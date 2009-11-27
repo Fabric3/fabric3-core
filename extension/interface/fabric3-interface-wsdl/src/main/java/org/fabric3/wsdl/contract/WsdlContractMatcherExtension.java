@@ -37,6 +37,7 @@
 */
 package org.fabric3.wsdl.contract;
 
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
@@ -54,8 +55,8 @@ public class WsdlContractMatcherExtension extends AbstractXsdContractMatcherExte
         return WsdlServiceContract.class;
     }
 
-    public boolean isAssignableFrom(WsdlServiceContract source, WsdlServiceContract target) {
-        return matchContract(source, target);
+    public MatchResult isAssignableFrom(WsdlServiceContract source, WsdlServiceContract target, boolean reportErrors) {
+        return matchContract(source, target, reportErrors);
     }
 
 }

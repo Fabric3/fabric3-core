@@ -58,6 +58,7 @@ import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -232,7 +233,8 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         String name = null;
         for (Map.Entry<String, ServiceDefinition> entry : type.getServices().entrySet()) {
             ServiceContract candidateContract = entry.getValue().getServiceContract();
-            if (matcher.isAssignableFrom(candidateContract, callbackContract)) {
+            MatchResult result = matcher.isAssignableFrom(candidateContract, callbackContract, false);
+            if (result.isAssignable()) {
                 name = entry.getKey();
                 break;
             }

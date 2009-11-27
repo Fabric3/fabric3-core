@@ -47,6 +47,7 @@ import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -132,7 +133,8 @@ public class WebImplementationIntrospectorImpl implements WebImplementationIntro
             if (reference != null) {
                 ServiceContract source = reference.getServiceContract();
                 ServiceContract target = entry.getValue().getServiceContract();
-                if (!matcher.isAssignableFrom(source, target)) {
+                MatchResult result = matcher.isAssignableFrom(source, target, false);
+                if (!result.isAssignable()) {
                     // TODO display areas where it was not matching
                     IncompatibleReferenceDefinitions failure = new IncompatibleReferenceDefinitions(name);
                     context.addError(failure);

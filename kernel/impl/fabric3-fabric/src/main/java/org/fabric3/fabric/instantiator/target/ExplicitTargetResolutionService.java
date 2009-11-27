@@ -54,6 +54,7 @@ import org.fabric3.fabric.instantiator.TargetResolutionService;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -221,12 +222,14 @@ public class ExplicitTargetResolutionService implements TargetResolutionService 
     private void validateContracts(LogicalReference reference, LogicalService service, InstantiationContext context) {
         ServiceContract referenceContract = resolver.determineContract(reference);
         ServiceContract serviceContract = resolver.determineContract(service);
-        if (!matcher.isAssignableFrom(referenceContract, serviceContract)) {
+        MatchResult result = matcher.isAssignableFrom(referenceContract, serviceContract, true);
+        if (!result.isAssignable()) {
             URI uri = reference.getParent().getUri();
             URI referenceUri = reference.getUri();
             URI serviceUri = service.getUri();
             URI contributionUri = reference.getParent().getDefinition().getContributionUri();
-            IncompatibleContracts error = new IncompatibleContracts(referenceUri, serviceUri, uri, contributionUri);
+            String message = result.getError();
+            IncompatibleContracts error = new IncompatibleContracts(referenceUri, serviceUri, uri, message, contributionUri);
             context.addError(error);
         }
     }

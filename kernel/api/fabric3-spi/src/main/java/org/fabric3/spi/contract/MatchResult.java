@@ -37,27 +37,39 @@
 */
 package org.fabric3.spi.contract;
 
-import org.fabric3.model.type.contract.ServiceContract;
-
 /**
- * Dermines if two <code>ServiceContract</code>s or compatible for wiring. Specifically, tests whether the target contract can be converted to the
- * source contract type. Some interface languages, such as Java, allow for inheritance. In these cases, compatibility will include checking if a
- * widening conversion is possible from the target contract to source contract.
- * <p/>
- * This service delegates to {@link ContractMatcherExtension}s for particular mappings such as WSDL-to-Java.
+ * The result of a contract matching operation.
  *
  * @version $Rev$ $Date$
  */
-public interface ContractMatcher {
+public class MatchResult {
+    private boolean assignable;
+    private String error;
+
+    public MatchResult(boolean assignable) {
+        this.assignable = assignable;
+    }
+
+    public MatchResult(String error) {
+        this.assignable = false;
+        this.error = error;
+    }
 
     /**
-     * Determines if two <code>ServiceContract</code>s are compatible for wiring.
+     * True if the contracts are compatible.
      *
-     * @param source       the source contract. This is the contract specified by a component reference.
-     * @param target       the ctarget contract. This is the contract specified by a service.
-     * @param reportErrors true if errors should be reported in the result
-     * @return the match result
+     * @return if the contracts are compatible.
      */
-    MatchResult isAssignableFrom(ServiceContract source, ServiceContract target, boolean reportErrors);
+    public boolean isAssignable() {
+        return assignable;
+    }
 
+    /**
+     * Returns the error or null if the contracts match
+     *
+     * @return the error  or null
+     */
+    public String getError() {
+        return error;
+    }
 }

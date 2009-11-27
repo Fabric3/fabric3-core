@@ -38,6 +38,7 @@
 
 package org.fabric3.wsdl.contract;
 
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
@@ -56,8 +57,8 @@ public class WsdlToJavaContractMatcherExtension extends AbstractXsdContractMatch
         return JavaServiceContract.class;
     }
 
-    public boolean isAssignableFrom(WsdlServiceContract source, JavaServiceContract target) {
-        return matchContract(source, target);
+    public MatchResult isAssignableFrom(WsdlServiceContract source, JavaServiceContract target, boolean reportErrors) {
+        return matchContract(source, target, reportErrors);
     }
 
 }

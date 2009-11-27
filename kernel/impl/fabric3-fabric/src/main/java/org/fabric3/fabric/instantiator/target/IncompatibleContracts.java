@@ -49,6 +49,7 @@ import org.fabric3.host.domain.AssemblyFailure;
 public class IncompatibleContracts extends AssemblyFailure {
     private URI referenceUri;
     private URI serviceUri;
+    private String message;
 
     /**
      * Constructor.
@@ -56,15 +57,19 @@ public class IncompatibleContracts extends AssemblyFailure {
      * @param referenceUri    the URI of the reference
      * @param serviceUri      the URI of the service
      * @param componentUri    the URI of the component associated with the failure.
+     * @param message         the reported contract matching error
      * @param contributionUri the contribution containing the component
      */
-    public IncompatibleContracts(URI referenceUri, URI serviceUri, URI componentUri, URI contributionUri) {
+    public IncompatibleContracts(URI referenceUri, URI serviceUri, URI componentUri, String message, URI contributionUri) {
         super(componentUri, contributionUri);
         this.referenceUri = referenceUri;
         this.serviceUri = serviceUri;
+        this.message = message;
     }
 
     public String getMessage() {
-        return "The contracts for the reference " + referenceUri + " and service " + serviceUri + " are incompatible";
+        StringBuilder builder = new StringBuilder("The contracts for the reference ").append(referenceUri).append(
+                " and service ").append(serviceUri).append(" are incompatible. The following error was reported: ").append(message);
+        return builder.toString();
     }
 }

@@ -57,6 +57,7 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -197,7 +198,8 @@ public class TypeBasedAutowireResolutionService implements TargetResolutionServi
                         // This is a programming error since a non-composite service must have a service contract
                         throw new AssertionError("No service contract specified on service: " + service.getUri());
                     }
-                    if (matcher.isAssignableFrom(contract, targetContract)) {
+                    MatchResult result = matcher.isAssignableFrom(contract, targetContract, false);
+                    if (result.isAssignable()) {
                         candidates.add(service);
                         break;
                     }

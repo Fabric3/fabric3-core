@@ -45,6 +45,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcherExtension;
+import org.fabric3.spi.contract.MatchResult;
 
 /**
  * An abstract ContractMatcher that uses XML Schema to match contracts specified with different type systems.
@@ -53,36 +54,49 @@ import org.fabric3.spi.contract.ContractMatcherExtension;
  */
 public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContract, T extends ServiceContract>
         implements ContractMatcherExtension<S, T> {
+    private static final MatchResult MATCH = new MatchResult(true);
+    private static final MatchResult NO_MATCH = new MatchResult(false);
 
-    protected boolean matchContract(ServiceContract source, ServiceContract target) {
+    protected MatchResult matchContract(ServiceContract source, ServiceContract target, boolean reportErrors) {
         if (source == target) {
-            return true;
+            return MATCH;
         }
         for (Operation operation : source.getOperations()) {
-            boolean match = matchOperation(operation, target.getOperations());
-            if (!match) {
-                return false;
+            MatchResult match = matchOperation(operation, target.getOperations(), reportErrors);
+            if (!match.isAssignable()) {
+                // fail fast
+                return match;
             }
         }
-        return true;
+        return MATCH;
     }
+
     // TODO throw explicit error if DataType.getXsdType() == null saying XSD mapping extension is not installed
-    protected boolean matchOperation(Operation operation, List<Operation> operations) {
+    protected MatchResult matchOperation(Operation operation, List<Operation> operations, boolean reportErrors) {
         for (Operation candidate : operations) {
-            if (!operation.getName().equalsIgnoreCase(candidate.getName())) {
+            String name = operation.getName();
+            if (!name.equalsIgnoreCase(candidate.getName())) {
                 continue;
             }
             // check input types
             List<DataType<?>> inputTypes = operation.getInputTypes();
             List<DataType<?>> candidateInputTypes = candidate.getInputTypes();
             if (inputTypes.size() != candidateInputTypes.size()) {
-                return false;
+                if (reportErrors) {
+                    return new MatchResult("The number of parameters for the source and target operations are not equal for operation " + name);
+                } else {
+                    return NO_MATCH;
+                }
             }
             for (int i = 0; i < inputTypes.size(); i++) {
                 DataType<?> inputType = inputTypes.get(i);
                 DataType<?> candidateInputType = candidateInputTypes.get(i);
                 if (inputType.getXsdType() == null || !inputType.getXsdType().equals(candidateInputType.getXsdType())) {
-                    return false;
+                    if (reportErrors) {
+                        return new MatchResult("Input types at position " + i + " do not match on operation " + name);
+                    } else {
+                        return NO_MATCH;
+                    }
                 }
             }
             // check output types
@@ -103,7 +117,7 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
 //                }
 //            }
         }
-        return true;
+        return MATCH;
     }
 
 }

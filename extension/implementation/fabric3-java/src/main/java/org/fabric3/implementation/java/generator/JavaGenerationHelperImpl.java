@@ -47,6 +47,8 @@ import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
+import org.fabric3.implementation.pojo.generator.GenerationHelper;
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.CallbackDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -55,9 +57,8 @@ import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -139,7 +140,8 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
             // NB: This currently only supports the case where one callback injection site of the same type is on an implementation.
             // TODO clarify with the spec if having more than one callback injection site of the same type is valid
             ServiceContract candidate = entry.getServiceContract();
-            if (matcher.isAssignableFrom(candidate, serviceContract)) {
+            MatchResult result = matcher.isAssignableFrom(candidate, serviceContract, false);
+            if (result.isAssignable()) {
                 name = entry.getName();
                 break;
             }

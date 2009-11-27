@@ -39,6 +39,7 @@
 package org.fabric3.fabric.contract;
 
 import org.fabric3.spi.contract.ContractMatcherExtension;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.Signature;
 
@@ -48,6 +49,8 @@ import org.fabric3.spi.model.type.java.Signature;
  * @version $Rev$ $Date$
  */
 public class JavaContractMatcherExtension implements ContractMatcherExtension<JavaServiceContract, JavaServiceContract> {
+    private static final MatchResult MATCH = new MatchResult(true);
+    private static final MatchResult NO_MATCH = new MatchResult(false);
 
     public Class<JavaServiceContract> getSource() {
         return JavaServiceContract.class;
@@ -57,31 +60,35 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
         return JavaServiceContract.class;
     }
 
-    public boolean isAssignableFrom(JavaServiceContract source, JavaServiceContract target) {
+    public MatchResult isAssignableFrom(JavaServiceContract source, JavaServiceContract target, boolean reportErrors) {
         if (source == target) {
-            return true;
+            return MATCH;
         }
         if ((source.getSuperType() == null && target.getSuperType() != null)
                 || (source.getSuperType() != null && !source.getSuperType().equals(target.getSuperType()))) {
-            return false;
+            return NO_MATCH;
         }
         if (source.getInterfaceClass().equals(target.getInterfaceClass())) {
             for (Signature signature : source.getMethodSignatures()) {
                 if (!target.getMethodSignatures().contains(signature)) {
-                    return false;
+                    return new MatchResult("Method signature not found on target service contract: " + signature);
                 }
             }
-            return true;
+            return MATCH;
         } else {
             // check the interfaces
             for (String superType : target.getInterfaces()) {
                 if (superType.equals(source.getInterfaceClass())) {
                     // need to match params as well
-                    return true;
+                    return MATCH;
                 }
             }
         }
-        return false;
+        if (reportErrors) {
+            return new MatchResult("Source and target interfaces do not match");
+        } else {
+            return NO_MATCH;
+        }
 
     }
 

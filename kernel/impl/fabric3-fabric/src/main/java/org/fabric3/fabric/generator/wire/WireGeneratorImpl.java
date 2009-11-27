@@ -51,6 +51,7 @@ import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -373,7 +374,8 @@ public class WireGeneratorImpl implements WireGenerator {
             throws GenerationException {
         LogicalService candidate = null;
         for (LogicalService entry : source.getServices()) {
-            if (matcher.isAssignableFrom(contract, entry.getDefinition().getServiceContract())) {
+            MatchResult result = matcher.isAssignableFrom(contract, entry.getDefinition().getServiceContract(), false);
+            if (result.isAssignable()) {
                 candidate = entry;
                 break;
             }

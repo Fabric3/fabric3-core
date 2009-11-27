@@ -46,6 +46,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.ContractMatcherExtension;
+import org.fabric3.spi.contract.MatchResult;
 
 /**
  * The default ContractMatcher implementation.
@@ -69,7 +70,7 @@ public class DefaultContractMatcher implements ContractMatcher {
     }
 
     @SuppressWarnings({"unchecked"})
-    public boolean isAssignableFrom(ServiceContract source, ServiceContract target) {
+    public MatchResult isAssignableFrom(ServiceContract source, ServiceContract target, boolean reportErrors) {
         Key key = new Key(source.getClass(), target.getClass());
         ContractMatcherExtension matcher = cache.get(key);
         if (matcher == null) {
@@ -77,7 +78,7 @@ public class DefaultContractMatcher implements ContractMatcher {
             String name = ContractMatcherExtension.class.getSimpleName();
             throw new AssertionError(name + " not found for converting from " + source.getClass() + " to " + target.getClass());
         }
-        return matcher.isAssignableFrom(source, target);
+        return matcher.isAssignableFrom(source, target, reportErrors);
     }
 
     private class Key {
