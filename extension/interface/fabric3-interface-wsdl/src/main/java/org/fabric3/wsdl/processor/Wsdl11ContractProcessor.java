@@ -116,8 +116,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     private List<DataType<?>> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         List<DataType<?>> types = new ArrayList<DataType<?>>();
         for (Part part : (Collection<Part>) message.getParts().values()) {
-            QName name = part.getElementName();
-            XSDType dataType = getDataType(name, collection, portType, context);
+            XSDType dataType = getDataType(part, collection, portType, context);
             if (dataType != null) {
                 types.add(dataType);
             }
@@ -130,8 +129,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
         List<DataType<?>> types = new LinkedList<DataType<?>>();
         for (Fault fault : (Collection<Fault>) faults.values()) {
             Part part = (Part) fault.getMessage().getOrderedParts(null).get(0);
-            QName name = part.getElementName();
-            XSDType dataType = getDataType(name, collection, portType, context);
+            XSDType dataType = getDataType(part, collection, portType, context);
             if (dataType != null) {
                 types.add(dataType);
             }
@@ -146,11 +144,22 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
         }
         Message message = output.getMessage();
         Part part = (Part) message.getOrderedParts(null).get(0);
-        QName name = part.getElementName();
-        return getDataType(name, collection, portType, context);
+        return getDataType(part, collection, portType, context);
     }
 
-    private XSDType getDataType(QName elementName, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+    private XSDType getDataType(Part part, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+        QName elementName = part.getElementName();
+        XSDType dataType = null;
+        QName typeName = part.getTypeName();
+        if (elementName != null) {
+            dataType = getElementDataType(elementName, collection, portType, context);
+        } else if (typeName != null) {
+            dataType = getSchemaDataType(typeName, collection, portType, context);
+        }
+        return dataType;
+    }
+
+    private XSDType getElementDataType(QName elementName, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         XmlSchemaElement element = collection.getElementByQName(elementName);
         if (element == null) {
             SchemaTypeNotFound error = new SchemaTypeNotFound("Schema type " + elementName + " not found referenced in: " + portType.getQName());
@@ -163,6 +172,20 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
             context.addError(error);
             return null;
         }
+        return createDataType(type);
+    }
+
+    private XSDType getSchemaDataType(QName typeName, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
+        XmlSchemaType type = collection.getTypeByQName(typeName);
+        if (type == null) {
+            SchemaTypeNotFound error = new SchemaTypeNotFound("Schema type " + typeName + " not found referenced in: " + portType.getQName());
+            context.addError(error);
+            return null;
+        }
+        return createDataType(type);
+    }
+
+    private XSDType createDataType(XmlSchemaType type) {
         QName name = type.getQName();
         if (type instanceof XmlSchemaComplexType) {
             return new XSDComplexType(Object.class, name);
