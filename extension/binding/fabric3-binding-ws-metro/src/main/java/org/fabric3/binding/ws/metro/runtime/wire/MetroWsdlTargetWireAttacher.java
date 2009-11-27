@@ -38,13 +38,13 @@
 package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
 
-import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.wss.SecurityEnvironment;
 import org.osoa.sca.annotations.Reference;
 
@@ -54,7 +54,6 @@ import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
-import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectFactory;
@@ -72,19 +71,15 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdlTargetDefinition> {
-
-    private BindingIdResolver bindingIdResolver;
     private FeatureResolver resolver;
     private SecurityEnvironment securityEnvironment;
     private WorkScheduler scheduler;
     private ArtifactCache cache;
 
-    public MetroWsdlTargetWireAttacher(@Reference BindingIdResolver bindingIdResolver,
-                                       @Reference FeatureResolver resolver,
+    public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference WorkScheduler scheduler,
                                        @Reference ArtifactCache cache) {
-        this.bindingIdResolver = bindingIdResolver;
         this.resolver = resolver;
         this.securityEnvironment = securityEnvironment;
         this.scheduler = scheduler;
@@ -99,17 +94,18 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
         String wsdl = target.getWsdl();
         URL wsdlLocation;
         try {
-            wsdlLocation = cache.cache(target.getUri(), new ByteArrayInputStream(wsdl.getBytes()));
+            URI servicePath = target.getEndpointDefinition().getUrl().toURI();
+            wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
         } catch (CacheException e) {
+            throw new WiringException(e);
+        } catch (URISyntaxException e) {
             throw new WiringException(e);
         }
 
-        File generatedWsdl = null;  // TODO support policy
-        BindingID bindingId = bindingIdResolver.resolveBindingId(requestedIntents);
 
         MetroDispatchObjectFactory proxyFactory = new MetroDispatchObjectFactory(endpointDefinition,
                                                                                  wsdlLocation,
-                                                                                 generatedWsdl,
+                                                                                 null,
                                                                                  features,
                                                                                  scheduler,
                                                                                  securityEnvironment);

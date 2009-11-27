@@ -132,13 +132,12 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                 // cache WSDL and Schemas
                 URL wsdlLocation = target.getWsdlLocation();
                 URL generatedWsdl = null;
-                List<URL> generatedSchemas;
                 URI servicePath = target.getEndpointDefinition().getUrl().toURI();
                 String wsdl = target.getWsdl();
                 if (wsdl != null) {
                     wsdlLocation = artifactCache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
                     generatedWsdl = wsdlLocation;
-                    generatedSchemas = cacheSchemas(servicePath, target);
+                    cacheSchemas(servicePath, target);
                 }
 
                 WebServiceFeature[] features = resolver.getFeatures(requestedIntents);
