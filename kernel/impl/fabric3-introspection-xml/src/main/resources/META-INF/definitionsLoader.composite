@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           name="DefinitionsLoaderBootComposite"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot">
+
+    <component name="DefinitionsLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsLoader"/>
+    </component>
+
+    <component name="DefinitionsIndexer">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsIndexer"/>
+    </component>
+
+    <component name="IntentLoader" f3-core:key="sca:intent">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.IntentLoader"/>
+    </component>
+
+    <component name="PolicySetLoader" f3-core:key="sca:policySet">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.PolicySetLoader"/>
+    </component>
+
+    <component name="BindingTypeLoader" f3-core:key="sca:bindingType">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.BindingTypeLoader"/>
+    </component>
+
+    <component name="ImplementationTypeLoader" f3-core:key="sca:implementationType">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.ImplementationTypeLoader"/>
+    </component>
+
+</composite>

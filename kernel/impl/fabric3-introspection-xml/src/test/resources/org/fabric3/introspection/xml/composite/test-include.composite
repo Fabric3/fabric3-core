@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+-->
+<composite>
+    This file just needs to exist
+</composite>

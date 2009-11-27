@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright © 2008 Metaform Systems Limited
+
+ This proprietary software may be used only connection with the Fabric3 license
+ (the “License”), a copy of which is included in the software or may be
+ obtained at: http://www.metaformsystems.com/licenses/license.html.
+
+ Software distributed under the License is distributed on an “as is” basis,
+ without warranties or conditions of any kind.  See the License for the
+ specific language governing permissions and limitations of use of the software.
+ This software is distributed in conjunction with other software licensed under
+ different terms.  See the separate licenses for those programs included in the
+ distribution for the permitted and restricted uses of such software.
+-->
+<project name="Atomikos-Installer">
+
+    <property name="atomikos.version" value="3.5.5"/>
+
+    <target name="check-installed">
+        <condition property="already.installed">
+            <and>
+                <available file="${localRepository}/com/atomikos/transactions-api/${atomikos.version}/transactions-api-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions/${atomikos.version}/transactions-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions-essentials-all/${atomikos.version}/transactions-essentials-all-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/atomikos-util/${atomikos.version}/atomikos-util-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions-jdbc/${atomikos.version}/transactions-jdbc-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions-jms/${atomikos.version}/transactions-jms-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions-jta/${atomikos.version}/transactions-jta-${atomikos.version}.jar"/>
+                <available file="${localRepository}/com/atomikos/transactions-hibernate3/${atomikos.version}/transactions-hibernate3-${atomikos.version}.jar"/>
+            </and>
+        </condition>
+        <condition property="maven.suffix" value="">
+            <os family="unix"/>
+        </condition>
+        <condition property="maven.suffix" value=".bat">
+            <os family="windows"/>
+        </condition>
+    </target>
+
+    <target name="install-atomikos" depends="check-installed" unless="already.installed">
+
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-api -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-api.jar&quot;"/>
+        </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions.jar&quot;"/>
+        </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-essentials-all -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-essentials-all.jar&quot;"/>
+        </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=atomikos-util -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/atomikos-util.jar&quot;"/>
+        </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-jdbc -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-jdbc.jar&quot;"/>
+        </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+             <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-jms -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-jms.jar&quot;"/>
+         </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+             <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-jta -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-jta.jar&quot;"/>
+         </exec>
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+             <arg line="install:install-file -DgroupId=com.atomikos  -DartifactId=transactions-hibernate3 -Dversion=${atomikos.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/transactions-hibernate3.jar&quot;"/>
+         </exec>
+    </target>
+
+</project>

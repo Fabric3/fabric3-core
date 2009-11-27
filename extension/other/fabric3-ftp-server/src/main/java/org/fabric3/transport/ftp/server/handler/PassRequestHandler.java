@@ -1,0 +1,99 @@
+/*
+* Fabric3
+* Copyright (c) 2009 Metaform Systems
+*
+* Fabric3 is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version, with the
+* following exception:
+*
+* Linking this software statically or dynamically with other
+* modules is making a combined work based on this software.
+* Thus, the terms and conditions of the GNU General Public
+* License cover the whole combination.
+*
+* As a special exception, the copyright holders of this software
+* give you permission to link this software with independent
+* modules to produce an executable, regardless of the license
+* terms of these independent modules, and to copy and distribute
+* the resulting executable under terms of your choice, provided
+* that you also meet, for each linked independent module, the
+* terms and conditions of the license of that module. An
+* independent module is a module which is not derived from or
+* based on this software. If you modify this software, you may
+* extend this exception to your version of the software, but
+* you are not obligated to do so. If you do not wish to do so,
+* delete this exception statement from your version.
+*
+* Fabric3 is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty
+* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+* See the GNU General Public License for more details.
+*
+* You should have received a copy of the
+* GNU General Public License along with Fabric3.
+* If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.fabric3.transport.ftp.server.handler;
+
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.transport.ftp.server.protocol.DefaultResponse;
+import org.fabric3.transport.ftp.server.protocol.FtpSession;
+import org.fabric3.transport.ftp.server.protocol.Request;
+import org.fabric3.transport.ftp.server.protocol.RequestHandler;
+import org.fabric3.transport.ftp.server.security.User;
+import org.fabric3.transport.ftp.server.security.UserManager;
+
+/**
+ * Handles the <code>PASS</code> command.
+ *
+ * @version $Rev$ $Date$
+ */
+public class PassRequestHandler implements RequestHandler {
+
+    private UserManager userManager;
+
+    /**
+     * Uses the registered user manager to authenticate the <code>PASS</code> command.
+     *
+     * @param request Object the encapsuates the current FTP command.
+     */
+    public void service(Request request) {
+
+        FtpSession session = request.getSession();
+        User user = session.getUser();
+
+        if (user == null) {
+            session.write(new DefaultResponse(503, "Login with USER first"));
+            return;
+        }
+
+        String userName = user.getName();
+        String password = request.getArgument();
+
+        if (password == null) {
+            session.write(new DefaultResponse(501, "Syntax error in parameters or arguments"));
+        }
+
+        if (userManager.login(userName, password)) {
+            session.setAuthenticated();
+            session.write(new DefaultResponse(230, "User logged in, proceed"));
+        } else {
+            session.write(new DefaultResponse(530, "Authentication failed"));
+        }
+
+    }
+
+    /**
+     * Injects the user manager.
+     *
+     * @param userManager Injects the user manager.
+     */
+    @Reference
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
+    }
+
+}

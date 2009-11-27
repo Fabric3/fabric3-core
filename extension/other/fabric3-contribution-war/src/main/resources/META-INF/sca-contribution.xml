@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev$ $Date$
+-->
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+              xmlns:ns="urn:fabric3.org:web"
+              xmlns:f3-core="urn:fabric3.org:core"
+              xmlns:web="urn:fabric3.org:web"
+              f3-core:extension="true"
+              f3-core:description="WAR extension">
+    <import.java package="org.fabric3.spi.*" version="1.4"/>
+    <deployable composite="web:WarContributionExtension"/>
+</contribution>

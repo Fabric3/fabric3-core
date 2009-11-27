@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+    $Rev: 7117 $ $Date: 2009-06-14 14:03:22 -0700 (Sun, 14 Jun 2009) $
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="DomainComposite"
+           autowire="true">
+
+    <component name="ApplicationDomain">
+        <f3-impl:implementation.system class="org.fabric3.fabric.domain.DistributedDomain"/>
+        <reference name="logicalComponentManager" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="ContributionHelper">
+        <f3-impl:implementation.system class="org.fabric3.fabric.domain.ContributionHelperImpl"/>
+    </component>
+
+    <component name="LogicalComponentManager">
+        <f3-impl:implementation.system class="org.fabric3.fabric.lcm.LogicalComponentManagerImpl"/>
+        <property name="autowire" source="$systemConfig/domain/@autowire"/>
+    </component>
+
+    <component name="LocalRoutingService">
+        <f3-impl:implementation.system class="org.fabric3.fabric.domain.LocalRoutingService"/>
+    </component>
+    <!-- this wire reinjects the routing service into the RuntimeDomain -->
+    <wire source="RuntimeDomain/routingService" target="LocalRoutingService"/>
+
+    <component name="SingletonComponentSynthesizer">
+        <f3-impl:implementation.system class="org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer"/>
+    </component>
+
+    <component name="PolicyRegistry">
+        <f3-impl:implementation.system class="org.fabric3.fabric.policy.DefaultPolicyRegistry"/>
+    </component>
+
+    <wire source="ApplicationDomain/policyRegistry" target="PolicyRegistry"/>
+    <wire source="RuntimeDomain/policyRegistry" target="PolicyRegistry"/>
+
+
+</composite>

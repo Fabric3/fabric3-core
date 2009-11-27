@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:binding"
+           name="MetroBinding"
+           autowire="true">
+
+    <component name="BindingIDResolver">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.DefaultBindingIdResolver"/>
+    </component>
+
+    <component name="ClassDefiner">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.ClassDefinerImpl"/>
+    </component>
+
+    <component name="ClassLoaderUpdater">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.ClassLoaderUpdaterImpl"/>
+    </component>
+
+    <component name="MetroBinding">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.MetroBinding"/>
+        <property name="logLevel" source="$systemConfig//web.services/metro/@logging"/>
+    </component>
+
+</composite>

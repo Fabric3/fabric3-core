@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           name="PlanLoaderBootComposite" targetNamespace="urn:maven:org.codehaus.fabric3:boot">
+
+    <component name="DeploymentPlanIndexer">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.plan.DeploymentPlanIndexer"/>
+    </component>
+
+    <component name="DeploymentPlanProcessor">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.plan.DeploymentPlanProcessor"/>
+    </component>
+
+</composite>

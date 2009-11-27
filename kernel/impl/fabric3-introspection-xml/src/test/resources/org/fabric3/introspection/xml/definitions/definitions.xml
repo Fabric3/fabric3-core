@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+-->
+<definitions
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+        targetNamespace="urn:fabric3.org:policy"
+        xmlns:f3-policy="urn:fabric3.org:policy"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+        xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+
+    <intent name="intercepted" constrains="binding">
+        <description>Intercepted intent</description>
+    </intent>
+
+    <intent name="qualifier" constrains="binding">
+        <description>Qualifier intent</description>
+        <qualifier name="qualifier1" default="true"/>
+        <qualifier name="qualifier2"/>
+    </intent>
+
+    <policySet name="interceptedPolicy" appliesTo="sca:binding.foo" provides="f3-policy:intercepted">
+        <f3-policy:interceptor class="FooInterceptor"/>
+    </policySet>
+
+    <policySet name="providedPolicy" appliesTo="sca:binding.fo" provides="f3-policy:provided">
+        <f3-policy:someElement f3-policy:phase="provided"/>
+    </policySet>
+
+    <policySet name="wsPolicy" provides="sca:authentication.message" appliesTo="fabric3://domain/FooService">
+        <wsp:Policy>
+            <sp:UsernameToken>
+                <wsp:Policy>
+                    <sp:WssUsernameToken11/>
+                </wsp:Policy>
+            </sp:UsernameToken>
+        </wsp:Policy>
+    </policySet>
+
+</definitions>

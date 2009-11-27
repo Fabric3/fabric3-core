@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:binding"
+           name="MetroParticipantExtension"
+           autowire="true">
+
+    <component f3-core:key="org.fabric3.binding.ws.metro.provision.MetroJavaSourceDefinition" name="MetroJavaSourceWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaSourceWireAttacher"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition" name="MetroWsdlSourceWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlSourceWireAttacher"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition" name="MetroJavaTargetWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroJavaTargetWireAttacher"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.binding.ws.metro.provision.MetroWsdlTargetDefinition" name="MetroWsdlTargetWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.MetroWsdlTargetWireAttacher"/>
+    </component>
+
+    <component name="FeatureResolver">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.policy.DefaultFeatureResolver"/>
+    </component>
+
+    <component name="WireAttacherHelper">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.wire.WireAttacherHelperImpl"/>
+    </component>
+
+    <component name="F3SecurityEnvironment">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.F3SecurityEnvironment"/>
+        <property name="keyStoreLocation" source="$systemConfig/security/keystore"/>
+        <property name="keyStorePassword" source="$systemConfig/security/keystore.password"/>
+        <!--<property name="certPassword" source="$systemConfig/security/cert.password"/>-->
+        <property name="trustStoreLocation" source="$systemConfig/security/truststore"/>
+        <property name="trustStorePassword" source="$systemConfig/security/truststore.password"/>
+    </component>
+
+    <component name="CertificateValidator">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.security.CertificateValidatorImpl"/>
+    </component>
+
+    <component name="EndpointService">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.runtime.core.EndpointServiceImpl"/>
+    </component>
+
+</composite>

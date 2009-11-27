@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions name="Weather"
+             targetNamespace="urn:weather"
+             xmlns:tns="urn:weather"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:weather">
+            <complexType name="WeatherRequest">
+                <sequence>
+                    <element name="city" type="xsd:string"/>
+                    <element name="date" type="xsd:date"/>
+                </sequence>
+            </complexType>
+            <complexType name="WeatherResponse">
+                <sequence>
+                    <element name="forecast" type="xsd:string"/>
+                    <element name="temperature" type="xsd:double"/>
+                </sequence>
+            </complexType>
+            <element name="weatherRequest" type="tns:WeatherRequest"/>
+            <element name="weatherResponse" type="tns:WeatherResponse"/>
+        </xsd:schema>
+    </types>
+
+    <message name="weatherRequest">
+        <part name="weatherRequest" element="tns:weatherRequest"/>
+    </message>
+
+    <message name="weatherResponse">
+        <part name="weatherResponse" element="tns:weatherResponse"/>
+    </message>
+
+    <portType name="WeatherPortType">
+        <operation name="getWeather">
+            <input message="tns:weatherRequest"/>
+            <output message="tns:weatherResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="WeatherBinding" type="tns:WeatherPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="getWeather">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="WeatherService">
+        <port name="WeatherPort" binding="tns:WeatherBinding">
+            <soap:address location="http://localhost:7001/weather"/>
+        </port>
+    </service>
+
+</definitions>

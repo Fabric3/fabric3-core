@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="SystemImplementationComposite"
+           autowire="true">
+
+    <component name="SystemImplementationLoader" f3-core:key="f3-impl:implementation.system">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationLoader"/>
+    </component>
+
+    <component name="SystemComponentBuilder" f3-core:key="org.fabric3.implementation.system.provision.SystemComponentDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.runtime.SystemComponentBuilder"/>
+    </component>
+
+    <component name="SystemSourceWireAttacher" f3-core:key="org.fabric3.implementation.system.provision.SystemSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.runtime.SystemSourceWireAttacher"/>
+    </component>
+
+    <component name="SystemTargetWireAttacher" f3-core:key="org.fabric3.implementation.system.provision.SystemTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetWireAttacher"/>
+    </component>
+
+
+    <component name="SystemImplementationProcessorImpl">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl"/>
+        <reference name="heuristic" target="SystemHeuristic"/>
+    </component>
+
+    <component name="SystemHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemHeuristic"/>
+        <reference name="service" target="SystemServiceHeuristic"/>
+        <reference name="constructor" target="SystemConstructorHeuristic"/>
+        <reference name="injection" target="SystemUnannotatedHeuristic"/>
+    </component>
+
+    <component name="SystemServiceHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemServiceHeuristic"/>
+    </component>
+
+    <component name="SystemConstructorHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemConstructorHeuristic"/>
+    </component>
+
+    <component name="SystemUnannotatedHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic"/>
+    </component>
+
+    <component name="SystemComponentGenerator" f3-core:key="org.fabric3.implementation.system.model.SystemImplementation">
+        <f3-impl:implementation.system class="org.fabric3.implementation.system.generator.SystemComponentGenerator"/>
+    </component>
+
+</composite>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:jpa"
+           name="HibernateJpaExtension"
+           autowire="true">
+
+    <!-- EMF Builder Delegate -->
+    <component name="HibernateDelegate" f3-core:key="org.hibernate.ejb.HibernatePersistence">
+        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateDelegate"/>
+        <property name="logLevel" source="$systemConfig//jpa/@logging"/>
+    </component>
+
+    <component name="HibernateEmfClassLoaderService">
+        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateEmfClassLoaderService"/>
+    </component>
+
+    <!-- Transaction manager lookup -->
+    <component name="F3HibernateTransactionManagerLookup">
+        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.F3HibernateTransactionManagerLookup"/>
+    </component>
+
+    <component name="HibernateContributionListener">
+        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateContributionListener"/>
+    </component>
+
+    <include name="JPACore" scdlResource="META-INF/jpa.composite"/>
+</composite>

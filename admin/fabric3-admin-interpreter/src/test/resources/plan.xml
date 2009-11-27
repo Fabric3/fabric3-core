@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ASCII"?>
+<plan xmlns:calc="org.codehaus.fabric3" name="testPlan">
+    <mappings>
+        <mapping deployable="calc:CalculatorComposite" zone="ZoneManager"/>
+    </mappings>
+</plan>

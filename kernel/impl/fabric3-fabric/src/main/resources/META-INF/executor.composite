@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="ExecutorComposite"
+           autowire="true">
+
+
+    <component name="CommandExecutorRegistry">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.CommandExecutorRegistryImpl"/>
+    </component>
+
+    <component name="ClassloaderProvisionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor"/>
+    </component>
+
+    <component name="AttachExtensionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachExtensionCommandExecutor"/>
+    </component>
+
+    <component name="ComponentBuildCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildComponentCommandExecutor"/>
+    </component>
+
+    <component name="WireAttachCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachWireCommandExecutor"/>
+    </component>
+
+    <component name="ComponentStartCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.StartComponentCommandExecutor"/>
+    </component>
+
+    <component name="StartCompositeContextCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.StartContextCommandExecutor"/>
+    </component>
+
+    <component name="ComponentStopCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.StopComponentCommandExecutor"/>
+    </component>
+
+    <component name="StopCompositeContextCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.StopContextCommandExecutor"/>
+    </component>
+
+    <component name="WireDetachCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DetachWireCommandExecutor"/>
+    </component>
+
+    <component name="UnprovisionClassloaderCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnprovisionClassloaderCommandExecutor"/>
+    </component>
+
+    <component name="ReferenceConnectionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ReferenceConnectionCommandExecutor"/>
+    </component>
+
+    <component name="ProvisionExtensionsCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ProvisionExtensionsCommandExecutor"/>
+        <reference name="domain" target="RuntimeDomain"/>
+    </component>
+
+    <component name="UnProvisionExtensionsCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnProvisionExtensionsCommandExecutor"/>
+        <reference name="domain" target="RuntimeDomain"/>
+    </component>
+
+</composite>

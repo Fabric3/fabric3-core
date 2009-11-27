@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright © 2008 Metaform Systems Limited
+
+ This proprietary software may be used only connection with the Fabric3 license
+ (the “License”), a copy of which is included in the software or may be
+ obtained at: http://www.metaformsystems.com/licenses/license.html.
+
+ Software distributed under the License is distributed on an “as is” basis,
+ without warranties or conditions of any kind.  See the License for the
+ specific language governing permissions and limitations of use of the software.
+ This software is distributed in conjunction with other software licensed under
+ different terms.  See the separate licenses for those programs included in the
+ distribution for the permitted and restricted uses of such software.
+
+-->
+<!--
+    $Rev$ $Date$
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="org.codehaus.fabric3"
+           name="EXistDatabase"
+           autowire="true">
+
+     <property name="eXistDBConfig" type="f3-core:eXistDBConfig"/>
+    <reference name="eXistDBRegistry" promote="EXistDatabase/eXistDBRegistry"/>
+
+    <!-- eXist Database Instance -->
+    <component name="EXistDatabase">
+        <f3-impl:implementation.system class="org.fabric3.exist.ExistDBInstanceImpl"/>
+        <property name="instanceName" source="$eXistDBConfig//instanceName"/>
+        <property name="existHome" source="$eXistDBConfig//existHome"/>
+        <property name="configFile" source="$eXistDBConfig//configFile"/>
+        <property name="minBrokers" source="$eXistDBConfig//minBrokers"/>
+        <property name="maxBrokers" source="$eXistDBConfig//maxBrokers"/>
+        <property name="userID" source="$eXistDBConfig//userID"/>
+        <property name="password" source="$eXistDBConfig//password"/>
+    </component>
+
+</composite>

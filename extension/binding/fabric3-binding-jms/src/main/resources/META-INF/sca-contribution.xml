@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev$ $Date$
+-->
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+              xmlns:f3-binding="urn:fabric3.org:binding"
+              xmlns:f3-core="urn:fabric3.org:core"
+              f3-core:extension="true"
+              f3-core:description="JMS extension">
+    <import.java package="javax.transaction" version="1.1.0"/>
+    <import.java package="javax.transaction.xa" version="1.1.0"/>
+    <import.java package="javax.jms" version="1.1.0"/>
+    <import.java package="javax.xml.bind.annotation" version="1.4"/>
+    <import.java package="org.fabric3.spi.*" version="1.4"/>
+    <export.java package="org.fabric3.binding.jms.common" version="1.4"/>
+    <export.java package="org.fabric3.binding.jms.model" version="1.4"/>
+    <export.java package="org.fabric3.binding.jms.spi.*" version="1.4"/>
+    <deployable composite="f3-binding:JMSBindingExtension"/>
+    <f3-core:provides name="jms"/>
+</contribution>

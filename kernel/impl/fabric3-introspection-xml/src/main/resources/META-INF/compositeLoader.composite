@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           name="CompositeLoaderBootComposite" targetNamespace="urn:maven:org.codehaus.fabric3:boot">
+
+    <!-- Common loader implementations -->
+    <component name="OperationLoader" f3-core:key="sca:operation">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.OperationLoader"/>
+    </component>
+    <component name="ComponentReferenceLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.ComponentReferenceLoader"/>
+    </component>
+    <component name="ComponentServiceLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.ComponentServiceLoader"/>
+    </component>
+    <component name="PropertyLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.PropertyLoader"/>
+    </component>
+    <component name="JavaInterfaceLoader" f3-core:key="sca:interface.java">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.JavaInterfaceLoader"/>
+    </component>
+
+    <!-- Composite loader implementations -->
+    <component name="PropertyValueLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.PropertyValueLoader"/>
+    </component>
+    <component name="ComponentLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.ComponentLoader"/>
+    </component>
+    <component name="IncludeLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.IncludeLoader"/>
+    </component>
+    <component name="CompositeReferenceLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.CompositeReferenceLoader"/>
+    </component>
+    <component name="CompositeServiceLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.CompositeServiceLoader"/>
+    </component>
+
+    <component name="WireLoader" f3-core:key="sca:wire">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.WireLoader"/>
+    </component>
+
+    <component name="CompositeLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.CompositeLoader"/>
+        <!-- explicitly wire composite property, service and reference laoders -->
+        <reference name="service" target="CompositeServiceLoader"/>
+        <reference name="reference" target="CompositeReferenceLoader"/>
+        <reference name="property" target="PropertyLoader"/>
+    </component>
+
+    <!-- Composite implementation type -->
+    <component name="ImplementationCompositeLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.ImplementationCompositeLoader"/>
+    </component>
+
+    <component name="ComponentTypeLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.componentType.ComponentTypeLoader"/>
+        <reference name="property" target="PropertyLoader"/>
+    </component>
+</composite>

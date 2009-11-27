@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<!--
+    $Rev$ $Date$
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:org.fabric3:binding:ftp"
+        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+        elementFormDefault="qualified">
+
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-core.xsd"/>
+
+    <element name="binding.ftp" type="FtpBinding"
+             substitutionGroup="sca:binding"/>
+
+    <xsd:simpleType name="FtpTransferMode">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ACTIVE"/>
+            <xsd:enumeration value="PASSIVE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <complexType name="FtpBinding">
+        <complexContent>
+            <extension base="sca:Binding">
+                <sequence>
+                    <any namespace="##other" processContents="lax" minOccurs="0"
+                         maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="uri" type="anyURI" use="required"/>
+                <attribute name="mode" type="FtpTransferMode" use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

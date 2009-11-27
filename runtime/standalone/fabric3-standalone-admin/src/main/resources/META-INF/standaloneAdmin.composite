@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:admin"
+           name="StandaloneAdminExtension">
+
+
+    <component name="ContibutionServiceMBean">
+        <f3-impl:implementation.system class="org.fabric3.admin.controller.ContibutionServiceMBeanImpl"/>
+        <property name="hostName" source="$systemConfig//host.name"/>
+    </component>
+
+    <component name="DistributedDomainMBean">
+        <f3-impl:implementation.system class="org.fabric3.admin.controller.DistributedDomainMBean"/>
+        <reference name="domain" target="ApplicationDomain"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="RuntimeDomainMBean">
+        <f3-impl:implementation.system class="org.fabric3.admin.controller.RuntimeDomainMBeanImpl"/>
+        <reference name="domain" target="RuntimeDomain"/>
+    </component>
+
+</composite>

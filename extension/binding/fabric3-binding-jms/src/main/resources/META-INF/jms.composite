@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+__________________________________________________
+Portions originally based on Apache Tuscany 2007
+licensed under the Apache 2.0 license.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:binding"
+           name="JMSBindingExtension">
+
+    <component f3-core:key="sca:binding.jms" name="JMSBindingLoader">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.loader.JmsBindingLoader"/>
+    </component>
+
+    <component name="JmsBindingGenerator" f3-core:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
+    </component>
+
+    <component name="MessageTypeIntrospector">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
+    </component>
+
+    <component name="JmsHost">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.host.JmsHostImpl"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.binding.jms.provision.JmsSourceDefinition" name="JmsSourceWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsSourceWireAttacher"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.binding.jms.provision.JmsTargetDefinition" name="JmsTargetWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
+    </component>
+
+    <component name="AdministeredObjectResolver">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.AdministeredObjectResolverImpl"/>
+    </component>
+
+    <component name="AlwaysCreateDestination" f3-core:key="ALWAYS">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.destination.AlwaysDestinationStrategy"/>
+    </component>
+
+    <component name="NeverCreateDestination" f3-core:key="NEVER">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.destination.NeverDestinationStrategy"/>
+    </component>
+
+    <component name="IfNotExistCreateDestination" f3-core:key="IF_NOT_EXIST">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.destination.IfNotExistDestinationStrategy"/>
+    </component>
+
+    <component name="AlwaysCreateConnectionFactory" f3-core:key="ALWAYS">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.connectionfactory.AlwaysConnectionFactoryStrategy"/>
+    </component>
+
+    <component name="NeverCreateConnectionFactory" f3-core:key="NEVER">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.connectionfactory.NeverConnectionFactoryStrategy"/>
+    </component>
+
+    <component name="IfNotExistCreateConnectionFactory" f3-core:key="IF_NOT_EXIST">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.lookup.connectionfactory.IfNotExistConnectionFactoryStrategy"/>
+    </component>
+
+</composite>

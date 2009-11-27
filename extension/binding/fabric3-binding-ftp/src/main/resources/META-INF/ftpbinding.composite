@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:binding"
+           name="FtpBindingExtension"
+           autowire="true"
+           xmlns:f3-binding="urn:org.fabric3:binding">
+
+    <!-- Ftp Binding Loader -->
+    <component name="FtpBindingLoader" f3-core:key="f3-binding:binding.ftp">
+        <f3-impl:implementation.system class="org.fabric3.binding.ftp.introspection.FtpBindingLoader"/>
+    </component>
+
+    <!-- Ftp Binding Generator -->
+    <component name="FtpBindingGenerator" f3-core:key="org.fabric3.binding.ftp.model.FtpBindingDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.ftp.generator.FtpBindingGenerator"/>
+        <!-- sets the optional socket connect timeout property from the system configuration domain property -->
+        <property name="connectTimeout" source="$systemConfig//ftp.binding/@connectTimeout"/>
+        <!-- sets the optional client timeout property from the system configuration domain property -->
+        <property name="socketTimeout" source="$systemConfig//ftp.binding/@clientTimeout"/>
+    </component>
+
+    <!-- Ftp Wire Attachers -->
+    <component name="FtpSourceWireAttacher" f3-core:key="org.fabric3.binding.ftp.provision.FtpSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.ftp.runtime.FtpSourceWireAttacher"/>
+    </component>
+
+    <component name="FtpTargetWireAttacher" f3-core:key="org.fabric3.binding.ftp.provision.FtpTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.ftp.runtime.FtpTargetWireAttacher"/>
+    </component>
+
+</composite>

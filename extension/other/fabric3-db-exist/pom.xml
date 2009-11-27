@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright © 2008 Metaform Systems Limited
+
+ This proprietary software may be used only connection with the Fabric3 license
+ (the “License”), a copy of which is included in the software or may be
+ obtained at: http://www.metaformsystems.com/licenses/license.html.
+
+ Software distributed under the License is distributed on an “as is” basis,
+ without warranties or conditions of any kind.  See the License for the
+ specific language governing permissions and limitations of use of the software.
+ This software is distributed in conjunction with other software licensed under
+ different terms.  See the separate licenses for those programs included in the
+ distribution for the permitted and restricted uses of such software.
+
+-->
+<!--
+    $Rev$ $Date$
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.fabric3</groupId>
+        <artifactId>fabric3-extension-other-parent-pom</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>org.codehaus.fabric3</groupId>
+    <artifactId>fabric3-db-exist</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Fabric3 eXist Database Extension</name>
+    <description>Fabric3 eXist Database Extension.</description>
+    <packaging>sca-contribution-jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-spi</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.fabric3.fabric3-db-exist</groupId>
+            <artifactId>exist</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+        </dependency>
+         <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-xquery</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <!-- use version 1.0 as it is the version bundled in JDK 6 -->
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <!-- use version 1.0 as it is the version bundled in JDK 6 -->
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>        
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.fabric3</groupId>
+                <artifactId>fabric3-contribution-plugin</artifactId>
+                <version>${project.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <mavenImports>
+                        <mavenImport>
+                            <groupId>org.codehaus.fabric3</groupId>
+                            <artifactId>fabric3-spi</artifactId>
+                        </mavenImport>
+                        <mavenImport>
+                            <groupId>org.codehaus.fabric3</groupId>
+                            <artifactId>fabric3-xquery</artifactId>
+                        </mavenImport>
+                    </mavenImports>
+                    <deployables>
+                        <deployable>META-INF/exist.composite</deployable>
+                    </deployables>                    
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <scm>
+        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk/extension/other/fabric3-exist-db</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk/extension/other/fabric3-exist-db</developerConnection>
+        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk/extension/other/fabric3-exist-db</url>
+    </scm>
+</project>

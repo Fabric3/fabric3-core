@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev$ $Date$
+-->
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+              xmlns:f3-core="urn:fabric3.org:core"
+              xmlns:other="urn:fabric3.org:other"
+              f3-core:extension="true">
+    <import.java package="org.fabric3.spi.*" version="1.4"/>
+    <!-- exports are needed for the implicit imports added by JaxbContributionServiceListener to end-user contrbutions -->
+    <export.java package="com.sun.xml.bind.*" version="2.2"/>
+    <export.java package="com.sun.xml.xsom.*" version="2.2"/>
+    <export.java package="com.sun.xml.txw2.*" version="2.2"/>
+    <export.java package="com.sun.xml.dtdparser.*" version="2.2"/>
+    <export.java package="com.sun.xml.util.*" version="2.2"/>
+    <export.java package="com.sun.istack.*" version="2.2"/>
+    <f3-core:extends name="jaxb"/>
+    <deployable composite="other:JAXBExtension"/>
+</contribution>

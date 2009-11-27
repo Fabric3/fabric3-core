@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+	$Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+           name="org.fabric3.fabric.policy.testCase">
+    <policySet name="BasicAuthMsgProtSecurity"
+               provides="sec.confidentiality" appliesTo="binding.ws binding.jms"
+               xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+        <wsp:PolicyAttachment/>
+        <intentMap provides="sec.confidentiality" default="transport">
+            <qualifier name="transport">
+                <wsp:PolicyAttachment/>
+                <wsp:PolicyAttachment/>
+            </qualifier>
+            <qualifier name="message">
+                <intentMap provides="sec.confidentiality/message"
+                           default="all">
+                    <qualifier name="all">
+                        <wsp:PolicyAttachment/>
+                    </qualifier>
+                    <qualifier name="body">
+                        <wsp:PolicyAttachment/>
+                    </qualifier>
+                </intentMap>
+            </qualifier>
+        </intentMap>
+    </policySet>
+</composite>

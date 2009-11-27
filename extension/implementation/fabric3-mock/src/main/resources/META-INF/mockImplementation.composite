@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:implementation"
+           name="MockImplementationExtension"
+           autowire="true">
+
+    <component name="ImplementationMockLoader" f3-core:key="f3-impl:implementation.mock">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.ImplementationMockLoader"/>
+    </component>
+
+    <component name="MockComponentTypeLoader">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.MockComponentTypeLoaderImpl"/>
+    </component>
+
+    <component name="MockComponentGenerator" f3-core:key="org.fabric3.implementation.mock.ImplementationMock">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.MockComponentGenerator"/>
+    </component>
+
+    <component name="MockComponentBuilder" f3-core:key="org.fabric3.implementation.mock.MockComponentDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.MockComponentBuilder"/>
+    </component>
+
+    <component name="MockTargetWireAttacher" f3-core:key="org.fabric3.implementation.mock.MockTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.MockTargetWireAttacher"/>
+    </component>
+
+    <component name="MockSourceWireAttacher" f3-core:key="org.fabric3.implementation.mock.MockSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.MockSourceWireAttacher"/>
+    </component>
+
+    <component name="IMocksControlProxy">
+        <f3-impl:implementation.system class="org.fabric3.implementation.mock.IMocksControlProxy"/>
+    </component>
+
+</composite>

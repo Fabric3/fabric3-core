@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    Policy configuraion.
+    
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="PolicyComposite"
+           autowire="true">
+
+    <component name="PolicyEvaluator">
+        <f3-impl:implementation.system class="org.fabric3.policy.infoset.PolicyEvaluatorImpl"/>
+    </component>
+
+    <component name="InteractionPolicyResolver">
+        <f3-impl:implementation.system class="org.fabric3.policy.resolver.InteractionPolicyResolverImpl"/>
+    </component>
+
+    <component name="ImplementationPolicyResolver">
+        <f3-impl:implementation.system class="org.fabric3.policy.resolver.ImplementationPolicyResolverImpl"/>
+    </component>
+
+    <component name="DefaultPolicyResolver">
+        <f3-impl:implementation.system class="org.fabric3.policy.DefaultPolicyResolver"/>
+    </component>
+
+    <component name="DefaultPolicyAttacher">
+        <f3-impl:implementation.system class="org.fabric3.policy.DefaultPolicyAttacher"/>
+    </component>
+
+    <component name="SimpleInterceptorBuilder" f3-core:key="org.fabric3.policy.interceptor.simple.SimpleInterceptorDefinition">
+        <f3-impl:implementation.system class="org.fabric3.policy.interceptor.simple.SimpleInterceptorBuilder"/>
+    </component>
+
+    <component name="SimpleInterceptorDefinitionGenerator" f3-core:key="{urn:fabric3.org:policy}interceptor">
+        <f3-impl:implementation.system class="org.fabric3.policy.interceptor.simple.SimpleInterceptorGenerator"/>
+    </component>
+
+</composite>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ See the NOTICE file distributed with this work for information
+ regarding copyright ownership.  This file is licensed
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:binding"
+           name="ActiveMQControllerExtension"
+           autowire="true">
+
+    <component name="ActiveMQBindingProvider">
+        <f3-impl:implementation.system class="org.fabric3.binding.activemq.control.ActiveMQBindingProvider"/>
+        <property name="connectionFactory" source="$systemConfig//jms/binding.sca/@factory"/>
+        <property name="xaConnectionFactory" source="$systemConfig//jms/binding.sca/@xa.factory"/>
+        <property name="enabled" source="$systemConfig//binding.jms/@jmsBindingProvider"/>
+    </component>
+
+</composite>

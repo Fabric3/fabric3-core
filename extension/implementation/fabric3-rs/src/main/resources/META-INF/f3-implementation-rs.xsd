@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<!--
+    $Rev$ $Date$
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.fabric3.org/xmlns/rs/1.0"
+        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+        elementFormDefault="qualified">
+
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-core.xsd"/>
+
+    <element name="implementation.rs" type="RsImplementation"
+             substitutionGroup="sca:implementation"/>
+    <complexType name="RsImplementation ">
+        <complexContent>
+            <extension base="sca:Implementation">
+                <sequence>
+                    <any namespace="##other" processContents="lax"
+                         minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="class" type="NCName" use="required"/>
+                <attribute name="uri" type="anyURI" use="required"/>
+                <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+                <attribute name="policySets" type="sca:listOfQNames"
+                           use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

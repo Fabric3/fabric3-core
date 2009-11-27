@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:other"
+           name="ContributionScannerExtension"
+           autowire="true">
+
+    <component name="ContributionDirectoryScanner">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.ContributionDirectoryScanner"/>
+        <reference name="assembly" target="ApplicationDomain"/>
+    </component>
+
+    <component name="FileSystemResourceFactoryRegistry">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.FileSystemResourceFactoryRegistryImpl"/>
+    </component>
+
+    <component name="JarResourceFactory">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.JarResourceFactory"/>
+    </component>
+
+    <component name="XmlResourceFactory">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.XmlResourceFactory"/>
+    </component>
+
+    <component name="ExplodedJarResourceFactory">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.ExplodedJarResourceFactory"/>
+    </component>
+
+</composite>

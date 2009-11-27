@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="TransformComposite"
+           autowire="true">
+
+    <component name="TransformerRegistry">
+        <f3-impl:implementation.system class="org.fabric3.transform.DefaultTransformerRegistry"/>
+    </component>
+
+    <component name="Property2BooleanTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2BooleanTransformer"/>
+    </component>
+
+    <component name="Property2ByteTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2ByteTransformer"/>
+    </component>
+
+    <component name="Property2ShortTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2ShortTransformer"/>
+    </component>
+
+    <component name="Property2IntegerTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2IntegerTransformer"/>
+    </component>
+
+    <component name="Property2LongTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2LongTransformer"/>
+    </component>
+
+    <component name="Property2FloatTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2FloatTransformer"/>
+    </component>
+
+    <component name="Property2DoubleTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2DoubleTransformer"/>
+    </component>
+
+    <component name="Property2QNameTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2QNameTransformer"/>
+    </component>
+
+    <component name="Property2ClassTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2ClassTransformer"/>
+    </component>
+
+    <component name="Property2DateTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2DateTransformer"/>
+    </component>
+
+    <component name="Property2CalendarTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2CalendarTransformer"/>
+    </component>
+
+    <component name="Property2StringTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2StringTransformer"/>
+    </component>
+
+    <component name="Property2URITransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2URITransformer"/>
+    </component>
+
+    <component name="Property2URLTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2URLTransformer"/>
+    </component>
+
+    <component name="Property2MapOfStringsTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.map.Property2MapOfStringsTransformer"/>
+    </component>
+
+    <component name="Property2MapOfQName2ClassTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.map.Property2MapOfQName2ClassTransformer"/>
+    </component>
+
+    <component name="Property2ListOfStringTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.list.Property2ListOfStringTransformer"/>
+    </component>
+
+    <component name="Property2ListOfQNameTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.list.Property2ListOfQNameTransformer"/>
+    </component>
+
+    <component name="Property2PropertiesTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2PropertiesTransformer"/>
+    </component>
+
+    <component name="Property2StreamTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2StreamTransformer"/>
+    </component>
+
+    <component name="String2QNameTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.string2java.String2QNameTransformer"/>
+    </component>
+
+    <component name="String2ClassTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.string2java.String2ClassTransformer"/>
+    </component>
+
+    <component name="String2IntegerTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.string2java.String2IntegerTransformer"/>
+    </component>
+
+</composite>

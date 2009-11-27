@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev: 7148 $ $Date: 2009-06-14 17:18:27 -0700 (Sun, 14 Jun 2009) $
+-->
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:f3-core="urn:fabric3.org:core" f3-core:extension="true"/>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:implementation"
+           name="JavaImplementationExtension"
+           autowire="true">
+
+
+    <component name="JavaImplementationLoader" f3-core:key="sca:implementation.java">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationLoader"/>
+    </component>
+
+    <component name="JavaImplementationProcessorImpl">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationProcessorImpl"/>
+        <reference name="heuristic" target="JavaHeuristic"/>
+    </component>
+
+    <component name="JavaHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.introspection.JavaHeuristic"/>
+        <reference name="service" target="JavaServiceHeuristic"/>
+    </component>
+
+    <component name="JavaServiceHeuristic">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.introspection.JavaServiceHeuristic"/>
+    </component>
+
+    <component name="JavaComponentGenerator" f3-core:key="org.fabric3.implementation.java.model.JavaImplementation">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.generator.JavaComponentGenerator"/>
+    </component>
+
+    <component name="JavaGenerationHelper">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.generator.JavaGenerationHelperImpl"/>
+    </component>
+
+    <component name="JavaComponentBuilder" f3-core:key="org.fabric3.implementation.java.provision.JavaComponentDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.runtime.JavaComponentBuilder"/>
+    </component>
+
+    <component name="JavaSourceWireAttacher" f3-core:key="org.fabric3.implementation.java.provision.JavaSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.runtime.JavaSourceWireAttacher"/>
+    </component>
+
+    <component name="JavaTargetWireAttacher" f3-core:key="org.fabric3.implementation.java.provision.JavaTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.runtime.JavaTargetWireAttacher"/>
+    </component>
+
+
+</composite>

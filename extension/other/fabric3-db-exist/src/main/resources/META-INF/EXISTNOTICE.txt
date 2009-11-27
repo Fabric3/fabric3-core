@@ -1,0 +1,22 @@
+eXist Native XML Database - Version 1.0rc / 1.1rc
+=================================================
+
+For instructions on how to install and start eXist, please
+refer to http://exist-db.org/quickstart.html. Alternatively 
+you may directly start the database with the included Jetty 
+webserver and read the documentation which will be available at
+
+http://localhost:8080/exist/
+
+To start eXist on Windows, double click on the created desktop
+icon ("eXist Database Startup") or the corresponding entry in the
+start menu.
+
+On other operating systems, change into the location where you
+installed eXist and call
+
+bin/startup.sh or bin/startup.bat
+
+If these scripts don't work for you, try to call Java manually:
+
+java -jar start.jar jetty

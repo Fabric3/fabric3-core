@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+-->
+<!--
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           name="XQueryExtension" targetNamespace="org.codehaus.fabric3"
+           autowire="true">
+
+
+    <component name="org.fabric3.xquery.introspection.XQueryImplementationLoader" f3-core:key="f3-impl:implementation.xquery">
+        <f3-impl:implementation.system class="org.fabric3.xquery.introspection.XQueryImplementationLoader"/>
+    </component>
+
+    <component name="org.fabric3.xquery.control.XQueryComponentGenerator" f3-core:key="org.fabric3.xquery.scdl.XQueryImplementation">
+        <f3-impl:implementation.system class="org.fabric3.xquery.control.XQueryComponentGenerator"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.xquery.provision.XQueryComponentSourceDefinition" name="org.fabric3.xquery.runtime.XQueryComponentSourceWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.xquery.runtime.XQueryComponentSourceWireAttacher"/>
+    </component>
+
+    <component f3-core:key="org.fabric3.xquery.provision.XQueryComponentTargetDefinition" name="org.fabric3.xquery.runtime.XQueryComponentTargetWireAttacher">
+        <f3-impl:implementation.system class="org.fabric3.xquery.runtime.XQueryComponentTargetWireAttacher"/>
+    </component>
+
+</composite>

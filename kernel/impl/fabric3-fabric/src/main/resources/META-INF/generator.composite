@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (C) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           name="GeneratorComposite"
+           autowire="true">
+
+    <component name="GeneratorRegistry">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorRegistryImpl"/>
+    </component>
+
+    <component name="PhysicalOperationGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl"/>
+    </component>
+
+    <component name="OperationResolver">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.OperationResolverImpl"/>
+    </component>
+
+    <component name="Generator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorImpl"/>
+    </component>
+    <!-- the wire forces a reinjection of the generator into the RuntimeDomain -->
+    <wire source="RuntimeDomain/generator" target="Generator"/>
+
+    <component name="WireGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireGeneratorImpl"/>
+    </component>
+
+    <component name="ContributionCollator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.collator.ContributionCollatorImpl"/>
+    </component>
+
+    <component name="ExtensionGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.extension.ExtensionGeneratorImpl"/>
+    </component>
+
+    <component name="ClassLoaderGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
+    </component>
+
+    <component name="BindingSelector">
+        <f3-impl:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
+        <reference name="logicalComponentManager" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="ConfigurableBindingSelectionStrategy">
+        <f3-impl:implementation.system class="org.fabric3.fabric.binding.ConfigurableBindingSelectionStrategy"/>
+        <!-- allows users to configure the SCA binding preference through a systemConfig entry -->
+        <property name="scaBindingOrder" source="$systemConfig//bindings/binding.sca/provider.order"/>
+    </component>
+
+    <component name="ComponentBuildCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
+        <property name="order">1</property>
+    </component>
+
+    <component name="LocalWireCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.LocalWireCommandGenerator"/>
+        <property name="order">2</property>
+        <reference name="applicationLCM" target="LogicalComponentManager"/>
+        <reference name="runtimeLCM" target="RuntimeLogicalComponentManager"/>
+    </component>
+
+    <component name="ReferenceWireCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ReferenceWireCommandGenerator"/>
+        <property name="order">2</property>
+    </component>
+
+    <component name="ServiceWireCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ServiceWireCommandGenerator"/>
+        <property name="order">2</property>
+    </component>
+
+    <component name="ResourceWireCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ResourceWireCommandGenerator"/>
+        <property name="order">2</property>
+    </component>
+
+    <component name="StartComponentCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StartComponentCommandGenerator"/>
+        <property name="order">3</property>
+    </component>
+
+    <component name="StartCompositeContextCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StartContextCommandGeneratorImpl"/>
+    </component>
+
+
+    <component name="StopCompositeContextCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl"/>
+    </component>
+
+    <component name="StopComponentCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
+        <property name="order">3</property>
+    </component>
+
+</composite>

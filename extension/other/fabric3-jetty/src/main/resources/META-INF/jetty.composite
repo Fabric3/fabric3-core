@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:other"
+           name="JettyExtension">
+
+    <!-- Jetty service -->
+    <component name="JettyService">
+        <f3-impl:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
+        <property name="httpPort" source="$systemConfig//web.server/http/@port"/>
+        <property name="enableHttps" source="$systemConfig//web.server/https/@enabled"/>
+        <property name="httpsPort" source="$systemConfig//web.server/https/@port"/>
+        <property name="keystore" source="$systemConfig/security/keystore"/>
+        <property name="keyPassword" source="$systemConfig/security/keystore.password"/>
+        <property name="certPassword" source="$systemConfig/security/cert.password"/>
+        <property name="truststore" source="$systemConfig/security/truststore"/>
+        <property name="trustPassword" source="$systemConfig/security/truststore.password"/>
+    </component>
+
+</composite>
