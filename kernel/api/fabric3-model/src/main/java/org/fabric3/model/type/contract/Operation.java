@@ -59,7 +59,8 @@ public class Operation extends AbstractPolicyAware {
     public static final int CONVERSATION_END = 2;
 
     private static final long serialVersionUID = 5279880534105654066L;
-    private final String name;
+    private String name;
+    private String wsdlName;
     private DataType<?> outputType;
     private List<DataType<?>> inputTypes;
     private List<DataType<?>> faultTypes;
@@ -75,6 +76,7 @@ public class Operation extends AbstractPolicyAware {
      */
     public Operation(String name, List<DataType<?>> inputTypes, DataType<?> outputType, List<DataType<?>> faultTypes) {
         this(name, inputTypes, outputType, faultTypes, NO_CONVERSATION);
+        wsdlName = name;
     }
 
     /**
@@ -94,6 +96,7 @@ public class Operation extends AbstractPolicyAware {
         this.outputType = outputType;
         this.faultTypes = (faultTypes == null) ? types : faultTypes;
         this.conversationSequence = sequence;
+        wsdlName = name;
     }
 
     /**
@@ -103,6 +106,25 @@ public class Operation extends AbstractPolicyAware {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the WSDL name of the operation. Service contracts may be defined by Java interfaces where <code>@WebMethod</code> is used to map a
+     * method to a WSDL operation name.  By default, the WSDL name will be the same as the operation name.
+     *
+     * @return the WSDL name.
+     */
+    public String getWsdlName() {
+        return wsdlName;
+    }
+
+    /**
+     * Sets the WSDL name.
+     *
+     * @param wsdlName the WSDL name
+     */
+    public void setWsdlName(String wsdlName) {
+        this.wsdlName = wsdlName;
     }
 
     /**

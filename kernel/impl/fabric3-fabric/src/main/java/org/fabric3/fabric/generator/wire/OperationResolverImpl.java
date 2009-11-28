@@ -56,7 +56,9 @@ public class OperationResolverImpl implements OperationResolver {
         Operation sourceDefinition = source.getDefinition();
         for (LogicalOperation target : targets) {
             Operation targetDefinition = target.getDefinition();
-            if (sourceDefinition.getName().equals(targetDefinition.getName())) {
+            // match on actual or mapped WSDL name
+            if (sourceDefinition.getName().equals(targetDefinition.getName())
+                    || sourceDefinition.getWsdlName().equals(targetDefinition.getWsdlName())) {
                 if (sourceDefinition.getInputTypes().size() == targetDefinition.getInputTypes().size()) {
                     List<DataType<?>> sourceTypes = sourceDefinition.getInputTypes();
                     boolean equals = true;

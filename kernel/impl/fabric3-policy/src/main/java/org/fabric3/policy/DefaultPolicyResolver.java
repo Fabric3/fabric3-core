@@ -202,6 +202,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
      */
     private LogicalOperation matchOperation(LogicalOperation operation, Bindable bindable) {
         String name = operation.getDefinition().getName();
+        String wsdlName = operation.getDefinition().getWsdlName();
         List<DataType<?>> inputTypes = operation.getDefinition().getInputTypes();
         DataType<?> outputType = operation.getDefinition().getOutputType();
 
@@ -213,7 +214,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
             operations = bindable.getOperations();
         }
         for (LogicalOperation candidate : operations) {
-            if (name.equals(candidate.getDefinition().getName())) {
+            // match on the actual or mapped WSDL name
+            if (name.equals(candidate.getDefinition().getName()) || wsdlName.equals(candidate.getDefinition().getWsdlName())) {
                 Operation definition = candidate.getDefinition();
                 if (outputType.equals(definition.getOutputType()) && inputTypes.equals(definition.getInputTypes())) {
                     return candidate;

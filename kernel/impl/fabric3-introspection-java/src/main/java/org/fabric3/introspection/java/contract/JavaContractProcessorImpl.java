@@ -47,6 +47,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import javax.jws.WebMethod;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
@@ -61,7 +62,6 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import static org.fabric3.model.type.contract.Operation.CONVERSATION_END;
 import static org.fabric3.model.type.contract.Operation.NO_CONVERSATION;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -70,6 +70,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**
@@ -173,6 +174,11 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
 
             if (method.isAnnotationPresent(org.oasisopen.sca.annotation.OneWay.class) || method.isAnnotationPresent(OneWay.class)) {
                 operation.addIntent(ONEWAY_INTENT);
+            }
+
+            WebMethod webMethod = method.getAnnotation(WebMethod.class);
+            if (webMethod != null && webMethod.operationName().length() > 0) {
+                operation.setWsdlName(webMethod.operationName());
             }
 
             for (OperationIntrospector introspector : operationIntrospectors) {

@@ -45,6 +45,7 @@ package org.fabric3.introspection.java.contract;
 
 import java.util.Collection;
 import java.util.List;
+import javax.jws.WebMethod;
 
 import junit.framework.TestCase;
 import org.osoa.sca.annotations.Callback;
@@ -57,8 +58,8 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.TypeMapping;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
@@ -204,6 +205,17 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         assertTrue(tested);
     }
 
+    public void testMappedWsdlName() throws Exception {
+        IntrospectionContext context = new DefaultIntrospectionContext();
+        TypeMapping mapping = new TypeMapping();
+        context.addTypeMapping(FooWsdl.class, mapping);
+
+        ServiceContract contract = impl.introspect(FooWsdl.class, context);
+
+        assertEquals(1, contract.getOperations().size());
+        assertEquals("operation", contract.getOperations().get(0).getWsdlName());
+    }
+
     public void testInvalidConversationalAttribute() throws Exception {
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
@@ -272,6 +284,12 @@ public class JavaContractProcessorImplTestCase extends TestCase {
 
         @EndsConversation
         void endOperation();
+    }
+
+    private interface FooWsdl {
+
+        @WebMethod(operationName = "operation")
+        void op();
     }
 
 }
