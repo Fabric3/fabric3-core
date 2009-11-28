@@ -133,9 +133,9 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
         }
         DataType<?> outputType = operation.getOutputType();
         if (!(outputType instanceof JavaType)) {
-                // programming error
-                throw new AssertionError("Java contracts must use " + JavaType.class);
-            }
+            // programming error
+            throw new AssertionError("Java contracts must use " + JavaType.class);
+        }
         introspectJAXB((JavaType<?>) outputType);
 
     }
@@ -158,9 +158,12 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
         if (typeAnnotation != null) {
             String namespace = typeAnnotation.namespace();
             if (namespace == null || "##default".equals(namespace)) {
-                XmlSchema schemaAnnotation = physical.getPackage().getAnnotation(XmlSchema.class);
-                if (schemaAnnotation != null) {
-                    namespace = schemaAnnotation.namespace();
+                Package pkg = physical.getPackage();
+                if (pkg != null) {
+                    XmlSchema schemaAnnotation = pkg.getAnnotation(XmlSchema.class);
+                    if (schemaAnnotation != null) {
+                        namespace = schemaAnnotation.namespace();
+                    }
                 }
             }
             xsdName = new QName(namespace, typeAnnotation.name());
