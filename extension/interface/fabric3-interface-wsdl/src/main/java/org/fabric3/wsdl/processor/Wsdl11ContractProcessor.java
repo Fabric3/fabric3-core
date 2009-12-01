@@ -115,7 +115,8 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     @SuppressWarnings({"unchecked"})
     private List<DataType<?>> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         List<DataType<?>> types = new ArrayList<DataType<?>>();
-        for (Part part : (Collection<Part>) message.getParts().values()) {
+        // Note Message.getParts() may not return the parts in proper order; Message.getOrderedParts(null) does
+        for (Part part : (Collection<Part>) message.getOrderedParts(null)) {
             XSDType dataType = getDataType(part, collection, portType, context);
             if (dataType != null) {
                 types.add(dataType);
