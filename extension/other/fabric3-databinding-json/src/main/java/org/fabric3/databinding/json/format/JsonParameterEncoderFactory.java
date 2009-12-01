@@ -38,8 +38,8 @@
 package org.fabric3.databinding.json.format;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.osoa.sca.annotations.EagerInit;
 
@@ -64,7 +64,7 @@ public class JsonParameterEncoderFactory implements ParameterEncoderFactory {
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition definition = chain.getPhysicalOperation();
             String name = definition.getName();
-            Set<Class<?>> inParams;
+            List<Class<?>> inParams;
             try {
                 inParams = ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
             } catch (ClassNotFoundException e) {
@@ -82,7 +82,7 @@ public class JsonParameterEncoderFactory implements ParameterEncoderFactory {
             }
             try {
                 Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
-                Set<Class<?>> faults = ParameterTypeHelper.loadSourceFaultTypes(definition, loader);
+                List<Class<?>> faults = ParameterTypeHelper.loadSourceFaultTypes(definition, loader);
                 OperationTypes types = new OperationTypes(inParam, outParam, faults);
                 mappings.put(name, types);
             } catch (ClassNotFoundException e) {

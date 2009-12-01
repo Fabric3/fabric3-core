@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.transform;
 
-import java.util.Set;
+import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
 
@@ -46,7 +46,7 @@ import org.fabric3.model.type.contract.DataType;
  *
  * @version $Rev: 7606 $ $Date: 2009-09-09 16:00:11 +0200 (Wed, 09 Sep 2009) $
  */
-public interface TransformerFactory<SOURCE, TARGET> {
+public interface TransformerFactory {
 
     /**
      * Returns true if the factory creates transformers that can convert from the source to target data types.
@@ -58,7 +58,7 @@ public interface TransformerFactory<SOURCE, TARGET> {
     boolean canTransform(DataType<?> source, DataType<?> target);
 
     /**
-     * Creates a transformer capable of converting from the source to target data types.
+     * Creates a transformer capable of converting from the source to target data types. 
      *
      * @param source   the source data type
      * @param target   the target data type
@@ -67,6 +67,5 @@ public interface TransformerFactory<SOURCE, TARGET> {
      * @return the transformer the transformer
      * @throws TransformationException if there was an error creating the transformer
      */
-    Transformer<SOURCE, TARGET> create(DataType<?> source, DataType<?> target, Set<Class<?>> inTypes, Set<Class<?>> outTypes)
-            throws TransformationException;
+    Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes) throws TransformationException;
 }

@@ -37,9 +37,8 @@
 */
 package org.fabric3.fabric.builder.transform;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -68,8 +67,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                                          List<DataType<?>> targets,
                                          ClassLoader targetLoader,
                                          ClassLoader sourceLoader) throws WiringException {
-        Set<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
-        Set<Class<?>> sourceTypes = loadSourceInputTypes(definition, targetLoader);
+        List<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
+        List<Class<?>> sourceTypes = loadSourceInputTypes(definition, targetLoader);
         try {
             // Find a transformer that can convert from a type supported by the source component or binding to one supported by the target component
             // or binding. A search is performed by iterating the supported source and target types in order of preference.
@@ -95,8 +94,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             }
 
             // create the output transformer which flips the source and target types of the forward interceptor
-            Set<Class<?>> sourceOutTypes = loadSourceOutputTypes(definition, targetLoader);
-            Set<Class<?>> targetOutTypes = loadTargetOutputTypes(definition, targetLoader);
+            List<Class<?>> sourceOutTypes = loadSourceOutputTypes(definition, targetLoader);
+            List<Class<?>> targetOutTypes = loadTargetOutputTypes(definition, targetLoader);
             Transformer<Object, Object> outTransformer =
                     (Transformer<Object, Object>) registry.getTransformer(selectedTarget, selectedSource, targetOutTypes, sourceOutTypes);
             if (outTransformer == null) {
@@ -116,7 +115,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @return a collection of loaded parameter types
      * @throws WiringException if an error occurs loading the parameter types
      */
-    private Set<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
         try {
             return ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
@@ -132,7 +131,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @return a collection of loaded parameter types
      * @throws WiringException if an error occurs loading the parameter types
      */
-    private Set<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
         try {
             return ParameterTypeHelper.loadTargetInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
@@ -148,8 +147,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @return a collection of loaded parameter types
      * @throws WiringException if an error occurs loading the parameter types
      */
-    private Set<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadSourceOutputType(definition, loader);
             types.add(outParam);
@@ -170,8 +169,8 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @return a collection of loaded parameter types
      * @throws WiringException if an error occurs loading the parameter types
      */
-    private Set<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
             types.add(outParam);

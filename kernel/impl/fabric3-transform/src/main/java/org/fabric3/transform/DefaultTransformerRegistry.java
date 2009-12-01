@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -62,7 +61,7 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
     private Map<Key, SingleTypeTransformer<?, ?>> transformers = new HashMap<Key, SingleTypeTransformer<?, ?>>();
 
     // cache of transformer factories
-    private List<TransformerFactory<?, ?>> factories = new ArrayList<TransformerFactory<?, ?>>();
+    private List<TransformerFactory> factories = new ArrayList<TransformerFactory>();
 
     @Reference(required = false)
     public void setTransformers(List<SingleTypeTransformer<?, ?>> transformers) {
@@ -73,18 +72,18 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
     }
 
     @Reference(required = false)
-    public void setFactories(List<TransformerFactory<?, ?>> factories) {
+    public void setFactories(List<TransformerFactory> factories) {
         this.factories = factories;
     }
 
-    public Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, Set<Class<?>> inTypes, Set<Class<?>> outTypes)
+    public Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes)
             throws TransformationException {
         Key key = new Key(source, target);
         Transformer<?, ?> transformer = transformers.get(key);
         if (transformer != null) {
             return transformer;
         }
-        for (TransformerFactory<?, ?> factory : factories) {
+        for (TransformerFactory factory : factories) {
             boolean canTransform = factory.canTransform(source, target);
             if (canTransform) {
                 return factory.create(source, target, inTypes, outTypes);

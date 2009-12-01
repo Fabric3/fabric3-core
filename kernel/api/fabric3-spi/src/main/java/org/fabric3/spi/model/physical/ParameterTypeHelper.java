@@ -37,8 +37,8 @@
 */
 package org.fabric3.spi.model.physical;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.spi.util.ParamTypes;
 
@@ -59,8 +59,8 @@ public class ParameterTypeHelper {
      * @return the loaded types
      * @throws ClassNotFoundException if an error occurs loading the types
      */
-    public static Set<Class<?>> loadSourceInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    public static List<Class<?>> loadSourceInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         for (String param : operation.getSourceParameterTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -76,8 +76,8 @@ public class ParameterTypeHelper {
      * @return the loaded types
      * @throws ClassNotFoundException if an error occurs loading the types
      */
-    public static Set<Class<?>> loadTargetInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    public static List<Class<?>> loadTargetInParameterTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         for (String param : operation.getTargetParameterTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -93,8 +93,8 @@ public class ParameterTypeHelper {
      * @return the loaded types
      * @throws ClassNotFoundException if an error occurs loading the types
      */
-    public static Set<Class<?>> loadSourceFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    public static List<Class<?>> loadSourceFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         for (String param : operation.getSourceFaultTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);
@@ -110,8 +110,8 @@ public class ParameterTypeHelper {
      * @return the loaded types
      * @throws ClassNotFoundException if an error occurs loading the types
      */
-    public static Set<Class<?>> loadTargetFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+    public static List<Class<?>> loadTargetFaultTypes(PhysicalOperationDefinition operation, ClassLoader loader) throws ClassNotFoundException {
+        List<Class<?>> types = new ArrayList<Class<?>>();
         for (String param : operation.getTargetFaultTypes()) {
             Class<?> clazz = loadClass(param, loader);
             types.add(clazz);

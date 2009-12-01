@@ -37,8 +37,9 @@
 */
 package org.fabric3.databinding.jaxb.transform;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -59,7 +60,7 @@ import org.fabric3.spi.transform.TransformerFactory;
  *
  * @version $Rev$ $Date$
  */
-public class Node2JAXBTransformerFactory implements TransformerFactory<Node, Object> {
+public class Node2JAXBTransformerFactory implements TransformerFactory {
     private JAXBContextFactory contextFactory;
 
     public Node2JAXBTransformerFactory(@Reference JAXBContextFactory contextFactory) {
@@ -70,29 +71,41 @@ public class Node2JAXBTransformerFactory implements TransformerFactory<Node, Obj
         return Node.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
     }
 
-    public Transformer<Node, Object> create(DataType<?> source, DataType<?> target, Set<Class<?>> sourceTypes, Set<Class<?>> targetTypes)
+    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
             throws TransformationException {
         try {
-            if (targetTypes.size() != 1) {
-                throw new UnsupportedOperationException("Null and multiparameter operations not yet supported");
-            }
             Set<Class<?>> types = new HashSet<Class<?>>(sourceTypes);
             types.addAll(targetTypes);
             JAXBContext jaxbContext = contextFactory.createJAXBContext(types.toArray(new Class<?>[types.size()]));
-
-            Class<?> type = targetTypes.iterator().next();
-            if (type.isAnnotationPresent(XmlRootElement.class)) {
-                if (XSDConstants.PROPERTY_TYPE.equals(source)) {
-                    // the value is a property
-                    return new PropertyValue2JAXBTransformer(jaxbContext);
-                } else {
-                    return new Node2JAXBTransformer(jaxbContext);
+            if (targetTypes.size() == 1) {
+                Class<?> type = targetTypes.iterator().next();
+                return createTransformer(source, type, jaxbContext);
+            } else if (targetTypes.size() > 1) {
+                // the conversion must handle multiple parameters, which will be passed to the transformer in an array
+                Transformer<?, ?>[] transformers = new Transformer<?, ?>[sourceTypes.size()];
+                for (int i = 0; i < sourceTypes.size(); i++) {
+                    Class<?> type = sourceTypes.get(i);
+                    transformers[i] = createTransformer(source, type, jaxbContext);
                 }
+                return new MultiValueArrayTransformer(transformers);
             } else {
-                return new Node2JAXBElementTransformer(jaxbContext, type);
+                throw new UnsupportedOperationException("Null parameter operations not yet supported");
             }
         } catch (JAXBException e) {
             throw new TransformationException(e);
+        }
+    }
+
+    private Transformer<Node, Object> createTransformer(DataType<?> source, Class<?> type, JAXBContext jaxbContext) {
+        if (type.isAnnotationPresent(XmlRootElement.class)) {
+            if (XSDConstants.PROPERTY_TYPE.equals(source)) {
+                // the value is a property
+                return new PropertyValue2JAXBTransformer(jaxbContext);
+            } else {
+                return new Node2JAXBTransformer(jaxbContext);
+            }
+        } else {
+            return new Node2JAXBElementTransformer(jaxbContext, type);
         }
     }
 

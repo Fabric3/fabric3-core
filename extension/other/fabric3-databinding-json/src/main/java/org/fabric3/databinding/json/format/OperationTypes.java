@@ -37,7 +37,7 @@
 */
 package org.fabric3.databinding.json.format;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Holder for for operation type information.
@@ -47,9 +47,9 @@ import java.util.Set;
 public class OperationTypes {
     private Class<?> inParameterType;
     private Class<?> outParameterType;
-    private Set<Class<?>> faultTypes;
+    private List<Class<?>> faultTypes;
 
-    public OperationTypes(Class<?> inParameterType, Class<?> outParameterType, Set<Class<?>> faultTypes) {
+    public OperationTypes(Class<?> inParameterType, Class<?> outParameterType, List<Class<?>> faultTypes) {
         this.inParameterType = inParameterType;
         this.outParameterType = outParameterType;
         this.faultTypes = faultTypes;
@@ -63,7 +63,7 @@ public class OperationTypes {
         return outParameterType;
     }
 
-    public Set<Class<?>> getFaultTypes() {
+    public List<Class<?>> getFaultTypes() {
         return faultTypes;
     }
 }

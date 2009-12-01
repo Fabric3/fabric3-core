@@ -38,6 +38,7 @@
 package org.fabric3.databinding.jaxb.format;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -73,11 +74,11 @@ public class JAXBParameterEncoderFactory implements ParameterEncoderFactory {
             Set<Class<?>> types = new HashSet<Class<?>>();
             for (InvocationChain chain : wire.getInvocationChains()) {
                 PhysicalOperationDefinition definition = chain.getPhysicalOperation();
-                Set<Class<?>> inParams = ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
+                List<Class<?>> inParams = ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
                 types.addAll(inParams);
                 Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
                 types.add(outParam);
-                Set<Class<?>> faults = ParameterTypeHelper.loadSourceFaultTypes(definition, loader);
+                List<Class<?>> faults = ParameterTypeHelper.loadSourceFaultTypes(definition, loader);
                 types.addAll(faults);
             }
 

@@ -38,9 +38,7 @@
 package org.fabric3.transform;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -58,22 +56,22 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
     private DefaultTransformerRegistry registry;
 
     public void testTransformerFactoryRegistration() throws Exception {
-        List<TransformerFactory<?, ?>> factories = new ArrayList<TransformerFactory<?, ?>>();
+        List<TransformerFactory> factories = new ArrayList<TransformerFactory>();
         factories.add(new MockFactory());
         registry.setFactories(factories);
         JavaClass<Integer> target = new JavaClass<Integer>(Integer.class);
-        Set<Class<?>> targets = new HashSet<Class<?>>();
+        List<Class<?>> targets = new ArrayList<Class<?>>();
         targets.add(Integer.class);
         assertNotNull(registry.getTransformer(XSDConstants.PROPERTY_TYPE, target, targets, targets));
     }
 
-    private class MockFactory implements TransformerFactory<Object, Object> {
+    private class MockFactory implements TransformerFactory {
 
         public boolean canTransform(DataType<?> source, DataType<?> target) {
             return true;
         }
 
-        public Transformer<Object, Object> create(DataType<?> source, DataType<?> target, Set<Class<?>> sourceTypes, Set<Class<?>> targetTypes)
+        public Transformer<Object, Object> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
                 throws TransformationException {
             return new MockTransformer();
         }

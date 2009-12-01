@@ -44,16 +44,14 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.component.OASISPojoComponentContext;
 import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
@@ -62,6 +60,7 @@ import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.injection.ConversationIDObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
@@ -178,7 +177,7 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
     private ObjectFactory<?> createObjectFactory(String name, DataType<?> dataType, Element value, ClassLoader classLoader) throws BuilderException {
         try {
             Class<?> physical = dataType.getPhysical();
-            Set<Class<?>> types = new HashSet<Class<?>>();
+            List<Class<?>> types = new ArrayList<Class<?>>();
             types.add(physical);
             Transformer<Node, ?> transformer = (Transformer<Node, ?>) transformerRegistry.getTransformer(PROPERTY_TYPE, dataType, types, types);
             if (transformer == null) {

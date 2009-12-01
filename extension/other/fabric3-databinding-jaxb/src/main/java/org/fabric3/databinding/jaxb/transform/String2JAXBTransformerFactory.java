@@ -38,6 +38,7 @@
 package org.fabric3.databinding.jaxb.transform;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -57,7 +58,7 @@ import org.fabric3.spi.transform.TransformerFactory;
  *
  * @version $Rev: 7720 $ $Date: 2009-09-30 10:28:56 +0200 (Wed, 30 Sep 2009) $
  */
-public class String2JAXBTransformerFactory implements TransformerFactory<String, Object> {
+public class String2JAXBTransformerFactory implements TransformerFactory {
     private JAXBContextFactory contextFactory;
 
     public String2JAXBTransformerFactory(@Reference JAXBContextFactory contextFactory) {
@@ -68,23 +69,36 @@ public class String2JAXBTransformerFactory implements TransformerFactory<String,
         return String.class.equals(source.getPhysical()) && target instanceof JavaType;
     }
 
-    public Transformer<String, Object> create(DataType<?> source, DataType<?> target, Set<Class<?>> sourceTypes, Set<Class<?>> targetTypes)
+    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
             throws TransformationException {
         try {
-            if (sourceTypes.size() != 1) {
-                throw new UnsupportedOperationException("Null and multiparameter operations not yet supported");
-            }
             Set<Class<?>> types = new HashSet<Class<?>>(sourceTypes);
             types.addAll(targetTypes);
             JAXBContext jaxbContext = contextFactory.createJAXBContext(types.toArray(new Class<?>[types.size()]));
-            Class<?> type = targetTypes.iterator().next();
-            if (type.isAnnotationPresent(XmlRootElement.class)) {
-                return new String2JAXBObjectTransformer(jaxbContext);
+            if (sourceTypes.size() == 1) {
+                Class<?> type = targetTypes.iterator().next();
+                return createTransformer(type, jaxbContext);
+            } else if (sourceTypes.size() > 1) {
+                // the conversion must handle multiple parameters, which will be passed to the transformer in an array
+                Transformer<?, ?>[] transformers = new Transformer<?, ?>[sourceTypes.size()];
+                for (int i = 0; i < sourceTypes.size(); i++) {
+                    Class<?> type = sourceTypes.get(i);
+                    transformers[i] = createTransformer(type, jaxbContext);
+                }
+                return new MultiValueArrayTransformer(transformers);
             } else {
-                return new String2JAXBElementTransformer(jaxbContext, type);
+                throw new UnsupportedOperationException("Null parameter operations not yet supported");
             }
         } catch (JAXBException e) {
             throw new TransformationException(e);
+        }
+    }
+
+    private Transformer<String, Object> createTransformer(Class<?> type, JAXBContext jaxbContext) {
+        if (type.isAnnotationPresent(XmlRootElement.class)) {
+            return new String2JAXBObjectTransformer(jaxbContext);
+        } else {
+            return new String2JAXBElementTransformer(jaxbContext, type);
         }
     }
 

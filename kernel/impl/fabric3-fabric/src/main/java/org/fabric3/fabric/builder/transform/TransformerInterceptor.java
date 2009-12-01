@@ -56,7 +56,7 @@ public class TransformerInterceptor implements Interceptor {
     private ClassLoader inLoader;
     private ClassLoader outLoader;
     private Interceptor next;
-
+   
     /**
      * Constructor.
      *
@@ -86,14 +86,13 @@ public class TransformerInterceptor implements Interceptor {
         // TODO handle null types
         if (params != null) {
             try {
-                if (params.getClass().isArray()) {
+                // Operations take 0..n parameters. A single parameter must be unwrapped from the invocation array and passed to a transformer.
+                // In contrast, multiple parameter operations are passed as an array to the transformer.
+                if (params.getClass().isArray() && ((Object[]) params).length == 1) {
                     Object[] paramArray = (Object[]) params;
-                    for (int i = 0; i < paramArray.length; i++) {
-                        Object param = paramArray[i];
-                        Object transformed = inTransformer.transform(param, inLoader);
-                        paramArray[i] = transformed;
-                    }
+                    paramArray[0] = inTransformer.transform(paramArray[0], inLoader);
                 } else {
+                    // multiple parameters - pass the entire array to transform
                     Object transformed = inTransformer.transform(params, inLoader);
                     msg.setBody(transformed);
                 }
@@ -109,20 +108,11 @@ public class TransformerInterceptor implements Interceptor {
         // TODO handle null types
         if (params != null) {
             try {
-                if (params.getClass().isArray()) {
-                    Object[] paramArray = (Object[]) params;
-                    for (int i = 0; i < paramArray.length; i++) {
-                        Object param = paramArray[i];
-                        Object transformed = outTransformer.transform(param, outLoader);
-                        paramArray[i] = transformed;
-                    }
+                Object transformed = outTransformer.transform(params, outLoader);
+                if (ret.isFault()) {
+                    ret.setBodyWithFault(transformed);
                 } else {
-                    Object transformed = outTransformer.transform(params, outLoader);
-                    if (ret.isFault()) {
-                        ret.setBodyWithFault(transformed);
-                    } else {
-                        ret.setBody(transformed);
-                    }
+                    ret.setBody(transformed);
                 }
             } catch (TransformationException e) {
                 throw new ServiceRuntimeException(e);

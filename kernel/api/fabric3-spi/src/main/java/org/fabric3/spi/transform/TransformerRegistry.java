@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.transform;
 
-import java.util.Set;
+import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
 
@@ -59,7 +59,7 @@ public interface TransformerRegistry {
      * @return the transformer or null if one is not found
      * @throws TransformationException if an error occurs returning the transformer
      */
-    Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, Set<Class<?>> inTypes, Set<Class<?>> outTypes)
+    Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes)
             throws TransformationException;
 
 

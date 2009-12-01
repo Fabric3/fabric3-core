@@ -44,12 +44,12 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
@@ -121,7 +121,7 @@ public abstract class PojoSourceWireAttacher {
     private Object createKey(DataType<?> targetType, String value, ClassLoader classLoader) throws KeyInstantiationException {
         try {
             Class<?> physical = targetType.getPhysical();
-            Set<Class<?>> types = new HashSet<Class<?>>();
+            List<Class<?>> types = new ArrayList<Class<?>>();
             types.add(physical);
             Transformer<String, ?> transformer = (Transformer<String, ?>) transformerRegistry.getTransformer(STRING_TYPE, targetType, types, types);
             if (transformer == null) {
