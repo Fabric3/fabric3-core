@@ -93,7 +93,8 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 DataType<?> candidateInputType = candidateInputTypes.get(i);
                 if (inputType.getXsdType() == null || !inputType.getXsdType().equals(candidateInputType.getXsdType())) {
                     if (reportErrors) {
-                        return new MatchResult("Input types at position " + i + " do not match on operation " + name);
+                        return new MatchResult("Input types at position " + i + " do not match on operation " + name
+                                + ". Types were " + inputType.getXsdType() + " and " + candidateInputType.getXsdType());
                     } else {
                         return NO_MATCH;
                     }
