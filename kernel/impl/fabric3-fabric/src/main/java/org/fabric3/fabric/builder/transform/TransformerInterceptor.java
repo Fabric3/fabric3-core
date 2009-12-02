@@ -56,7 +56,7 @@ public class TransformerInterceptor implements Interceptor {
     private ClassLoader inLoader;
     private ClassLoader outLoader;
     private Interceptor next;
-   
+
     /**
      * Constructor.
      *
@@ -104,15 +104,23 @@ public class TransformerInterceptor implements Interceptor {
 
     private Message transformOutput(Message ret) {
         // FIXME For exception transformation, if it is checked convert as application fault
-        Object params = ret.getBody();
+        Object body = ret.getBody();
         // TODO handle null types
-        if (params != null) {
+        if (body != null) {
             try {
-                Object transformed = outTransformer.transform(params, outLoader);
+                Object transformed = outTransformer.transform(body, outLoader);
                 if (ret.isFault()) {
                     ret.setBodyWithFault(transformed);
                 } else {
                     ret.setBody(transformed);
+                }
+            } catch (ClassCastException e) {
+                // an unexpected type was returned by the target service or an interceptor later in the chain. This is an error in the extension or
+                // interceptor and not user code since errors should be trapped and returned in the format expected by the transformer
+                if (body instanceof Throwable) {
+                    throw new ServiceRuntimeException("Unexpected exception returned", (Throwable) body);
+                } else {
+                    throw new ServiceRuntimeException("Unexpected type returned: " + body.getClass());
                 }
             } catch (TransformationException e) {
                 throw new ServiceRuntimeException(e);
