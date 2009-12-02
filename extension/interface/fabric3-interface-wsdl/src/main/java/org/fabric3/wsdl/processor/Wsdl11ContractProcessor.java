@@ -173,7 +173,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
             context.addError(error);
             return null;
         }
-        return createDataType(type);
+        return createDataType(type, elementName);
     }
 
     private XSDType getSchemaDataType(QName typeName, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
@@ -183,11 +183,14 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
             context.addError(error);
             return null;
         }
-        return createDataType(type);
+        return createDataType(type, null);
     }
 
-    private XSDType createDataType(XmlSchemaType type) {
+    private XSDType createDataType(XmlSchemaType type, QName elementName) {
         QName name = type.getQName();
+        if (name == null){
+            name = elementName;
+        }
         if (type instanceof XmlSchemaComplexType) {
             return new XSDComplexType(Object.class, name);
         } else if (type instanceof XmlSchemaSimpleType) {
