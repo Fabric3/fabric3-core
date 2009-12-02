@@ -38,6 +38,7 @@
 package org.fabric3.databinding.jaxb.introspection;
 
 import java.awt.*;
+import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -72,6 +73,7 @@ import org.fabric3.spi.model.type.java.JavaType;
  * @version $Rev$ $Date$
  */
 public class JAXBTypeIntrospector implements OperationIntrospector {
+    private static final String DEFAULT = "##default";
     private static final Map<Class, QName> JAXB_MAPPING;
 
     static {
@@ -150,23 +152,31 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
         }
         XmlRootElement annotation = physical.getAnnotation(XmlRootElement.class);
         if (annotation != null) {
-            xsdName = new QName(annotation.namespace(), annotation.name());
+            String namespace = annotation.namespace();
+            if (DEFAULT.equals(namespace)) {
+                namespace = getDefaultNamespace(physical);
+            }
+            String name = annotation.name();
+            if (DEFAULT.equals(namespace)) {
+                // as per the JAXB specification
+                name = Introspector.decapitalize(physical.getSimpleName());
+            }
+            xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
             return;
         }
         XmlType typeAnnotation = physical.getAnnotation(XmlType.class);
         if (typeAnnotation != null) {
             String namespace = typeAnnotation.namespace();
-            if (namespace == null || "##default".equals(namespace)) {
-                Package pkg = physical.getPackage();
-                if (pkg != null) {
-                    XmlSchema schemaAnnotation = pkg.getAnnotation(XmlSchema.class);
-                    if (schemaAnnotation != null) {
-                        namespace = schemaAnnotation.namespace();
-                    }
-                }
+            if (DEFAULT.equals(namespace)) {
+                namespace = getDefaultNamespace(physical);
             }
-            xsdName = new QName(namespace, typeAnnotation.name());
+            String name = typeAnnotation.name();
+            if (DEFAULT.equals(namespace)) {
+                // as per the JAXB specification
+                name = Introspector.decapitalize(physical.getSimpleName());
+            }
+            xsdName = new QName(namespace, name);
             dataType.setXsdType(xsdName);
             return;
         }
@@ -175,4 +185,16 @@ public class JAXBTypeIntrospector implements OperationIntrospector {
         dataType.setXsdType(xsdName);
     }
 
+    private String getDefaultNamespace(Class clazz) {
+        Package pkg = clazz.getPackage();
+        // as per the JAXB specification
+        if (pkg != null) {
+            XmlSchema schemaAnnotation = pkg.getAnnotation(XmlSchema.class);
+            if (schemaAnnotation != null) {
+                return schemaAnnotation.namespace();
+            }
+            return pkg.getName();
+        }
+        return "";
+    }
 }
