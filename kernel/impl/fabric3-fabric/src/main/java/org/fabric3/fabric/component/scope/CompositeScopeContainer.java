@@ -197,6 +197,10 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
         InstanceWrapper<T> wrapper = (InstanceWrapper<T>) instanceWrappers.get(component);
         if (wrapper != EMPTY) {
+            if (wrapper == null) {
+                // indicates some type of synchronization error
+                throw new InstanceInitializationException("Instance wrapper not found for " + component.getUri());
+            }
             return wrapper;
         }
         CountDownLatch latch;
