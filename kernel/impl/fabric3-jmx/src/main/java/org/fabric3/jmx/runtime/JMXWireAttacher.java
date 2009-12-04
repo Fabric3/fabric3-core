@@ -91,13 +91,7 @@ public class JMXWireAttacher implements SourceWireAttacher<JMXSourceDefinition> 
     }
 
     public void detach(JMXSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        try {
-            URI uri = source.getUri();
-            ObjectName name = getObjectName(uri);
-            mBeanServer.unregisterMBean(name);
-        } catch (JMException e) {
-            throw new WiringException(e);
-        }
+        throw new AssertionError();
     }
 
     public void attachObjectFactory(JMXSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
@@ -122,7 +116,13 @@ public class JMXWireAttacher implements SourceWireAttacher<JMXSourceDefinition> 
     }
 
     public void detachObjectFactory(JMXSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
+        try {
+            URI uri = source.getUri();
+            ObjectName name = getObjectName(uri);
+            mBeanServer.unregisterMBean(name);
+        } catch (JMException e) {
+            throw new WiringException(e);
+        }
     }
 
     private ObjectName getObjectName(URI uri) throws MalformedObjectNameException {
