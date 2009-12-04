@@ -197,7 +197,7 @@ public class MavenMonitorFactory implements MonitorFactory {
     }
 
     private Level translateLogLevel(LogLevels level) {
-        Level result = null;
+        Level result;
         if (level == null) {
             result = defaultLevel;
         } else {
