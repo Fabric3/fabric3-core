@@ -79,6 +79,31 @@ import org.fabric3.runtime.ant.api.TestRunner;
 import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
 
 /**
+ * Launches a Fabric3 instance from the Ant runtime distribution.
+ * <p/>
+ * To define the task, create a <code>taskdef</code> pointing to the Fabric3 ant runtime distribution /lib directory entry as follows:
+ * <pre>
+ *
+ *  &lt;taskdef name="fabric3" classname="org.fabric3.runtime.ant.task.Fabric3Task"&gt;
+ *       &lt;classpath&gt;
+ *           &lt;fileset dir="&lt;path to distribution&gt;/fabric3-runtime-ant-1.4-SNAPSHOT-bin/lib"&gt;
+ *               &lt;include name="*.jar"/&gt;
+ *           &lt;/fileset&gt;
+ *       &lt;/classpath&gt;
+ *   &lt;/taskdef&gt;
+ * </pre>
+ * This Task may be configured with <code>contribution</code> sub-elements which are <code>FileLists</code> pointing to contribution jars or
+ * <code>contributionSet</code> sub-elements which are <code>FileSet</code> filters for calculating sets of contributions as follows:
+ * <pre>
+ * 
+ *  &lt;fabric3&gt;
+ *     &lt;contribution dir="lib" files="mycontribution.jar"/&gt;
+ *     &lt;contributionSet dir="build"&gt;
+ *        &lt;include name="..."/&gt;
+ *     &lt;/contributionSet&gt;
+ *  &lt;/fabric3&gt;
+ * </pre>
+ *
  * @version $Rev$ $Date$
  */
 public class Fabric3Task extends Task {
