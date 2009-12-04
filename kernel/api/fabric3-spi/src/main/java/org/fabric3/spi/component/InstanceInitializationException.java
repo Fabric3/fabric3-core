@@ -51,8 +51,8 @@ package org.fabric3.spi.component;
 public class InstanceInitializationException extends InstanceLifecycleException {
     private static final long serialVersionUID = 987684568823134235L;
 
-    public InstanceInitializationException(String message, String identifier) {
-        super(message, identifier);
+    public InstanceInitializationException(String message) {
+        super(message);
     }
 
     public InstanceInitializationException(String message, String identifier, Throwable cause) {
