@@ -19,8 +19,8 @@
     </parent>
     <groupId>org.codehaus.fabric3.tomcat</groupId>
     <artifactId>fabric3-tomcat-server</artifactId>
-    <name>Fabric3 Tomcat Runtime</name>
-    <description>Fabric3 Tomcat Runtime Bootstrap.</description>
+    <name>Fabric3 Tomcat Runtime Server</name>
+    <description>Fabric3 Tomcat Runtime Server.</description>
 
     <dependencies>
 

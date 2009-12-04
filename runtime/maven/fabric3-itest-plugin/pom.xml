@@ -19,8 +19,8 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-itest-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Fabric3 Integration Test Maven Plugin</name>
-    <description>Fabric3 Integration Test Maven Plugin.</description>
+    <name>Fabric3 Maven Runtime Plugin</name>
+    <description>Fabric3 Maven Runtime Plugin.</description>
     <build>
         <plugins>
             <plugin>

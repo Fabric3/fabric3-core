@@ -16,7 +16,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-ant-api</artifactId>
-    <name>Fabric3 Ant API</name>
+    <name>Fabric3 Ant Runtime API</name>
     <description>Fabric3 Ant Runtime Host API.</description>
 
     <dependencies>

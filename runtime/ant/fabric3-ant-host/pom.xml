@@ -19,7 +19,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-ant-host</artifactId>
-    <name>Fabric3 Ant Host</name>
+    <name>Fabric3 Ant Runtime Host</name>
     <description>Fabric3 Ant Runtime Host.</description>
 
     <dependencies>

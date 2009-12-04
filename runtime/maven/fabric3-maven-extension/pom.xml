@@ -19,7 +19,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-maven-extension</artifactId>
-    <name>Fabric3 Maven Exension</name>
+    <name>Fabric3 Maven Runtime Exension</name>
     <description>Fabric3 Maven Runtime Exension.</description>
     <packaging>jar</packaging>
 

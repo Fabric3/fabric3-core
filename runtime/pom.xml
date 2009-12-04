@@ -33,6 +33,7 @@
 		<module>maven</module>
 		<module>standalone</module>
 		<module>tomcat</module>
+		<module>ant</module>
 		<module>webapp</module>
 	</modules>
 </project>

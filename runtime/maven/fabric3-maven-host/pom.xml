@@ -19,7 +19,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-maven-host</artifactId>
-    <name>Fabric3 Maven Host</name>
+    <name>Fabric3 Maven Runtime Host</name>
     <description>Fabric3 Maven Runtime Host.</description>
 
     <dependencies>
