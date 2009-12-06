@@ -52,8 +52,8 @@ import javax.management.remote.JMXServiceURL;
  * @version $Revison$ $Date$
  */
 public abstract class AbstractAgent implements Agent {
-
     private static final String DOMAIN = "fabric3";
+
     private MBeanServer mBeanServer;
     private AtomicBoolean started = new AtomicBoolean();
     private JMXConnectorServer connectorServer;
@@ -86,28 +86,20 @@ public abstract class AbstractAgent implements Agent {
     }
 
     public final void start() throws ManagementException {
-
         try {
-
             if (started.get()) {
                 throw new IllegalArgumentException("Agent already started");
             }
-
             preStart();
-
             JMXServiceURL url = getAdaptorUrl();
             connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
-
             connectorServer.start();
-
             started.set(true);
-
         } catch (MalformedURLException ex) {
             throw new ManagementException(ex);
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
-
     }
 
     public final void run() {
@@ -123,24 +115,19 @@ public abstract class AbstractAgent implements Agent {
     }
 
     public final void shutdown() throws ManagementException {
-
         try {
-
             if (!started.get()) {
                 throw new IllegalArgumentException("Agent not started");
             }
-
             connectorServer.stop();
             postStop();
             started.set(false);
             synchronized (this) {
                 notify();
             }
-
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
-
     }
 
     public int getMinPort() {
@@ -155,16 +142,21 @@ public abstract class AbstractAgent implements Agent {
      * Gets the adaptor URL.
      *
      * @return Adaptor URL.
+     * @throws ManagementException if there is an error returning the URL
      */
     protected abstract JMXServiceURL getAdaptorUrl() throws ManagementException;
 
     /**
-     * Any initialiation required for protocol specific agent.
+     * Performs initialization for a protocol-specific agent.
+     *
+     * @throws ManagementException if an initialization error occurs.
      */
     protected abstract void preStart() throws ManagementException;
 
     /**
-     * Any initialiation required for protocol specific agent.
+     * Performs a shutdown operation for protocol-specific agent.
+     *
+     * @throws ManagementException if an shutdown error occurs.
      */
     protected abstract void postStop() throws ManagementException;
 

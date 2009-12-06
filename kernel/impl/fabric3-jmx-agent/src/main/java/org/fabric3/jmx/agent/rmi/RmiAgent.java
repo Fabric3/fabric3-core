@@ -87,7 +87,9 @@ public class RmiAgent extends AbstractAgent {
     public void postStop() throws ManagementException {
 
         try {
-            UnicastRemoteObject.unexportObject(registry, true);
+            if (registry != null) {
+                UnicastRemoteObject.unexportObject(registry, true);
+            }
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
@@ -105,5 +107,5 @@ public class RmiAgent extends AbstractAgent {
 
     }
 
-    
+
 }
