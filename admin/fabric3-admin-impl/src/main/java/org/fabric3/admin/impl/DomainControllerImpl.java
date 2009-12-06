@@ -80,7 +80,7 @@ public class DomainControllerImpl implements DomainController {
 
     private String username;
     private String password;
-    private String domainAddress = "service:jmx:rmi:///jndi/rmi://localhost:1099/server";
+    private String domainAddress = "service:jmx:rmi:///jndi/rmi://localhost:1199/server";
     private JMXConnector jmxc;
 
     public void setDomainAddress(String address) {

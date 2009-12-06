@@ -98,7 +98,7 @@ public class RmiAgent extends AbstractAgent {
 
         try {
             return new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + assignedPort + "/server");
-            // service:jmx:rmi:///jndi/rmi://localhost:1099/server
+            // service:jmx:rmi:///jndi/rmi://localhost:1199/server
         } catch (MalformedURLException ex) {
             throw new ManagementException(ex);
         }

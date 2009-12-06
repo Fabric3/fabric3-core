@@ -73,7 +73,7 @@ public class ShutdownServer {
     /**
      * Default port.
      */
-    private static final int DEFAULT_ADMIN_PORT = 1099;
+    private static final int DEFAULT_ADMIN_PORT = 1199;
 
     /**
      * Host.

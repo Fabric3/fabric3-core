@@ -52,7 +52,7 @@ import org.fabric3.admin.interpreter.impl.InterpreterImpl;
  * @version $Rev$ $Date$
  */
 public class UseTestCase extends TestCase {
-    private static final String DOMAIN_ADDRESS = "service:jmx:rmi:///jndi/rmi://localhost:1099/server";
+    private static final String DOMAIN_ADDRESS = "service:jmx:rmi:///jndi/rmi://localhost:1199/server";
 
     public void testUse() throws Exception {
         DomainController controller = EasyMock.createMock(DomainController.class);

@@ -196,7 +196,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 
             // boot the JMX agent
-            String jmxString = props.getProperty(JMX_PORT, "1099");
+            String jmxString = props.getProperty(JMX_PORT, "1199");
             String[] tokens = jmxString.split("-");
             RmiAgent agent;
             if (tokens.length == 1) {

@@ -66,7 +66,7 @@ public abstract class AbstractAgent implements Agent {
      * @throws ManagementException If unable to start the agent.
      */
     public AbstractAgent() throws ManagementException {
-        this(1099, -1);
+        this(1199, -1);
     }
 
     /**

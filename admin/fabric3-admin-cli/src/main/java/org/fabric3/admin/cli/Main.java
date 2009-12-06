@@ -67,7 +67,7 @@ public class Main {
         try {
             settings.load();
             if (settings.getDomainAddress("default") == null) {
-                settings.addDomain("default", "service:jmx:rmi:///jndi/rmi://localhost:1099/server");
+                settings.addDomain("default", "service:jmx:rmi:///jndi/rmi://localhost:1199/server");
             }
         } catch (IOException e) {
             throw new InterpreterException("Error loading settings", e);
