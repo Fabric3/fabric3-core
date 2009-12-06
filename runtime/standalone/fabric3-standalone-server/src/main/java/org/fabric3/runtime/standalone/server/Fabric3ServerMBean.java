@@ -37,21 +37,12 @@
 */
 package org.fabric3.runtime.standalone.server;
 
-import org.fabric3.host.RuntimeMode;
-
 /**
  * Management interface for the Fabric3 server.
  *
  * @version $Revision$ $Date$
  */
 public interface Fabric3ServerMBean {
-
-    /**
-     * Starts a runtime specified by the bootpath.
-     *
-     * @param mode      the mode to start the runtime in
-     */
-    public void startRuntime(RuntimeMode mode);
 
     /**
      * Shuts down a runtime specified by the bootpath.

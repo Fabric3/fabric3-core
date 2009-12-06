@@ -44,12 +44,12 @@
 package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
@@ -61,6 +61,7 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
@@ -70,7 +71,7 @@ import org.fabric3.jmx.agent.rmi.RmiAgent;
  * that listens for a shutdown command.
  * <p/>
  * The administration port can be specified using the system property <code>fabric3.adminPort</code>.If not specified the default port that is used is
- * <code>1099</code>
+ * <code>1199</code>
  *
  * @version $Rev$ $Date$
  */
@@ -80,6 +81,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private static final String MONITOR_KEY_PARAM = "fabric3.monitor.key";
     private static final String JOIN_DOMAIN_TIMEOUT = "fabric3.join.domain.timeout";
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
+    private static final int ERROR = -1;
+    private static final int NORMAL = 1;
 
     private final File installDirectory;
     private RuntimeLifecycleCoordinator coordinator;
@@ -89,14 +92,14 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * Main method.
      *
      * @param args Commandline arguments.
-     * @throws Exception if there is a problem starting the runtime
+     * @throws Fabric3Exception if there is a catostrophic problem starting the runtime
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Fabric3Exception {
         Fabric3Server server = new Fabric3Server();
 
         RuntimeMode runtimeMode = getRuntimeMode(args);
-        server.startRuntime(runtimeMode);
-        server.shutdownRuntime();
+        int code = server.startRuntime(runtimeMode);
+        server.shutdownRuntime(code);
 
         System.exit(0);
     }
@@ -118,16 +121,22 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
     /**
      * Constructor.
-     *
-     * @throws MalformedURLException if the install directory is invalid
      */
-    private Fabric3Server() throws MalformedURLException {
+    private Fabric3Server() {
         installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
     }
 
-    public final void startRuntime(RuntimeMode runtimeMode) {
+    /**
+     * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
+     *
+     * @param runtimeMode the mode to start the runtime in
+     * @return 0 if the runtime was initialized and released normally; -1 if an error was encountered
+     * @throws Fabric3ServerException if catostrophic exception was encountered leaving the runtime in an unstable state
+     */
+    public int startRuntime(RuntimeMode runtimeMode) throws Fabric3ServerException {
         HostInfo hostInfo;
         Fabric3Runtime<HostInfo> runtime;
+
         try {
             //  calculate config directories based on the mode the runtime is booted in
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
@@ -198,6 +207,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // boot the JMX agent
             String jmxString = props.getProperty(JMX_PORT, "1199");
             String[] tokens = jmxString.split("-");
+
             RmiAgent agent;
             if (tokens.length == 1) {
                 // port specified
@@ -234,49 +244,33 @@ public class Fabric3Server implements Fabric3ServerMBean {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            agent.shutdown();
+            return NORMAL;
+        } catch (RuntimeException ex) {
+            handleStartException(ex);
+            return ERROR;
         } catch (Exception ex) {
-            if (monitor != null) {
-                // there could have been an error initializing the monitor
-                monitor.runError(ex);
-            }
-            throw new Fabric3ServerException(ex);
+            handleStartException(ex);
+            return ERROR;
         }
-    }
-
-    private int parsePortNumber(String portVal, String portType) {
-        int port;
-        try {
-            port = Integer.parseInt(portVal);
-            if (port < 0) {
-                throw new IllegalArgumentException("Invalid " + portType + " port number specified in runtime.properties:" + port);
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid " + portType + " port", e);
-        }
-        return port;
     }
 
     public final void shutdownRuntime() {
+        shutdownRuntime(NORMAL);
+    }
 
+    public final void shutdownRuntime(int code) {
         try {
-            if (coordinator != null) {
+            if (coordinator != null && coordinator.getState().compareTo(RuntimeState.PRIMORDIAL) >= 0) {
                 coordinator.shutdown();
             }
-            monitor.stopped();
         } catch (ShutdownException ex) {
             monitor.runError(ex);
-            throw new Fabric3ServerException(ex);
+        }
+        if (NORMAL == code) {
+            monitor.stopped();
         }
 
     }
-
-    /**
-     * Shuts the server down.
-     */
-    public final void shutdown() {
-    }
-
 
     private BootConfiguration createBootConfiguration(Fabric3Runtime<HostInfo> runtime, ClassLoader bootClassLoader) throws InitializationException {
         HostInfo hostInfo = runtime.getHostInfo();
@@ -298,6 +292,30 @@ public class Fabric3Server implements Fabric3ServerMBean {
         return configuration;
     }
 
+    private int parsePortNumber(String portVal, String portType) {
+        int port;
+        try {
+            port = Integer.parseInt(portVal);
+            if (port < 0) {
+                throw new IllegalArgumentException("Invalid " + portType + " port number specified in runtime.properties:" + port);
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid " + portType + " port", e);
+        }
+        return port;
+    }
+
+    private void handleStartException(Exception ex) throws Fabric3ServerException {
+        if (monitor != null) {
+            // there could have been an error initializing the monitor
+            monitor.exited(ex);
+        } else {
+            // throw the exception if the monitor is not available, e.g. due to an error
+            throw new Fabric3ServerException(ex);
+        }
+    }
+
+
     public interface ServerMonitor {
         @Severe
         void runError(Exception e);
@@ -307,6 +325,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
         @Info
         void stopped();
+
+        @Info
+        void exited(Exception e);
 
     }
 

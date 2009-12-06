@@ -56,6 +56,7 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
@@ -70,7 +71,7 @@ import org.fabric3.spi.policy.PolicyActivationException;
  * @version $Rev$ $Date$
  */
 public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
-    private State state = State.UNINITIALIZED;
+    private RuntimeState state = RuntimeState.INSTANTIATED;
     private Fabric3Runtime<?> runtime;
     private Bootstrapper bootstrapper;
     private ClassLoader bootClassLoader;
@@ -79,15 +80,8 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
     private List<ContributionSource> userContributions;
     private List<ComponentRegistration> registrations;
 
-    public enum State {
-        UNINITIALIZED,
-        PRIMORDIAL,
-        INITIALIZED,
-        DOMAIN_JOINED,
-        RECOVERED,
-        STARTED,
-        SHUTDOWN,
-        ERROR
+    public RuntimeState getState() {
+        return state;
     }
 
     public void setConfiguration(BootConfiguration configuration) {
@@ -101,17 +95,17 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
     }
 
     public void bootPrimordial() throws InitializationException {
-        if (state != State.UNINITIALIZED) {
-            throw new IllegalStateException("Not in UNINITIALIZED state");
+        if (state != RuntimeState.INSTANTIATED) {
+            throw new IllegalStateException("Not in INSTANTIATED state");
         }
         runtime.boot();
         bootstrapper.bootRuntimeDomain(runtime, bootClassLoader, registrations, exportedPackages);
-        state = State.PRIMORDIAL;
+        state = RuntimeState.PRIMORDIAL;
     }
 
     public void initialize() throws InitializationException {
 
-        if (state != State.PRIMORDIAL) {
+        if (state != RuntimeState.PRIMORDIAL) {
             throw new IllegalStateException("Not in PRIMORDIAL state");
         }
         // initialize core system components
@@ -126,11 +120,11 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
             throw new InitializationException(e);
         }
 
-        state = State.INITIALIZED;
+        state = RuntimeState.INITIALIZED;
     }
 
     public void recover() throws InitializationException {
-        if (state != State.INITIALIZED) {
+        if (state != RuntimeState.INITIALIZED) {
             throw new IllegalStateException("Not in INITIALIZED state");
         }
         Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
@@ -142,33 +136,33 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
         installContributions(userContributions);
         EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new RuntimeRecover());
-        state = State.RECOVERED;
+        state = RuntimeState.RECOVERED;
     }
 
     public void joinDomain(final long timeout) {
-        if (state != State.RECOVERED) {
+        if (state != RuntimeState.RECOVERED) {
             throw new IllegalStateException("Not in RECOVERED state");
         }
         EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new JoinDomain());
         eventService.publish(new DomainRecover());
-        state = State.DOMAIN_JOINED;
+        state = RuntimeState.JOINED_DOMAIN;
     }
 
     public void start() throws InitializationException {
-        if (state != State.DOMAIN_JOINED) {
-            throw new IllegalStateException("Not in DOMAIN_JOINED state");
+        if (state != RuntimeState.JOINED_DOMAIN) {
+            throw new IllegalStateException("Not in JOINED_DOMAIN state");
         }
         // starts the runtime by publishing a start event
         EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new RuntimeStart());
-        state = State.STARTED;
+        state = RuntimeState.STARTED;
     }
 
     public void shutdown() throws ShutdownException {
-        if (state == State.STARTED) {
+        if (state == RuntimeState.STARTED) {
             runtime.destroy();
-            state = State.SHUTDOWN;
+            state = RuntimeState.SHUTDOWN;
         }
     }
 

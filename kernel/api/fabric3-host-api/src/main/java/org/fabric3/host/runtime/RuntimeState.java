@@ -34,42 +34,48 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.runtime.standalone.server;
-
-import org.fabric3.host.Fabric3Exception;
+*/
+package org.fabric3.host.runtime;
 
 /**
- * Exception thrown by the Fabric3 server during startup and shutdown.
+ * Defines runtime states.
  *
- * @version $Revisiion$ $Date$
+ * @version $Rev$ $Date$
  */
-
-@SuppressWarnings("serial")
-public class Fabric3ServerException extends Fabric3Exception {
+public enum RuntimeState {
 
     /**
-     * Initializes the cause.
-     *
-     * @param cause Root cause of the exception.
+     * The runtime has been instantiated.
      */
-    public Fabric3ServerException(Throwable cause) {
-        super(cause);
-    }
+    INSTANTIATED,
 
     /**
-     * Initializes the message.
-     *
-     * @param message Message of the exception.
+     * Runtime primordial services have been booted.
      */
-    public Fabric3ServerException(String message) {
-        super(message);
-    }
+    PRIMORDIAL,
 
+    /**
+     * Runtime extensions have been loaded and initialized.
+     */
+    INITIALIZED,
+
+    /**
+     * Recovery operations have completed.
+     */
+    RECOVERED,
+
+    /**
+     * The runtime has joined the domain.
+     */
+    JOINED_DOMAIN,
+
+    /**
+     * The runtime is started and ready to receive requests.
+     */
+    STARTED,
+
+    /**
+     * The runtime has stopped processing requests and shutdown extensions.
+     */
+    SHUTDOWN
 }

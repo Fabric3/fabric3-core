@@ -44,21 +44,18 @@
 package org.fabric3.host.runtime;
 
 /**
- * Implementations manage the Fabric3 runtime lifecycle. This involves transitioning through a series of states:
- * <pre>
- * <ul>
- *      <li>BOOT PRIMORDIAL - the runtime is booted with and its domain containing system components is initialized.
- *      <li>INITIALIZE - extensions are registered and activated in the local runtime domain.
- *      <li>RECOVER - the runtime recovers and synchronizes its state with the application domain.
- *      <li>JOIN DOMIAN - the runtime instance discoveres and joins an application domain.
- *      <li>START - the runtime is prepared to receive and process requests
- *      <li>SHUTDOWN - the runtime has stopped prcessing synnchronous requests and detached from the domain.
- * </ul>
- * </pre>
+ * Manages the Fabric3 runtime lifecycle. This involves transitioning a runtime instance through a series of states defined by {@link RuntimeState}.
  *
  * @version $Rev$ $Date$
  */
 public interface RuntimeLifecycleCoordinator {
+
+    /**
+     * Returns the runtime state.
+     *
+     * @return the runtime state
+     */
+    RuntimeState getState();
 
     /**
      * Sets the bootstrap configuration. Thismust be done prior to booting the runtime.
