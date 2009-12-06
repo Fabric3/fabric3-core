@@ -50,6 +50,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -100,6 +101,22 @@ public class ThreadPoolWorkScheduler extends AbstractExecutorService implements 
     public void init() {
         executor = new ThreadPoolExecutor(size, size, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         paused.set(pauseOnStart);
+    }
+
+    @Destroy
+    public void stop() {
+
+        Lock lock = readWriteLock.writeLock();
+        lock.lock();
+        try {
+            for (PausableWork pausableWork : workInProgress) {
+                pausableWork.stop();
+            }
+            executor.shutdown();
+        } finally {
+            lock.unlock();
+        }
+
     }
 
     public <T extends PausableWork> void scheduleWork(T work) {
@@ -212,21 +229,6 @@ public class ThreadPoolWorkScheduler extends AbstractExecutorService implements 
             for (PausableWork pausableWork : workInProgress) {
                 pausableWork.start();
             }
-        } finally {
-            lock.unlock();
-        }
-
-    }
-
-    public void stop() {
-
-        Lock lock = readWriteLock.writeLock();
-        lock.lock();
-        try {
-            for (PausableWork pausableWork : workInProgress) {
-                pausableWork.stop();
-            }
-            executor.shutdown();
         } finally {
             lock.unlock();
         }
