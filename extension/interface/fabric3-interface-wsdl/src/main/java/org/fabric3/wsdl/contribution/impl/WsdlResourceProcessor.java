@@ -49,7 +49,6 @@ import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
-import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
@@ -70,6 +69,7 @@ import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.PortTypeSymbol;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
+import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.fabric3.wsdl.processor.WsdlContractProcessor;
 
@@ -85,11 +85,15 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private static final String MIME_TYPE = "text/wsdl+xml";
 
     private ProcessorRegistry registry;
-    private WsdlContractProcessor contractProcessor;
+    private WsdlContractProcessor processor;
+    private Wsdl4JFactory factory;
 
-    public WsdlResourceProcessor(@Reference ProcessorRegistry registry, @Reference WsdlContractProcessor contractProcessor) {
+    public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
+                                 @Reference WsdlContractProcessor processor,
+                                 @Reference Wsdl4JFactory factory) {
         this.registry = registry;
-        this.contractProcessor = contractProcessor;
+        this.processor = processor;
+        this.factory = factory;
     }
 
     @Init
@@ -166,7 +170,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         // introspect port type service contracts
         for (Object object : definition.getPortTypes().values()) {
             PortType portType = (PortType) object;
-            WsdlServiceContract contract = contractProcessor.introspect(portType, wsdlQName, schemaCollection, context);
+            WsdlServiceContract contract = processor.introspect(portType, wsdlQName, schemaCollection, context);
             QName name = portType.getQName();
             WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(name);
             ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element =
@@ -177,11 +181,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
 
     private Definition parseWsdl(URL wsdlLocation) throws InstallException {
         try {
-            WSDLFactory factory = WSDLFactory.newInstance();
-            WSDLReader reader = factory.newWSDLReader();
-            reader.setFeature("javax.wsdl.verbose", false);
-            // TODO add support for SCA-specific extensions
-            reader.setExtensionRegistry(factory.newPopulatedExtensionRegistry());
+            WSDLReader reader = factory.newReader();
             return reader.readWSDL(wsdlLocation.toURI().toString());
         } catch (WSDLException e) {
             throw new InstallException(e);

@@ -42,7 +42,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
-import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
@@ -54,6 +53,7 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
+import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
 /**
  * Resolves parsed WSDLs against an external location or those visible to the current contribution installed in the domain.
@@ -62,19 +62,16 @@ import org.fabric3.wsdl.contribution.WsdlSymbol;
  */
 public class WsdlResolverImpl implements WsdlResolver {
     private MetaDataStore store;
-    private WSDLFactory wsdlFactory;
+    private Wsdl4JFactory wsdlFactory;
 
-    public WsdlResolverImpl(@Reference MetaDataStore store) throws WSDLException {
+    public WsdlResolverImpl(@Reference MetaDataStore store, @Reference Wsdl4JFactory wsdlFactory) throws WSDLException {
         this.store = store;
-        wsdlFactory = WSDLFactory.newInstance();
+        this.wsdlFactory =wsdlFactory;
     }
 
     public Definition parseWsdl(URL wsdlLocation) throws WsdlResolutionException {
         try {
-            WSDLReader reader = wsdlFactory.newWSDLReader();
-            reader.setFeature("javax.wsdl.verbose", false);
-            // TODO add support for SCA-specific extensions
-            reader.setExtensionRegistry(wsdlFactory.newPopulatedExtensionRegistry());
+            WSDLReader reader = wsdlFactory.newReader();
             return reader.readWSDL(wsdlLocation.toURI().toString());
         } catch (WSDLException e) {
             throw new WsdlResolutionException(e);

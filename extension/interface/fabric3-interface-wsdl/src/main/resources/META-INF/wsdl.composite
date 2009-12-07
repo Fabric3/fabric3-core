@@ -18,6 +18,10 @@ Public License. See the accompanying license file for details.
            name="WsdlInterfaceExtension"
            autowire="true">
 
+    <component name="Wsdl4JFactory">
+        <f3-impl:implementation.system class="org.fabric3.wsdl.factory.impl.Wsdl4JFactoryImpl"/>
+    </component>
+
     <component name="WsdlResourceProcessor">
         <f3-impl:implementation.system class="org.fabric3.wsdl.contribution.impl.WsdlResourceProcessor"/>
     </component>

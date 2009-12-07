@@ -17,5 +17,6 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.wsdl.model" version="1.4"/>
     <export.java package="javax.wsdl" version="1.6.2"/>
     <export.java package="org.fabric3.wsdl.contribution" version="1.4"/>
+    <export.java package="org.fabric3.wsdl.factory" version="1.4"/>
     <deployable composite="other:WsdlInterfaceExtension"/>
 </contribution>

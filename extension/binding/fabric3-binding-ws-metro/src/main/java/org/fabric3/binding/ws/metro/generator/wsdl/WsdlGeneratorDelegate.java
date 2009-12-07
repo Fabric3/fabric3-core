@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Set;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
-import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
@@ -84,6 +83,7 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
@@ -96,19 +96,20 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
     private WsdlResolver wsdlResolver;
     private EndpointResolver endpointResolver;
     private WsdlSynthesizer wsdlSynthesizer;
-    private WSDLFactory wsdlFactory;
     private WsdlPolicyAttacher policyAttacher;
+    private Wsdl4JFactory wsdlFactory;
     private TransformerFactory transformerFactory;
 
     public WsdlGeneratorDelegate(@Reference WsdlResolver wsdlResolver,
                                  @Reference EndpointResolver endpointResolver,
                                  @Reference WsdlSynthesizer wsdlSynthesizer,
-                                 @Reference WsdlPolicyAttacher policyAttacher) throws WSDLException {
+                                 @Reference WsdlPolicyAttacher policyAttacher,
+                                 @Reference Wsdl4JFactory wsdlFactory) throws WSDLException {
         this.wsdlResolver = wsdlResolver;
         this.endpointResolver = endpointResolver;
         this.wsdlSynthesizer = wsdlSynthesizer;
         this.policyAttacher = policyAttacher;
-        wsdlFactory = WSDLFactory.newInstance();
+        this.wsdlFactory = wsdlFactory;
         transformerFactory = TransformerFactory.newInstance();
     }
 
@@ -305,7 +306,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
      */
     private String serializeToString(Definition wsdl) throws GenerationException {
         try {
-            WSDLWriter writer = wsdlFactory.newWSDLWriter();
+            WSDLWriter writer = wsdlFactory.newWriter();
             StringWriter stringWriter = new StringWriter();
             writer.writeWSDL(wsdl, stringWriter);
             return stringWriter.toString();
@@ -325,7 +326,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
      */
     private String mergePolicy(Definition wsdl, List<Element> policyExpressions, List<PolicyExpressionMapping> mappings) throws GenerationException {
         try {
-            Document wsdlDocument = wsdlFactory.newWSDLWriter().getDocument(wsdl);
+            Document wsdlDocument = wsdlFactory.newWriter().getDocument(wsdl);
             policyAttacher.attach(wsdlDocument, policyExpressions, mappings);
             // Write the DOM representing the abstract WSDL back to the file
             Source source = new DOMSource(wsdlDocument);
