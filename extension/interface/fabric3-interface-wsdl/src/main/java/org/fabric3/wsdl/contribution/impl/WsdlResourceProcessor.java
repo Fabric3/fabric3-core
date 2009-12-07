@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -67,6 +69,7 @@ import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.PortTypeSymbol;
+import org.fabric3.wsdl.contribution.WsdlResourceProcessorExtension;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
@@ -87,6 +90,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private ProcessorRegistry registry;
     private WsdlContractProcessor processor;
     private Wsdl4JFactory factory;
+    private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
                                  @Reference WsdlContractProcessor processor,
@@ -94,6 +98,11 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         this.registry = registry;
         this.processor = processor;
         this.factory = factory;
+    }
+
+    @Reference(required = false)
+    public void setExtensions(List<WsdlResourceProcessorExtension> extensions) {
+        this.extensions = extensions;
     }
 
     @Init
@@ -176,6 +185,11 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element =
                     new ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract>(symbol, contract);
             resource.addResourceElement(element);
+        }
+
+        // callback processor extensions
+        for (WsdlResourceProcessorExtension extension : extensions) {
+            extension.process(resource, definition);
         }
     }
 
