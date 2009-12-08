@@ -30,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.fabric3.runtime.standalone.server.ShutdownServer</mainClass>
+                            <mainClass>org.fabric3.runtime.standalone.server.Shutdown</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>../lib/</classpathPrefix>
                         </manifest>
