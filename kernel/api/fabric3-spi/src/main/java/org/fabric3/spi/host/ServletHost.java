@@ -71,9 +71,12 @@ public interface ServletHost {
 
     /**
      * Returns the default servlet context associated with the host.
+     * <p/>
+     * NOTE: Remove when the webapp runtime is decomissioned
      *
      * @return the default servlet context associated with the host
      */
+    @Deprecated
     ServletContext getServletContext();
 
     /**
