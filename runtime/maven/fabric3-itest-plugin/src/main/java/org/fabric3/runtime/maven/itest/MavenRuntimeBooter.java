@@ -120,7 +120,7 @@ public class MavenRuntimeBooter {
     }
 
     private MavenRuntime createRuntime() throws MojoExecutionException {
-        MonitorFactory monitorFactory = new MavenMonitorFactory(log, "f3");
+        MonitorFactory monitorFactory = new MavenMonitorFactory(log);
         MavenRuntime runtime = instantiate(MavenRuntime.class, RUNTIME_IMPL, bootClassLoader);
         runtime.setMonitorFactory(monitorFactory);
         runtime.setHostClassLoader(hostClassLoader);

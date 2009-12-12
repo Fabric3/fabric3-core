@@ -44,18 +44,9 @@
 package org.fabric3.runtime.ant.monitor;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.net.URL;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -63,20 +54,18 @@ import java.util.logging.LogRecord;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
-import org.fabric3.api.annotation.logging.LogLevels;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.AbstractProxyMonitorFactory;
+import org.fabric3.host.monitor.GenericFormatter;
+import org.fabric3.host.monitor.MonitorDispatcher;
 
 /**
  * A MonitorFactory that forwards events to the Ant logger.
  *
  * @version $Rev$ $Date$
  */
-public class AntMonitorFactory implements MonitorFactory {
+public class AntMonitorFactory extends AbstractProxyMonitorFactory {
     private Task task;
-    private Level defaultLevel = Level.FINEST;
-    private String bundleName = "f3";
-    private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
-    private Formatter formatter = new AntFormatter();
+    private Formatter formatter = new GenericFormatter();
 
     public AntMonitorFactory(Task task) {
         this.task = task;
@@ -90,126 +79,43 @@ public class AntMonitorFactory implements MonitorFactory {
     public void readConfiguration(URL url) throws IOException {
     }
 
-    public synchronized <T> T getMonitor(Class<T> monitorInterface) {
-        T monitor = getCachedMonitor(monitorInterface);
-        if (monitor == null) {
-            monitor = createMonitor(monitorInterface);
-            proxies.put(monitorInterface, new WeakReference<T>(monitor));
-        }
-        return monitor;
+    protected MonitorDispatcher createDispatcher(Class<?> monitorInterface,
+                                                 String methodName,
+                                                 Level level,
+                                                 ResourceBundle bundle,
+                                                 int throwable) {
+        String name = monitorInterface.getName();
+        return new AntMonitorDispatcher(task, level, name, methodName, bundle, throwable, formatter);
     }
 
-    private <T> T getCachedMonitor(Class<T> monitorInterface) {
-        WeakReference<?> ref = proxies.get(monitorInterface);
-        return (ref != null) ? monitorInterface.cast(ref.get()) : null;
-    }
 
-    private <T> T createMonitor(Class<T> monitorInterface) {
-        String className = monitorInterface.getName();
-        ResourceBundle bundle = locateBundle(monitorInterface, bundleName);
-
-        Method[] methods = monitorInterface.getMethods();
-        Map<Method, MethodInfo> methodInfo = new ConcurrentHashMap<Method, MethodInfo>(methods.length);
-        for (Method method : methods) {
-            String methodName = method.getName();
-
-            LogLevels level = LogLevels.getAnnotatedLogLevel(method);
-            Level methodLevel = translateLogLevel(level);
-            int throwable = getExceptionParameterIndex(method);
-
-            MethodInfo info = new MethodInfo(task, methodLevel, className, methodName, bundle, throwable, formatter);
-            methodInfo.put(method, info);
-        }
-
-        InvocationHandler handler = new LoggingHandler(methodInfo);
-        Object proxy = Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler);
-        return monitorInterface.cast(proxy);
-    }
-
-    private int getExceptionParameterIndex(Method method) {
-        int result = -1;
-        for (int i = 0; i < method.getParameterTypes().length; i++) {
-            Class<?> paramType = method.getParameterTypes()[i];
-            if (Throwable.class.isAssignableFrom(paramType)) {
-                result = i;
-                break;
-            }
-        }
-
-        //The position in the monitor interface's parameter list of the first throwable
-        //is used when creating the LogRecord in the MethodInfo
-        return result;
-    }
-
-    private <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName) {
-        Locale locale = Locale.getDefault();
-        ClassLoader cl = monitorInterface.getClassLoader();
-        String packageName = monitorInterface.getPackage().getName();
-        while (true) {
-            try {
-                return ResourceBundle.getBundle(packageName + '.' + bundleName, locale, cl);
-            } catch (MissingResourceException e) {
-                //ok
-            }
-            int index = packageName.lastIndexOf('.');
-            if (index == -1) {
-                break;
-            }
-            packageName = packageName.substring(0, index);
-        }
-        try {
-            return ResourceBundle.getBundle(bundleName, locale, cl);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private Level translateLogLevel(LogLevels level) {
-        Level result;
-        if (level == null) {
-            result = defaultLevel;
-        } else {
-            try {
-                //Because the LogLevels' values are based on the Level's logging levels,
-                //no translation is required, just a pass-through mapping
-                result = Level.parse(level.toString());
-            } catch (IllegalArgumentException e) {
-                //TODO: Add error reporting for unsupported log level
-                result = defaultLevel;
-            }
-        }
-        return result;
-    }
-
-    private static class MethodInfo {
+    private static class AntMonitorDispatcher implements MonitorDispatcher {
         private final Task task;
         private final Level level;
         private String className;
-        private final String methodName;
         private final ResourceBundle bundle;
         private final int throwable;
         private Formatter formatter;
+        private String key;
 
-        private MethodInfo(Task task,
-                           Level level,
-                           String className,
-                           String methodName,
-                           ResourceBundle bundle,
-                           int throwable,
-                           Formatter formatter) {
+        private AntMonitorDispatcher(Task task,
+                                     Level level,
+                                     String className,
+                                     String methodName,
+                                     ResourceBundle bundle,
+                                     int throwable,
+                                     Formatter formatter) {
             this.task = task;
             this.level = level;
             this.className = className;
-            this.methodName = methodName;
             this.bundle = bundle;
             this.throwable = throwable;
             this.formatter = formatter;
+            // construct the key for the resource bundle
+            this.key = className + '#' + methodName;
         }
 
-        private void invoke(Object[] args) {
-
-            // construct the key for the resource bundle
-            String key = className + '#' + methodName;
+        public void invoke(Object[] args) {
 
             LogRecord logRecord = new LogRecord(level, key);
             logRecord.setLoggerName(className);
@@ -235,22 +141,6 @@ public class AntMonitorFactory implements MonitorFactory {
                 antLevel = Project.MSG_VERBOSE;
             }
             task.getProject().log(task, message, antLevel);
-        }
-    }
-
-    private static class LoggingHandler implements InvocationHandler {
-        private final Map<Method, MethodInfo> info;
-
-        public LoggingHandler(Map<Method, MethodInfo> methodInfo) {
-            this.info = methodInfo;
-        }
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            MethodInfo methodInfo = info.get(method);
-            if (methodInfo != null) {
-                methodInfo.invoke(args);
-            }
-            return null;
         }
     }
 

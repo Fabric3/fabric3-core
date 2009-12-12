@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.ant.monitor;
+package org.fabric3.host.monitor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,20 +43,22 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * Formats log messages.
+ * Formats monitor messages.
  *
  * @version $Rev$ $Date$
  */
-public class AntFormatter extends Formatter {
+public class GenericFormatter extends Formatter {
 
+    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
     public String format(LogRecord record) {
         String message = formatMessage(record);
         StringBuilder output = new StringBuilder().append(message);
-        if (record.getThrown() != null) {
+        Throwable throwable = record.getThrown();
+        if (throwable != null) {
             try {
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
-                record.getThrown().printStackTrace(pw);
+                throwable.printStackTrace(pw);
                 pw.close();
                 output.append(sw.toString());
             } catch (Exception ex) {
