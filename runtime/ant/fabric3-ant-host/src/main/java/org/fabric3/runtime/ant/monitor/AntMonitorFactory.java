@@ -75,7 +75,6 @@ public class AntMonitorFactory extends AbstractProxyMonitorFactory {
         return getMonitor(monitorInterface);
     }
 
-    @SuppressWarnings({"unchecked"})
     public void readConfiguration(URL url) throws IOException {
     }
 
