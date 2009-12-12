@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Default implementation of the pausable work.
  *
- * @Revision $Date$
+ * $Rev$ $Date$
  */
 public abstract class DefaultPausableWork implements PausableWork {
 
@@ -71,30 +71,22 @@ public abstract class DefaultPausableWork implements PausableWork {
         this.daemon = daemon;
     }
 
-    /**
-     * Pauses the job.
-     */
+    public boolean isDaemon() {
+        return daemon;
+    }
+
     public void pause() {
         paused.set(true);
     }
 
-    /**
-     * Restarts the job.
-     */
     public void start() {
         paused.set(false);
     }
 
-    /**
-     * Terminates the job.
-     */
     public void stop() {
         active.set(false);
     }
 
-    /**
-     * Runs the job.
-     */
     public final void run() {
 
         if (daemon) {
