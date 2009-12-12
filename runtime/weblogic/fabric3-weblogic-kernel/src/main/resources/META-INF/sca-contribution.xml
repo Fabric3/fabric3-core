@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev$ $Date$
+-->
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+              xmlns:weblogic="urn:fabric3.org:weblogic"
+              xmlns:f3-core="urn:fabric3.org:core"
+              f3-core:extension="true">
+    <import.java package="org.fabric3.spi.*" version="1.4"/>
+    <import.java package="org.fabric3.runtime.weblogic.api" version="1.4"/>
+    <import.java package="com.bea.core.workmanager" version="1.7.0.0"/>
+    <import.java package="com.bea.core.workmanager.internal" version="1.7.0.0"/>
+    <import.java package="weblogic.common" version="1.7.0.0"/>
+    <import.java package="weblogic.kernel" version="1.7.0.0"/>
+    <import.java package="weblogic.work" version="1.7.0.0"/>
+    <import.java package="weblogic.work.commonj" version="1.7.0.0"/>
+
+    <deployable composite="weblogic:WeblogicExtensionComposite"/>
+</contribution>

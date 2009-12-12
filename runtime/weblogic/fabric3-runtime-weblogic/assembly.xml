@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+ ________________________________________________
+ Portions originally based on Apache Tuscany 2007
+ licensed under the Apache 2.0 license.
+
+-->
+<assembly>
+
+    <id>bin</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>zip</format>
+        <format>tar.gz</format>
+    </formats>
+
+    <!-- include assembly files -->
+    <fileSets>
+        <fileSet>
+            <directory>src/main</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+
+        
+        <!-- copy dependencies used by the host api to the Weblogic lib directory 
+        <dependencySet>
+            <includes>
+                <include>org.codehaus.fabric3.tomcat:fabric3-tomcat-server</include>
+                <include>org.codehaus.fabric3.spec:sca-api-r1.0</include>
+                <include>org.codehaus.fabric3:fabric3-api</include>
+                <include>org.codehaus.fabric3:fabric3-model</include>
+                <include>org.codehaus.fabric3:fabric3-host-api</include>
+                <include>org.codehaus.fabric3:fabric3-management-api</include>
+            </includes>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet> -->
+
+        <!-- copy shared classes to the host directory -->
+        <dependencySet>
+            <includes>
+                <include>javax.annotation:com.springsource.javax.annotation</include>
+                <include>javax.activation:activation</include>
+                <include>javax.xml.bind:jaxb-api-osgi</include>
+                <include>javax.xml:webservices-api-osgi</include>
+                <include>stax:stax-api</include>
+            </includes>
+            <outputDirectory>fabric3/host</outputDirectory>
+        </dependencySet>
+
+        <!-- copy boot dependencies to standalone profile -->
+        <dependencySet>
+            <includes>
+                <include>org.codehaus.fabric3:fabric3-monitor</include>
+                <include>org.codehaus.fabric3:fabric3-introspection-java</include>
+                <include>org.codehaus.fabric3:fabric3-spi</include>
+                <include>org.codehaus.fabric3:fabric3-util</include>
+                <include>org.codehaus.fabric3:fabric3-jmx</include>
+                <include>org.codehaus.fabric3:fabric3-pojo</include>
+                <include>org.codehaus.fabric3:fabric3-transform</include>
+                <include>org.codehaus.fabric3:fabric3-introspection-xml</include>
+                <include>org.codehaus.fabric3:fabric3-policy</include>
+                <include>org.codehaus.fabric3:fabric3-contribution</include>
+                <include>org.codehaus.fabric3:fabric3-fabric</include>
+                <include>org.codehaus.fabric3:fabric3-system</include>
+                <include>org.codehaus.fabric3:fabric3-thread-pool</include>
+                <include>jaxen:jaxen</include>
+                <include>org.codehaus.woodstox:wstx-asl</include>
+            </includes>
+            <outputDirectory>fabric3/boot</outputDirectory>
+        </dependencySet>
+
+        <!-- copy extension modules to the extensions directory-->
+        <dependencySet>
+            <includes>
+                <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
+                <include>org.codehaus.fabric3:fabric3-java</include>
+                <include>org.codehaus.fabric3:fabric3-async</include>
+                <include>org.codehaus.fabric3:fabric3-conversation-propagation</include>
+                <include>org.codehaus.fabric3:fabric3-sca-intents</include>
+                <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>
+                <include>org.codehaus.fabric3:fabric3-resource</include>
+                <include>org.codehaus.fabric3:fabric3-security-impl</include>
+                <include>org.codehaus.fabric3:fabric3-federation-allocation</include>
+                <include>javax.transaction:com.springsource.javax.transaction</include>
+                <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
+            </includes>
+            <outputDirectory>fabric3/repository</outputDirectory>
+        </dependencySet>
+
+    </dependencySets>
+
+</assembly>
+
