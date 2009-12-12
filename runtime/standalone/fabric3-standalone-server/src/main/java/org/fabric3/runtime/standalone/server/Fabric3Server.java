@@ -78,7 +78,6 @@ import org.fabric3.jmx.agent.rmi.RmiAgent;
  */
 public class Fabric3Server implements Fabric3ServerMBean {
     private static final String JMX_PORT = "fabric3.jmx.port";
-    private static final String JOIN_DOMAIN_TIMEOUT = "fabric3.join.domain.timeout";
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
@@ -142,14 +141,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // load properties for this runtime
             File propFile = new File(modeConfigDir, "runtime.properties");
             Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
-            // load the join timeout
-            int joinTimeout;
-            try {
-                joinTimeout = Integer.parseInt(props.getProperty(JOIN_DOMAIN_TIMEOUT, "10000"));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid join domain timeout value", e);
-            }
 
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");

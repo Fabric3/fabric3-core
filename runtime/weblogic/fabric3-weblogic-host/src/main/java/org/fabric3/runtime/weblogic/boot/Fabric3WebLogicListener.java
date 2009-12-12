@@ -73,7 +73,6 @@ import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
  */
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
-    private static final String JOIN_DOMAIN_TIMEOUT = "fabric3.join.domain.timeout";
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private ServletContext context;
     private RuntimeCoordinator coordinator;
@@ -132,14 +131,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // load properties for this runtime
             File propFile = new File(modeConfigDir, "runtime.properties");
             Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
-            // load the join timeout
-            int joinTimeout;
-            try {
-                joinTimeout = Integer.parseInt(props.getProperty(JOIN_DOMAIN_TIMEOUT, "10000"));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid join domain timeout value", e);
-            }
 
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
