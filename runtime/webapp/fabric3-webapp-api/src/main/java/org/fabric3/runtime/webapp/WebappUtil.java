@@ -45,7 +45,7 @@ package org.fabric3.runtime.webapp;
 
 import java.net.URL;
 
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 
 /**
@@ -57,7 +57,7 @@ public interface WebappUtil {
 
     ScdlBootstrapper getBootstrapper(ClassLoader bootClassLoader) throws Fabric3InitException;
 
-    RuntimeLifecycleCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException;
+    RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException;
 
     URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
 

@@ -61,7 +61,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
@@ -76,7 +76,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String JOIN_DOMAIN_TIMEOUT = "fabric3.join.domain.timeout";
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private ServletContext context;
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
 
 
@@ -170,11 +170,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             coordinator = BootstrapHelper.createCoordinator(bootLoader);
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
             coordinator.setConfiguration(configuration);
-            coordinator.bootPrimordial();
-            // load and initialize runtime extension components and the local runtime domain
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(joinTimeout);
             coordinator.start();
 
             monitor.started(runtimeMode.toString());

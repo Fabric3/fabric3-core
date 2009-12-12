@@ -71,7 +71,7 @@ import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_DEFAULT;
@@ -93,7 +93,7 @@ import static org.fabric3.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  */
 public class Fabric3ContextListener implements ServletContextListener {
 
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
 
     public void contextInitialized(ServletContextEvent event) {
 
@@ -118,11 +118,6 @@ public class Fabric3ContextListener implements ServletContextListener {
             BootConfiguration configuration = createBootConfiguration(runtime, webappClassLoader, utils);
             coordinator.setConfiguration(configuration);
 
-            // boot the runtime
-            coordinator.bootPrimordial();
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(-1);
             coordinator.start();
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             monitor.started();

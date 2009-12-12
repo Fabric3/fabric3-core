@@ -62,8 +62,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
-import org.fabric3.host.runtime.RuntimeState;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
@@ -84,7 +83,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
     private File installDirectory;
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
     private CountDownLatch latch;
 
@@ -204,15 +203,10 @@ public class Fabric3Server implements Fabric3ServerMBean {
             MBeanServer mbServer = agent.getMBeanServer();
             runtime.setMBeanServer(mbServer);
 
-            // boot the runtime
+            // start the runtime
             coordinator = BootstrapHelper.createCoordinator(bootLoader);
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
             coordinator.setConfiguration(configuration);
-            coordinator.bootPrimordial();
-            // load and initialize runtime extension components and the local runtime domain
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(joinTimeout);
             coordinator.start();
 
             // register the runtime with the MBean server
@@ -245,7 +239,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
     private void shutdown() {
         try {
-            if (coordinator != null && coordinator.getState().compareTo(RuntimeState.PRIMORDIAL) >= 0) {
+            if (coordinator != null) {
                 coordinator.shutdown();
             }
         } catch (ShutdownException ex) {

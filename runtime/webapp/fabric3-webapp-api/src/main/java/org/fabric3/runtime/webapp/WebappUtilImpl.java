@@ -50,7 +50,7 @@ import javax.management.MBeanServer;
 import javax.servlet.ServletContext;
 
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
@@ -110,11 +110,11 @@ public class WebappUtilImpl implements WebappUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    public RuntimeLifecycleCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException {
+    public RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException {
 
         try {
 
-            return (RuntimeLifecycleCoordinator) bootClassLoader.loadClass(COORDINATOR_CLASS).newInstance();
+            return (RuntimeCoordinator) bootClassLoader.loadClass(COORDINATOR_CLASS).newInstance();
 
         } catch (InstantiationException e) {
             throw new Fabric3InitException(e);

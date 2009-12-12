@@ -55,7 +55,7 @@ import org.fabric3.host.runtime.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.spi.event.DomainRecover;
@@ -70,8 +70,8 @@ import org.fabric3.spi.policy.PolicyActivationException;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
-    private RuntimeState state = RuntimeState.INSTANTIATED;
+public class DefaultCoordinator implements RuntimeCoordinator {
+    private RuntimeState state = RuntimeState.UNINITIALIZED;
     private Fabric3Runtime<?> runtime;
     private Bootstrapper bootstrapper;
     private ClassLoader bootClassLoader;
@@ -94,65 +94,14 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
         registrations = configuration.getRegistrations();
     }
 
-    public void bootPrimordial() throws InitializationException {
-        if (state != RuntimeState.INSTANTIATED) {
-            throw new IllegalStateException("Not in INSTANTIATED state");
-        }
-        runtime.boot();
-        bootstrapper.bootRuntimeDomain(runtime, bootClassLoader, registrations, exportedPackages);
-        state = RuntimeState.PRIMORDIAL;
-    }
-
-    public void initialize() throws InitializationException {
-
-        if (state != RuntimeState.PRIMORDIAL) {
-            throw new IllegalStateException("Not in PRIMORDIAL state");
-        }
-        // initialize core system components
-        bootstrapper.bootSystem();
-
-        try {
-            // install extensions
-            List<URI> uris = installContributions(extensionContributions);
-            // deploy extensions
-            deploy(uris);
-        } catch (PolicyActivationException e) {
-            throw new InitializationException(e);
-        }
-
-        state = RuntimeState.INITIALIZED;
-    }
-
-    public void recover() throws InitializationException {
-        if (state != RuntimeState.INITIALIZED) {
-            throw new IllegalStateException("Not in INITIALIZED state");
-        }
-        Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
-        if (domain == null) {
-            String name = APPLICATION_DOMAIN_URI.toString();
-            throw new InitializationException("Domain not found: " + name, name);
-        }
-        // install user contibutions - they will be deployed when the domain recovers
-        installContributions(userContributions);
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
-        eventService.publish(new RuntimeRecover());
-        state = RuntimeState.RECOVERED;
-    }
-
-    public void joinDomain(final long timeout) {
-        if (state != RuntimeState.RECOVERED) {
-            throw new IllegalStateException("Not in RECOVERED state");
-        }
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
-        eventService.publish(new JoinDomain());
-        eventService.publish(new DomainRecover());
-        state = RuntimeState.JOINED_DOMAIN;
-    }
-
     public void start() throws InitializationException {
-        if (state != RuntimeState.JOINED_DOMAIN) {
-            throw new IllegalStateException("Not in JOINED_DOMAIN state");
-        }
+        bootPrimordial();
+
+        // load and initialize runtime extension components and the local runtime domain
+        loadExtensions();
+        recover();
+        joinDomain();
+
         // starts the runtime by publishing a start event
         EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new RuntimeStart());
@@ -162,8 +111,65 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
     public void shutdown() throws ShutdownException {
         if (state == RuntimeState.STARTED) {
             runtime.destroy();
-            state = RuntimeState.SHUTDOWN;
         }
+        state = RuntimeState.SHUTDOWN;
+    }
+
+    /**
+     * Boots the runtime domain and primordial components.
+     *
+     * @throws InitializationException if an error booting the runtime domain is encountered
+     */
+    private void bootPrimordial() throws InitializationException {
+        runtime.boot();
+        bootstrapper.bootRuntimeDomain(runtime, bootClassLoader, registrations, exportedPackages);
+    }
+
+    /**
+     * Loads runtime extensions.
+     *
+     * @throws InitializationException if an error loading runtime extensions
+     */
+    private void loadExtensions() throws InitializationException {
+        // initialize core system components
+        bootstrapper.bootSystem();
+
+        try {
+            // install extensions
+            List<URI> uris = installContributions(extensionContributions);
+            // deploy extensions
+            deploy(uris);
+        } catch (PolicyActivationException e) {
+            state = RuntimeState.ERROR;
+            throw new InitializationException(e);
+        }
+    }
+
+    /**
+     * Performs local runtime recovery operations, such as controller recovery and transaction recovery.
+     *
+     * @throws InitializationException if an error performing recovery is encountered
+     */
+    private void recover() throws InitializationException {
+        Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
+        if (domain == null) {
+            state = RuntimeState.ERROR;
+            String name = APPLICATION_DOMAIN_URI.toString();
+            throw new InitializationException("Domain not found: " + name, name);
+        }
+        // install user contibutions - they will be deployed when the domain recovers
+        installContributions(userContributions);
+        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+        eventService.publish(new RuntimeRecover());
+    }
+
+    /**
+     * Synchronizes the runtime with the domain
+     */
+    private void joinDomain() {
+        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+        eventService.publish(new JoinDomain());
+        eventService.publish(new DomainRecover());
     }
 
     private List<URI> installContributions(List<ContributionSource> sources) throws InitializationException {
@@ -173,6 +179,7 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
             return contributionService.contribute(sources);
 
         } catch (ContributionException e) {
+            state = RuntimeState.ERROR;
             throw new ExtensionInitializationException("Error contributing extensions", e);
         }
     }
@@ -182,6 +189,7 @@ public class DefaultCoordinator implements RuntimeLifecycleCoordinator {
             Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
             domain.include(contributionUris, false);
         } catch (DeploymentException e) {
+            state = RuntimeState.ERROR;
             throw new ExtensionInitializationException("Error deploying extensions", e);
         }
     }

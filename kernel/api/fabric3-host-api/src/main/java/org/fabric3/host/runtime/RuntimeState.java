@@ -45,29 +45,9 @@ package org.fabric3.host.runtime;
 public enum RuntimeState {
 
     /**
-     * The runtime has been instantiated.
+     * The runtime has not been initialized.
      */
-    INSTANTIATED,
-
-    /**
-     * Runtime primordial services have been booted.
-     */
-    PRIMORDIAL,
-
-    /**
-     * Runtime extensions have been loaded and initialized.
-     */
-    INITIALIZED,
-
-    /**
-     * Recovery operations have completed.
-     */
-    RECOVERED,
-
-    /**
-     * The runtime has joined the domain.
-     */
-    JOINED_DOMAIN,
+    UNINITIALIZED,
 
     /**
      * The runtime is started and ready to receive requests.
@@ -77,5 +57,11 @@ public enum RuntimeState {
     /**
      * The runtime has stopped processing requests and shutdown extensions.
      */
-    SHUTDOWN
+    SHUTDOWN,
+
+    /**
+     * The runtime is in an error state.
+     */
+    ERROR
+
 }

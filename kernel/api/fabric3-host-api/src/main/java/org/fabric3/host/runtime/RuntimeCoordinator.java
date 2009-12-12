@@ -44,11 +44,11 @@
 package org.fabric3.host.runtime;
 
 /**
- * Manages the Fabric3 runtime lifecycle. This involves transitioning a runtime instance through a series of states defined by {@link RuntimeState}.
+ * Manages the lifecycle of a Fabric3 runtime instance.
  *
  * @version $Rev$ $Date$
  */
-public interface RuntimeLifecycleCoordinator {
+public interface RuntimeCoordinator {
 
     /**
      * Returns the runtime state.
@@ -65,36 +65,7 @@ public interface RuntimeLifecycleCoordinator {
     void setConfiguration(BootConfiguration configuration);
 
     /**
-     * Boots the runtime with its primordial components.
-     *
-     * @throws InitializationException if an error occurs booting the runtime
-     */
-    void bootPrimordial() throws InitializationException;
-
-    /**
-     * Initializes the runtime, including all system components
-     *
-     * @throws InitializationException if an error occurs initializing the runtime
-     */
-    void initialize() throws InitializationException;
-
-    /**
-     * Performs local recovery operations.
-     *
-     * @throws InitializationException if an error occurs performing recovery
-     */
-    void recover() throws InitializationException;
-
-    /**
-     * Joins the domain in a non-blocking fashion.
-     *
-     * @param timeout the timeout in milliseconds or -1 if the operation should wait indefinitely
-     * @throws InitializationException if an error occurs joining the domain
-     */
-    void joinDomain(long timeout) throws InitializationException;
-
-    /**
-     * Start the runtime receiving requests.
+     * Boots the runtime, synchronizes it with the domain, and places it in a state to receive requests.
      *
      * @throws InitializationException if an error occurs starting the runtime
      */

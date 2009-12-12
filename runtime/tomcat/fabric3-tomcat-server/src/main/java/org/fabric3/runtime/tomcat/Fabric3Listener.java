@@ -54,8 +54,6 @@ import org.apache.catalina.Service;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
@@ -67,7 +65,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 
@@ -79,7 +77,7 @@ import org.fabric3.host.runtime.ShutdownException;
 public class Fabric3Listener implements LifecycleListener {
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
 
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
 
     public void lifecycleEvent(LifecycleEvent event) {
@@ -135,12 +133,6 @@ public class Fabric3Listener implements LifecycleListener {
             coordinator = BootstrapHelper.createCoordinator(bootLoader);
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader, service);
             coordinator.setConfiguration(configuration);
-            coordinator.bootPrimordial();
-
-            // load and initialize runtime extension components and the local runtime domain
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(-1);
             coordinator.start();
             monitor.started(RuntimeMode.VM.toString());
         } catch (Exception e) {

@@ -58,7 +58,7 @@ import org.fabric3.host.Names;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.jmx.agent.Agent;
@@ -91,7 +91,7 @@ public class MavenRuntimeBooter {
     private Log log;
 
 
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
     private MavenRuntime runtime;
     private ExtensionHelper extensionHelper;
 
@@ -113,7 +113,7 @@ public class MavenRuntimeBooter {
     public MavenRuntime boot() throws MojoExecutionException {
         runtime = createRuntime();
         BootConfiguration configuration = createBootConfiguration();
-        coordinator = instantiate(RuntimeLifecycleCoordinator.class, COORDINATOR_IMPL, bootClassLoader);
+        coordinator = instantiate(RuntimeCoordinator.class, COORDINATOR_IMPL, bootClassLoader);
         coordinator.setConfiguration(configuration);
         bootRuntime();
         return runtime;
@@ -192,10 +192,6 @@ public class MavenRuntimeBooter {
     private void bootRuntime() throws MojoExecutionException {
         try {
             log.info("Starting Fabric3 Runtime ...");
-            coordinator.bootPrimordial();
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(-1);
             coordinator.start();
         } catch (InitializationException e) {
             throw new MojoExecutionException("Error booting Fabric3 runtime", e);

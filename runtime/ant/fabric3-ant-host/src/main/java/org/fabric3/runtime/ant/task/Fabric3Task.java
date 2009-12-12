@@ -72,7 +72,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
-import org.fabric3.host.runtime.RuntimeLifecycleCoordinator;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.runtime.ant.api.TestRunner;
@@ -113,7 +113,7 @@ public class Fabric3Task extends Task {
 
     private File installDirectory;
     private Fabric3Runtime<HostInfo> runtime;
-    private RuntimeLifecycleCoordinator coordinator;
+    private RuntimeCoordinator coordinator;
 
     public Fabric3Task() {
         installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Task.class);
@@ -175,12 +175,6 @@ public class Fabric3Task extends Task {
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
 
             coordinator.setConfiguration(configuration);
-            coordinator.bootPrimordial();
-
-            // load and initialize runtime extension components and the local runtime domain
-            coordinator.initialize();
-            coordinator.recover();
-            coordinator.joinDomain(-1);
             coordinator.start();
 
         } catch (Exception e) {

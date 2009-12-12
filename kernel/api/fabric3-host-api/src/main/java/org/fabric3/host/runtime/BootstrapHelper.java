@@ -293,10 +293,10 @@ public final class BootstrapHelper {
     }
 
     @SuppressWarnings({"unchecked"})
-    public static RuntimeLifecycleCoordinator createCoordinator(ClassLoader bootClassLoader) throws InitializationException {
+    public static RuntimeCoordinator createCoordinator(ClassLoader bootClassLoader) throws InitializationException {
         try {
             Class<?> implClass = Class.forName(COORDINATOR_CLASS, true, bootClassLoader);
-            return (RuntimeLifecycleCoordinator) implClass.newInstance();
+            return (RuntimeCoordinator) implClass.newInstance();
         } catch (ClassNotFoundException e) {
             throw new InitializationException(e);
         } catch (IllegalAccessException e) {
