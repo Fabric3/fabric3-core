@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.management.MBeanServerFactory;
+import javax.management.MBeanServer;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.FileScanner;
@@ -166,9 +167,8 @@ public class Fabric3Task extends Task {
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
             MonitorFactory monitorFactory = new AntMonitorFactory(this);
 
-            runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, monitorFactory);
-
-            runtime.setMBeanServer(MBeanServerFactory.createMBeanServer("fabric3"));
+            MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
+            runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, mBeanServer, monitorFactory);
 
             // boot the runtime
             coordinator = BootstrapHelper.createCoordinator(bootLoader);

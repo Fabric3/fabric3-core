@@ -171,9 +171,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
             }
 
-            runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, monitorFactory);
-            monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
-
             // boot the JMX agent
             String jmxString = props.getProperty(JMX_PORT, "1199");
             String[] tokens = jmxString.split("-");
@@ -192,7 +189,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 throw new IllegalArgumentException("Invalid JMX port specified in runtime.properties");
             }
             MBeanServer mbServer = agent.getMBeanServer();
-            runtime.setMBeanServer(mbServer);
+
+            runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, mbServer, monitorFactory);
+            monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 
             // start the runtime
             coordinator = BootstrapHelper.createCoordinator(bootLoader);

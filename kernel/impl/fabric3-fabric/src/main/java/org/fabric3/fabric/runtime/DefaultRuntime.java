@@ -43,7 +43,6 @@
  */
 package org.fabric3.fabric.runtime;
 
-import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
@@ -53,8 +52,8 @@ import org.fabric3.host.runtime.HostInfo;
  */
 public class DefaultRuntime extends AbstractRuntime<HostInfo> {
 
-    public DefaultRuntime(MonitorFactory factory) {
-        super(HostInfo.class, factory);
+    public DefaultRuntime() {
+        super(HostInfo.class);
     }
 
 }

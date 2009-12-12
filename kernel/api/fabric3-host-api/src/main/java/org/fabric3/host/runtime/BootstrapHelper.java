@@ -57,6 +57,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.jar.JarFile;
+import javax.management.MBeanServer;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
@@ -243,13 +244,15 @@ public final class BootstrapHelper {
     public static Fabric3Runtime<HostInfo> createRuntime(HostInfo hostInfo,
                                                          ClassLoader hostClassLoader,
                                                          ClassLoader bootClassLoader,
+                                                         MBeanServer mBeanServer,
                                                          MonitorFactory monitorFactory) throws InitializationException {
         try {
             Class<?> implClass = Class.forName(RUNTIME_CLASS, true, bootClassLoader);
-            Constructor<?> ctor = implClass.getConstructor(MonitorFactory.class);
-            Fabric3Runtime<HostInfo> runtime = (Fabric3Runtime<HostInfo>) ctor.newInstance(monitorFactory);
-            runtime.setHostClassLoader(hostClassLoader);
-            runtime.setHostInfo(hostInfo);
+            Constructor<?> ctor = implClass.getConstructor();
+            
+            Fabric3Runtime<HostInfo> runtime = (Fabric3Runtime<HostInfo>) ctor.newInstance();
+            RuntimeConfiguration<HostInfo> configuration = new RuntimeConfiguration<HostInfo>(hostClassLoader, hostInfo, monitorFactory, mBeanServer);
+            runtime.setConfiguration(configuration);
             return runtime;
         } catch (IllegalAccessException e) {
             throw new InitializationException(e);

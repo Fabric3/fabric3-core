@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import javax.management.MBeanServer;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -58,12 +59,14 @@ import org.fabric3.host.Names;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.jmx.agent.Agent;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
+import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.util.io.FileHelper;
 
@@ -122,8 +125,6 @@ public class MavenRuntimeBooter {
     private MavenRuntime createRuntime() throws MojoExecutionException {
         MonitorFactory monitorFactory = new MavenMonitorFactory(log);
         MavenRuntime runtime = instantiate(MavenRuntime.class, RUNTIME_IMPL, bootClassLoader);
-        runtime.setMonitorFactory(monitorFactory);
-        runtime.setHostClassLoader(hostClassLoader);
 
         Properties hostProperties = properties != null ? properties : System.getProperties();
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
@@ -137,7 +138,6 @@ public class MavenRuntimeBooter {
         tempDir.mkdir();
 
         MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(URI.create(DOMAIN), hostProperties, moduleDependencies, tempDir);
-        runtime.setHostInfo(hostInfo);
 
         // TODO Add better host JMX support from the next release
         Agent agent;
@@ -146,7 +146,13 @@ public class MavenRuntimeBooter {
         } catch (ManagementException e) {
             throw new MojoExecutionException("Error initializing JMX Agent", e);
         }
-        runtime.setMBeanServer(agent.getMBeanServer());
+
+        MBeanServer mBeanServer = agent.getMBeanServer();
+
+        RuntimeConfiguration<MavenHostInfo> configuration =
+                new RuntimeConfiguration<MavenHostInfo>(hostClassLoader, hostInfo, monitorFactory, mBeanServer);
+
+        runtime.setConfiguration(configuration);
 
         return runtime;
     }

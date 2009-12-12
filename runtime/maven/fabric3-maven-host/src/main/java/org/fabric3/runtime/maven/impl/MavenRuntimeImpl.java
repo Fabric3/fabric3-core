@@ -59,13 +59,13 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.ContextStartException;
 import org.fabric3.runtime.maven.CompositeQNameService;
 import org.fabric3.runtime.maven.InvalidResourceException;
-import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.MavenHostInfo;
+import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.component.GroupInitializationException;
+import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Default Maven runtime implementation.
@@ -76,14 +76,13 @@ public class MavenRuntimeImpl extends AbstractRuntime<MavenHostInfo> implements 
     private static final URI CONTRIBUTION_URI = URI.create("iTestContribution");
 
     public MavenRuntimeImpl() {
-        super(MavenHostInfo.class, null);
+        super(MavenHostInfo.class);
     }
 
     public void deploy(URL base, QName qName) throws ContributionException, DeploymentException {
         ModuleContributionSource source = new ModuleContributionSource(CONTRIBUTION_URI, base);
         // contribute the Maven project to the application domain
-        ContributionService contributionService =
-                getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
+        ContributionService contributionService = getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
         Domain domain = getComponent(Domain.class, APPLICATION_DOMAIN_URI);
         contributionService.contribute(source);
         // activate the deployable composite in the domain

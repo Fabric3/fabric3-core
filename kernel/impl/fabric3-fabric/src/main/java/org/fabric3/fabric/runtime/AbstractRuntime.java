@@ -58,6 +58,7 @@ import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
@@ -89,21 +90,19 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
 
     private ClassLoader hostClassLoader;
 
-    protected AbstractRuntime(Class<HI> runtimeInfoType, MonitorFactory monitorFactory) {
-        this.hostInfoType = runtimeInfoType;
-        this.monitorFactory = monitorFactory;
-    }
-
     protected AbstractRuntime(Class<HI> runtimeInfoType) {
         this.hostInfoType = runtimeInfoType;
     }
 
-    public ClassLoader getHostClassLoader() {
-        return hostClassLoader;
+    public void setConfiguration(RuntimeConfiguration<HI> configuration) {
+        hostClassLoader = configuration.getHostClassLoader();
+        hostInfo = configuration.getHostInfo();
+        monitorFactory = configuration.getMonitorFactory();
+        mbServer = configuration.getMBeanServer();
     }
 
-    public void setHostClassLoader(ClassLoader hostClassLoader) {
-        this.hostClassLoader = hostClassLoader;
+    public ClassLoader getHostClassLoader() {
+        return hostClassLoader;
     }
 
     public Class<HI> getHostInfoType() {
@@ -114,24 +113,12 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         return hostInfo;
     }
 
-    public void setHostInfo(HI hostInfo) {
-        this.hostInfo = hostInfo;
-    }
-
     public MonitorFactory getMonitorFactory() {
         return monitorFactory;
     }
 
-    public void setMonitorFactory(MonitorFactory monitorFactory) {
-        this.monitorFactory = monitorFactory;
-    }
-
     public MBeanServer getMBeanServer() {
         return mbServer;
-    }
-
-    public void setMBeanServer(MBeanServer mbServer) {
-        this.mbServer = mbServer;
     }
 
     public void boot() throws InitializationException {

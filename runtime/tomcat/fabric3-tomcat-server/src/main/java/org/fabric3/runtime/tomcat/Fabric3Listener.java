@@ -47,6 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.management.MBeanServer;
+
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Server;
@@ -117,10 +119,10 @@ public class Fabric3Listener implements LifecycleListener {
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, props, bootLoader);
 
-            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, monitorFactory);
+            // use the Tomcat JMX server
+            MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            // set the Tomcat JMX server
-            runtime.setMBeanServer(MBeanUtils.createServer());
+            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader,mBeanServer, monitorFactory);
 
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 

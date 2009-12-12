@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.management.MBeanServer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -69,8 +70,10 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
@@ -156,9 +159,15 @@ public class Fabric3ContextListener implements ServletContextListener {
             URI domain = new URI(utils.getInitParameter(DOMAIN_PARAM, "fabric3://domain"));
             WebappHostInfo info = new WebappHostInfoImpl(context, domain, baseDir, tempDir);
 
-            WebappRuntime runtime = utils.getRuntime(webappClassLoader);
-            runtime.setHostInfo(info);
-            runtime.setHostClassLoader(webappClassLoader);
+            WebappRuntime runtime = utils.createRuntime(webappClassLoader);
+            MonitorFactory factory = utils.createMonitorFactory(webappClassLoader);
+            MBeanServer mBeanServer = utils.createMBeanServer();
+
+
+            RuntimeConfiguration<WebappHostInfo> configuration =
+                    new RuntimeConfiguration<WebappHostInfo>(webappClassLoader, info, factory, mBeanServer);
+
+            runtime.setConfiguration(configuration);
 
             return runtime;
 

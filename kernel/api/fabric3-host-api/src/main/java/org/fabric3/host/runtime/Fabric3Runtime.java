@@ -50,18 +50,18 @@ import org.fabric3.host.monitor.MonitorFactory;
 public interface Fabric3Runtime<HI extends HostInfo> {
 
     /**
+     * Sets the dependencies required from the host environment.
+     *
+     * @param configuration the dependencies required from the host environment
+     */
+    void setConfiguration(RuntimeConfiguration<HI> configuration);
+
+    /**
      * Returns the host ClassLoader that is parent to all Fabric3 classloaders.
      *
      * @return the host's ClassLoader
      */
     ClassLoader getHostClassLoader();
-
-    /**
-     * Sets the host ClassLoader; this will be a parent for all Fabric3 classloaders.
-     *
-     * @param classLoader the host's ClassLoader
-     */
-    void setHostClassLoader(ClassLoader classLoader);
 
     /**
      * Returns the type of info supplied by the host.
@@ -78,13 +78,6 @@ public interface Fabric3Runtime<HI extends HostInfo> {
     HI getHostInfo();
 
     /**
-     * Sets the info this runtime should make available to service components.
-     *
-     * @param hostInfo the information this runtime should make available to service components
-     */
-    void setHostInfo(HI hostInfo);
-
-    /**
      * Returns the MonitorFactory that this runtime is using.
      *
      * @return the MonitorFactory that this runtime is using
@@ -92,27 +85,11 @@ public interface Fabric3Runtime<HI extends HostInfo> {
     MonitorFactory getMonitorFactory();
 
     /**
-     * Sets the MonitorFactory that this runtime should use.
-     *
-     * @param monitorFactory the MonitorFactory that this runtime should use
-     */
-    void setMonitorFactory(MonitorFactory monitorFactory);
-
-    /**
      * Returns the MBeanServer this runtime should use.
      *
      * @return the MBeanServer
      */
     MBeanServer getMBeanServer();
-
-    /**
-     * Sets the MBeanServer this runtime should use.
-     * <p/>
-     * This allows the host environment to specify an MBeanServer with which any manageable runtime components should be registered.
-     *
-     * @param mbServer the MBeanServer this runtime should use
-     */
-    void setMBeanServer(MBeanServer mbServer);
 
     /**
      * Returns the system component providing the designated service.

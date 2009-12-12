@@ -58,7 +58,7 @@ public interface RuntimeCoordinator {
     RuntimeState getState();
 
     /**
-     * Sets the bootstrap configuration. Thismust be done prior to booting the runtime.
+     * Sets the bootstrap configuration. This must be done prior to starting the runtime.
      *
      * @param configuration the bootstrap configuration
      */

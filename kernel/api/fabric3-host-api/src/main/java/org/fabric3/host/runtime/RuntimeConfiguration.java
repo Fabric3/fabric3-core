@@ -34,46 +34,65 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.runtime.webapp;
-
-import java.net.URL;
+*/
+package org.fabric3.host.runtime;
 
 import javax.management.MBeanServer;
 
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.monitor.MonitorFactory;
 
 /**
+ * Host dependencies required to boot a runtime instance.
+ *
  * @version $Rev$ $Date$
  */
-public interface WebappUtil {
+public class RuntimeConfiguration<HI extends HostInfo> {
+    private ClassLoader hostClassLoader;
+    private HI hostInfo;
+    private MonitorFactory monitorFactory;
+    private MBeanServer mBeanServer;
 
-    WebappRuntime createRuntime(ClassLoader bootClassLoader) throws Fabric3InitException;
-
-    MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException;
-
-    ScdlBootstrapper getBootstrapper(ClassLoader bootClassLoader) throws Fabric3InitException;
-
-    RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException;
-
-    URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
+    public RuntimeConfiguration(ClassLoader hostClassLoader, HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
+        this.hostClassLoader = hostClassLoader;
+        this.hostInfo = hostInfo;
+        this.monitorFactory = monitorFactory;
+        this.mBeanServer = mBeanServer;
+    }
 
     /**
-     * Return a init parameter from the servlet context or provide a default.
+     * Returns the host classloader.
      *
-     * @param name  the name of the parameter
-     * @param value the default value
-     * @return the value of the specified parameter, or the default if not defined
+     * @return the host classloader
      */
-    String getInitParameter(String name, String value);
+    public ClassLoader getHostClassLoader() {
+        return hostClassLoader;
+    }
 
-    MBeanServer createMBeanServer();
+    /**
+     * Returns the runtime host info.
+     *
+     * @return the runtime host info
+     */
+    public HI getHostInfo() {
+        return hostInfo;
+    }
+
+    /**
+     * Returns the monitor factory.
+     *
+     * @return the monitor factory
+     */
+    public MonitorFactory getMonitorFactory() {
+        return monitorFactory;
+    }
+
+    /**
+     * Returns the MBeanServer.
+     *
+     * @return the MBeanServer
+     */
+    public MBeanServer getMBeanServer() {
+        return mBeanServer;
+    }
+
 }

@@ -74,20 +74,6 @@ public class WebappUtilImpl implements WebappUtil {
         this.servletContext = servletContext;
     }
 
-    public WebappRuntime getRuntime(ClassLoader bootClassLoader) throws Fabric3InitException {
-
-        WebappRuntime runtime = createRuntime(bootClassLoader);
-
-        MonitorFactory factory = createMonitorFactory(bootClassLoader);
-        MBeanServer mBeanServer = createMBeanServer();
-
-        runtime.setMonitorFactory(factory);
-        runtime.setMBeanServer(mBeanServer);
-
-        return runtime;
-
-    }
-
     public ScdlBootstrapper getBootstrapper(ClassLoader bootClassLoader) throws Fabric3InitException {
 
         try {
@@ -152,7 +138,7 @@ public class WebappUtilImpl implements WebappUtil {
      * @return MBean server.
      * @throws Fabric3InitException If unable to initialize the MBean server.
      */
-    private MBeanServer createMBeanServer() throws Fabric3InitException {
+    public MBeanServer createMBeanServer() throws Fabric3InitException {
         DefaultAgent agent;
         try {
             agent = new DefaultAgent();
@@ -169,7 +155,7 @@ public class WebappUtilImpl implements WebappUtil {
      * @return Webapp runtime instance.
      * @throws Fabric3InitException If unable to initialize the runtime.
      */
-    private WebappRuntime createRuntime(ClassLoader bootClassLoader) throws Fabric3InitException {
+    public WebappRuntime createRuntime(ClassLoader bootClassLoader) throws Fabric3InitException {
 
         try {
             return (WebappRuntime) bootClassLoader.loadClass(RUNTIME_CLASS).newInstance();
@@ -190,7 +176,7 @@ public class WebappUtilImpl implements WebappUtil {
      * @return Monitor factory instance.
      * @throws Fabric3InitException If unable to initialize the monitor factory.
      */
-    private MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException {
+    public MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException {
 
         try {
             String monitorFactoryClass = getInitParameter(MONITOR_FACTORY_PARAM, MONITOR_FACTORY_DEFAULT);

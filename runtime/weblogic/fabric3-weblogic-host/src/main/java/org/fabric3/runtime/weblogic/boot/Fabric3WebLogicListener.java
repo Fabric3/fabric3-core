@@ -151,11 +151,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
 
             MonitorFactory monitorFactory = new WebLogicMonitorFactory();
-            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, monitorFactory);
+            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, mBeanServer, monitorFactory);
 
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
-
-            runtime.setMBeanServer(mBeanServer);
 
             // boot the runtime
             coordinator = BootstrapHelper.createCoordinator(bootLoader);
@@ -214,7 +212,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private MBeanServer getMBeanServer() throws NamingException {
         InitialContext ctx = new InitialContext();
         return (MBeanServer) ctx.lookup("java:comp/env/jmx/runtime");
-        // TODO create the runtime and put it in the servlet context
     }
 
     public interface ServerMonitor {
