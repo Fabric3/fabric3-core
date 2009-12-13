@@ -37,6 +37,8 @@
 */
 package org.fabric3.contribution.manifest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -82,7 +84,18 @@ public class JavaImportLoader implements TypeLoader<JavaImport> {
             // validation error
             return null;
         }
-        return new JavaImport(info);
+        URI locationUri = null;
+        String location = reader.getAttributeValue(null, "location");
+        if (location != null) {
+            try {
+                locationUri = new URI(location);
+            } catch (URISyntaxException e) {
+                InvalidValue error = new InvalidValue("Invalid location attribute", reader, e);
+                context.addError(error);
+            }
+        }
+
+        return new JavaImport(info, locationUri);
     }
 
     private PackageInfo parseVersion(String statement,

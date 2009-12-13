@@ -58,6 +58,11 @@ public class JavaImport implements Import {
         this.packageInfo = packageInfo;
     }
 
+    public JavaImport(PackageInfo packageInfo, URI location) {
+        this.packageInfo = packageInfo;
+        this.location = location;
+    }
+
     public URI getLocation() {
         return location;
     }
