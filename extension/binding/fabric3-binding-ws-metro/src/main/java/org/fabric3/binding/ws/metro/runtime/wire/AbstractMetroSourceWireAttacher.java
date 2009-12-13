@@ -37,14 +37,12 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLDecoder;
 
 import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointException;
+import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -66,11 +64,8 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
             URI servicePath = endpointDefinition.getServicePath();
-            // FIXME remove need to decode
-            String path = URLDecoder.decode(servicePath.toASCIIString(), "UTF-8");
+            String path = servicePath.toString();
             endpointService.unregisterService(path);
-        } catch (UnsupportedEncodingException e) {
-            throw new WiringException(e);
         } catch (EndpointException e) {
             throw new WiringException(e);
         }

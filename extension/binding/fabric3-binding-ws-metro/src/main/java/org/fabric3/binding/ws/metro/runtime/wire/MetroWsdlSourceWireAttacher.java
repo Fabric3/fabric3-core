@@ -38,10 +38,8 @@
 package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
@@ -97,8 +95,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             BindingID bindingId = bindingIdResolver.resolveBindingId(requestedIntents);
             WebServiceFeature[] features = featureResolver.getFeatures(requestedIntents);
 
-            // FIXME remove need to decode
-            String path = URLDecoder.decode(servicePath.toASCIIString(), "UTF-8");
+            String path = servicePath.toString();
 
             String wsdl = source.getWsdl();
             URL wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
@@ -116,8 +113,6 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             null,
                                                                             generatedSchemas);
             endpointService.registerService(configuration);
-        } catch (UnsupportedEncodingException e) {
-            throw new WiringException(e);
         } catch (CacheException e) {
             throw new WiringException(e);
         } catch (EndpointException e) {

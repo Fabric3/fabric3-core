@@ -43,10 +43,8 @@
  */
 package org.fabric3.binding.ws.loader;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -107,9 +105,7 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
             if (uri == null) {
                 bd = new WsBindingDefinition(null, wsdlLocation, wsdlElement);
             } else {
-                // encode the URI since there may be expressions (e.g. "${..}") contained in it
-                URI endpointUri = new URI(URLEncoder.encode(uri, "UTF-8"));
-                bd = new WsBindingDefinition(endpointUri, wsdlLocation, wsdlElement);
+                bd = new WsBindingDefinition(new URI(uri), wsdlLocation, wsdlElement);
             }
             loaderHelper.loadPolicySetsAndIntents(bd, reader, introspectionContext);
 
@@ -118,9 +114,6 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
 
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
-            introspectionContext.addError(failure);
-        } catch (UnsupportedEncodingException e) {
-            InvalidValue failure = new InvalidValue("Invalid encoding for URI: " + uri + "\n" + e, reader);
             introspectionContext.addError(failure);
         }
 

@@ -38,14 +38,12 @@
 package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.security.SecureClassLoader;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
 
@@ -134,8 +132,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                     generatedSchemas = cacheSchemas(servicePath, source);
                 }
 
-                // FIXME remove need to decode
-                String path = URLDecoder.decode(servicePath.toASCIIString(), "UTF-8");
+                String path = servicePath.toString();
                 JaxbInvoker invoker = new JaxbInvoker(invocationChains);
                 EndpointConfiguration configuration = new EndpointConfiguration(seiClass,
                                                                                 serviceName,
@@ -152,8 +149,6 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
-        } catch (UnsupportedEncodingException e) {
-            throw new WiringException(e);
         } catch (EndpointException e) {
             throw new WiringException(e);
         } catch (CacheException e) {

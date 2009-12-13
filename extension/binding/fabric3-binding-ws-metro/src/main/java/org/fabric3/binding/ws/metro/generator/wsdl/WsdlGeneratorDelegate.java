@@ -39,11 +39,9 @@
 package org.fabric3.binding.ws.metro.generator.wsdl;
 
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -206,8 +204,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             } else {
                 try {
-                    // TODO get rid of need to decode
-                    URL url = new URL(URLDecoder.decode(targetUri.toASCIIString(), "UTF-8"));
+                    URL url = targetUri.toURL();
                     // A port type is used. Synthesize concrete WSDL for the port type.
                     String endpointAddress = url.toString();
                     ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl);
@@ -216,8 +213,6 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                     QName portTypeName = contract.getPortTypeQname();
                     endpointDefinition = new ReferenceEndpointDefinition(result.getServiceName(), false, result.getPortName(), portTypeName, url);
                 } catch (MalformedURLException e) {
-                    throw new GenerationException(e);
-                } catch (UnsupportedEncodingException e) {
                     throw new GenerationException(e);
                 }
             }
@@ -340,6 +335,6 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         } catch (WSDLException e) {
             throw new GenerationException(e);
         }
-    }    
+    }
 
 }
