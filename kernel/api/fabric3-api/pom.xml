@@ -23,7 +23,7 @@ Public License. See the accompanying license file for details.
     <dependencies>
         <dependency>
             <groupId>org.codehaus.fabric3.spec</groupId>
-            <artifactId>sca-api-r1.0</artifactId>
+            <artifactId>sca-api</artifactId>
             <version>${sca.api.version}</version>
         </dependency>
         <dependency>

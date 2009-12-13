@@ -83,7 +83,7 @@ public class OASISServiceProcessor<I extends Implementation<? extends InjectingC
     public void visitType(Service annotation, Class<?> type, I implementation, IntrospectionContext context) {
         InjectingComponentType componentType = implementation.getComponentType();
 
-        for (Class<?> service : annotation.interfaces()) {
+        for (Class<?> service : annotation.names()) {
             ServiceDefinition definition = createDefinition(service, type, context);
             componentType.add(definition);
         }

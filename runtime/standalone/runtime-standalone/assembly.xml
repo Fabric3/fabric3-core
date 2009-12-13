@@ -51,7 +51,7 @@
         <!-- copy dependencies used by the executable commands to the lib directory -->
         <dependencySet>
             <includes>
-                <include>org.codehaus.fabric3.spec:sca-api-r1.0</include>
+                <include>org.codehaus.fabric3.spec:sca-api</include>
                 <include>org.codehaus.fabric3:fabric3-api</include>
                 <include>org.codehaus.fabric3:fabric3-model</include>
                 <include>org.codehaus.fabric3:fabric3-host-api</include>
