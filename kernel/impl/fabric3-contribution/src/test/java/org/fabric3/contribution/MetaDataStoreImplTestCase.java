@@ -76,7 +76,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
     public void testResolve() throws Exception {
         URI uri = URI.create("source");
-        QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME);
+        QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME, null);
         ContributionWire<?, ?> wire = store.resolve(uri, imprt);
         assertEquals(RESOURCE_URI, wire.getExportContributionUri());
     }
@@ -119,7 +119,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
         Contribution contribution2 = new Contribution(RESOURCE_URI2);
         ContributionManifest manifest2 = contribution2.getManifest();
-        QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME);
+        QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME, null);
         manifest2.addImport(imprt);
         QNameExport export2 = new QNameExport(IMPORT_EXPORT_QNAME2);
         manifest2.addExport(export2);

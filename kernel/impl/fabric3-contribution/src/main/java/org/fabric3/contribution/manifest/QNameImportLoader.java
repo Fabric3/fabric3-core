@@ -38,6 +38,7 @@
 package org.fabric3.contribution.manifest;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -45,6 +46,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
@@ -64,12 +66,17 @@ public class QNameImportLoader implements TypeLoader<QNameImport> {
             context.addError(failure);
             return null;
         }
+        URI locationUri = null;
         String location = reader.getAttributeValue(null, "location");
-        QNameImport contributionImport = new QNameImport(ns);
         if (location != null) {
-            contributionImport.setLocation(URI.create(location));
+            try {
+                locationUri = new URI(location);
+            } catch (URISyntaxException e) {
+                InvalidValue error = new InvalidValue("Invalid location attribute", reader, e);
+                context.addError(error);
+            }
         }
-        return contributionImport;
+        return new QNameImport(ns, locationUri);
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

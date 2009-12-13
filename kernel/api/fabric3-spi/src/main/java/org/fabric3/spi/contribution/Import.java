@@ -62,11 +62,4 @@ public interface Import extends Serializable {
      */
     URI getLocation();
 
-    /**
-     * Sets the URI representing the import artifact location.
-     *
-     * @param location the URI representing the import artifact location
-     */
-    void setLocation(URI location);
-
 }

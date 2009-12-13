@@ -54,16 +54,15 @@ public class QNameImport implements Import {
     private String namespace;
     private URI location;
 
-    public URI getLocation() {
-        return location;
-    }
-
-    public void setLocation(URI location) {
-        this.location = location;
-    }
-
-    public QNameImport(String namespace) {
+    /**
+     * Constructor.
+     *
+     * @param namespace the imported namespace
+     * @param location  the location of the contribution exporting the namespace or null if the contribution should be resolved
+     */
+    public QNameImport(String namespace, URI location) {
         this.namespace = namespace;
+        this.location = location;
     }
 
     public String getNamespace() {
@@ -72,6 +71,10 @@ public class QNameImport implements Import {
 
     public QName getType() {
         return TYPE;
+    }
+
+    public URI getLocation() {
+        return location;
     }
 
     public String toString() {

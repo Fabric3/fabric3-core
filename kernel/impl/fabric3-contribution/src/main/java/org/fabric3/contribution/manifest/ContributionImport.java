@@ -65,7 +65,4 @@ public class ContributionImport implements Import {
         return location;
     }
 
-    public void setLocation(URI location) {
-        this.location = location;
-    }
 }

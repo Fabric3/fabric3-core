@@ -108,10 +108,6 @@ public class ContributionElementLoaderTestCase extends TestCase {
                 return null;
             }
 
-            public void setLocation(URI location) {
-
-            }
-
             public QName getType() {
                 return null;
             }

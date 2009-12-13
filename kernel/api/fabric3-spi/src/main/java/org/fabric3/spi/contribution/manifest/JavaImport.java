@@ -62,10 +62,6 @@ public class JavaImport implements Import {
         return location;
     }
 
-    public void setLocation(URI location) {
-        this.location = location;
-    }
-
     public QName getType() {
         return TYPE;
     }
