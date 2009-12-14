@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,19 +91,18 @@ public class DependencyServiceImpl implements DependencyService {
         for (Vertex<Contribution> source : dag.getVertices()) {
             Contribution contribution = source.getEntity();
             ContributionManifest manifest = contribution.getManifest();
-            assert manifest != null;
+            URI uri = contribution.getUri();
             for (Import imprt : manifest.getImports()) {
                 // See if the import is already stored
                 // note that extension imports do not need to be checked since we assume extensons are installed prior
-                Vertex<Contribution> sink = findTargetVertex(dag, imprt);
+                Vertex<Contribution> sink = findTargetVertex(dag, uri, imprt);
                 if (sink == null) {
-                    Contribution resolved = store.resolve(imprt);
+                    Contribution resolved = store.resolve(uri, imprt);
                     if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
                         throw new DependencyException("Contribution " + contribution.getUri() + " imports "
                                 + resolved.getUri() + " which is not installed");
                     }
                     if (resolved == null) {
-                        String uri = contribution.getUri().toString();
                         throw new UnresolvableImportException("Unable to resolve import " + imprt + " in " + uri, imprt);
                     }
 
@@ -141,13 +141,13 @@ public class DependencyServiceImpl implements DependencyService {
         // add edges based on imports
         for (Vertex<Contribution> source : dag.getVertices()) {
             Contribution contribution = source.getEntity();
+            URI uri = contribution.getUri();
             for (ContributionWire<?, ?> wire : contribution.getWires()) {
                 for (Contribution entry : contributions) {
                     if (entry.getUri().equals(wire.getExportContributionUri())) {
                         Import imprt = wire.getImport();
-                        Vertex<Contribution> sink = findTargetVertex(dag, imprt);
+                        Vertex<Contribution> sink = findTargetVertex(dag, uri, imprt);
                         if (sink == null) {
-                            String uri = contribution.getUri().toString();
                             // this should not happen
                             throw new AssertionError("Unable to resolve import " + imprt + " in " + uri);
                         }
@@ -180,17 +180,19 @@ public class DependencyServiceImpl implements DependencyService {
     /**
      * Finds the Vertex in the graph with a maching export
      *
-     * @param dag   the graph to resolve against
-     * @param imprt the import to resolve
+     * @param dag             the graph to resolve against
+     * @param contributionUri the importing contribution URI
+     * @param imprt           the import to resolve
      * @return the matching Vertext or null
      */
-    private Vertex<Contribution> findTargetVertex(DirectedGraph<Contribution> dag, Import imprt) {
+    private Vertex<Contribution> findTargetVertex(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
         for (Vertex<Contribution> vertex : dag.getVertices()) {
             Contribution contribution = vertex.getEntity();
             ContributionManifest manifest = contribution.getManifest();
             assert manifest != null;
             for (Export export : manifest.getExports()) {
-                if (Export.EXACT_MATCH == export.match(imprt)) {
+                // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
+                if (Export.EXACT_MATCH == export.match(imprt) && !contributionUri.equals(contribution.getUri())) {
                     return vertex;
                 }
             }

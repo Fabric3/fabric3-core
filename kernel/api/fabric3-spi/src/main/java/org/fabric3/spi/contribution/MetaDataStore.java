@@ -119,10 +119,11 @@ public interface MetaDataStore {
     /**
      * Resolves an import or returns null if it cannot be satisfied.
      *
+     * @param uri   the importing contribution  URI
      * @param imprt the import
      * @return the contribution or null
      */
-    Contribution resolve(Import imprt);
+    Contribution resolve(URI uri, Import imprt);
 
     /**
      * Resolves an import to a matching export and returns the associated ContributionWire.
@@ -132,7 +133,7 @@ public interface MetaDataStore {
      * @return the ContributionWire
      * @throws UnresolvedImportException if the import cannot be resolved
      */
-    ContributionWire<?, ?> resolve(URI uri, Import imprt) throws UnresolvedImportException;
+    ContributionWire<?, ?> resolveContributionWire(URI uri, Import imprt) throws UnresolvedImportException;
 
     /**
      * Resolves contributions that import the contribution represented by the given URI.

@@ -206,12 +206,13 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public Contribution resolve(Import imprt) {
+    public Contribution resolve(URI uri, Import imprt) {
         Map<Export, Contribution> exports = exportsToContributionCache.get(imprt.getType());
         if (exports != null) {
             for (Map.Entry<Export, Contribution> entry : exports.entrySet()) {
                 Export export = entry.getKey();
-                if (Export.EXACT_MATCH == export.match(imprt)) {
+                // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
+                if (Export.EXACT_MATCH == export.match(imprt) && !uri.equals(entry.getValue().getUri())) {
                     return entry.getValue();
                 }
             }
@@ -219,7 +220,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public ContributionWire<?, ?> resolve(URI uri, Import imprt) throws UnresolvedImportException {
+    public ContributionWire<?, ?> resolveContributionWire(URI uri, Import imprt) throws UnresolvedImportException {
         Map<Export, Contribution> map = exportsToContributionCache.get(imprt.getType());
         if (map == null) {
             return null;
