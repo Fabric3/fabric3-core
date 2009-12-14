@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ import java.util.List;
 public class CompositeReference extends ReferenceDefinition {
     private static final long serialVersionUID = 5387987439912912994L;
 
-    private final List<URI> promotedUris;
+    private List<URI> promotedUris;
 
     /**
      * Construct a composite reference.
@@ -64,7 +65,11 @@ public class CompositeReference extends ReferenceDefinition {
      */
     public CompositeReference(String name, List<URI> promotedUris) {
         super(name, null);
-        this.promotedUris = promotedUris;
+        if (promotedUris != null) {
+            this.promotedUris = promotedUris;
+        } else {
+            this.promotedUris = new ArrayList<URI>();
+        }
     }
 
     /**
