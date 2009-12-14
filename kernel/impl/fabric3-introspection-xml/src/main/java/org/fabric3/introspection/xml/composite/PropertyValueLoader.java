@@ -136,11 +136,13 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                 context.addError(failure);
                 return null;
             }
+            dataType = XSDConstants.PROPERTY_TYPE;
             // TODO support type attribute
-            throw new UnsupportedOperationException();
+//            throw new UnsupportedOperationException();
         } else if (element != null) {
             // TODO support element attribute
-            throw new UnsupportedOperationException();
+            dataType = XSDConstants.PROPERTY_TYPE;
+//            throw new UnsupportedOperationException();
         } else {
             dataType = XSDConstants.PROPERTY_TYPE;
         }
