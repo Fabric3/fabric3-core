@@ -45,8 +45,8 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -61,6 +61,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
@@ -70,7 +71,7 @@ import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -189,7 +190,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         handleReference(type, reader, childContext);
                         continue;
                     } else if (COMPONENT.equals(qname)) {
-                        handleComponent(type, reader, childContext);
+                        boolean valid = handleComponent(type, reader, childContext);
+                        if (!valid) {
+                            return type;
+                        }
                         continue;
                     } else if (WIRE.equals(qname)) {
                         handleWire(type, reader, childContext);
@@ -262,23 +266,28 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.add(wire);
     }
 
-    private void handleComponent(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private boolean handleComponent(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
             throws XMLStreamException, UnrecognizedElementException {
         ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, childContext);
         if (componentDefinition == null) {
             // errror encountered loading the componentDefinition
-            return;
+            return false;
         }
         String key = componentDefinition.getName();
         if (type.getComponents().containsKey(key)) {
             DuplicateComponentName failure = new DuplicateComponentName(key, reader);
             childContext.addError(failure);
-            return;
+            return false;
+        }
+        Implementation<?> implementation = componentDefinition.getImplementation();
+        if (implementation == null || implementation.getComponentType() == null) {
+            return false;
         }
         if (type.getAutowire() != Autowire.INHERITED && componentDefinition.getAutowire() == Autowire.INHERITED) {
             componentDefinition.setAutowire(type.getAutowire());
         }
         type.add(componentDefinition);
+        return true;
     }
 
     private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
@@ -373,7 +382,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 childContext.addError(error);
             } else {
                 String serviceName = promotedUri.getFragment();
-                AbstractComponentType<?,?,?,?> componentType = promoted.getComponentType();
+                AbstractComponentType<?, ?, ?, ?> componentType = promoted.getComponentType();
                 if (serviceName != null) {
                     if (!componentType.getServices().containsKey(serviceName)) {
                         PromotionNotFound error =
@@ -383,7 +392,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 } else {
                     Map<String, ? extends ServiceDefinition> services = componentType.getServices();
                     int numberOfServices = services.size();
-                    if (numberOfServices == 2){
+                    if (numberOfServices == 2) {
                         Iterator<? extends ServiceDefinition> iter = services.values().iterator();
                         ServiceDefinition one = iter.next();
                         ServiceDefinition two = iter.next();
@@ -393,7 +402,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                             childContext.addError(error);
                         }
 
-                    } else if (numberOfServices > 2){
+                    } else if (numberOfServices > 2) {
                         PromotionNotFound error =
                                 new PromotionNotFound("A promoted service must be specified for " + service.getName(), reader);
                         childContext.addError(error);
