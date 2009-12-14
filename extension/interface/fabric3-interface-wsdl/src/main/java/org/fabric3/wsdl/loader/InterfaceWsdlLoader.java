@@ -112,13 +112,13 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
             URI uri = new URI(portType);
             String namespace = UriHelper.getDefragmentedNameAsString(uri);
             String localExpression = uri.getFragment();
-            if (localExpression == null || !localExpression.startsWith("wsdl11.portType(") || !localExpression.endsWith(")")) {
-                InvalidValue error = new InvalidValue("A port type expression must be specified of the form: <namespace>#wsdl11.portType(portType)"
+            if (localExpression == null || !localExpression.toLowerCase().startsWith("wsdl.porttype(") || !localExpression.endsWith(")")) {
+                InvalidValue error = new InvalidValue("A port type expression must be specified of the form <namespace>#wsdl.portType(portType): "
                         + portType, reader);
                 context.addError(error);
                 return null;
             }
-            String localPart = localExpression.substring(16, localExpression.length() - 1);
+            String localPart = localExpression.substring(14, localExpression.length() - 1);
             return new QName(namespace, localPart);
         } catch (URISyntaxException e) {
             InvalidValue error = new InvalidValue("Invalid port type identifier: " + portType, reader, e);

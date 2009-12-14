@@ -44,6 +44,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
@@ -216,7 +217,9 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                 Schema schema = (Schema) obj;
                 Element element = schema.getElement();
                 collection.setBaseUri(schema.getDocumentBaseURI());
-                collection.read(element);
+                // create a synthetic id to work around issue where XmlSchema cannot handle elements with the same targetnamespace
+                String syntheticId = UUID.randomUUID().toString();
+                collection.read(element, syntheticId);
             }
 
         }

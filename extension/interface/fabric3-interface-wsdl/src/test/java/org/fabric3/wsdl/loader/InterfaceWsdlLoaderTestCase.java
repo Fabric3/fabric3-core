@@ -54,7 +54,7 @@ public class InterfaceWsdlLoaderTestCase extends TestCase {
         InterfaceWsdlLoader loader = new InterfaceWsdlLoader(null);
         XMLStreamReader reader = EasyMock.createNiceMock(XMLStreamReader.class);
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl11.portType(StockQuote)", reader, context);
+        QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl.portType(StockQuote)", reader, context);
         assertEquals("http://www.stockquote.org/StockQuoteService", name.getNamespaceURI());
         assertEquals("StockQuote", name.getLocalPart());
     }
