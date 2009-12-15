@@ -67,6 +67,7 @@ public class WireLoaderTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
         EasyMock.expect(reader.getAttributeValue(null, "source")).andReturn("source");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target");
+        EasyMock.expect(reader.getAttributeValue(null, "replace")).andReturn("false");
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         WireDefinition definition = wireLoader.load(reader, null);
@@ -79,6 +80,7 @@ public class WireLoaderTestCase extends TestCase {
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
         EasyMock.expect(reader.getAttributeValue(null, "source")).andReturn("source/s");
         EasyMock.expect(reader.getAttributeValue(null, "target")).andReturn("target/t");
+        EasyMock.expect(reader.getAttributeValue(null, "replace")).andReturn("false");
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);
         WireDefinition definition = wireLoader.load(reader, null);

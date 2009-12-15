@@ -162,9 +162,18 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                 if (type instanceof ServiceContract) {
                     reference.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
-                        reference.addCallbackBinding((BindingDefinition) type);
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
+                        }
+                        reference.addCallbackBinding(binding);
                     } else {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
+                        }
                         reference.addBinding((BindingDefinition) type);
                     }
                 } else if (type instanceof OperationDefinition) {

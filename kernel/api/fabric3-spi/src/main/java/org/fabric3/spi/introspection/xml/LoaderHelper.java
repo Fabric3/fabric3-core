@@ -84,8 +84,7 @@ public interface LoaderHelper {
     Document loadValue(XMLStreamReader reader) throws XMLStreamException;
 
     /**
-     * Loads policy sets and intents defined against bindings, implementations, services, references and components. Errors will be collated in the
-     * IntrospectionContext.
+     * Loads policy sets and intents. Errors will be collated in the IntrospectionContext.
      *
      * @param policyAware Element against which policy sets and intents are declared.
      * @param reader      XML stream reader from where the attributes are read.

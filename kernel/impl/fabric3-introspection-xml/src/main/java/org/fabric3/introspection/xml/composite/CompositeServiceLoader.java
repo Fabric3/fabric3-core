@@ -52,11 +52,12 @@ import javax.xml.stream.XMLStreamReader;
 import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.OperationDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeService;
+import org.fabric3.model.type.contract.OperationDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -119,10 +120,19 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
                 if (type instanceof ServiceContract) {
                     def.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
-                        def.addCallbackBinding((BindingDefinition) type);
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                        }
+                        def.addCallbackBinding(binding);
                     } else {
-                        def.addBinding((BindingDefinition) type);
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                        }
+                        def.addBinding(binding);
                     }
                 } else if (type instanceof OperationDefinition) {
                     def.addOperation((OperationDefinition) type);

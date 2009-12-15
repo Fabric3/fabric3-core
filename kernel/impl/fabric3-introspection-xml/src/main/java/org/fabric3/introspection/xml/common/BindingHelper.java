@@ -34,45 +34,41 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.model.type.component;
+*/
+package org.fabric3.introspection.xml.common;
 
-import java.net.URI;
+import java.util.List;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Represents a wire specified in a composite file.
- *
  * @version $Rev$ $Date$
  */
-public class WireDefinition extends ModelObject {
-    private static final long serialVersionUID = -2310313135279527903L;
-    private URI source;
-    private URI target;
-    private boolean replace;
+public class BindingHelper {
 
-    public WireDefinition(URI source, URI target, boolean replace) {
-        this.source = source;
-        this.target = target;
-        this.replace = replace;
-    }
-
-    public URI getSource() {
-        return source;
-    }
-
-    public URI getTarget() {
-        return target;
-    }
-
-    public boolean isReplace() {
-        return replace;
+    /**
+     * Configures the default binding name if no name is specified in SCDL.
+     *
+     * @param binding     the binding
+     * @param defaultName the default name to use
+     * @param bindings    the existing configured bindings parsed prior to this one
+     * @param reader      the stream reader
+     * @param context     the introspection context
+     */
+    public static void configureName(BindingDefinition binding,
+                                     String defaultName,
+                                     List<BindingDefinition> bindings,
+                                     XMLStreamReader reader,
+                                     IntrospectionContext context) {
+        for (BindingDefinition entry : bindings) {
+            if (defaultName.equals(entry.getName())) {
+                BindingNameNotConfigured error = new BindingNameNotConfigured(defaultName, reader);
+                context.addError(error);
+                return;
+            }
+        }
+        binding.setName(defaultName);
     }
 }

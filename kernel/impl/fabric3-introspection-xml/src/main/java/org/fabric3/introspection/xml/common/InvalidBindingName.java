@@ -35,19 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.test;
+package org.fabric3.introspection.xml.common;
 
-import java.net.URI;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
+ * A validation failure indicating an attempt to configure an invalid binding name.
+ *
  * @version $Rev$ $Date$
  */
-public class TestBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 2529090404017606258L;
+public class InvalidBindingName extends XmlValidationFailure {
+    private String bindingName;
 
-    public TestBindingDefinition(String name, URI targetUri) {
-        super(name, targetUri, TestBindingLoader.BINDING_QNAME);
+    public InvalidBindingName(String message, String bindingName, XMLStreamReader reader) {
+        super(message, reader);
+        this.bindingName = bindingName;
+    }
+
+    public String getBindingName() {
+        return bindingName;
     }
 }

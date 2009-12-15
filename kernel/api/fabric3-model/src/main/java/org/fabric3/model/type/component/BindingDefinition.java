@@ -61,12 +61,40 @@ public abstract class BindingDefinition extends AbstractPolicyAware implements C
 
     private URI targetUri;
     private QName type;
+    private String name;
 
     private Set<String> requiredCapabilities = new HashSet<String>();
 
+    /**
+     * Constructor for a binding using the default binding name.
+     *
+     * @param targetUri the target URI which may be null if not specified
+     * @param type      the binding type
+     */
     public BindingDefinition(URI targetUri, QName type) {
         this.targetUri = targetUri;
         this.type = type;
+    }
+
+    /**
+     * Constructor for a binding using a configured binding name.
+     *
+     * @param name      the binding name
+     * @param targetUri the target URI which may be null if not specified
+     * @param type      the binding type
+     */
+    public BindingDefinition(String name, URI targetUri, QName type) {
+        this.name = name;
+        this.targetUri = targetUri;
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public URI getTargetUri() {

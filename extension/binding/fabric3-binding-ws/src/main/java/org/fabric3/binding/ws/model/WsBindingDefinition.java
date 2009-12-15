@@ -67,11 +67,12 @@ public class WsBindingDefinition extends BindingDefinition {
     /**
      * Constructor
      *
+     * @param name         the binding name. May be null.
      * @param targetUri    the target binding URI. May be null.
      * @param wsdlLocation the WSDL location. May be null.
      * @param wsdlElement  the SCA WSDL element expression. May be null.
      */
-    public WsBindingDefinition(URI targetUri, String wsdlLocation, String wsdlElement) {
+    public WsBindingDefinition(String name, URI targetUri, String wsdlLocation, String wsdlElement) {
         super(targetUri, BINDING_QNAME);
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;

@@ -121,8 +121,16 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                        }
                         def.addCallbackBinding(binding);
                     } else {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                        }
                         def.addBinding(binding);
                     }
                 } else if (type instanceof OperationDefinition) {

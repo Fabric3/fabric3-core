@@ -56,11 +56,12 @@ import javax.xml.stream.XMLStreamReader;
 import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -145,10 +146,19 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                 if (type instanceof ServiceContract) {
                     referenceDefinition.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
-                        referenceDefinition.addCallbackBinding((BindingDefinition) type);
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, referenceDefinition.getCallbackBindings(), reader, context);
+                        }
+                        referenceDefinition.addCallbackBinding(binding);
                     } else {
-                        referenceDefinition.addBinding((BindingDefinition) type);
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, referenceDefinition.getBindings(), reader, context);
+                        }
+                        referenceDefinition.addBinding(binding);
 
                     }
                 } else if (type instanceof OperationDefinition) {

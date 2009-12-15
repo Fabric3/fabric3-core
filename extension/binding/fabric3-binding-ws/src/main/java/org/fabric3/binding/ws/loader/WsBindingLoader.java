@@ -76,6 +76,7 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
         ATTRIBUTES.put("wsdlLocation", "wsdlLocation");
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
+        ATTRIBUTES.put("name", "name");
     }
 
     private final LoaderHelper loaderHelper;
@@ -98,11 +99,12 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
             uri = reader.getAttributeValue(null, "uri");
             String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
             String wsdlLocation = reader.getAttributeValue("http://www.w3.org/2004/08/wsdl-instance", "wsdlLocation");
-
+            String bindingName = reader.getAttributeValue(null, "name");
             if (uri == null) {
-                binding = new WsBindingDefinition(null, wsdlLocation, wsdlElement);
+                binding = new WsBindingDefinition(bindingName, null, wsdlLocation, wsdlElement);
             } else {
-                binding = new WsBindingDefinition(new URI(uri), wsdlLocation, wsdlElement);
+                URI targetUri = new URI(uri);
+                binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement);
             }
             loaderHelper.loadPolicySetsAndIntents(binding, reader, introspectionContext);
 

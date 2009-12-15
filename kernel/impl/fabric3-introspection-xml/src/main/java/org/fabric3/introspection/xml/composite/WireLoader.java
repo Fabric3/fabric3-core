@@ -73,17 +73,18 @@ public class WireLoader implements TypeLoader<WireDefinition> {
 
         String source = reader.getAttributeValue(null, "source");
         String target = reader.getAttributeValue(null, "target");
+        boolean replace = Boolean.parseBoolean(reader.getAttributeValue(null, "replace"));
         LoaderUtil.skipToEndElement(reader);
 
         URI sourceURI = helper.getURI(source);
         URI targetURI = helper.getURI(target);
-        return new WireDefinition(sourceURI, targetURI);
+        return new WireDefinition(sourceURI, targetURI, replace);
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"source".equals(name) && !"target".equals(name) && !"requires".equals(name)) {
+            if (!"source".equals(name) && !"target".equals(name) && !"requires".equals(name) && !"replace".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

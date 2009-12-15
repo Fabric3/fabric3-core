@@ -72,10 +72,10 @@ public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
                 MissingAttribute failure = new MissingAttribute("The uri attribute is not specified", reader);
                 context.addError(failure);
                 return null;
-            } else {
-                URI targetUri = new URI(uri);
-                definition = new TestBindingDefinition(targetUri);
             }
+            URI targetUri = new URI(uri);
+            String name = reader.getAttributeValue(null, "name");
+            definition = new TestBindingDefinition(name, targetUri);
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The binding URI is not valid: " + uri, reader);
             context.addError(failure);
