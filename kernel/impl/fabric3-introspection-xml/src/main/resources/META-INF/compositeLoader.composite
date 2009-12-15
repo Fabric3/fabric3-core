@@ -17,7 +17,6 @@
            xmlns:f3-impl="urn:fabric3.org:implementation"
            name="CompositeLoaderBootComposite" targetNamespace="urn:maven:org.codehaus.fabric3:boot">
 
-    <!-- Common loader implementations -->
     <component name="OperationLoader" f3-core:key="sca:operation">
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.OperationLoader"/>
     </component>
@@ -34,7 +33,6 @@
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.JavaInterfaceLoader"/>
     </component>
 
-    <!-- Composite loader implementations -->
     <component name="PropertyValueLoader">
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.PropertyValueLoader"/>
     </component>
@@ -63,7 +61,6 @@
         <reference name="property" target="PropertyLoader"/>
     </component>
 
-    <!-- Composite implementation type -->
     <component name="ImplementationCompositeLoader">
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.composite.ImplementationCompositeLoader"/>
     </component>
@@ -72,4 +69,9 @@
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.componentType.ComponentTypeLoader"/>
         <reference name="property" target="PropertyLoader"/>
     </component>
+
+    <component name="SCABindingLoader" f3-core:key="sca:binding.sca">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.binding.SCABindingLoader"/>
+    </component>
+
 </composite>
