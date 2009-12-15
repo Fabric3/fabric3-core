@@ -131,7 +131,7 @@ public class ServiceWireCommandGenerator implements CommandGenerator {
 
             for (LogicalBinding<?> binding : service.getBindings()) {
                 if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED || !incremental) {
-                    PhysicalWireDefinition pwd = wireGenerator.generateBoundServiceWire(service, binding, callbackUri);
+                    PhysicalWireDefinition pwd = wireGenerator.generateBoundServiceWire(binding, callbackUri);
                     if (LogicalState.MARKED == component.getState()) {
                         DetachWireCommand detachWireCommand = new DetachWireCommand();
                         detachWireCommand.setPhysicalWireDefinition(pwd);
@@ -149,7 +149,7 @@ public class ServiceWireCommandGenerator implements CommandGenerator {
                     && (callbackBinding.getState() == LogicalState.NEW
                     || callbackBinding.getState() == LogicalState.MARKED
                     || !incremental)) {
-                PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundCallbackServiceWire(service, callbackBinding);
+                PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundCallbackServiceWire(callbackBinding);
                 if (LogicalState.MARKED == component.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
                     detachWireCommand.setPhysicalWireDefinition(callbackPwd);

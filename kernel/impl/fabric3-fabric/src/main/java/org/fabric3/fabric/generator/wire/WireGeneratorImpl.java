@@ -213,8 +213,11 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalWireDefinition generateBoundServiceWire(LogicalService service, LogicalBinding<?> binding, URI callbackUri)
-            throws GenerationException {
+    public PhysicalWireDefinition generateBoundServiceWire(LogicalBinding<?> binding, URI callbackUri) throws GenerationException {
+        if (!(binding.getParent() instanceof LogicalService)) {
+            throw new AssertionError("Expected " + LogicalService.class.getName() + " as parent to binding");
+        }
+        LogicalService service = (LogicalService) binding.getParent();
 
         LogicalComponent<?> component = service.getParent();
         // use the service contract from the binding's parent service if it is defined, otherwise default to the one
@@ -264,8 +267,11 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public PhysicalWireDefinition generateBoundReferenceWire(LogicalReference reference, LogicalBinding<?> binding) throws GenerationException {
-
+    public PhysicalWireDefinition generateBoundReferenceWire(LogicalBinding<?> binding) throws GenerationException {
+        if (!(binding.getParent() instanceof LogicalReference)) {
+            throw new AssertionError("Expected " + LogicalReference.class.getName() + " as parent to binding");
+        }
+        LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent component = reference.getParent();
         ReferenceDefinition referenceDefinition = reference.getDefinition();
         ServiceContract contract = referenceDefinition.getServiceContract();
@@ -300,8 +306,12 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireDefinition generateBoundCallbackReferenceWire(LogicalReference reference, LogicalBinding<?> binding)
-            throws GenerationException {
+    public PhysicalWireDefinition generateBoundCallbackReferenceWire(LogicalBinding<?> binding) throws GenerationException {
+        if (!(binding.getParent() instanceof LogicalReference)) {
+            throw new AssertionError("Expected " + LogicalReference.class.getName() + " as parent to binding");
+        }
+        LogicalReference reference = (LogicalReference) binding.getParent();
+
         LogicalComponent<?> component = reference.getParent();
         ReferenceDefinition definition = reference.getDefinition();
         ServiceContract contract = definition.getServiceContract();
@@ -331,7 +341,12 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalWireDefinition generateBoundCallbackServiceWire(LogicalService service, LogicalBinding<?> binding) throws GenerationException {
+    public PhysicalWireDefinition generateBoundCallbackServiceWire(LogicalBinding<?> binding) throws GenerationException {
+        if (!(binding.getParent() instanceof LogicalService)) {
+            throw new AssertionError("Expected " + LogicalService.class.getName() + " as parent to binding");
+        }
+
+        LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getParent();
 
         ServiceContract contract = service.getDefinition().getServiceContract();

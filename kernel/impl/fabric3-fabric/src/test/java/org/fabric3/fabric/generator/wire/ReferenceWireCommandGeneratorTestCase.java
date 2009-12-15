@@ -80,7 +80,7 @@ public class ReferenceWireCommandGeneratorTestCase extends TestCase {
         LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
         reference.addBinding(binding);
 
-        wireGenerator.generateBoundReferenceWire(reference, binding);
+        wireGenerator.generateBoundReferenceWire(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -111,7 +111,7 @@ public class ReferenceWireCommandGeneratorTestCase extends TestCase {
         binding.setState(LogicalState.MARKED);
         reference.addBinding(binding);
 
-        wireGenerator.generateBoundReferenceWire(reference, binding);
+        wireGenerator.generateBoundReferenceWire(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -146,9 +146,9 @@ public class ReferenceWireCommandGeneratorTestCase extends TestCase {
         markedBinding.setState(LogicalState.MARKED);
         reference.addBinding(markedBinding);
 
-        wireGenerator.generateBoundReferenceWire(reference, binding);
+        wireGenerator.generateBoundReferenceWire(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
-        wireGenerator.generateBoundReferenceWire(reference, markedBinding);
+        wireGenerator.generateBoundReferenceWire(markedBinding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
 
         EasyMock.replay(wireGenerator);
@@ -206,7 +206,7 @@ public class ReferenceWireCommandGeneratorTestCase extends TestCase {
         binding.setState(LogicalState.PROVISIONED);
         reference.addBinding(binding);
 
-        wireGenerator.generateBoundReferenceWire(reference, binding);
+        wireGenerator.generateBoundReferenceWire(binding);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
         EasyMock.replay(wireGenerator);
 

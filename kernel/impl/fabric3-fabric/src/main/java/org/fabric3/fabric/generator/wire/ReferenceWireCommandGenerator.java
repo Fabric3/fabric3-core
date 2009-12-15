@@ -120,9 +120,9 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalReference, logicalBinding);
+                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalReference, logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalBinding);
             }
             DetachWireCommand wireCommand = new DetachWireCommand();
             wireCommand.setPhysicalWireDefinition(wireDefinition);
@@ -131,9 +131,9 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
         } else if (LogicalState.NEW == logicalBinding.getState() || !incremental || reinjection) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalReference, logicalBinding);
+                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalReference, logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalBinding);
             }
             AttachWireCommand wireCommand = new AttachWireCommand();
             wireCommand.setPhysicalWireDefinition(wireDefinition);
