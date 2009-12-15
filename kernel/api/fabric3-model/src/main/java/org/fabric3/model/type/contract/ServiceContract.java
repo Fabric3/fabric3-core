@@ -46,14 +46,14 @@ package org.fabric3.model.type.contract;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * Base class representing service contract information
  *
  * @version $Rev$ $Date$
  */
-public abstract class ServiceContract extends ModelObject {
+public abstract class ServiceContract extends AbstractPolicyAware {
     private static final long serialVersionUID = 7930416351019873131L;
     protected boolean conversational;
     protected boolean remotable;
