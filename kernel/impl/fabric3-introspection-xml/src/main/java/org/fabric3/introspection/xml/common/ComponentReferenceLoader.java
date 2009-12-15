@@ -170,8 +170,8 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                 } else if (type instanceof OperationDefinition) {
                     reference.addOperation((OperationDefinition) type);
                 } else if (type == null) {
-                    // error loading, the element, ignore as an error will have been reported
-                    break;
+                    // no type, continue processing
+                    continue;
                 } else {
                     context.addError(new UnrecognizedElement(reader));
                     continue;
