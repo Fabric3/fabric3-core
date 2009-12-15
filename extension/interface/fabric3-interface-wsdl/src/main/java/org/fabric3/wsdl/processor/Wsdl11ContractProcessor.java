@@ -39,6 +39,7 @@ package org.fabric3.wsdl.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,8 @@ import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
 
@@ -188,17 +191,49 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     private XSDType createDataType(XmlSchemaType type, QName elementName) {
         QName name = type.getQName();
-        if (name == null){
+        if (name == null) {
             name = elementName;
         }
         if (type instanceof XmlSchemaComplexType) {
-            return new XSDComplexType(Object.class, name);
+            return introspectComplexType((XmlSchemaComplexType) type, name);
         } else if (type instanceof XmlSchemaSimpleType) {
             return new XSDSimpleType(Object.class, name);
         } else {
             // should not happen
             throw new AssertionError("Unknown Schema type" + type);
         }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private XSDType introspectComplexType(XmlSchemaComplexType type, QName name) {
+        if (type.getParticle() instanceof XmlSchemaSequence) {
+            XmlSchemaSequence sequence = (XmlSchemaSequence) type.getParticle();
+            List<XSDType> sequenceTypes = new ArrayList<XSDType>();
+            Iterator<XmlSchemaObject> iter = sequence.getItems().getIterator();
+            while (iter.hasNext()) {
+                XmlSchemaObject o = iter.next();
+                if (o instanceof XmlSchemaElement) {
+                    XmlSchemaElement schemaElement = (XmlSchemaElement) o;
+                    QName schemaTypeName = schemaElement.getSchemaTypeName();
+                    XmlSchemaType schemaType = schemaElement.getSchemaType();
+                    if (schemaType instanceof XmlSchemaComplexType) {
+                        sequenceTypes.add(new XSDComplexType(Object.class, schemaTypeName));
+                    } else if (schemaType instanceof XmlSchemaSimpleType) {
+                        sequenceTypes.add(new XSDSimpleType(Object.class, schemaTypeName));
+                    }
+                } else if (o instanceof XmlSchemaType) {
+                    XmlSchemaType schemaType = (XmlSchemaType) o;
+                    QName schemaTypeName = schemaType.getQName();
+                    if (schemaType instanceof XmlSchemaComplexType) {
+                        sequenceTypes.add(new XSDComplexType(Object.class, schemaTypeName));
+                    } else if (schemaType instanceof XmlSchemaSimpleType) {
+                        sequenceTypes.add(new XSDSimpleType(Object.class, schemaTypeName));
+                    }
+                }
+            }
+            return new XSDComplexType(Object.class, name, sequenceTypes);
+        }
+        return new XSDComplexType(Object.class, name);
     }
 
 }

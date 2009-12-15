@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.model.type.xsd;
 
+import java.util.List;
 import javax.xml.namespace.QName;
 
 /**
@@ -46,8 +47,31 @@ import javax.xml.namespace.QName;
  */
 public class XSDComplexType extends XSDType {
     private static final long serialVersionUID = 6325312345723762898L;
+    private boolean sequence;
+    private List<XSDType> sequenceTypes;
 
     public XSDComplexType(Class<?> physical, QName logical) {
         super(physical, logical);
+    }
+
+    /**
+     * Constructor for complex types that contain an XSD sequence.
+     *
+     * @param physical      the physical type
+     * @param logical       the logical type
+     * @param sequenceTypes a collection of sequence types
+     */
+    public XSDComplexType(Class<?> physical, QName logical, List<XSDType> sequenceTypes) {
+        super(physical, logical);
+        this.sequenceTypes = sequenceTypes;
+        sequence = true;
+    }
+
+    public boolean isSequence() {
+        return sequence;
+    }
+
+    public List<XSDType> getSequenceTypes() {
+        return sequenceTypes;
     }
 }

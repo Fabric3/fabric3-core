@@ -46,6 +46,8 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.model.type.xsd.XSDComplexType;
+import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  * An abstract ContractMatcher that uses XML Schema to match contracts specified with different type systems.
@@ -92,6 +94,16 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 DataType<?> inputType = inputTypes.get(i);
                 DataType<?> candidateInputType = candidateInputTypes.get(i);
                 if (inputType.getXsdType() == null || !inputType.getXsdType().equals(candidateInputType.getXsdType())) {
+                    if (inputType instanceof XSDComplexType) {
+                        if (checkSequence((XSDComplexType) inputType, candidateInputType)) {
+                            continue;
+                        }
+                    }
+                    if (candidateInputType instanceof XSDComplexType) {
+                        if (checkSequence((XSDComplexType) candidateInputType, inputType)) {
+                            continue;
+                        }
+                    }
                     if (reportErrors) {
                         return new MatchResult("Input types at position " + i + " do not match on operation " + name
                                 + ". Types were " + inputType.getXsdType() + " and " + candidateInputType.getXsdType());
@@ -119,6 +131,35 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
 //            }
         }
         return MATCH;
+    }
+
+    /**
+     * Attempts to match a XSD sequence against another type. This is triggered by JAXB when a sequence containing a single simple type is mapped to a
+     * single Java type as in:
+     * <p/>
+     * <pre>
+     * &lt;xs:complexType name="chair_kind"&gt;
+     *    &lt;xs:sequence&gt;
+     *    &lt;xs:element type="xs:boolean"/&gt;
+     *    &lt;/xs:sequence&gt;
+     * &lt;/xs:complexType&gt;
+     * </pre>
+     * <p/>
+     * which is mapped to <code>setHasArmRest(boolean value)</code>
+     *
+     * @param complexType the complex type
+     * @param type        the other type to compare
+     * @return true if the types match
+     */
+    private boolean checkSequence(XSDComplexType complexType, DataType<?> type) {
+        if (complexType.isSequence() && complexType.getSequenceTypes().size() == 1) {
+            XSDType sequenceType = complexType.getSequenceTypes().get(0);
+            if (sequenceType.getXsdType().equals(type.getXsdType())) {
+                // sequence type matches
+                return true;
+            }
+        }
+        return false;
     }
 
 }
