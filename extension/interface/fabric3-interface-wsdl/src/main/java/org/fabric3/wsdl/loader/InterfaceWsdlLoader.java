@@ -52,6 +52,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
 import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
@@ -68,15 +69,18 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 @EagerInit
 public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
     private MetaDataStore store;
+    private LoaderHelper helper;
 
-    public InterfaceWsdlLoader(@Reference MetaDataStore store) {
+    public InterfaceWsdlLoader(@Reference MetaDataStore store, @Reference LoaderHelper helper) {
         this.store = store;
+        this.helper = helper;
     }
 
     public WsdlServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         WsdlServiceContract wsdlContract = processInterface(reader, context);
         processCallbackInterface(reader, wsdlContract, context);
+        helper.loadPolicySetsAndIntents(wsdlContract, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return wsdlContract;
     }
@@ -149,7 +153,7 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"interface".equals(name) && !"callbackInterface".equals(name) && !"remotable".equals(name)) {
+            if (!"interface".equals(name) && !"callbackInterface".equals(name) && !"remotable".equals(name) && !"requires".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

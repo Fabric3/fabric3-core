@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -51,7 +52,8 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 public class InterfaceWsdlLoaderTestCase extends TestCase {
 
     public void testParseUri() throws Exception {
-        InterfaceWsdlLoader loader = new InterfaceWsdlLoader(null);
+        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
+        InterfaceWsdlLoader loader = new InterfaceWsdlLoader(null, helper);
         XMLStreamReader reader = EasyMock.createNiceMock(XMLStreamReader.class);
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl.portType(StockQuote)", reader, context);
@@ -59,8 +61,4 @@ public class InterfaceWsdlLoaderTestCase extends TestCase {
         assertEquals("StockQuote", name.getLocalPart());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 }
