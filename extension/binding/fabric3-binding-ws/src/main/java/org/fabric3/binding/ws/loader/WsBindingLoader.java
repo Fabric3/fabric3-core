@@ -59,7 +59,6 @@ import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
@@ -68,7 +67,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 @EagerInit
 public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
-
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
     static {
@@ -94,35 +92,29 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
     public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         validateAttributes(reader, introspectionContext);
 
-        WsBindingDefinition bd = null;
+        WsBindingDefinition binding = null;
         String uri = null;
         try {
-
             uri = reader.getAttributeValue(null, "uri");
             String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
             String wsdlLocation = reader.getAttributeValue("http://www.w3.org/2004/08/wsdl-instance", "wsdlLocation");
 
             if (uri == null) {
-                bd = new WsBindingDefinition(null, wsdlLocation, wsdlElement);
+                binding = new WsBindingDefinition(null, wsdlLocation, wsdlElement);
             } else {
-                bd = new WsBindingDefinition(new URI(uri), wsdlLocation, wsdlElement);
+                binding = new WsBindingDefinition(new URI(uri), wsdlLocation, wsdlElement);
             }
-            loaderHelper.loadPolicySetsAndIntents(bd, reader, introspectionContext);
+            loaderHelper.loadPolicySetsAndIntents(binding, reader, introspectionContext);
 
             //Load optional config parameters
-            loadConfig(bd, reader);
+            loadConfig(binding, reader);
 
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
             introspectionContext.addError(failure);
         }
 
-        if (bd != null && bd.getTargetUri() == null && bd.getWsdlElement() == null) {
-            MissingAttribute error =
-                    new MissingAttribute("Either a uri or wsdlElement attribute must be specified on the web service binding", reader);
-            introspectionContext.addError(error);
-        }
-        return bd;
+        return binding;
     }
 
     private void loadConfig(WsBindingDefinition bd, XMLStreamReader reader) throws XMLStreamException {
