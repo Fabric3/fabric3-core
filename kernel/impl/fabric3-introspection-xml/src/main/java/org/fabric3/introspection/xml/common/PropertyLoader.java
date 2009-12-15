@@ -65,6 +65,7 @@ public class PropertyLoader implements TypeLoader<Property> {
     private static final String MANY = "many";
     private static final String MUST_SUPPLY = "mustSupply";
     private static final String TYPE = "type";
+    private static final String ELEMENT = "element";
     private static final String SOURCE = "source";
 
     private final LoaderHelper helper;
@@ -91,7 +92,8 @@ public class PropertyLoader implements TypeLoader<Property> {
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!NAME.equals(name) && !MANY.equals(name) && !MUST_SUPPLY.equals(name) && !TYPE.equals(name) && !SOURCE.equals(name)) {
+            if (!NAME.equals(name) && !MANY.equals(name) && !MUST_SUPPLY.equals(name) && !TYPE.equals(name) && !SOURCE.equals(name)
+                    && !ELEMENT.equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
