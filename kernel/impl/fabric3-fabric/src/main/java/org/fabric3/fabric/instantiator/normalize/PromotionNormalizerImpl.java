@@ -62,7 +62,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
     public void normalize(LogicalComponent<?> component) {
         normalizeServiceBindings(component);
-        normalizeReferenceBindings(component);
+        normalizeReferenceBindingsAndWires(component);
     }
 
     private void normalizeServiceBindings(LogicalComponent<?> component) {
@@ -127,7 +127,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         return bindings;
     }
 
-    private void normalizeReferenceBindings(LogicalComponent<?> component) {
+    private void normalizeReferenceBindingsAndWires(LogicalComponent<?> component) {
         LogicalComponent<CompositeImplementation> parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
             URI referenceUri = reference.getUri();
