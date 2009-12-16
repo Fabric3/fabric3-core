@@ -46,7 +46,6 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
@@ -100,7 +99,7 @@ public class LogicalReference extends Bindable {
      *
      * @return the wires for the reference
      */
-    public Set<LogicalWire> getWires() {
+    public List<LogicalWire> getWires() {
         return getComposite().getWires(this);
     }
 
@@ -182,12 +181,9 @@ public class LogicalReference extends Bindable {
 
 
     private LogicalCompositeComponent getComposite() {
-
         LogicalComponent<?> parent = getParent();
         LogicalCompositeComponent composite = parent.getParent();
-
         return composite != null ? composite : (LogicalCompositeComponent) parent;
-
     }
 
 }

@@ -39,10 +39,8 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
@@ -224,7 +222,7 @@ public class CompositeComponentInstantiator extends AbstractComponentInstantiato
                     }
                     // xcv potentially remove if LogicalWires added to LogicalReference
                     LogicalCompositeComponent grandParent = parent.getParent();
-                    Set<LogicalWire> wires = new LinkedHashSet<LogicalWire>();
+                    List<LogicalWire> wires = new ArrayList<LogicalWire>();
                     if (null != grandParent) {
                         for (URI targetUri : targets) {
                             LogicalWire wire = new LogicalWire(grandParent, logicalReference, targetUri);

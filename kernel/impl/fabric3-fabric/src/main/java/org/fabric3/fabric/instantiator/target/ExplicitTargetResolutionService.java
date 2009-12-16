@@ -39,9 +39,7 @@ package org.fabric3.fabric.instantiator.target;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
@@ -107,7 +105,7 @@ public class ExplicitTargetResolutionService implements TargetResolutionService 
         // create the logical wires
         LogicalComponent parent = logicalReference.getParent();
         LogicalCompositeComponent grandParent = (LogicalCompositeComponent) parent.getParent();
-        Set<LogicalWire> wires = new LinkedHashSet<LogicalWire>();
+        List<LogicalWire> wires = new ArrayList<LogicalWire>();
         if (null != grandParent) {
             for (LogicalService targetService : targets) {
                 URI uri = targetService.getUri();

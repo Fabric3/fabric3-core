@@ -38,11 +38,11 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -53,7 +53,7 @@ import org.fabric3.model.type.component.CompositeImplementation;
 public class LogicalCompositeComponent extends LogicalComponent<CompositeImplementation> {
     private static final long serialVersionUID = 6661201121307925462L;
 
-    private final Map<LogicalReference, Set<LogicalWire>> wires = new HashMap<LogicalReference, Set<LogicalWire>>();
+    private final Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
     private final Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
 
     /**
@@ -74,9 +74,9 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param logicalWire      Wire to be added to this composite component.
      */
     public final void addWire(LogicalReference logicalReference, LogicalWire logicalWire) {
-        Set<LogicalWire> logicalWires = wires.get(logicalReference);
+        List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
-            logicalWires = new LinkedHashSet<LogicalWire>();
+            logicalWires = new ArrayList<LogicalWire>();
             wires.put(logicalReference, logicalWires);
         }
         logicalWires.add(logicalWire);
@@ -86,9 +86,9 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * Adds a set of wires to this composite component.
      *
      * @param logicalReference the source for the wires
-     * @param logicalWires     the set of wires
+     * @param logicalWires     the list of wires
      */
-    public final void overrideWires(LogicalReference logicalReference, Set<LogicalWire> logicalWires) {
+    public final void overrideWires(LogicalReference logicalReference, List<LogicalWire> logicalWires) {
         wires.put(logicalReference, logicalWires);
     }
 
@@ -107,15 +107,13 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param logicalReference Logical reference that sources the wire.
      * @return Resolved targets for the reference.
      */
-    public final Set<LogicalWire> getWires(LogicalReference logicalReference) {
-
-        Set<LogicalWire> logicalWires = wires.get(logicalReference);
+    public final List<LogicalWire> getWires(LogicalReference logicalReference) {
+        List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
-            logicalWires = new LinkedHashSet<LogicalWire>();
+            logicalWires = new ArrayList<LogicalWire>();
             wires.put(logicalReference, logicalWires);
         }
         return logicalWires;
-
     }
 
     /**
@@ -123,7 +121,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      *
      * @return a map of wires  keyed by logical reference contained in this composite
      */
-    public Map<LogicalReference, Set<LogicalWire>> getWires() {
+    public Map<LogicalReference, List<LogicalWire>> getWires() {
         return wires;
     }
 
@@ -164,6 +162,11 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
         components.put(component.getUri(), component);
     }
 
+    /**
+     * Sets the component state.
+     *
+     * @param state the instance state
+     */
     @Override
     public void setState(LogicalState state) {
         super.setState(state);

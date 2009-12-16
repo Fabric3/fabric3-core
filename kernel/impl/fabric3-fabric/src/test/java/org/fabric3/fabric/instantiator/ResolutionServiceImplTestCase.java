@@ -82,7 +82,7 @@ public class ResolutionServiceImplTestCase extends TestCase {
         InstantiationContext context = new InstantiationContext(domain);
         resolutionService.resolve(composite, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
-        assertEquals(TARGET_URI, source.getReference("ref").getWires().iterator().next().getTargetUri());
+        assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
 
     public void testAutowireAtomicToAtomicRequiresSuperInterface() throws Exception {
@@ -91,7 +91,7 @@ public class ResolutionServiceImplTestCase extends TestCase {
         resolutionService.resolve(composite, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
         resolutionService.resolve(composite, context);
-        assertEquals(TARGET_URI, source.getReference("ref").getWires().iterator().next().getTargetUri());
+        assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
 
     public void testAutowireAtomicToAtomicRequiresSubInterface() throws Exception {
@@ -116,7 +116,7 @@ public class ResolutionServiceImplTestCase extends TestCase {
         InstantiationContext context = new InstantiationContext(domain);
         resolutionService.resolve(parent, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
-        assertEquals(TARGET_URI, source.getReference("ref").getWires().iterator().next().getTargetUri());
+        assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
 
     public void testAutowireIncludeInComposite() throws Exception {

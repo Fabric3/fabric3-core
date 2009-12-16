@@ -38,7 +38,7 @@
 package org.fabric3.fabric.collector;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -90,8 +90,8 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
-        for (Set<LogicalWire> set : composite.getWires().values()) {
-            for (LogicalWire wire : set) {
+        for (List<LogicalWire> wires : composite.getWires().values()) {
+            for (LogicalWire wire : wires) {
                 if (LogicalState.NEW == wire.getState()) {
                     wire.setState(LogicalState.PROVISIONED);
                 }
@@ -136,8 +136,8 @@ public class CollectorImpl implements Collector {
                 }
                 // recurse through wires and mark any that were part of the deployable being undeployed
                 // this can occur when a wire is configured in a deployable other than its source component
-                for (Set<LogicalWire> set : composite.getWires().values()) {
-                    for (LogicalWire wire : set) {
+                for (List<LogicalWire> wires : composite.getWires().values()) {
+                    for (LogicalWire wire : wires) {
                         if (LogicalState.MARKED == wire.getState()) {
                             continue;
                         }
@@ -170,8 +170,8 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
-        for (Set<LogicalWire> set : composite.getWires().values()) {
-            for (Iterator<LogicalWire> it = set.iterator(); it.hasNext();) {
+        for (List<LogicalWire> wires : composite.getWires().values()) {
+            for (Iterator<LogicalWire> it = wires.iterator(); it.hasNext();) {
                 LogicalWire wire = it.next();
                 if (LogicalState.MARKED == wire.getState()) {
                     it.remove();

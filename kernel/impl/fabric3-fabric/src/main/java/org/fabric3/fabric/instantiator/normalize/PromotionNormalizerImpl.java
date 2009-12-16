@@ -39,9 +39,7 @@ package org.fabric3.fabric.instantiator.normalize;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
@@ -96,8 +94,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 // no service specified
                 if (targetUri.equals(UriHelper.getDefragmentedName(serviceUri))) {
                     if (parent.getParent() != null) {
-                        List<LogicalBinding<?>> list =
-                                recurseServicePromotionPath(parent.getParent(), service.getUri());
+                        List<LogicalBinding<?>> list = recurseServicePromotionPath(parent.getParent(), service.getUri());
                         if (list.isEmpty()) {
                             // no bindings were overridden
                             bindings.addAll(service.getBindings());
@@ -140,7 +137,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             }
             List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
             List<LogicalWire> wiresFromPromotedReferences = new ArrayList<LogicalWire>();
-            Set<LogicalWire> wires = new LinkedHashSet<LogicalWire>();
+            List<LogicalWire> wires = new ArrayList<LogicalWire>();
             for (LogicalReference promoted : references) {
                 bindings.addAll(promoted.getBindings());
                 for (LogicalWire logicalWire : promoted.getWires()) {
