@@ -57,7 +57,6 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.GeneratorNotFoundException;
 import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -220,13 +219,10 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = (LogicalService) binding.getParent();
 
         LogicalComponent<?> component = service.getParent();
+
         // use the service contract from the binding's parent service if it is defined, otherwise default to the one
         // defined on the original component
-        Bindable bindable = binding.getParent();
-        assert bindable instanceof LogicalService;
-        LogicalService logicalService = (LogicalService) bindable;
-
-        ServiceContract contract = logicalService.getDefinition().getServiceContract();
+        ServiceContract contract = service.getDefinition().getServiceContract();
         if (contract == null) {
             contract = service.getDefinition().getServiceContract();
         }
@@ -234,7 +230,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<RemoteBindingDefinition> targetBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
 
-        PolicyResult policyResult = resolvePolicies(logicalService.getOperations(), binding, targetBinding, null, component);
+        PolicyResult policyResult = resolvePolicies(service.getOperations(), binding, targetBinding, null, component);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -254,7 +250,7 @@ public class WireGeneratorImpl implements WireGenerator {
         targetDefinition.setClassLoaderId(targetService.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallbackUri(callbackUri);
         BindingGenerator sourceGenerator = getGenerator(binding);
-        List<LogicalOperation> logicalOperations = logicalService.getOperations();
+        List<LogicalOperation> logicalOperations = service.getOperations();
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateWireSource(binding, contract, logicalOperations, sourcePolicy);
         sourceDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 

@@ -67,10 +67,20 @@ public abstract class Implementation<T extends AbstractComponentType<?, ?, ?, ?>
         this.componentType = componentType;
     }
 
+    /**
+     * Returns the component type.
+     *
+     * @return the component type
+     */
     public T getComponentType() {
         return componentType;
     }
 
+    /**
+     * Sets the component type.
+     *
+     * @param componentType the component type
+     */
     public void setComponentType(T componentType) {
         this.componentType = componentType;
     }
@@ -86,28 +96,27 @@ public abstract class Implementation<T extends AbstractComponentType<?, ?, ?, ?>
     }
 
     /**
-     * Returns true if this implementation is a composite.
-     * <p/>
-     * This indicates whether this implementation can have children in the logical assembly.
+     * Returns the runtime capabilities required to host this type.
      *
-     * @return true if this implementation is a composite
+     * @return the runtime capabilities required to host this type
      */
-    public boolean isComposite() {
-        return false;
-    }
-
     public Set<String> getRequiredCapabilities() {
         return requiredCapabilities;
     }
 
+    /**
+     * Sets the runtime capabilities required to host this type.
+     *
+     * @param capability the runtime capabilities required to host this type
+     */
     public void addRequiredCapability(String capability) {
         requiredCapabilities.add(capability);
     }
 
     /**
-     * Returns the SCDL XML element corresponding to this type.
+     * Returns the XML element corresponding to this type.
      *
-     * @return the SCDL XML element corresponding to this type
+     * @return the XML element corresponding to this type
      */
     public abstract QName getType();
 

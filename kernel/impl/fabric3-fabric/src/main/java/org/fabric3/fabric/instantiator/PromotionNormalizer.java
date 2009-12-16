@@ -40,7 +40,7 @@ package org.fabric3.fabric.instantiator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Merges binding and other metadata on promoted services and references down the to the leaf component they are initially defined on.
+ * Merges binding and wiring on promoted services and references down the to the leaf component they are initially defined on.
  *
  * @version $Rev$ $Date$
  */

@@ -43,7 +43,7 @@ import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Implementations instantiate logical components within a domain.
+ * Instantiates logical components within a domain which can be used to generate deployment commands.
  *
  * @version $Rev$ $Date$
  */

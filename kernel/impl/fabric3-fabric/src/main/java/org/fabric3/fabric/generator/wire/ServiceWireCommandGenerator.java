@@ -108,8 +108,7 @@ public class ServiceWireCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command, boolean incremental)
-            throws GenerationException {
+    private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command, boolean incremental) throws GenerationException {
         for (LogicalService service : component.getServices()) {
             List<LogicalBinding<?>> bindings = service.getBindings();
             if (bindings.isEmpty()) {

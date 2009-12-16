@@ -186,7 +186,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                             ComponentDefinition<?> definition,
                                             InstantiationContext context) {
 
-        if (definition.getImplementation().isComposite()) {
+        if (definition.getImplementation() instanceof CompositeImplementation) {
             ComponentDefinition<CompositeImplementation> componentDefinition = (ComponentDefinition<CompositeImplementation>) definition;
             return compositeComponentInstantiator.instantiate(parent, properties, componentDefinition, context);
         } else {
