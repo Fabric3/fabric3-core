@@ -150,7 +150,7 @@ public class LogicalReference extends Bindable {
     }
 
     /**
-     * Gets the explicit referenceassociated with this logical reference.
+     * Gets the explicit reference associated with this logical reference.
      *
      * @return Component reference if defined, otherwise null.
      */
