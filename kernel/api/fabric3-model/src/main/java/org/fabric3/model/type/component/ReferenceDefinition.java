@@ -81,7 +81,7 @@ public class ReferenceDefinition extends AbstractPolicyAware {
     /**
      * Constructor.
      *
-     * @param name            the refeence name
+     * @param name            the reference name
      * @param serviceContract the service contract required by this reference
      * @param multiplicity    the reference multiplicity
      */
