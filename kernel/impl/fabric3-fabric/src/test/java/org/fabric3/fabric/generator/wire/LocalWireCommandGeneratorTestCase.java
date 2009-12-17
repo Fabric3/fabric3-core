@@ -38,6 +38,7 @@
 package org.fabric3.fabric.generator.wire;
 
 import java.net.URI;
+import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -62,7 +63,7 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  * @version $Rev$ $Date$
  */
 public class LocalWireCommandGeneratorTestCase extends TestCase {
-
+    private static final QName DEPLOYABLE = new QName("foo", "bar");
     private LocalWireCommandGenerator generator;
     private WireGenerator wireGenerator;
     private LogicalComponentManager lcm;
@@ -78,7 +79,7 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
         JavaServiceContract contract = new JavaServiceContract();
         ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
-        LogicalService service = new LogicalService(URI.create("source#service"), serviceDefinition, target);
+        LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
 
@@ -89,12 +90,10 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
-        LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
+        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
         composite.addWire(reference, wire);
         composite.addComponent(source);
 
-        lcm.getComponent(targetUri);
-        EasyMock.expectLastCall().andReturn(target);
 
         wireGenerator.generateCollocatedWire(reference, service);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
@@ -120,7 +119,7 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         target.setState(LogicalState.PROVISIONED);
         JavaServiceContract contract = new JavaServiceContract();
         ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
-        LogicalService service = new LogicalService(URI.create("source#service"), serviceDefinition, target);
+        LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
 
@@ -132,13 +131,11 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
-        LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
+        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
         wire.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire);
         composite.addComponent(source);
 
-        lcm.getComponent(targetUri);
-        EasyMock.expectLastCall().andReturn(target);
 
         wireGenerator.generateCollocatedWire(reference, service);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
@@ -163,7 +160,7 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> target = new LogicalComponent(targetUri, targetDefinition, composite);
         JavaServiceContract contract = new JavaServiceContract();
         ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
-        LogicalService service = new LogicalService(URI.create("source#service"), serviceDefinition, target);
+        LogicalService service = new LogicalService(URI.create("target#service"), serviceDefinition, target);
         target.addService(service);
         composite.addComponent(target);
 
@@ -178,13 +175,10 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
-        LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
+        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
         wire.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire);
         composite.addComponent(source);
-
-        lcm.getComponent(targetUri);
-        EasyMock.expectLastCall().andReturn(target);
 
         wireGenerator.generateCollocatedWire(reference, service);
         EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
@@ -234,18 +228,14 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
-        LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
+        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
         wire.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire);
-        LogicalWire wire2 = new LogicalWire(composite, reference, URI.create("target2#service"));
+        LogicalWire wire2 = new LogicalWire(composite, reference, service2, DEPLOYABLE);
         wire2.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire2);
         composite.addComponent(source);
 
-        lcm.getComponent(targetUri);
-        EasyMock.expectLastCall().andReturn(target).times(2);
-        lcm.getComponent(targetUri2);
-        EasyMock.expectLastCall().andReturn(target2);
         PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(null, null, null);
         EasyMock.expect(wireGenerator.generateCollocatedWire(reference, service)).andReturn(wireDefinition);
         EasyMock.expect(wireGenerator.generateCollocatedWire(reference, service2)).andReturn(wireDefinition);
@@ -267,7 +257,7 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         super.setUp();
         wireGenerator = EasyMock.createMock(WireGenerator.class);
         lcm = EasyMock.createMock(LogicalComponentManager.class);
-        generator = new LocalWireCommandGenerator(wireGenerator, null, lcm, 0);
+        generator = new LocalWireCommandGenerator(wireGenerator, 0);
     }
 
 }

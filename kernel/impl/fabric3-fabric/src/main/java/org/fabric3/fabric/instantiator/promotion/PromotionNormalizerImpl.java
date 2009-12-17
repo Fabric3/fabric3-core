@@ -100,8 +100,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             } else {
                 if (targetUri.equals(serviceUri)) {
                     if (parent.getParent() != null) {
-                        List<LogicalBinding<?>> list =
-                                recurseServicePromotionPath(service.getUri(), parent.getParent());
+                        List<LogicalBinding<?>> list = recurseServicePromotionPath(service.getUri(), parent.getParent());
                         if (list.isEmpty()) {
                             // no bindings were overridden
                             bindings.addAll(service.getBindings());
@@ -141,9 +140,9 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             }
             if (!wiresFromPromotedReferences.isEmpty()) {
                 for (LogicalWire promotedWire : wiresFromPromotedReferences) {
-                    URI uri = promotedWire.getTargetUri();
+                    LogicalService target = promotedWire.getTarget();
                     QName deployable = promotedWire.getParent().getDeployable();
-                    LogicalWire wire = new LogicalWire(parent, reference, uri, deployable);
+                    LogicalWire wire = new LogicalWire(parent, reference, target, deployable);
                     wires.add(wire);
                 }
                 ((LogicalCompositeComponent) parent).overrideWires(reference, wires);
@@ -157,8 +156,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             for (URI targetUri : reference.getPromotedUris()) {
                 if (targetUri.equals(referenceUri)) {
                     if (parent.getParent() != null) {
-                        List<LogicalReference> list =
-                                recurseReferencePromotionPath(reference.getUri(), parent.getParent());
+                        List<LogicalReference> list =  recurseReferencePromotionPath(reference.getUri(), parent.getParent());
                         if (list.isEmpty()) {
                             // no references were overridden
                             references.add(reference);

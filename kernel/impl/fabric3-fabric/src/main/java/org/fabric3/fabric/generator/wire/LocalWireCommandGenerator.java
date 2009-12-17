@@ -39,19 +39,16 @@ package org.fabric3.fabric.generator.wire;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.DetachWireCommand;
-import org.fabric3.host.Names;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -67,43 +64,17 @@ import org.fabric3.spi.util.UriHelper;
  * @version $Rev$ $Date$
  */
 public class LocalWireCommandGenerator implements CommandGenerator {
-
     private WireGenerator wireGenerator;
-    private LogicalComponentManager applicationLCM;
-    private LogicalComponentManager runtimeLCM;
     private int order;
 
     /**
-     * Constructor used during bootstrap.
+     * Constructor.
      *
      * @param wireGenerator the bootstrap physical wire generator
-     * @param runtimeLCM    the bootstrap LogicalComponentManager
      * @param order         the order value for commands generated
      */
-    public LocalWireCommandGenerator(WireGenerator wireGenerator, LogicalComponentManager runtimeLCM, int order) {
+    public LocalWireCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
-        this.runtimeLCM = runtimeLCM;
-        this.order = order;
-    }
-
-    /**
-     * Constructor used for instantiation after bootstrap. After bootstrap on a controller instance, two domains will be active: the runtime domain
-     * containing system components and the application domain containing end-user components. On runtime nodes, the application domain may not be
-     * active, in which case a null value may be injected.
-     *
-     * @param wireGenerator  the bootstrap physical wire generator
-     * @param runtimeLCM     the LogicalComponentManager associated with the runtime domain
-     * @param applicationLCM the LogicalComponentManager associated with the application domain
-     * @param order          the order value for commands generated
-     */
-    @Constructor
-    public LocalWireCommandGenerator(@Reference WireGenerator wireGenerator,
-                                     @Reference(name = "runtimeLCM") LogicalComponentManager runtimeLCM,
-                                     @Reference(name = "applicationLCM") LogicalComponentManager applicationLCM,
-                                     @Property(name = "order") int order) {
-        this.wireGenerator = wireGenerator;
-        this.runtimeLCM = runtimeLCM;
-        this.applicationLCM = applicationLCM;
         this.order = order;
     }
 
@@ -134,34 +105,29 @@ public class LocalWireCommandGenerator implements CommandGenerator {
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
         boolean reinjection = isReinjection(logicalReference, incremental);
 
-        for (LogicalWire logicalWire : logicalReference.getWires()) {
-            URI uri = logicalWire.getTargetUri();
-            LogicalComponent<?> target = findTarget(logicalWire);
-            if (!reinjection && (logicalWire.getState() == LogicalState.PROVISIONED && target.getState() != LogicalState.MARKED && incremental)) {
+        for (LogicalWire wire : logicalReference.getWires()) {
+            LogicalService targetService = wire.getTarget();
+            LogicalComponent<?> targetComponent = targetService.getParent();
+            if (!reinjection && (wire.getState() == LogicalState.PROVISIONED && targetComponent.getState() != LogicalState.MARKED && incremental)) {
                 continue;
             }
-            String serviceName = uri.getFragment();
-            LogicalService targetService = target.getService(serviceName);
-            if (targetService == null) {
-                throw new AssertionError("Target service not found: " + uri);
-            }
-            while (CompositeImplementation.class.isInstance(target.getDefinition().getImplementation())) {
-                LogicalCompositeComponent composite = (LogicalCompositeComponent) target;
+            while (CompositeImplementation.class.isInstance(targetComponent.getDefinition().getImplementation())) {
+                LogicalCompositeComponent composite = (LogicalCompositeComponent) targetComponent;
                 URI promoteUri = targetService.getPromotedUri();
                 URI promotedComponent = UriHelper.getDefragmentedName(promoteUri);
-                target = composite.getComponent(promotedComponent);
-                targetService = target.getService(promoteUri.getFragment());
+                targetComponent = composite.getComponent(promotedComponent);
+                targetService = targetComponent.getService(promoteUri.getFragment());
             }
 
-            LogicalReference reference = logicalWire.getSource();
+            LogicalReference reference = wire.getSource();
             boolean attach = true;
-            if (target.getState() == LogicalState.MARKED || logicalWire.getState() == LogicalState.MARKED) {
+            if (targetComponent.getState() == LogicalState.MARKED || wire.getState() == LogicalState.MARKED) {
                 PhysicalWireDefinition pwd = wireGenerator.generateCollocatedWire(reference, targetService);
                 attach = false;
                 DetachWireCommand detachCommand = new DetachWireCommand();
                 detachCommand.setPhysicalWireDefinition(pwd);
                 command.add(detachCommand);
-            } else if (reinjection || !incremental || logicalWire.getState() == LogicalState.NEW || target.getState() == LogicalState.NEW) {
+            } else if (reinjection || !incremental || wire.getState() == LogicalState.NEW || targetComponent.getState() == LogicalState.NEW) {
                 PhysicalWireDefinition pwd = wireGenerator.generateCollocatedWire(reference, targetService);
                 AttachWireCommand attachCommand = new AttachWireCommand();
                 attachCommand.setPhysicalWireDefinition(pwd);
@@ -189,26 +155,17 @@ public class LocalWireCommandGenerator implements CommandGenerator {
         Multiplicity multiplicity = logicalReference.getDefinition().getMultiplicity();
         if (incremental && multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
             for (LogicalWire wire : logicalReference.getWires()) {
-                LogicalComponent<?> target = findTarget(wire);
+                LogicalComponent<?> targetComponent = wire.getTarget().getParent();
                 // check the source and target sides since a target may have been added or removed
                 if (wire.getState() == LogicalState.NEW
                         || wire.getState() == LogicalState.MARKED
-                        || target.getState() == LogicalState.NEW
-                        || target.getState() == LogicalState.MARKED) {
+                        || targetComponent.getState() == LogicalState.NEW
+                        || targetComponent.getState() == LogicalState.MARKED) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    private LogicalComponent<?> findTarget(LogicalWire logicalWire) {
-        URI uri = UriHelper.getDefragmentedName(logicalWire.getTargetUri());
-        if (uri.toString().startsWith(Names.RUNTIME_NAME)) {
-            return runtimeLCM.getComponent(uri);
-        } else {
-            return applicationLCM.getComponent(uri);
-        }
     }
 
 }

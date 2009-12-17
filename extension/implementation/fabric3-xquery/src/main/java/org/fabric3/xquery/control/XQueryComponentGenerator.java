@@ -120,9 +120,9 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         for (LogicalComponent lc : component.getParent().getComponents()) {
             for (LogicalReference lr : (Collection<LogicalReference>) lc.getReferences()) {
                 for (LogicalWire wire : component.getParent().getWires(lr)) {
-                    URI targetUri = UriHelper.getDefragmentedName(wire.getTargetUri());
+                    URI targetUri = UriHelper.getDefragmentedName(wire.getTarget().getUri());
                     if (component.getUri().equals(targetUri)) {
-                        String serviceName = wire.getTargetUri().getFragment();
+                        String serviceName = wire.getTarget().getUri().getFragment();
                         services.put(serviceName, lr.getDefinition().getServiceContract());
                     }
                 }
@@ -131,9 +131,9 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
 
         for (LogicalReference lr : component.getReferences()) {
             for (LogicalWire wire : component.getParent().getWires(lr)) {
-                URI sourceUri = UriHelper.getDefragmentedName(wire.getTargetUri());
+                URI sourceUri = UriHelper.getDefragmentedName(wire.getTarget().getUri());
                 LogicalComponent lc = component.getParent().getComponent(sourceUri);
-                String referenceName = wire.getTargetUri().getFragment();
+                String referenceName = wire.getTarget().getUri().getFragment();
                 references.put(referenceName, lc.getService(referenceName).getDefinition().getServiceContract());
             }
         }

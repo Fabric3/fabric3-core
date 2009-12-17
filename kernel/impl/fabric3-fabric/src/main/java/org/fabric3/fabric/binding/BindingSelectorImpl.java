@@ -49,12 +49,10 @@ import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.util.UriHelper;
 
 /**
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an
@@ -68,11 +66,6 @@ import org.fabric3.spi.util.UriHelper;
 public class BindingSelectorImpl implements BindingSelector {
     private List<BindingProvider> providers = new ArrayList<BindingProvider>();
     private BindingSelectionStrategy strategy;
-    private LogicalComponentManager logicalComponentManager;
-
-    public BindingSelectorImpl(@Reference(name = "logicalComponentManager") LogicalComponentManager logicalComponentManager) {
-        this.logicalComponentManager = logicalComponentManager;
-    }
 
     /**
      * Lazily injects SCAServiceProviders as they become available from runtime extensions.
@@ -101,20 +94,17 @@ public class BindingSelectorImpl implements BindingSelector {
     public void selectBindings(LogicalComponent<?> component) throws BindingSelectionException {
         for (LogicalReference reference : component.getReferences()) {
             for (LogicalWire wire : reference.getWires()) {
-                if (wire.getTargetUri() != null) {
-                    URI targetUri = UriHelper.getDefragmentedName(wire.getTargetUri());
-                    LogicalComponent target = logicalComponentManager.getComponent(targetUri);
-                    assert target != null;
-                    if ((component.getZone() == null && target.getZone() == null)) {
+                LogicalService targetService = wire.getTarget();
+                if (targetService != null) {
+                    LogicalComponent<?> targetComponent = targetService.getParent();
+                    if ((component.getZone() == null && targetComponent.getZone() == null)) {
                         // components are local, no need for a binding
                         continue;
-                    } else if (component.getZone() != null && component.getZone().equals(target.getZone())) {
+                    } else if (component.getZone() != null && component.getZone().equals(targetComponent.getZone())) {
                         // components are local, no need for a binding
                         continue;
                     }
-                    LogicalService targetServce = target.getService(wire.getTargetUri().getFragment());
-                    assert targetServce != null;
-                    selectBinding(reference, targetServce);
+                    selectBinding(reference, targetService);
                 }
             }
         }

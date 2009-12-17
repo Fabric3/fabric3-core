@@ -65,7 +65,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * Resolves an uspecified reference target using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
+ * Resolves unspecified reference targets using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
  *
  * @version $Revsion$ $Date$
  */
@@ -241,11 +241,9 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
         // create the wires
         for (LogicalService target : candidates) {
-            URI uri = target.getUri();
             // for autowires, the deployable of the wire is the target since the wire must be removed when the target is undeployed
             QName deployable = target.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(composite, logicalReference, uri, deployable);
-
+            LogicalWire wire = new LogicalWire(composite, logicalReference, target, deployable);
             LogicalComponent parent = logicalReference.getParent();
             LogicalCompositeComponent grandParent = (LogicalCompositeComponent) parent.getParent();
             if (grandParent != null) {

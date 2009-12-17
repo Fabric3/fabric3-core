@@ -107,14 +107,14 @@ import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiator;
-import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
-import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService;
+import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
+import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
+import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
 import org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl;
+import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.monitor.MonitorGenerator;
 import org.fabric3.fabric.monitor.MonitorResource;
 import org.fabric3.fabric.monitor.MonitorTargetDefinition;
@@ -198,7 +198,7 @@ public class BootstrapAssemblyFactory {
                                       MBeanServer mbServer,
                                       HostInfo info) throws InitializationException {
 
-        BindingSelector bindingSelector = new BindingSelectorImpl(logicalComponentManager);
+        BindingSelector bindingSelector = new BindingSelectorImpl();
         CommandExecutorRegistry commandRegistry =
                 createCommandExecutorRegistry(monitorFactory,
                                               classLoaderRegistry,
@@ -217,7 +217,7 @@ public class BootstrapAssemblyFactory {
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
 
-        Generator generator = createGenerator(logicalComponentManager, metaDataStore, policyResolver, matcher);
+        Generator generator = createGenerator(metaDataStore, policyResolver, matcher);
 
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
@@ -343,11 +343,7 @@ public class BootstrapAssemblyFactory {
         return builder;
     }
 
-    private static Generator createGenerator(LogicalComponentManager lcm,
-                                             MetaDataStore metaDataStore,
-                                             PolicyResolver resolver,
-                                             ContractMatcher matcher) {
-
+    private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
         OperationResolver operationResolver = new OperationResolverImpl();
         PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
@@ -363,7 +359,7 @@ public class BootstrapAssemblyFactory {
 
         List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
         commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, 1));
-        commandGenerators.add(new LocalWireCommandGenerator(wireGenerator, lcm, 2));
+        commandGenerators.add(new LocalWireCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new ServiceWireCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new ResourceWireCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new StartComponentCommandGenerator(3));

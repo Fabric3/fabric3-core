@@ -92,14 +92,15 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
             // resolve the target service
             URI targetUri = URI.create(baseUri + "/" + definition.getTarget());
-            targetUri = resolveTargetUri(targetUri, parent, context);
+            LogicalService targetService = resolveTargetUri(targetUri, parent, context);
             if (targetUri == null) {
                 // error resolving, continue processing other targets so all errors are collated
                 continue;
             }
 
             // create the wire
-            LogicalWire wire = new LogicalWire(parent, logicalReference, targetUri);
+            QName deployable = parent.getDeployable();
+            LogicalWire wire = new LogicalWire(parent, logicalReference, targetService, deployable);
             parent.addWire(logicalReference, wire);
         }
     }
@@ -145,17 +146,15 @@ public class WireInstantiatorImpl implements WireInstantiator {
         List<LogicalWire> wires = new ArrayList<LogicalWire>();
         if (null != grandParent) {
             for (LogicalService targetService : targets) {
-                URI uri = targetService.getUri();
                 QName deployable = targetService.getParent().getDeployable();
-                LogicalWire wire = new LogicalWire(grandParent, logicalReference, uri, deployable);
+                LogicalWire wire = new LogicalWire(grandParent, logicalReference, targetService, deployable);
                 wires.add(wire);
             }
             grandParent.overrideWires(logicalReference, wires);
         } else {
             for (LogicalService targetService : targets) {
-                URI uri = targetService.getUri();
                 QName deployable = targetService.getParent().getDeployable();
-                LogicalWire wire = new LogicalWire(parent, logicalReference, uri, deployable);
+                LogicalWire wire = new LogicalWire(parent, logicalReference, targetService, deployable);
                 wires.add(wire);
             }
             ((LogicalCompositeComponent) parent).overrideWires(logicalReference, wires);
@@ -214,7 +213,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param context   the logical context to report errors against
      * @return the fully resolved wire target URI
      */
-    private URI resolveTargetUri(URI targetUri, LogicalCompositeComponent parent, InstantiationContext context) {
+    private LogicalService resolveTargetUri(URI targetUri, LogicalCompositeComponent parent, InstantiationContext context) {
         URI targetComponentUri = UriHelper.getDefragmentedName(targetUri);
         LogicalComponent<?> targetComponent = parent.getComponent(targetComponentUri);
         if (targetComponent == null) {
@@ -227,14 +226,15 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
         String serviceName = targetUri.getFragment();
         if (serviceName != null) {
-            if (targetComponent.getService(serviceName) == null) {
+            LogicalService targetService = targetComponent.getService(serviceName);
+            if (targetService == null) {
                 URI uri = parent.getUri();
                 URI contributionUri = parent.getDefinition().getContributionUri();
                 WireTargetServiceNotFound error = new WireTargetServiceNotFound(targetUri, uri, contributionUri);
                 context.addError(error);
                 return null;
             }
-            return targetUri;
+            return targetService;
         } else {
             LogicalService target = null;
             for (LogicalService service : targetComponent.getServices()) {
@@ -257,7 +257,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
                 context.addError(error);
                 return null;
             }
-            return target.getUri();
+            return target;
         }
 
     }

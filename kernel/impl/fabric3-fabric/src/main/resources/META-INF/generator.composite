@@ -55,7 +55,6 @@
 
     <component name="BindingSelector">
         <f3-impl:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
-        <reference name="logicalComponentManager" target="LogicalComponentManager"/>
     </component>
 
     <component name="ConfigurableBindingSelectionStrategy">
@@ -72,8 +71,6 @@
     <component name="LocalWireCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.LocalWireCommandGenerator"/>
         <property name="order">2</property>
-        <reference name="applicationLCM" target="LogicalComponentManager"/>
-        <reference name="runtimeLCM" target="RuntimeLogicalComponentManager"/>
     </component>
 
     <component name="ReferenceWireCommandGenerator">

@@ -43,7 +43,6 @@
  */
 package org.fabric3.spi.model.instance;
 
-import java.net.URI;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -62,68 +61,50 @@ import org.oasisopen.sca.Constants;
  */
 public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -643283191171197255L;
-
     private static final QName TYPE = new QName(Constants.SCA_NS, "wire");
 
     private LogicalReference source;
-    private URI targetUri;
-    private LogicalState state = LogicalState.NEW;
+    private LogicalService target;
     private QName deployable;
-
-    /**
-     * Instantiates a logical wire.
-     *
-     * @param parent    component within which the wire is defined.
-     * @param source    the source reference of the wire
-     * @param targetUri the uri of the target service
-     */
-    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, URI targetUri) {
-        super(null, parent, TYPE);
-        this.source = source;
-        this.targetUri = targetUri;
-    }
+    private LogicalState state = LogicalState.NEW;
 
     /**
      * Instantiates a logical wire.
      *
      * @param parent     component within which the wire is defined.
      * @param source     the source reference of the wire
-     * @param targetUri  the uri of the target service
+     * @param target the target service
      * @param deployable the target service deployable
      */
-    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, URI targetUri, QName deployable) {
+    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, QName deployable) {
         super(null, parent, TYPE);
         this.source = source;
-        this.targetUri = targetUri;
+        this.target = target;
         this.deployable = deployable;
     }
 
     /**
      * Gets the source of the wire.
      *
-     * @return Source of the wire.
+     * @return source of the wire.
      */
     public LogicalReference getSource() {
         return source;
     }
 
     /**
-     * Gets the target URI of the wire.
+     * Gets the target service of the wire.
      *
-     * @return Target URI of the wire.
+     * @return target service of the wire.
      */
-    public URI getTargetUri() {
-        return targetUri;
-    }
-
-    public void setTargetUri(URI targetUri) {
-        this.targetUri = targetUri;
+    public LogicalService getTarget() {
+        return target;
     }
 
     /**
      * Intents are not supported on wires.
      *
-     * @return Intents declared on the SCA artifact.
+     * @return intents declared on the SCA artifact.
      */
     @Override
     public Set<QName> getIntents() {
@@ -132,6 +113,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
 
     /**
      * Policy sets are not supported on wires.
+     * @return policy sets declared on the SCA artifact.
      */
     @Override
     public Set<QName> getPolicySets() {
@@ -183,7 +165,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
         }
 
         LogicalWire test = (LogicalWire) obj;
-        return targetUri.equals(test.targetUri) && source.equals(test.source);
+        return target.equals(test.target) && source.equals(test.source);
 
     }
 
@@ -196,7 +178,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
 
         int hash = 7;
         hash = 31 * hash + source.hashCode();
-        hash = 31 * hash + targetUri.hashCode();
+        hash = 31 * hash + target.hashCode();
         return hash;
 
     }
