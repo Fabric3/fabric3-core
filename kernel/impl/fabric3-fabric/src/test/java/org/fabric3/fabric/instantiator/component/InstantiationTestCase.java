@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator;
+package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 import java.util.Collections;
@@ -45,9 +45,13 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
-import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator;
-import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiator;
-import org.fabric3.fabric.instantiator.component.WireInstantiatorImpl;
+import org.fabric3.fabric.instantiator.AutowireInstantiator;
+import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
+import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
+import org.fabric3.fabric.instantiator.PromotionNormalizer;
+import org.fabric3.fabric.instantiator.PromotionResolutionService;
+import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentType;
@@ -79,7 +83,7 @@ public class InstantiationTestCase extends TestCase {
         ComponentDefinition<?> definition = createParentWithChild();
         Composite composite = new Composite(null);
         composite.add(definition);
-        logicalModelInstantiator.include(parent, composite);
+        logicalModelInstantiator.include(composite, parent);
         LogicalCompositeComponent logicalComponent = (LogicalCompositeComponent) parent.getComponents().iterator().next();
         assertEquals(COMPONENT_URI, logicalComponent.getUri().toString());
         LogicalComponent<?> logicalChild = logicalComponent.getComponent(URI.create(CHILD_URI));
@@ -90,7 +94,7 @@ public class InstantiationTestCase extends TestCase {
         ComponentDefinition<?> definition = createParentWithServiceAndReference();
         Composite composite = new Composite(null);
         composite.add(definition);
-        logicalModelInstantiator.include(parent, composite);
+        logicalModelInstantiator.include(composite, parent);
         LogicalCompositeComponent logicalComponent = (LogicalCompositeComponent) parent.getComponents().iterator().next();
         LogicalService logicalService = logicalComponent.getService("service");
         assertEquals(SERVICE_URI, logicalService.getUri().toString());
@@ -102,20 +106,19 @@ public class InstantiationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        AtomicComponentInstantiator atomicComponentInstantiator = new AtomicComponentInstantiator(null);
-        WireInstantiator wireInstantiator = new WireInstantiatorImpl();
-        CompositeComponentInstantiator compositeComponentInstantiator =
-                new CompositeComponentInstantiator(atomicComponentInstantiator, wireInstantiator, null);
-        ResolutionService resolutionService = EasyMock.createMock(ResolutionService.class);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiator(null);
+        WireInstantiator wireInstantiator = new WireInstantiatorImpl(null, null);
+        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiator(atomicInstantiator, wireInstantiator, null);
+        AutowireInstantiator autowireService = EasyMock.createMock(AutowireInstantiator.class);
+        PromotionResolutionService promotionResolutionService = EasyMock.createMock(PromotionResolutionService.class);
         PromotionNormalizer normalizer = EasyMock.createMock(PromotionNormalizer.class);
 
-        logicalModelInstantiator =
-                new LogicalModelInstantiatorImpl(resolutionService,
-                                                 normalizer,
-                                                 null,
-                                                 atomicComponentInstantiator,
-                                                 compositeComponentInstantiator,
-                                                 wireInstantiator);
+        logicalModelInstantiator = new LogicalModelInstantiatorImpl(compositeInstantiator,
+                                                                    atomicInstantiator,
+                                                                    wireInstantiator,
+                                                                    normalizer,
+                                                                    promotionResolutionService,
+                                                                    autowireService);
         parent = new LogicalCompositeComponent(PARENT_URI, null, null);
     }
 
@@ -155,6 +158,8 @@ public class InstantiationTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<AbstractComponentType<?, ?, ?, ?>> {
+        private static final long serialVersionUID = 4128780797281194069L;
+
         public QName getType() {
             return null;
         }

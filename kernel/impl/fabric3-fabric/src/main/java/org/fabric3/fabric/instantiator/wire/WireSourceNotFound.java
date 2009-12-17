@@ -35,41 +35,28 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.util.UriHelper;
 
-/**
- * Thrown when an attempt is made to wire a reference to a service with incompatible contracts.
- *
- * @version $Rev$ $Date$
- */
-public class IncompatibleContracts extends AssemblyFailure {
-    private URI referenceUri;
-    private URI serviceUri;
-    private String message;
+public class WireSourceNotFound extends AssemblyFailure {
+    private URI sourceUri;
 
-    /**
-     * Constructor.
-     *
-     * @param referenceUri    the URI of the reference
-     * @param serviceUri      the URI of the service
-     * @param componentUri    the URI of the component associated with the failure.
-     * @param message         the reported contract matching error
-     * @param contributionUri the contribution containing the component
-     */
-    public IncompatibleContracts(URI referenceUri, URI serviceUri, URI componentUri, String message, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.referenceUri = referenceUri;
-        this.serviceUri = serviceUri;
-        this.message = message;
+    public WireSourceNotFound(URI sourceUri, URI compositeUri, URI contributionUri) {
+        super(compositeUri, contributionUri);
+        this.sourceUri = sourceUri;
+    }
+
+    public URI getSourceUri() {
+        return sourceUri;
     }
 
     public String getMessage() {
-        StringBuilder builder = new StringBuilder("The contracts for the reference ").append(referenceUri).append(
-                " and service ").append(serviceUri).append(" are incompatible. The following error was reported: ").append(message);
-        return builder.toString();
+        return "The component " + UriHelper.getDefragmentedName(sourceUri) + " specified as a wire source in "
+                + getComponentUri() + " was not found";
     }
+
 }

@@ -35,24 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.util.UriHelper;
 
-public class TargetComponentNotFound extends AssemblyFailure {
-    private URI referenceUri;
-    private URI targetUri;
+public class WireSourceReferenceNotFound extends AssemblyFailure {
+    private URI sourceUri;
+    private String referenceName;
 
-    public TargetComponentNotFound(URI referenceUri, URI targetUri, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.referenceUri = referenceUri;
-        this.targetUri = targetUri;
+    public WireSourceReferenceNotFound(URI sourceUri, String referenceName, URI compositeUri, URI contributionUri) {
+        super(compositeUri, contributionUri);
+        this.sourceUri = sourceUri;
+        this.referenceName = referenceName;
+    }
+
+    public URI getSourceUri() {
+        return sourceUri;
+    }
+
+    public String getReferenceName() {
+        return referenceName;
     }
 
     public String getMessage() {
-        return "Target component for reference " + referenceUri + " not found: " + targetUri;
+        return "The component " + UriHelper.getDefragmentedName(sourceUri) + " specified as a wire source in "
+                + getComponentUri() + " does not have a reference " + referenceName;
     }
 
 }

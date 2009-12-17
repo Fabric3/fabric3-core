@@ -67,8 +67,6 @@ import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.fabric.domain.ContributionHelper;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.LocalRoutingService;
@@ -103,38 +101,52 @@ import org.fabric3.fabric.generator.wire.ResourceWireCommandGenerator;
 import org.fabric3.fabric.generator.wire.ServiceWireCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
+import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
-import org.fabric3.fabric.instantiator.ResolutionService;
-import org.fabric3.fabric.instantiator.ResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
+import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiator;
-import org.fabric3.fabric.instantiator.component.WireInstantiatorImpl;
-import org.fabric3.fabric.instantiator.normalize.PromotionNormalizerImpl;
+import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
+import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService;
-import org.fabric3.fabric.instantiator.target.ExplicitTargetResolutionService;
-import org.fabric3.fabric.instantiator.target.ServiceContractResolver;
-import org.fabric3.fabric.instantiator.target.ServiceContractResolverImpl;
-import org.fabric3.fabric.instantiator.target.TypeBasedAutowireResolutionService;
+import org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl;
 import org.fabric3.fabric.monitor.MonitorGenerator;
 import org.fabric3.fabric.monitor.MonitorResource;
 import org.fabric3.fabric.monitor.MonitorTargetDefinition;
 import org.fabric3.fabric.monitor.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
 import org.fabric3.fabric.policy.NullPolicyResolver;
+import org.fabric3.fabric.xml.DocumentLoader;
+import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
+import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
+import org.fabric3.implementation.system.generator.SystemComponentGenerator;
+import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.implementation.system.provision.SystemComponentDefinition;
+import org.fabric3.implementation.system.provision.SystemSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemTargetDefinition;
+import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
+import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
+import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
+import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
+import org.fabric3.implementation.system.singleton.SingletonImplementation;
+import org.fabric3.implementation.system.singleton.SingletonSourceDefinition;
+import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
+import org.fabric3.implementation.system.singleton.SingletonTargetDefinition;
+import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.jmx.control.JMXBindingGenerator;
 import org.fabric3.jmx.provision.JMXSourceDefinition;
 import org.fabric3.jmx.runtime.JMXWireAttacher;
-import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
-import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -159,20 +171,6 @@ import org.fabric3.spi.model.type.binding.JMXBinding;
 import org.fabric3.spi.policy.PolicyAttacher;
 import org.fabric3.spi.policy.PolicyResolver;
 import org.fabric3.spi.transform.SingleTypeTransformer;
-import org.fabric3.implementation.system.generator.SystemComponentGenerator;
-import org.fabric3.implementation.system.model.SystemImplementation;
-import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.implementation.system.provision.SystemSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemTargetDefinition;
-import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
-import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
-import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
-import org.fabric3.implementation.system.singleton.SingletonImplementation;
-import org.fabric3.implementation.system.singleton.SingletonSourceDefinition;
-import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
-import org.fabric3.implementation.system.singleton.SingletonTargetDefinition;
-import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
 import org.fabric3.transform.DefaultTransformerRegistry;
 import org.fabric3.transform.property.Property2BooleanTransformer;
 import org.fabric3.transform.property.Property2IntegerTransformer;
@@ -221,7 +219,7 @@ public class BootstrapAssemblyFactory {
 
         Generator generator = createGenerator(logicalComponentManager, metaDataStore, policyResolver, matcher);
 
-        LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(logicalComponentManager, matcher);
+        LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore);
 
@@ -237,27 +235,24 @@ public class BootstrapAssemblyFactory {
                                  info);
     }
 
-    private static LogicalModelInstantiator createLogicalModelGenerator(LogicalComponentManager logicalComponentManager, ContractMatcher matcher) {
+    private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
         PromotionResolutionService promotionResolutionService = new DefaultPromotionResolutionService();
         ServiceContractResolver resolver = new ServiceContractResolverImpl();
-        ExplicitTargetResolutionService explicitTargetResolutionService = new ExplicitTargetResolutionService(resolver, matcher);
-        TypeBasedAutowireResolutionService autowireResolutionService = new TypeBasedAutowireResolutionService(resolver, matcher);
-        ResolutionService resolutionService =
-                new ResolutionServiceImpl(promotionResolutionService, explicitTargetResolutionService, autowireResolutionService);
+        AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(resolver, matcher);
 
         PromotionNormalizer normalizer = new PromotionNormalizerImpl();
         DocumentLoader documentLoader = new DocumentLoaderImpl();
-        AtomicComponentInstantiator atomicComponentInstantiator = new AtomicComponentInstantiator(documentLoader);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiator(documentLoader);
 
-        WireInstantiator wireInstantiator = new WireInstantiatorImpl();
-        CompositeComponentInstantiator compositeComponentInstantiator =
-                new CompositeComponentInstantiator(atomicComponentInstantiator, wireInstantiator, documentLoader);
-        return new LogicalModelInstantiatorImpl(resolutionService,
+        WireInstantiator wireInstantiator = new WireInstantiatorImpl(resolver, matcher);
+        CompositeComponentInstantiator compositeInstantiator =
+                new CompositeComponentInstantiator(atomicInstantiator, wireInstantiator, documentLoader);
+        return new LogicalModelInstantiatorImpl(compositeInstantiator,
+                                                atomicInstantiator,
+                                                wireInstantiator,
                                                 normalizer,
-                                                logicalComponentManager,
-                                                atomicComponentInstantiator,
-                                                compositeComponentInstantiator,
-                                                wireInstantiator);
+                                                promotionResolutionService,
+                                                autowireInstantiator);
     }
 
     @SuppressWarnings({"unchecked"})

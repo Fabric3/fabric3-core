@@ -44,7 +44,6 @@
 package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
-import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -57,7 +56,6 @@ import org.w3c.dom.NodeList;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -133,10 +131,10 @@ public class AssemblyPropertyTestCase extends TestCase {
         super.setUp();
         componentInstantiator = new AbstractComponentInstantiator(null) {
 
-            public <I extends Implementation<?>> LogicalComponent<I> instantiate(LogicalCompositeComponent parent,
-                                                                                 Map<String, Document> properties,
-                                                                                 ComponentDefinition<I> definition,
-                                                                                 InstantiationContext context) {
+            @SuppressWarnings({"unchecked"})
+            public LogicalComponent instantiate(ComponentDefinition componentDefinition,
+                                                LogicalCompositeComponent parent,
+                                                InstantiationContext context) {
                 return null;
             }
         };

@@ -116,7 +116,6 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         try {
             LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
             AtomicComponent<I> physical = createPhysicalComponent(logical, instance);
-            lcm.getRootComponent().addComponent(logical);
             componentManager.register(physical);
             scopeContainer.register(physical);
         } catch (RegistrationException e) {
@@ -127,12 +126,13 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     }
 
 
+    @SuppressWarnings({"unchecked"})
     private <S, I extends S> LogicalComponent<Implementation<?>> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException, AssemblyException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         ComponentDefinition<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
-        InstantiationContext context = new InstantiationContext(domain);
-        LogicalComponent<Implementation<?>> logical = instantiator.instantiate(domain, domain.getPropertyValues(), definition, context);
+        InstantiationContext context = new InstantiationContext();
+        LogicalComponent<Implementation<?>> logical = instantiator.instantiate(definition, domain, context);
         if (context.hasErrors()) {
             throw new AssemblyException(context.getErrors());
         }

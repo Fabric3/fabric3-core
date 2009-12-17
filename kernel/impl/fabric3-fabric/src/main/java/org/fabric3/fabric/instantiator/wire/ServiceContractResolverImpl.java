@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 import java.util.Collection;

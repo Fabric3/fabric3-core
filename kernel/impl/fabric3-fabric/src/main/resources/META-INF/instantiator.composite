@@ -19,7 +19,7 @@
            name="InstantiatorComposite"
            autowire="true">
 
-    <component name="LogicalModelGenerator">
+    <component name="LogicalModelInstantiator">
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl"/>
         <reference name="atomicComponentInstantiator" target="AtomicComponentInstantiator"/>
         <reference name="compositeComponentInstantiator" target="CompositeComponentInstantiator"/>
@@ -35,33 +35,23 @@
     </component>
 
     <component name="WireInstantiator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.WireInstantiatorImpl"/>
-    </component>
-
-    <component name="WiringService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.ResolutionServiceImpl"/>
-        <reference name="explicitResolutionService" target="ExplicitTargetResolutionService"/>
-        <reference name="autowireResolutionService" target="TypeBasedAutoWireResolutionService"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl"/>
     </component>
 
     <component name="PromotionNormalizer">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.normalize.PromotionNormalizerImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl"/>
     </component>
 
-    <component name="TargetPromotionService">
+    <component name="PromotionResolutionService">
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService"/>
     </component>
 
-    <component name="ExplicitTargetResolutionService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.target.ExplicitTargetResolutionService"/>
-    </component>
-
-    <component name="TypeBasedAutoWireResolutionService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.target.TypeBasedAutowireResolutionService"/>
+    <component name="AutowireInstantiator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl"/>
     </component>
 
     <component name="ServiceContractResolver">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.target.ServiceContractResolverImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl"/>
     </component>
 
     <component name="DocumentLoader">

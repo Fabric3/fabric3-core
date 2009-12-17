@@ -35,35 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
-import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalService;
+import java.net.URI;
 
-/**
- * Resolves the service contract for services and references. Promoted services and references often do not specify a service contract explicitly,
- * instead using a contract defined further down in the promotion hierarchy. In these cases, the service contract is often inferred from the
- * implementation (e.g. a Java class) or explicitly declared within the component definition in a composite file.
- *
- * @version $Rev$ $Date$
- */
-public interface ServiceContractResolver {
+import org.fabric3.host.domain.AssemblyFailure;
 
-    /**
-     * Returns the contract for a service.
-     *
-     * @param service the service to determine the service contract for.
-     * @return the contract or null if none is found
-     */
-    ServiceContract determineContract(LogicalService service);
+public class WireTargetNotFound extends AssemblyFailure {
+    private URI targetUri;
 
-    /**
-     * Returns the contract for a reference.
-     *
-     * @param reference the reference to determine the service contract for.
-     * @return the contract or null if none is found
-     */
-    ServiceContract determineContract(LogicalReference reference);
+    public WireTargetNotFound(URI targetUri, URI compositeUri, URI contributionUri) {
+        super(compositeUri, contributionUri);
+        this.targetUri = targetUri;
+    }
+
+    public URI getTargetUri() {
+        return targetUri;
+    }
+
+    public String getMessage() {
+        return "Target component " + targetUri + " for wire in " + getComponentUri() + " not found";
+    }
 
 }

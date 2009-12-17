@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -44,9 +44,9 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ReferenceNotFound;
-import org.fabric3.fabric.instantiator.TargetResolutionService;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -69,16 +69,43 @@ import org.fabric3.spi.model.instance.LogicalWire;
  *
  * @version $Revsion$ $Date$
  */
-public class TypeBasedAutowireResolutionService implements TargetResolutionService {
+public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private ServiceContractResolver resolver;
     private ContractMatcher matcher;
 
-    public TypeBasedAutowireResolutionService(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
+    public AutowireInstantiatorImpl(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
         this.resolver = resolver;
         this.matcher = matcher;
     }
 
-    public void resolve(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
+    public void instantiate(LogicalComponent<?> component, InstantiationContext context) {
+        resolveReferences(component, context);
+        if (component instanceof LogicalCompositeComponent) {
+            LogicalCompositeComponent compositeComponent = (LogicalCompositeComponent) component;
+            for (LogicalComponent<?> child : compositeComponent.getComponents()) {
+                instantiate(child, context);
+            }
+        }
+    }
+
+    private void resolveReferences(LogicalComponent<?> component, InstantiationContext context) {
+        LogicalCompositeComponent parent = component.getParent();
+        for (LogicalReference reference : component.getReferences()) {
+            Multiplicity multiplicityValue = reference.getDefinition().getMultiplicity();
+            boolean refMultiplicity = multiplicityValue.equals(Multiplicity.ZERO_N) || multiplicityValue.equals(Multiplicity.ONE_N);
+            if (refMultiplicity || !reference.isResolved()) {
+                // Only resolve references that have not been resolved or ones that are multiplicities since the latter may be reinjected.
+                // Explicitly set the reference to unresolved, since if it was a multiplicity it may have been previously resolved.
+                reference.setResolved(false);
+                if (reference.isResolved()) {
+                    continue;
+                }
+                resolve(reference, parent, context);
+            }
+        }
+    }
+
+    private void resolve(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
 
         ComponentReference componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
@@ -186,7 +213,6 @@ public class TypeBasedAutowireResolutionService implements TargetResolutionServi
      * @return true if the reference has been resolved.
      */
     private boolean resolveByType(LogicalCompositeComponent composite, LogicalReference logicalReference, ServiceContract contract) {
-
         List<LogicalService> candidates = new ArrayList<LogicalService>();
         Multiplicity refMultiplicity = logicalReference.getDefinition().getMultiplicity();
         boolean multiplicity = Multiplicity.ZERO_N.equals(refMultiplicity) || Multiplicity.ONE_N.equals(refMultiplicity);
@@ -229,9 +255,7 @@ public class TypeBasedAutowireResolutionService implements TargetResolutionServi
             }
 
         }
-
         return true;
-
     }
 
     /**

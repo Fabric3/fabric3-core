@@ -35,27 +35,28 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.component;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.util.UriHelper;
 
-public class AmbiguousWireTargetService extends AssemblyFailure {
-    private URI targetUri;
+public class WireSourceNoReference extends AssemblyFailure {
+    private URI sourceUri;
 
-    public AmbiguousWireTargetService(URI targetUri, URI compositeUri, URI contributionUri) {
+    public WireSourceNoReference(URI sourceUri, URI compositeUri, URI contributionUri) {
         super(compositeUri, contributionUri);
-        this.targetUri = targetUri;
+        this.sourceUri = sourceUri;
     }
 
-    public URI getTargetUri() {
-        return targetUri;
+    public URI getSourceUri() {
+        return sourceUri;
     }
 
     public String getMessage() {
-        return "Target component " + targetUri + "for wire in " + getComponentUri() + " has more than one service. " +
-                "The service must be specified in the wire";
+        return "The component " + UriHelper.getDefragmentedName(sourceUri) + " specified as a wire source in "
+                + getComponentUri() + " does not have any reference";
     }
 
 }

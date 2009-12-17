@@ -41,36 +41,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.host.domain.AssemblyFailure;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * A context used during logical component instantiation. Used primarily to record errors.
+ * A context used during logical component instantiation to record errors.
  *
  * @version $Rev$ $Date$
  */
 public class InstantiationContext {
-
-    private final LogicalCompositeComponent parent;
-
-    private final List<AssemblyFailure> errors = new ArrayList<AssemblyFailure>();
-
-    /**
-     * Constructor.
-     *
-     * @param parent the target composite an instantiation is being made to.
-     */
-    public InstantiationContext(LogicalCompositeComponent parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * Returns the component instantiation operation is targeted at.
-     *
-     * @return the component the instantiation operation is targeted at.
-     */
-    public LogicalCompositeComponent getParent() {
-        return parent;
-    }
+    private List<AssemblyFailure> errors = new ArrayList<AssemblyFailure>();
 
     /**
      * Returns true if the instantiation operation detected any fatal errors.

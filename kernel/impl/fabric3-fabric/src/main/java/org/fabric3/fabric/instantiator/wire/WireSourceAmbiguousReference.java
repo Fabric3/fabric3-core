@@ -35,25 +35,28 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator;
+package org.fabric3.fabric.instantiator.wire;
 
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalReference;
+import java.net.URI;
 
-/**
- * Abstraction for resolving refeence targets. Implementations perform resolution through matching an explicit target URI or through autowire.
- *
- * @version $Rev$ $Date$
- */
-public interface TargetResolutionService {
+import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.util.UriHelper;
 
-    /**
-     * Resolves the target for a logical reference. If the reference is resolved, {@link LogicalReference#isResolved()} will return true.
-     *
-     * @param reference Logical reference to be resolved.
-     * @param component Composite component within which the targets are resolved.
-     * @param context   the instantiation context. Recoverable errors and warnings should be reported here.
-     */
-    void resolve(LogicalReference reference, LogicalCompositeComponent component, InstantiationContext context);
+public class WireSourceAmbiguousReference extends AssemblyFailure {
+    private URI sourceUri;
+
+    public WireSourceAmbiguousReference(URI sourceUri, URI compositeUri, URI contributionUri) {
+        super(compositeUri, contributionUri);
+        this.sourceUri = sourceUri;
+    }
+
+    public URI getSourceUri() {
+        return sourceUri;
+    }
+
+    public String getMessage() {
+        return "The component " + UriHelper.getDefragmentedName(sourceUri) + " specified as a wire source in "
+                + getComponentUri() + " has more than one reference. A reference must be specified in the wire.";
+    }
 
 }

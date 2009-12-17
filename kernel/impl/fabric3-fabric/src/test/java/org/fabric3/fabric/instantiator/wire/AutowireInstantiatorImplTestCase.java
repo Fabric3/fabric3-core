@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 import javax.xml.namespace.QName;
@@ -44,11 +44,8 @@ import junit.framework.TestCase;
 
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
-import org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService;
-import org.fabric3.fabric.instantiator.target.ExplicitTargetResolutionService;
-import org.fabric3.fabric.instantiator.target.ServiceContractResolver;
-import org.fabric3.fabric.instantiator.target.ServiceContractResolverImpl;
-import org.fabric3.fabric.instantiator.target.TypeBasedAutowireResolutionService;
+import org.fabric3.fabric.instantiator.InstantiationContext;
+import org.fabric3.fabric.instantiator.ReferenceNotFound;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -70,41 +67,41 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class ResolutionServiceImplTestCase extends TestCase {
+public class AutowireInstantiatorImplTestCase extends TestCase {
     private static final URI REFERENCE_URI = URI.create("source#ref");
     private static final URI SOURCE_URI = URI.create("source");
     private static final URI TARGET_URI = URI.create("target#service");
     private LogicalCompositeComponent domain;
-    private ResolutionServiceImpl resolutionService;
+    private AutowireInstantiatorImpl resolutionService;
 
     public void testAutowireAtomicToAtomic() throws Exception {
         LogicalCompositeComponent composite = createWiredComposite(domain, Foo.class, Foo.class);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(composite, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(composite, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
         assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
 
     public void testAutowireAtomicToAtomicRequiresSuperInterface() throws Exception {
         LogicalCompositeComponent composite = createWiredComposite(domain, SuperFoo.class, Foo.class);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(composite, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(composite, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
-        resolutionService.resolve(composite, context);
+        resolutionService.instantiate(composite, context);
         assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
 
     public void testAutowireAtomicToAtomicRequiresSubInterface() throws Exception {
         LogicalComponent<CompositeImplementation> composite = createWiredComposite(domain, Foo.class, SuperFoo.class);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(composite, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(composite, context);
         assertTrue(context.getErrors().get(0) instanceof ReferenceNotFound);
     }
 
     public void testAutowireAtomicToAtomicIncompatibleInterfaces() throws Exception {
         LogicalComponent<CompositeImplementation> composite = createWiredComposite(domain, Foo.class, String.class);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(composite, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(composite, context);
         assertTrue(context.getErrors().get(0) instanceof ReferenceNotFound);
     }
 
@@ -113,8 +110,8 @@ public class ResolutionServiceImplTestCase extends TestCase {
         LogicalCompositeComponent parent = createComposite("parent", composite);
         parent.addComponent(composite);
         parent.getDefinition().getImplementation().getComponentType().add(composite.getDefinition());
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(parent, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(parent, context);
         LogicalComponent<?> source = composite.getComponent(SOURCE_URI);
         assertEquals(TARGET_URI, source.getReference("ref").getWires().get(0).getTargetUri());
     }
@@ -125,8 +122,8 @@ public class ResolutionServiceImplTestCase extends TestCase {
         composite.addComponent(source);
         LogicalComponent<?> target = createTargetAtomic(Foo.class, composite);
         composite.addComponent(target);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(source, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(source, context);
     }
 
     public void testAutowireToSiblingIncludeInComposite() throws Exception {
@@ -137,21 +134,18 @@ public class ResolutionServiceImplTestCase extends TestCase {
         LogicalComponent<?> target = createTargetAtomic(Foo.class, composite);
         parent.addComponent(composite);
         composite.addComponent(target);
-        InstantiationContext context = new InstantiationContext(domain);
-        resolutionService.resolve(composite, context);
+        InstantiationContext context = new InstantiationContext();
+        resolutionService.instantiate(composite, context);
     }
 
 
     protected void setUp() throws Exception {
         super.setUp();
-        PromotionResolutionService promotionResolutionService = new DefaultPromotionResolutionService();
         ServiceContractResolver resolver = new ServiceContractResolverImpl();
         DefaultContractMatcher matcher = new DefaultContractMatcher();
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
-        ExplicitTargetResolutionService resolutionService = new ExplicitTargetResolutionService(resolver, matcher);
-        TypeBasedAutowireResolutionService autowireResolutionService = new TypeBasedAutowireResolutionService(resolver, matcher);
-        this.resolutionService = new ResolutionServiceImpl(promotionResolutionService, resolutionService, autowireResolutionService);
+        resolutionService = new AutowireInstantiatorImpl(resolver, matcher);
         URI domainUri = URI.create("fabric3://runtime");
         domain = new LogicalCompositeComponent(domainUri, null, null);
     }
@@ -219,13 +213,15 @@ public class ResolutionServiceImplTestCase extends TestCase {
     }
 
     private class MockAtomicImpl extends Implementation<MockComponentType> {
+        private static final long serialVersionUID = 9075647188452892957L;
+
         public QName getType() {
             throw new UnsupportedOperationException();
         }
     }
 
     private class MockComponentType extends AbstractComponentType<ServiceDefinition, ReferenceDefinition, Property, ResourceDefinition> {
-
+        private static final long serialVersionUID = 1030610904165857606L;
     }
 
     private interface SuperFoo {

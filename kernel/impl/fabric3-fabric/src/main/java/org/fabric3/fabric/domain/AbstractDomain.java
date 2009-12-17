@@ -435,9 +435,9 @@ public abstract class AbstractDomain implements Domain {
             for (Contribution contribution : contributions) {
                 activateDefinitions(contribution);
             }
-            InstantiationContext change = logicalModelInstantiator.include(domain, deployables);
-            if (change.hasErrors()) {
-                throw new AssemblyException(change.getErrors());
+            InstantiationContext context = logicalModelInstantiator.include(deployables, domain);
+            if (context.hasErrors()) {
+                throw new AssemblyException(context.getErrors());
             }
             policyAttacher.attachPolicies(domain, !recover);
             if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
@@ -553,7 +553,7 @@ public abstract class AbstractDomain implements Domain {
                 domain = CopyUtil.copy(domain);
             }
             activateDefinitions(contribution);
-            InstantiationContext context = logicalModelInstantiator.include(domain, composite);
+            InstantiationContext context = logicalModelInstantiator.include(composite, domain);
             if (context.hasErrors()) {
                 throw new AssemblyException(context.getErrors());
             }

@@ -43,28 +43,28 @@ import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Instantiates logical components within a domain which can be used to generate deployment commands.
+ * Instantiates logical components in a domain that can be used to generate deployment commands.
  *
  * @version $Rev$ $Date$
  */
 public interface LogicalModelInstantiator {
 
     /**
-     * Includes a composite in another composite.
+     * Instantiates a composite using SCA inclusion semantics in a domain.
      *
-     * @param targetComposite the target composite in which the composite is to be included.
-     * @param composite       the composite to be included.
+     * @param composite the composite to be included.
+     * @param domain    the target composite in which the composite is to be included.
      * @return the instantiation context that results from this include operation
      */
-    InstantiationContext include(LogicalCompositeComponent targetComposite, Composite composite);
+    InstantiationContext include(Composite composite, LogicalCompositeComponent domain);
 
     /**
-     * Includes a set of composites in another composite.
+     * Instantiates a collection of composites using SCA inclusion semantics in a domain.
      *
-     * @param targetComposite the target composite in which the composite is to be included.
-     * @param composites      the composites to be included.
+     * @param composites the composites to be included.
+     * @param domain     the target composite in which the composite is to be included.
      * @return the instantiation context that results from this include operation
      */
-    InstantiationContext include(LogicalCompositeComponent targetComposite, List<Composite> composites);
+    InstantiationContext include(List<Composite> composites, LogicalCompositeComponent domain);
 
 }

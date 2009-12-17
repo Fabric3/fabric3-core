@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.normalize;
+package org.fabric3.fabric.instantiator.promotion;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         LogicalComponent<CompositeImplementation> parent = component.getParent();
         for (LogicalService service : component.getServices()) {
             URI serviceUri = service.getUri();
-            List<LogicalBinding<?>> bindings = recurseServicePromotionPath(parent, serviceUri);
+            List<LogicalBinding<?>> bindings = recurseServicePromotionPath(serviceUri, parent);
             if (bindings.isEmpty()) {
                 continue;
             }
@@ -77,16 +77,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    private List<LogicalBinding<?>> resetParent(List<LogicalBinding<?>> list, Bindable parent) {
-        List<LogicalBinding<?>> newList = new ArrayList<LogicalBinding<?>>();
-        for (LogicalBinding<?> binding : list) {
-            newList.add(new LogicalBinding(binding.getDefinition(), parent));
-        }
-        return newList;
-    }
-
-    private List<LogicalBinding<?>> recurseServicePromotionPath(LogicalComponent<CompositeImplementation> parent, URI serviceUri) {
+    private List<LogicalBinding<?>> recurseServicePromotionPath(URI serviceUri, LogicalComponent<CompositeImplementation> parent) {
         List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
         for (LogicalService service : parent.getServices()) {
             URI targetUri = service.getPromotedUri();
@@ -94,7 +85,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 // no service specified
                 if (targetUri.equals(UriHelper.getDefragmentedName(serviceUri))) {
                     if (parent.getParent() != null) {
-                        List<LogicalBinding<?>> list = recurseServicePromotionPath(parent.getParent(), service.getUri());
+                        List<LogicalBinding<?>> list = recurseServicePromotionPath(service.getUri(), parent.getParent());
                         if (list.isEmpty()) {
                             // no bindings were overridden
                             bindings.addAll(service.getBindings());
@@ -110,7 +101,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 if (targetUri.equals(serviceUri)) {
                     if (parent.getParent() != null) {
                         List<LogicalBinding<?>> list =
-                                recurseServicePromotionPath(parent.getParent(), service.getUri());
+                                recurseServicePromotionPath(service.getUri(), parent.getParent());
                         if (list.isEmpty()) {
                             // no bindings were overridden
                             bindings.addAll(service.getBindings());
@@ -131,7 +122,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         LogicalComponent<CompositeImplementation> parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
             URI referenceUri = reference.getUri();
-            List<LogicalReference> references = recurseReferencePromotionPath(parent, referenceUri);
+            List<LogicalReference> references = recurseReferencePromotionPath(referenceUri, parent);
             if (references.isEmpty()) {
                 continue;
             }
@@ -160,14 +151,14 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
     }
 
-    private List<LogicalReference> recurseReferencePromotionPath(LogicalComponent<CompositeImplementation> parent, URI referenceUri) {
+    private List<LogicalReference> recurseReferencePromotionPath(URI referenceUri, LogicalComponent<CompositeImplementation> parent) {
         List<LogicalReference> references = new ArrayList<LogicalReference>();
         for (LogicalReference reference : parent.getReferences()) {
             for (URI targetUri : reference.getPromotedUris()) {
                 if (targetUri.equals(referenceUri)) {
                     if (parent.getParent() != null) {
                         List<LogicalReference> list =
-                                recurseReferencePromotionPath(parent.getParent(), reference.getUri());
+                                recurseReferencePromotionPath(reference.getUri(), parent.getParent());
                         if (list.isEmpty()) {
                             // no references were overridden
                             references.add(reference);
@@ -183,4 +174,14 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
         return references;
     }
+
+    @SuppressWarnings({"unchecked"})
+    private List<LogicalBinding<?>> resetParent(List<LogicalBinding<?>> list, Bindable parent) {
+        List<LogicalBinding<?>> newList = new ArrayList<LogicalBinding<?>>();
+        for (LogicalBinding<?> binding : list) {
+            newList.add(new LogicalBinding(binding.getDefinition(), parent));
+        }
+        return newList;
+    }
+
 }

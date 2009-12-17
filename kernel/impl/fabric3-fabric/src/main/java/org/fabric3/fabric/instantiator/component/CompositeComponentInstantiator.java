@@ -40,10 +40,8 @@ package org.fabric3.fabric.instantiator.component;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
-import org.w3c.dom.Document;
 
 import org.fabric3.fabric.instantiator.ComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
@@ -63,80 +61,69 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Instatiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeComponentInstantiator extends AbstractComponentInstantiator {
+public class CompositeComponentInstantiator extends AbstractComponentInstantiator<CompositeImplementation> {
 
-    private ComponentInstantiator atomicComponentInstantiator;
+    private ComponentInstantiator atomicInstantiator;
     private WireInstantiator wireInstantiator;
 
-    public CompositeComponentInstantiator(
-            @Reference(name = "atomicComponentInstantiator") ComponentInstantiator atomicComponentInstantiator,
-            @Reference WireInstantiator wireInstantiator,
-            @Reference(name = "documentLoader") DocumentLoader documentLoader) {
+    public CompositeComponentInstantiator(@Reference(name = "atomicComponentInstantiator") ComponentInstantiator atomicInstantiator,
+                                          @Reference WireInstantiator wireInstantiator,
+                                          @Reference DocumentLoader documentLoader) {
         super(documentLoader);
-        this.atomicComponentInstantiator = atomicComponentInstantiator;
+        this.atomicInstantiator = atomicInstantiator;
         this.wireInstantiator = wireInstantiator;
     }
 
-    @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> LogicalComponent<I> instantiate(LogicalCompositeComponent parent,
-                                                                         Map<String, Document> properties,
-                                                                         ComponentDefinition<I> definition,
-                                                                         InstantiationContext context) {
-        ComponentDefinition<CompositeImplementation> def = (ComponentDefinition<CompositeImplementation>) definition;
-        return LogicalComponent.class.cast(instantiateComposite(parent, properties, def, context));
-    }
-
-    private LogicalCompositeComponent instantiateComposite(LogicalCompositeComponent parent,
-                                                           Map<String, Document> properties,
-                                                           ComponentDefinition<CompositeImplementation> definition,
-                                                           InstantiationContext context) {
+    public LogicalComponent<CompositeImplementation> instantiate(ComponentDefinition<CompositeImplementation> definition,
+                                                                 LogicalCompositeComponent parent,
+                                                                 InstantiationContext context) {
 
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
         Composite composite = definition.getImplementation().getComponentType();
 
         LogicalCompositeComponent component = new LogicalCompositeComponent(uri, definition, parent);
         initializeProperties(component, definition, context);
-        instantiateChildComponents(component, properties, composite, context);
+        instantiateChildComponents(component, composite, context);
         instantiateCompositeServices(component, composite);
-        instantiateCompositeReferences(parent, component, composite);
-        wireInstantiator.instantiateWires(composite, component, context);
+        instantiateCompositeReferences(component, composite);
+        wireInstantiator.instantiateCompositeWires(composite, component, context);
+        parent.addComponent(component);
         return component;
-
     }
 
-    private void instantiateChildComponents(LogicalCompositeComponent parent,
-                                            Map<String, Document> properties,
-                                            Composite composite,
-                                            InstantiationContext context) {
+    @SuppressWarnings({"unchecked"})
+    private void instantiateChildComponents(LogicalCompositeComponent component, Composite composite, InstantiationContext context) {
 
         // create the child components
+        List<LogicalComponent<?>> children = new ArrayList<LogicalComponent<?>>();
         for (ComponentDefinition<? extends Implementation<?>> child : composite.getDeclaredComponents().values()) {
 
             LogicalComponent<?> childComponent;
             if (child.getImplementation() instanceof CompositeImplementation) {
-                childComponent = instantiate(parent, properties, child, context);
+                childComponent = instantiate((ComponentDefinition<CompositeImplementation>) child, component, context);
             } else {
-                childComponent = atomicComponentInstantiator.instantiate(parent, properties, child, context);
+                childComponent = atomicInstantiator.instantiate(child, component, context);
             }
-            parent.addComponent(childComponent);
+            component.addComponent(childComponent);
+            children.add(childComponent);
         }
-
+        // resolve the reference wires after the children have been instantiated and added to the parent, otherwise targets will not resolve
+        for (LogicalComponent<?> child : children) {
+            wireInstantiator.instantiateReferenceWires(child, component, context);
+        }
     }
 
     private void instantiateCompositeServices(LogicalCompositeComponent component, Composite composite) {
-
         ComponentDefinition<CompositeImplementation> definition = component.getDefinition();
         String uriBase = component.getUri().toString() + "/";
 
         for (CompositeService service : composite.getServices().values()) {
-
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
             LogicalService logicalService = new LogicalService(serviceUri, service, component);
@@ -164,23 +151,16 @@ public class CompositeComponentInstantiator extends AbstractComponentInstantiato
                     logicalService.overrideBindings(bindings);
                 }
             }
-
             component.addService(logicalService);
-
         }
-
     }
 
-    private void instantiateCompositeReferences(LogicalCompositeComponent parent,
-                                                LogicalCompositeComponent component,
-                                                Composite composite) {
-
+    private void instantiateCompositeReferences(LogicalCompositeComponent component, Composite composite) {
         ComponentDefinition<CompositeImplementation> definition = component.getDefinition();
         String uriBase = component.getUri().toString() + "/";
 
         // create logical references based on promoted references in the composite definition
         for (CompositeReference reference : composite.getReferences().values()) {
-
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
@@ -199,9 +179,7 @@ public class CompositeComponentInstantiator extends AbstractComponentInstantiato
             }
 
             ComponentReference componentReference = definition.getReferences().get(name);
-
             if (componentReference != null) {
-
                 // Merge/override logical reference configuration created above with reference configuration on the
                 // composite use. For example, when the component is used as an implementation, it may contain
                 // reference configuration. This information must be merged with or used to override any
@@ -213,36 +191,8 @@ public class CompositeComponentInstantiator extends AbstractComponentInstantiato
                     }
                     logicalReference.overrideBindings(bindings);
                 }
-
-                if (!componentReference.getTargets().isEmpty()) {
-                    List<URI> targets = new ArrayList<URI>();
-                    for (URI targetUri : componentReference.getTargets()) {
-                        // the target is relative to the component's parent, not the component
-                        targets.add(URI.create(parent.getUri().toString() + "/" + targetUri));
-                    }
-                    // xcv potentially remove if LogicalWires added to LogicalReference
-                    LogicalCompositeComponent grandParent = parent.getParent();
-                    List<LogicalWire> wires = new ArrayList<LogicalWire>();
-                    if (null != grandParent) {
-                        for (URI targetUri : targets) {
-                            LogicalWire wire = new LogicalWire(grandParent, logicalReference, targetUri);
-                            wires.add(wire);
-                        }
-                        grandParent.overrideWires(logicalReference, wires);
-                    } else {
-                        for (URI targetUri : targets) {
-                            LogicalWire wire = new LogicalWire(parent, logicalReference, targetUri);
-                            wires.add(wire);
-                        }
-                        parent.overrideWires(logicalReference, wires);
-                    }
-                    // end remove
-                }
-
             }
-
             component.addReference(logicalReference);
-
         }
     }
 

@@ -35,28 +35,24 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.component;
+package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
-import org.fabric3.host.domain.AssemblyFailure;
-import org.fabric3.spi.util.UriHelper;
+/**
+ * Instantiates logical wires using the SCA autowire algorithm for unconfigured references.
+ *
+ * @version $Rev$ $Date$
+ */
+public interface AutowireInstantiator {
 
-public class WireSourceNotFound extends AssemblyFailure {
-    private URI sourceUri;
-
-    public WireSourceNotFound(URI sourceUri, URI compositeUri, URI contributionUri) {
-        super(compositeUri, contributionUri);
-        this.sourceUri = sourceUri;
-    }
-
-    public URI getSourceUri() {
-        return sourceUri;
-    }
-
-    public String getMessage() {
-        return "The component " + UriHelper.getDefragmentedName(sourceUri) + " specified as a wire source in "
-                + getComponentUri() + " was not found";
-    }
+    /**
+     * Instantiates logical wires using autowire for unconfigured references of the component and its children. The component and its children will be
+     * updated with any instantiated wires.
+     *
+     * @param component the component
+     * @param context   the instantiation context
+     */
+    void instantiate(LogicalComponent<?> component, InstantiationContext context);
 
 }

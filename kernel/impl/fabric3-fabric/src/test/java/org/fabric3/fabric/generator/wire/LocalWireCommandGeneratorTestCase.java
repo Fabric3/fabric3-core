@@ -44,9 +44,9 @@ import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -85,7 +85,8 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        ComponentReference referenceDefinition = new ComponentReference("reference");
+        referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
         LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
@@ -127,7 +128,8 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
         source.setState(LogicalState.PROVISIONED);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        ComponentReference referenceDefinition = new ComponentReference("reference");
+        referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
         LogicalWire wire = new LogicalWire(composite, reference, URI.create("target#service"));
@@ -171,7 +173,8 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        ComponentReference referenceDefinition = new ComponentReference("reference");
+        referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
@@ -225,7 +228,8 @@ public class LocalWireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        ComponentReference referenceDefinition = new ComponentReference("reference");
+        referenceDefinition.setServiceContract(contract);
         referenceDefinition.setMultiplicity(Multiplicity.ONE_N);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);

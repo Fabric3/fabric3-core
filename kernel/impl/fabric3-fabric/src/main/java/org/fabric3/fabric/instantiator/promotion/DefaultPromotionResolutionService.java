@@ -55,6 +55,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.util.UriHelper;
+import org.fabric3.model.type.component.Multiplicity;
 
 /**
  * Default implementation of the promotion service.
@@ -63,7 +64,38 @@ import org.fabric3.spi.util.UriHelper;
  */
 public class DefaultPromotionResolutionService implements PromotionResolutionService {
 
-    public void resolve(LogicalService logicalService, InstantiationContext context) {
+    public void resolve(LogicalComponent<?> logicalComponent, InstantiationContext context) {
+        resolveReferences(logicalComponent, context);
+        resolveServices(logicalComponent, context);
+        if (logicalComponent instanceof LogicalCompositeComponent) {
+            LogicalCompositeComponent compositeComponent = (LogicalCompositeComponent) logicalComponent;
+            for (LogicalComponent<?> child : compositeComponent.getComponents()) {
+                resolve(child, context);
+            }
+        }
+    }
+
+    private void resolveReferences(LogicalComponent<?> logicalComponent, InstantiationContext context) {
+        for (LogicalReference reference : logicalComponent.getReferences()) {
+            Multiplicity multiplicityValue = reference.getDefinition().getMultiplicity();
+            boolean refMultiplicity = multiplicityValue.equals(Multiplicity.ZERO_N) || multiplicityValue.equals(Multiplicity.ONE_N);
+            if (refMultiplicity || !reference.isResolved()) {
+                // Only resolve references that have not been resolved or ones that are multiplicities since the latter may be reinjected.
+                // Explicitly set the reference to unresolved, since if it was a multiplicity it may have been previously resolved.
+                reference.setResolved(false);
+                resolve(reference, context);
+            }
+        }
+    }
+
+    private void resolveServices(LogicalComponent<?> logicalComponent, InstantiationContext context) {
+        for (LogicalService logicalService : logicalComponent.getServices()) {
+            resolve(logicalService, context);
+        }
+    }
+
+
+    void resolve(LogicalService logicalService, InstantiationContext context) {
 
         URI promotedUri = logicalService.getPromotedUri();
 
@@ -115,7 +147,7 @@ public class DefaultPromotionResolutionService implements PromotionResolutionSer
 
     }
 
-    public void resolve(LogicalReference logicalReference, InstantiationContext context) {
+    void resolve(LogicalReference logicalReference, InstantiationContext context) {
 
         List<URI> promotedUris = logicalReference.getPromotedUris();
 

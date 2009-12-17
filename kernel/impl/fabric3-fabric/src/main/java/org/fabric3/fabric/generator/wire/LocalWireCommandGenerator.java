@@ -135,7 +135,6 @@ public class LocalWireCommandGenerator implements CommandGenerator {
         boolean reinjection = isReinjection(logicalReference, incremental);
 
         for (LogicalWire logicalWire : logicalReference.getWires()) {
-
             URI uri = logicalWire.getTargetUri();
             LogicalComponent<?> target = findTarget(logicalWire);
             if (!reinjection && (logicalWire.getState() == LogicalState.PROVISIONED && target.getState() != LogicalState.MARKED && incremental)) {
@@ -143,8 +142,9 @@ public class LocalWireCommandGenerator implements CommandGenerator {
             }
             String serviceName = uri.getFragment();
             LogicalService targetService = target.getService(serviceName);
-
-            assert targetService != null;
+            if (targetService == null) {
+                throw new AssertionError("Target service not found: " + uri);
+            }
             while (CompositeImplementation.class.isInstance(target.getDefinition().getImplementation())) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) target;
                 URI promoteUri = targetService.getPromotedUri();

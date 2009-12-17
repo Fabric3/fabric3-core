@@ -37,32 +37,27 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.util.Map;
-
-import org.w3c.dom.Document;
-
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
+ * Instantiates a logical component from a component definition.
+ *
  * @version $Rev$ $Date$
  */
-public interface ComponentInstantiator {
+public interface ComponentInstantiator<I extends Implementation<?>> {
 
     /**
-     * Instantiates a logical component from a component definition
+     * Instantiates a logical component and any children from a component definition in the given parent context. Note the parent is updated with the
+     * instantiated component.
      *
-     * @param parent     the parent logical component
-     * @param properties the collection of properties associated with the component
      * @param definition the component definition to instantiate from @return the instantiated logical component
+     * @param parent     the parent logical component
      * @param context    the instantiation context
      * @return an instantiated logical component
      */
-    <I extends Implementation<?>> LogicalComponent<I> instantiate(LogicalCompositeComponent parent,
-                                                                  Map<String, Document> properties,
-                                                                  ComponentDefinition<I> definition,
-                                                                  InstantiationContext context);
+    LogicalComponent<I> instantiate(ComponentDefinition<I> definition, LogicalCompositeComponent parent, InstantiationContext context);
 
 }

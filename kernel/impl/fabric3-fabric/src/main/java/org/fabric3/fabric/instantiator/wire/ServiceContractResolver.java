@@ -35,44 +35,35 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator;
+package org.fabric3.fabric.instantiator.wire;
 
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * Abstraction for resolving reference targets, reference promotions, and serivce promotions. Resolution involves determining the fully-qualified URI
- * of a promoted service, promoted reference, or a reference target.
+ * Resolves the service contract for services and references. Promoted services and references often do not specify a service contract explicitly,
+ * instead using a contract defined further down in the promotion hierarchy. In these cases, the service contract is often inferred from the
+ * implementation (e.g. a Java class) or explicitly declared within the component definition in a composite file.
  *
  * @version $Rev$ $Date$
  */
-public interface ResolutionService {
+public interface ServiceContractResolver {
 
     /**
-     * Resolves promoted references and services as well as reference targets for the logical component. If the component is a composite, its children
-     * will be resolved.
+     * Returns the contract for a service.
      *
-     * @param logicalComponent logical component to be resolved.
-     * @param context          the instantiation context. Recoverable errors and warnings should be reported here.
+     * @param service the service to determine the service contract for.
+     * @return the contract or null if none is found
      */
-    void resolve(LogicalComponent<?> logicalComponent, InstantiationContext context);
+    ServiceContract determineContract(LogicalService service);
 
     /**
-     * Resolves the promotion on the specified logical service.
+     * Returns the contract for a reference.
      *
-     * @param logicalService Logical service whose promotion is to be resolved.
-     * @param context        the instantiation context. Recoverable errors and warnings should be reported here.
+     * @param reference the reference to determine the service contract for.
+     * @return the contract or null if none is found
      */
-    void resolve(LogicalService logicalService, InstantiationContext context);
+    ServiceContract determineContract(LogicalReference reference);
 
-    /**
-     * Resolves the logical reference against the given composite.
-     *
-     * @param logicalReference Logical reference to be resolved.
-     * @param composite        Composite component against which the targets are resolved.
-     * @param context          the instantiation context. Recoverable errors and warnings should be reported here.
-     */
-    void resolve(LogicalReference logicalReference, LogicalCompositeComponent composite, InstantiationContext context);
 }

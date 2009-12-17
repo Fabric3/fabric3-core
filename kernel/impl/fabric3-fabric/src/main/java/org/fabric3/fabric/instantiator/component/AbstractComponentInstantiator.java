@@ -39,7 +39,6 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -57,28 +56,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.instantiator.ComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
+import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.OperationDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalService;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AbstractComponentInstantiator implements ComponentInstantiator {
-
+public abstract class AbstractComponentInstantiator<I extends Implementation<?>> implements ComponentInstantiator<I> {
     private static final DocumentBuilderFactory DOCUMENT_FACTORY;
     private static final XPathFactory XPATH_FACTORY;
 
@@ -92,24 +83,6 @@ public abstract class AbstractComponentInstantiator implements ComponentInstanti
 
     protected AbstractComponentInstantiator(DocumentLoader documentLoader) {
         this.documentLoader = documentLoader;
-    }
-
-    /**
-     * Transfers intents and policy sets declared in the SCDL to the service contract.
-     *
-     * @param serviceDefinition Service definition from the SCDL.
-     */
-    protected void addOperationLevelIntentsAndPolicies(LogicalService logicalService, ServiceDefinition serviceDefinition) {
-        transferIntentsAndPolicies(logicalService.getDefinition().getServiceContract(), serviceDefinition.getOperations());
-    }
-
-    /**
-     * Transfers intents and policy sets declared in the SCDL to the service contract.
-     *
-     * @param referenceDefinition Reference definition from the SCDL.
-     */
-    protected void addOperationLevelIntentsAndPolicies(LogicalReference logicalReference, ReferenceDefinition referenceDefinition) {
-        transferIntentsAndPolicies(logicalReference.getDefinition().getServiceContract(), referenceDefinition.getOperations());
     }
 
     /**
@@ -254,19 +227,5 @@ public abstract class AbstractComponentInstantiator implements ComponentInstanti
         }
     }
 
-    private void transferIntentsAndPolicies(ServiceContract serviceContract, List<OperationDefinition> operationDefinitions) {
-        for (OperationDefinition operationDefinition : operationDefinitions) {
-            for (Operation operation : serviceContract.getOperations()) {
-                if (operationDefinition.getName().equals(operation.getName())) {
-                    for (QName intent : operationDefinition.getIntents()) {
-                        operation.addIntent(intent);
-                    }
-                    for (QName policySet : operationDefinition.getPolicySets()) {
-                        operation.addPolicySet(policySet);
-                    }
-                }
-            }
-        }
-    }
 
 }

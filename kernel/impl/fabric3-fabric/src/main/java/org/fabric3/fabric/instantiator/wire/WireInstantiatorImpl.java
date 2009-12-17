@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.target;
+package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -48,8 +48,10 @@ import org.fabric3.fabric.instantiator.AmbiguousService;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.NoServiceOnComponent;
 import org.fabric3.fabric.instantiator.ServiceNotFound;
-import org.fabric3.fabric.instantiator.TargetResolutionService;
+import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.model.type.component.ComponentReference;
+import org.fabric3.model.type.component.Composite;
+import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
@@ -61,24 +63,59 @@ import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * Resolves an explicit target uri specified on a reference to a service and creates a corresponding wire.
+ * Default implementation of the WireInstantiator.
  *
- * @version $Revsion$ $Date$
+ * @version $Rev$ $Date$
  */
-public class ExplicitTargetResolutionService implements TargetResolutionService {
+public class WireInstantiatorImpl implements WireInstantiator {
     private ServiceContractResolver resolver;
     private ContractMatcher matcher;
 
-    public ExplicitTargetResolutionService(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
+    public WireInstantiatorImpl(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
         this.resolver = resolver;
         this.matcher = matcher;
     }
 
-    public void resolve(LogicalReference logicalReference, LogicalCompositeComponent component, InstantiationContext context) {
+    public void instantiateCompositeWires(Composite composite, LogicalCompositeComponent parent, InstantiationContext context) {
+        String baseUri = parent.getUri().toString();
+        // instantiate wires held directly in the composite and in included composites
+        for (WireDefinition definition : composite.getWires()) {
+            // resolve the source reference
+            // source URI is relative to the parent composite the include is targeted to
+            URI sourceUri = URI.create(baseUri + "/" + UriHelper.getDefragmentedName(definition.getSource()));
+            String referenceName = definition.getSource().getFragment();
+            LogicalReference logicalReference = resolveLogicalReference(referenceName, sourceUri, parent, context);
+            if (logicalReference == null) {
+                // error resolving, continue processing other targets so all errors are collated
+                continue;
+            }
+
+            // resolve the target service
+            URI targetUri = URI.create(baseUri + "/" + definition.getTarget());
+            targetUri = resolveTargetUri(targetUri, parent, context);
+            if (targetUri == null) {
+                // error resolving, continue processing other targets so all errors are collated
+                continue;
+            }
+
+            // create the wire
+            LogicalWire wire = new LogicalWire(parent, logicalReference, targetUri);
+            parent.addWire(logicalReference, wire);
+        }
+    }
+
+
+    public void instantiateReferenceWires(LogicalComponent<?> component, LogicalCompositeComponent parent, InstantiationContext context) {
+        for (LogicalReference logicalReference : component.getReferences()) {
+            resolve(logicalReference, parent, context);
+        }
+    }
+
+    private void resolve(LogicalReference logicalReference, LogicalCompositeComponent component, InstantiationContext context) {
 
         ComponentReference componentReference = logicalReference.getComponentReference();
         if (componentReference == null) {
-            // the reference is not configured on the component definition in the composite
+            // the reference is not configured on the component definition in the composite so there are no wires
             return;
         }
 
@@ -123,9 +160,108 @@ public class ExplicitTargetResolutionService implements TargetResolutionService 
             }
             ((LogicalCompositeComponent) parent).overrideWires(logicalReference, wires);
         }
-        // end remove
         logicalReference.setResolved(true);
     }
+
+    private LogicalReference resolveLogicalReference(String referenceName,
+                                                     URI sourceUri,
+                                                     LogicalCompositeComponent parent,
+                                                     InstantiationContext context) {
+        LogicalComponent<?> source = parent.getComponent(sourceUri);
+        if (source == null) {
+            URI uri = parent.getUri();
+            URI contributionUri = parent.getDefinition().getContributionUri();
+            WireSourceNotFound error = new WireSourceNotFound(sourceUri, uri, contributionUri);
+            context.addError(error);
+            return null;
+        }
+        LogicalReference logicalReference;
+        if (referenceName == null) {
+            // a reference was not specified
+            if (source.getReferences().size() == 0) {
+                URI uri = parent.getUri();
+                URI contributionUri = parent.getDefinition().getContributionUri();
+                WireSourceNoReference error = new WireSourceNoReference(sourceUri, uri, contributionUri);
+                context.addError(error);
+                return null;
+            } else if (source.getReferences().size() != 1) {
+                URI uri = parent.getUri();
+                URI contributionUri = parent.getDefinition().getContributionUri();
+                WireSourceAmbiguousReference error = new WireSourceAmbiguousReference(sourceUri, uri, contributionUri);
+                context.addError(error);
+                return null;
+            }
+            // default to the only reference
+            logicalReference = source.getReferences().iterator().next();
+        } else {
+            logicalReference = source.getReference(referenceName);
+            if (logicalReference == null) {
+                URI uri = parent.getUri();
+                URI contributionUri = parent.getDefinition().getContributionUri();
+                WireSourceReferenceNotFound error = new WireSourceReferenceNotFound(sourceUri, referenceName, uri, contributionUri);
+                context.addError(error);
+                return null;
+            }
+        }
+        return logicalReference;
+    }
+
+    /**
+     * Resolves the wire target URI to a service provided by a component in the parent composite.
+     *
+     * @param targetUri the atrget URI to resolve.
+     * @param parent    the parent composite to resolve against
+     * @param context   the logical context to report errors against
+     * @return the fully resolved wire target URI
+     */
+    private URI resolveTargetUri(URI targetUri, LogicalCompositeComponent parent, InstantiationContext context) {
+        URI targetComponentUri = UriHelper.getDefragmentedName(targetUri);
+        LogicalComponent<?> targetComponent = parent.getComponent(targetComponentUri);
+        if (targetComponent == null) {
+            URI uri = parent.getUri();
+            URI contributionUri = parent.getDefinition().getContributionUri();
+            WireTargetNotFound error = new WireTargetNotFound(targetUri, uri, contributionUri);
+            context.addError(error);
+            return null;
+        }
+
+        String serviceName = targetUri.getFragment();
+        if (serviceName != null) {
+            if (targetComponent.getService(serviceName) == null) {
+                URI uri = parent.getUri();
+                URI contributionUri = parent.getDefinition().getContributionUri();
+                WireTargetServiceNotFound error = new WireTargetServiceNotFound(targetUri, uri, contributionUri);
+                context.addError(error);
+                return null;
+            }
+            return targetUri;
+        } else {
+            LogicalService target = null;
+            for (LogicalService service : targetComponent.getServices()) {
+                if (service.getDefinition().isManagement()) {
+                    continue;
+                }
+                if (target != null) {
+                    URI uri = parent.getUri();
+                    URI contributionUri = parent.getDefinition().getContributionUri();
+                    AmbiguousWireTarget error = new AmbiguousWireTarget(uri, targetUri, contributionUri);
+                    context.addError(error);
+                    return null;
+                }
+                target = service;
+            }
+            if (target == null) {
+                URI uri = parent.getUri();
+                URI contributionUri = parent.getDefinition().getContributionUri();
+                WireTargetNoService error = new WireTargetNoService(targetUri, uri, contributionUri);
+                context.addError(error);
+                return null;
+            }
+            return target.getUri();
+        }
+
+    }
+
 
     private LogicalService resolveByUri(LogicalReference reference,
                                         URI targetUri,
