@@ -70,7 +70,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     @SuppressWarnings({"unchecked"})
-    public  LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
+    public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
         Implementation<?> impl = definition.getImplementation();
         AbstractComponentType<?, ?, ?, ?> componentType = impl.getComponentType();
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
