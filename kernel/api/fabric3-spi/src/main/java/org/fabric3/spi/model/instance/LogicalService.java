@@ -62,6 +62,7 @@ public class LogicalService extends Bindable {
 
     private ServiceDefinition definition;
     private URI promote;
+    private LogicalComponent<?> leafComponent;
 
     /**
      * Default constructor
@@ -78,6 +79,7 @@ public class LogicalService extends Bindable {
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
+        leafComponent = parent;
     }
 
     /**
@@ -105,5 +107,24 @@ public class LogicalService extends Bindable {
      */
     public void setPromotedUri(URI uri) {
         this.promote = uri;
+    }
+
+    /**
+     * Returns the leaf component this service is promoted from. The leaf component is determined by descending down the service promotion
+     * hierarchy to the original service provided by a component.
+     *
+     * @return the leaf component
+     */
+    public LogicalComponent<?> getLeafComponent() {
+        return leafComponent;
+    }
+
+    /**
+     * Sets the leaf component
+     *
+     * @param component the leaf component
+     */
+    public void setLeafComponent(LogicalComponent<?> component) {
+        this.leafComponent = component;
     }
 }

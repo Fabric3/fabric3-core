@@ -39,12 +39,16 @@ package org.fabric3.fabric.instantiator.promotion;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -55,131 +59,248 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * Default implementation of the PromotionNormalizer.
+ * <p/>
+ * The service promotion normalization algorithm works as follows: <li>A reverse-ordered list of services is constructed by walking the service
+ * promotion hierarchy from a leaf component to the domain component. The leaf service is added as the last list entry.
+ * <p/>
+ * <li>The list is iterated in order, starting with the service nearest the domain level.
+ * <p/>
+ * <li>For each entry, bindings are added or replaced (according to the overide setting for the service), policies added, a service contract set if
+ * not defined, and the leaf component set as the leaf parent. <li>
+ * <p/>
+ * </ul> The reference promotion algorithm works as follows: <li> A reverse-ordered list of references is constructed by walking the reference
+ * promotion hierarchy from a leaf component to the domain component. The leaf reference is added as the last list entry.
+ * <p/>
+ * <li>The list is iterated in order, starting with the reference nearest the domain level.
+ * <p/>
+ * <li>For each entry, bindings are added or replaced (according to the overide setting for the reference), policies added and a service contract set
+ * if not defined
+ * <p/>
+ * <li>The list is iterated a second time and wires for references are examined with their targets pushed down to the next (child) level in the
+ * hierarchy.
  *
  * @version $Rev$ $Date$
  */
 public class PromotionNormalizerImpl implements PromotionNormalizer {
 
-    public void normalize(LogicalComponent<?> component) {
-        normalizeServiceBindings(component);
-        normalizeReferenceBindingsAndWires(component);
+    public void normalize(LogicalComponent<?> component, InstantiationContext context) {
+        normalizeServicePromotions(component);
+        normalizeReferenceAndWirePromotions(component);
     }
 
-    private void normalizeServiceBindings(LogicalComponent<?> component) {
-        LogicalComponent<CompositeImplementation> parent = component.getParent();
+    private void normalizeServicePromotions(LogicalComponent<?> component) {
         for (LogicalService service : component.getServices()) {
-            URI serviceUri = service.getUri();
-            List<LogicalBinding<?>> bindings = recurseServicePromotionPath(serviceUri, parent);
-            if (bindings.isEmpty()) {
+            LinkedList<LogicalService> services = new LinkedList<LogicalService>();
+            // add the leaf service as the last element
+            services.add(service);
+            getPromotionHierarchy(service, services);
+            if (services.isEmpty()) {
                 continue;
             }
-            service.overrideBindings(resetParent(bindings, service));
+            processServicePromotions(services);
         }
     }
 
-    private List<LogicalBinding<?>> recurseServicePromotionPath(URI serviceUri, LogicalComponent<CompositeImplementation> parent) {
+    private void normalizeReferenceAndWirePromotions(LogicalComponent<?> component) {
+        for (LogicalReference reference : component.getReferences()) {
+            LinkedList<LogicalReference> references = new LinkedList<LogicalReference>();
+            // add the leaf (promoted) reference as the last element
+            references.add(reference);
+            getPromotionHierarchy(reference, references);
+            if (references.isEmpty()) {
+                continue;
+            }
+            processReferencePromotions(references);
+            processWirePromotions(references);
+        }
+    }
+
+    /**
+     * Processes the service promotion hierarchy by updating bindings, policies, and the service contract.
+     *
+     * @param services the sorted service promotion hierarchy
+     */
+    private void processServicePromotions(LinkedList<LogicalService> services) {
+        if (services.size() < 2) {
+            // no promotion evaluation needed
+            return;
+        }
+        LogicalService leafService = services.getLast();
+        LogicalComponent<?> leafComponent = leafService.getParent();
         List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-        for (LogicalService service : parent.getServices()) {
-            URI targetUri = service.getPromotedUri();
+        ServiceContract contract = leafService.getDefinition().getServiceContract();
+        Set<QName> intents = new HashSet<QName>();
+        Set<QName> policySets = new HashSet<QName>();
+
+        for (LogicalService service : services) {
+            if (service.getDefinition().getServiceContract() == null) {
+                service.setServiceContract(contract);
+            }
+            // TODO determine if bindings should be overriden - for now, override
+            if (service.getBindings().isEmpty()) {
+                service.overrideBindings(bindings);
+            } else {
+                bindings.clear();
+                bindings.addAll(service.getBindings());
+            }
+            if (service.getIntents().isEmpty()) {
+                service.addIntents(intents);
+            } else {
+                intents.clear();
+                intents.addAll(service.getIntents());
+            }
+            if (service.getPolicySets().isEmpty()) {
+                service.addPolicySets(policySets);
+            } else {
+                policySets.clear();
+                policySets.addAll(service.getPolicySets());
+            }
+            service.setLeafComponent(leafComponent);
+        }
+
+    }
+
+    /**
+     * Processes the reference promotion hierarchy by updating bindings, policies, and the service contract.
+     *
+     * @param references the sorted reference promotion hierarchy
+     */
+    private void processReferencePromotions(LinkedList<LogicalReference> references) {
+        if (references.size() < 2) {
+            // no promotion evaluation needed
+            return;
+        }
+        LogicalReference leafReference = references.getLast();
+        List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+        ServiceContract contract = leafReference.getDefinition().getServiceContract();
+        Set<QName> intents = new HashSet<QName>();
+        Set<QName> policySets = new HashSet<QName>();
+
+        for (LogicalReference reference : references) {
+            if (reference.getDefinition().getServiceContract() == null) {
+                reference.setServiceContract(contract);
+            }
+            // TODO determine if bindings should be overriden - for now, override
+            if (reference.getBindings().isEmpty()) {
+                reference.overrideBindings(bindings);
+            } else {
+                bindings.clear();
+                bindings.addAll(reference.getBindings());
+            }
+            if (reference.getIntents().isEmpty()) {
+                reference.addIntents(intents);
+            } else {
+                intents.clear();
+                intents.addAll(reference.getIntents());
+            }
+            if (reference.getPolicySets().isEmpty()) {
+                reference.addPolicySets(policySets);
+            } else {
+                policySets.clear();
+                policySets.addAll(reference.getPolicySets());
+            }
+        }
+
+    }
+
+    /**
+     * Processes the wiring hierarchy by pushing wires down to child components.
+     *
+     * @param references the sorted reference promotion hierarchy
+     */
+    // TODO handle wire addition
+    private void processWirePromotions(LinkedList<LogicalReference> references) {
+        if (references.size() < 2) {
+            // no promotion evaluation needed
+            return;
+        }
+        List<LogicalService> newTargets = new ArrayList<LogicalService>();
+
+        for (LogicalReference reference : references) {
+            LogicalCompositeComponent composite = reference.getParent().getParent();
+            if (!newTargets.isEmpty()) {
+                List<LogicalWire> newWires = new ArrayList<LogicalWire>();
+                for (LogicalService target : newTargets) {
+                    QName deployable = composite.getDeployable();
+                    LogicalWire newWire = new LogicalWire(reference.getParent(), reference, target, deployable);
+                    newWires.add(newWire);
+                }
+                composite.overrideWires(reference, newWires);
+                newTargets = new ArrayList<LogicalService>();
+            }
+            for (LogicalWire wire : reference.getWires()) {
+                // currently only supports overriding wires; wire additions must also be supported
+                LogicalService target = wire.getTarget();
+                newTargets.add(target);
+            }
+        }
+
+    }
+
+
+    /**
+     * Updates the list of services with the promotion hierarchy for the given service. The list is populated in reverse order so that the leaf
+     * (promoted) service is stored last.
+     *
+     * @param service  the current service to ascend from
+     * @param services the list
+     */
+    private void getPromotionHierarchy(LogicalService service, LinkedList<LogicalService> services) {
+        LogicalComponent<CompositeImplementation> parent = service.getParent().getParent();
+        URI serviceUri = service.getUri();
+        for (LogicalService promotion : parent.getServices()) {
+            URI targetUri = promotion.getPromotedUri();
             if (targetUri.getFragment() == null) {
                 // no service specified
                 if (targetUri.equals(UriHelper.getDefragmentedName(serviceUri))) {
+                    services.addFirst(promotion);
                     if (parent.getParent() != null) {
-                        List<LogicalBinding<?>> list = recurseServicePromotionPath(service.getUri(), parent.getParent());
-                        if (list.isEmpty()) {
-                            // no bindings were overridden
-                            bindings.addAll(service.getBindings());
-                        } else {
-                            bindings.addAll(list);
-                        }
-                    } else {
-                        bindings.addAll(service.getBindings());
+                        getPromotionHierarchy(promotion, services);
                     }
                 }
 
             } else {
                 if (targetUri.equals(serviceUri)) {
+                    services.addFirst(promotion);
                     if (parent.getParent() != null) {
-                        List<LogicalBinding<?>> list = recurseServicePromotionPath(service.getUri(), parent.getParent());
-                        if (list.isEmpty()) {
-                            // no bindings were overridden
-                            bindings.addAll(service.getBindings());
-                        } else {
-                            bindings.addAll(list);
-                        }
-
-                    } else {
-                        bindings.addAll(service.getBindings());
+                        getPromotionHierarchy(promotion, services);
                     }
                 }
             }
         }
-        return bindings;
     }
 
-    private void normalizeReferenceBindingsAndWires(LogicalComponent<?> component) {
-        LogicalComponent<CompositeImplementation> parent = component.getParent();
-        for (LogicalReference reference : component.getReferences()) {
-            URI referenceUri = reference.getUri();
-            List<LogicalReference> references = recurseReferencePromotionPath(referenceUri, parent);
-            if (references.isEmpty()) {
-                continue;
-            }
-            List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-            List<LogicalWire> wiresFromPromotedReferences = new ArrayList<LogicalWire>();
-            List<LogicalWire> wires = new ArrayList<LogicalWire>();
-            for (LogicalReference promoted : references) {
-                bindings.addAll(promoted.getBindings());
-                for (LogicalWire logicalWire : promoted.getWires()) {
-                    wiresFromPromotedReferences.add(logicalWire);
-
-                }
-            }
-            if (!bindings.isEmpty()) {
-                reference.overrideBindings(resetParent(bindings, reference));
-            }
-            if (!wiresFromPromotedReferences.isEmpty()) {
-                for (LogicalWire promotedWire : wiresFromPromotedReferences) {
-                    LogicalService target = promotedWire.getTarget();
-                    QName deployable = promotedWire.getParent().getDeployable();
-                    LogicalWire wire = new LogicalWire(parent, reference, target, deployable);
-                    wires.add(wire);
-                }
-                ((LogicalCompositeComponent) parent).overrideWires(reference, wires);
-            }
-        }
-    }
-
-    private List<LogicalReference> recurseReferencePromotionPath(URI referenceUri, LogicalComponent<CompositeImplementation> parent) {
-        List<LogicalReference> references = new ArrayList<LogicalReference>();
-        for (LogicalReference reference : parent.getReferences()) {
-            for (URI targetUri : reference.getPromotedUris()) {
-                if (targetUri.equals(referenceUri)) {
-                    if (parent.getParent() != null) {
-                        List<LogicalReference> list =  recurseReferencePromotionPath(reference.getUri(), parent.getParent());
-                        if (list.isEmpty()) {
-                            // no references were overridden
-                            references.add(reference);
-                        } else {
-                            references.addAll(list);
+    /**
+     * Updates the list of references with the promotion hierarchy for the given reference. The list is populated in reverse order so that the leaf
+     * (promoted) reference is stored last.
+     *
+     * @param reference  the current service to ascend from
+     * @param references the list
+     */
+    private void getPromotionHierarchy(LogicalReference reference, LinkedList<LogicalReference> references) {
+        LogicalComponent<CompositeImplementation> parent = reference.getParent().getParent();
+        URI referenceUri = reference.getUri();
+        for (LogicalReference promotion : parent.getReferences()) {
+            List<URI> promotedUris = promotion.getPromotedUris();
+            for (URI promotedUri : promotedUris) {
+                if (promotedUri.getFragment() == null) {
+                    if (promotedUri.equals(UriHelper.getDefragmentedName(referenceUri))) {
+                        references.addFirst(promotion);
+                        if (parent.getParent() != null) {
+                            getPromotionHierarchy(promotion, references);
                         }
-
-                    } else {
-                        references.add(reference);
+                    }
+                } else {
+                    if (promotedUri.equals(referenceUri)) {
+                        references.addFirst(promotion);
+                        if (parent.getParent() != null) {
+                            getPromotionHierarchy(promotion, references);
+                        }
                     }
                 }
             }
-        }
-        return references;
-    }
 
-    @SuppressWarnings({"unchecked"})
-    private List<LogicalBinding<?>> resetParent(List<LogicalBinding<?>> list, Bindable parent) {
-        List<LogicalBinding<?>> newList = new ArrayList<LogicalBinding<?>>();
-        for (LogicalBinding<?> binding : list) {
-            newList.add(new LogicalBinding(binding.getDefinition(), parent));
         }
-        return newList;
     }
 
 }

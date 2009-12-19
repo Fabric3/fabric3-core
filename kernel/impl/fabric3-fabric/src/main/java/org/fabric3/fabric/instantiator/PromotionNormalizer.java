@@ -51,7 +51,8 @@ public interface PromotionNormalizer {
      * will be walked to determine the set of promoted services and references.
      *
      * @param component the leaf component
+     * @param context   the instantiation context
      */
-    void normalize(LogicalComponent<?> component);
+    void normalize(LogicalComponent<?> component, InstantiationContext context);
 
 }

@@ -59,6 +59,7 @@ public abstract class Bindable extends LogicalAttachPoint {
     private static final long serialVersionUID = 570403036597601956L;
     private List<LogicalBinding<?>> bindings;
     private List<LogicalBinding<?>> callbackBindings;
+    private ServiceContract serviceContract;
 
     /**
      * Initializes the URI and parent for the service or the reference.
@@ -72,6 +73,7 @@ public abstract class Bindable extends LogicalAttachPoint {
         super(uri, contract, parent, type);
         bindings = new ArrayList<LogicalBinding<?>>();
         callbackBindings = new ArrayList<LogicalBinding<?>>();
+        serviceContract = contract;
     }
 
     /**
@@ -125,6 +127,15 @@ public abstract class Bindable extends LogicalAttachPoint {
     }
 
     /**
+     * Adds a collection of bindings.
+     *
+     * @param bindings the bindings
+     */
+    public void addBindings(List<LogicalBinding<?>> bindings) {
+        bindings.addAll(bindings);
+    }
+
+    /**
      * Adds a callback binding to the service or the reference.
      *
      * @param binding Binding to be added to the service or the reference.
@@ -132,6 +143,26 @@ public abstract class Bindable extends LogicalAttachPoint {
     public final void addCallbackBinding(LogicalBinding<?> binding) {
         binding.setCallback(true);
         callbackBindings.add(binding);
+    }
+
+
+    /**
+     * The effective service contract for this bindable. The effective contract may be set through promotion.
+     *
+     * @return the effective service contract for this bindable
+     */
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    /**
+     * Sets the effective service contract for this bindable.
+     *
+     * @param serviceContract the contract
+     */
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+        createOperations(serviceContract);
     }
 
 }

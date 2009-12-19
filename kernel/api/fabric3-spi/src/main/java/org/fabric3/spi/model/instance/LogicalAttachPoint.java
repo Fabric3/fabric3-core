@@ -65,6 +65,23 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
      */
     public LogicalAttachPoint(URI uri, ServiceContract contract, LogicalComponent<?> parent, QName type) {
         super(uri, parent, type);
+        createOperations(contract);
+    }
+
+    public List<LogicalOperation> getOperations() {
+        return operations;
+    }
+
+    public List<LogicalOperation> getCallbackOperations() {
+        return callbackOperations;
+    }
+
+    /**
+     * Instantiates logical operations from a service contract
+     *
+     * @param contract the contract
+     */
+    protected final void createOperations(ServiceContract contract) {
         operations = new ArrayList<LogicalOperation>();
         callbackOperations = new ArrayList<LogicalOperation>();
         if (contract != null) {
@@ -79,14 +96,6 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
                 }
             }
         }
-    }
-
-    public List<LogicalOperation> getOperations() {
-        return operations;
-    }
-
-    public List<LogicalOperation> getCallbackOperations() {
-        return callbackOperations;
     }
 
 }

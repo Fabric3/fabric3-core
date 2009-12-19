@@ -53,8 +53,8 @@ import org.fabric3.model.type.component.CompositeImplementation;
 public class LogicalCompositeComponent extends LogicalComponent<CompositeImplementation> {
     private static final long serialVersionUID = 6661201121307925462L;
 
-    private final Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
-    private final Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
+    private Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
+    private Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
 
     /**
      * Instantiates a composite component.
@@ -73,7 +73,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param logicalReference the wire source
      * @param logicalWire      Wire to be added to this composite component.
      */
-    public final void addWire(LogicalReference logicalReference, LogicalWire logicalWire) {
+    public void addWire(LogicalReference logicalReference, LogicalWire logicalWire) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
             logicalWires = new ArrayList<LogicalWire>();
@@ -88,7 +88,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param logicalReference the source for the wires
      * @param logicalWires     the list of wires
      */
-    public final void overrideWires(LogicalReference logicalReference, List<LogicalWire> logicalWires) {
+    public void overrideWires(LogicalReference logicalReference, List<LogicalWire> logicalWires) {
         wires.put(logicalReference, logicalWires);
     }
 
@@ -107,7 +107,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * @param logicalReference Logical reference that sources the wire.
      * @return Resolved targets for the reference.
      */
-    public final List<LogicalWire> getWires(LogicalReference logicalReference) {
+    public List<LogicalWire> getWires(LogicalReference logicalReference) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
             logicalWires = new ArrayList<LogicalWire>();

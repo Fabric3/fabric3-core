@@ -73,7 +73,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
      *
      * @param parent     component within which the wire is defined.
      * @param source     the source reference of the wire
-     * @param target the target service
+     * @param target     the target service
      * @param deployable the target service deployable
      */
     public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, QName deployable) {
@@ -113,6 +113,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
 
     /**
      * Policy sets are not supported on wires.
+     *
      * @return policy sets declared on the SCA artifact.
      */
     @Override

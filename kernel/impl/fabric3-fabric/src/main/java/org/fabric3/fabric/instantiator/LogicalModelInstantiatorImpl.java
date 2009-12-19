@@ -105,9 +105,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
         // @FIXME XCV log warning about domain level services and references being ignored: composite.getServices(), composite.getReferences()
 
-        // normalize bindings for each new component
+        // normalize bindings for each new component - this must come before resolution since target URIs may be inherited
         for (LogicalComponent<?> component : newComponents) {
-            normalize(component);
+            normalize(component, context);
         }
 
         // resolve services and references - evaluate all references since reinjection may apply
@@ -209,15 +209,16 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      * Normalizes the component and any children
      *
      * @param component the component to normalize
+     * @param context   the instantiation context
      */
-    private void normalize(LogicalComponent<?> component) {
+    private void normalize(LogicalComponent<?> component, InstantiationContext context) {
         if (component instanceof LogicalCompositeComponent) {
             LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
             for (LogicalComponent<?> child : composite.getComponents()) {
-                normalize(child);
+                normalize(child, context);
             }
         } else {
-            promotionNormalizer.normalize(component);
+            promotionNormalizer.normalize(component, context);
         }
 
     }

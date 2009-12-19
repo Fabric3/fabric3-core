@@ -170,8 +170,8 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     }
 
     public void generateWireTarget(JavaTargetDefinition definition, LogicalService service) throws GenerationException {
-        LogicalComponent<?> component = service.getParent();
-        URI uri = service.getUri();
+        LogicalComponent<?> component = service.getLeafComponent();
+        URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);
 
         // assume only wires to composite scope components can be optimized

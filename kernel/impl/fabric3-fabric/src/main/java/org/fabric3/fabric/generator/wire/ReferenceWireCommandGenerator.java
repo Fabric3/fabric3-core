@@ -88,7 +88,7 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
             for (LogicalBinding<?> logicalBinding : logicalReference.getBindings()) {
                 generateCommand(component, logicalBinding, command, incremental, reinjection, false);
             }
-            if (logicalReference.getDefinition().getServiceContract().getCallbackContract() != null) {
+            if (logicalReference.getServiceContract().getCallbackContract() != null) {
                 List<LogicalBinding<?>> callbackBindings = logicalReference.getCallbackBindings();
                 boolean bindings = !logicalReference.getBindings().isEmpty();
                 if (bindings) {
