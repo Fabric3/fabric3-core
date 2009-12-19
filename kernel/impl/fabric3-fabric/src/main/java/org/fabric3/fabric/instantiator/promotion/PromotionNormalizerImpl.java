@@ -140,19 +140,19 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             if (service.getBindings().isEmpty()) {
                 service.overrideBindings(bindings);
             } else {
-                bindings.clear();
+                bindings = new ArrayList<LogicalBinding<?>>();
                 bindings.addAll(service.getBindings());
             }
             if (service.getIntents().isEmpty()) {
                 service.addIntents(intents);
             } else {
-                intents.clear();
+                intents = new HashSet<QName>();
                 intents.addAll(service.getIntents());
             }
             if (service.getPolicySets().isEmpty()) {
                 service.addPolicySets(policySets);
             } else {
-                policySets.clear();
+                policySets = new HashSet<QName>();
                 policySets.addAll(service.getPolicySets());
             }
             service.setLeafComponent(leafComponent);
@@ -184,19 +184,19 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             if (reference.getBindings().isEmpty()) {
                 reference.overrideBindings(bindings);
             } else {
-                bindings.clear();
+                bindings = new ArrayList<LogicalBinding<?>>();
                 bindings.addAll(reference.getBindings());
             }
             if (reference.getIntents().isEmpty()) {
                 reference.addIntents(intents);
             } else {
-                intents.clear();
+                intents = new HashSet<QName>();
                 intents.addAll(reference.getIntents());
             }
             if (reference.getPolicySets().isEmpty()) {
                 reference.addPolicySets(policySets);
             } else {
-                policySets.clear();
+                policySets = new HashSet<QName>();
                 policySets.addAll(reference.getPolicySets());
             }
         }
