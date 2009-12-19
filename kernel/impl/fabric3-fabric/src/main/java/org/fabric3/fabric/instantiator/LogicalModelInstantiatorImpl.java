@@ -66,15 +66,16 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private QName SYNTHENTIC_COMPOSITE = new QName(Namespaces.IMPLEMENTATION, "SyntheticComposite");
 
     private PromotionNormalizer promotionNormalizer;
-    private ComponentInstantiator atomicComponentInstantiator;
-    private ComponentInstantiator compositeComponentInstantiator;
+    private AtomicComponentInstantiator atomicComponentInstantiator;
+    private CompositeComponentInstantiator compositeComponentInstantiator;
     private WireInstantiator wireInstantiator;
     private PromotionResolutionService promotionResolutionService;
     private AutowireInstantiator autowireService;
 
-    public LogicalModelInstantiatorImpl(@Reference(name = "compositeComponentInstantiator") ComponentInstantiator compositeComponentInstantiator,
-                                        @Reference(name = "atomicComponentInstantiator") ComponentInstantiator atomicComponentInstantiator,
-                                        @Reference WireInstantiator wireInstantiator, @Reference PromotionNormalizer promotionNormalizer,
+    public LogicalModelInstantiatorImpl(@Reference CompositeComponentInstantiator compositeComponentInstantiator,
+                                        @Reference AtomicComponentInstantiator atomicComponentInstantiator,
+                                        @Reference WireInstantiator wireInstantiator,
+                                        @Reference PromotionNormalizer promotionNormalizer,
                                         @Reference PromotionResolutionService promotionResolutionService,
                                         @Reference AutowireInstantiator autowireService) {
         this.promotionNormalizer = promotionNormalizer;

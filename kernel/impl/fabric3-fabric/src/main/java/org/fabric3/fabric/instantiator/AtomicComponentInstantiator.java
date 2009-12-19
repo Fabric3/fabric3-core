@@ -38,16 +38,15 @@
 package org.fabric3.fabric.instantiator;
 
 import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates a logical component from a component definition.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8430 $ $Date: 2009-12-17 17:11:10 +0100 (Thu, 17 Dec 2009) $
  */
-public interface ComponentInstantiator<I extends Implementation<?>> {
+public interface AtomicComponentInstantiator {
 
     /**
      * Instantiates a logical component and any children from a component definition in the given parent context. Note the parent is updated with the
@@ -58,6 +57,6 @@ public interface ComponentInstantiator<I extends Implementation<?>> {
      * @param context    the instantiation context
      * @return an instantiated logical component
      */
-    LogicalComponent<I> instantiate(ComponentDefinition<I> definition, LogicalCompositeComponent parent, InstantiationContext context);
+    LogicalComponent<?> instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context);
 
 }

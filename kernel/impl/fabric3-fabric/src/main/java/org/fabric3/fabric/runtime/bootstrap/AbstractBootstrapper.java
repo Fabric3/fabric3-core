@@ -51,13 +51,13 @@ import javax.management.MBeanServer;
 import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.fabric.instantiator.ComponentInstantiator;
-import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator;
+import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.FabricNames;
 import org.fabric3.fabric.runtime.RuntimeServices;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
+import org.fabric3.fabric.xml.DocumentLoader;
+import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
@@ -70,6 +70,7 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.model.type.component.Composite;
@@ -92,7 +93,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.fabric3.spi.xml.XMLFactory;
-import org.fabric3.implementation.system.model.SystemImplementation;
 
 /**
  * The base Bootstrapper implementation.
@@ -105,7 +105,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
 
     // bootstrap components - these are disposed of after the core runtime system components are booted
     private final JavaContractProcessor contractProcessor;
-    private final ComponentInstantiator instantiator;
+    private final AtomicComponentInstantiator instantiator;
     private final ImplementationProcessor<SystemImplementation> systemImplementationProcessor;
     private ComponentSynthesizer synthesizer;
 
@@ -134,7 +134,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
         DocumentLoader documentLoader = new DocumentLoaderImpl();
-        instantiator = new AtomicComponentInstantiator(documentLoader);
+        instantiator = new AtomicComponentInstantiatorImpl(documentLoader);
         systemImplementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 

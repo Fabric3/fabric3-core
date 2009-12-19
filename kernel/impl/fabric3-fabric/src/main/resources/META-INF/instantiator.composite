@@ -21,17 +21,14 @@
 
     <component name="LogicalModelInstantiator">
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl"/>
-        <reference name="atomicComponentInstantiator" target="AtomicComponentInstantiator"/>
-        <reference name="compositeComponentInstantiator" target="CompositeComponentInstantiator"/>
     </component>
 
     <component name="AtomicComponentInstantiator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl"/>
     </component>
 
     <component name="CompositeComponentInstantiator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.CompositeComponentInstantiator"/>
-        <reference name="atomicComponentInstantiator" target="AtomicComponentInstantiator"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl"/>
     </component>
 
     <component name="WireInstantiator">

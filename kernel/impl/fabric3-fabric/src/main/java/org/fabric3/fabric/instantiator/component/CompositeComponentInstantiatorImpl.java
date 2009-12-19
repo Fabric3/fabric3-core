@@ -43,7 +43,8 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.instantiator.ComponentInstantiator;
+import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.fabric.xml.DocumentLoader;
@@ -67,14 +68,14 @@ import org.fabric3.spi.model.instance.LogicalService;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeComponentInstantiator extends AbstractComponentInstantiator<CompositeImplementation> {
+public class CompositeComponentInstantiatorImpl extends AbstractComponentInstantiator implements CompositeComponentInstantiator {
 
-    private ComponentInstantiator atomicInstantiator;
+    private AtomicComponentInstantiator atomicInstantiator;
     private WireInstantiator wireInstantiator;
 
-    public CompositeComponentInstantiator(@Reference(name = "atomicComponentInstantiator") ComponentInstantiator atomicInstantiator,
-                                          @Reference WireInstantiator wireInstantiator,
-                                          @Reference DocumentLoader documentLoader) {
+    public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,
+                                              @Reference WireInstantiator wireInstantiator,
+                                              @Reference DocumentLoader documentLoader) {
         super(documentLoader);
         this.atomicInstantiator = atomicInstantiator;
         this.wireInstantiator = wireInstantiator;

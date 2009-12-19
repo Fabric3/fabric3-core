@@ -101,14 +101,16 @@ import org.fabric3.fabric.generator.wire.ResourceWireCommandGenerator;
 import org.fabric3.fabric.generator.wire.ServiceWireCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
+import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
+import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiator;
-import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiator;
+import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
+import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService;
 import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
@@ -242,11 +244,11 @@ public class BootstrapAssemblyFactory {
 
         PromotionNormalizer normalizer = new PromotionNormalizerImpl();
         DocumentLoader documentLoader = new DocumentLoaderImpl();
-        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiator(documentLoader);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl(documentLoader);
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(resolver, matcher);
         CompositeComponentInstantiator compositeInstantiator =
-                new CompositeComponentInstantiator(atomicInstantiator, wireInstantiator, documentLoader);
+                new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, documentLoader);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,

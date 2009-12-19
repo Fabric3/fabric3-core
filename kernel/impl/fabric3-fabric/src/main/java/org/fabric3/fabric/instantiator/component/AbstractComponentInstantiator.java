@@ -56,20 +56,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import org.fabric3.fabric.instantiator.ComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
+ * Contains functionality common to different component instantiators.
+ *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractComponentInstantiator<I extends Implementation<?>> implements ComponentInstantiator<I> {
+public abstract class AbstractComponentInstantiator {
     private static final DocumentBuilderFactory DOCUMENT_FACTORY;
     private static final XPathFactory XPATH_FACTORY;
 
@@ -92,9 +92,7 @@ public abstract class AbstractComponentInstantiator<I extends Implementation<?>>
      * @param definition the definition of the component
      * @param context    the instantiation conte
      */
-    protected <I extends Implementation<?>> void initializeProperties(LogicalComponent<I> component,
-                                                                      ComponentDefinition<I> definition,
-                                                                      InstantiationContext context) {
+    protected void initializeProperties(LogicalComponent<?> component, ComponentDefinition<?> definition, InstantiationContext context) {
 
         Map<String, PropertyValue> propertyValues = definition.getPropertyValues();
         AbstractComponentType<?, ?, ?, ?> componentType = definition.getComponentType();

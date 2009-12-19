@@ -42,10 +42,13 @@ import java.net.URI;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.instantiator.ComponentInstantiator;
+import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.implementation.system.singleton.SingletonComponent;
+import org.fabric3.implementation.system.singleton.SingletonImplementation;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Scope;
@@ -70,9 +73,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.fabric3.spi.synthesize.InvalidServiceContractException;
-import org.fabric3.implementation.system.model.SystemImplementation;
-import org.fabric3.implementation.system.singleton.SingletonComponent;
-import org.fabric3.implementation.system.singleton.SingletonImplementation;
 
 /**
  * Implementation that synthesizes a singleton component from an existing object instance.
@@ -82,7 +82,7 @@ import org.fabric3.implementation.system.singleton.SingletonImplementation;
 public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
     private ImplementationProcessor<SystemImplementation> implementationProcessor;
-    private ComponentInstantiator instantiator;
+    private AtomicComponentInstantiator instantiator;
     private LogicalComponentManager lcm;
     private ComponentManager componentManager;
     private JavaContractProcessor contractProcessor;
@@ -90,7 +90,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
     @Constructor
     public SingletonComponentSynthesizer(@Reference ImplementationProcessor<SystemImplementation> implementationProcessor,
-                                         @Reference ComponentInstantiator instantiator,
+                                         @Reference AtomicComponentInstantiator instantiator,
                                          @Reference LogicalComponentManager lcm,
                                          @Reference ComponentManager componentManager,
                                          @Reference JavaContractProcessor contractProcessor,
@@ -99,7 +99,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     }
 
     public SingletonComponentSynthesizer(ImplementationProcessor<SystemImplementation> implementationProcessor,
-                                         ComponentInstantiator instantiator,
+                                         AtomicComponentInstantiator instantiator,
                                          LogicalComponentManager lcm,
                                          ComponentManager componentManager,
                                          JavaContractProcessor contractProcessor,
@@ -126,13 +126,12 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     }
 
 
-    @SuppressWarnings({"unchecked"})
-    private <S, I extends S> LogicalComponent<Implementation<?>> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
+    private <S, I extends S> LogicalComponent<?> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException, AssemblyException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         ComponentDefinition<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
         InstantiationContext context = new InstantiationContext();
-        LogicalComponent<Implementation<?>> logical = instantiator.instantiate(definition, domain, context);
+        LogicalComponent<?> logical = instantiator.instantiate(definition, domain, context);
         if (context.hasErrors()) {
             throw new AssemblyException(context.getErrors());
         }

@@ -45,6 +45,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
+import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
@@ -106,9 +107,9 @@ public class InstantiationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiator(null);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl(null);
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(null, null);
-        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiator(atomicInstantiator, wireInstantiator, null);
+        CompositeComponentInstantiatorImpl compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, null);
         AutowireInstantiator autowireService = EasyMock.createMock(AutowireInstantiator.class);
         PromotionResolutionService promotionResolutionService = EasyMock.createMock(PromotionResolutionService.class);
         PromotionNormalizer normalizer = EasyMock.createMock(PromotionNormalizer.class);
