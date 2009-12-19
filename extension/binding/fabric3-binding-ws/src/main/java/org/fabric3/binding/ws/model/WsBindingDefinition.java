@@ -73,7 +73,7 @@ public class WsBindingDefinition extends BindingDefinition {
      * @param wsdlElement  the SCA WSDL element expression. May be null.
      */
     public WsBindingDefinition(String name, URI targetUri, String wsdlLocation, String wsdlElement) {
-        super(targetUri, BINDING_QNAME);
+        super(name, targetUri, BINDING_QNAME);
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;
     }
