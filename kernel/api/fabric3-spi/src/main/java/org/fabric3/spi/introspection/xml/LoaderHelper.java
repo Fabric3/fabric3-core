@@ -78,8 +78,7 @@ public interface LoaderHelper {
      *
      * @param reader a stream containing a property value
      * @return a standalone document containing the value
-     * @throws javax.xml.stream.XMLStreamException
-     *          if there was a problem reading the stream
+     * @throws XMLStreamException if there was a problem reading the stream
      */
     Document loadValue(XMLStreamReader reader) throws XMLStreamException;
 
