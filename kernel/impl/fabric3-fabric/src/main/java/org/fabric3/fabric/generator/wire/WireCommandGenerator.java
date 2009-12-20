@@ -59,7 +59,7 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LocalWireCommandGenerator implements CommandGenerator {
+public class WireCommandGenerator implements CommandGenerator {
     private WireGenerator wireGenerator;
     private int order;
 
@@ -69,7 +69,7 @@ public class LocalWireCommandGenerator implements CommandGenerator {
      * @param wireGenerator the physical wire generator
      * @param order         the order for this command generator
      */
-    public LocalWireCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public WireCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
     }
@@ -95,36 +95,35 @@ public class LocalWireCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateUnboundReferenceWires(LogicalReference logicalReference, ConnectionCommand command, boolean incremental)
+    private void generateUnboundReferenceWires(LogicalReference reference, ConnectionCommand command, boolean incremental)
             throws GenerationException {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
-        boolean reinjection = isReinjection(logicalReference, incremental);
+        boolean reinjection = isReinjection(reference, incremental);
 
-        for (LogicalWire wire : logicalReference.getWires()) {
-            LogicalService targetService = wire.getTarget();
-            LogicalComponent<?> targetComponent = targetService.getLeafComponent();
+        for (LogicalWire wire : reference.getWires()) {
+            LogicalService service = wire.getTarget();
+            LogicalComponent<?> targetComponent = service.getLeafComponent();
             if (!reinjection && (wire.getState() == LogicalState.PROVISIONED && targetComponent.getState() != LogicalState.MARKED && incremental)) {
                 continue;
             }
 
-            LogicalReference reference = wire.getSource();
             boolean attach = true;
             if (targetComponent.getState() == LogicalState.MARKED || wire.getState() == LogicalState.MARKED) {
-                PhysicalWireDefinition pwd = wireGenerator.generateCollocatedWire(reference, targetService);
                 attach = false;
+                PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
                 DetachWireCommand detachCommand = new DetachWireCommand();
                 detachCommand.setPhysicalWireDefinition(pwd);
                 command.add(detachCommand);
             } else if (reinjection || !incremental || wire.getState() == LogicalState.NEW || targetComponent.getState() == LogicalState.NEW) {
-                PhysicalWireDefinition pwd = wireGenerator.generateCollocatedWire(reference, targetService);
+                PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
                 AttachWireCommand attachCommand = new AttachWireCommand();
                 attachCommand.setPhysicalWireDefinition(pwd);
                 command.add(attachCommand);
             }
             // generate physical callback wires if the forward service is bidirectional
             if (reference.getServiceContract().getCallbackContract() != null) {
-                PhysicalWireDefinition pwd = wireGenerator.generateCollocatedCallbackWire(targetService, reference);
+                PhysicalWireDefinition pwd = wireGenerator.generateWireCallback(wire);
                 if (attach) {
                     AttachWireCommand attachCommand = new AttachWireCommand();
                     attachCommand.setPhysicalWireDefinition(pwd);

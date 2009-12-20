@@ -56,17 +56,16 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * Generates commands to attach reference wires to their transports for components being deployed or commands to detach reference wires for components
- * being undeployed.
+ * Generates commands to attach/detach the target end of physical wires to their transports for components being deployed or undeployed.
  *
  * @version $Rev$ $Date$
  */
-public class ReferenceWireCommandGenerator implements CommandGenerator {
+public class BoundReferenceCommandGenerator implements CommandGenerator {
 
     private final WireGenerator wireGenerator;
     private final int order;
 
-    public ReferenceWireCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public BoundReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
     }
@@ -82,19 +81,23 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
         }
         ConnectionCommand command = new ConnectionCommand();
 
-        for (LogicalReference logicalReference : component.getReferences()) {
-            boolean reinjection = isReinjection(logicalReference, incremental);
+        for (LogicalReference reference : component.getReferences()) {
+            if (!reference.getWires().isEmpty()){
+                // if the reference is wired, skip it (a reference may have an explicit binding configured and be wired)
+                continue;
+            }
+            boolean reinjection = isReinjection(reference, incremental);
 
-            for (LogicalBinding<?> logicalBinding : logicalReference.getBindings()) {
+            for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
                 generateCommand(component, logicalBinding, command, incremental, reinjection, false);
             }
-            if (logicalReference.getServiceContract().getCallbackContract() != null) {
-                List<LogicalBinding<?>> callbackBindings = logicalReference.getCallbackBindings();
-                boolean bindings = !logicalReference.getBindings().isEmpty();
+            if (reference.getServiceContract().getCallbackContract() != null) {
+                List<LogicalBinding<?>> callbackBindings = reference.getCallbackBindings();
+                boolean bindings = !reference.getBindings().isEmpty();
                 if (bindings) {
                     if (callbackBindings.size() != 1) {
                         // if the reference is explicitly bound, it must have one callback binding
-                        String uri = logicalReference.getUri().toString();
+                        String uri = reference.getUri().toString();
                         throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be " +
                                 "specified on reference: " + uri);
                     }
@@ -119,9 +122,9 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
         if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
             }
             DetachWireCommand wireCommand = new DetachWireCommand();
             wireCommand.setPhysicalWireDefinition(wireDefinition);
@@ -130,9 +133,9 @@ public class ReferenceWireCommandGenerator implements CommandGenerator {
         } else if (LogicalState.NEW == logicalBinding.getState() || !incremental || reinjection) {
             PhysicalWireDefinition wireDefinition;
             if (callback) {
-                wireDefinition = wireGenerator.generateBoundCallbackReferenceWire(logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
             } else {
-                wireDefinition = wireGenerator.generateBoundReferenceWire(logicalBinding);
+                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
             }
             AttachWireCommand wireCommand = new AttachWireCommand();
             wireCommand.setPhysicalWireDefinition(wireDefinition);

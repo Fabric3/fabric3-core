@@ -68,23 +68,23 @@
         <property name="order">1</property>
     </component>
 
-    <component name="LocalWireCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.LocalWireCommandGenerator"/>
+    <component name="WireCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
-    <component name="ReferenceWireCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ReferenceWireCommandGenerator"/>
+    <component name="BoundReferenceCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundReferenceCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
-    <component name="ServiceWireCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ServiceWireCommandGenerator"/>
+    <component name="BoundServiceCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
-    <component name="ResourceWireCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ResourceWireCommandGenerator"/>
+    <component name="ResourceCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ResourceCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
