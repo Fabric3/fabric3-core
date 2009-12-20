@@ -77,4 +77,12 @@ public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefin
                                                    EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
+
+    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JUnitBindingDefinition> referenceBinding,
+                                                       LogicalBinding<JUnitBindingDefinition> serviceBinding,
+                                                       ServiceContract contract,
+                                                       List<LogicalOperation> operations,
+                                                       EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
+    }
 }

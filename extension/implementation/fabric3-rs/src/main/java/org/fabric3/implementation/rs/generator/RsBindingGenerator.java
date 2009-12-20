@@ -49,6 +49,7 @@ import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -81,5 +82,13 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
                                              EffectivePolicy policy) throws GenerationException {
         throw new GenerationException("Not supported");
 
+    }
+
+    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<RsBindingDefinition> referenceBinding,
+                                                       LogicalBinding<RsBindingDefinition> serviceBinding,
+                                                       ServiceContract contract,
+                                                       List<LogicalOperation> operations,
+                                                       EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
     }
 }

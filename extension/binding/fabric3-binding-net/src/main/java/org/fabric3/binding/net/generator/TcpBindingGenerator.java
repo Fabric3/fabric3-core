@@ -79,4 +79,12 @@ public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinitio
         targetDefinition.setUri(binding.getDefinition().getTargetUri());
         return targetDefinition;
     }
+
+    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<TcpBindingDefinition> referenceBinding,
+                                                       LogicalBinding<TcpBindingDefinition> serviceBinding,
+                                                       ServiceContract contract,
+                                                       List<LogicalOperation> operations,
+                                                       EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -55,7 +55,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
- * Implementations are responsible for generating command metadata used to provision components to runtimes.
+ * Generates metadata used to provision components and physical wires to runtimes.
  *
  * @version $Rev$ $Date$
  */
@@ -72,7 +72,7 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalComponentDefinition generate(C component) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a wire to a source component. Metadata contained in the
+     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param reference the source logical reference
@@ -83,7 +83,7 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalTargetDefinition} used to attach a wire to a target component. Metadata contained in the
+     * Generates a {@link PhysicalTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its target on a runtime.
      *
      * @param service the target logical service
@@ -94,8 +94,9 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a wire for a callback service to a source component. Metadata contained in the
-     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
+     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in
+     * the PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a
+     * runtime.
      *
      * @param service the forward service the callback is being generated for
      * @param policy  the provided intents and policy sets
@@ -105,7 +106,7 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a resource to a source component. Metadata contained in the
+     * Generates a {@link PhysicalSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param resource the source logical resource

@@ -57,6 +57,7 @@ import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -126,6 +127,14 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
         hwtd.setTmpFileSuffix(binding.getDefinition().getTmpFileSuffix());
         return hwtd;
 
+    }
+
+    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<FtpBindingDefinition> referenceBinding,
+                                                       LogicalBinding<FtpBindingDefinition> serviceBinding,
+                                                       ServiceContract contract,
+                                                       List<LogicalOperation> operations,
+                                                       EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
     }
 
     private FtpSecurity processPolicies(EffectivePolicy policy) throws GenerationException {
