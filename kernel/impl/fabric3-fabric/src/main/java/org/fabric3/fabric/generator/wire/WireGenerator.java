@@ -39,6 +39,8 @@ package org.fabric3.fabric.generator.wire;
 
 import java.net.URI;
 
+import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -79,7 +81,8 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws GenerationException if an error ocurrs during generation
      */
-    PhysicalWireDefinition generateBoundServiceWire(LogicalBinding<?> binding, URI callbackUri) throws GenerationException;
+    <T extends BindingDefinition> PhysicalWireDefinition generateBoundServiceWire(LogicalBinding<T> binding, URI callbackUri)
+            throws GenerationException;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire from a component to the callback service provided by a forward service
@@ -88,25 +91,25 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws GenerationException if an error ocurrs during generation
      */
-    PhysicalWireDefinition generateBoundCallbackServiceWire(LogicalBinding<?> binding) throws GenerationException;
+    <T extends BindingDefinition> PhysicalWireDefinition generateBoundCallbackServiceWire(LogicalBinding<T> binding) throws GenerationException;
 
     /**
      * Generates a PhysicalWireDefinition for a bound reference.
      *
-     * @param binding   the reference binding
+     * @param binding the reference binding
      * @return the physical wire definition.
      * @throws GenerationException if an error ocurrs during generation
      */
-    PhysicalWireDefinition generateBoundReferenceWire(LogicalBinding<?> binding) throws GenerationException;
+    <T extends BindingDefinition> PhysicalWireDefinition generateBoundReferenceWire(LogicalBinding<T> binding) throws GenerationException;
 
     /**
      * Generates a PhysicalWireDefinition for callback wire for a bound reference
      *
-     * @param binding   the callback binding
+     * @param binding the callback binding
      * @return the physical wire definition.
      * @throws GenerationException if an error ocurrs during generation
      */
-    PhysicalWireDefinition generateBoundCallbackReferenceWire(LogicalBinding<?> binding) throws GenerationException;
+    <T extends BindingDefinition> PhysicalWireDefinition generateBoundCallbackReferenceWire(LogicalBinding<T> binding) throws GenerationException;
 
     /**
      * Generates a PhysicalWireDefinition for a wire between collocated components.
@@ -126,7 +129,7 @@ public interface WireGenerator {
      * @return the physical wire definition.
      * @throws GenerationException if an error ocurrs during generation
      */
-    public PhysicalWireDefinition generateCollocatedCallbackWire(LogicalService service, LogicalReference reference) throws GenerationException;
+    PhysicalWireDefinition generateCollocatedCallbackWire(LogicalService service, LogicalReference reference) throws GenerationException;
 
     /**
      * Generates a PhysicalWireDefinition for the resource.
@@ -135,7 +138,7 @@ public interface WireGenerator {
      * @return the physical wire definition
      * @throws GenerationException if an error ocurrs during generation
      */
-    PhysicalWireDefinition generateResourceWire(LogicalResource<?> resource) throws GenerationException;
+    <T extends ResourceDefinition> PhysicalWireDefinition generateResourceWire(LogicalResource<T> resource) throws GenerationException;
 
 
 }
