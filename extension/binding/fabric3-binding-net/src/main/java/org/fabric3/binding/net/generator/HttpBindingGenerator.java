@@ -80,7 +80,7 @@ public class HttpBindingGenerator implements BindingGenerator<HttpBindingDefinit
         return targetDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<HttpBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<HttpBindingDefinition> referenceBinding,
                                                        LogicalBinding<HttpBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

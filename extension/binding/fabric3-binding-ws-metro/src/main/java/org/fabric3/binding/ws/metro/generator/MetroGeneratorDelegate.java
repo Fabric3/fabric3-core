@@ -53,26 +53,42 @@ import org.fabric3.spi.policy.EffectivePolicy;
 public interface MetroGeneratorDelegate<T extends ServiceContract> {
 
     /**
-     * Generates a physical wire source definition from a logical binding.
+     * Generates a source definition from a logical binding.
      *
-     * @param binding  Logical binding.
-     * @param contract the service contract
-     * @param policy   the effective policy associated with the wire
+     * @param serviceBinding logical binding.
+     * @param contract       the service contract
+     * @param policy         the effective policy associated with the wire
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy) throws GenerationException;
+    MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> serviceBinding, T contract, EffectivePolicy policy)
+            throws GenerationException;
 
     /**
-     * Generates a physical wire target definition from a logical binding.
+     * Generates a target definition from a logical binding.
      *
-     * @param binding  Logical binding.
-     * @param contract the service contract
-     * @param policy   the effective policy associated with the wire
+     * @param referenceBinding logical binding.
+     * @param contract         the service contract
+     * @param policy           the effective policy associated with the wire
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy) throws GenerationException;
+    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding, T contract, EffectivePolicy policy)
+            throws GenerationException;
 
+    /**
+     * Generates a target definition from logical reference and service bindings.
+     *
+     * @param referenceBinding logical reference binding.
+     * @param serviceBinding   logical service binding.
+     * @param contract         the service contract
+     * @param policy           the effective policy associated with the wire
+     * @return Physical wire target definition.
+     * @throws GenerationException if an error is raised during generation
+     */
+    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
+                                         LogicalBinding<WsBindingDefinition> serviceBinding,
+                                         T contract,
+                                         EffectivePolicy policy) throws GenerationException;
 
 }

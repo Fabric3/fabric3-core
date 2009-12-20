@@ -272,6 +272,14 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                                              connectionConfiguration);
     }
 
+    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
+                                                LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                WsdlServiceContract contract,
+                                                EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
+    }
+
+
     /**
      * Returns the WSDL location if one is defined in the binding configuration or null.
      *

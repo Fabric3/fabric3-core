@@ -81,12 +81,13 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
         return delegate.generateTarget(binding, contract, policy);
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
-                                                       LogicalBinding<WsBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
+                                                   LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
+        MetroGeneratorDelegate delegate = getDelegate(contract);
+        return delegate.generateTarget(referenceBinding, serviceBinding, contract, policy);
     }
 
 

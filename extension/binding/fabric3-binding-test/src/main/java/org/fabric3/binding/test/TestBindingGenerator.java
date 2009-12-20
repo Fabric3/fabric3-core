@@ -76,7 +76,7 @@ public class TestBindingGenerator implements BindingGenerator<TestBindingDefinit
         return definition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<TestBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> referenceBinding,
                                                        LogicalBinding<TestBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

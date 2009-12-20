@@ -133,7 +133,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType);
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JmsBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> referenceBinding,
                                                        LogicalBinding<JmsBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

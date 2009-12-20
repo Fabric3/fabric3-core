@@ -78,7 +78,7 @@ public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefin
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JUnitBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<JUnitBindingDefinition> referenceBinding,
                                                        LogicalBinding<JUnitBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

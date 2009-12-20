@@ -84,7 +84,7 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
 
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<RsBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> referenceBinding,
                                                        LogicalBinding<RsBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

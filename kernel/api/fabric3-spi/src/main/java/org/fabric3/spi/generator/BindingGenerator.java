@@ -104,11 +104,11 @@ public interface BindingGenerator<BD extends BindingDefinition> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalTargetDefinition generateWireTarget(LogicalBinding<BD> referenceBinding,
-                                                LogicalBinding<BD> serviceBinding,
-                                                ServiceContract contract,
-                                                List<LogicalOperation> operations,
-                                                EffectivePolicy policy) throws GenerationException;
+    PhysicalTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
+                                            LogicalBinding<BD> serviceBinding,
+                                            ServiceContract contract,
+                                            List<LogicalOperation> operations,
+                                            EffectivePolicy policy) throws GenerationException;
 
 
 }

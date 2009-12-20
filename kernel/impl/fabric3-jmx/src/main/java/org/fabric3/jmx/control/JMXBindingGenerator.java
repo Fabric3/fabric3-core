@@ -85,7 +85,7 @@ public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JMXBinding> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<JMXBinding> referenceBinding,
                                                        LogicalBinding<JMXBinding> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

@@ -80,7 +80,7 @@ public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinitio
         return targetDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<TcpBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<TcpBindingDefinition> referenceBinding,
                                                        LogicalBinding<TcpBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

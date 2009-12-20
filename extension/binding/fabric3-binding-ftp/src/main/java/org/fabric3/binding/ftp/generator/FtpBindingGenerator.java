@@ -129,7 +129,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<FtpBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<FtpBindingDefinition> referenceBinding,
                                                        LogicalBinding<FtpBindingDefinition> serviceBinding,
                                                        ServiceContract contract,
                                                        List<LogicalOperation> operations,

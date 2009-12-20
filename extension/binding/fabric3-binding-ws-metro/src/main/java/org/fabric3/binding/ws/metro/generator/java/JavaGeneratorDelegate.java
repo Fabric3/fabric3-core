@@ -278,6 +278,13 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                              connectionConfiguration);
     }
 
+    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
+                                                LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                JavaServiceContract contract,
+                                                EffectivePolicy policy) throws GenerationException {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns the WSDL location if one is defined in the binding configuration or null.
      *
