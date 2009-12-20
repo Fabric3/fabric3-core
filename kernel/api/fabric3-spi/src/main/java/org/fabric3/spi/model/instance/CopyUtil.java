@@ -166,6 +166,8 @@ public class CopyUtil {
             QName deployable = wire.getTargetDeployable();
             LogicalService target = wire.getTarget();
             LogicalWire wireCopy = new LogicalWire(parent, reference, target, deployable);
+            wireCopy.setSourceBinding(wire.getSourceBinding());
+            wireCopy.setTargetBinding(wire.getTargetBinding());
             parent.addWire(reference, wireCopy);
         }
     }
