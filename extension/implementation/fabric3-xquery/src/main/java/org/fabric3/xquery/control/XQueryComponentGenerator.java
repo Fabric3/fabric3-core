@@ -215,7 +215,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         }
     }
 
-    public XQueryComponentSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public XQueryComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
         if (reference.getDefinition().getServiceContract().isConversational()) {
@@ -225,7 +225,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
         LogicalComponent<XQueryImplementation> source = (LogicalComponent<XQueryImplementation>) service.getParent();
@@ -248,13 +248,13 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         return sourceDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         XQueryComponentTargetDefinition targetDefinition = new XQueryComponentTargetDefinition();
         targetDefinition.setUri(service.getUri());
         return targetDefinition;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
         sourceDefinition.setUri(resource.getParent().getUri());
         return sourceDefinition;

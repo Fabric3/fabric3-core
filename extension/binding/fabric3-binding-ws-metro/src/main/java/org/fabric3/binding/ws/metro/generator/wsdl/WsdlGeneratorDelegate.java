@@ -111,7 +111,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         transformerFactory = TransformerFactory.newInstance();
     }
 
-    public MetroSourceDefinition generateWireSource(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
+    public MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
         URI targetUri = binding.getDefinition().getTargetUri();
         Definition wsdl;
@@ -182,9 +182,9 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         return new MetroWsdlSourceDefinition(endpointDefinition, serializedWsdl, intentNames);
     }
 
-    public MetroTargetDefinition generateWireTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                    WsdlServiceContract contract,
-                                                    EffectivePolicy policy) throws GenerationException {
+    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+                                                WsdlServiceContract contract,
+                                                EffectivePolicy policy) throws GenerationException {
         WsBindingDefinition definition = binding.getDefinition();
         URI targetUri = definition.getTargetUri();
         ReferenceEndpointDefinition endpointDefinition;

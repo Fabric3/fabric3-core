@@ -61,8 +61,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroSourceDefinition generateWireSource(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy)
-            throws GenerationException;
+    MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy) throws GenerationException;
 
     /**
      * Generates a physical wire target definition from a logical binding.
@@ -73,8 +72,7 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroTargetDefinition generateWireTarget(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy)
-            throws GenerationException;
+    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, T contract, EffectivePolicy policy) throws GenerationException;
 
 
 }

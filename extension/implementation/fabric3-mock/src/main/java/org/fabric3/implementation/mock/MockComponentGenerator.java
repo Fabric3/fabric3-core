@@ -64,7 +64,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         return componentDefinition;
     }
 
-    public MockTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public MockTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         MockTargetDefinition definition = new MockTargetDefinition();
         definition.setUri(service.getUri());
         ServiceContract serviceContract = service.getDefinition().getServiceContract();
@@ -72,15 +72,15 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) {
         throw new UnsupportedOperationException("Mock objects cannot have resources");
     }
 
-    public PhysicalSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) {
+    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
         throw new UnsupportedOperationException("Mock objects cannot be source of a wire");
     }
 
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         return new MockSourceDefinition();
     }
 

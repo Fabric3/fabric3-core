@@ -63,31 +63,31 @@ public interface BindingGenerator<BD extends BindingDefinition> {
     /**
      * Generates a physical wire source definition from a logical binding.
      *
-     * @param binding    Logical binding.
-     * @param contract   the service contract
-     * @param operations the operations to generate the wire for
-     * @param policy     the effective policy associated with the wire
+     * @param serviceBinding the binding specified on the service
+     * @param contract       the service contract
+     * @param operations     the operations to generate the wire for
+     * @param policy         the effective policy associated with the wire
      * @return Physical wire source definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalSourceDefinition generateWireSource(LogicalBinding<BD> binding,
-                                                ServiceContract contract,
-                                                List<LogicalOperation> operations,
-                                                EffectivePolicy policy) throws GenerationException;
+    PhysicalSourceDefinition generateSource(LogicalBinding<BD> serviceBinding,
+                                            ServiceContract contract,
+                                            List<LogicalOperation> operations,
+                                            EffectivePolicy policy) throws GenerationException;
 
     /**
      * Generates a physical wire target definition from a logical binding.
      *
-     * @param binding    Logical binding.
-     * @param contract   the service contract
-     * @param operations the operations to generate the wire for
-     * @param policy     the effective policy associated with the wire
+     * @param referenceBinding the binding specified on the reference
+     * @param contract         the service contract
+     * @param operations       the operations to generate the wire for
+     * @param policy           the effective policy associated with the wire
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalTargetDefinition generateWireTarget(LogicalBinding<BD> binding,
-                                                ServiceContract contract,
-                                                List<LogicalOperation> operations,
-                                                EffectivePolicy policy) throws GenerationException;
+    PhysicalTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
+                                            ServiceContract contract,
+                                            List<LogicalOperation> operations,
+                                            EffectivePolicy policy) throws GenerationException;
 
 }

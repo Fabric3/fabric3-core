@@ -91,10 +91,10 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         this.introspector = introspector;
     }
 
-    public JmsSourceDefinition generateWireSource(LogicalBinding<JmsBindingDefinition> logicalBinding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public JmsSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> logicalBinding,
+                                              ServiceContract contract,
+                                              List<LogicalOperation> operations,
+                                              EffectivePolicy policy) throws GenerationException {
 
         TransactionType transactionType = getTransactionType(policy, operations);
 
@@ -105,16 +105,16 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         for (PayloadType payloadType : payloadTypes.values()) {
             if (PayloadType.XML == payloadType) {
                 // set the source type to string XML
-                 return new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                return new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
             }
         }
         return new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType);
     }
 
-    public JmsTargetDefinition generateWireTarget(LogicalBinding<JmsBindingDefinition> logicalBinding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public JmsTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> logicalBinding,
+                                              ServiceContract contract,
+                                              List<LogicalOperation> operations,
+                                              EffectivePolicy policy) throws GenerationException {
 
         TransactionType transactionType = getTransactionType(policy, operations);
 
@@ -126,7 +126,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         // FIXME hack
         for (PayloadType payloadType : payloadTypes.values()) {
             if (PayloadType.XML == payloadType) {
-                 return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
             }
         }
         return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType);

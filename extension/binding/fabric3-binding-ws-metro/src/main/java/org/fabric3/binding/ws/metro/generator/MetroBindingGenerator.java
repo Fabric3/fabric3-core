@@ -65,20 +65,20 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
         this.delegates = delegates;
     }
 
-    public MetroSourceDefinition generateWireSource(LogicalBinding<WsBindingDefinition> binding,
-                                                    ServiceContract contract,
-                                                    List<LogicalOperation> operations,
-                                                    EffectivePolicy policy) throws GenerationException {
+    public MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
+                                                ServiceContract contract,
+                                                List<LogicalOperation> operations,
+                                                EffectivePolicy policy) throws GenerationException {
         MetroGeneratorDelegate delegate = getDelegate(contract);
-        return delegate.generateWireSource(binding, contract, policy);
+        return delegate.generateSource(binding, contract, policy);
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         MetroGeneratorDelegate delegate = getDelegate(contract);
-        return delegate.generateWireTarget(binding, contract, policy);
+        return delegate.generateTarget(binding, contract, policy);
     }
 
 

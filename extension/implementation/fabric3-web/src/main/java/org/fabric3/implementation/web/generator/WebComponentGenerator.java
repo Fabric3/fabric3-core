@@ -119,7 +119,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return physical;
     }
 
-    public WebComponentSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public WebComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         WebComponentSourceDefinition sourceDefinition = new WebComponentSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
         if (reference.getDefinition().getServiceContract().isConversational()) {
@@ -128,15 +128,15 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return sourceDefinition;
     }
 
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         return null;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         return null;
     }
 

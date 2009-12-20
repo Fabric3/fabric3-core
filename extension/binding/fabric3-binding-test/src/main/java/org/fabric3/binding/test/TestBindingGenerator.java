@@ -56,19 +56,19 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class TestBindingGenerator implements BindingGenerator<TestBindingDefinition> {
 
-    public TestBindingSourceDefinition generateWireSource(LogicalBinding<TestBindingDefinition> logicalBinding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations,
-                                                          EffectivePolicy policy) throws GenerationException {
+    public TestBindingSourceDefinition generateSource(LogicalBinding<TestBindingDefinition> logicalBinding,
+                                                      ServiceContract contract,
+                                                      List<LogicalOperation> operations,
+                                                      EffectivePolicy policy) throws GenerationException {
         TestBindingSourceDefinition definition = new TestBindingSourceDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());
         return definition;
     }
 
-    public TestBindingTargetDefinition generateWireTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
-                                                          ServiceContract contract,
-                                                          List<LogicalOperation> operations,
-                                                          EffectivePolicy policy) throws GenerationException {
+    public TestBindingTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> logicalBinding,
+                                                      ServiceContract contract,
+                                                      List<LogicalOperation> operations,
+                                                      EffectivePolicy policy) throws GenerationException {
 
         TestBindingTargetDefinition definition = new TestBindingTargetDefinition();
         definition.setUri(logicalBinding.getDefinition().getTargetUri());

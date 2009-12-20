@@ -46,12 +46,12 @@ import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
+import org.fabric3.implementation.pojo.generator.GenerationHelper;
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -101,7 +101,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return physical;
     }
 
-    public PhysicalSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = getInterfaceName(serviceContract);
@@ -127,11 +127,11 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return wireDefinition;
     }
 
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
 
         URI uri = resource.getUri();
         ServiceContract serviceContract = resource.getResourceDefinition().getServiceContract();
@@ -148,7 +148,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         return contract.getQualifiedInterfaceName();
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         JavaTargetDefinition wireDefinition = new JavaTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;

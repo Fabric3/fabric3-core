@@ -40,14 +40,14 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.implementation.pojo.generator.GenerationHelper;
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -97,7 +97,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return physical;
     }
 
-    public PhysicalSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         URI uri = reference.getUri();
         SystemSourceDefinition definition = new SystemSourceDefinition();
         definition.setOptimizable(true);
@@ -116,18 +116,18 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         SystemTargetDefinition definition = new SystemTargetDefinition();
         definition.setOptimizable(true);
         definition.setUri(service.getUri());
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         URI uri = resource.getUri();
         SystemSourceDefinition definition = new SystemSourceDefinition();
         definition.setOptimizable(true);

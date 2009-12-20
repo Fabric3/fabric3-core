@@ -61,20 +61,20 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefinition> {
 
-    public JUnitSourceDefinition generateWireSource(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
-                                                    ServiceContract contract,
-                                                    List<LogicalOperation> operations,
-                                                    EffectivePolicy policy) throws GenerationException {
+    public JUnitSourceDefinition generateSource(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
+                                                ServiceContract contract,
+                                                List<LogicalOperation> operations,
+                                                EffectivePolicy policy) throws GenerationException {
         ComponentDefinition<?> definition = bindingDefinition.getParent().getParent().getDefinition();
         String testName = definition.getName();
         ContextConfiguration configuration = bindingDefinition.getDefinition().getConfiguration();
         return new JUnitSourceDefinition(testName, configuration);
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<JUnitBindingDefinition> bindingDefinition,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

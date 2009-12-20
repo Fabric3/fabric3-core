@@ -70,7 +70,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         SingletonSourceDefinition wireDefinition = new SingletonSourceDefinition();
         URI uri = reference.getUri();
         wireDefinition.setOptimizable(true);
@@ -80,7 +80,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         SingletonTargetDefinition wireDefinition = new SingletonTargetDefinition();
         URI uri = service.getUri();
         wireDefinition.setUri(uri);
@@ -88,7 +88,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         SingletonSourceDefinition wireDefinition = new SingletonSourceDefinition();
         URI uri = resource.getUri();
         wireDefinition.setOptimizable(true);
@@ -97,7 +97,7 @@ public class SingletonComponentGenerator implements ComponentGenerator<LogicalCo
         return wireDefinition;
     }
 
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

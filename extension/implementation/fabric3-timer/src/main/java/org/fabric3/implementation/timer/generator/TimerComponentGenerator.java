@@ -46,6 +46,9 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
+import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
+import org.fabric3.implementation.timer.provision.TriggerData;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -57,9 +60,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.implementation.timer.model.TimerImplementation;
-import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
-import org.fabric3.implementation.timer.provision.TriggerData;
 
 /**
  * Generates physical metadata for a Timer component deployment.
@@ -85,14 +85,14 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalSourceDefinition generateWireSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         JavaSourceDefinition definition = new JavaSourceDefinition();
         generationHelper.generateWireSource(definition, reference, policy);
         return definition;
     }
 
     @SuppressWarnings({"unchecked"})
-    public PhysicalSourceDefinition generateCallbackWireSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         JavaSourceDefinition definition = new JavaSourceDefinition();
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         LogicalComponent<JavaImplementation> source = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
@@ -100,13 +100,13 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceWireSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         JavaSourceDefinition definition = new JavaSourceDefinition();
         generationHelper.generateResourceWireSource(definition, resource);
         return definition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException("Cannot wire to timer components");
     }
 }

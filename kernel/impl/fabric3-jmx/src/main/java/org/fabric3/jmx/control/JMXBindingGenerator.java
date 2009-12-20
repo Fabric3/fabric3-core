@@ -59,10 +59,10 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
 
-    public JMXSourceDefinition generateWireSource(LogicalBinding<JMXBinding> binding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public JMXSourceDefinition generateSource(LogicalBinding<JMXBinding> binding,
+                                              ServiceContract contract,
+                                              List<LogicalOperation> operations,
+                                              EffectivePolicy policy) throws GenerationException {
         Bindable logicalService = binding.getParent();
 
         JMXSourceDefinition definition = new JMXSourceDefinition();
@@ -76,10 +76,10 @@ public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
         return definition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<JMXBinding> binding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<JMXBinding> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
 
         // TODO we might need this for notifications but leave it out for now
         throw new UnsupportedOperationException();

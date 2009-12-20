@@ -59,10 +59,10 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
 
-    public RsSourceDefinition generateWireSource(LogicalBinding<RsBindingDefinition> logicalBinding,
-                                                 ServiceContract contract,
-                                                 List<LogicalOperation> operations,
-                                                 EffectivePolicy policy) throws GenerationException {
+    public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> logicalBinding,
+                                             ServiceContract contract,
+                                             List<LogicalOperation> operations,
+                                             EffectivePolicy policy) throws GenerationException {
 
         RsSourceDefinition rwsd = new RsSourceDefinition();
         rwsd.setUri(logicalBinding.getDefinition().getTargetUri());
@@ -75,10 +75,10 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
 
     }
 
-    public RsTargetDefinition generateWireTarget(LogicalBinding<RsBindingDefinition> logicalBinding,
-                                                 ServiceContract contract,
-                                                 List<LogicalOperation> operations,
-                                                 EffectivePolicy policy) throws GenerationException {
+    public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> logicalBinding,
+                                             ServiceContract contract,
+                                             List<LogicalOperation> operations,
+                                             EffectivePolicy policy) throws GenerationException {
         throw new GenerationException("Not supported");
 
     }

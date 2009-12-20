@@ -58,10 +58,10 @@ import org.fabric3.spi.policy.EffectivePolicy;
  */
 public class HttpBindingGenerator implements BindingGenerator<HttpBindingDefinition> {
 
-    public PhysicalSourceDefinition generateWireSource(LogicalBinding<HttpBindingDefinition> binding,
-                                                           ServiceContract contract,
-                                                           List<LogicalOperation> operations,
-                                                           EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalBinding<HttpBindingDefinition> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         HttpSourceDefinition sourceDefinition = new HttpSourceDefinition();
         HttpBindingDefinition bindingDefinition = binding.getDefinition();
         sourceDefinition.setConfig(bindingDefinition.getConfig());
@@ -69,10 +69,10 @@ public class HttpBindingGenerator implements BindingGenerator<HttpBindingDefinit
         return sourceDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<HttpBindingDefinition> binding,
-                                                           ServiceContract contract,
-                                                           List<LogicalOperation> operations,
-                                                           EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<HttpBindingDefinition> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         HttpTargetDefinition targetDefinition = new HttpTargetDefinition();
         HttpBindingDefinition bindingDefinition = binding.getDefinition();
         targetDefinition.setConfig(bindingDefinition.getConfig());

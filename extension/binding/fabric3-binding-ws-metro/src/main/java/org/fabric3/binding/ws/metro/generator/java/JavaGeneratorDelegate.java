@@ -141,9 +141,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         transformerFactory = TransformerFactory.newInstance();
     }
 
-    public MetroJavaSourceDefinition generateWireSource(LogicalBinding<WsBindingDefinition> binding,
-                                                        JavaServiceContract contract,
-                                                        EffectivePolicy policy) throws GenerationException {
+    public MetroJavaSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
+                                                    JavaServiceContract contract,
+                                                    EffectivePolicy policy) throws GenerationException {
         Class<?> serviceClass = loadServiceClass(binding, contract);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
@@ -201,9 +201,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
     }
 
-    public MetroTargetDefinition generateWireTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                    JavaServiceContract contract,
-                                                    EffectivePolicy policy) throws GenerationException {
+    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
+                                                JavaServiceContract contract,
+                                                EffectivePolicy policy) throws GenerationException {
         Class<?> serviceClass = loadServiceClass(binding, contract);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);

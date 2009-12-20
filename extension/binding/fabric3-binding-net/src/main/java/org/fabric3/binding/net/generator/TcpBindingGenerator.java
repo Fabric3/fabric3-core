@@ -58,10 +58,10 @@ import org.fabric3.spi.policy.EffectivePolicy;
  */
 public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinition> {
 
-    public PhysicalSourceDefinition generateWireSource(LogicalBinding<TcpBindingDefinition> binding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalSourceDefinition generateSource(LogicalBinding<TcpBindingDefinition> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         TcpSourceDefinition sourceDefinition = new TcpSourceDefinition();
         TcpBindingDefinition bindingDefinition = binding.getDefinition();
         sourceDefinition.setConfig(bindingDefinition.getConfig());
@@ -69,10 +69,10 @@ public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinitio
         return sourceDefinition;
     }
 
-    public PhysicalTargetDefinition generateWireTarget(LogicalBinding<TcpBindingDefinition> binding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<TcpBindingDefinition> binding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         TcpTargetDefinition targetDefinition = new TcpTargetDefinition();
         TcpBindingDefinition bindingDefinition = binding.getDefinition();
         targetDefinition.setConfig(bindingDefinition.getConfig());

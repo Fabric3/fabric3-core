@@ -51,8 +51,8 @@ import org.fabric3.binding.ftp.model.TransferMode;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.binding.ftp.provision.FtpSourceDefinition;
 import org.fabric3.binding.ftp.provision.FtpTargetDefinition;
-import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -86,10 +86,10 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
         this.socketTimeout = socketTimeout;
     }
 
-    public FtpSourceDefinition generateWireSource(LogicalBinding<FtpBindingDefinition> binding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public FtpSourceDefinition generateSource(LogicalBinding<FtpBindingDefinition> binding,
+                                              ServiceContract contract,
+                                              List<LogicalOperation> operations,
+                                              EffectivePolicy policy) throws GenerationException {
 
         if (contract.getOperations().size() != 1) {
             throw new GenerationException("Expects only one operation");
@@ -103,10 +103,10 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
     }
 
-    public FtpTargetDefinition generateWireTarget(LogicalBinding<FtpBindingDefinition> binding,
-                                                  ServiceContract contract,
-                                                  List<LogicalOperation> operations,
-                                                  EffectivePolicy policy) throws GenerationException {
+    public FtpTargetDefinition generateTarget(LogicalBinding<FtpBindingDefinition> binding,
+                                              ServiceContract contract,
+                                              List<LogicalOperation> operations,
+                                              EffectivePolicy policy) throws GenerationException {
 
         if (operations.size() != 1) {
             throw new GenerationException("Expects only one operation");
