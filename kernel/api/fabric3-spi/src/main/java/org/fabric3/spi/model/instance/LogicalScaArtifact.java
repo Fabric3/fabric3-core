@@ -44,7 +44,6 @@
 package org.fabric3.spi.model.instance;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -56,37 +55,17 @@ import javax.xml.namespace.QName;
  */
 public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implements Serializable {
     private static final long serialVersionUID = 3937960041374196627L;
-    private final URI uri;
-    private final P parent;
-    private final QName type;
+    private P parent;
     private Set<QName> intents = new LinkedHashSet<QName>();
     private Set<QName> policySets = new LinkedHashSet<QName>();
 
     /**
-     * @param uri    URI of the SCA artifact.
-     * @param parent Parent of the SCA artifact.
-     * @param type   Type of this artifact.
-     */
-    public LogicalScaArtifact(final URI uri, final P parent, final QName type) {
-        this.uri = uri;
-        this.parent = parent;
-        this.type = type;
-    }
-
-    /**
-     * Returns the uri.
+     * Constructor.
      *
-     * @return the uri
+     * @param parent Parent of the SCA artifact.
      */
-    public URI getUri() {
-        return uri;
-    }
-
-    /**
-     * @return Type of this SCA artifact.
-     */
-    public QName getType() {
-        return type;
+    protected LogicalScaArtifact(P parent) {
+        this.parent = parent;
     }
 
     /**
@@ -94,13 +73,6 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
      */
     public final P getParent() {
         return parent;
-    }
-
-    public String toString() {
-        if (uri == null) {
-            return "";
-        }
-        return uri.toString();
     }
 
     public Set<QName> getIntents() {
@@ -130,6 +102,5 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
     public void addPolicySets(Set<QName> policySets) {
         this.policySets.addAll(policySets);
     }
-
 
 }

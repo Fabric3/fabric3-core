@@ -44,9 +44,6 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.ServiceDefinition;
 
@@ -57,8 +54,6 @@ import org.fabric3.model.type.component.ServiceDefinition;
  */
 public class LogicalService extends Bindable {
     private static final long serialVersionUID = -2417797075030173948L;
-
-    private static final QName TYPE = new QName(Constants.SCA_NS, "service");
 
     private ServiceDefinition definition;
     private URI promote;
@@ -72,7 +67,7 @@ public class LogicalService extends Bindable {
      * @param parent     the service parent component
      */
     public LogicalService(URI uri, ServiceDefinition definition, LogicalComponent<?> parent) {
-        super(uri, definition != null ? definition.getServiceContract() : null, parent, TYPE);
+        super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated
@@ -110,8 +105,8 @@ public class LogicalService extends Bindable {
     }
 
     /**
-     * Returns the leaf component this service is promoted from. The leaf component is determined by descending down the service promotion
-     * hierarchy to the original service provided by a component.
+     * Returns the leaf component this service is promoted from. The leaf component is determined by descending down the service promotion hierarchy
+     * to the original service provided by a component.
      *
      * @return the leaf component
      */

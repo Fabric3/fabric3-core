@@ -43,10 +43,7 @@
  */
 package org.fabric3.spi.model.instance;
 
-import java.util.Set;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 /**
  * Represents a wire from a reference to a service in the domain. A wire always targets a service in the domain (as opposed to a service hosted
@@ -61,7 +58,6 @@ import org.oasisopen.sca.Constants;
  */
 public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -643283191171197255L;
-    private static final QName TYPE = new QName(Constants.SCA_NS, "wire");
 
     private LogicalReference source;
     private LogicalService target;
@@ -80,7 +76,7 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
      * @param deployable the target service deployable
      */
     public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, QName deployable) {
-        super(null, parent, TYPE);
+        super(parent);
         this.source = source;
         this.target = target;
         this.deployable = deployable;
@@ -102,26 +98,6 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public LogicalService getTarget() {
         return target;
-    }
-
-    /**
-     * Intents are not supported on wires.
-     *
-     * @return intents declared on the SCA artifact.
-     */
-    @Override
-    public Set<QName> getIntents() {
-        throw new UnsupportedOperationException("Intents are not supported on wires");
-    }
-
-    /**
-     * Policy sets are not supported on wires.
-     *
-     * @return policy sets declared on the SCA artifact.
-     */
-    @Override
-    public Set<QName> getPolicySets() {
-        throw new UnsupportedOperationException("Policy sets are not supported on wires");
     }
 
     /**

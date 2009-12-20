@@ -43,9 +43,8 @@
  */
 package org.fabric3.spi.model.instance;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.BindingDefinition;
 
@@ -57,16 +56,15 @@ import org.fabric3.model.type.component.BindingDefinition;
 public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArtifact<Bindable> {
     private static final long serialVersionUID = 8153501808553226042L;
 
-    private static final QName TYPE = new QName(Constants.SCA_NS, "binding");
-
-    private final BD definition;
+    private BD definition;
+    private URI uri;
     private LogicalState state = LogicalState.NEW;
     private QName deployable;
     private boolean assigned;
     private boolean callback;
 
     public LogicalBinding(BD definition, Bindable parent) {
-        super(null, parent, TYPE);
+        super(parent);
         this.definition = definition;
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated
@@ -76,7 +74,7 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
     }
 
     public LogicalBinding(BD definition, Bindable parent, QName deployable) {
-        super(null, parent, TYPE);
+        super(parent);
         this.definition = definition;
         this.deployable = deployable;
         if (definition != null) {
@@ -84,6 +82,15 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
+    }
+
+    /**
+     * Returns the binding URI.
+     *
+     * @return the uri
+     */
+    public URI getUri() {
+        return uri;
     }
 
     /**
@@ -159,4 +166,5 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
     public void setCallback(boolean callback) {
         this.callback = callback;
     }
+
 }

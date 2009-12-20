@@ -40,7 +40,6 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -54,6 +53,7 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
     private static final long serialVersionUID = -5294444649296282992L;
     protected List<LogicalOperation> operations;
     protected List<LogicalOperation> callbackOperations;
+    private URI uri;
 
     /**
      * Constructor.
@@ -61,10 +61,10 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
      * @param uri      URI of the SCA artifact.
      * @param contract the service contract
      * @param parent   Parent of the SCA artifact.
-     * @param type     Type of this artifact.
      */
-    public LogicalAttachPoint(URI uri, ServiceContract contract, LogicalComponent<?> parent, QName type) {
-        super(uri, parent, type);
+    protected LogicalAttachPoint(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
+        super(parent);
+        this.uri = uri;
         createOperations(contract);
     }
 
@@ -74,6 +74,15 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
 
     public List<LogicalOperation> getCallbackOperations() {
         return callbackOperations;
+    }
+
+    /**
+     * Returns the uri.
+     *
+     * @return the uri
+     */
+    public URI getUri() {
+        return uri;
     }
 
     /**

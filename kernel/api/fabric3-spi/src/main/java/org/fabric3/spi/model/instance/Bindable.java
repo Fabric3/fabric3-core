@@ -46,7 +46,6 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.contract.ServiceContract;
 
@@ -67,10 +66,9 @@ public abstract class Bindable extends LogicalAttachPoint {
      * @param uri      URI of the service or the reference.
      * @param contract the service contract
      * @param parent   Parent of the service or the reference.
-     * @param type     Type of this artifact (service or reference).
      */
-    protected Bindable(URI uri, ServiceContract contract, LogicalComponent<?> parent, QName type) {
-        super(uri, contract, parent, type);
+    protected Bindable(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
+        super(uri, contract, parent);
         bindings = new ArrayList<LogicalBinding<?>>();
         callbackBindings = new ArrayList<LogicalBinding<?>>();
         serviceContract = contract;
@@ -164,5 +162,5 @@ public abstract class Bindable extends LogicalAttachPoint {
         this.serviceContract = serviceContract;
         createOperations(serviceContract);
     }
-
+    
 }

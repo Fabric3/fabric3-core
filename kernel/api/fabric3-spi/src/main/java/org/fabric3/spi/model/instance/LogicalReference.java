@@ -46,9 +46,6 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -60,8 +57,6 @@ import org.fabric3.model.type.component.ReferenceDefinition;
  */
 public class LogicalReference extends Bindable {
     private static final long serialVersionUID = 2308698868251298609L;
-
-    private static final QName TYPE = new QName(Constants.SCA_NS, "reference");
 
     private ReferenceDefinition definition;
     private List<URI> promotedUris;
@@ -75,7 +70,7 @@ public class LogicalReference extends Bindable {
      * @param parent     the parent component
      */
     public LogicalReference(URI uri, ReferenceDefinition definition, LogicalComponent<?> parent) {
-        super(uri, definition != null ? definition.getServiceContract() : null, parent, TYPE);
+        super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         promotedUris = new ArrayList<URI>();
         if (definition != null) {

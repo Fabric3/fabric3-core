@@ -55,7 +55,7 @@ public class LogicalOperation extends LogicalScaArtifact<LogicalAttachPoint> {
      * @param parent     Parent of the SCA artifact
      */
     public LogicalOperation(Operation definition, LogicalAttachPoint parent) {
-        super(null, parent, null);
+        super(parent);
         this.definition = definition;
         addIntents(definition.getIntents());
         addPolicySets(definition.getPolicySets());
@@ -64,4 +64,5 @@ public class LogicalOperation extends LogicalScaArtifact<LogicalAttachPoint> {
     public Operation getDefinition() {
         return definition;
     }
+
 }

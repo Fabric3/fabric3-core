@@ -49,7 +49,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.Autowire;
@@ -64,8 +63,7 @@ import org.fabric3.model.type.component.Implementation;
 public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -3520150701040845117L;
 
-    private static final QName TYPE = new QName(Constants.SCA_NS, "component");
-
+    private URI uri;
     private final ComponentDefinition<I> definition;
     private final Map<String, Document> propertyValues = new HashMap<String, Document>();
     private final Map<String, LogicalService> services = new HashMap<String, LogicalService>();
@@ -82,13 +80,23 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      * @param parent     Parent of the component.
      */
     public LogicalComponent(URI uri, ComponentDefinition<I> definition, LogicalCompositeComponent parent) {
-        super(uri, parent, TYPE);
+        super(parent);
+        this.uri = uri;
         this.definition = definition;
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
+    }
+
+    /**
+     * Returns the component uri.
+     *
+     * @return the uri
+     */
+    public URI getUri() {
+        return uri;
     }
 
     /**

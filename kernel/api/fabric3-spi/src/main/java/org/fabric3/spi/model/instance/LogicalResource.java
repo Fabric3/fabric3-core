@@ -38,9 +38,7 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
@@ -50,8 +48,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
  */
 public class LogicalResource<RD extends ResourceDefinition> extends LogicalAttachPoint {
     private static final long serialVersionUID = -6298167441706672513L;
-
-    private static final QName TYPE = new QName(Namespaces.BINDING, "resource");
 
     private RD resourceDefinition;
     private URI target;
@@ -64,7 +60,7 @@ public class LogicalResource<RD extends ResourceDefinition> extends LogicalAttac
      * @param parent             the parent component
      */
     public LogicalResource(URI uri, RD resourceDefinition, LogicalComponent<?> parent) {
-        super(uri, resourceDefinition != null ? resourceDefinition.getServiceContract() : null, parent, TYPE);
+        super(uri, resourceDefinition != null ? resourceDefinition.getServiceContract() : null, parent);
         this.resourceDefinition = resourceDefinition;
     }
 
