@@ -65,6 +65,9 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
 
     private LogicalReference source;
     private LogicalService target;
+    private LogicalBinding sourceBinding;
+    private LogicalBinding targetBinding;
+
     private QName deployable;
     private LogicalState state = LogicalState.NEW;
 
@@ -147,6 +150,30 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public QName getTargetDeployable() {
         return deployable;
+    }
+
+    public LogicalBinding getSourceBinding() {
+        return sourceBinding;
+    }
+
+    public void setSourceBinding(LogicalBinding sourceBinding) {
+        this.sourceBinding = sourceBinding;
+    }
+
+    public LogicalBinding getTargetBinding() {
+        return targetBinding;
+    }
+
+    public void setTargetBinding(LogicalBinding targetBinding) {
+        this.targetBinding = targetBinding;
+    }
+
+    public QName getDeployable() {
+        return deployable;
+    }
+
+    public void setDeployable(QName deployable) {
+        this.deployable = deployable;
     }
 
     /**
