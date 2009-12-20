@@ -232,57 +232,11 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     public PhysicalWireDefinition generateWire(LogicalWire wire) throws GenerationException {
-        LogicalReference reference = wire.getSource();
-        LogicalService service = wire.getTarget();
-        LogicalComponent source = reference.getParent();
-        LogicalComponent target = service.getLeafComponent();
-        ReferenceDefinition referenceDefinition = reference.getDefinition();
-        ServiceContract referenceContract = reference.getServiceContract();
-
-        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
-        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, service);
-
-        PolicyResult policyResult = resolvePolicies(reference.getOperations(), sourceBinding, targetBinding, source, target);
-        EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
-        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
-
-        ComponentGenerator targetGenerator = getGenerator(target);
-        // generate metadata for the target side of the wire
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
-        targetDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
-        ServiceContract serviceContract = service.getServiceContract();
-        ServiceContract callbackContract = serviceContract.getCallbackContract();
-        if (callbackContract != null) {
-            // if there is a callback wire associated with this forward wire, calculate its URI
-            URI callbackUri = generateCallbackUri(source, callbackContract, referenceDefinition.getName());
-            targetDefinition.setCallbackUri(callbackUri);
-        }
-
-        ComponentGenerator sourceGenerator = getGenerator(source);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
-        sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
-        String key = target.getDefinition().getKey();
-        sourceDefinition.setKey(key);
-
-        Set<PhysicalOperationDefinition> operations;
-        if (referenceContract.getClass().equals(serviceContract.getClass())) {
-            operations = operationGenerator.generateOperations(reference.getOperations(), policyResult);
+        if (wire.getSourceBinding() != null && wire.getTargetBinding() != null) {
+            return generateRemoteWire(wire);
         } else {
-            operations = operationGenerator.generateOperations(reference.getOperations(), service.getOperations(), policyResult);
+            return generateLocalWire(wire);
         }
-        QName sourceDeployable = null;
-        QName targetDeployable = null;
-        if (LogicalState.NEW == target.getState()) {
-            sourceDeployable = source.getDeployable();
-            targetDeployable = target.getDeployable();
-        }
-
-        PhysicalWireDefinition wireDefinition =
-                new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
-        boolean optimizable =
-                sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(referenceContract, operations);
-        wireDefinition.setOptimizable(optimizable);
-        return wireDefinition;
     }
 
     public PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws GenerationException {
@@ -345,6 +299,128 @@ public class WireGeneratorImpl implements WireGenerator {
         wireDefinition.setOptimizable(optimizable);
 
         return wireDefinition;
+    }
+
+    /**
+     * Generates a physical wire definition for a wire that is not bound to a remote transport - i.e. it is between two components hosted in the same
+     * runtime.
+     *
+     * @param wire the logical wire
+     * @return the physical wire definiton
+     * @throws GenerationException if an error occurs during generation
+     */
+    private PhysicalWireDefinition generateLocalWire(LogicalWire wire) throws GenerationException {
+        LogicalReference reference = wire.getSource();
+        LogicalService service = wire.getTarget();
+        LogicalComponent source = reference.getParent();
+        LogicalComponent target = service.getLeafComponent();
+        ReferenceDefinition referenceDefinition = reference.getDefinition();
+        ServiceContract referenceContract = reference.getServiceContract();
+
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
+        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, service);
+
+        PolicyResult policyResult = resolvePolicies(reference.getOperations(), sourceBinding, targetBinding, source, target);
+        EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
+        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
+
+        ComponentGenerator targetGenerator = getGenerator(target);
+        // generate metadata for the target side of the wire
+        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
+        targetDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
+        ServiceContract serviceContract = service.getServiceContract();
+        ServiceContract callbackContract = serviceContract.getCallbackContract();
+        if (callbackContract != null) {
+            // if there is a callback wire associated with this forward wire, calculate its URI
+            URI callbackUri = generateCallbackUri(source, callbackContract, referenceDefinition.getName());
+            targetDefinition.setCallbackUri(callbackUri);
+        }
+
+        ComponentGenerator sourceGenerator = getGenerator(source);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
+        sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
+        String key = target.getDefinition().getKey();
+        sourceDefinition.setKey(key);
+
+        Set<PhysicalOperationDefinition> operations;
+        if (referenceContract.getClass().equals(serviceContract.getClass())) {
+            operations = operationGenerator.generateOperations(reference.getOperations(), policyResult);
+        } else {
+            operations = operationGenerator.generateOperations(reference.getOperations(), service.getOperations(), policyResult);
+        }
+        QName sourceDeployable = null;
+        QName targetDeployable = null;
+        if (LogicalState.NEW == target.getState()) {
+            sourceDeployable = source.getDeployable();
+            targetDeployable = target.getDeployable();
+        }
+
+        PhysicalWireDefinition wireDefinition =
+                new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
+        boolean optimizable =
+                sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(referenceContract, operations);
+        wireDefinition.setOptimizable(optimizable);
+        return wireDefinition;
+    }
+
+    /**
+     * Generates a physical wire definition for a wire that bound to a remote transport - i.e. it is between two components hosted in different
+     * runtime processes.
+     *
+     * @param wire the logical wire
+     * @return the physical wire definiton
+     * @throws GenerationException if an error occurs during generation
+     */
+    @SuppressWarnings({"unchecked"})
+    private <BD extends BindingDefinition> PhysicalWireDefinition generateRemoteWire(LogicalWire wire) throws GenerationException {
+        LogicalReference reference = wire.getSource();
+        LogicalService service = wire.getTarget();
+        LogicalComponent source = reference.getParent();
+        LogicalComponent target = service.getLeafComponent();
+        ReferenceDefinition referenceDefinition = reference.getDefinition();
+        ServiceContract referenceContract = reference.getServiceContract();
+        ServiceContract serviceContract = service.getServiceContract();
+        ServiceContract callbackContract = serviceContract.getCallbackContract();
+
+        LogicalBinding<BD> referenceBinding = wire.getSourceBinding();
+        LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
+
+        PolicyResult policyResult = resolvePolicies(reference.getOperations(), referenceBinding, serviceBinding, source, target);
+        EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
+        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
+
+        BindingGenerator<BD> bindingGenerator = getGenerator(serviceBinding);
+
+        // generate metadata for the target side of the wire
+        PhysicalSourceDefinition sourceDefinition =
+                bindingGenerator.generateSource(serviceBinding, serviceContract, service.getOperations(), targetPolicy);
+        sourceDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
+        String key = source.getDefinition().getKey();
+        sourceDefinition.setKey(key);
+
+        PhysicalTargetDefinition targetDefinition =
+                bindingGenerator.generateTarget(serviceBinding, referenceBinding, serviceContract, reference.getOperations(), sourcePolicy);
+        targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
+        if (callbackContract != null) {
+            // if there is a callback wire associated with this forward wire, calculate its URI
+            URI callbackUri = generateCallbackUri(source, callbackContract, referenceDefinition.getName());
+            targetDefinition.setCallbackUri(callbackUri);
+        }
+
+        Set<PhysicalOperationDefinition> operations;
+        if (referenceContract.getClass().equals(serviceContract.getClass())) {
+            operations = operationGenerator.generateOperations(reference.getOperations(), policyResult);
+        } else {
+            operations = operationGenerator.generateOperations(reference.getOperations(), service.getOperations(), policyResult);
+        }
+        QName sourceDeployable = null;
+        QName targetDeployable = null;
+        if (LogicalState.NEW == target.getState()) {
+            sourceDeployable = source.getDeployable();
+            targetDeployable = target.getDeployable();
+        }
+
+        return new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
     }
 
     private PolicyResult resolvePolicies(List<LogicalOperation> operations,
