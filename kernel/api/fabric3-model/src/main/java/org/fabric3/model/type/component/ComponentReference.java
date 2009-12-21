@@ -43,7 +43,6 @@
  */
 package org.fabric3.model.type.component;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +54,7 @@ import java.util.List;
 public class ComponentReference extends ReferenceDefinition {
     private static final long serialVersionUID = 2072898078368317712L;
     private boolean autowire;
-    private List<URI> targets = new ArrayList<URI>();
+    private List<Target> targets = new ArrayList<Target>();
 
     /**
      * Construct a ComponentReference specifying the name of the reference being configured.
@@ -84,11 +83,11 @@ public class ComponentReference extends ReferenceDefinition {
         this.autowire = autowire;
     }
 
-    public List<URI> getTargets() {
+    public List<Target> getTargets() {
         return targets;
     }
 
-    public void addTarget(URI target) {
+    public void addTarget(Target target) {
         targets.add(target);
     }
 

@@ -179,7 +179,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         // instantiate wires - note this must be done after the included components as wire targets may resolve to an included service
         wireInstantiator.instantiateCompositeWires(composite, domain, context);
         for (LogicalComponent<?> component : newComponents) {
-            wireInstantiator.instantiateReferenceWires(component, domain, context);
+            wireInstantiator.instantiateReferenceWires(component, context);
         }
 
         return newComponents;

@@ -35,27 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.instantiator.wire;
+package org.fabric3.spi.introspection.xml;
 
-import java.net.URI;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.host.domain.AssemblyFailure;
+/**
+ * Denotes an invalid Target string.
+ *
+ * @version $Rev$ $Date$
+ */
+public class InvalidTargetException extends LoaderException {
+    private static final long serialVersionUID = 3152039537445905353L;
+    private String target;
 
-public class AmbiguousWireTarget extends AssemblyFailure {
-    private URI targetUri;
-
-    public AmbiguousWireTarget(URI targetUri, URI compositeUri, URI contributionUri) {
-        super(compositeUri, contributionUri);
-        this.targetUri = targetUri;
+    public InvalidTargetException(String message, String target, XMLStreamReader reader) {
+        super(message, reader);
+        this.target = target;
     }
 
-    public URI getTargetUri() {
-        return targetUri;
+    public String getTarget() {
+        return target;
     }
-
-    public String getMessage() {
-        return "Target component " + targetUri + "for wire in " + getComponentUri() + " has more than one service. " +
-                "The service must be specified in the wire";
-    }
-
 }

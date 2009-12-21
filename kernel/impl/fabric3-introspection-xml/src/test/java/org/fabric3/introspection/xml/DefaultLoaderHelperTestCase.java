@@ -51,10 +51,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 
 /**
@@ -90,7 +92,7 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         }
     }
 
-    public void testComplexProperty() throws XMLStreamException {
+    public void testComplexProperty() throws Exception {
         String xml = "<property xmlns:foo='http://foo.com'>"
                 + "<foo:a>aValue</foo:a>"
                 + "<foo:b>InterestingURI</foo:b>"
@@ -111,6 +113,24 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         assertEquals("http://foo.com", e.getNamespaceURI());
         assertEquals("b", e.getLocalName());
         assertEquals("InterestingURI", e.getTextContent());
+    }
+
+    public void testParseTargetComponent() throws Exception {
+        Target target = helper.parseTarget("component", EasyMock.createNiceMock(XMLStreamReader.class));
+        assertEquals("component", target.getComponent());
+    }
+
+    public void testParseTargetComponentService() throws Exception {
+        Target target = helper.parseTarget("component/service", EasyMock.createNiceMock(XMLStreamReader.class));
+        assertEquals("component", target.getComponent());
+        assertEquals("service", target.getBindable());
+    }
+
+    public void testParseTargetComponentServiceBinding() throws Exception {
+        Target target = helper.parseTarget("component/service/binding", EasyMock.createNiceMock(XMLStreamReader.class));
+        assertEquals("component", target.getComponent());
+        assertEquals("service", target.getBindable());
+        assertEquals("binding", target.getBinding());
     }
 
     protected void setUp() throws Exception {

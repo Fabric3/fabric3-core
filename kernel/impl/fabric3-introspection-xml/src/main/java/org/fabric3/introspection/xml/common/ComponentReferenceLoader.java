@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +62,11 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -127,16 +128,22 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             context.addError(failure);
         }
 
-        String target = reader.getAttributeValue(null, "target");
-        List<URI> uris = new ArrayList<URI>();
-        if (target != null) {
-            StringTokenizer tokenizer = new StringTokenizer(target);
-            while (tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken();
-                uris.add(loaderHelper.getURI(token));
+        String targetAttribute = reader.getAttributeValue(null, "target");
+        List<Target> targets = new ArrayList<Target>();
+        try {
+            if (targetAttribute != null) {
+                StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
+                while (tokenizer.hasMoreTokens()) {
+                    String token = tokenizer.nextToken();
+                    Target target = loaderHelper.parseTarget(token, reader);
+                    targets.add(target);
+                }
             }
+        } catch (InvalidTargetException e) {
+            InvalidValue failure = new InvalidValue("Invalid target format", reader, e);
+            context.addError(failure);
         }
-        reference.getTargets().addAll(uris);
+        reference.getTargets().addAll(targets);
 
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 

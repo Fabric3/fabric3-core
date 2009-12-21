@@ -34,53 +34,63 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.model.type.component;
 
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Represents a wire specified in a composite file.
+ * Encapsulates information needed to identify a component/service, component/service/binding, component/reference or component/reference/binding.
+ * Targets are relative to a composite and not absolute.
  *
  * @version $Rev$ $Date$
  */
-public class WireDefinition extends ModelObject {
-    private static final long serialVersionUID = -2310313135279527903L;
-    private Target reference;
-    private Target service;
-    private boolean replace;
+public class Target extends ModelObject {
+    private static final long serialVersionUID = 8616545726099554138L;
 
-    public WireDefinition(Target reference, Target service, boolean replace) {
-        this.reference = reference;
-        this.service = service;
-        this.replace = replace;
+    private String component;
+    private String bindable;
+    private String binding;
+
+    public Target(String component) {
+        this.component = component;
+    }
+
+    public Target(String component, String bindable) {
+        this.component = component;
+        this.bindable = bindable;
+    }
+
+    public Target(String component, String bindable, String binding) {
+        this.component = component;
+        this.bindable = bindable;
+        this.binding = binding;
     }
 
     /**
-     * Returns a <code>Target</code> identifying the source reference for the wire
+     * Returns the component name.
      *
-     * @return the target
+     * @return the component name
      */
-    public Target getReferenceTarget() {
-        return reference;
+    public String getComponent() {
+        return component;
     }
 
     /**
-     * Returns a <code>Target</code> identifying the target service for the wire
+     * Returns the reference or service name.
      *
-     * @return the target
+     * @return the reference or service name. May be null.
      */
-    public Target getServiceTarget() {
-        return service;
+    public String getBindable() {
+        return bindable;
     }
 
-    public boolean isReplace() {
-        return replace;
+    /**
+     * Returns the binding name.
+     *
+     * @return the binding name. May be null.
+     */
+    public String getBinding() {
+        return binding;
     }
 }

@@ -142,7 +142,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(failure);
                 return null;
             }
-            URI targetURI = loaderHelper.getURI(uri);
+            URI targetURI = loaderHelper.parseUri(uri);
             bd = new JmsBindingDefinition(targetURI, metadata);
         } else {
             metadata = new JmsBindingMetadata();

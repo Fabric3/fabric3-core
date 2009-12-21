@@ -71,9 +71,11 @@ import org.w3c.dom.Text;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.PolicyAware;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
+import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
@@ -167,7 +169,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return qName;
     }
 
-    public URI getURI(String target) {
+    public URI parseUri(String target) {
         if (target == null) {
             return null;
         }
@@ -182,6 +184,22 @@ public class DefaultLoaderHelper implements LoaderHelper {
         }
     }
 
+    public Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException {
+        if (target == null) {
+            return null;
+        }
+        String[] tokens = target.split("/");
+        if (tokens.length == 1) {
+            return new Target(tokens[0]);
+        } else if (tokens.length == 2) {
+            return new Target(tokens[0], tokens[1]);
+        } else if (tokens.length == 3) {
+            return new Target(tokens[0], tokens[1], tokens[2]);
+        } else {
+            throw new InvalidTargetException("Invalid target format: " + target, target, reader);
+        }
+    }
+
     public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) {
         String value = reader.getAttributeValue(null, attribute);
         if (value == null || value.length() == 0) {
@@ -190,7 +208,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
             StringTokenizer tok = new StringTokenizer(value);
             List<URI> result = new ArrayList<URI>(tok.countTokens());
             while (tok.hasMoreTokens()) {
-                result.add(getURI(tok.nextToken().trim()));
+                result.add(parseUri(tok.nextToken().trim()));
             }
             return result;
         }

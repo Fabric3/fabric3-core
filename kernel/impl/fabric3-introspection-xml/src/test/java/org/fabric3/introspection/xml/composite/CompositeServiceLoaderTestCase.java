@@ -90,7 +90,7 @@ public class CompositeServiceLoaderTestCase extends TestCase {
         expect(mockReader.getAttributeCount()).andReturn(0);
         expect(mockReader.getAttributeValue(null, "name")).andReturn(serviceName);
         expect(mockReader.getAttributeValue(null, "promote")).andReturn(componentName);
-        expect(mockLoaderHelper.getURI(componentName)).andReturn(componentURI);
+        expect(mockLoaderHelper.parseUri(componentName)).andReturn(componentURI);
         mockLoaderHelper.loadPolicySetsAndIntents(EasyMock.isA(CompositeService.class),
                                                   EasyMock.same(mockReader),
                                                   EasyMock.same(introspectionContext));
@@ -107,7 +107,7 @@ public class CompositeServiceLoaderTestCase extends TestCase {
         expect(mockReader.getAttributeCount()).andReturn(0);
         expect(mockReader.getAttributeValue(null, "name")).andReturn(serviceName);
         expect(mockReader.getAttributeValue(null, "promote")).andReturn(componentServiceName);
-        expect(mockLoaderHelper.getURI(componentServiceName)).andReturn(componentServiceURI);
+        expect(mockLoaderHelper.parseUri(componentServiceName)).andReturn(componentServiceURI);
         mockLoaderHelper.loadPolicySetsAndIntents(EasyMock.isA(CompositeService.class),
                                                   EasyMock.same(mockReader),
                                                   EasyMock.same(introspectionContext));
@@ -124,7 +124,7 @@ public class CompositeServiceLoaderTestCase extends TestCase {
         expect(mockReader.getAttributeCount()).andReturn(0);
         expect(mockReader.getAttributeValue(null, "name")).andReturn(serviceName);
         expect(mockReader.getAttributeValue(null, "promote")).andReturn(componentName);
-        expect(mockLoaderHelper.getURI(componentName)).andReturn(componentURI);
+        expect(mockLoaderHelper.parseUri(componentName)).andReturn(componentURI);
         mockLoaderHelper.loadPolicySetsAndIntents(EasyMock.isA(CompositeService.class),
                                                   EasyMock.same(mockReader),
                                                   EasyMock.same(introspectionContext));
@@ -157,7 +157,7 @@ public class CompositeServiceLoaderTestCase extends TestCase {
         expect(mockReader.getAttributeCount()).andReturn(0);
         expect(mockReader.getAttributeValue(null, "name")).andReturn(serviceName);
         expect(mockReader.getAttributeValue(null, "promote")).andReturn(componentName);
-        expect(mockLoaderHelper.getURI(componentName)).andReturn(componentURI);
+        expect(mockLoaderHelper.parseUri(componentName)).andReturn(componentURI);
         mockLoaderHelper.loadPolicySetsAndIntents(EasyMock.isA(CompositeService.class),
                                                   EasyMock.same(mockReader),
                                                   EasyMock.same(introspectionContext));

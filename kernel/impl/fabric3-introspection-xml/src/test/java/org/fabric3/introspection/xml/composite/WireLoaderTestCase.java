@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -72,8 +71,8 @@ public class WireLoaderTestCase extends TestCase {
         EasyMock.replay(reader);
         WireDefinition definition = wireLoader.load(reader, null);
         EasyMock.verify(reader);
-        assertEquals(URI.create("source"), definition.getSource());
-        assertEquals(URI.create("target"), definition.getTarget());
+        assertEquals("source", definition.getReferenceTarget().getComponent());
+        assertEquals("target", definition.getServiceTarget().getComponent());
     }
 
     public void testWithServiceName() throws LoaderException, XMLStreamException {
@@ -85,8 +84,8 @@ public class WireLoaderTestCase extends TestCase {
         EasyMock.replay(reader);
         WireDefinition definition = wireLoader.load(reader, null);
         EasyMock.verify(reader);
-        assertEquals(URI.create("source#s"), definition.getSource());
-        assertEquals(URI.create("target#t"), definition.getTarget());
+        assertEquals("s", definition.getReferenceTarget().getBindable());
+        assertEquals("t", definition.getServiceTarget().getBindable());
     }
 
     protected void setUp() throws Exception {

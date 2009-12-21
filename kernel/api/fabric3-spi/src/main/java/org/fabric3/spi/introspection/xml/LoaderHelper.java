@@ -53,6 +53,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.PolicyAware;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -91,13 +92,24 @@ public interface LoaderHelper {
      */
     void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context);
 
+
     /**
-     * Convert a component URI in the form ${componentName}/${serviceName} to a URI of the form ${componentName}#${serviceName}
+     * Convert a URI from a String form of <code>component/service</code> to a URI form of <code>component/service</code>.
      *
-     * @param target the target URI to convert
+     * @param target the URI to convert
      * @return a URI where the fragment represents the service name
      */
-    URI getURI(String target);
+    URI parseUri(String target);
+
+    /**
+     * Convert a URI from a String form of <code>component/service/binding</code> to a Target.
+     *
+     * @param target the URI to convert
+     * @param reader the stream reader parsing the XML document where the target is specified
+     * @return a target instance
+     * @throws InvalidTargetException if the target format is invalid
+     */
+    Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException;
 
     /**
      * Parses a list of qualified names.

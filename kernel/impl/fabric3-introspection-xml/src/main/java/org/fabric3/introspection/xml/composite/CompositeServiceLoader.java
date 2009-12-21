@@ -95,7 +95,7 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
             MissingPromotion error = new MissingPromotion("Promotion not specied on composite service " + name, reader);
             context.addError(error);
         }
-        CompositeService def = new CompositeService(name, null, loaderHelper.getURI(promote));
+        CompositeService def = new CompositeService(name, null, loaderHelper.parseUri(promote));
 
         loaderHelper.loadPolicySetsAndIntents(def, reader, context);
         boolean callback = false;

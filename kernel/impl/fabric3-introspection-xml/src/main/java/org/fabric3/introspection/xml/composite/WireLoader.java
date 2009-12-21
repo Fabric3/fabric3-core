@@ -43,15 +43,17 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidTargetException;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
@@ -71,14 +73,21 @@ public class WireLoader implements TypeLoader<WireDefinition> {
     public WireDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
 
-        String source = reader.getAttributeValue(null, "source");
-        String target = reader.getAttributeValue(null, "target");
+        String referenceAttribute = reader.getAttributeValue(null, "source");
+        String serviceAttribute = reader.getAttributeValue(null, "target");
         boolean replace = Boolean.parseBoolean(reader.getAttributeValue(null, "replace"));
         LoaderUtil.skipToEndElement(reader);
 
-        URI sourceURI = helper.getURI(source);
-        URI targetURI = helper.getURI(target);
-        return new WireDefinition(sourceURI, targetURI, replace);
+        Target referenceTarget = null;
+        Target serviceTarget = null;
+        try {
+            referenceTarget = helper.parseTarget(referenceAttribute, reader);
+            serviceTarget = helper.parseTarget(serviceAttribute, reader);
+        } catch (InvalidTargetException e) {
+            InvalidValue failure = new InvalidValue("Invalid wire attribute", reader, e);
+            context.addError(failure);
+        }
+        return new WireDefinition(referenceTarget, serviceTarget, replace);
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

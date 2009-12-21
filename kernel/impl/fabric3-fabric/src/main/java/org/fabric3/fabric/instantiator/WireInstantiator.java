@@ -43,7 +43,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates explicit wires, i.e. those declared by a <code>wire<code> wire element or using the <code>target</code> attribute on a
- * <code>reference</code> element.
+ * <code>reference</code> element. During instantiation, wires will be validated.
  *
  * @version $Rev$ $Date$
  */
@@ -62,8 +62,7 @@ public interface WireInstantiator {
      * Instantiates wires declared using the <code>target</code> attribute on a <code>reference</code> element.
      *
      * @param component the logical component containing the configured references
-     * @param parent    the logical composite where the wires will be added
      * @param context   the instantiation context.
      */
-    void instantiateReferenceWires(LogicalComponent<?> component, LogicalCompositeComponent parent, InstantiationContext context);
+    void instantiateReferenceWires(LogicalComponent<?> component, InstantiationContext context);
 }

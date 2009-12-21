@@ -116,7 +116,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         }
         // resolve the reference wires after the children have been instantiated and added to the parent, otherwise targets will not resolve
         for (LogicalComponent<?> child : children) {
-            wireInstantiator.instantiateReferenceWires(child, component, context);
+            wireInstantiator.instantiateReferenceWires(child, context);
         }
     }
 

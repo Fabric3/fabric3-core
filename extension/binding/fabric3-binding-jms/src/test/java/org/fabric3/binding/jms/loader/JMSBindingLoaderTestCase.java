@@ -63,10 +63,12 @@ import org.fabric3.binding.jms.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.model.type.PolicyAware;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.InvalidTargetException;
 
 public class JMSBindingLoaderTestCase extends TestCase {
     public void testLoaderJMSBindingElement() throws Exception {
@@ -76,7 +78,11 @@ public class JMSBindingLoaderTestCase extends TestCase {
                 return null;
             }
 
-            public URI getURI(String target) {
+            public URI parseUri(String target) {
+                return null;
+            }
+
+            public Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException {
                 return null;
             }
 

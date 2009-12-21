@@ -55,6 +55,7 @@ import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
@@ -125,8 +126,8 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
         } else {
             // The reference is explicity configured on the component definition in the composite
-            List<URI> uris = componentReference.getTargets();
-            if (!uris.isEmpty()) {
+            List<Target> targets = componentReference.getTargets();
+            if (!targets.isEmpty()) {
                 return;
             }
 
