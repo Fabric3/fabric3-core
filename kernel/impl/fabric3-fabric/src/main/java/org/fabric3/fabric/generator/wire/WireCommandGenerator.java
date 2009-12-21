@@ -85,9 +85,7 @@ public class WireCommandGenerator implements CommandGenerator {
         ConnectionCommand command = new ConnectionCommand();
 
         for (LogicalReference logicalReference : component.getReferences()) {
-            if (logicalReference.getBindings().isEmpty()) {
-                generateUnboundReferenceWires(logicalReference, command, incremental);
-            }
+            generateWires(logicalReference, command, incremental);
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;
@@ -95,7 +93,7 @@ public class WireCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateUnboundReferenceWires(LogicalReference reference, ConnectionCommand command, boolean incremental)
+    private void generateWires(LogicalReference reference, ConnectionCommand command, boolean incremental)
             throws GenerationException {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection

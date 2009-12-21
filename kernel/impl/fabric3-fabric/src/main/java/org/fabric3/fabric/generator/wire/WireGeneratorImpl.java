@@ -364,8 +364,12 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     /**
-     * Generates a physical wire definition for a wire that bound to a remote transport - i.e. it is between two components hosted in different
+     * Generates a physical wire definition for a wire that is bound to a remote transport - i.e. it is between two components hosted in different
      * runtime processes.
+     * <p/>
+     * The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the reference
+     * binding. Note that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from
+     * another deployable composite or when metadata for the bound service is created by another generator. 
      *
      * @param wire the logical wire
      * @return the physical wire definiton
@@ -389,17 +393,18 @@ public class WireGeneratorImpl implements WireGenerator {
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
-        BindingGenerator<BD> bindingGenerator = getGenerator(serviceBinding);
+        ComponentGenerator componentGenerator = getGenerator(reference.getParent());
 
-        // generate metadata for the target side of the wire
-        PhysicalSourceDefinition sourceDefinition =
-                bindingGenerator.generateSource(serviceBinding, serviceContract, service.getOperations(), targetPolicy);
+        PhysicalSourceDefinition sourceDefinition = componentGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
         String key = source.getDefinition().getKey();
         sourceDefinition.setKey(key);
 
+        BindingGenerator<BD> bindingGenerator = getGenerator(referenceBinding);
+
+        // generate metadata for the target side of the wire which it the reference binding
         PhysicalTargetDefinition targetDefinition =
-                bindingGenerator.generateTarget(serviceBinding, referenceBinding, serviceContract, reference.getOperations(), sourcePolicy);
+                bindingGenerator.generateTarget(referenceBinding, serviceBinding, serviceContract, reference.getOperations(), targetPolicy);
         targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
