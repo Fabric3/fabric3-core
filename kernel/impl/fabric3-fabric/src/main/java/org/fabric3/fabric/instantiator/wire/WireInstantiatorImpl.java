@@ -424,7 +424,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         URI parentUri = parent.getUri();
         URI contributionUri = parent.getDefinition().getContributionUri();
         BindingNotFound error =
-                new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + "was not found", parentUri, contributionUri);
+                new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " was not found", parentUri, contributionUri);
         context.addError(error);
     }
 
@@ -433,7 +433,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         URI parentUri = parent.getUri();
         URI contributionUri = parent.getDefinition().getContributionUri();
         BindingNotFound error =
-                new BindingNotFound("The binding " + name + "  for service " + service.getUri() + "was not found", parentUri, contributionUri);
+                new BindingNotFound("The binding " + name + "  for service " + service.getUri() + " was not found", parentUri, contributionUri);
         context.addError(error);
     }
 
