@@ -58,7 +58,7 @@ import org.fabric3.model.type.contract.ServiceContract;
  */
 public class ReferenceDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = 4641581818938572132L;
-    private final String name;
+    private String name;
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
     private boolean keyed;

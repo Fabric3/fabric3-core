@@ -66,10 +66,7 @@ public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
         Bindable logicalService = binding.getParent();
 
         JMXSourceDefinition definition = new JMXSourceDefinition();
-        URI uri = binding.getUri();
-        if (uri == null) {
-            uri = logicalService.getUri();
-        }
+        URI uri = logicalService.getUri();
         definition.setUri(uri);
         definition.setInterfaceName(contract.getQualifiedInterfaceName());
         definition.setOptimizable(true);
@@ -86,10 +83,10 @@ public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalBinding<JMXBinding> referenceBinding,
-                                                       LogicalBinding<JMXBinding> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+                                                   LogicalBinding<JMXBinding> serviceBinding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

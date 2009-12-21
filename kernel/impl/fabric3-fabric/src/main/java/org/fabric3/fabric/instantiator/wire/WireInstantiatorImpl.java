@@ -56,6 +56,8 @@ import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -98,10 +100,12 @@ public class WireInstantiatorImpl implements WireInstantiator {
             // create the wire
             QName deployable = parent.getDeployable();
             LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+            String referenceBindingName = referenceTarget.getBinding();
+            String serviceBindingName = serviceTarget.getBinding();
+            resolveBindings(reference, referenceBindingName, service, wire, serviceBindingName, context);
             parent.addWire(reference, wire);
         }
     }
-
 
     public void instantiateReferenceWires(LogicalComponent<?> component, InstantiationContext context) {
         for (LogicalReference logicalReference : component.getReferences()) {
@@ -109,9 +113,9 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
     }
 
-    private void instantiateReferenceWires(LogicalReference logicalReference, InstantiationContext context) {
-        LogicalCompositeComponent parent = logicalReference.getParent().getParent();
-        ComponentReference componentReference = logicalReference.getComponentReference();
+    private void instantiateReferenceWires(LogicalReference reference, InstantiationContext context) {
+        LogicalCompositeComponent parent = reference.getParent().getParent();
+        ComponentReference componentReference = reference.getComponentReference();
         if (componentReference == null) {
             // the reference is not configured on the component definition in the composite so there are no wires
             return;
@@ -123,25 +127,21 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return;
         }
 
-        // resolve the target URIs to services
-        List<LogicalService> targetServices = new ArrayList<LogicalService>();
+        // resolve the targets and create logical wires
+        List<LogicalWire> wires = new ArrayList<LogicalWire>();
         for (Target serviceTarget : serviceTargets) {
-            LogicalService targetService = resolveService(logicalReference, serviceTarget, parent, context);
-            if (targetService == null) {
+            LogicalService service = resolveService(reference, serviceTarget, parent, context);
+            if (service == null) {
                 return;
             }
-            targetServices.add(targetService);
-
-        }
-        // create the logical wires
-        List<LogicalWire> wires = new ArrayList<LogicalWire>();
-        for (LogicalService targetService : targetServices) {
-            QName deployable = targetService.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(parent, logicalReference, targetService, deployable);
+            QName deployable = service.getParent().getDeployable();
+            LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+            String serviceBindingName = serviceTarget.getBinding();
+            resolveBindings(reference, null, service, wire, serviceBindingName, context);
             wires.add(wire);
         }
-        parent.overrideWires(logicalReference, wires);
-        logicalReference.setResolved(true);
+        parent.overrideWires(reference, wires);
+        reference.setResolved(true);
     }
 
     /**
@@ -232,6 +232,87 @@ public class WireInstantiatorImpl implements WireInstantiator {
         validate(reference, targetService, context);
         return targetService;
     }
+
+    /**
+     * Resolves any bindings specified as part of the service and reference targets of a wire
+     *
+     * @param reference            the logical reference to resolve against
+     * @param referenceBindingName the reference binding name. May be null.
+     * @param service              the logical service to resolve against
+     * @param wire                 the wire to update
+     * @param serviceBindingName   the service binding name. May be null.
+     * @param context              the logical context
+     */
+    private void resolveBindings(LogicalReference reference,
+                                 String referenceBindingName,
+                                 LogicalService service,
+                                 LogicalWire wire,
+                                 String serviceBindingName,
+                                 InstantiationContext context) {
+        if (serviceBindingName == null) {
+            return;
+        }
+        LogicalBinding<?> serviceBinding = getBinding(serviceBindingName, service);
+        if (serviceBinding == null) {
+            raiseServiceBindingNotFound(service, serviceBindingName, context);
+        }
+
+        LogicalBinding<?> referenceBinding;
+        if (referenceBindingName != null) {
+            referenceBinding = getBinding(referenceBindingName, reference);
+        } else if (serviceBinding != null) {
+            referenceBinding = selectBinding(reference, serviceBinding);
+        } else {
+            // error condition
+            return;
+        }
+
+        if (referenceBinding == null) {
+            raiseReferenceBindingNotFound(reference, referenceBindingName, context);
+            return;
+        }
+        wire.setSourceBinding(referenceBinding);
+        wire.setTargetBinding(serviceBinding);
+        if (serviceBinding != null && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
+            raiseIncomaptibleBindings(reference, service, referenceBindingName, context);
+        }
+    }
+
+    /**
+     * Selects a binding from the given bindable by matching it against another binding
+     *
+     * @param bindable the bindable to select the binding from
+     * @param binding  the binding to match against
+     * @return the selected binding or null if no matching ones were found
+     */
+    private LogicalBinding<?> selectBinding(Bindable bindable, LogicalBinding binding) {
+        for (LogicalBinding<?> candidate : bindable.getBindings()) {
+            if (candidate.getDefinition().getType().equals(binding.getDefinition().getType())) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns a binding matching the name
+     *
+     * @param name     the binding name
+     * @param bindable the bindable containing the binding
+     * @return the matching binding or null if no matching one was found
+     */
+    private LogicalBinding<?> getBinding(String name, Bindable bindable) {
+        LogicalBinding<?> selectedBinding = null;
+        for (LogicalBinding<?> binding : bindable.getBindings()) {
+            if (name.equals(binding.getDefinition().getName())) {
+                selectedBinding = binding;
+                break;
+            }
+        }
+        return selectedBinding;
+    }
+
 
     private void validate(LogicalReference reference, LogicalService service, InstantiationContext context) {
         validateKeyedReference(reference, service, context);
@@ -337,5 +418,37 @@ public class WireInstantiatorImpl implements WireInstantiator {
         ServiceNotFound error = new ServiceNotFound(msg, referenceUri, parentUri, contributionUri);
         context.addError(error);
     }
+
+    private void raiseReferenceBindingNotFound(LogicalReference reference, String name, InstantiationContext context) {
+        LogicalCompositeComponent parent = reference.getParent().getParent();
+        URI parentUri = parent.getUri();
+        URI contributionUri = parent.getDefinition().getContributionUri();
+        BindingNotFound error =
+                new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + "was not found", parentUri, contributionUri);
+        context.addError(error);
+    }
+
+    private void raiseServiceBindingNotFound(LogicalService service, String name, InstantiationContext context) {
+        LogicalCompositeComponent parent = service.getParent().getParent();
+        URI parentUri = parent.getUri();
+        URI contributionUri = parent.getDefinition().getContributionUri();
+        BindingNotFound error =
+                new BindingNotFound("The binding " + name + "  for service " + service.getUri() + "was not found", parentUri, contributionUri);
+        context.addError(error);
+    }
+
+    private void raiseIncomaptibleBindings(LogicalReference reference,
+                                           LogicalService service,
+                                           String name,
+                                           InstantiationContext context) {
+
+        LogicalCompositeComponent parent = reference.getParent().getParent();
+        URI parentUri = parent.getUri();
+        URI contributionUri = parent.getDefinition().getContributionUri();
+        BindingNotFound error = new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " and service "
+                + service.getUri() + " are not compatible", parentUri, contributionUri);
+        context.addError(error);
+    }
+
 
 }

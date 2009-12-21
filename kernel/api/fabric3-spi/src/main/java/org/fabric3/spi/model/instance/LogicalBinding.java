@@ -43,7 +43,6 @@
  */
 package org.fabric3.spi.model.instance;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.BindingDefinition;
@@ -57,7 +56,6 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
     private static final long serialVersionUID = 8153501808553226042L;
 
     private BD definition;
-    private URI uri;
     private LogicalState state = LogicalState.NEW;
     private QName deployable;
     private boolean assigned;
@@ -82,15 +80,6 @@ public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArti
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
-    }
-
-    /**
-     * Returns the binding URI.
-     *
-     * @return the uri
-     */
-    public URI getUri() {
-        return uri;
     }
 
     /**
