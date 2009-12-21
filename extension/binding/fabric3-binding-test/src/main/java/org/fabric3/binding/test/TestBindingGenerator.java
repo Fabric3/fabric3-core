@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.test;
 
+import java.net.URI;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -77,11 +78,16 @@ public class TestBindingGenerator implements BindingGenerator<TestBindingDefinit
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> referenceBinding,
-                                                       LogicalBinding<TestBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
+                                                   LogicalBinding<TestBindingDefinition> serviceBinding,
+                                                   ServiceContract contract,
+                                                   List<LogicalOperation> operations,
+                                                   EffectivePolicy policy) throws GenerationException {
+
+        TestBindingTargetDefinition definition = new TestBindingTargetDefinition();
+
+        URI path = serviceBinding.getDefinition().getTargetUri();
+        definition.setUri(path);
+        return definition;
     }
 
 

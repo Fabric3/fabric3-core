@@ -49,7 +49,6 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
@@ -67,13 +66,11 @@ public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
         TestBindingDefinition definition = null;
         String uri = null;
         try {
+            URI targetUri = null;
             uri = reader.getAttributeValue(null, "uri");
-            if (uri == null) {
-                MissingAttribute failure = new MissingAttribute("The uri attribute is not specified", reader);
-                context.addError(failure);
-                return null;
+            if (uri != null) {
+                targetUri = new URI(uri);
             }
-            URI targetUri = new URI(uri);
             String name = reader.getAttributeValue(null, "name");
             definition = new TestBindingDefinition(name, targetUri);
         } catch (URISyntaxException ex) {
