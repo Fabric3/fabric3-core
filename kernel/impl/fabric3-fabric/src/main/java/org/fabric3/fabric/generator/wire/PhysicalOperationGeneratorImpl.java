@@ -60,6 +60,8 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.policy.PolicyMetadata;
 import org.fabric3.spi.policy.PolicyResult;
+import org.fabric3.spi.contract.OperationNotFoundException;
+import org.fabric3.spi.contract.OperationResolver;
 
 /**
  * @version $Rev$ $Date$
@@ -116,7 +118,12 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         }
 
         for (LogicalOperation source : sources) {
-            LogicalOperation target = operationResolver.resolve(source, targets);
+            LogicalOperation target;
+            try {
+                target = operationResolver.resolve(source, targets);
+            } catch (OperationNotFoundException e) {
+               throw new GenerationException(e);
+            }
             PhysicalOperationDefinition physicalOperation = generate(source, target);
             if (result != null) {
                 List<PolicySet> policies = result.getInterceptedPolicySets(source);

@@ -93,7 +93,7 @@ import org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl;
 import org.fabric3.fabric.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.generator.impl.GeneratorRegistryImpl;
 import org.fabric3.fabric.generator.wire.WireCommandGenerator;
-import org.fabric3.fabric.generator.wire.OperationResolver;
+import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.fabric.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl;

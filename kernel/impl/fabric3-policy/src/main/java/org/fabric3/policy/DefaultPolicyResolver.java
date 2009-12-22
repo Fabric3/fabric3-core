@@ -46,13 +46,13 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.resolver.ImplementationPolicyResolver;
 import org.fabric3.policy.resolver.InteractionPolicyResolver;
+import org.fabric3.spi.contract.OperationNotFoundException;
+import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -95,11 +95,14 @@ public class DefaultPolicyResolver implements PolicyResolver {
 
     private InteractionPolicyResolver interactionResolver;
     private ImplementationPolicyResolver implementationResolver;
+    private OperationResolver operationResolver;
 
     public DefaultPolicyResolver(@Reference InteractionPolicyResolver interactionResolver,
-                                 @Reference ImplementationPolicyResolver implementationResolver) {
+                                 @Reference ImplementationPolicyResolver implementationResolver,
+                                 @Reference OperationResolver operationResolver) {
         this.interactionResolver = interactionResolver;
         this.implementationResolver = implementationResolver;
+        this.operationResolver = operationResolver;
     }
 
     public PolicyResult resolvePolicies(List<LogicalOperation> operations,
@@ -199,12 +202,10 @@ public class DefaultPolicyResolver implements PolicyResolver {
      * @param operation the source operation to match against.
      * @param bindable  the target bindable.
      * @return the matching operation
+     * @throws PolicyResolutionException if there is a matching error
      */
-    private LogicalOperation matchOperation(LogicalOperation operation, Bindable bindable) {
+    private LogicalOperation matchOperation(LogicalOperation operation, Bindable bindable) throws PolicyResolutionException {
         String name = operation.getDefinition().getName();
-        String wsdlName = operation.getDefinition().getWsdlName();
-        List<DataType<?>> inputTypes = operation.getDefinition().getInputTypes();
-        DataType<?> outputType = operation.getDefinition().getOutputType();
 
         List<LogicalOperation> operations;
         if (bindable instanceof LogicalReference) {
@@ -213,35 +214,16 @@ public class DefaultPolicyResolver implements PolicyResolver {
         } else {
             operations = bindable.getOperations();
         }
-        for (LogicalOperation candidate : operations) {
-            // match on the actual or mapped WSDL name
-            if (name.equals(candidate.getDefinition().getName()) || wsdlName.equals(candidate.getDefinition().getWsdlName())) {
-                Operation definition = candidate.getDefinition();
-                if (outputType.equals(definition.getOutputType()) && inputTypes.equals(definition.getInputTypes())) {
-                    return candidate;
-                }
-                // types could be from different type systems, determine equivalence based on XSD if available
-                if (outputType.getXsdType() != null && definition.getOutputType() != null && inputTypes.size() == definition.getInputTypes().size()) {
-                    if (outputType.getXsdType().equals(definition.getOutputType().getXsdType())) {
-                        boolean found = true;
-                        for (int i = 0; i < inputTypes.size(); i++) {
-                            DataType<?> inputType = inputTypes.get(i);
-                            DataType<?> otherInputType = definition.getInputTypes().get(i);
-                            if (inputType.getXsdType() != null && otherInputType.getXsdType() != null) {
-                                if (!inputType.getXsdType().equals(otherInputType.getXsdType())) {
-                                    found = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (found) {
-                            return candidate;
-                        }
-                    }
-                }
+
+        try {
+            LogicalOperation matched = operationResolver.resolve(operation, operations);
+            if (matched == null) {
+                throw new AssertionError("No matching operation for " + name);
             }
+            return matched;
+        } catch (OperationNotFoundException e) {
+            throw new PolicyResolutionException(e);
         }
-        throw new AssertionError("No matching operation for " + name);
     }
 
     private boolean noPolicy(LogicalComponent<?> component) {
@@ -301,6 +283,4 @@ public class DefaultPolicyResolver implements PolicyResolver {
         }
 
     }
-
-
 }

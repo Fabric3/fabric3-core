@@ -35,16 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.wire;
+package org.fabric3.spi.contract;
 
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
  * Thrown when an operation cannot be resolved against a set of target operations.
  *
  * @version $Rev$ $Date$
  */
-public class OperationNotFoundException extends GenerationException {
+public class OperationNotFoundException extends Fabric3Exception {
     private static final long serialVersionUID = 1636517908715626972L;
 
     public OperationNotFoundException(String msg) {

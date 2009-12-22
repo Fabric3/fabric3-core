@@ -113,10 +113,27 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 }
             }
             // check output types
-            QName outputXsdType = operation.getOutputType().getXsdType();
-            QName candidateOutputXsdType = candidate.getOutputType().getXsdType();
+            DataType<?> outputType = operation.getOutputType();
+            QName outputXsdType = outputType.getXsdType();
+            DataType<?> candidateOutputType = candidate.getOutputType();
+            QName candidateOutputXsdType = candidateOutputType.getXsdType();
             if (outputXsdType == null || !outputXsdType.equals(candidateOutputXsdType)) {
-                continue;
+                if (outputType instanceof XSDComplexType) {
+                    if (checkSequence((XSDComplexType) outputType, candidateOutputType)) {
+                        continue;
+                    }
+                }
+                if (candidateOutputType instanceof XSDComplexType) {
+                    if (checkSequence((XSDComplexType) candidateOutputType, outputType)) {
+                        continue;
+                    }
+                }
+                if (reportErrors) {
+                    return new MatchResult("Output types do not match on operation " + name
+                            + ". Types were " + outputType.getXsdType() + " and " + candidateOutputType.getXsdType());
+                } else {
+                    return NO_MATCH;
+                }
             }
             // check fault types
             // FIXME handle web faults
