@@ -31,6 +31,10 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
     </component>
 
+    <component name="TargetUrlResolver">
+        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl"/>
+    </component>
+
     <component name="JavaInterfaceGenerator">
         <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
     </component>
