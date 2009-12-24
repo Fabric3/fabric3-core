@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicatePromotedReferenceName extends XmlValidationFailure {
     public DuplicatePromotedReferenceName(String referenceName, XMLStreamReader reader) {
-        super("More than one promoted reference with the name " + referenceName + "was found in the composite ", reader);
+        super("More than one promoted reference with the name " + referenceName + " was found in the composite ", reader);
     }
 
 }
