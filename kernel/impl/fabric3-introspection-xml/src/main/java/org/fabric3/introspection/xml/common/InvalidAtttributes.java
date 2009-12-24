@@ -35,19 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.introspection.xml.composite;
+package org.fabric3.introspection.xml.common;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
+ * A validation failure indicating an attempt to configure an invalid attribute combination.
+ *
  * @version $Rev$ $Date$
  */
-public class DuplicateProperty extends XmlValidationFailure {
+public class InvalidAtttributes extends XmlValidationFailure {
 
-    public DuplicateProperty(String propertyName, XMLStreamReader reader) {
-        super("The property " + propertyName + " is configured more than once on the component", reader);
+    public InvalidAtttributes(String message, XMLStreamReader reader) {
+        super(message, reader);
     }
 
 }

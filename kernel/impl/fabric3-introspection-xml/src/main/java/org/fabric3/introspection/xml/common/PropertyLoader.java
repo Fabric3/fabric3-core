@@ -74,11 +74,17 @@ public class PropertyLoader implements TypeLoader<Property> {
         this.helper = helper;
     }
 
-    public Property load(XMLStreamReader reader, IntrospectionContext ctx) throws XMLStreamException {
-        validateAttributes(reader, ctx);
+    public Property load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, NAME);
         boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, MANY));
         boolean mustSupply = Boolean.parseBoolean(reader.getAttributeValue(null, MUST_SUPPLY));
+        String type = reader.getAttributeValue(null, TYPE);
+        String element = reader.getAttributeValue(null, ELEMENT);
+
+        if (type != null && element != null ) {
+             context.addError(new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader));
+        }
         Document value = helper.loadValue(reader);
 
         Property property = new Property();
@@ -86,6 +92,7 @@ public class PropertyLoader implements TypeLoader<Property> {
         property.setName(name);
         property.setMany(many);
         property.setDefaultValue(value);
+
         return property;
     }
 
