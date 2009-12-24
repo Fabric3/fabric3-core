@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -77,8 +78,8 @@ public class MetaDataStoreImplTestCase extends TestCase {
     public void testResolve() throws Exception {
         URI uri = URI.create("source");
         QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME, null);
-        ContributionWire<?, ?> wire = store.resolveContributionWire(uri, imprt);
-        assertEquals(RESOURCE_URI, wire.getExportContributionUri());
+        List<ContributionWire<?, ?>> wires = store.resolveContributionWires(uri, imprt);
+        assertEquals(RESOURCE_URI, wires.get(0).getExportContributionUri());
     }
 
     public void testResolveContainingResource() throws Exception {
@@ -124,8 +125,10 @@ public class MetaDataStoreImplTestCase extends TestCase {
         QNameExport export2 = new QNameExport(IMPORT_EXPORT_QNAME2);
         manifest2.addExport(export2);
         store.store(contribution2);
-        ContributionWire<?, ?> wire = store.resolveContributionWire(RESOURCE_URI2, imprt);
-        contribution2.addWire(wire);
+        List<ContributionWire<?, ?>> wires = store.resolveContributionWires(RESOURCE_URI2, imprt);
+        for (ContributionWire<?, ?> wire : wires) {
+            contribution2.addWire(wire);
+        }
 
     }
 

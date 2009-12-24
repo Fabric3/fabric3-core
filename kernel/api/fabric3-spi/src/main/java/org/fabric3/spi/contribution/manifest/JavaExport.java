@@ -79,5 +79,20 @@ public class JavaExport implements Export {
         return "Exported package [" + packageInfo + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaExport that = (JavaExport) o;
+
+        return !(packageInfo != null ? !packageInfo.equals(that.packageInfo) : that.packageInfo != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return packageInfo != null ? packageInfo.hashCode() : 0;
+    }
 }
 

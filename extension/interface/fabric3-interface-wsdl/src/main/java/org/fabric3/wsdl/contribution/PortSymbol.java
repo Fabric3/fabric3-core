@@ -39,14 +39,14 @@ package org.fabric3.wsdl.contribution;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.contribution.Symbol;
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
  * A key to a WSDL port.
  *
  * @version $Rev$ $Date$
  */
-public class PortSymbol extends Symbol<QName> {
+public class PortSymbol extends QNameSymbol {
     public PortSymbol(QName qName) {
         super(qName);
     }

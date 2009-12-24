@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +74,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public class MetaDataStoreImpl implements MetaDataStore {
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
-    private Map<QName, Map<Export, Contribution>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, Contribution>>();
+    private Map<QName, Map<Export, List<Contribution>>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, List<Contribution>>>();
     private ProcessorRegistry processorRegistry;
     private ClassLoaderRegistry classLoaderRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
@@ -116,12 +117,19 @@ public class MetaDataStoreImpl implements MetaDataStore {
         if (contribution != null) {
             List<Export> exports = contribution.getManifest().getExports();
             for (Export export : exports) {
-                Map<Export, Contribution> types = exportsToContributionCache.get(export.getType());
+                Map<Export, List<Contribution>> types = exportsToContributionCache.get(export.getType());
                 if (types == null) {
                     // programming error
                     throw new AssertionError("Export type not found: " + export.getType());
                 }
-                types.remove(export);
+                for (Iterator<Map.Entry<Export, List<Contribution>>> it = types.entrySet().iterator(); it.hasNext();) {
+                    Map.Entry<Export, List<Contribution>> contributions = it.next();
+                    contributions.getValue().remove(contribution);
+                    if (contributions.getValue().isEmpty()) {
+                        // if there are no exporting contributions left, remove it
+                        it.remove();
+                    }
+                }
             }
         }
         cache.remove(contributionUri);
@@ -214,26 +222,33 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public Contribution resolve(URI uri, Import imprt) {
-        Map<Export, Contribution> exports = exportsToContributionCache.get(imprt.getType());
+    public List<Contribution> resolve(URI uri, Import imprt) {
+        Map<Export, List<Contribution>> exports = exportsToContributionCache.get(imprt.getType());
+        List<Contribution> resolved = new ArrayList<Contribution>();
         if (exports != null) {
-            for (Map.Entry<Export, Contribution> entry : exports.entrySet()) {
+            for (Map.Entry<Export, List<Contribution>> entry : exports.entrySet()) {
                 Export export = entry.getKey();
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
-                if (Export.EXACT_MATCH == export.match(imprt) && !uri.equals(entry.getValue().getUri())) {
-                    return entry.getValue();
+                if (Export.EXACT_MATCH == export.match(imprt)) {
+                    for (Contribution contribution : entry.getValue()) {
+                        if (!uri.equals(contribution.getUri())) {
+                            resolved.add(contribution);
+                        }
+                    }
+
                 }
             }
         }
-        return null;
+        return resolved;
     }
 
-    public ContributionWire<?, ?> resolveContributionWire(URI uri, Import imprt) throws UnresolvedImportException {
-        Map<Export, Contribution> map = exportsToContributionCache.get(imprt.getType());
+    public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException {
+        Map<Export, List<Contribution>> map = exportsToContributionCache.get(imprt.getType());
         if (map == null) {
             return null;
         }
-        for (Map.Entry<Export, Contribution> entry : map.entrySet()) {
+        List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
+        for (Map.Entry<Export, List<Contribution>> entry : map.entrySet()) {
             Export export = entry.getKey();
             int level = export.match(imprt);
             if (level == Export.EXACT_MATCH) {
@@ -241,11 +256,20 @@ public class MetaDataStoreImpl implements MetaDataStore {
                     // Programming error: an illegal attempt to resolve a contribution before bootstrap has completed.
                     throw new AssertionError("Instantiator not yet configured");
                 }
-                URI exportUri = entry.getValue().getUri();
-                return instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
+                for (Contribution contribution : entry.getValue()) {
+                    URI exportUri = contribution.getUri();
+                    ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
+                    wires.add(wire);
+                    if (!imprt.isMultiplicity()) {
+                        return wires;
+                    }
+                }
             }
         }
-        throw new UnresolvedImportException("Unable to resolve import: " + imprt);
+        if (wires.isEmpty()) {
+            throw new UnresolvedImportException("Unable to resolve import: " + imprt);
+        }
+        return wires;
     }
 
     public Set<Contribution> resolveDependentContributions(URI uri) {
@@ -403,12 +427,21 @@ public class MetaDataStoreImpl implements MetaDataStore {
         List<Export> exports = contribution.getManifest().getExports();
         if (exports.size() > 0) {
             for (Export export : exports) {
-                Map<Export, Contribution> map = exportsToContributionCache.get(export.getType());
+                Map<Export, List<Contribution>> map = exportsToContributionCache.get(export.getType());
                 if (map == null) {
-                    map = new ConcurrentHashMap<Export, Contribution>();
+                    map = new ConcurrentHashMap<Export, List<Contribution>>();
                     exportsToContributionCache.put(export.getType(), map);
+                    List<Contribution> contributions = new ArrayList<Contribution>();
+                    contributions.add(contribution);
+                    map.put(export, contributions);
+                } else {
+                    List<Contribution> contributions = map.get(export);
+                    if (contributions == null) {
+                        contributions = new ArrayList<Contribution>();
+                        map.put(export, contributions);
+                    }
+                    contributions.add(contribution);
                 }
-                map.put(export, contribution);
             }
         }
     }

@@ -42,16 +42,16 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
- * A contribution import
+ * A contribution import.
  *
  * @version $Rev$ $Date$
  */
 public interface Import extends Serializable {
 
     /**
-     * The QName uniquely identiying the import type.
+     * The QName uniquely identiying the import/export type.
      *
-     * @return the QName uniquely identiying the import type
+     * @return the QName uniquely identiying the import/export type
      */
     QName getType();
 
@@ -62,4 +62,10 @@ public interface Import extends Serializable {
      */
     URI getLocation();
 
+    /**
+     * Returns true if this import supports wiring to multiple exports.
+     *
+     * @return true if this import supports wiring to multiple exports.
+     */
+    boolean isMultiplicity();
 }

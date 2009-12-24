@@ -75,7 +75,30 @@ public class JavaImport implements Import {
         return packageInfo;
     }
 
+    public boolean isMultiplicity() {
+        return false;
+    }
+
     public String toString() {
         return "[" + packageInfo + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaImport that = (JavaImport) o;
+
+        return !(location != null ? !location.equals(that.location) : that.location != null)
+                && !(packageInfo != null ? !packageInfo.equals(that.packageInfo) : that.packageInfo != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = location != null ? location.hashCode() : 0;
+        result = 31 * result + (packageInfo != null ? packageInfo.hashCode() : 0);
+        return result;
     }
 }

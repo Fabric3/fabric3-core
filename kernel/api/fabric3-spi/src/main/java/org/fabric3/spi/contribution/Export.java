@@ -41,7 +41,7 @@ import java.io.Serializable;
 import javax.xml.namespace.QName;
 
 /**
- * Represents an exported artifact in a contribution
+ * A contribution export.
  *
  * @version $Rev$ $Date$
  */
@@ -49,8 +49,19 @@ public interface Export extends Serializable {
     int NO_MATCH = -1;
     int EXACT_MATCH = 1;
 
-    int match(Import contributionImport);
+    /**
+     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when compating against an import.
+     *
+     * @param imprt the import declaration
+     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
+     */
+    int match(Import imprt);
 
+    /**
+     * The QName uniquely identiying the import/export type.
+     *
+     * @return the QName uniquely identiying the import/export type
+     */
     QName getType();
 
 }

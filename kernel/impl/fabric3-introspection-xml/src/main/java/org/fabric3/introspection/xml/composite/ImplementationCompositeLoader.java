@@ -186,7 +186,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
                 ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, introspectionContext);
                 if (element == null) {
                     String id = name.toString();
-                    MissingComposite failure = new MissingComposite("Composite with qualified name not found: " + id, reader);
+                    MissingComposite failure = new MissingComposite("Composite not found: " + id, reader);
                     introspectionContext.addError(failure);
                     return impl;
                 }

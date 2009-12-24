@@ -77,8 +77,30 @@ public class QNameImport implements Import {
         return location;
     }
 
+    public boolean isMultiplicity() {
+        return true;
+    }
+
     public String toString() {
         return "qname [" + namespace + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QNameImport that = (QNameImport) o;
+
+        return !(location != null ? !location.equals(that.location) : that.location != null)
+                && !(namespace != null ? !namespace.equals(that.namespace) : that.namespace != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = namespace != null ? namespace.hashCode() : 0;
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        return result;
+    }
 }

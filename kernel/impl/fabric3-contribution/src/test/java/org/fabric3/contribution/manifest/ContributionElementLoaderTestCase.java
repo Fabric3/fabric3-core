@@ -111,6 +111,11 @@ public class ContributionElementLoaderTestCase extends TestCase {
             public QName getType() {
                 return null;
             }
+
+            public boolean isMultiplicity() {
+                return false;
+            }
+
         };
         EasyMock.expect(loaderRegistry.load(
                 EasyMock.isA(XMLStreamReader.class),

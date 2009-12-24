@@ -73,4 +73,19 @@ public class QNameExport implements Export {
         return TYPE;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QNameExport that = (QNameExport) o;
+
+        return !(namespace != null ? !namespace.equals(that.namespace) : that.namespace != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return namespace != null ? namespace.hashCode() : 0;
+    }
 }

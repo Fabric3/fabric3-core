@@ -97,12 +97,14 @@ public class DependencyServiceImpl implements DependencyService {
                 // note that extension imports do not need to be checked since we assume extensons are installed prior
                 Vertex<Contribution> sink = findTargetVertex(dag, uri, imprt);
                 if (sink == null) {
-                    Contribution resolved = store.resolve(uri, imprt);
-                    if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
-                        throw new DependencyException("Contribution " + contribution.getUri() + " imports "
-                                + resolved.getUri() + " which is not installed");
+                    List<Contribution> resolvedContributions = store.resolve(uri, imprt);
+                    for (Contribution resolved : resolvedContributions) {
+                        if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
+                            throw new DependencyException("Contribution " + contribution.getUri() + " imports "
+                                    + resolved.getUri() + " which is not installed");
+                        }
                     }
-                    if (resolved == null) {
+                    if (resolvedContributions.isEmpty()) {
                         throw new UnresolvableImportException("Unable to resolve import " + imprt + " in " + uri, imprt);
                     }
 

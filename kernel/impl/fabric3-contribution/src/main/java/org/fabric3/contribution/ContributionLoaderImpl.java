@@ -189,10 +189,12 @@ public class ContributionLoaderImpl implements ContributionLoader {
         ContributionManifest manifest = contribution.getManifest();
         for (Import imprt : manifest.getImports()) {
             URI uri = contribution.getUri();
-            ContributionWire<?, ?> wire = store.resolveContributionWire(uri, imprt);
+            List<ContributionWire<?, ?>> wires = store.resolveContributionWires(uri, imprt);
             // add the resolved wire to the contribution
-            contribution.addWire(wire);
-            resolved.add(wire);
+            for (ContributionWire<?, ?> wire : wires) {
+                contribution.addWire(wire);
+                resolved.add(wire);
+            }
         }
         return resolved;
     }

@@ -117,23 +117,24 @@ public interface MetaDataStore {
                                                                              IntrospectionContext context) throws StoreException;
 
     /**
-     * Resolves an import or returns null if it cannot be satisfied.
+     * Resolves an import or returns an empty list if it cannot be satisfied.
      *
      * @param uri   the importing contribution  URI
      * @param imprt the import
-     * @return the contribution or null
+     * @return the contributions
      */
-    Contribution resolve(URI uri, Import imprt);
+    List<Contribution> resolve(URI uri, Import imprt);
 
     /**
      * Resolves an import to a matching export and returns the associated ContributionWire.
      *
      * @param uri   the importing contribution  URI
      * @param imprt the import to resolve @return a ContributionWire or null
-     * @return the ContributionWire
+     * @return a collection of ContributionWires matching the import. For multiplicity imports, the collection may contain 0..N wires. For
+     *         non-multiplicty imports (e.g. import.java), the collection will contain 0..1 wires.
      * @throws UnresolvedImportException if the import cannot be resolved
      */
-    ContributionWire<?, ?> resolveContributionWire(URI uri, Import imprt) throws UnresolvedImportException;
+    List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException;
 
     /**
      * Resolves contributions that import the contribution represented by the given URI.
@@ -184,7 +185,13 @@ public interface MetaDataStore {
      */
     Set<Contribution> resolveCapability(String capability);
 
-    List<Resource> resolveResources(URI contributionUri);
+    /**
+     * Resolves all resources in a contribution
+     *
+     * @param uri the contribution URI
+     * @return the resources
+     */
+    List<Resource> resolveResources(URI uri);
 
 
 }
