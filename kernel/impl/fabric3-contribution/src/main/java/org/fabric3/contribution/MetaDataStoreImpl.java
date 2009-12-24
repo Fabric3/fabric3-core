@@ -172,37 +172,45 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI contributionUri,
-                                                                                    Class<V> type,
-                                                                                    S symbol,
-                                                                                    IntrospectionContext context)
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
             throws StoreException {
-        Contribution contribution = find(contributionUri);
+        Contribution contribution = find(uri);
         if (contribution == null) {
-            String identifier = contributionUri.toString();
+            String identifier = uri.toString();
             throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
         }
-        ResourceElement<S, V> element = resolveInternal(contribution, type, symbol, context);
-        if (element != null) {
-            return element;
-        }
+
+        return resolve(contribution, type, symbol, context);
+    }
+
+    private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
+                                                                                     Class<V> type,
+                                                                                     S symbol,
+                                                                                     IntrospectionContext context) throws StoreException {
+        ResourceElement<S, V> element;
+        // resolve by delegating to exporting contributions first
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
             if (!wire.resolves(symbol)) {
                 // the wire doesn't resolve the specific resource
                 continue;
             }
-            URI uri = wire.getExportContributionUri();
+            URI resolvedUri = wire.getExportContributionUri();
 
-            Contribution resolved = cache.get(uri);
+            Contribution resolved = cache.get(resolvedUri);
             if (resolved == null) {
-                String identifier = contributionUri.toString();
+                String identifier = resolvedUri.toString();
                 throw new ContributionResolutionException("Dependent contibution not found: " + identifier, identifier);
             }
-            element = resolveInternal(resolved, type, symbol, context);
+            element = resolve(resolved, type, symbol, context);
             if (element != null) {
                 return element;
             }
         }
+        element = resolveInternal(contribution, type, symbol, context);
+        if (element != null) {
+            return element;
+        }
+
         return null;
     }
 
@@ -230,7 +238,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             int level = export.match(imprt);
             if (level == Export.EXACT_MATCH) {
                 if (instantiatorRegistry == null) {
-                    // Programming error: an illegal attempt to resolve a contribution before bootstrap has completed. 
+                    // Programming error: an illegal attempt to resolve a contribution before bootstrap has completed.
                     throw new AssertionError("Instantiator not yet configured");
                 }
                 URI exportUri = entry.getValue().getUri();
