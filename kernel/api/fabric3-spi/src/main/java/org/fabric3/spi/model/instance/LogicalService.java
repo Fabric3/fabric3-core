@@ -58,6 +58,7 @@ public class LogicalService extends Bindable {
     private ServiceDefinition definition;
     private URI promote;
     private LogicalComponent<?> leafComponent;
+    private LogicalService leafService;
 
     /**
      * Default constructor
@@ -75,6 +76,7 @@ public class LogicalService extends Bindable {
             addPolicySets(definition.getPolicySets());
         }
         leafComponent = parent;
+        leafService = this;
     }
 
     /**
@@ -121,5 +123,13 @@ public class LogicalService extends Bindable {
      */
     public void setLeafComponent(LogicalComponent<?> component) {
         this.leafComponent = component;
+    }
+
+    public LogicalService getLeafService() {
+        return leafService;
+    }
+
+    public void setLeafService(LogicalService leafService) {
+        this.leafService = leafService;
     }
 }
