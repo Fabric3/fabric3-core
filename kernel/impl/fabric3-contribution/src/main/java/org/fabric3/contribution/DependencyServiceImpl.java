@@ -95,8 +95,8 @@ public class DependencyServiceImpl implements DependencyService {
             for (Import imprt : manifest.getImports()) {
                 // See if the import is already stored
                 // note that extension imports do not need to be checked since we assume extensons are installed prior
-                Vertex<Contribution> sink = findTargetVertex(dag, uri, imprt);
-                if (sink == null) {
+                List<Vertex<Contribution>> sinks = findTargetVertex(dag, uri, imprt);
+                if (sinks.isEmpty()) {
                     List<Contribution> resolvedContributions = store.resolve(uri, imprt);
                     for (Contribution resolved : resolvedContributions) {
                         if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
@@ -109,8 +109,10 @@ public class DependencyServiceImpl implements DependencyService {
                     }
 
                 } else {
-                    Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
-                    dag.add(edge);
+                    for (Vertex<Contribution> sink : sinks) {
+                        Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                        dag.add(edge);
+                    }
                 }
             }
 
@@ -148,13 +150,15 @@ public class DependencyServiceImpl implements DependencyService {
                 for (Contribution entry : contributions) {
                     if (entry.getUri().equals(wire.getExportContributionUri())) {
                         Import imprt = wire.getImport();
-                        Vertex<Contribution> sink = findTargetVertex(dag, uri, imprt);
-                        if (sink == null) {
+                        List<Vertex<Contribution>> sinks = findTargetVertex(dag, uri, imprt);
+                        if (sinks.isEmpty()) {
                             // this should not happen
                             throw new AssertionError("Unable to resolve import " + imprt + " in " + uri);
                         }
-                        Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
-                        dag.add(edge);
+                        for (Vertex<Contribution> sink : sinks) {
+                            Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                            dag.add(edge);
+                        }
                         break;
                     }
                 }
@@ -187,7 +191,8 @@ public class DependencyServiceImpl implements DependencyService {
      * @param imprt           the import to resolve
      * @return the matching Vertext or null
      */
-    private Vertex<Contribution> findTargetVertex(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
+    private List<Vertex<Contribution>> findTargetVertex(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
+        List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
         for (Vertex<Contribution> vertex : dag.getVertices()) {
             Contribution contribution = vertex.getEntity();
             ContributionManifest manifest = contribution.getManifest();
@@ -195,11 +200,16 @@ public class DependencyServiceImpl implements DependencyService {
             for (Export export : manifest.getExports()) {
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
                 if (Export.EXACT_MATCH == export.match(imprt) && !contributionUri.equals(contribution.getUri())) {
-                    return vertex;
+                    vertices.add(vertex);
+                    if (!imprt.isMultiplicity()) {
+                        return vertices;
+                    }
+                    // multiplicity, check other vertices
+                    break;
                 }
             }
         }
-        return null;
+        return vertices;
     }
 
 }
