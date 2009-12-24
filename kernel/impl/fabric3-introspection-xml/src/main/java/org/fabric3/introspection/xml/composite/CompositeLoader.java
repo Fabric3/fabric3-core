@@ -192,6 +192,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     } else if (COMPONENT.equals(qname)) {
                         boolean valid = handleComponent(type, reader, childContext);
                         if (!valid) {
+                            updateContext(context, childContext, compositeName);
                             return type;
                         }
                         continue;
@@ -206,23 +207,12 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     assert COMPOSITE.equals(reader.getName());
                     validateServicePromotions(type, reader, childContext);
                     validateReferencePromotions(type, reader, childContext);
-                    if (childContext.hasErrors() || childContext.hasWarnings()) {
-                        URI uri = context.getContributionUri();
-                        if (childContext.hasErrors()) {
-                            ArtifactValidationFailure artifactFailure = new ArtifactValidationFailure(uri, compositeName.toString());
-                            artifactFailure.addFailures(childContext.getErrors());
-                            context.addError(artifactFailure);
-                        }
-                        if (childContext.hasWarnings()) {
-                            ArtifactValidationFailure artifactFailure = new ArtifactValidationFailure(uri, compositeName.toString());
-                            artifactFailure.addFailures(childContext.getWarnings());
-                            context.addWarning(artifactFailure);
-                        }
-                    }
+                    updateContext(context, childContext, compositeName);
                     return type;
                 }
             }
         } catch (UnrecognizedElementException e) {
+            updateContext(context, childContext, compositeName);
             UnrecognizedElement failure = new UnrecognizedElement(reader);
             context.addError(failure);
             return type;
@@ -439,5 +429,20 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
+    private void updateContext(IntrospectionContext context, IntrospectionContext childContext, QName compositeName) {
+        if (childContext.hasErrors() || childContext.hasWarnings()) {
+            URI uri = context.getContributionUri();
+            if (childContext.hasErrors()) {
+                ArtifactValidationFailure artifactFailure = new ArtifactValidationFailure(uri, compositeName.toString());
+                artifactFailure.addFailures(childContext.getErrors());
+                context.addError(artifactFailure);
+            }
+            if (childContext.hasWarnings()) {
+                ArtifactValidationFailure artifactFailure = new ArtifactValidationFailure(uri, compositeName.toString());
+                artifactFailure.addFailures(childContext.getWarnings());
+                context.addWarning(artifactFailure);
+            }
+        }
+    }
 
 }
