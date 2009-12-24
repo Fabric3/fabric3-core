@@ -311,7 +311,9 @@ public class WireGeneratorImpl implements WireGenerator {
      */
     private PhysicalWireDefinition generateLocalWire(LogicalWire wire) throws GenerationException {
         LogicalReference reference = wire.getSource();
-        LogicalService service = wire.getTarget();
+
+        // use the leaf service to optimize data paths - e.g. a promoted service may use a different service contract and databinding than the leaf
+        LogicalService service = wire.getTarget().getLeafService();
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
         ReferenceDefinition referenceDefinition = reference.getDefinition();

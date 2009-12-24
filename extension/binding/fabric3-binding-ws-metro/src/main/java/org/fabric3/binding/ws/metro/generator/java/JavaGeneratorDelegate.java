@@ -93,7 +93,9 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.policy.EffectivePolicy;
@@ -148,7 +150,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     public MetroJavaSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
                                                     JavaServiceContract contract,
                                                     EffectivePolicy policy) throws GenerationException {
-        Class<?> serviceClass = loadServiceClass(binding, contract);
+        Class<?> serviceClass = loadServiceClass(contract);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
 
@@ -199,7 +201,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 schemas = artifacts.getSchemas();
                 wsdl = mergePolicy(wsdl, policyExpressions, mappings);
             }
-            return new MetroJavaSourceDefinition(endpointDefinition, interfaze, generatedBytes, wsdl, schemas, intentNames, wsdlLocation);
+            URI classLoaderUri = null;
+            if (serviceClass.getClassLoader() instanceof MultiParentClassLoader) {
+                classLoaderUri = ((MultiParentClassLoader) serviceClass.getClassLoader()).getName();
+            }
+            return new MetroJavaSourceDefinition(endpointDefinition,
+                                                 interfaze,
+                                                 generatedBytes,
+                                                 classLoaderUri,
+                                                 wsdl,
+                                                 schemas,
+                                                 intentNames,
+                                                 wsdlLocation);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -233,7 +246,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                                  URL targetUrl,
                                                  JavaServiceContract contract,
                                                  EffectivePolicy policy) throws GenerationException {
-        Class<?> serviceClass = loadServiceClass(binding, contract);
+        Class<?> serviceClass = loadServiceClass(contract);
         WsBindingDefinition definition = binding.getDefinition();
         URL wsdlLocation = getWsdlLocation(definition, serviceClass);
 
@@ -296,9 +309,15 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         // obtain connection information
         ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
 
+        URI classLoaderUri = null;
+        if (serviceClass.getClassLoader() instanceof MultiParentClassLoader) {
+            classLoaderUri = ((MultiParentClassLoader) serviceClass.getClassLoader()).getName();
+        }
+
         return new MetroJavaTargetDefinition(endpointDefinition,
                                              interfaze,
                                              generatedBytes,
+                                             classLoaderUri,
                                              wsdl,
                                              schemas,
                                              wsdlLocation,
@@ -341,19 +360,21 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
      * Loads a service contract class in either a host environment that supports classloader isolation or one that does not, in which case the TCCL is
      * used.
      *
-     * @param binding      the binding defintion
      * @param javaContract the contract
      * @return the loaded class
      */
-    private Class<?> loadServiceClass(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract javaContract) {
+    private Class<?> loadServiceClass(JavaServiceContract javaContract) {
         ClassLoader loader;
         if (info.supportsClassLoaderIsolation()) {
-            URI classLoaderUri = binding.getParent().getParent().getDefinition().getContributionUri();
-            // check if a namespace is assigned
-            loader = classLoaderRegistry.getClassLoader(classLoaderUri);
-            if (loader == null) {
-                // programming error
-                throw new AssertionError("Classloader not found: " + classLoaderUri);
+            URI classLoaderUri = javaContract.getContributionClassLoaderUri();
+            if (classLoaderUri == null) {
+                loader = Thread.currentThread().getContextClassLoader();
+            } else {
+                loader = classLoaderRegistry.getClassLoader(classLoaderUri);
+                if (loader == null) {
+                    // programming error
+                    throw new AssertionError("Classloader not found: " + classLoaderUri);
+                }
             }
         } else {
             loader = Thread.currentThread().getContextClassLoader();
@@ -370,7 +391,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
     private ServiceEndpointDefinition createServiceEndpointDefinition(LogicalBinding<WsBindingDefinition> binding,
                                                                       JavaServiceContract contract,
-                                                                      Class<?> serviceClass, URL wsdlLocation) throws GenerationException {
+                                                                      Class<?> serviceClass,
+                                                                      URL wsdlLocation) throws GenerationException {
         ServiceEndpointDefinition endpointDefinition;
         URI targetUri = binding.getDefinition().getTargetUri();
         if (targetUri != null) {
@@ -379,8 +401,24 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             // no target uri specified, check wsdlElement
             String wsdlElementString = binding.getDefinition().getWsdlElement();
             if (wsdlElementString == null) {
-                URI bindableUri = binding.getParent().getUri();
-                throw new GenerationException("Either a uri or wsdlElement must be specified for the web service binding on " + bindableUri);
+                // the WSDL element is not specified, default to the service name
+                Bindable service = binding.getParent();
+                for (LogicalBinding<?> otherBinding : service.getBindings()) {
+                    if (binding == otherBinding) {
+                        continue;
+                    }
+                    if (WsBindingDefinition.BINDING_QNAME.equals(otherBinding.getDefinition().getType())) {
+                        // check to see if other WS bindings also use a default
+                        WsBindingDefinition wsDefinition = (WsBindingDefinition) otherBinding.getDefinition();
+                        if (wsDefinition.getTargetUri() == null && wsDefinition.getWsdlElement() == null) {
+                            throw new GenerationException("If there is more than one web service binding, one must provide a URI or WSDLElement:"
+                                    + service.getUri());
+                        }
+
+                    }
+                }
+                targetUri = URI.create(service.getUri().getFragment());
+                return synthesizer.synthesizeServiceEndpoint(contract, serviceClass, targetUri);
             }
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(wsdlElementString);
             if (wsdlLocation == null) {

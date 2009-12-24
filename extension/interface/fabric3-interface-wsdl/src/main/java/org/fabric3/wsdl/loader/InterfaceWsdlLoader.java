@@ -90,11 +90,11 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
         if (interfaze == null) {
             MissingAttribute failure = new MissingAttribute("Interface attribute is required", reader);
             context.addError(failure);
-            return null;
+            return new WsdlServiceContract(null, null);
         }
         QName portTypeName = parseQName(interfaze, reader, context);
         if (portTypeName == null) {
-            return null;
+            return new WsdlServiceContract(null, null);
         }
         return resolveContract(portTypeName, reader, context);
     }
@@ -140,12 +140,13 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
         } catch (StoreException e) {
             ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
             context.addError(failure);
-            return null;
+            return new WsdlServiceContract(null, null);
         }
         if (element == null) {
             PortTypeNotFound error = new PortTypeNotFound("Port type not found: " + portTypeName);
             context.addError(error);
-            return null;
+            return new WsdlServiceContract(null, null);
+
         }
         return element.getValue();
     }

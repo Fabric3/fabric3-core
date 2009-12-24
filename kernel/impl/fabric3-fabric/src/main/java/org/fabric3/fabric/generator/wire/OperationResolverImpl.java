@@ -84,6 +84,9 @@ public class OperationResolverImpl implements OperationResolver {
                             if (sourceType instanceof XSDComplexType && checkSequence((XSDComplexType) sourceType, targetType)) {
                                 continue;
                             }
+                            if (targetType instanceof XSDComplexType && checkSequence((XSDComplexType) targetType, sourceType)) {
+                                continue;
+                            }
                             equals = false;
                             break;
                         }

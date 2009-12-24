@@ -38,6 +38,7 @@
 package org.fabric3.binding.ws.metro.provision;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -51,6 +52,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
     private static final long serialVersionUID = 2898989563911925959L;
     private String interfaze;
     private byte[] generatedInterface;
+    private URI classLoaderUri;
     private Map<String, String> schemas;
 
     private URL wsdlLocation;
@@ -61,6 +63,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
      * @param endpointDefinition endpoint metadta
      * @param interfaze          the service contract (SEI) name.
      * @param generatedInterface the generated SEI bytes or null if no interface needed to be generated
+     * @param classLoaderUri
      * @param wsdl               the generated WSDL containing merged policy or null if no policy applies to the endpoint
      * @param schemas            the schemas imported by the generated WSDL or null
      * @param providedIntents    intents configured at the endpoint level that are provided natively by the Metro
@@ -69,6 +72,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
     public MetroJavaSourceDefinition(ServiceEndpointDefinition endpointDefinition,
                                      String interfaze,
                                      byte[] generatedInterface,
+                                     URI classLoaderUri,
                                      String wsdl,
                                      Map<String, String> schemas,
                                      List<QName> providedIntents,
@@ -76,6 +80,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
         super(endpointDefinition, wsdl, providedIntents);
         this.interfaze = interfaze;
         this.generatedInterface = generatedInterface;
+        this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
         this.wsdlLocation = wsdlLocation;
     }
@@ -106,4 +111,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
         return wsdlLocation;
     }
 
+    public URI getSEIClassLoaderUri() {
+        return classLoaderUri;
+    }
 }

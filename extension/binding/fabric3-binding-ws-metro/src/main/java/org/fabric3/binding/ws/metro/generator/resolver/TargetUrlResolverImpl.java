@@ -75,6 +75,9 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
         try {
             URL targetUrl;
             String path = serviceBinding.getDefinition().getTargetUri().toString();
+            if (path == null) {
+                path = serviceBinding.getParent().getUri().getFragment();
+            }
             boolean https = requiresHttps(policy);
             if (domainManager != null) {
                 // distributed domain, get the remote node HTTP/S information

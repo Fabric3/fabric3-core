@@ -38,6 +38,7 @@
 package org.fabric3.binding.ws.metro.provision;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -54,6 +55,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     private Map<String, String> schemas;
     private URL wsdlLocation;
     private String interfaze;
+    private URI classLoaderUri;
 
     /**
      * Constructor.
@@ -71,6 +73,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     public MetroJavaTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
                                      String interfaze,
                                      byte[] generatedInterface,
+                                     URI classLoaderUri,
                                      String wsdl,
                                      Map<String, String> schemas,
                                      URL wsdlLocation,
@@ -79,6 +82,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
                                      ConnectionConfiguration connectionConfiguration) {
         super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration);
         this.generatedInterface = generatedInterface;
+        this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
         this.wsdlLocation = wsdlLocation;
         this.interfaze = interfaze;
@@ -108,6 +112,10 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
      */
     public URL getWsdlLocation() {
         return wsdlLocation;
+    }
+
+    public URI getSEIClassLoaderUri() {
+        return classLoaderUri;
     }
 
 

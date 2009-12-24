@@ -82,8 +82,10 @@ public class WireInstantiatorImpl implements WireInstantiator {
         // instantiate wires held directly in the composite and in included composites
         for (WireDefinition definition : composite.getWires()) {
             // resolve the source reference
+            URI contributionUri = composite.getContributionUri();
+
             Target referenceTarget = definition.getReferenceTarget();
-            LogicalReference reference = resolveReference(referenceTarget, parent, context);
+            LogicalReference reference = resolveReference(referenceTarget, parent, contributionUri, context);
             if (reference == null) {
                 // error resolving, continue processing other targets so all errors are collated
                 continue;
@@ -147,12 +149,13 @@ public class WireInstantiatorImpl implements WireInstantiator {
     /**
      * Resolves the wire source to a reference provided by a component in the parent composite.
      *
-     * @param target  the reference target
-     * @param parent  the parent composite
-     * @param context the logical context to report errors against
-     * @return the resolve reference
+     * @param target          the reference target
+     * @param parent          the parent composite
+     * @param contributionUri the contribution uri
+     * @param context         the logical context to report errors against  @return the resolve reference
+     * @return                the resolved reference or null if not found
      */
-    private LogicalReference resolveReference(Target target, LogicalCompositeComponent parent, InstantiationContext context) {
+    private LogicalReference resolveReference(Target target, LogicalCompositeComponent parent, URI contributionUri, InstantiationContext context) {
         String base = parent.getUri().toString();
         // component URI is relative to the parent composite
         URI componentUri = URI.create(base + "/" + target.getComponent());
@@ -160,17 +163,17 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
         LogicalComponent<?> source = parent.getComponent(componentUri);
         if (source == null) {
-            raiseWireSourceNotFound(componentUri, parent, context);
+            raiseWireSourceNotFound(componentUri, parent, contributionUri, context);
             return null;
         }
         LogicalReference logicalReference;
         if (referenceName == null) {
             // a reference was not specified
             if (source.getReferences().size() == 0) {
-                raiseWireSourceNoReference(componentUri, parent, context);
+                raiseWireSourceNoReference(componentUri, parent, contributionUri, context);
                 return null;
             } else if (source.getReferences().size() != 1) {
-                raiseWireSourceAmbiguousReference(componentUri, parent, context);
+                raiseWireSourceAmbiguousReference(componentUri, parent, contributionUri, context);
                 return null;
             }
             // default to the only reference
@@ -178,7 +181,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         } else {
             logicalReference = source.getReference(referenceName);
             if (logicalReference == null) {
-                raiseWireSourceNotFound(componentUri, referenceName, parent, context);
+                raiseWireSourceNotFound(componentUri, referenceName, parent, contributionUri, context);
                 return null;
             }
         }
@@ -199,7 +202,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         LogicalComponent<?> targetComponent = parent.getComponent(targetComponentUri);
         if (targetComponent == null) {
             URI referenceUri = reference.getUri();
-            URI contributionUri = parent.getDefinition().getContributionUri();
+            URI contributionUri = reference.getParent().getDefinition().getContributionUri();
             URI parentUri = parent.getUri();
             TargetComponentNotFound error = new TargetComponentNotFound(referenceUri, targetComponentUri, parentUri, contributionUri);
             context.addError(error);
@@ -332,7 +335,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
         LogicalComponent<?> parent = service.getParent();
         if (parent.getDefinition().getKey() == null) {
-            KeyNotFound error = new KeyNotFound(reference.getUri(), parent.getUri(), parent.getDefinition().getContributionUri());
+            URI contributionUri = parent.getDefinition().getContributionUri();
+            KeyNotFound error = new KeyNotFound(reference.getUri(), parent.getUri(), contributionUri);
             context.addError(error);
         }
     }
@@ -359,30 +363,33 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
     }
 
-    private void raiseWireSourceNotFound(URI componentUri, String referenceName, LogicalCompositeComponent parent, InstantiationContext context) {
+    private void raiseWireSourceNotFound(URI componentUri,
+                                         String referenceName,
+                                         LogicalCompositeComponent parent,
+                                         URI contributionUri,
+                                         InstantiationContext context) {
         URI uri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
         WireSourceReferenceNotFound error = new WireSourceReferenceNotFound(componentUri, referenceName, uri, contributionUri);
         context.addError(error);
     }
 
-    private void raiseWireSourceAmbiguousReference(URI componentUri, LogicalCompositeComponent parent, InstantiationContext context) {
+    private void raiseWireSourceAmbiguousReference(URI componentUri,
+                                                   LogicalCompositeComponent parent,
+                                                   URI contributionUri,
+                                                   InstantiationContext context) {
         URI uri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
         WireSourceAmbiguousReference error = new WireSourceAmbiguousReference(componentUri, uri, contributionUri);
         context.addError(error);
     }
 
-    private void raiseWireSourceNoReference(URI componentUri, LogicalCompositeComponent parent, InstantiationContext context) {
+    private void raiseWireSourceNoReference(URI componentUri, LogicalCompositeComponent parent, URI contributionUri, InstantiationContext context) {
         URI uri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
         WireSourceNoReference error = new WireSourceNoReference(componentUri, uri, contributionUri);
         context.addError(error);
     }
 
-    private void raiseWireSourceNotFound(URI componentUri, LogicalCompositeComponent parent, InstantiationContext context) {
+    private void raiseWireSourceNotFound(URI componentUri, LogicalCompositeComponent parent, URI contributionUri, InstantiationContext context) {
         URI uri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
         WireSourceNotFound error = new WireSourceNotFound(componentUri, uri, contributionUri);
         context.addError(error);
     }
@@ -391,7 +398,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         String componentName = target.getComponent();
         URI referenceUri = reference.getUri();
         String msg = "The reference " + referenceUri + " is wired to component " + componentName + " but the component has no services";
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         URI parentUri = parent.getUri();
         NoServiceOnComponent error = new NoServiceOnComponent(msg, parentUri, contributionUri);
         context.addError(error);
@@ -403,7 +410,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         String msg = "More than one service available on component: " + componentName + ". The wire from the reference" + referenceUri
                 + " must explicitly specify a target service.";
         URI parentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         AmbiguousService error = new AmbiguousService(msg, parentUri, contributionUri);
         context.addError(error);
     }
@@ -414,7 +421,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         String serviceName = target.getBindable();
         String msg = "The service " + serviceName + " wired from the reference " + referenceUri + " is not found on component " + componentName;
         URI parentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         ServiceNotFound error = new ServiceNotFound(msg, referenceUri, parentUri, contributionUri);
         context.addError(error);
     }
@@ -422,7 +429,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
     private void raiseReferenceBindingNotFound(LogicalReference reference, String name, InstantiationContext context) {
         LogicalCompositeComponent parent = reference.getParent().getParent();
         URI parentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         BindingNotFound error =
                 new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " was not found", parentUri, contributionUri);
         context.addError(error);
@@ -431,7 +438,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
     private void raiseServiceBindingNotFound(LogicalService service, String name, InstantiationContext context) {
         LogicalCompositeComponent parent = service.getParent().getParent();
         URI parentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = service.getParent().getDefinition().getContributionUri();
         BindingNotFound error =
                 new BindingNotFound("The binding " + name + "  for service " + service.getUri() + " was not found", parentUri, contributionUri);
         context.addError(error);
@@ -444,7 +451,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
         LogicalCompositeComponent parent = reference.getParent().getParent();
         URI parentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
+        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         BindingNotFound error = new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " and service "
                 + service.getUri() + " are not compatible", parentUri, contributionUri);
         context.addError(error);

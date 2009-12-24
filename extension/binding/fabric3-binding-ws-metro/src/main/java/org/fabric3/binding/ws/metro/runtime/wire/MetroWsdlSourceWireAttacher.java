@@ -96,7 +96,10 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             WebServiceFeature[] features = featureResolver.getFeatures(requestedIntents);
 
             String path = servicePath.toString();
-
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            
             String wsdl = source.getWsdl();
             URL wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
             List<URL> generatedSchemas = null;

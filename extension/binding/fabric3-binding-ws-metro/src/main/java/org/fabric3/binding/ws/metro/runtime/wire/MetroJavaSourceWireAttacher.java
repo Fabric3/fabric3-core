@@ -99,7 +99,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             QName portName = endpointDefinition.getPortName();
             URI servicePath = endpointDefinition.getServicePath();
             List<InvocationChain> invocationChains = wire.getInvocationChains();
-            URI classLoaderId = source.getClassLoaderId();
+            URI classLoaderId = source.getSEIClassLoaderUri();
             URL wsdlLocation = source.getWsdlLocation();
             List<QName> requestedIntents = source.getIntents();
 
@@ -133,6 +133,9 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                 }
 
                 String path = servicePath.toString();
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
                 JaxbInvoker invoker = new JaxbInvoker(invocationChains);
                 EndpointConfiguration configuration = new EndpointConfiguration(seiClass,
                                                                                 serviceName,

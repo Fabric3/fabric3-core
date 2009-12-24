@@ -156,6 +156,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 policySets.addAll(service.getPolicySets());
             }
             service.setLeafComponent(leafComponent);
+            service.setLeafService(leafService);
         }
 
     }

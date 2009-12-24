@@ -60,7 +60,6 @@ import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.artifact.ArtifactCache;
@@ -92,7 +91,6 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
                                        @Reference FeatureResolver resolver,
                                        @Reference WireAttacherHelper wireAttacherHelper,
-                                       @Reference ClassLoaderUpdater classLoaderUpdater,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference WorkScheduler scheduler,
@@ -110,7 +108,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
 
         try {
             ReferenceEndpointDefinition endpointDefinition = target.getEndpointDefinition();
-            URI classLoaderId = source.getClassLoaderId();
+            URI classLoaderId = target.getSEIClassLoaderUri();
             List<QName> requestedIntents = target.getIntents();
 
             ClassLoader classLoader = registry.getClassLoader(classLoaderId);
