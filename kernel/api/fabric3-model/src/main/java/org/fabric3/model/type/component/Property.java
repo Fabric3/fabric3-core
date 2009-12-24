@@ -43,6 +43,8 @@
  */
 package org.fabric3.model.type.component;
 
+import javax.xml.namespace.QName;
+
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.ModelObject;
@@ -58,6 +60,8 @@ public class Property extends ModelObject {
     private boolean many;
     private boolean required;
     private Document defaultValue;
+    private QName type;
+    private QName element;
 
     public Property() {
     }
@@ -138,4 +142,39 @@ public class Property extends ModelObject {
         this.defaultValue = defaultValue;
     }
 
+    /**
+     * Returns the property XSD type or null if it is not an XSD type.
+     *
+     * @return the XSD type
+     */
+    public QName getType() {
+        return type;
+    }
+
+    /**
+     * Sets the XSD type
+     *
+     * @param type the XSD type
+     */
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    /**
+     * Gets the property XSD element or null if the property is not an XSD element type
+     *
+     * @return XSD element
+     */
+    public QName getElement() {
+        return element;
+    }
+
+    /**
+     * Sets the property XSD element
+     *
+     * @param element XSD element
+     */
+    public void setElement(QName element) {
+        this.element = element;
+    }
 }
