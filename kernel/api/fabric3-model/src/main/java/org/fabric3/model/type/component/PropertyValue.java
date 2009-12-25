@@ -64,9 +64,6 @@ public class PropertyValue extends ModelObject {
     private DataType<QName> valueType;
     private Document value;
 
-    public PropertyValue() {
-    }
-
     /**
      * Constructor specifying the name of a property and the XPath source expression.
      *

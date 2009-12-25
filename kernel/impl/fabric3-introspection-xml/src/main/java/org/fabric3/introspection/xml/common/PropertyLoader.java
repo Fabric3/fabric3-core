@@ -87,9 +87,8 @@ public class PropertyLoader implements TypeLoader<Property> {
         }
         Document value = helper.loadValue(reader);
 
-        Property property = new Property();
+        Property property = new Property(name);
         property.setRequired(mustSupply);
-        property.setName(name);
         property.setMany(many);
         property.setDefaultValue(value);
 

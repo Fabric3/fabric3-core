@@ -63,9 +63,6 @@ public class Property extends ModelObject {
     private QName type;
     private QName element;
 
-    public Property() {
-    }
-
     public Property(String name) {
         this.name = name;
     }

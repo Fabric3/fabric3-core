@@ -48,6 +48,10 @@ public class XQueryProperty extends Property {
 
     private QName variableName;
 
+    public XQueryProperty(String name) {
+        super(name);
+    }
+
     public QName getVariableName() {
         return variableName;
     }

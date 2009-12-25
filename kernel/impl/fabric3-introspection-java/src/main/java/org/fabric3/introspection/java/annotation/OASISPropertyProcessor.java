@@ -165,8 +165,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
     }
 
     private Property createDefinition(String name, boolean required, Type type, TypeMapping typeMapping) {
-        Property property = new Property();
-        property.setName(name);
+        Property property = new Property(name);
         property.setRequired(required);
         MultiplicityType multiplicityType = helper.introspectMultiplicity(type, typeMapping);
         property.setMany(MultiplicityType.COLLECTION == multiplicityType || MultiplicityType.DICTIONARY == multiplicityType);
