@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A reference exposed by a composite component typee.
+ * A promoted composite reference.
  *
  * @version $Rev$ $Date$
  */

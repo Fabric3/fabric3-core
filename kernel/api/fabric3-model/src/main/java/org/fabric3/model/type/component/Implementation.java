@@ -51,7 +51,7 @@ import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.CapabilityAware;
 
 /**
- * Represents a component implementation.
+ * A base component implementation.
  *
  * @version $Rev$ $Date$
  */

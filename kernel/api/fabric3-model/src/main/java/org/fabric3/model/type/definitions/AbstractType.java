@@ -47,7 +47,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Represents a type.
+ * A policy type.
  *
  * @version $Rev$ $Date$
  */

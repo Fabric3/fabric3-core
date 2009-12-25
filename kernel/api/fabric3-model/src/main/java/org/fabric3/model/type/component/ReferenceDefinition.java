@@ -51,7 +51,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents a component reference.
+ * A reference configured on a component.
  *
  * @version $Rev$ $Date$
  */

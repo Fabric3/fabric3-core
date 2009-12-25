@@ -50,7 +50,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Base class for SCA definitions that support references to intents and policySets.
+ * Base class for types that intents and policySets may be associated with.
  *
  * @version $Rev$ $Date$
  */

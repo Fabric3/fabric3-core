@@ -49,7 +49,7 @@ import java.util.List;
 import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
- * Represents an operation that is part of a service contract.
+ * An operation on a service contract.
  *
  * @version $Rev$ $Date$
  */

@@ -46,7 +46,7 @@ package org.fabric3.model.type.component;
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Represents a wire specified in a composite file.
+ * A wire specified in a composite file.
  *
  * @version $Rev$ $Date$
  */

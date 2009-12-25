@@ -49,7 +49,7 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.Constants;
 
 /**
- * Represents a registered intent within the domain.
+ * An intent.
  *
  * @version $Rev$ $Date$
  */

@@ -48,7 +48,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Interface that indicates that a SCA definition supports references to intent or policySet definitions.
+ * Indicates intents or policySet definitions may be associated with a type.
  *
  * @version $Rev$ $Date$
  */

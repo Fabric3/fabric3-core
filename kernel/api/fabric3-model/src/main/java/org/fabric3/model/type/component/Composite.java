@@ -54,7 +54,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.model.type.PolicyAware;
 
 /**
- * Represents a composite.
+ * A composite component type.
  *
  * @version $Rev$ $Date$
  */

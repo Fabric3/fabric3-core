@@ -44,7 +44,7 @@
 package org.fabric3.model.type.definitions;
 
 /**
- * Phases at which the policy is applied.
+ * Defines phases at which the policy is applied.
  *
  * @version $Rev$ $Date$
  */

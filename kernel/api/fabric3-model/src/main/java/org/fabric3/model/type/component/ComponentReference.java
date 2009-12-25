@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a component reference.
+ * A reference configured on a component.
  *
  * @version $Rev$ $Date$
  */
@@ -59,7 +59,7 @@ public class ComponentReference extends ReferenceDefinition {
     /**
      * Construct a ComponentReference specifying the name of the reference being configured.
      *
-     * @param name the name of the reference being configured
+     * @param name         the name of the reference being configured
      * @param multiplicity the reference multiplicity
      */
     public ComponentReference(String name, Multiplicity multiplicity) {

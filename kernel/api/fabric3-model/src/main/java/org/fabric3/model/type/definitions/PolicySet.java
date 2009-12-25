@@ -50,7 +50,7 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 /**
- * Model object that represents a policy set.
+ * A policy set.
  *
  * @version $Rev$ $Date$
  */

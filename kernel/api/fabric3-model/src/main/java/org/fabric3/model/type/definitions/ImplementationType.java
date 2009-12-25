@@ -47,7 +47,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Represents an implementation type.
+ * An implementation type.
  *
  * @version $Rev$ $Date$
  */

@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Represents a component property declared in the component type.
+ * A component type property.
  *
  * @version $Rev$ $Date$
  */

@@ -52,7 +52,7 @@ import org.fabric3.model.type.CapabilityAware;
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Base component type representation.
+ * A base component type.
  *
  * @version $Rev$ $Date$
  */

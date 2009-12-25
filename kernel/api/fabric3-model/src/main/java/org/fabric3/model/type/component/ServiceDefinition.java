@@ -50,7 +50,7 @@ import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents a service offered by a component.
+ * A component type service.
  *
  * @version $Rev$ $Date$
  */

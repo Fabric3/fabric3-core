@@ -44,7 +44,7 @@
 package org.fabric3.model.type.component;
 
 /**
- * Represents a component service.
+ * A service configured on a component.
  *
  * @version $Rev$ $Date$
  */

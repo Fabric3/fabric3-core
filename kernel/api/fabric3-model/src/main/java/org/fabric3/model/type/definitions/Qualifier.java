@@ -38,7 +38,7 @@
 package org.fabric3.model.type.definitions;
 
 /**
- * Represents a qualifier element in an intent definition.
+ * A qualifier element in an intent definition.
  *
  * @version $Rev$ $Date$
  */

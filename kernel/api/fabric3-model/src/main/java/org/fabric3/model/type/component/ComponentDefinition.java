@@ -50,7 +50,7 @@ import java.util.Map;
 import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
- * Represents a component configuration in a composite file.
+ * A component configuration in a composite file.
  *
  * @version $Rev$ $Date$
  */

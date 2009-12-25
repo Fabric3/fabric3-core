@@ -47,7 +47,7 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents a resource definition.
+ * A component type resource.
  *
  * @version $Rev$ $Date$
  */

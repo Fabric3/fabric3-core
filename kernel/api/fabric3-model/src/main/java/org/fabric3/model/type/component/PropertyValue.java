@@ -52,7 +52,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Represents the value of a configured component property.
+ * The value of a configured component property.
  *
  * @version $Rev$ $Date$
  */

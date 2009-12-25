@@ -47,7 +47,7 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents a callback definition.
+ * A component type callback.
  *
  * @version $Rev$ $Date$
  */
