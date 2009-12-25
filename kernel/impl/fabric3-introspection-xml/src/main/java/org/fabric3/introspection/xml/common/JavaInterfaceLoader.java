@@ -80,10 +80,6 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "interface");
         if (name == null) {
-            // allow "class" as well as seems to be a common mistake
-            name = reader.getAttributeValue(null, "class");
-        }
-        if (name == null) {
             MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", reader);
             context.addError(failure);
             return null;
