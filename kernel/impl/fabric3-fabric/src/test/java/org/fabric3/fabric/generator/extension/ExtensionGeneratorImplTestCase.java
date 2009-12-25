@@ -57,6 +57,7 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -129,7 +130,7 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         URI uri = URI.create("test");
         LogicalComponent<MockImplementation> component = new LogicalComponent<MockImplementation>(uri, definition, null);
         component.setZone("zone1");
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", null);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", Multiplicity.ONE_ONE);
         LogicalReference reference = new LogicalReference(URI.create("test#referemce"), referenceDefinition, component);
         MockBinding bindingDefiniton = new MockBinding();
         bindingDefiniton.addRequiredCapability("bindingCapability");

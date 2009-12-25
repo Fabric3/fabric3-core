@@ -60,6 +60,7 @@ import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderException;
@@ -126,7 +127,7 @@ public class DuplicatePromotedReferenceNameTestCase extends TestCase {
         TypeLoader loader = EasyMock.createMock(TypeLoader.class);
         List<URI> uris = new ArrayList<URI>();
         uris.add(URI.create("ref"));
-        CompositeReference value = new CompositeReference(REF_NAME, uris);
+        CompositeReference value = new CompositeReference(REF_NAME, uris, Multiplicity.ONE_ONE);
         EasyMock.expect(loader.load(EasyMock.isA(XMLStreamReader.class),
                                     EasyMock.isA(IntrospectionContext.class))).andReturn(value).times(2);
         EasyMock.replay(loader);
@@ -142,7 +143,7 @@ public class DuplicatePromotedReferenceNameTestCase extends TestCase {
         ComponentType type = new ComponentType();
         List<URI> uris = new ArrayList<URI>();
         uris.add(URI.create("ref"));
-        CompositeReference reference = new CompositeReference(REF_NAME, uris);
+        CompositeReference reference = new CompositeReference(REF_NAME, uris, Multiplicity.ONE_ONE);
 
         type.add(reference);
         impl.setComponentType(type);

@@ -60,9 +60,10 @@ public class ComponentReference extends ReferenceDefinition {
      * Construct a ComponentReference specifying the name of the reference being configured.
      *
      * @param name the name of the reference being configured
+     * @param multiplicity the reference multiplicity
      */
-    public ComponentReference(String name) {
-        super(name, null);
+    public ComponentReference(String name, Multiplicity multiplicity) {
+        super(name, multiplicity);
     }
 
     /**

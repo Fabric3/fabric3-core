@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml.composite;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -61,9 +62,13 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -110,14 +115,14 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return null;
         }
 
-        ComponentDefinition<Implementation<?>> componentDefinition = new ComponentDefinition<Implementation<?>>(name);
+        ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<Implementation<?>>(name);
         Autowire autowire = Autowire.fromString(reader.getAttributeValue(null, "autowire"));
-        componentDefinition.setAutowire(autowire);
+        definition.setAutowire(autowire);
 
         String key = loaderHelper.loadKey(reader);
-        componentDefinition.setKey(key);
+        definition.setKey(key);
 
-        loaderHelper.loadPolicySetsAndIntents(componentDefinition, reader, context);
+        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         Implementation<?> impl;
         try {
@@ -128,24 +133,24 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 MissingComponentImplementation error =
                         new MissingComponentImplementation("The component " + name + " must specify an implementation", reader);
                 context.addError(error);
-                return componentDefinition;
+                return definition;
             } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName)) {
                 MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
                         + " must specify an implementation as the first child element", reader);
                 context.addError(error);
-                return componentDefinition;
+                return definition;
             }
             impl = registry.load(reader, Implementation.class, context);
             if (impl == null || impl.getComponentType() == null) {
                 // error loading impl
-                return componentDefinition;
+                return definition;
             }
 
             if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
                 // ensure that the implementation loader has positioned the cursor to the end element 
                 throw new AssertionError("Impementation loader must position the cursor to the end element");
             }
-            componentDefinition.setImplementation(impl);
+            definition.setImplementation(impl);
             AbstractComponentType<?, ?, ?, ?> componentType = impl.getComponentType();
 
             while (true) {
@@ -153,11 +158,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (PROPERTY.equals(qname)) {
-                        parseProperty(componentDefinition, componentType, reader, context);
+                        parseProperty(definition, componentType, reader, context);
                     } else if (REFERENCE.equals(qname)) {
-                        parseReference(componentDefinition, componentType, reader, context);
+                        parseReference(definition, componentType, reader, context);
                     } else if (SERVICE.equals(qname)) {
-                        parseService(componentDefinition, componentType, reader, context);
+                        parseService(definition, componentType, reader, context);
                     } else {
                         // Unknown extension element - issue an error and continue
                         context.addError(new UnrecognizedElement(reader));
@@ -166,8 +171,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                     break;
                 case END_ELEMENT:
                     assert COMPONENT.equals(reader.getName());
-                    validateRequiredProperties(componentDefinition, reader, context);
-                    return componentDefinition;
+                    validateRequiredProperties(definition, reader, context);
+                    return definition;
                 }
             }
         } catch (UnrecognizedElementException e) {
@@ -181,7 +186,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         return COMPONENT;
     }
 
-    private void parseService(ComponentDefinition<Implementation<?>> componentDefinition,
+    private void parseService(ComponentDefinition<Implementation<?>> definition,
                               AbstractComponentType<?, ?, ?, ?> componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
@@ -193,20 +198,20 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
         if (!componentType.hasService(service.getName())) {
             // ensure the service exists
-            ComponentServiceNotFound failure = new ComponentServiceNotFound(service.getName(), componentDefinition, reader);
+            ComponentServiceNotFound failure = new ComponentServiceNotFound(service.getName(), definition, reader);
             context.addError(failure);
             return;
         }
-        if (componentDefinition.getServices().containsKey(service.getName())) {
+        if (definition.getServices().containsKey(service.getName())) {
             String id = service.getName();
-            DuplicateComponentService failure = new DuplicateComponentService(id, componentDefinition.getName(), reader);
+            DuplicateComponentService failure = new DuplicateComponentService(id, definition.getName(), reader);
             context.addError(failure);
         } else {
-            componentDefinition.add(service);
+            definition.add(service);
         }
     }
 
-    private void parseReference(ComponentDefinition<Implementation<?>> componentDefinition,
+    private void parseReference(ComponentDefinition<Implementation<?>> definition,
                                 AbstractComponentType<?, ?, ?, ?> componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
@@ -216,22 +221,34 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // there was an error with the reference configuration, just skip it
             return;
         }
-        if (!componentType.hasReference(reference.getName())) {
+        String name = reference.getName();
+        ReferenceDefinition typeReference = componentType.getReferences().get(name);
+        if (typeReference == null) {
             // ensure the reference exists
-            ComponentReferenceNotFound failure = new ComponentReferenceNotFound(reference.getName(), componentDefinition, reader);
+            ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, reader);
             context.addError(failure);
             return;
         }
-        String refKey = reference.getName();
-        if (componentDefinition.getReferences().containsKey(refKey)) {
-            DuplicateComponentReference failure = new DuplicateComponentReference(refKey, componentDefinition.getName(), reader);
+        if (definition.getReferences().containsKey(name)) {
+            DuplicateComponentReference failure = new DuplicateComponentReference(name, definition.getName(), reader);
             context.addError(failure);
-        } else {
-            componentDefinition.add(reference);
+            return;
         }
+        if (reference.getMultiplicity() == null) {
+            Multiplicity multiplicity = typeReference.getMultiplicity();
+            reference.setMultiplicity(multiplicity);
+        }
+        definition.add(reference);
+        List<Target> targets = reference.getTargets();
+        Multiplicity multiplicity = reference.getMultiplicity();
+        if (targets.size() > 1 && (Multiplicity.ZERO_ONE == multiplicity || Multiplicity.ONE_ONE == multiplicity)) {
+            InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", reader);
+            context.addError(failure);
+        }
+
     }
 
-    private void parseProperty(ComponentDefinition<Implementation<?>> componentDefinition,
+    private void parseProperty(ComponentDefinition<Implementation<?>> definition,
                                AbstractComponentType<?, ?, ?, ?> componentType,
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
@@ -243,16 +260,16 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
         if (!componentType.hasProperty(value.getName())) {
             // ensure the property exists
-            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), componentDefinition, reader);
+            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, reader);
             context.addError(failure);
             return;
         }
-        if (componentDefinition.getPropertyValues().containsKey(value.getName())) {
+        if (definition.getPropertyValues().containsKey(value.getName())) {
             String id = value.getName();
-            DuplicateConfiguredProperty failure = new DuplicateConfiguredProperty(id, componentDefinition, reader);
+            DuplicateConfiguredProperty failure = new DuplicateConfiguredProperty(id, definition, reader);
             context.addError(failure);
         } else {
-            componentDefinition.add(value);
+            definition.add(value);
         }
     }
 

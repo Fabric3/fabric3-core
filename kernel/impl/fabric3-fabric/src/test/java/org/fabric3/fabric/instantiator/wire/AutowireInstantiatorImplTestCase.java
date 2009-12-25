@@ -186,7 +186,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         ComponentDefinition<MockAtomicImpl> definition =
                 new ComponentDefinition<MockAtomicImpl>(SOURCE_URI.toString());
         definition.setImplementation(impl);
-        ComponentReference target = new ComponentReference(REFERENCE_URI.getFragment());
+        ComponentReference target = new ComponentReference(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
         target.setAutowire(true);
         definition.add(target);
         LogicalComponent<?> component =

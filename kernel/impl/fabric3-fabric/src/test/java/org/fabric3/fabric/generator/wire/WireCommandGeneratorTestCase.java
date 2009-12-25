@@ -86,7 +86,7 @@ public class WireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference");
+        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -127,7 +127,7 @@ public class WireCommandGeneratorTestCase extends TestCase {
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
         source.setState(LogicalState.PROVISIONED);
-        ComponentReference referenceDefinition = new ComponentReference("reference");
+        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -170,7 +170,7 @@ public class WireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference");
+        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
@@ -222,7 +222,7 @@ public class WireCommandGeneratorTestCase extends TestCase {
         URI sourceUri = URI.create("source");
         ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
         LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
-        ComponentReference referenceDefinition = new ComponentReference("reference");
+        ComponentReference referenceDefinition = new ComponentReference("reference", Multiplicity.ONE_ONE);
         referenceDefinition.setServiceContract(contract);
         referenceDefinition.setMultiplicity(Multiplicity.ONE_N);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);

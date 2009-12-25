@@ -67,11 +67,13 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.CompositeService;
+import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Include;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -206,7 +208,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 case END_ELEMENT:
                     assert COMPOSITE.equals(reader.getName());
                     validateServicePromotions(type, reader, childContext);
-                    validateReferencePromotions(type, reader, childContext);
+                    updateAndValidateReferencePromotions(type, reader, childContext);
                     updateContext(context, childContext, compositeName);
                     return type;
                 }
@@ -403,28 +405,43 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void validateReferencePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
+    private void updateAndValidateReferencePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
         for (CompositeReference reference : type.getReferences().values()) {
             for (URI promotedUri : reference.getPromotedUris()) {
                 String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
-                ComponentDefinition promoted = type.getComponents().get(componentName);
+                ComponentDefinition<?> promoted = type.getComponents().get(componentName);
+                String referenceName = promotedUri.getFragment();
                 if (promoted == null) {
                     PromotionNotFound error =
                             new PromotionNotFound("Component " + componentName + " referenced by " + reference.getName() + " not found", reader);
                     childContext.addError(error);
+                    return;
                 } else {
-                    String referenceName = promotedUri.getFragment();
                     if (referenceName == null && promoted.getComponentType().getReferences().size() != 1) {
                         PromotionNotFound error =
                                 new PromotionNotFound("A promoted reference must be specified for " + reference.getName(), reader);
                         childContext.addError(error);
+                        return;
                     }
-                    if (referenceName != null && !promoted.getComponentType().getReferences().containsKey(referenceName)) {
+                    ReferenceDefinition promotedReference;
+                    if (referenceName == null && promoted.getComponentType().getReferences().size() == 1) {
+                        promotedReference = promoted.getComponentType().getReferences().get(0);
+                    } else {
+                        promotedReference = promoted.getComponentType().getReferences().get(referenceName);
+                    }
+                    if (referenceName != null && promotedReference == null) {
                         PromotionNotFound error =
                                 new PromotionNotFound("Reference " + referenceName + " promoted by " + reference.getName() + " not found", reader);
                         childContext.addError(error);
+                        return;
+                    }
+                    // set the multiplicity to inherit from the promoted reference
+                    if (reference.getMultiplicity() == null) {
+                        Multiplicity multiplicity = promotedReference.getMultiplicity();
+                        reference.setMultiplicity(multiplicity);
                     }
                 }
+
             }
         }
     }

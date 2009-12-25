@@ -112,21 +112,21 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             context.addError(failure);
             return null;
         }
-        ComponentReference reference = new ComponentReference(name);
 
         boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
-        reference.setAutowire(autowire);
 
         String value = reader.getAttributeValue(null, "multiplicity");
+        Multiplicity multiplicity = null;
         try {
-            Multiplicity multiplicity = Multiplicity.fromString(value);
-            if (multiplicity != null) {
-                reference.setMultiplicity(multiplicity);
+            if (value != null) {
+                multiplicity = Multiplicity.fromString(value);
             }
         } catch (IllegalArgumentException e) {
             InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
             context.addError(failure);
         }
+        ComponentReference reference = new ComponentReference(name, multiplicity);
+        reference.setAutowire(autowire);
 
         String targetAttribute = reader.getAttributeValue(null, "target");
         List<Target> targets = new ArrayList<Target>();

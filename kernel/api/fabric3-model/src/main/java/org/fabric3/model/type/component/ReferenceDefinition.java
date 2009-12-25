@@ -78,6 +78,11 @@ public class ReferenceDefinition extends AbstractPolicyAware {
         this(name, serviceContract, Multiplicity.ONE_ONE);
     }
 
+    public ReferenceDefinition(String name, Multiplicity multiplicity) {
+        this.name = name;
+        this.multiplicity = multiplicity;
+    }
+
     /**
      * Constructor.
      *

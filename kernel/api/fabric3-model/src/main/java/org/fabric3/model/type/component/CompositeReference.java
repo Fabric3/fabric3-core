@@ -62,9 +62,10 @@ public class CompositeReference extends ReferenceDefinition {
      *
      * @param name         the name of the composite reference
      * @param promotedUris the list of component references it promotes
+     * @param multiplicity the reference multiplicity
      */
-    public CompositeReference(String name, List<URI> promotedUris) {
-        super(name, null);
+    public CompositeReference(String name, List<URI> promotedUris, Multiplicity multiplicity) {
+        super(name, multiplicity);
         if (promotedUris != null) {
             this.promotedUris = promotedUris;
         } else {

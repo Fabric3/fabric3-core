@@ -56,6 +56,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -100,7 +101,7 @@ public class DuplicateComponentReferenceTestCase extends TestCase {
                                       EasyMock.eq(Implementation.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(impl);
 
-        ComponentReference reference = new ComponentReference(REF_NAME);
+        ComponentReference reference = new ComponentReference(REF_NAME, Multiplicity.ONE_ONE);
         EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
                                       EasyMock.eq(ComponentReference.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(reference).times(2);
@@ -115,7 +116,7 @@ public class DuplicateComponentReferenceTestCase extends TestCase {
             }
         };
         ComponentType type = new ComponentType();
-        ReferenceDefinition definition = new ReferenceDefinition(REF_NAME, null);
+        ReferenceDefinition definition = new ReferenceDefinition(REF_NAME, Multiplicity.ONE_ONE);
         type.add(definition);
         impl.setComponentType(type);
         return impl;

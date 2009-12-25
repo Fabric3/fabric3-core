@@ -61,6 +61,7 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.CompositeService;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -145,7 +146,7 @@ public class InstantiationTestCase extends TestCase {
     private ComponentDefinition<?> createParentWithServiceAndReference() {
         CompositeService service = new CompositeService("service", null, null);
         List<URI> references = Collections.emptyList();
-        CompositeReference reference = new CompositeReference("reference", references);
+        CompositeReference reference = new CompositeReference("reference", references, Multiplicity.ONE_ONE);
         Composite type = new Composite(null);
         type.add(service);
         type.add(reference);

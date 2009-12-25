@@ -113,19 +113,20 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
             MissingPromotion error = new MissingPromotion("Promotion not specied on composite reference " + name, reader);
             context.addError(error);
         }
-        CompositeReference referenceDefinition = new CompositeReference(name, promotedUris);
-        loaderHelper.loadPolicySetsAndIntents(referenceDefinition, reader, context);
-
+        Multiplicity multiplicity = null;
         String value = reader.getAttributeValue(null, "multiplicity");
         try {
-            Multiplicity multiplicity = Multiplicity.fromString(value);
-            if (multiplicity != null) {
-                referenceDefinition.setMultiplicity(multiplicity);
+            if (value != null) {
+                multiplicity = Multiplicity.fromString(value);
             }
         } catch (IllegalArgumentException e) {
             InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
             context.addError(failure);
         }
+
+        CompositeReference referenceDefinition = new CompositeReference(name, promotedUris, multiplicity);
+        loaderHelper.loadPolicySetsAndIntents(referenceDefinition, reader, context);
+
         boolean callback = false;
         while (true) {
             switch (reader.next()) {

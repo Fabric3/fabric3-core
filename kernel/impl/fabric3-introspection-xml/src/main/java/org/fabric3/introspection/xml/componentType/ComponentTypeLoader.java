@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml.componentType;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
@@ -55,15 +56,24 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.introspection.xml.common.BindingHelper;
+import org.fabric3.introspection.xml.common.MissingReferenceName;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.contract.OperationDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -78,13 +88,18 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     private static final QName PROPERTY = new QName(SCA_NS, "property");
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
+    private static final QName CALLBACK = new QName(SCA_NS, "callback");
+
+    private LoaderHelper loaderHelper;
 
     private final LoaderRegistry registry;
     private final TypeLoader<Property> propertyLoader;
 
     public ComponentTypeLoader(@Reference LoaderRegistry registry,
+                               @Reference LoaderHelper loaderHelper,
                                @Reference(name = "property") TypeLoader<Property> propertyLoader) {
         this.registry = registry;
+        this.loaderHelper = loaderHelper;
         this.propertyLoader = propertyLoader;
     }
 
@@ -103,12 +118,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     }
 
     public ComponentType load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        QName constrainingType = LoaderUtil.getQName(reader.getAttributeValue(null, "constrainingType"),
-                                                     introspectionContext.getTargetNamespace(),
-                                                     reader.getNamespaceContext());
-
         ComponentType type = new ComponentType();
-        type.setConstrainingType(constrainingType);
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
@@ -117,24 +127,12 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     Property property = propertyLoader.load(reader, introspectionContext);
                     type.add(property);
                 } else if (SERVICE.equals(qname)) {
-                    ServiceDefinition service = null;
-                    try {
-                        service = registry.load(reader, ServiceDefinition.class, introspectionContext);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
-                        introspectionContext.addError(failure);
-                        continue;
-                    }
+                    ServiceDefinition service;
+                    service = loadService(reader, introspectionContext);
                     type.add(service);
                 } else if (REFERENCE.equals(qname)) {
-                    ReferenceDefinition reference = null;
-                    try {
-                        reference = registry.load(reader, ReferenceDefinition.class, introspectionContext);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
-                        introspectionContext.addError(failure);
-                        continue;
-                    }
+                    ReferenceDefinition reference;
+                    reference = loadReference(reader, introspectionContext);
                     type.add(reference);
                 } else {
                     // Extension element - for now try to load and see if we can handle it
@@ -152,9 +150,6 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                         type.add((ServiceDefinition) modelObject);
                     } else if (modelObject instanceof ReferenceDefinition) {
                         type.add((ReferenceDefinition) modelObject);
-                    } else if (type == null) {
-                        // error loading, the element, ignore as an error will have been reported
-                        break;
                     } else {
                         introspectionContext.addError(new UnrecognizedElement(reader));
                         continue;
@@ -166,4 +161,176 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
             }
         }
     }
+
+    private ServiceDefinition loadService(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateServiceAttributes(reader, context);
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
+            context.addError(failure);
+            return null;
+        }
+        ServiceDefinition def = new ServiceDefinition(name, null);
+
+        loaderHelper.loadPolicySetsAndIntents(def, reader, context);
+
+        boolean callback = false;
+        while (true) {
+            int i = reader.next();
+            switch (i) {
+            case XMLStreamConstants.START_ELEMENT:
+                callback = CALLBACK.equals(reader.getName());
+                if (callback) {
+                    reader.nextTag();
+                }
+                QName elementName = reader.getName();
+                ModelObject type;
+                try {
+                    type = registry.load(reader, ModelObject.class, context);
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
+                    continue;
+                }
+                if (type instanceof ServiceContract) {
+                    def.setServiceContract((ServiceContract) type);
+                } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
+                    if (callback) {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                        }
+                        def.addCallbackBinding(binding);
+                    } else {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                        }
+                        def.addBinding(binding);
+                    }
+                } else if (type instanceof OperationDefinition) {
+                    def.addOperation((OperationDefinition) type);
+                } else if (type == null) {
+                    // error loading, the element, ignore as an error will have been reported
+                    break;
+                } else {
+                    context.addError(new UnrecognizedElement(reader));
+                    continue;
+                }
+                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                    throw new AssertionError("Loader must position the cursor to the end element");
+                }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if (callback) {
+                    callback = false;
+                    break;
+                }
+                return def;
+            }
+        }
+    }
+
+    private ReferenceDefinition loadReference(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateReferenceAttributes(reader, context);
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingReferenceName failure = new MissingReferenceName(reader);
+            context.addError(failure);
+            return null;
+        }
+
+        String value = reader.getAttributeValue(null, "multiplicity");
+        Multiplicity multiplicity = Multiplicity.ONE_ONE;   // for component types, default 1..1
+        try {
+            if (value != null) {
+                multiplicity = Multiplicity.fromString(value);
+            }
+        } catch (IllegalArgumentException e) {
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
+            context.addError(failure);
+        }
+        ReferenceDefinition reference = new ReferenceDefinition(name, multiplicity);
+
+        loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
+
+        boolean callback = false;
+        while (true) {
+            switch (reader.next()) {
+            case START_ELEMENT:
+                callback = CALLBACK.equals(reader.getName());
+                if (callback) {
+                    reader.nextTag();
+                }
+                QName elementName = reader.getName();
+                ModelObject type;
+                try {
+                    type = registry.load(reader, ModelObject.class, context);
+                    // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
+                    // UnrecognizedElement added to the context if none is found
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
+                    continue;
+                }
+                if (type instanceof ServiceContract) {
+                    reference.setServiceContract((ServiceContract) type);
+                } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
+                    if (callback) {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
+                        }
+                        reference.addCallbackBinding(binding);
+                    } else {
+                        if (binding.getName() == null) {
+                            // set the default binding name
+                            BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
+                        }
+                        reference.addBinding((BindingDefinition) type);
+                    }
+                } else if (type instanceof OperationDefinition) {
+                    reference.addOperation((OperationDefinition) type);
+                } else if (type == null) {
+                    // no type, continue processing
+                    continue;
+                } else {
+                    context.addError(new UnrecognizedElement(reader));
+                    continue;
+                }
+                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                    throw new AssertionError("Loader must position the cursor to the end element");
+                }
+                break;
+            case END_ELEMENT:
+                if (callback) {
+                    callback = false;
+                    break;
+                }
+                return reference;
+            }
+        }
+    }
+
+    private void validateReferenceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"multiplicity".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
+    }
+
+    private void validateServiceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
+    }
+
+
 }
