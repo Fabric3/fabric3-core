@@ -65,7 +65,6 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -209,8 +208,6 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                         }
                         def.addBinding(binding);
                     }
-                } else if (type instanceof OperationDefinition) {
-                    def.addOperation((OperationDefinition) type);
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
                     break;
@@ -291,8 +288,6 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                         }
                         reference.addBinding((BindingDefinition) type);
                     }
-                } else if (type instanceof OperationDefinition) {
-                    reference.addOperation((OperationDefinition) type);
                 } else if (type == null) {
                     // no type, continue processing
                     continue;

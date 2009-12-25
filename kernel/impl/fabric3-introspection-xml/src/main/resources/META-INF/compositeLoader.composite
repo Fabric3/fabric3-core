@@ -17,9 +17,6 @@
            xmlns:f3-impl="urn:fabric3.org:implementation"
            name="CompositeLoaderBootComposite" targetNamespace="urn:maven:org.codehaus.fabric3:boot">
 
-    <component name="OperationLoader" f3-core:key="sca:operation">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.OperationLoader"/>
-    </component>
     <component name="ComponentReferenceLoader">
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.ComponentReferenceLoader"/>
     </component>

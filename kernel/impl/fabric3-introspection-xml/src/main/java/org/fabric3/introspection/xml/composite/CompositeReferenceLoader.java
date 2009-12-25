@@ -61,7 +61,6 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -162,8 +161,6 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                         referenceDefinition.addBinding(binding);
 
                     }
-                } else if (type instanceof OperationDefinition) {
-                    referenceDefinition.addOperation((OperationDefinition) type);
                 } else if (type == null) {
                     // there was an error loading the element, ingore it as the errors will have been reported
                     continue;

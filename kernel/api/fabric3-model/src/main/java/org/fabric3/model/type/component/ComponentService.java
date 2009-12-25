@@ -43,8 +43,6 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.contract.ServiceContract;
-
 /**
  * Represents a component service.
  *
@@ -53,7 +51,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 public class ComponentService extends ServiceDefinition {
     private static final long serialVersionUID = 1076710434904709542L;
 
-    public ComponentService(String name, ServiceContract serviceContract) {
-        super(name, serviceContract);
+    public ComponentService(String name) {
+        super(name);
     }
 }

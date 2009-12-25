@@ -99,7 +99,7 @@ public class ComponentLoaderServiceTestCase extends TestCase {
                                       EasyMock.eq(Implementation.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(impl);
 
-        ComponentService service = new ComponentService(SERVICE_NAME, null);
+        ComponentService service = new ComponentService(SERVICE_NAME);
         EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
                                       EasyMock.eq(ComponentService.class),
                                       EasyMock.isA(IntrospectionContext.class))).andReturn(service);

@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.model.type.AbstractPolicyAware;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
@@ -60,9 +59,8 @@ public class ServiceDefinition extends AbstractPolicyAware {
     private String name;
     private ServiceContract serviceContract;
     private boolean management;
-    private final List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
-    private final List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
-    private final List<OperationDefinition> operations = new ArrayList<OperationDefinition>();
+    private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
     public ServiceDefinition(String name) {
         this(name, null);
@@ -151,21 +149,6 @@ public class ServiceDefinition extends AbstractPolicyAware {
      */
     public void addCallbackBinding(BindingDefinition binding) {
         this.callbackBindings.add(binding);
-    }
-
-
-    /**
-     * @return Get the list of operations defined against the reference.
-     */
-    public List<OperationDefinition> getOperations() {
-        return operations;
-    }
-
-    /**
-     * @param operation Operation definition to be added.
-     */
-    public void addOperation(OperationDefinition operation) {
-        operations.add(operation);
     }
 
 }

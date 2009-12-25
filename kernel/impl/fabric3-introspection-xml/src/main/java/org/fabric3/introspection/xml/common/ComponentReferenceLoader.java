@@ -63,7 +63,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
@@ -183,8 +182,6 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                         }
                         reference.addBinding((BindingDefinition) type);
                     }
-                } else if (type instanceof OperationDefinition) {
-                    reference.addOperation((OperationDefinition) type);
                 } else if (type == null) {
                     // no type, continue processing
                     continue;

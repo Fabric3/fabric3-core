@@ -54,10 +54,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.OperationDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentService;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -94,7 +93,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             context.addError(failure);
             return null;
         }
-        ComponentService def = new ComponentService(name, null);
+        ComponentService def = new ComponentService(name);
 
         loaderHelper.loadPolicySetsAndIntents(def, reader, context);
 
@@ -133,8 +132,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                         }
                         def.addBinding(binding);
                     }
-                } else if (type instanceof OperationDefinition) {
-                    def.addOperation((OperationDefinition) type);
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
                     break;

@@ -48,7 +48,6 @@ import java.util.List;
 
 import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.OperationDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
@@ -64,9 +63,8 @@ public class ReferenceDefinition extends AbstractPolicyAware {
     private boolean keyed;
     private DataType<?> keyDataType;
 
-    private final List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
-    private final List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
-    private final List<OperationDefinition> operations = new ArrayList<OperationDefinition>();
+    private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
     /**
      * Constructor.
@@ -184,24 +182,6 @@ public class ReferenceDefinition extends AbstractPolicyAware {
      */
     public void addCallbackBinding(BindingDefinition binding) {
         this.callbackBindings.add(binding);
-    }
-
-    /**
-     * Returns the operation configurations for the reference.
-     *
-     * @return the operation configurations
-     */
-    public List<OperationDefinition> getOperations() {
-        return operations;
-    }
-
-    /**
-     * Adds a configured operation.
-     *
-     * @param operation the configured operation
-     */
-    public void addOperation(OperationDefinition operation) {
-        operations.add(operation);
     }
 
     /**
