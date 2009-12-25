@@ -119,7 +119,7 @@ public class CompositeLoaderTestCase extends TestCase {
         LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
         EasyMock.replay(registry);
 
-        loader = new CompositeLoader(registry, null, null, null, loaderHelper);
+        loader = new CompositeLoader(registry, null, null, null, null, loaderHelper);
         name = new QName("http://example.com", "composite");
     }
 }

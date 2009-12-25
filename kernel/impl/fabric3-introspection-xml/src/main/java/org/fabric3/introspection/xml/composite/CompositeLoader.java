@@ -74,6 +74,8 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
+import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -115,6 +117,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private TypeLoader<CompositeService> serviceLoader;
     private TypeLoader<CompositeReference> referenceLoader;
     private TypeLoader<Property> propertyLoader;
+    private ContractMatcher contractMatcher;
     private final LoaderHelper loaderHelper;
 
 
@@ -139,6 +142,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param serviceLoader   the service loader
      * @param referenceLoader the reference loader
      * @param propertyLoader  the property loader
+     * @param contractMatcher the contract matcher
      * @param loaderHelper    helper the helper
      */
     @Constructor
@@ -146,11 +150,13 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                            @Reference(name = "service") TypeLoader<CompositeService> serviceLoader,
                            @Reference(name = "reference") TypeLoader<CompositeReference> referenceLoader,
                            @Reference(name = "property") TypeLoader<Property> propertyLoader,
+                           @Reference ContractMatcher contractMatcher,
                            @Reference LoaderHelper loaderHelper) {
         super(registry);
         this.serviceLoader = serviceLoader;
         this.referenceLoader = referenceLoader;
         this.propertyLoader = propertyLoader;
+        this.contractMatcher = contractMatcher;
         this.loaderHelper = loaderHelper;
     }
 
@@ -374,7 +380,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 PromotionNotFound error =
                         new PromotionNotFound("Component " + componentName + " referenced by " + name + " not found", reader);
                 childContext.addError(error);
-                return;
+                continue;
             } else {
                 String serviceName = promotedUri.getFragment();
                 AbstractComponentType<?, ?, ?, ?> componentType = promotedComponent.getComponentType();
@@ -384,7 +390,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         PromotionNotFound error =
                                 new PromotionNotFound("Service " + serviceName + " promoted by " + name + " not found", reader);
                         childContext.addError(error);
-                        return;
+                        continue;
                     }
                 } else {
                     Map<String, ? extends ServiceDefinition> services = componentType.getServices();
@@ -407,18 +413,27 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         PromotionNotFound error =
                                 new PromotionNotFound("Component " + componentName + " has no services to promote", reader);
                         childContext.addError(error);
-                        return;
+                        continue;
                     } else {
                         PromotionNotFound error =
                                 new PromotionNotFound("A promoted service must be specified for " + name, reader);
                         childContext.addError(error);
-                        return;
+                        continue;
                     }
                 }
             }
             if (service.getServiceContract() == null) {
                 // if a service contract is not set on the composite service, inherit from the promoted service 
                 service.setServiceContract(promotedService.getServiceContract());
+            } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+                // verify service contracts are compatible
+                MatchResult result = contractMatcher.isAssignableFrom(promotedService.getServiceContract(), service.getServiceContract(), true);
+                if (!result.isAssignable()) {
+                    IncompatibleContracts error =
+                            new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
+                                    + promotedService.getName() + ": " + result.getError(), reader);
+                    childContext.addError(error);
+                }
             }
         }
     }

@@ -105,7 +105,7 @@ public class DuplicatePromotedReferenceNameTestCase extends TestCase {
         LoaderRegistry registry = createRegistry();
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         EasyMock.replay(helper);
-        loader = new CompositeLoader(registry, null, refLoader, null, helper);
+        loader = new CompositeLoader(registry, null, refLoader, null, null, helper);
         reader = createReader();
         ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
     }

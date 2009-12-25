@@ -53,6 +53,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.oasisopen.sca.Constants.SCA_NS;
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -68,6 +69,8 @@ import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.Target;
+import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -100,11 +103,27 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ATTRIBUTES.put("key", "key");
     }
 
-    private final LoaderHelper loaderHelper;
+    private LoaderHelper loaderHelper;
+    private ContractMatcher contractMatcher;
 
-    public ComponentLoader(@Reference LoaderRegistry registry, @Reference(name = "loaderHelper") LoaderHelper loaderHelper) {
+    /**
+     * Constructor used during boostrap
+     *
+     * @param registry     the loader registry
+     * @param loaderHelper the helper
+     */
+    public ComponentLoader(LoaderRegistry registry, LoaderHelper loaderHelper) {
         super(registry);
         this.loaderHelper = loaderHelper;
+    }
+
+    @Constructor
+    public ComponentLoader(@Reference LoaderRegistry registry,
+                           @Reference(name = "loaderHelper") LoaderHelper loaderHelper,
+                           @Reference ContractMatcher contractMatcher) {
+        super(registry);
+        this.loaderHelper = loaderHelper;
+        this.contractMatcher = contractMatcher;
     }
 
     public ComponentDefinition<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -208,6 +227,15 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
+        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+            // verify service contracts are compatible
+            MatchResult result = contractMatcher.isAssignableFrom(typeService.getServiceContract(), service.getServiceContract(), true);
+            if (!result.isAssignable()) {
+                IncompatibleContracts error =
+                        new IncompatibleContracts("The component service interface " + name + " is not compatible with the promoted service "
+                                + typeService.getName() + ": " + result.getError(), reader);
+                context.addError(error);
+            }
         }
         if (definition.getServices().containsKey(name)) {
             DuplicateComponentService failure = new DuplicateComponentService(name, definition.getName(), reader);
