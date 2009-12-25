@@ -54,7 +54,7 @@ public interface ContractMatcher {
      * Determines if two <code>ServiceContract</code>s are compatible for wiring.
      *
      * @param source       the source contract. This is the contract specified by a component reference.
-     * @param target       the ctarget contract. This is the contract specified by a service.
+     * @param target       the target contract. This is the contract specified by a service.
      * @param reportErrors true if errors should be reported in the result
      * @return the match result
      */
