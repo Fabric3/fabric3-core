@@ -71,7 +71,11 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
         if (source.getInterfaceClass().equals(target.getInterfaceClass())) {
             for (Signature signature : source.getMethodSignatures()) {
                 if (!target.getMethodSignatures().contains(signature)) {
-                    return new MatchResult("Method signature not found on target service contract: " + signature);
+                    if (reportErrors) {
+                        return new MatchResult("Method signature not found on target service contract: " + signature);
+                    } else {
+                        return NO_MATCH;
+                    }
                 }
             }
             return MATCH;
@@ -83,11 +87,25 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
                     return MATCH;
                 }
             }
-        }
-        if (reportErrors) {
-            return new MatchResult("Source and target interfaces do not match");
-        } else {
-            return NO_MATCH;
+            if (!source.isRemotable() || !target.isRemotable()) {
+                // enforce stricter compatibility rules for local interfaces
+                if (reportErrors) {
+                    return new MatchResult("Source and target interfaces do not match");
+                } else {
+                    return NO_MATCH;
+                }
+
+            }
+            for (Signature signature : source.getMethodSignatures()) {
+                if (!target.getMethodSignatures().contains(signature)) {
+                    if (reportErrors) {
+                        return new MatchResult("Method signature not found on target service contract: " + signature);
+                    } else {
+                        return NO_MATCH;
+                    }
+                }
+            }
+            return MATCH;
         }
 
     }
