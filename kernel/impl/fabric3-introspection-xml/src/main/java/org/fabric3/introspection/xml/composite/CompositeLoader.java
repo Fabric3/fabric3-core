@@ -207,7 +207,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     }
                 case END_ELEMENT:
                     assert COMPOSITE.equals(reader.getName());
-                    validateServicePromotions(type, reader, childContext);
+                    updateAndValidateServicePromotions(type, reader, childContext);
                     updateAndValidateReferencePromotions(type, reader, childContext);
                     updateContext(context, childContext, compositeName);
                     return type;
@@ -363,23 +363,28 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void validateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
+    private void updateAndValidateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
         for (CompositeService service : type.getServices().values()) {
             URI promotedUri = service.getPromote();
             String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
-            ComponentDefinition promoted = type.getComponents().get(componentName);
-            if (promoted == null) {
+            ComponentDefinition promotedComponent = type.getComponents().get(componentName);
+            ServiceDefinition promotedService;
+            String name = service.getName();
+            if (promotedComponent == null) {
                 PromotionNotFound error =
-                        new PromotionNotFound("Component " + componentName + " referenced by " + service.getName() + " not found", reader);
+                        new PromotionNotFound("Component " + componentName + " referenced by " + name + " not found", reader);
                 childContext.addError(error);
+                return;
             } else {
                 String serviceName = promotedUri.getFragment();
-                AbstractComponentType<?, ?, ?, ?> componentType = promoted.getComponentType();
+                AbstractComponentType<?, ?, ?, ?> componentType = promotedComponent.getComponentType();
                 if (serviceName != null) {
-                    if (!componentType.getServices().containsKey(serviceName)) {
+                    promotedService = componentType.getServices().get(serviceName);
+                    if (promotedService == null) {
                         PromotionNotFound error =
-                                new PromotionNotFound("Service " + serviceName + " promoted by " + service.getName() + " not found", reader);
+                                new PromotionNotFound("Service " + serviceName + " promoted by " + name + " not found", reader);
                         childContext.addError(error);
+                        return;
                     }
                 } else {
                     Map<String, ? extends ServiceDefinition> services = componentType.getServices();
@@ -390,17 +395,30 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         ServiceDefinition two = iter.next();
                         if (!one.isManagement() && !two.isManagement()) {
                             PromotionNotFound error =
-                                    new PromotionNotFound("A promoted service must be specified for " + service.getName(), reader);
+                                    new PromotionNotFound("A promoted service must be specified for " + name, reader);
                             childContext.addError(error);
+                            return;
                         }
+                        promotedService = one.isManagement() ? two : one;
 
-                    } else if (numberOfServices > 2) {
+                    } else if (numberOfServices == 1) {
+                        promotedService = services.values().iterator().next();
+                    } else if (numberOfServices == 0) {
                         PromotionNotFound error =
-                                new PromotionNotFound("A promoted service must be specified for " + service.getName(), reader);
+                                new PromotionNotFound("Component " + componentName + " has no services to promote", reader);
                         childContext.addError(error);
+                        return;
+                    } else {
+                        PromotionNotFound error =
+                                new PromotionNotFound("A promoted service must be specified for " + name, reader);
+                        childContext.addError(error);
+                        return;
                     }
                 }
-
+            }
+            if (service.getServiceContract() == null) {
+                // if a service contract is not set on the composite service, inherit from the promoted service 
+                service.setServiceContract(promotedService.getServiceContract());
             }
         }
     }

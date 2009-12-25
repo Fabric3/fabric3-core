@@ -66,6 +66,7 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -196,15 +197,20 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // there was an error with the service configuration, just skip it
             return;
         }
-        if (!componentType.hasService(service.getName())) {
+        String name = service.getName();
+        ServiceDefinition typeService = componentType.getServices().get(name);
+        if (typeService == null) {
             // ensure the service exists
-            ComponentServiceNotFound failure = new ComponentServiceNotFound(service.getName(), definition, reader);
+            ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, reader);
             context.addError(failure);
             return;
         }
-        if (definition.getServices().containsKey(service.getName())) {
-            String id = service.getName();
-            DuplicateComponentService failure = new DuplicateComponentService(id, definition.getName(), reader);
+        if (service.getServiceContract() == null) {
+            // if the service contract is not set, inherit from the component type service
+            service.setServiceContract(typeService.getServiceContract());
+        }
+        if (definition.getServices().containsKey(name)) {
+            DuplicateComponentService failure = new DuplicateComponentService(name, definition.getName(), reader);
             context.addError(failure);
         } else {
             definition.add(service);
@@ -258,7 +264,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // there was an error with the property configuration, just skip it
             return;
         }
-        if (!componentType.hasProperty(value.getName())) {
+        if (componentType.getProperties().get(value.getName()) == null) {
             // ensure the property exists
             ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, reader);
             context.addError(failure);

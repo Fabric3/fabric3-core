@@ -93,9 +93,9 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             context.addError(failure);
             return null;
         }
-        ComponentService def = new ComponentService(name);
+        ComponentService definition = new ComponentService(name);
 
-        loaderHelper.loadPolicySetsAndIntents(def, reader, context);
+        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         boolean callback = false;
         while (true) {
@@ -116,21 +116,21 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     continue;
                 }
                 if (type instanceof ServiceContract) {
-                    def.setServiceContract((ServiceContract) type);
+                    definition.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, definition.getCallbackBindings(), reader, context);
                         }
-                        def.addCallbackBinding(binding);
+                        definition.addCallbackBinding(binding);
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, definition.getBindings(), reader, context);
                         }
-                        def.addBinding(binding);
+                        definition.addBinding(binding);
                     }
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
@@ -148,7 +148,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     callback = false;
                     break;
                 }
-                return def;
+                return definition;
             }
         }
     }

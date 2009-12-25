@@ -177,16 +177,6 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
     }
 
     /**
-     * Checks if this component type has a service with a certain name.
-     *
-     * @param name the name of the service to check
-     * @return true if there is a service defined with that name
-     */
-    public boolean hasService(String name) {
-        return services.containsKey(name);
-    }
-
-    /**
      * Returns a live Map of references to services consumed by the implementation.
      *
      * @return a live Map of references to services consumed by the implementation
@@ -205,16 +195,6 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
     }
 
     /**
-     * Checks if this component type has a reference with a certain name.
-     *
-     * @param name the name of the reference to check
-     * @return true if there is a reference defined with that name
-     */
-    public boolean hasReference(String name) {
-        return references.containsKey(name);
-    }
-
-    /**
      * Returns a live Map of properties that can be used to configure the implementation.
      *
      * @return a live Map of properties that can be used to configure the implementation
@@ -230,16 +210,6 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      */
     public void add(P property) {
         properties.put(property.getName(), property);
-    }
-
-    /**
-     * Checks if this component type has a property with a certain name.
-     *
-     * @param name the name of the property to check
-     * @return true if there is a property defined with that name
-     */
-    public boolean hasProperty(String name) {
-        return properties.containsKey(name);
     }
 
     /**
