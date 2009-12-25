@@ -123,7 +123,7 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"class".equals(name) && !"interface".equals(name) && !"callbackInterface".equals(name)) {
+            if (!"interface".equals(name) && !"callbackInterface".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
