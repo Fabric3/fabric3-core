@@ -71,6 +71,10 @@ import org.w3c.dom.Text;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.PolicyAware;
+import org.fabric3.model.type.component.Multiplicity;
+import static org.fabric3.model.type.component.Multiplicity.ONE_N;
+import static org.fabric3.model.type.component.Multiplicity.ONE_ONE;
+import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
@@ -212,6 +216,21 @@ public class DefaultLoaderHelper implements LoaderHelper {
             }
             return result;
         }
+    }
+
+    public boolean canNarrow(Multiplicity first, Multiplicity second) {
+        switch (second) {
+        case ONE_ONE:
+            return ONE_ONE == first;
+        case ONE_N:
+            return ONE_ONE == first || ONE_N == first;
+        case ZERO_N:
+            return true;
+        case ZERO_ONE:
+            return ONE_ONE == first || ZERO_ONE == first;
+        }
+        return false;
+
     }
 
     private void transform(XMLStreamReader reader, Element element) throws XMLStreamException {

@@ -53,6 +53,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.PolicyAware;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -139,4 +140,13 @@ public interface LoaderHelper {
      * @return the list of URIs contained in that attribute, or null if the attribute is not present
      */
     List<URI> parseListOfUris(XMLStreamReader reader, String attribute);
+
+    /**
+     * Determines if the first multiplicity setting can narrow the second
+     *
+     * @param first  multiplicity setting
+     * @param second multiplicity setting
+     * @return true if the first can narrow the second
+     */
+    boolean canNarrow(Multiplicity first, Multiplicity second);
 }

@@ -88,6 +88,7 @@ public class DuplicateComponentReferenceTestCase extends TestCase {
         super.setUp();
         LoaderRegistry registry = createRegistry();
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
+        EasyMock.expect(helper.canNarrow(EasyMock.isA(Multiplicity.class), EasyMock.isA(Multiplicity.class))).andReturn(true);
         EasyMock.replay(helper);
         loader = new ComponentLoader(registry, helper);
         reader = createReader();

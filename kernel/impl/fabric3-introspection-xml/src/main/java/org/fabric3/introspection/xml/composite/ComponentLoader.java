@@ -271,6 +271,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (reference.getMultiplicity() == null) {
             Multiplicity multiplicity = typeReference.getMultiplicity();
             reference.setMultiplicity(multiplicity);
+        } else {
+            if (!loaderHelper.canNarrow(reference.getMultiplicity(), typeReference.getMultiplicity())) {
+                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", reader);
+                context.addError(failure);
+            }
         }
         definition.add(reference);
         List<Target> targets = reference.getTargets();

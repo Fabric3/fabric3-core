@@ -78,6 +78,7 @@ import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -472,6 +473,13 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     if (reference.getMultiplicity() == null) {
                         Multiplicity multiplicity = promotedReference.getMultiplicity();
                         reference.setMultiplicity(multiplicity);
+                    } else {
+                        if (!loaderHelper.canNarrow(reference.getMultiplicity(), promotedReference.getMultiplicity())) {
+                            InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + referenceName
+                                    + " widens the default setting", reader);
+                            childContext.addError(failure);
+                        }
+
                     }
                 }
 

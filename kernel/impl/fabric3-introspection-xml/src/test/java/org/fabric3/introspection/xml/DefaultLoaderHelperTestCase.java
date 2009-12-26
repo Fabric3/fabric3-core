@@ -56,6 +56,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 
@@ -133,6 +134,23 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         assertEquals("binding", target.getBinding());
     }
 
+    public void testultiplicityNarrow() throws Exception {
+        assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ZERO_ONE));
+        assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ONE_ONE));
+        assertTrue(helper.canNarrow(Multiplicity.ZERO_N, Multiplicity.ZERO_N));
+        assertTrue(helper.canNarrow(Multiplicity.ZERO_ONE, Multiplicity.ZERO_N));
+        assertTrue(helper.canNarrow(Multiplicity.ZERO_ONE, Multiplicity.ZERO_ONE));
+        assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ZERO_N));
+        assertTrue(helper.canNarrow(Multiplicity.ONE_N, Multiplicity.ZERO_N));
+        assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ONE_N));
+
+        assertFalse(helper.canNarrow(Multiplicity.ZERO_ONE, Multiplicity.ONE_ONE));
+        assertFalse(helper.canNarrow(Multiplicity.ZERO_N, Multiplicity.ZERO_ONE));
+        assertFalse(helper.canNarrow(Multiplicity.ZERO_N, Multiplicity.ONE_ONE));
+        assertFalse(helper.canNarrow(Multiplicity.ZERO_N, Multiplicity.ONE_N));
+        assertFalse(helper.canNarrow(Multiplicity.ONE_N, Multiplicity.ONE_ONE));
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
@@ -148,4 +166,5 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         return reader;
 
     }
+
 }
