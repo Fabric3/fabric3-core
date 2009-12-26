@@ -46,7 +46,6 @@ package org.fabric3.implementation.pojo.component;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
@@ -57,6 +56,7 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.model.type.java.Injectable;
 
 /**
  * Base class for Component implementations based on Java objects.
@@ -150,40 +150,39 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
     /**
      * Sets an object factory.
      *
-     * @param attribute     the InjectableAttribute identifying the component reference, property or context artifact the object factory creates
+     * @param injectable    the InjectableAttribute identifying the component reference, property or context artifact the object factory creates
      *                      instances for
      * @param objectFactory the object factory
      */
-    public void setObjectFactory(Injectable attribute, ObjectFactory<?> objectFactory) {
-        setObjectFactory(attribute, objectFactory, null);
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
+        setObjectFactory(injectable, objectFactory, null);
     }
 
     /**
      * Sets an object factory.
      *
-     * @param attribute     the InjectableAttribute identifying the component reference, property or context artifact the object factory creates
-     *                      instances for
+     * @param injectable    the injectable identifying the component reference, property or context artifact the object factory creates instances for
      * @param objectFactory the object factory
      * @param key           key value for a Map reference
      */
-    public void setObjectFactory(Injectable attribute, ObjectFactory<?> objectFactory, Object key) {
-        scopeContainer.addObjectFactory(this, objectFactory, attribute.getName(), key);
-        provider.setObjectFactory(attribute, objectFactory, key);
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
+        scopeContainer.addObjectFactory(this, objectFactory, injectable.getName(), key);
+        provider.setObjectFactory(injectable, objectFactory, key);
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first 
         // instance has been created.
         instanceFactory = null;
     }
 
-    public void removeObjectFactory(Injectable attribute) {
-        scopeContainer.removeObjectFactory(this, attribute.getName());
-        provider.removeObjectFactory(attribute);
+    public void removeObjectFactory(Injectable injectable) {
+        scopeContainer.removeObjectFactory(this, injectable.getName());
+        provider.removeObjectFactory(injectable);
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.
         instanceFactory = null;
     }
 
-    public ObjectFactory<?> getObjectFactory(Injectable attribute) {
-        return provider.getObjectFactory(attribute);
+    public ObjectFactory<?> getObjectFactory(Injectable injectable) {
+        return provider.getObjectFactory(injectable);
     }
 
     public String toString() {

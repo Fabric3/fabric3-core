@@ -44,6 +44,7 @@
 package org.fabric3.implementation.pojo.injection;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.spi.ObjectCreationException;
@@ -54,25 +55,29 @@ import org.fabric3.spi.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class ArrayMultiplicityObjectFactory implements ObjectFactory<Object> {
-
-    private ObjectFactory[] factories;
-
+public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory<Object> {
+    private List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
     private Class interfaceType;
 
-    public ArrayMultiplicityObjectFactory(Class interfaceType, List<ObjectFactory<?>> factories) {
+    public ArrayMultiplicityObjectFactory(Class interfaceType) {
         assert interfaceType != null : "Interface type was null";
         assert factories != null : "Object factories were null";
         this.interfaceType = interfaceType;
-        this.factories = factories.toArray(new ObjectFactory[factories.size()]);
     }
 
     public Object getInstance() throws ObjectCreationException {
-        Object array = Array.newInstance(interfaceType, factories.length);
-        for (int i = 0; i < factories.length; i++) {
-            Array.set(array, i, factories[i].getInstance());
+        Object array = Array.newInstance(interfaceType, factories.size());
+        for (int i = 0; i < factories.size(); i++) {
+            Array.set(array, i, factories.get(i).getInstance());
         }
         return array;
     }
 
+    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+       factories.add(objectFactory);
+    }
+
+    public void clear() {
+       factories.clear();
+    }
 }

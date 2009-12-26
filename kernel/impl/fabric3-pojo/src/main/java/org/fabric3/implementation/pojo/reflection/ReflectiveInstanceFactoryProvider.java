@@ -54,20 +54,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.Injector;
+import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * @version $Rev$ $Date$
@@ -107,31 +108,31 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
 
     }
 
-    public void setObjectFactory(Injectable attribute, ObjectFactory<?> objectFactory) {
-        setObjectFactory(attribute, objectFactory, null);
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
+        setObjectFactory(injectable, objectFactory, null);
     }
 
-    public void setObjectFactory(Injectable attribute, ObjectFactory<?> objectFactory, Object key) {
-        if (InjectableType.REFERENCE == attribute.getType() || InjectableType.CALLBACK == attribute.getType()) {
-            setUpdateableFactory(attribute, objectFactory, key);
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
+        if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
+            setUpdateableFactory(injectable, objectFactory, key);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
-            factories.put(attribute, objectFactory);
+            factories.put(injectable, objectFactory);
         }
     }
 
-    public ObjectFactory<?> getObjectFactory(Injectable attribute) {
-        return factories.get(attribute);
+    public ObjectFactory<?> getObjectFactory(Injectable injectable) {
+        return factories.get(injectable);
     }
 
     public void removeObjectFactory(Injectable attribute) {
         factories.remove(attribute);
     }
 
-    public Class<?> getMemberType(Injectable attribute) {
-        InjectionSite site = findInjectionSite(attribute);
+    public Class<?> getMemberType(Injectable injectable) {
+        InjectionSite site = findInjectionSite(injectable);
         if (site == null) {
-            throw new AssertionError("No injection site for " + attribute + " in " + implementationClass);
+            throw new AssertionError("No injection site for " + injectable + " in " + implementationClass);
         }
         if (site instanceof FieldInjectionSite) {
             try {
@@ -283,36 +284,40 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         return injectors;
     }
 
-    private void setUpdateableFactory(Injectable name, ObjectFactory<?> objectFactory, Object key) {
+    private void setUpdateableFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
         // determine if object factory is present. if so, must be updated.
-        ObjectFactory<?> factory = factories.get(name);
+        ObjectFactory<?> factory = factories.get(injectable);
         if (factory == null) {
-            Class<?> type = getMemberType(name);
+            Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
                 MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
                 mapFactory.addObjectFactory(objectFactory, key);
-                factories.put(name, mapFactory);
+                factories.put(injectable, mapFactory);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
                 setFactory.addObjectFactory(objectFactory, key);
-                factories.put(name, setFactory);
+                factories.put(injectable, setFactory);
             } else if (List.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.addObjectFactory(objectFactory, key);
-                factories.put(name, listFactory);
+                factories.put(injectable, listFactory);
             } else if (Collection.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.addObjectFactory(objectFactory, key);
-                factories.put(name, listFactory);
+                factories.put(injectable, listFactory);
+            } else if (type.isArray()) {
+                ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
+                arrayFactory.addObjectFactory(objectFactory, key);
+                factories.put(injectable, arrayFactory);
             } else {
-                factories.put(name, objectFactory);
+                factories.put(injectable, objectFactory);
             }
         } else if (factory instanceof MultiplicityObjectFactory) {
             MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
             multiplicityObjectFactory.addObjectFactory(objectFactory, key);
         } else {
             //update or overwrite  the factory
-            factories.put(name, objectFactory);
+            factories.put(injectable, objectFactory);
         }
     }
 
