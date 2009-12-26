@@ -74,6 +74,7 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -228,16 +229,16 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void handleExtensionElement(Composite type, XMLStreamReader reader, IntrospectionContext childContext) throws XMLStreamException {
+    private void handleExtensionElement(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         // Extension element - for now try to load and see if we can handle it
         ModelObject modelObject;
         try {
-            modelObject = registry.load(reader, ModelObject.class, childContext);
+            modelObject = registry.load(reader, ModelObject.class, context);
             // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
             // UnrecognizedElement added to the context if none is found
         } catch (UnrecognizedElementException e) {
             UnrecognizedElement failure = new UnrecognizedElement(reader);
-            childContext.addError(failure);
+            context.addError(failure);
             return;
         }
         if (modelObject instanceof Property) {
@@ -251,13 +252,13 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         } else if (type == null) {
             // there was an error loading the element, ingore it as the errors will have been reported
         } else {
-            childContext.addError(new UnrecognizedElement(reader));
+            context.addError(new UnrecognizedElement(reader));
         }
     }
 
-    private void handleWire(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private void handleWire(Composite type, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException, UnrecognizedElementException {
-        WireDefinition wire = registry.load(reader, WireDefinition.class, childContext);
+        WireDefinition wire = registry.load(reader, WireDefinition.class, context);
         if (wire == null) {
             // errror encountered loading the wire
             return;
@@ -265,9 +266,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.add(wire);
     }
 
-    private boolean handleComponent(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private boolean handleComponent(Composite type, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException, UnrecognizedElementException {
-        ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, childContext);
+        ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, context);
         if (componentDefinition == null) {
             // errror encountered loading the componentDefinition
             return false;
@@ -275,7 +276,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         String key = componentDefinition.getName();
         if (type.getComponents().containsKey(key)) {
             DuplicateComponentName failure = new DuplicateComponentName(key, reader);
-            childContext.addError(failure);
+            context.addError(failure);
             return false;
         }
         Implementation<?> implementation = componentDefinition.getImplementation();
@@ -289,9 +290,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         return true;
     }
 
-    private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException {
-        CompositeReference reference = referenceLoader.load(reader, childContext);
+        CompositeReference reference = referenceLoader.load(reader, context);
         if (reference == null) {
             // errror encountered loading the reference
             return;
@@ -299,15 +300,14 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (type.getReferences().containsKey(reference.getName())) {
             String key = reference.getName();
             DuplicatePromotedReferenceName failure = new DuplicatePromotedReferenceName(key, reader);
-            childContext.addError(failure);
+            context.addError(failure);
         } else {
             type.add(reference);
         }
     }
 
-    private void handleService(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
-            throws XMLStreamException {
-        CompositeService service = serviceLoader.load(reader, childContext);
+    private void handleService(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        CompositeService service = serviceLoader.load(reader, context);
         if (service == null) {
             // errror encountered loading the service
             return;
@@ -315,15 +315,15 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (type.getServices().containsKey(service.getName())) {
             String key = service.getName();
             DuplicateService failure = new DuplicateService(key, reader);
-            childContext.addError(failure);
+            context.addError(failure);
         } else {
             type.add(service);
         }
     }
 
-    private void handleProperty(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private void handleProperty(Composite type, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException, UnrecognizedElementException {
-        Property property = propertyLoader.load(reader, childContext);
+        Property property = propertyLoader.load(reader, context);
         if (property == null) {
             // errror encountered loading the property
             return;
@@ -331,15 +331,15 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         String key = property.getName();
         if (type.getProperties().containsKey(key)) {
             DuplicateProperty failure = new DuplicateProperty(key, reader);
-            childContext.addError(failure);
+            context.addError(failure);
         } else {
             type.add(property);
         }
     }
 
-    private void handleInclude(Composite type, XMLStreamReader reader, IntrospectionContext childContext)
+    private void handleInclude(Composite type, XMLStreamReader reader, IntrospectionContext context)
             throws XMLStreamException, UnrecognizedElementException {
-        Include include = registry.load(reader, Include.class, childContext);
+        Include include = registry.load(reader, Include.class, context);
         if (include == null) {
             // errror encountered loading the include
             return;
@@ -348,14 +348,14 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (type.getIncludes().containsKey(includeName)) {
             String identifier = includeName.toString();
             DuplicateInclude failure = new DuplicateInclude(identifier, reader);
-            childContext.addError(failure);
+            context.addError(failure);
             return;
         }
         for (ComponentDefinition definition : include.getIncluded().getComponents().values()) {
             String key = definition.getName();
             if (type.getComponents().containsKey(key)) {
                 DuplicateComponentName failure = new DuplicateComponentName(key, reader);
-                childContext.addError(failure);
+                context.addError(failure);
             }
         }
         type.add(include);
@@ -370,7 +370,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void updateAndValidateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
+    private void updateAndValidateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext context) {
         for (CompositeService service : type.getServices().values()) {
             URI promotedUri = service.getPromote();
             String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
@@ -380,7 +380,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             if (promotedComponent == null) {
                 PromotionNotFound error =
                         new PromotionNotFound("Component " + componentName + " referenced by " + name + " not found", reader);
-                childContext.addError(error);
+                context.addError(error);
                 continue;
             } else {
                 String serviceName = promotedUri.getFragment();
@@ -390,7 +390,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     if (promotedService == null) {
                         PromotionNotFound error =
                                 new PromotionNotFound("Service " + serviceName + " promoted by " + name + " not found", reader);
-                        childContext.addError(error);
+                        context.addError(error);
                         continue;
                     }
                 } else {
@@ -403,7 +403,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         if (!one.isManagement() && !two.isManagement()) {
                             PromotionNotFound error =
                                     new PromotionNotFound("A promoted service must be specified for " + name, reader);
-                            childContext.addError(error);
+                            context.addError(error);
                             return;
                         }
                         promotedService = one.isManagement() ? two : one;
@@ -413,33 +413,21 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     } else if (numberOfServices == 0) {
                         PromotionNotFound error =
                                 new PromotionNotFound("Component " + componentName + " has no services to promote", reader);
-                        childContext.addError(error);
+                        context.addError(error);
                         continue;
                     } else {
                         PromotionNotFound error =
                                 new PromotionNotFound("A promoted service must be specified for " + name, reader);
-                        childContext.addError(error);
+                        context.addError(error);
                         continue;
                     }
                 }
             }
-            if (service.getServiceContract() == null) {
-                // if a service contract is not set on the composite service, inherit from the promoted service 
-                service.setServiceContract(promotedService.getServiceContract());
-            } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-                // verify service contracts are compatible
-                MatchResult result = contractMatcher.isAssignableFrom(promotedService.getServiceContract(), service.getServiceContract(), true);
-                if (!result.isAssignable()) {
-                    IncompatibleContracts error =
-                            new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
-                                    + promotedService.getName() + ": " + result.getError(), reader);
-                    childContext.addError(error);
-                }
-            }
+            processServiceContract(service, promotedService, reader, context);
         }
     }
 
-    private void updateAndValidateReferencePromotions(Composite type, XMLStreamReader reader, IntrospectionContext childContext) {
+    private void updateAndValidateReferencePromotions(Composite type, XMLStreamReader reader, IntrospectionContext context) {
         for (CompositeReference reference : type.getReferences().values()) {
             for (URI promotedUri : reference.getPromotedUris()) {
                 String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
@@ -448,14 +436,14 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 if (promoted == null) {
                     PromotionNotFound error =
                             new PromotionNotFound("Component " + componentName + " referenced by " + reference.getName() + " not found", reader);
-                    childContext.addError(error);
+                    context.addError(error);
                     return;
                 } else {
                     if (referenceName == null && promoted.getComponentType().getReferences().size() != 1) {
                         PromotionNotFound error =
                                 new PromotionNotFound("A promoted reference must be specified for " + reference.getName(), reader);
-                        childContext.addError(error);
-                        return;
+                        context.addError(error);
+                        continue;
                     }
                     ReferenceDefinition promotedReference;
                     if (referenceName == null && promoted.getComponentType().getReferences().size() == 1) {
@@ -466,24 +454,100 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     if (referenceName != null && promotedReference == null) {
                         PromotionNotFound error =
                                 new PromotionNotFound("Reference " + referenceName + " promoted by " + reference.getName() + " not found", reader);
-                        childContext.addError(error);
-                        return;
+                        context.addError(error);
+                        continue;
                     }
-                    // set the multiplicity to inherit from the promoted reference
-                    if (reference.getMultiplicity() == null) {
-                        Multiplicity multiplicity = promotedReference.getMultiplicity();
-                        reference.setMultiplicity(multiplicity);
-                    } else {
-                        if (!loaderHelper.canNarrow(reference.getMultiplicity(), promotedReference.getMultiplicity())) {
-                            InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + referenceName
-                                    + " widens the default setting", reader);
-                            childContext.addError(failure);
-                        }
-
-                    }
+                    processMultiplicity(reference, promotedReference, reader, context);
+                    processReferenceContract(reference, promotedReference, reader, context);
                 }
 
             }
+        }
+    }
+
+    /**
+     * Sets the composite service contract from the promoted service if not explicitly configured. If configured, validates the contract matches the
+     * promoted reference contract.
+     *
+     * @param service         the service
+     * @param promotedService the promoted service
+     * @param reader          the reader
+     * @param context         the context
+     */
+    private void processServiceContract(CompositeService service,
+                                        ServiceDefinition promotedService,
+                                        XMLStreamReader reader,
+                                        IntrospectionContext context) {
+        if (service.getServiceContract() == null) {
+            // if a service contract is not set on the composite service, inherit from the promoted service
+            service.setServiceContract(promotedService.getServiceContract());
+        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+            // verify service contracts are compatible
+            MatchResult result = contractMatcher.isAssignableFrom(promotedService.getServiceContract(), service.getServiceContract(), true);
+            if (!result.isAssignable()) {
+                String name = service.getName();
+                IncompatibleContracts error =
+                        new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
+                                + promotedService.getName() + ": " + result.getError(), reader);
+                context.addError(error);
+            }
+        }
+    }
+
+    /**
+     * Sets the composite reference service contract from the promoted reference if not explicitly configured. If configured, validates the contract
+     * matches the promoted reference contract.
+     *
+     * @param reference         the reference
+     * @param promotedReference the promoted reference
+     * @param reader            the reader
+     * @param context           the context
+     */
+    private void processReferenceContract(CompositeReference reference,
+                                          ReferenceDefinition promotedReference,
+                                          XMLStreamReader reader,
+                                          IntrospectionContext context) {
+        if (reference.getServiceContract() == null) {
+            // if a reference contract is not set on the composite service, inherit from the promoted reference
+            reference.setServiceContract(promotedReference.getServiceContract());
+        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+            // verify service contracts are compatible
+            ServiceContract promotedContract = promotedReference.getServiceContract();
+            ServiceContract contract = reference.getServiceContract();
+            MatchResult result = contractMatcher.isAssignableFrom(promotedContract, contract, true);
+            if (!result.isAssignable()) {
+                String name = reference.getName();
+                IncompatibleContracts error = new IncompatibleContracts("The composite service interface " + name
+                        + " is not compatible with the promoted service " + promotedReference.getName() + ": " + result.getError(), reader);
+                context.addError(error);
+            }
+        }
+    }
+
+    /**
+     * Sets the composite multiplicity to inherit from the promoted reference if not explicitly configured. If configured, validates the setting
+     * against the promoted setting.
+     *
+     * @param reference         the reference
+     * @param promotedReference the promoted reference
+     * @param reader            the reader
+     * @param context           the context
+     */
+    private void processMultiplicity(CompositeReference reference,
+                                     ReferenceDefinition promotedReference,
+                                     XMLStreamReader reader,
+                                     IntrospectionContext context) {
+        // set the multiplicity to inherit from the promoted reference
+        if (reference.getMultiplicity() == null) {
+            Multiplicity multiplicity = promotedReference.getMultiplicity();
+            reference.setMultiplicity(multiplicity);
+        } else {
+            String name = reference.getName();
+            if (!loaderHelper.canNarrow(reference.getMultiplicity(), promotedReference.getMultiplicity())) {
+                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", reader);
+                context.addError(failure);
+            }
+
         }
     }
 

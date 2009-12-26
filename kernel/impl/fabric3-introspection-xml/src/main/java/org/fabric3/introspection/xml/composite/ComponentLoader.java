@@ -224,19 +224,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             context.addError(failure);
             return;
         }
-        if (service.getServiceContract() == null) {
-            // if the service contract is not set, inherit from the component type service
-            service.setServiceContract(typeService.getServiceContract());
-        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-            // verify service contracts are compatible
-            MatchResult result = contractMatcher.isAssignableFrom(typeService.getServiceContract(), service.getServiceContract(), true);
-            if (!result.isAssignable()) {
-                IncompatibleContracts error =
-                        new IncompatibleContracts("The component service interface " + name + " is not compatible with the promoted service "
-                                + typeService.getName() + ": " + result.getError(), reader);
-                context.addError(error);
-            }
-        }
+
+        processServiceContract(service, typeService, reader, context);
+
         if (definition.getServices().containsKey(name)) {
             DuplicateComponentService failure = new DuplicateComponentService(name, definition.getName(), reader);
             context.addError(failure);
@@ -263,27 +253,18 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             context.addError(failure);
             return;
         }
+
+        processReferenceContract(reference, typeReference, reader, context);
+
         if (definition.getReferences().containsKey(name)) {
             DuplicateComponentReference failure = new DuplicateComponentReference(name, definition.getName(), reader);
             context.addError(failure);
             return;
         }
-        if (reference.getMultiplicity() == null) {
-            Multiplicity multiplicity = typeReference.getMultiplicity();
-            reference.setMultiplicity(multiplicity);
-        } else {
-            if (!loaderHelper.canNarrow(reference.getMultiplicity(), typeReference.getMultiplicity())) {
-                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", reader);
-                context.addError(failure);
-            }
-        }
+
+        processMultiplicity(reference, typeReference, reader, context);
+
         definition.add(reference);
-        List<Target> targets = reference.getTargets();
-        Multiplicity multiplicity = reference.getMultiplicity();
-        if (targets.size() > 1 && (Multiplicity.ZERO_ONE == multiplicity || Multiplicity.ONE_ONE == multiplicity)) {
-            InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", reader);
-            context.addError(failure);
-        }
 
     }
 
@@ -309,6 +290,93 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             context.addError(failure);
         } else {
             definition.add(value);
+        }
+    }
+    
+    /**
+     * Sets the composite service contract from the comonent type reference if not explicitly configured. If configured, validates the contract
+     * matches the component type service contract.
+     *
+     * @param service     the service
+     * @param typeService the component type service
+     * @param reader      the reader
+     * @param context     the context
+     */
+    private void processServiceContract(ComponentService service,
+                                        ServiceDefinition typeService,
+                                        XMLStreamReader reader,
+                                        IntrospectionContext context) {
+        if (service.getServiceContract() == null) {
+            // if the service contract is not set, inherit from the component type service
+            service.setServiceContract(typeService.getServiceContract());
+        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+            // verify service contracts are compatible
+            MatchResult result = contractMatcher.isAssignableFrom(typeService.getServiceContract(), service.getServiceContract(), true);
+            if (!result.isAssignable()) {
+                String name = service.getName();
+                IncompatibleContracts error = new IncompatibleContracts("The component service interface " + name
+                        + " is not compatible with the promoted service " + typeService.getName() + ": " + result.getError(), reader);
+                context.addError(error);
+            }
+        }
+    }
+
+    /**
+     * Sets the composite reference service contract from the comonent type reference if not explicitly configured. If configured, validates the
+     * contract matches the promoted reference contract.
+     *
+     * @param reference     the reference
+     * @param typeReference the component type reference
+     * @param reader        the reader
+     * @param context       the context
+     */
+    private void processReferenceContract(ComponentReference reference,
+                                          ReferenceDefinition typeReference,
+                                          XMLStreamReader reader,
+                                          IntrospectionContext context) {
+        if (reference.getServiceContract() == null) {
+            // if the reference contract is not set, inherit from the component type service
+            reference.setServiceContract(typeReference.getServiceContract());
+        } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
+            // verify service contracts are compatible
+            MatchResult result = contractMatcher.isAssignableFrom(typeReference.getServiceContract(), reference.getServiceContract(), true);
+            if (!result.isAssignable()) {
+                String name = reference.getName();
+                IncompatibleContracts error = new IncompatibleContracts("The component reference interface " + name
+                        + " is not compatible with the promoted reference " + typeReference.getName() + ": " + result.getError(), reader);
+                context.addError(error);
+            }
+        }
+    }
+
+    /**
+     * Sets the composite multiplicity to inherit from the component type reference if not explicitly configured. If configured, validates the
+     * setting against the component type setting.
+     *
+     * @param reference     the reference
+     * @param typeReference the promoted reference
+     * @param reader        the reader
+     * @param context       the context
+     */
+    private void processMultiplicity(ComponentReference reference,
+                                     ReferenceDefinition typeReference,
+                                     XMLStreamReader reader,
+                                     IntrospectionContext context) {
+        String name = reference.getName();
+        if (reference.getMultiplicity() == null) {
+            Multiplicity multiplicity = typeReference.getMultiplicity();
+            reference.setMultiplicity(multiplicity);
+        } else {
+            if (!loaderHelper.canNarrow(reference.getMultiplicity(), typeReference.getMultiplicity())) {
+                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", reader);
+                context.addError(failure);
+            }
+        }
+        List<Target> targets = reference.getTargets();
+        Multiplicity multiplicity = reference.getMultiplicity();
+        if (targets.size() > 1 && (Multiplicity.ZERO_ONE == multiplicity || Multiplicity.ONE_ONE == multiplicity)) {
+            InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", reader);
+            context.addError(failure);
         }
     }
 
