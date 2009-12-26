@@ -64,6 +64,7 @@ import org.fabric3.binding.jms.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.model.type.PolicyAware;
 import org.fabric3.model.type.component.Target;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
@@ -103,6 +104,10 @@ public class JMSBindingLoaderTestCase extends TestCase {
 
             public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) {
                 return null;
+            }
+
+            public boolean canNarrow(Multiplicity first, Multiplicity second) {
+                return false;
             }
 
         };
