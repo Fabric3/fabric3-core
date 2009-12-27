@@ -234,12 +234,11 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return generateTarget(binding, targetUrl, contract, policy);
     }
 
-    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
-                                                LogicalBinding<WsBindingDefinition> serviceBinding,
-                                                JavaServiceContract contract,
-                                                EffectivePolicy policy) throws GenerationException {
+    public MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                              JavaServiceContract contract,
+                                                              EffectivePolicy policy) throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
-        return generateTarget(referenceBinding, targetUrl, contract, policy);
+        return generateTarget(serviceBinding, targetUrl, contract, policy);
     }
 
     private MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,

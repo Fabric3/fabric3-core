@@ -153,7 +153,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param parent          the parent composite
      * @param contributionUri the contribution uri
      * @param context         the logical context to report errors against  @return the resolve reference
-     * @return                the resolved reference or null if not found
+     * @return the resolved reference or null if not found
      */
     private LogicalReference resolveReference(Target target, LogicalCompositeComponent parent, URI contributionUri, InstantiationContext context) {
         String base = parent.getUri().toString();
@@ -270,13 +270,9 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return;
         }
 
-        if (referenceBinding == null) {
-            raiseReferenceBindingNotFound(reference, referenceBindingName, context);
-            return;
-        }
         wire.setSourceBinding(referenceBinding);
         wire.setTargetBinding(serviceBinding);
-        if (serviceBinding != null && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
+        if (serviceBinding != null && referenceBinding != null && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
             raiseIncomaptibleBindings(reference, service, referenceBindingName, context);
         }
     }
@@ -423,15 +419,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
         URI parentUri = parent.getUri();
         URI contributionUri = reference.getParent().getDefinition().getContributionUri();
         ServiceNotFound error = new ServiceNotFound(msg, referenceUri, parentUri, contributionUri);
-        context.addError(error);
-    }
-
-    private void raiseReferenceBindingNotFound(LogicalReference reference, String name, InstantiationContext context) {
-        LogicalCompositeComponent parent = reference.getParent().getParent();
-        URI parentUri = parent.getUri();
-        URI contributionUri = reference.getParent().getDefinition().getContributionUri();
-        BindingNotFound error =
-                new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " was not found", parentUri, contributionUri);
         context.addError(error);
     }
 

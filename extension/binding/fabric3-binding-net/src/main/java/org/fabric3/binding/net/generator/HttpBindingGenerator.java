@@ -80,11 +80,10 @@ public class HttpBindingGenerator implements BindingGenerator<HttpBindingDefinit
         return targetDefinition;
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<HttpBindingDefinition> referenceBinding,
-                                                       LogicalBinding<HttpBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<HttpBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

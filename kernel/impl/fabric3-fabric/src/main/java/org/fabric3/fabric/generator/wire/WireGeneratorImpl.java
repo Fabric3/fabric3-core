@@ -388,10 +388,9 @@ public class WireGeneratorImpl implements WireGenerator {
         ServiceContract serviceContract = service.getServiceContract();
         ServiceContract callbackContract = serviceContract.getCallbackContract();
 
-        LogicalBinding<BD> referenceBinding = wire.getSourceBinding();
         LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
 
-        PolicyResult policyResult = resolvePolicies(reference.getOperations(), referenceBinding, serviceBinding, source, target);
+        PolicyResult policyResult = resolvePolicies(reference.getOperations(), serviceBinding, serviceBinding, source, target);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -402,11 +401,11 @@ public class WireGeneratorImpl implements WireGenerator {
         String key = source.getDefinition().getKey();
         sourceDefinition.setKey(key);
 
-        BindingGenerator<BD> bindingGenerator = getGenerator(referenceBinding);
+        BindingGenerator<BD> bindingGenerator = getGenerator(serviceBinding);
 
         // generate metadata for the target side of the wire which it the reference binding
         PhysicalTargetDefinition targetDefinition =
-                bindingGenerator.generateTarget(referenceBinding, serviceBinding, serviceContract, reference.getOperations(), targetPolicy);
+                bindingGenerator.generateServiceBindingTarget(serviceBinding, serviceContract, reference.getOperations(), targetPolicy);
         targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI

@@ -202,12 +202,11 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         return generateTarget(binding, targetUrl, contract, policy);
     }
 
-    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
-                                                LogicalBinding<WsBindingDefinition> serviceBinding,
-                                                WsdlServiceContract contract,
-                                                EffectivePolicy policy) throws GenerationException {
+    public MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                              WsdlServiceContract contract,
+                                                              EffectivePolicy policy) throws GenerationException {
         URL targetUrl = targetUrlResolver.resolveUrl(serviceBinding, policy);
-        return generateTarget(referenceBinding, targetUrl, contract, policy);
+        return generateTarget(serviceBinding, targetUrl, contract, policy);
 
     }
 

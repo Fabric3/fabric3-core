@@ -84,11 +84,10 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
 
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> referenceBinding,
-                                                       LogicalBinding<RsBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

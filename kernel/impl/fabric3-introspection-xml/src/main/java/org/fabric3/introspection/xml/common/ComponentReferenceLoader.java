@@ -147,6 +147,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 
         boolean callback = false;
+        boolean bindingError = false;  // used to avoid reporting multiple binding errors
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
@@ -169,6 +170,17 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                     reference.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
+                    if (!reference.getTargets().isEmpty()) {
+                        if (!bindingError) {
+                            // bindings cannot be configured on references if the @target attribute is used
+                            InvalidBinding error =
+                                    new InvalidBinding("Bindings cannot be configured when the target attribute on a reference is used: "
+                                            + name, reader);
+                            context.addError(error);
+                            bindingError = true;
+                        }
+                        continue;
+                    }
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name

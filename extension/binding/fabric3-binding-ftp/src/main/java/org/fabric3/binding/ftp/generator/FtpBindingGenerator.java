@@ -129,11 +129,10 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
 
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<FtpBindingDefinition> referenceBinding,
-                                                       LogicalBinding<FtpBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<FtpBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

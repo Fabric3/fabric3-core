@@ -82,11 +82,10 @@ public class JMXBindingGenerator implements BindingGenerator<JMXBinding> {
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<JMXBinding> referenceBinding,
-                                                   LogicalBinding<JMXBinding> serviceBinding,
-                                                   ServiceContract contract,
-                                                   List<LogicalOperation> operations,
-                                                   EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<JMXBinding> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

@@ -76,7 +76,8 @@ public interface BindingGenerator<BD extends BindingDefinition> {
                                             EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates metadata used to attach a physical wire connected to a source component to a target transport.
+     * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when a reference
+     * is configured with a binding.
      *
      * @param referenceBinding the binding specified on the reference
      * @param contract         the service contract
@@ -93,22 +94,20 @@ public interface BindingGenerator<BD extends BindingDefinition> {
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the
      * reference is wired using the <code>@target</code> attribute of the <code>&lt;reference<&gt;</code> attribute. In this case, the reference is
-     * wired to a service hosted in the same domain and the target service configuration may be needed to calculate the physical wire for the
-     * reference.
+     * wired without a binding to a service hosted in the same domain and the target service binding configuration is used to calculate the physical
+     * wire for the reference.
      *
-     * @param referenceBinding the binding specified on the reference
-     * @param serviceBinding   the binding specified on the service
-     * @param contract         the service contract
-     * @param operations       the operations to generate the wire for
-     * @param policy           the effective policy associated with the wire
+     * @param serviceBinding the binding specified on the service
+     * @param contract       the service contract
+     * @param operations     the operations to generate the wire for
+     * @param policy         the effective policy associated with the wire
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    PhysicalTargetDefinition generateTarget(LogicalBinding<BD> referenceBinding,
-                                            LogicalBinding<BD> serviceBinding,
-                                            ServiceContract contract,
-                                            List<LogicalOperation> operations,
-                                            EffectivePolicy policy) throws GenerationException;
+    PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<BD> serviceBinding,
+                                                          ServiceContract contract,
+                                                          List<LogicalOperation> operations,
+                                                          EffectivePolicy policy) throws GenerationException;
 
 
 }

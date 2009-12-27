@@ -77,11 +77,10 @@ public class TestBindingGenerator implements BindingGenerator<TestBindingDefinit
         return definition;
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<TestBindingDefinition> referenceBinding,
-                                                   LogicalBinding<TestBindingDefinition> serviceBinding,
-                                                   ServiceContract contract,
-                                                   List<LogicalOperation> operations,
-                                                   EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<TestBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
 
         TestBindingTargetDefinition definition = new TestBindingTargetDefinition();
 

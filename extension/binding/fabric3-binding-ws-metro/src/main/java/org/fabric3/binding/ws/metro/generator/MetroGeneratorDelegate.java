@@ -79,16 +79,14 @@ public interface MetroGeneratorDelegate<T extends ServiceContract> {
     /**
      * Generates a target definition from logical reference and service bindings.
      *
-     * @param referenceBinding logical reference binding.
-     * @param serviceBinding   logical service binding.
-     * @param contract         the service contract
-     * @param policy           the effective policy associated with the wire
+     * @param serviceBinding logical service binding.
+     * @param contract       the service contract
+     * @param policy         the effective policy associated with the wire
      * @return Physical wire target definition.
      * @throws GenerationException if an error is raised during generation
      */
-    MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> referenceBinding,
-                                         LogicalBinding<WsBindingDefinition> serviceBinding,
-                                         T contract,
-                                         EffectivePolicy policy) throws GenerationException;
+    MetroTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
+                                                       T contract,
+                                                       EffectivePolicy policy) throws GenerationException;
 
 }

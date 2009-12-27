@@ -78,11 +78,10 @@ public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefin
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<JUnitBindingDefinition> referenceBinding,
-                                                       LogicalBinding<JUnitBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<JUnitBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }

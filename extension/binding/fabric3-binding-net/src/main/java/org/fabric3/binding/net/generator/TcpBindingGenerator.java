@@ -80,11 +80,10 @@ public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinitio
         return targetDefinition;
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<TcpBindingDefinition> referenceBinding,
-                                                       LogicalBinding<TcpBindingDefinition> serviceBinding,
-                                                       ServiceContract contract,
-                                                       List<LogicalOperation> operations,
-                                                       EffectivePolicy policy) throws GenerationException {
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<TcpBindingDefinition> serviceBinding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 }
