@@ -92,17 +92,17 @@ import org.fabric3.fabric.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl;
 import org.fabric3.fabric.generator.impl.GeneratorImpl;
 import org.fabric3.fabric.generator.impl.GeneratorRegistryImpl;
-import org.fabric3.fabric.generator.wire.WireCommandGenerator;
-import org.fabric3.spi.contract.OperationResolver;
+import org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl;
 import org.fabric3.fabric.generator.wire.ResourceCommandGenerator;
-import org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator;
+import org.fabric3.fabric.generator.wire.WireCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
+import org.fabric3.fabric.instantiator.AutowireNormalizer;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
@@ -111,7 +111,8 @@ import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
-import org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService;
+import org.fabric3.fabric.instantiator.component.AutowireNormalizerImpl;
+import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
@@ -157,6 +158,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.contribution.ContributionUriResolver;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -238,11 +240,12 @@ public class BootstrapAssemblyFactory {
     }
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
-        PromotionResolutionService promotionResolutionService = new DefaultPromotionResolutionService();
+        PromotionResolutionService promotionResolutionService = new PromotionResolutionServiceImpl();
         ServiceContractResolver resolver = new ServiceContractResolverImpl();
         AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(resolver, matcher);
 
-        PromotionNormalizer normalizer = new PromotionNormalizerImpl();
+        PromotionNormalizer promotionNormalizer = new PromotionNormalizerImpl();
+        AutowireNormalizer autowireNormalizer = new AutowireNormalizerImpl();
         DocumentLoader documentLoader = new DocumentLoaderImpl();
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl(documentLoader);
 
@@ -252,7 +255,8 @@ public class BootstrapAssemblyFactory {
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,
-                                                normalizer,
+                                                promotionNormalizer,
+                                                autowireNormalizer,
                                                 promotionResolutionService,
                                                 autowireInstantiator);
     }

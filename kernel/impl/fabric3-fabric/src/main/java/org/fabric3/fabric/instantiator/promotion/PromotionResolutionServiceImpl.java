@@ -62,7 +62,7 @@ import org.fabric3.model.type.component.Multiplicity;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultPromotionResolutionService implements PromotionResolutionService {
+public class PromotionResolutionServiceImpl implements PromotionResolutionService {
 
     public void resolve(LogicalComponent<?> logicalComponent, InstantiationContext context) {
         resolveReferences(logicalComponent, context);

@@ -46,7 +46,6 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -69,6 +68,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private AtomicComponentInstantiator atomicComponentInstantiator;
     private CompositeComponentInstantiator compositeComponentInstantiator;
     private WireInstantiator wireInstantiator;
+    private AutowireNormalizer autowireNormalizer;
     private PromotionResolutionService promotionResolutionService;
     private AutowireInstantiator autowireService;
 
@@ -76,12 +76,14 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                         @Reference AtomicComponentInstantiator atomicComponentInstantiator,
                                         @Reference WireInstantiator wireInstantiator,
                                         @Reference PromotionNormalizer promotionNormalizer,
+                                        @Reference AutowireNormalizer autowireNormalizer,
                                         @Reference PromotionResolutionService promotionResolutionService,
                                         @Reference AutowireInstantiator autowireService) {
         this.promotionNormalizer = promotionNormalizer;
         this.atomicComponentInstantiator = atomicComponentInstantiator;
         this.compositeComponentInstantiator = compositeComponentInstantiator;
         this.wireInstantiator = wireInstantiator;
+        this.autowireNormalizer = autowireNormalizer;
         this.promotionResolutionService = promotionResolutionService;
         this.autowireService = autowireService;
     }
@@ -106,7 +108,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
         // @FIXME XCV log warning about domain level services and references being ignored: composite.getServices(), composite.getReferences()
 
-        // normalize bindings for each new component - this must come before resolution since target URIs may be inherited
+        // normalize autowire settings and bindings for each new component - this must come before resolution since target URIs may be inherited
         for (LogicalComponent<?> component : newComponents) {
             normalize(component, context);
         }
@@ -152,7 +154,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         List<LogicalComponent<?>> newComponents = new ArrayList<LogicalComponent<?>>(definitions.size());
         for (ComponentDefinition<? extends Implementation<?>> definition : definitions) {
             LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
-            setAutowire(logicalComponent, definition, composite);
             setDeployable(logicalComponent, composite.getName());
             newComponents.add(logicalComponent);
         }
@@ -162,7 +163,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             // xcv FIXME need to recurse down included hierarchy
             for (ComponentDefinition<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
                 LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
-                setAutowire(logicalComponent, definition, composite);
                 if (synthetic) {
                     // If it is a synthetic composite, included composites are the deployables.
                     // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
@@ -195,7 +195,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      */
     @SuppressWarnings("unchecked")
     private LogicalComponent<?> instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
-
         if (definition.getImplementation() instanceof CompositeImplementation) {
             ComponentDefinition<CompositeImplementation> componentDefinition = (ComponentDefinition<CompositeImplementation>) definition;
             return compositeComponentInstantiator.instantiate(componentDefinition, parent, context);
@@ -207,12 +206,15 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
 
     /**
-     * Normalizes the component and any children
+     * Normalizes the component hierarchy autowire and promotion settings.
      *
      * @param component the component to normalize
      * @param context   the instantiation context
      */
     private void normalize(LogicalComponent<?> component, InstantiationContext context) {
+
+        autowireNormalizer.normalize(component);
+
         if (component instanceof LogicalCompositeComponent) {
             LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
             for (LogicalComponent<?> child : composite.getComponents()) {
@@ -221,7 +223,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         } else {
             promotionNormalizer.normalize(component, context);
         }
-
     }
 
     /**
@@ -257,26 +258,5 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         }
         component.setDeployable(deployable);
     }
-
-    /**
-     * Calculates the effective autowire value for a logical component.
-     *
-     * @param logicalComponent the logical component
-     * @param definition       the component definition of the logical component
-     * @param composite        the original composite containing the component definition
-     */
-    private void setAutowire(LogicalComponent<?> logicalComponent, ComponentDefinition<?> definition, Composite composite) {
-        // use autowire settings on the original composite as an override if they are not specified on the component
-        Autowire autowire;
-        if (definition.getAutowire() == Autowire.INHERITED) {
-            autowire = composite.getAutowire();
-        } else {
-            autowire = definition.getAutowire();
-        }
-        if (autowire == Autowire.ON || autowire == Autowire.OFF) {
-            logicalComponent.setAutowireOverride(autowire);
-        }
-    }
-
 
 }

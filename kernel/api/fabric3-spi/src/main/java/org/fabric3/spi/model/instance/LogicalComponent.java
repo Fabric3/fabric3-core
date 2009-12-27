@@ -64,11 +64,11 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private static final long serialVersionUID = -3520150701040845117L;
 
     private URI uri;
-    private final ComponentDefinition<I> definition;
-    private final Map<String, Document> propertyValues = new HashMap<String, Document>();
-    private final Map<String, LogicalService> services = new HashMap<String, LogicalService>();
-    private final Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
-    private final Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
+    private ComponentDefinition<I> definition;
+    private Map<String, Document> propertyValues = new HashMap<String, Document>();
+    private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
+    private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
+    private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
     private String zone;
     private QName deployable;
     private Autowire autowire;
@@ -136,20 +136,20 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Returns the overriden autowire value or null if not overriden
+     * Returns the autowire value based on the component autowire inheritence hierarchy.
      *
-     * @return the overriden autowire value or null if not overriden
+     * @return the autowire value
      */
-    public Autowire getAutowireOverride() {
+    public Autowire getAutowire() {
         return autowire;
     }
 
     /**
-     * Sets the overriden autowire value
+     * Sets the autowire value  based on the component autowire inheritence hierarchy.
      *
      * @param autowire the autowire value
      */
-    public void setAutowireOverride(Autowire autowire) {
+    public void setAutowire(Autowire autowire) {
         this.autowire = autowire;
     }
 

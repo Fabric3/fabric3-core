@@ -39,8 +39,12 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl"/>
     </component>
 
+    <component name="AutowireNormalizer">
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.component.AutowireNormalizerImpl"/>
+    </component>
+
     <component name="PromotionResolutionService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.DefaultPromotionResolutionService"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl"/>
     </component>
 
     <component name="AutowireInstantiator">

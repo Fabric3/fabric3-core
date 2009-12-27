@@ -47,12 +47,8 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ReferenceNotFound;
-import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
-import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.Target;
@@ -119,7 +115,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
             ServiceContract requiredContract = resolver.determineContract(logicalReference);
 
-            Autowire autowire = calculateAutowire(compositeComponent, component);
+            Autowire autowire = component.getAutowire();
             if (autowire == Autowire.ON) {
                 resolveByType(compositeComponent, logicalReference, requiredContract);
             }
@@ -152,56 +148,6 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         } else if (targetted) {
             logicalReference.setResolved(true);
         }
-    }
-
-    /**
-     * Determines the autowire setting for a component
-     *
-     * @param composite the parent the component inherits its default autowire setting from
-     * @param component the component
-     * @return the autowire setting
-     */
-    private Autowire calculateAutowire(LogicalComponent<?> composite, LogicalComponent<?> component) {
-
-        ComponentDefinition<? extends Implementation<?>> definition = component.getDefinition();
-
-        // check for an overridden value
-        Autowire overrideAutowire = component.getAutowireOverride();
-        if (overrideAutowire == Autowire.OFF || overrideAutowire == Autowire.ON) {
-            return overrideAutowire;
-        }
-
-        Autowire autowire = definition.getAutowire();
-        if (autowire == Autowire.INHERITED) {
-            // check in the parent composite definition
-            if (component.getParent() != null) {
-                ComponentDefinition<? extends Implementation<?>> def = component.getParent().getDefinition();
-                AbstractComponentType<?, ?, ?, ?> type = def.getImplementation().getComponentType();
-                autowire = (Composite.class.cast(type)).getAutowire();
-                if (autowire == Autowire.OFF || autowire == Autowire.ON) {
-                    return autowire;
-                }
-            }
-            // undefined in the original parent or the component is top-level,
-            // check in the target
-            ComponentDefinition<? extends Implementation<?>> parentDefinition = composite.getDefinition();
-            AbstractComponentType<?, ?, ?, ?> parentType = parentDefinition.getImplementation().getComponentType();
-            while (Composite.class.isInstance(parentType)) {
-                autowire = (Composite.class.cast(parentType)).getAutowire();
-                if (autowire == Autowire.OFF || autowire == Autowire.ON) {
-                    break;
-                }
-                composite = composite.getParent();
-                if (composite == null) {
-                    break;
-                }
-                parentDefinition = composite.getDefinition();
-                parentType = parentDefinition.getImplementation().getComponentType();
-            }
-        }
-
-        return autowire;
-
     }
 
     /**

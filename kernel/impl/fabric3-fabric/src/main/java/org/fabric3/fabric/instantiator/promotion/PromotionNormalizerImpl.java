@@ -47,7 +47,9 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
+import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -85,7 +87,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
     public void normalize(LogicalComponent<?> component, InstantiationContext context) {
         normalizeServicePromotions(component);
-        normalizeReferenceAndWirePromotions(component);
+        normalizeReferenceAndWirePromotions(component, context);
     }
 
     private void normalizeServicePromotions(LogicalComponent<?> component) {
@@ -101,7 +103,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
     }
 
-    private void normalizeReferenceAndWirePromotions(LogicalComponent<?> component) {
+    private void normalizeReferenceAndWirePromotions(LogicalComponent<?> component, InstantiationContext context) {
         for (LogicalReference reference : component.getReferences()) {
             LinkedList<LogicalReference> references = new LinkedList<LogicalReference>();
             // add the leaf (promoted) reference as the last element
@@ -111,7 +113,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 continue;
             }
             processReferencePromotions(references);
-            processWirePromotions(references);
+            processWirePromotions(references, context);
         }
     }
 
@@ -208,9 +210,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * Processes the wiring hierarchy by pushing wires down to child components.
      *
      * @param references the sorted reference promotion hierarchy
+     * @param context    the instantiation context
      */
     // TODO handle wire addition
-    private void processWirePromotions(LinkedList<LogicalReference> references) {
+    private void processWirePromotions(LinkedList<LogicalReference> references, InstantiationContext context) {
         if (references.size() < 2) {
             // no promotion evaluation needed
             return;
@@ -219,6 +222,11 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
         for (LogicalReference reference : references) {
             LogicalCompositeComponent composite = reference.getParent().getParent();
+            for (LogicalWire wire : reference.getWires()) {
+                // TODO support wire overrides
+                LogicalService target = wire.getTarget();
+                newTargets.add(target);
+            }
             if (!newTargets.isEmpty()) {
                 List<LogicalWire> newWires = new ArrayList<LogicalWire>();
                 for (LogicalService target : newTargets) {
@@ -227,15 +235,71 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                     newWires.add(newWire);
                 }
                 composite.overrideWires(reference, newWires);
-                newTargets = new ArrayList<LogicalService>();
+                // TODO if override, new targets should be erased
+//                newTargets = new ArrayList<LogicalService>();
             }
-            for (LogicalWire wire : reference.getWires()) {
-                // currently only supports overriding wires; wire additions must also be supported
-                LogicalService target = wire.getTarget();
-                newTargets.add(target);
+            if (!validateMultiplicity(reference, newTargets, context)) {
+                return;
             }
         }
 
+    }
+
+    /**
+     * Validates that the reference multiplicity is not violated by reference targets inherited through a promotion hierarchy.
+     *
+     * @param reference the reference to validate
+     * @param targets   the targets specified in the promotion hierarchy
+     * @param context   the context
+     * @return true if the validation was successful
+     */
+    private boolean validateMultiplicity(LogicalReference reference, List<LogicalService> targets, InstantiationContext context) {
+        if (reference.getParent().getAutowire() == Autowire.ON) {
+            return true;
+        }
+        Multiplicity multiplicity = reference.getDefinition().getMultiplicity();
+        LogicalComponent<?> component = reference.getParent();
+        URI componentUri = component.getUri();
+        URI contributionUri = component.getDefinition().getContributionUri();
+        switch (multiplicity) {
+        case ONE_N:
+            if (targets.size() < 1) {
+                URI referenceName = reference.getUri();
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference: "
+                        + referenceName, componentUri, contributionUri);
+                context.addError(error);
+                return false;
+            }
+            return true;
+        case ONE_ONE:
+            if (targets.size() < 1) {
+                URI referenceName = reference.getUri();
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference " +
+                        "(no targets configured): " + referenceName, componentUri, contributionUri);
+                context.addError(error);
+                return false;
+            } else if (targets.size() > 1) {
+                URI referenceName = reference.getUri();
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("Only one target must be configured for reference " +
+                        "(multiple targets configured via promotions): " + referenceName, componentUri, contributionUri);
+                context.addError(error);
+                return false;
+            }
+            return true;
+
+        case ZERO_N:
+            return true;
+        case ZERO_ONE:
+            if (targets.size() > 1) {
+                URI referenceName = reference.getUri();
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At most one target must be configured for reference " +
+                        "(multiple targets configured via promotions): " + referenceName, componentUri, contributionUri);
+                context.addError(error);
+                return false;
+            }
+            return true;
+        }
+        return true;
     }
 
 

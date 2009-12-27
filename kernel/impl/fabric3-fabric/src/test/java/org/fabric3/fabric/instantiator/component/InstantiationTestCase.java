@@ -52,6 +52,7 @@ import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.fabric.instantiator.AutowireNormalizer;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -114,11 +115,13 @@ public class InstantiationTestCase extends TestCase {
         AutowireInstantiator autowireService = EasyMock.createMock(AutowireInstantiator.class);
         PromotionResolutionService promotionResolutionService = EasyMock.createMock(PromotionResolutionService.class);
         PromotionNormalizer normalizer = EasyMock.createMock(PromotionNormalizer.class);
+        AutowireNormalizer autowireNormalizer = EasyMock.createMock(AutowireNormalizer.class);
 
         logicalModelInstantiator = new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                                     atomicInstantiator,
                                                                     wireInstantiator,
                                                                     normalizer,
+                                                                    autowireNormalizer,
                                                                     promotionResolutionService,
                                                                     autowireService);
         parent = new LogicalCompositeComponent(PARENT_URI, null, null);

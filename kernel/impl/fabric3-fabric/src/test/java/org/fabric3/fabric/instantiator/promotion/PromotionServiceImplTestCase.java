@@ -57,9 +57,9 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
-public class DefaultTargetPromotionServiceTestCase extends TestCase {
+public class PromotionServiceImplTestCase extends TestCase {
 
-    private DefaultPromotionResolutionService promotionResolutionService;
+    private PromotionResolutionServiceImpl promotionResolutionService;
     private LogicalCompositeComponent domain;
 
     public void testNoComponentForPromotedService() {
@@ -250,7 +250,7 @@ public class DefaultTargetPromotionServiceTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        promotionResolutionService = new DefaultPromotionResolutionService();
+        promotionResolutionService = new PromotionResolutionServiceImpl();
         ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("domain");
         URI uri = URI.create("fabric3://runtime");
         domain = new LogicalCompositeComponent(uri, definition, null);

@@ -73,7 +73,7 @@ public class CopyUtil {
     private static LogicalCompositeComponent copy(LogicalCompositeComponent composite, LogicalCompositeComponent parent) {
         LogicalCompositeComponent copy =
                 new LogicalCompositeComponent(composite.getUri(), composite.getDefinition(), parent);
-        copy.setAutowireOverride(composite.getAutowireOverride());
+        copy.setAutowire(composite.getAutowire());
         copy.setState(composite.getState());
         copy.setZone(composite.getZone());
         copy.addIntents(composite.getIntents());
