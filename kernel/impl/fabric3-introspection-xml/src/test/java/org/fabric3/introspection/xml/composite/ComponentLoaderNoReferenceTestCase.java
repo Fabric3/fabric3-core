@@ -44,67 +44,61 @@
 package org.fabric3.introspection.xml.composite;
 
 import java.io.ByteArrayInputStream;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.oasisopen.sca.Constants;
-import static org.oasisopen.sca.Constants.SCA_NS;
 
+import org.fabric3.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.WireDefinition;
+import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
-public class WireLoaderTestCase extends TestCase {
-    public static final QName COMPOSITE = new QName(SCA_NS, "composite");
-    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' "
-            + "targetNamespace='http://example.com' name='composite'>"
-            + "<wire source='source' target='target'/>"
-            + "<wire source='source/reference' target='target/service'/>"
-            + "<wire source='source/reference/binding' target='target/service/binding'/>"
-            + "</composite>";
+public class ComponentLoaderNoReferenceTestCase extends TestCase {
+    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+            + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
+            + "<f3:implementation.testing/>"
+            + "<reference name='notThere' target='test'/>"
+            + "</component>";
 
-    private CompositeLoader loader;
-    private XMLInputFactory factory;
-    private IntrospectionContext context;
+    private ComponentLoader loader;
+    private XMLStreamReader reader;
+    private IntrospectionContext ctx;
 
-    public void testLoadWire() throws Exception {
-        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
-        reader.nextTag();
-        Composite type = loader.load(reader, context);
-        assertEquals(3, type.getWires().size());
-        WireDefinition wire1 = type.getWires().get(0);
-        WireDefinition wire2 = type.getWires().get(1);
-        WireDefinition wire3 = type.getWires().get(2);
-
-        assertEquals("source", wire1.getReferenceTarget().getComponent());
-        assertEquals("reference", wire2.getReferenceTarget().getBindable());
-        assertEquals("binding", wire3.getReferenceTarget().getBinding());
-
-        assertEquals("target", wire1.getServiceTarget().getComponent());
-        assertEquals("service", wire2.getServiceTarget().getBindable());
-        assertEquals("binding", wire3.getServiceTarget().getBinding());
-
+    /**
+     * Verifies an exception is thrown if an attempt is made to configure a non-existent reference.
+     *
+     * @throws Exception on test failure
+     */
+    public void testNoReference() throws Exception {
+        loader.load(reader, ctx);
+        assertTrue(ctx.getErrors().get(0) instanceof ComponentReferenceNotFound);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = XMLInputFactory.newInstance();
-        context = new DefaultIntrospectionContext();
-        LoaderHelper loaderHelper = new DefaultLoaderHelper();
-        WireLoader wireLoader = new WireLoader(loaderHelper);
         LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
-        registry.registerLoader(new QName(Constants.SCA_NS, "wire"), wireLoader);
-        loader = new CompositeLoader(registry, null, null, null, null, loaderHelper);
+        LoaderHelper helper = new DefaultLoaderHelper();
+        ComponentReferenceLoader referenceLoader = new ComponentReferenceLoader(registry, helper);
+        referenceLoader.init();
+
+        MockImplementationLoader implLoader = new MockImplementationLoader();
+        registry.registerLoader(MockImplementation.TYPE, implLoader);
+        loader = new ComponentLoader(registry, helper);
+
+        XMLFactory factory = new MockXMLFactory();
+        reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader.nextTag();
+        ctx = new DefaultIntrospectionContext();
     }
+
+
 }

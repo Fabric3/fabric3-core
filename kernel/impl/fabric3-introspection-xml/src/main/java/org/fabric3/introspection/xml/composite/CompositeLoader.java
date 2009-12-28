@@ -71,6 +71,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
@@ -82,7 +83,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
@@ -173,14 +173,12 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         boolean local = Boolean.valueOf(reader.getAttributeValue(null, "local"));
         IntrospectionContext childContext = new DefaultIntrospectionContext(context, targetNamespace);
         QName compositeName = new QName(targetNamespace, name);
-        NamespaceContext namespace = reader.getNamespaceContext();
-        String constrainingTypeAttrbute = reader.getAttributeValue(null, "constrainingType");
-        QName constrainingType = LoaderUtil.getQName(constrainingTypeAttrbute, targetNamespace, namespace);
+
+        NamespaceContext nsContext = createNamespaceContext(reader);
 
         Composite type = new Composite(compositeName);
         type.setLocal(local);
         type.setAutowire(Autowire.fromString(reader.getAttributeValue(null, "autowire")));
-        type.setConstrainingType(constrainingType);
         loaderHelper.loadPolicySetsAndIntents(type, reader, childContext);
         try {
             while (true) {
@@ -200,7 +198,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         handleReference(type, reader, childContext);
                         continue;
                     } else if (COMPONENT.equals(qname)) {
-                        boolean valid = handleComponent(type, reader, childContext);
+                        boolean valid = handleComponent(type, reader, nsContext, childContext);
                         if (!valid) {
                             updateContext(context, childContext, compositeName);
                             return type;
@@ -266,7 +264,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.add(wire);
     }
 
-    private boolean handleComponent(Composite type, XMLStreamReader reader, IntrospectionContext context)
+    private boolean handleComponent(Composite type, XMLStreamReader reader, NamespaceContext nsContext, IntrospectionContext context)
             throws XMLStreamException, UnrecognizedElementException {
         ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, context);
         if (componentDefinition == null) {
@@ -286,6 +284,13 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (type.getAutowire() != Autowire.INHERITED && componentDefinition.getAutowire() == Autowire.INHERITED) {
             componentDefinition.setAutowire(type.getAutowire());
         }
+
+        // Calculate the namespace context from the composite element since XMLStreamReader.getNamespaceCount() only returns the number of namespaces
+        // declared on the current element. This means namespaces defined on parent elements which are active (e.g. <comoposite>) or not reported.
+        // Scoping results in no namespaces being reported 
+        for (PropertyValue value : componentDefinition.getPropertyValues().values()) {
+            value.setNamespaceContext(nsContext);
+        }
         type.add(componentDefinition);
         return true;
     }
@@ -299,7 +304,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         if (type.getReferences().containsKey(reference.getName())) {
             String key = reference.getName();
-            DuplicatePromotedReferenceName failure = new DuplicatePromotedReferenceName(key, reader);
+            DuplicatePromotedReference failure = new DuplicatePromotedReference(key, reader);
             context.addError(failure);
         } else {
             type.add(reference);
@@ -314,7 +319,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         if (type.getServices().containsKey(service.getName())) {
             String key = service.getName();
-            DuplicateService failure = new DuplicateService(key, reader);
+            DuplicatePromotedService failure = new DuplicatePromotedService(key, reader);
             context.addError(failure);
         } else {
             type.add(service);
@@ -566,5 +571,20 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             }
         }
     }
+
+    private NamespaceContext createNamespaceContext(XMLStreamReader reader) {
+        StatefulNamespaceContext namespaceContext = new StatefulNamespaceContext();
+        int count = reader.getNamespaceCount();
+        for (int i = 0; i < count; i++) {
+            String prefix = reader.getNamespacePrefix(i);
+            if (prefix == null) {
+                continue;
+            }
+            String namespaceUri = reader.getNamespaceURI(prefix);
+            namespaceContext.addNamespace(prefix, namespaceUri);
+        }
+        return namespaceContext;
+    }
+
 
 }

@@ -40,6 +40,7 @@ package org.fabric3.fabric.instantiator.component;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -114,7 +115,7 @@ public abstract class AbstractComponentInstantiator {
                 } else if (propertyValue.getSource() != null) {
                     // get the value by evaluating an XPath against the composite properties
                     try {
-                        value = deriveValueFromXPath(propertyValue.getSource(), component.getParent());
+                        value = deriveValueFromXPath(propertyValue.getSource(), component.getParent(), propertyValue.getNamespaceContext());
                     } catch (XPathExpressionException e) {
                         URI uri = component.getUri();
                         URI contributionUri = component.getDefinition().getContributionUri();
@@ -146,7 +147,7 @@ public abstract class AbstractComponentInstantiator {
 
     }
 
-    Document deriveValueFromXPath(String source, final LogicalComponent<?> parent) throws XPathExpressionException {
+    Document deriveValueFromXPath(String source, final LogicalComponent<?> parent, NamespaceContext nsContext) throws XPathExpressionException {
 
         XPathVariableResolver variableResolver = new XPathVariableResolver() {
             public Object resolveVariable(QName qName) {
@@ -161,7 +162,8 @@ public abstract class AbstractComponentInstantiator {
 
         XPath xpath = XPATH_FACTORY.newXPath();
         xpath.setXPathVariableResolver(variableResolver);
-
+        xpath.setNamespaceContext(nsContext);
+        
         DocumentBuilder builder;
         try {
             builder = DOCUMENT_FACTORY.newDocumentBuilder();

@@ -70,13 +70,11 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 @EagerInit
 public class LoaderRegistryImpl implements LoaderRegistry {
-    private Monitor monitor;
     private final XMLInputFactory xmlFactory;
     private Map<QName, TypeLoader<?>> mappedLoaders;
     private final Map<QName, TypeLoader<?>> loaders = new HashMap<QName, TypeLoader<?>>();
 
-    public LoaderRegistryImpl(@org.fabric3.api.annotation.Monitor Monitor monitor, @Reference XMLFactory factory) {
-        this.monitor = monitor;
+    public LoaderRegistryImpl(@Reference XMLFactory factory) {
         this.xmlFactory = factory.newInputFactoryInstance();
     }
 
@@ -89,19 +87,16 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loaders.containsKey(element)) {
             throw new IllegalStateException("Loader already registered for " + element);
         }
-        monitor.registeringLoader(element);
         loaders.put(element, loader);
     }
 
     public void unregisterLoader(QName element) {
-        monitor.unregisteringLoader(element);
         loaders.remove(element);
     }
 
     public <O> O load(XMLStreamReader reader, Class<O> type, IntrospectionContext introspectionContext)
             throws XMLStreamException, UnrecognizedElementException {
         QName name = reader.getName();
-        monitor.elementLoad(name);
         TypeLoader<?> loader = loaders.get(name);
         if (loader == null) {
             loader = mappedLoaders.get(name);

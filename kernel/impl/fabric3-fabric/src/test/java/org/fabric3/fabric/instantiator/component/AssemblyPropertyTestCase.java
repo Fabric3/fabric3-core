@@ -53,11 +53,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -71,7 +69,7 @@ public class AssemblyPropertyTestCase extends TestCase {
 
     public void testSimpleProperty() throws Exception {
         root.setTextContent("Hello World");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain", domain);
+        Document value = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild();
         assertEquals(Node.TEXT_NODE, child.getNodeType());
         assertEquals("Hello World", child.getTextContent());
@@ -83,7 +81,7 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element port = property.createElement("port");
         http.appendChild(port);
         port.setTextContent("8080");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain);
+        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain,  new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -94,7 +92,7 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element http = property.createElement("http");
         http.setAttribute("port", "8080");
         root.appendChild(http);
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain);
+        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain,  new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -108,7 +106,7 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element http2 = property.createElement("http");
         root.appendChild(http2);
         http2.setAttribute("index", "2");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http", domain);
+        Document value = componentInstantiator.deriveValueFromXPath("$domain/http", domain,  new StatefulNamespaceContext());
         Node child = value.getDocumentElement();
         NodeList list = child.getChildNodes();
         assertEquals(2, list.getLength());
@@ -120,7 +118,7 @@ public class AssemblyPropertyTestCase extends TestCase {
 
     public void testUnknownVariable() {
         try {
-            componentInstantiator.deriveValueFromXPath("$foo", domain);
+            componentInstantiator.deriveValueFromXPath("$foo", domain,  new StatefulNamespaceContext());
             fail();
         } catch (XPathExpressionException e) {
             // this is ok?
@@ -131,12 +129,6 @@ public class AssemblyPropertyTestCase extends TestCase {
         super.setUp();
         componentInstantiator = new AbstractComponentInstantiator(null) {
 
-            @SuppressWarnings({"unchecked"})
-            public LogicalComponent instantiate(ComponentDefinition componentDefinition,
-                                                LogicalCompositeComponent parent,
-                                                InstantiationContext context) {
-                return null;
-            }
         };
         domain = new LogicalComponent<CompositeImplementation>(URI.create("fabric3://domain"), null, null);
 

@@ -37,7 +37,8 @@
 */
 package org.fabric3.fabric.runtime.bootstrap;
 
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.implementation.system.introspection.SystemImplementationLoader;
+import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
@@ -53,8 +54,6 @@ import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.xml.XMLFactory;
-import org.fabric3.implementation.system.introspection.SystemImplementationLoader;
-import org.fabric3.implementation.system.model.SystemImplementation;
 
 /**
  * Factory class for an implementation of Loader that can handle system SCDL.
@@ -72,11 +71,10 @@ import org.fabric3.implementation.system.model.SystemImplementation;
  */
 public class BootstrapLoaderFactory {
 
-    public static Loader createLoader(ImplementationProcessor<SystemImplementation> processor, MonitorFactory monitorFactory, XMLFactory xmlFactory) {
+    public static Loader createLoader(ImplementationProcessor<SystemImplementation> processor, XMLFactory xmlFactory) {
         LoaderHelper loaderHelper = new DefaultLoaderHelper();
-        LoaderRegistryImpl.Monitor monitor = monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class);
 
-        LoaderRegistryImpl registry = new LoaderRegistryImpl(monitor, xmlFactory);
+        LoaderRegistryImpl registry = new LoaderRegistryImpl(xmlFactory);
 
         // loader for <implementation.system> elements
         SystemImplementationLoader systemLoader = new SystemImplementationLoader(processor);

@@ -44,12 +44,13 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.contract.DataType;
 
 /**
  * The value of a configured component property.
@@ -63,12 +64,13 @@ public class PropertyValue extends ModelObject {
     private URI file;
     private DataType<QName> valueType;
     private Document value;
+    private NamespaceContext namespaceContext;
 
     /**
      * Constructor specifying the name of a property and the XPath source expression.
      *
-     * @param name   the name of the property which this value is for
-     * @param source an XPath expression whose result will be the actual value
+     * @param name             the name of the property which this value is for
+     * @param source           an XPath expression whose result will be the actual value
      */
     public PropertyValue(String name, String source) {
         this.name = name;
@@ -78,8 +80,8 @@ public class PropertyValue extends ModelObject {
     /**
      * Constructor specifying the name of a property loaded from an exteral resource.
      *
-     * @param name the name of the property which this value is for
-     * @param file A URI that the property value can be loaded from
+     * @param name             the name of the property which this value is for
+     * @param file             A URI that the property value can be loaded from
      */
     public PropertyValue(String name, URI file) {
         this.name = name;
@@ -87,9 +89,9 @@ public class PropertyValue extends ModelObject {
     }
 
     /**
-     * @param name      the name of the property
-     * @param valueType the XML type of the value
-     * @param value     the property value
+     * @param name             the name of the property
+     * @param valueType        the XML type of the value
+     * @param value            the property value
      */
     public PropertyValue(String name, DataType<QName> valueType, Document value) {
         this.name = name;
@@ -185,5 +187,23 @@ public class PropertyValue extends ModelObject {
      */
     public void setValueType(DataType<QName> valueType) {
         this.valueType = valueType;
+    }
+
+    /**
+     * Returns the namespace context for the value.
+     *
+     * @return the namespace context
+     */
+    public NamespaceContext getNamespaceContext() {
+        return namespaceContext;
+    }
+
+    /**
+     * Sets the namespace context for the value.
+     *
+     * @param namespaceContext the namespace context
+     */
+    public void setNamespaceContext(NamespaceContext namespaceContext) {
+        this.namespaceContext = namespaceContext;
     }
 }

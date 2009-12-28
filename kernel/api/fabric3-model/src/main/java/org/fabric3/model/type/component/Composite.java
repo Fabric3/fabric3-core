@@ -78,7 +78,6 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private final List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
 
-    private QName constrainingType;
     private Set<QName> intents;
     private Set<QName> policySets;
     private Map<QName, Object> metadata = new HashMap<QName, Object>();
@@ -140,7 +139,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Returns if the autowire status for composite
+     * Returns if the autowire status for composite.
      *
      * @return the autowire status for the composite
      */
@@ -149,7 +148,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Sets the autowire status for the composite
+     * Sets the autowire status for the composite.
      *
      * @param autowire the autowire status for the composite
      */
@@ -158,29 +157,11 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Returns the name of the constraining type for this composite.
+     * Get all properties including the ones are from included composites.
      *
-     * @return the name of the constraining type for this composite
+     * @return properties
      */
-    public QName getConstrainingType() {
-        return constrainingType;
-    }
-
-    /**
-     * Sets the name of the constraining type for this composite.
-     *
-     * @param constrainingType the name of the constraining type for this composite
-     */
-    public void setConstrainingType(QName constrainingType) {
-        this.constrainingType = constrainingType;
-    }
-
     @Override
-    @SuppressWarnings("unchecked")
-    /**
-     * Get all properties including the ones are from included composites
-     * @return
-     */
     public Map<String, Property> getProperties() {
         return propertiesView;
     }
@@ -190,12 +171,12 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         propertiesView.put(property.getName(), property);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
     /**
-     * Get all references including the ones are from included composites
-     * @return
+     * Get all references including the ones are from included composites.
+     *
+     * @return references
      */
+    @Override
     public Map<String, CompositeReference> getReferences() {
         return referencesView;
     }
@@ -205,16 +186,17 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         referencesView.put(reference.getName(), reference);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
     /**
-     * Get all services including the ones are from included composites
-     * @return
+     * Get all services including the ones are from included composites.
+     *
+     * @return services
      */
+    @Override
     public Map<String, CompositeService> getServices() {
         return servicesView;
     }
 
+    @Override
     public void add(CompositeService service) {
         super.add(service);
         servicesView.put(service.getName(), service);
@@ -222,8 +204,9 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
 
     /**
      * Get all components including the ones are from included composites
+     *
+     * @return components
      */
-    @SuppressWarnings("unchecked")
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getComponents() {
         return componentsView;
     }
@@ -234,43 +217,54 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Get all wires including the ones are from included composites
+     * Get all wires including the ones are from included composites.
+     *
+     * @return wires
      */
-    @SuppressWarnings("unchecked")
     public List<WireDefinition> getWires() {
         return wiresView;
     }
 
     /**
-     * Get declared properties in this composite type, included doesn't count
+     * Get declared properties in this composite type, except properties from included composites.
+     *
+     * @return properties
      */
     public Map<String, Property> getDeclaredProperties() {
         return super.getProperties();
     }
 
     /**
-     * Get declared references in this composite type, included doesn't count
+     * Get declared references in this composite type, except references from included composites.
+     *
+     * @return references
      */
     public Map<String, CompositeReference> getDeclaredReferences() {
         return super.getReferences();
     }
 
     /**
-     * Get declared services in this composite type, included doesn't count
+     * Get declared services in this composite type, except services from included composites.
+     *
+     * @return services
      */
     public Map<String, CompositeService> getDeclaredServices() {
         return super.getServices();
     }
 
     /**
-     * Get declared components in this composite type, included doesn't count
+     * Get declared components in this composite type, except components from included composites.
+     *
+     * @return components
      */
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getDeclaredComponents() {
         return components;
     }
 
     /**
-     * Get declared wires in this composite type, included doesn't count
+     * Get declared wires in this composite type, except wires from included composites.
+     *
+     * @return wires
      */
     public List<WireDefinition> getDeclaredWires() {
         return wires;

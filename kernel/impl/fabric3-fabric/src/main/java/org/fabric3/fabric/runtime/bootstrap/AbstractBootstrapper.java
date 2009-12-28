@@ -193,7 +193,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         try {
 
             // load the system composite
-            Composite composite = loadSystemComposite(BOOT_CONTRIBUTION, bootClassLoader, systemImplementationProcessor, monitorFactory);
+            Composite composite = loadSystemComposite(BOOT_CONTRIBUTION, bootClassLoader, systemImplementationProcessor);
 
             // load system configuration
             Document systemConfig = loadSystemConfig();
@@ -219,14 +219,12 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
      * @param contributionUri the synthetic contrbution URI the core components are part of
      * @param bootClassLoader the classloader core components are loaded in
      * @param processor       the ImplementationProcessor for introspecting component implementations.
-     * @param monitorFactory  the MonitorFactory for reporting events
      * @return the loaded composite
      * @throws InitializationException if an error occurs loading the composite
      */
     protected abstract Composite loadSystemComposite(URI contributionUri,
                                                      ClassLoader bootClassLoader,
-                                                     ImplementationProcessor<SystemImplementation> processor,
-                                                     MonitorFactory monitorFactory) throws InitializationException;
+                                                     ImplementationProcessor<SystemImplementation> processor) throws InitializationException;
 
     /**
      * Subclasses return a Document representing the domain-level runtime configuration property or null if none is defined. This property may be

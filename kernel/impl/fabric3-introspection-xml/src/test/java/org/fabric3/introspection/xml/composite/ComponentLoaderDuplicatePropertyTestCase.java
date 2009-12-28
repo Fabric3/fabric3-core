@@ -43,31 +43,33 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import static org.oasisopen.sca.Constants.SCA_NS;
 
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.host.Namespaces;
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.introspection.xml.LoaderRegistryImpl;
+import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
 public class ComponentLoaderDuplicatePropertyTestCase extends TestCase {
-    public static final String PROP_NAME = "notThere";
+    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+            + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
+            + "<f3:implementation.testing/>"
+            + "<property name='prop'><value>val</value></property>"
+            + "<property name='prop'><value>val</value></property>"
+            + "</component>";
 
     private ComponentLoader loader;
     private XMLStreamReader reader;
@@ -85,69 +87,20 @@ public class ComponentLoaderDuplicatePropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        LoaderRegistry registry = createRegistry();
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        EasyMock.replay(helper);
+        LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
+        LoaderHelper helper = new DefaultLoaderHelper();
+        PropertyValueLoader pvLoader = new PropertyValueLoader(registry, helper);
+        pvLoader.init();
+
+        MockImplementationLoader implLoader = new MockImplementationLoader();
+        implLoader.setProperties(new Property("prop"));
+        registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ComponentLoader(registry, helper);
-        reader = createReader();
+
+        XMLFactory factory = new MockXMLFactory();
+        reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader.nextTag();
         ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
     }
-
-    private LoaderRegistry createRegistry() throws XMLStreamException, LoaderException {
-        LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
-        Implementation impl = createImpl();
-        EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
-                                      EasyMock.eq(Implementation.class),
-                                      EasyMock.isA(IntrospectionContext.class))).andReturn(impl);
-
-        PropertyValue value = new PropertyValue(PROP_NAME, "test");
-        EasyMock.expect(registry.load(EasyMock.isA(XMLStreamReader.class),
-                                      EasyMock.eq(PropertyValue.class),
-                                      EasyMock.isA(IntrospectionContext.class))).andReturn(value).times(2);
-
-        EasyMock.replay(registry);
-        return registry;
-    }
-
-    private Implementation createImpl() {
-        Implementation<ComponentType> impl = new Implementation<ComponentType>() {
-            public QName getType() {
-                return null;
-            }
-        };
-        ComponentType type = new ComponentType();
-        Property property = new Property(PROP_NAME);
-
-        type.add(property);
-        impl.setComponentType(type);
-        return impl;
-    }
-
-    private XMLStreamReader createReader() throws XMLStreamException {
-        Location location = EasyMock.createNiceMock(Location.class);
-        EasyMock.replay(location);
-
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeCount()).andReturn(0);
-        EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn("component");
-        EasyMock.expect(reader.getName()).andReturn(new QName("implementation.test")).times(2);
-        EasyMock.expect(reader.getEventType()).andReturn(2);
-        EasyMock.expect(reader.getAttributeValue(null, "autowire")).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue(null, "runtimeId")).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue(null, "initLevel")).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue(EasyMock.isA(String.class), EasyMock.eq("key"))).andReturn(null);
-        EasyMock.expect(reader.nextTag()).andReturn(1);
-        EasyMock.expect(reader.next()).andReturn(1);
-        EasyMock.expect(reader.getName()).andReturn(new QName(SCA_NS, "property"));
-        EasyMock.expect(reader.nextTag()).andReturn(1);
-        EasyMock.expect(reader.next()).andReturn(1);
-        EasyMock.expect(reader.getName()).andReturn(new QName(SCA_NS, "property"));
-        EasyMock.expect(reader.getLocation()).andReturn(location);
-        EasyMock.expect(reader.next()).andReturn(2);
-        EasyMock.expect(reader.getName()).andReturn(new QName(SCA_NS, "component"));
-        EasyMock.replay(reader);
-        return reader;
-    }
-
 
 }
