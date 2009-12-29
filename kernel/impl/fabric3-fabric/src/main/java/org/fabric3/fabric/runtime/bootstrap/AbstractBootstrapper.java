@@ -44,6 +44,7 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
@@ -198,7 +199,9 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
             // load system configuration
             Document systemConfig = loadSystemConfig();
             if (systemConfig != null) {
-                domain.setPropertyValue("systemConfig", systemConfig);
+                List<Document> values = new ArrayList<Document>();
+                values.add(systemConfig);
+                domain.setPropertyValues("systemConfig", values);
             }
 
             // deploy the composite to the runtime domain

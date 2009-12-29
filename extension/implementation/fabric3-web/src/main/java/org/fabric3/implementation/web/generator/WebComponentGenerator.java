@@ -41,6 +41,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.EagerInit;
@@ -228,11 +229,11 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     }
 
     private void processPropertyValues(LogicalComponent<?> component, WebComponentDefinition physical) {
-        for (Map.Entry<String, Document> entry : component.getPropertyValues().entrySet()) {
+        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
             String name = entry.getKey();
-            Document document = entry.getValue();
-            if (document != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document);
+            List<Document> documents = entry.getValue();
+            if (documents != null) {
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
                 physical.setPropertyDefinition(definition);
             }
         }

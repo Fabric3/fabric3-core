@@ -46,6 +46,7 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
@@ -65,7 +66,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
 
     private URI uri;
     private ComponentDefinition<I> definition;
-    private Map<String, Document> propertyValues = new HashMap<String, Document>();
+    private Map<String, List<Document>> propertyValues = new HashMap<String, List<Document>>();
     private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
     private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
@@ -242,28 +243,28 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      *
      * @return the resolved property values for the component
      */
-    public Map<String, Document> getPropertyValues() {
+    public Map<String, List<Document>> getAllPropertyValues() {
         return propertyValues;
     }
 
     /**
-     * Gets the value of a property.
+     * Gets the values of a property.
      *
      * @param name Name of the property.
      * @return Property value for the specified property.
      */
-    public Document getPropertyValue(String name) {
+    public List<Document> getPropertyValues(String name) {
         return propertyValues.get(name);
     }
 
     /**
-     * Sets a resolved property value
+     * Sets a collection of resolved property values
      *
      * @param name  the property name
-     * @param value the property value
+     * @param values the property values
      */
-    public void setPropertyValue(String name, Document value) {
-        propertyValues.put(name, value);
+    public void setPropertyValues(String name, List<Document> values) {
+        propertyValues.put(name, values);
     }
 
     /**

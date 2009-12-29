@@ -44,6 +44,8 @@
 package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -60,7 +62,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 /**
  * @version $Rev$ $Date$
  */
-public class AssemblyPropertyTestCase extends TestCase {
+public class AbstractComponentInstantiatorTestCase extends TestCase {
     private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
     private AbstractComponentInstantiator componentInstantiator;
     private LogicalComponent<CompositeImplementation> domain;
@@ -69,8 +71,8 @@ public class AssemblyPropertyTestCase extends TestCase {
 
     public void testSimpleProperty() throws Exception {
         root.setTextContent("Hello World");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
-        Node child = value.getDocumentElement().getFirstChild();
+        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
+        Node child = values.get(0).getDocumentElement().getFirstChild();
         assertEquals(Node.TEXT_NODE, child.getNodeType());
         assertEquals("Hello World", child.getTextContent());
     }
@@ -81,8 +83,8 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element port = property.createElement("port");
         http.appendChild(port);
         port.setTextContent("8080");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain,  new StatefulNamespaceContext());
-        Node child = value.getDocumentElement().getFirstChild();
+        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain,  new StatefulNamespaceContext());
+        Node child = values.get(0).getDocumentElement().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
         assertEquals("8080", child.getTextContent());
@@ -92,8 +94,8 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element http = property.createElement("http");
         http.setAttribute("port", "8080");
         root.appendChild(http);
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain,  new StatefulNamespaceContext());
-        Node child = value.getDocumentElement().getFirstChild();
+        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain,  new StatefulNamespaceContext());
+        Node child = values.get(0).getDocumentElement().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
         assertEquals("8080", child.getTextContent());
@@ -106,8 +108,8 @@ public class AssemblyPropertyTestCase extends TestCase {
         Element http2 = property.createElement("http");
         root.appendChild(http2);
         http2.setAttribute("index", "2");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http", domain,  new StatefulNamespaceContext());
-        Node child = value.getDocumentElement();
+        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http", domain,  new StatefulNamespaceContext());
+        Node child = values.get(0).getDocumentElement();
         NodeList list = child.getChildNodes();
         assertEquals(2, list.getLength());
         assertEquals("http", list.item(0).getNodeName());
@@ -135,7 +137,9 @@ public class AssemblyPropertyTestCase extends TestCase {
         property = FACTORY.newDocumentBuilder().newDocument();
         root = property.createElement("value");
         property.appendChild(root);
-        domain.setPropertyValue("domain", property);
+        List<Document> properties = new ArrayList<Document>();
+        properties.add(property);
+        domain.setPropertyValues("domain", properties);
     }
 
 }

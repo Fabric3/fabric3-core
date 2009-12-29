@@ -124,13 +124,13 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private void includeProperties(Composite composite, LogicalCompositeComponent domain, InstantiationContext context) {
         for (Property property : composite.getProperties().values()) {
             String name = property.getName();
-            if (domain.getPropertyValues().containsKey(name)) {
+            if (domain.getAllPropertyValues().containsKey(name)) {
                 URI parentUri = domain.getUri();
                 URI contributionUri = domain.getDefinition().getContributionUri();
                 DuplicateProperty error = new DuplicateProperty(name, parentUri, contributionUri);
                 context.addError(error);
             } else {
-                domain.setPropertyValue(name, property.getDefaultValue());
+                domain.setPropertyValues(name, property.getDefaultValues());
             }
         }
     }

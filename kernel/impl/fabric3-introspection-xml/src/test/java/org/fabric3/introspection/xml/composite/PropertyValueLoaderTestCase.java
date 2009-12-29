@@ -35,43 +35,41 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.model.physical;
+package org.fabric3.introspection.xml.composite;
 
-import java.io.Serializable;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
-import org.w3c.dom.Document;
+import junit.framework.TestCase;
+
+import org.fabric3.introspection.xml.DefaultLoaderHelper;
+import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * A property and its resolved values.
- *
  * @version $Rev$ $Date$
  */
-public class PhysicalPropertyDefinition implements Serializable {
-    private static final long serialVersionUID = -9068366603932114615L;
-    private String name;
-    private List<Document> values;
+public class PropertyValueLoaderTestCase  extends TestCase {
+    private String INLINE_XML = "<property name='prop'>value</property>";
+    private XMLInputFactory factory;
+    private PropertyValueLoader loader;
+    private IntrospectionContext context;
 
-    public PhysicalPropertyDefinition(String name, List<Document> values) {
-        this.name = name;
-        this.values = values;
+    public void testLoadInlineValue() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(INLINE_XML.getBytes()));
+        reader.nextTag();
+        PropertyValue value = loader.load(reader,context);
+        assertEquals("prop", value.getName());
     }
 
-    /**
-     * Returns the property name.
-     *
-     * @return the property name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * The property values. Properties may be single-valued or multi-valued.
-     *
-     * @return the property value
-     */
-    public List<Document> getValues() {
-        return values;
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        factory = XMLInputFactory.newInstance();
+        DefaultLoaderHelper loaderHelper = new DefaultLoaderHelper();
+        loader = new PropertyValueLoader(null, loaderHelper);
+        context = new DefaultIntrospectionContext();
     }
 }

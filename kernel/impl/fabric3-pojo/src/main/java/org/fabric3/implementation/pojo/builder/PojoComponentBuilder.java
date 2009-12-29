@@ -121,8 +121,8 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
 
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
-            Document value = propertyDefinition.getValue();
-            Element element = value.getDocumentElement();
+            List<Document> values = propertyDefinition.getValues();
+            Element element = values.get(0).getDocumentElement();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
 
             Type type = provider.getGenericType(source);

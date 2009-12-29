@@ -45,6 +45,7 @@ package org.fabric3.introspection.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -53,8 +54,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
@@ -93,27 +93,79 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         }
     }
 
-    public void testComplexProperty() throws Exception {
-        String xml = "<property xmlns:foo='http://foo.com'>"
-                + "<foo:a>aValue</foo:a>"
-                + "<foo:b>InterestingURI</foo:b>"
-                + "</property>";
-
+    public void testLoadSimpleValue() throws Exception {
+        String xml ="<property name='test'>value</property>";
         XMLStreamReader reader = createReader(xml);
-        Document value = helper.loadValue(reader);
+        Document value = helper.loadPropertyValues(reader).get(0);
         reader.close();
+        Node e = value.getDocumentElement();
+        assertEquals("value", e.getTextContent());
+    }
 
-        NodeList childNodes = value.getDocumentElement().getChildNodes();
-        assertEquals(2, childNodes.getLength());
+    public void testLoadMutlipleSimpleValue() throws Exception {
+        String xml ="<property name='test'><value>value1</value><value>value2</value></property>";
+        XMLStreamReader reader = createReader(xml);
+        List<Document> values = helper.loadPropertyValues(reader);
+        assertEquals(2, values.size());
+        reader.close();
+        Node e = values.get(0).getDocumentElement();
+        assertEquals("value1", e.getTextContent());
+        e = values.get(1).getDocumentElement();
+        assertEquals("value2", e.getTextContent());
+    }
 
-        Element e = (Element) childNodes.item(0);
+    public void testLoadComplexGlobalElement() throws Exception {
+        String xml ="<property name='test'><foo:a xmlns:foo='http://foo.com'>value</foo:a></property>";
+        XMLStreamReader reader = createReader(xml);
+        Document value = helper.loadPropertyValues(reader).get(0);
+        reader.close();
+        Node e = value.getDocumentElement();
         assertEquals("http://foo.com", e.getNamespaceURI());
         assertEquals("a", e.getLocalName());
-        assertEquals("aValue", e.getTextContent());
-        e = (Element) childNodes.item(1);
-        assertEquals("http://foo.com", e.getNamespaceURI());
-        assertEquals("b", e.getLocalName());
-        assertEquals("InterestingURI", e.getTextContent());
+        assertEquals("value", e.getTextContent());
+    }
+
+    public void testLoadComplexValue() throws Exception {
+        String xml ="<property name='test'><value><a xmlns:foo='http://foo.com'><b>value</b></a></value></property>";
+        XMLStreamReader reader = createReader(xml);
+        Document value = helper.loadPropertyValues(reader).get(0);
+        reader.close();
+        Node e = value.getDocumentElement().getFirstChild().getFirstChild();
+        assertEquals("value", e.getTextContent());
+    }
+
+    public void testLoadComplexValueMultipleElements() throws Exception {
+        String xml ="<property name='test'><value><xml>application/xml</xml><composite>text/vnd.fabric3.composite+xml</composite>" +
+                "<zip>application/zip</zip><jar>application/zip</jar></value></property>";
+        XMLStreamReader reader = createReader(xml);
+        Document value = helper.loadPropertyValues(reader).get(0);
+        reader.close();
+        assertEquals(4, value.getDocumentElement().getChildNodes().getLength());
+    }
+
+    public void testLoadMultipleComplexValue() throws Exception {
+        String xml ="<property name='test'><value><a xmlns:foo='http://foo.com'><b>value1</b></a></value><value>" +
+                "<a xmlns:foo='http://foo.com'><b>value2</b></a></value></property>";
+        XMLStreamReader reader = createReader(xml);
+        List<Document> values = helper.loadPropertyValues(reader);
+        reader.close();
+        assertEquals(2, values.size());
+        Node e = values.get(0).getDocumentElement().getFirstChild();
+        assertEquals("value1", e.getTextContent());
+        e = values.get(1).getDocumentElement().getFirstChild();
+        assertEquals("value2", e.getTextContent());
+    }
+
+    public void testLoadMultipleComplexGlobalElement() throws Exception {
+        String xml ="<property name='p'><foo:a xmlns:foo='http://foo.com'>value1</foo:a><foo:a xmlns:foo='http://foo.com'>value2</foo:a></property>";
+        XMLStreamReader reader = createReader(xml);
+        List<Document> values = helper.loadPropertyValues(reader);
+        reader.close();
+        assertEquals(2, values.size());
+        Node e = values.get(0).getDocumentElement();
+        assertEquals("value1", e.getTextContent());
+        e = values.get(1).getDocumentElement();
+        assertEquals("value2", e.getTextContent());
     }
 
     public void testParseTargetComponent() throws Exception {

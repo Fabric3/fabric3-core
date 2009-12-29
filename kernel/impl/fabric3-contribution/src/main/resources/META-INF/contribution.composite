@@ -156,12 +156,14 @@
     <component name="ContentTypeResolver">
         <f3-impl:implementation.system class="org.fabric3.contribution.ExtensionMapContentTypeResolver"/>
         <property name="extensionMap">
-            <xml>application/xml</xml>
-            <composite>text/vnd.fabric3.composite+xml</composite>
-            <zip>application/zip</zip>
-            <jar>application/zip</jar>
-            <definitions>text/vnd.fabric3.definitions+xml</definitions>
-            <wsdl>text/wsdl+xml</wsdl>
+            <value>
+                <xml>application/xml</xml>
+                <composite>text/vnd.fabric3.composite+xml</composite>
+                <zip>application/zip</zip>
+                <jar>application/zip</jar>
+                <definitions>text/vnd.fabric3.definitions+xml</definitions>
+                <wsdl>text/wsdl+xml</wsdl>
+            </value>
         </property>
     </component>
 

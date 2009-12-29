@@ -47,6 +47,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -147,8 +148,8 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             dataType = XSDConstants.PROPERTY_TYPE;
         }
 
-        Document value = helper.loadValue(reader);
-        return new PropertyValue(name, dataType, value);
+        List<Document> values = helper.loadPropertyValues(reader);
+        return new PropertyValue(name, dataType, values);
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

@@ -94,7 +94,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
             public void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context) {
             }
 
-            public Document loadValue(XMLStreamReader reader) throws XMLStreamException {
+            public List<Document> loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
                 return null;
             }
 

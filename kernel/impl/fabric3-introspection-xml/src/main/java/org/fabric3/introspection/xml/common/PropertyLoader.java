@@ -43,6 +43,7 @@
  */
 package org.fabric3.introspection.xml.common;
 
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -56,7 +57,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * Loads a property declaration from an XML-based assembly file
+ * Loads a property declaration in a composite or on a component.
  *
  * @version $Rev$ $Date$
  */
@@ -82,15 +83,14 @@ public class PropertyLoader implements TypeLoader<Property> {
         String type = reader.getAttributeValue(null, TYPE);
         String element = reader.getAttributeValue(null, ELEMENT);
 
-        if (type != null && element != null ) {
-             context.addError(new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader));
+        if (type != null && element != null) {
+            context.addError(new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader));
         }
-        Document value = helper.loadValue(reader);
-
+        List<Document> values = helper.loadPropertyValues(reader);
         Property property = new Property(name);
         property.setRequired(mustSupply);
         property.setMany(many);
-        property.setDefaultValue(value);
+        property.setDefaultValues(values);
 
         return property;
     }

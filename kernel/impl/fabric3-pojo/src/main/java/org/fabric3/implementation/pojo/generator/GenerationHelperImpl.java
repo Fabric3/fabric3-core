@@ -38,20 +38,21 @@
 package org.fabric3.implementation.pojo.generator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Document;
 
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
-import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -91,11 +92,11 @@ public class GenerationHelperImpl implements GenerationHelper {
     }
 
     public void processPropertyValues(LogicalComponent<?> component, PojoComponentDefinition physical) {
-        for (Map.Entry<String, Document> entry : component.getPropertyValues().entrySet()) {
+        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
             String name = entry.getKey();
-            Document document = entry.getValue();
-            if (document != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document);
+            List<Document> documents = entry.getValue();
+            if (documents != null) {
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
                 physical.setPropertyDefinition(definition);
             }
         }

@@ -65,8 +65,10 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.oasisopen.sca.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import org.fabric3.host.Namespaces;
@@ -114,20 +116,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return key;
     }
 
-
-    public Document loadValue(XMLStreamReader reader) throws XMLStreamException {
-        DocumentBuilder builder;
-        try {
-            builder = documentBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
-        Document value = builder.newDocument();
-        Element root = value.createElement("value");
-        value.appendChild(root);
-        transform(reader, root);
-        return value;
-    }
 
     public void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context) {
         try {
@@ -233,15 +221,36 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
     }
 
-    private void transform(XMLStreamReader reader, Element element) throws XMLStreamException {
-        Document document = element.getOwnerDocument();
+    public List<Document> loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
+        DocumentBuilder builder;
+        try {
+            builder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e);
+        }
+
+        List<Document> documents = new ArrayList<Document>();
+
         int depth = 0;
+        Document document = null;
+        Node element = null;
+
         while (true) {
             int next = reader.next();
             switch (next) {
             case START_ELEMENT:
+                String namespace = reader.getNamespaceURI();
+                String name = reader.getLocalName();
 
-                Element child = document.createElementNS(reader.getNamespaceURI(), reader.getLocalName());
+                if (depth == 0) {
+                    document = builder.newDocument();
+                    documents.add(document);
+                    if (!"value".equals(name)) {
+                        element = document;
+                    }
+                }
+
+                Element child = document.createElementNS(namespace, name);
 
                 for (int i = 0; i < reader.getAttributeCount(); i++) {
                     child.setAttributeNS(reader.getAttributeNamespace(i),
@@ -251,31 +260,52 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
                 // Handle namespaces
                 for (int i = 0; i < reader.getNamespaceCount(); i++) {
-
                     String prefix = reader.getNamespacePrefix(i);
                     String uri = reader.getNamespaceURI(i);
-
                     prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
-
                     child.setAttribute(prefix, uri);
-
                 }
 
-                element.appendChild(child);
+                if (element != null) {
+                    element.appendChild(child);
+                } else {
+                    document.appendChild(child);
+                }
                 element = child;
                 depth++;
                 break;
             case CHARACTERS:
             case CDATA:
-                Text text = document.createTextNode(reader.getText());
+                String value = reader.getText();
+                if (value.trim().length() == 0) {
+                    // empty, skip node
+                    break;
+                }
+                if (depth == 0) {
+                    // simple value, e.g. <property..>val</property>
+                    document = builder.newDocument();
+                    element = document.createElement("value");
+                    document.appendChild(element);
+                    documents.add(document);
+                }
+                Text text = document.createTextNode(value);
                 element.appendChild(text);
                 break;
             case END_ELEMENT:
-                if (depth == 0) {
-                    return;
+                QName elementName = reader.getName();
+                String localPart = elementName.getLocalPart();
+                String ns = elementName.getNamespaceURI();
+                if (localPart.equals("property") && ("".equals(ns) || Constants.SCA_NS.equals(ns))) {
+                    return documents;
                 }
                 depth--;
-                element = (Element) element.getParentNode();
+                if (depth == 0) {
+                    // property has multiple values, reset the curent element and document
+                    element = null;
+                    document = null;
+                } else {
+                    element = element.getParentNode();
+                }
             case ENTITY_REFERENCE:
             case COMMENT:
             case SPACE:

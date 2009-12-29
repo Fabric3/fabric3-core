@@ -186,11 +186,11 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     private void processPropertyValues(LogicalComponent<XQueryImplementation> component, XQueryComponentDefinition physical) {
-        for (Map.Entry<String, Document> entry : component.getPropertyValues().entrySet()) {
+        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
             String name = entry.getKey();
-            Document document = entry.getValue();
-            if (document != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document);
+            List<Document> documents = entry.getValue();
+            if (documents != null) {
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
                 physical.setPropertyDefinition(definition);
             }
         }

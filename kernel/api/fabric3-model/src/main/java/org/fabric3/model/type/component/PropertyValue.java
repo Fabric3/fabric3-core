@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.List;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
@@ -63,7 +64,7 @@ public class PropertyValue extends ModelObject {
     private String source;
     private URI file;
     private DataType<QName> valueType;
-    private Document value;
+    private List<Document> values;
     private NamespaceContext namespaceContext;
 
     /**
@@ -91,12 +92,12 @@ public class PropertyValue extends ModelObject {
     /**
      * @param name             the name of the property
      * @param valueType        the XML type of the value
-     * @param value            the property value
+     * @param values            the property values
      */
-    public PropertyValue(String name, DataType<QName> valueType, Document value) {
+    public PropertyValue(String name, DataType<QName> valueType, List<Document> values) {
         this.name = name;
         this.valueType = valueType;
-        this.value = value;
+        this.values = values;
     }
 
     /**
@@ -158,17 +159,17 @@ public class PropertyValue extends ModelObject {
      *
      * @return the XML value of the property
      */
-    public Document getValue() {
-        return value;
+    public List<Document> getValues() {
+        return values;
     }
 
     /**
-     * Sets the XML value of the property.
+     * Sets the XML values of the property.
      *
-     * @param value the XML value of the property
+     * @param values the XML value of the property
      */
-    public void setValue(Document value) {
-        this.value = value;
+    public void setValues(List<Document> values) {
+        this.values = values;
     }
 
     /**

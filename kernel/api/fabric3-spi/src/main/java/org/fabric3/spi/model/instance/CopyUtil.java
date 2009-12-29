@@ -38,6 +38,7 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
@@ -78,8 +79,8 @@ public class CopyUtil {
         copy.setZone(composite.getZone());
         copy.addIntents(composite.getIntents());
         copy.addPolicySets(composite.getPolicySets());
-        for (Map.Entry<String, Document> entry : composite.getPropertyValues().entrySet()) {
-            copy.setPropertyValue(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, List<Document>> entry : composite.getAllPropertyValues().entrySet()) {
+            copy.setPropertyValues(entry.getKey(), entry.getValue());
         }
         for (LogicalComponent<?> component : composite.getComponents()) {
             copy(component, copy);

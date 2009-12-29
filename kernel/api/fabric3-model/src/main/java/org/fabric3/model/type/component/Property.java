@@ -43,6 +43,7 @@
  */
 package org.fabric3.model.type.component;
 
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
@@ -59,7 +60,7 @@ public class Property extends ModelObject {
     private String name;
     private boolean many;
     private boolean required;
-    private Document defaultValue;
+    private List<Document> defaultValues;
     private QName type;
     private QName element;
 
@@ -126,17 +127,17 @@ public class Property extends ModelObject {
      *
      * @return the default property value
      */
-    public Document getDefaultValue() {
-        return defaultValue;
+    public List<Document> getDefaultValues() {
+        return defaultValues;
     }
 
     /**
-     * Sets the default property value.
+     * Sets the default property values.
      *
-     * @param defaultValue the default property value
+     * @param defaultValues the default property value
      */
-    public void setDefaultValue(Document defaultValue) {
-        this.defaultValue = defaultValue;
+    public void setDefaultValues(List<Document> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 
     /**
