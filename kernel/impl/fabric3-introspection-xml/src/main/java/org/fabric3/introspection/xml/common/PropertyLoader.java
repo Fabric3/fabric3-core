@@ -68,6 +68,7 @@ public class PropertyLoader implements TypeLoader<Property> {
     private static final String TYPE = "type";
     private static final String ELEMENT = "element";
     private static final String SOURCE = "source";
+    private static final String VALUE = "value";
 
     private final LoaderHelper helper;
 
@@ -86,11 +87,26 @@ public class PropertyLoader implements TypeLoader<Property> {
         if (type != null && element != null) {
             context.addError(new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader));
         }
+        String valueAttribute = reader.getAttributeValue(null, VALUE);
+
         List<Document> values = helper.loadPropertyValues(reader);
+
+        if (valueAttribute != null && values.size() > 0) {
+            InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, reader);
+            context.addError(error);
+        }
         Property property = new Property(name);
         property.setRequired(mustSupply);
         property.setMany(many);
-        property.setDefaultValues(values);
+        if (!many && values.size() > 1) {
+            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
+            context.addError(error);
+        } else {
+            if (valueAttribute != null) {
+                values = helper.loadPropertyValue(valueAttribute, reader);
+            }
+            property.setDefaultValues(values);
+        }
 
         return property;
     }
@@ -99,7 +115,7 @@ public class PropertyLoader implements TypeLoader<Property> {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!NAME.equals(name) && !MANY.equals(name) && !MUST_SUPPLY.equals(name) && !TYPE.equals(name) && !SOURCE.equals(name)
-                    && !ELEMENT.equals(name)) {
+                    && !ELEMENT.equals(name) && !VALUE.equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

@@ -34,50 +34,62 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.introspection.xml.composite;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.introspection.xml.common;
 
 import java.io.ByteArrayInputStream;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.common.InvalidPropertyValue;
-import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
+
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
-public class PropertyValueLoaderTestCase  extends TestCase {
+public class PropertyLoaderTestCase extends TestCase {
+    public static final QName COMPOSITE = new QName(SCA_NS, "composite");
+    private static final String SINGLE_VALUE = "<property name='prop'>value</property>";
     private static final String SINGLE_VALUE_ATTRIBUTE = "<property name='prop' value='value'/>";
     private static final String INVALID_VALUE = "<property name='prop' value='value'>value</property>";
     private static final String MULTIPLE_VALUES = "<property name='prop' many='true'><value>one</value><value>two</value></property>";
     private static final String INVALID_MULTIPLE_VALUES = "<property name='prop'><value>one</value><value>two</value></property>";
-    private static final String INLINE_XML = "<property name='prop'>value</property>";
 
+
+    private PropertyLoader loader;
     private XMLInputFactory factory;
-    private PropertyValueLoader loader;
     private IntrospectionContext context;
 
-    public void testLoadInlineValue() throws Exception {
-        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(INLINE_XML.getBytes()));
+    public void testLoad() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(SINGLE_VALUE.getBytes()));
         reader.nextTag();
-        PropertyValue value = loader.load(reader,context);
-        assertEquals("prop", value.getName());
+        Property property = loader.load(reader, context);
+        assertEquals("prop", property.getName());
+        assertFalse(property.isMany());
+        assertEquals("value", property.getDefaultValues().get(0).getDocumentElement().getTextContent());
     }
-
 
     public void testLoadAttribute() throws Exception {
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(SINGLE_VALUE_ATTRIBUTE.getBytes()));
         reader.nextTag();
-        PropertyValue value = loader.load(reader, context);
-        assertEquals("prop", value.getName());
-        assertFalse(value.isMany());
-        assertEquals("value", value.getValues().get(0).getDocumentElement().getTextContent());
+        Property property = loader.load(reader, context);
+        assertEquals("prop", property.getName());
+        assertFalse(property.isMany());
+        assertEquals("value", property.getDefaultValues().get(0).getDocumentElement().getTextContent());
     }
 
     public void testInvalidValue() throws Exception {
@@ -90,8 +102,8 @@ public class PropertyValueLoaderTestCase  extends TestCase {
     public void testMultipleValues() throws Exception {
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(MULTIPLE_VALUES.getBytes()));
         reader.nextTag();
-        PropertyValue value = loader.load(reader, context);
-        assertEquals(2, value.getValues().size());
+        Property property = loader.load(reader, context);
+        assertEquals(2, property.getDefaultValues().size());
     }
 
     public void testInvalidMultipleValues() throws Exception {
@@ -101,12 +113,11 @@ public class PropertyValueLoaderTestCase  extends TestCase {
         assertTrue(context.getErrors().get(0) instanceof InvalidPropertyValue);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         factory = XMLInputFactory.newInstance();
-        DefaultLoaderHelper loaderHelper = new DefaultLoaderHelper();
-        loader = new PropertyValueLoader(null, loaderHelper);
         context = new DefaultIntrospectionContext();
+        LoaderHelper loaderHelper = new DefaultLoaderHelper();
+        loader = new PropertyLoader(loaderHelper);
     }
 }

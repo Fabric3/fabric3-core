@@ -66,6 +66,7 @@ public class PropertyValue extends ModelObject {
     private DataType<QName> valueType;
     private List<Document> values;
     private NamespaceContext namespaceContext;
+    private boolean many;
 
     /**
      * Constructor specifying the name of a property and the XPath source expression.
@@ -116,6 +117,24 @@ public class PropertyValue extends ModelObject {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns whether the property is many-valued or single-valued.
+     *
+     * @return true if the property is many-valued
+     */
+    public boolean isMany() {
+        return many;
+    }
+
+    /**
+     * Sets whether the property is many-valued or single-valued.
+     *
+     * @param many true if the property is many-valued
+     */
+    public void setMany(boolean many) {
+        this.many = many;
     }
 
     /**

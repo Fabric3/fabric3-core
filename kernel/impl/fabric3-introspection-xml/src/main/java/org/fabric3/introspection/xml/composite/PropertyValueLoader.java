@@ -46,8 +46,8 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -56,6 +56,7 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -82,6 +83,7 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         ATTRIBUTES.put("file", "file");
         ATTRIBUTES.put("type", "type");
         ATTRIBUTES.put("element", "element");
+        ATTRIBUTES.put("value", "value");
     }
 
     private final LoaderHelper helper;
@@ -131,6 +133,9 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         DataType<QName> dataType;
         String type = reader.getAttributeValue(null, "type");
         String element = reader.getAttributeValue(null, "element");
+        boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, "many"));
+        String valueAttribute = reader.getAttributeValue(null, "value");
+
         if (type != null) {
             if (element != null) {
                 InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, reader);
@@ -149,7 +154,23 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         }
 
         List<Document> values = helper.loadPropertyValues(reader);
+
+        if (valueAttribute != null && values.size() > 0) {
+            InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, reader);
+            context.addError(error);
+        }
+
+        if (!many && values.size() > 1) {
+            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
+            context.addError(error);
+        } else {
+            if (valueAttribute != null) {
+                values = helper.loadPropertyValue(valueAttribute, reader);
+            }
+        }
+
         return new PropertyValue(name, dataType, values);
+
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

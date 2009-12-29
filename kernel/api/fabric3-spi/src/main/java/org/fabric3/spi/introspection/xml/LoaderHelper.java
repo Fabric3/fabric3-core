@@ -77,11 +77,21 @@ public interface LoaderHelper {
      * <p/>
      * The reader must be positioned at the composite or component &lt;property&gt; element.
      *
-     * @param reader the stream
+     * @param reader the stream reader
      * @return a collection of documents containing the values
      * @throws XMLStreamException if there was a problem reading the stream
      */
     List<Document> loadPropertyValues(XMLStreamReader reader) throws XMLStreamException;
+
+    /**
+     * Loads a property value configured in a composite or on a component using the @value attribute from a String.
+     *
+     * @param reader  the stream reader
+     * @param content String content
+     * @return a collection of documents containing the values
+     * @throws XMLStreamException if there was a problem reading the stream
+     */
+    List<Document> loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException;
 
     /**
      * Loads policy sets and intents. Errors will be collated in the IntrospectionContext.

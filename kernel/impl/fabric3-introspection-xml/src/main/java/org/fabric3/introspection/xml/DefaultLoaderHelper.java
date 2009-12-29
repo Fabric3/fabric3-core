@@ -258,13 +258,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
                                          reader.getAttributeValue(i));
                 }
 
-                // Handle namespaces
-                for (int i = 0; i < reader.getNamespaceCount(); i++) {
-                    String prefix = reader.getNamespacePrefix(i);
-                    String uri = reader.getNamespaceURI(i);
-                    prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
-                    child.setAttribute(prefix, uri);
-                }
+                populateNamespaces(reader, child);
 
                 if (element != null) {
                     element.appendChild(child);
@@ -313,6 +307,34 @@ public class DefaultLoaderHelper implements LoaderHelper {
             case DTD:
                 break;
             }
+        }
+    }
+
+    public List<Document> loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
+        DocumentBuilder builder;
+        try {
+            builder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e);
+        }
+
+        List<Document> documents = new ArrayList<Document>();
+        Document document = builder.newDocument();
+        Element element = document.createElement("value");
+        document.appendChild(element);
+        documents.add(document);
+        Text text = document.createTextNode(content);
+        element.appendChild(text);
+        documents.add(document);
+        return documents;
+    }
+
+    private void populateNamespaces(XMLStreamReader reader, Element element) {
+        for (int i = 0; i < reader.getNamespaceCount(); i++) {
+            String prefix = reader.getNamespacePrefix(i);
+            String uri = reader.getNamespaceURI(i);
+            prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
+            element.setAttribute(prefix, uri);
         }
     }
 
