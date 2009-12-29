@@ -54,7 +54,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * Expects the property to be dfined in the format,
+ * Expects the property to be defined in the format,
  * <p/>
  * <code> <key1>value1</key1> <key2>value2</key2> </code>
  *
@@ -81,11 +81,10 @@ public class Property2MapOfStringsTransformer implements SingleTypeTransformer<N
         return TARGET;
     }
 
-    public Map<String, String> transform(final Node node, ClassLoader loader)
-            throws TransformationException {
+    public Map<String, String> transform(Node node, ClassLoader loader) throws TransformationException {
 
-        final Map<String, String> map = new HashMap<String, String>();
-        final NodeList nodeList = node.getChildNodes();
+        Map<String, String> map = new HashMap<String, String>();
+        NodeList nodeList = node.getChildNodes();
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node child = nodeList.item(i);

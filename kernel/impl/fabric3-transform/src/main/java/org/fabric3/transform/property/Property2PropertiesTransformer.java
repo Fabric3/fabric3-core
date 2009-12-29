@@ -37,11 +37,11 @@
 */
 package org.fabric3.transform.property;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Properties;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaClass;
@@ -64,12 +64,15 @@ public class Property2PropertiesTransformer implements SingleTypeTransformer<Nod
     }
 
     public Properties transform(Node node, ClassLoader loader) throws TransformationException {
-        String content = node.getTextContent();
         Properties properties = new Properties();
-        try {
-            properties.load(new StringReader(content));
-        } catch (IOException e) {
-            throw new TransformationException(e);
+        NodeList nodeList = node.getChildNodes();
+
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node child = nodeList.item(i);
+            if (child instanceof Element) {
+                Element element = (Element) child;
+                properties.put(element.getTagName(), child.getTextContent());
+            }
         }
         return properties;
     }
