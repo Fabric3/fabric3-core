@@ -98,6 +98,10 @@ public class JMSBindingLoaderTestCase extends TestCase {
                 return null;
             }
 
+            public List<Document> loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
+                return null;
+            }
+
             public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
                 return null;
             }
