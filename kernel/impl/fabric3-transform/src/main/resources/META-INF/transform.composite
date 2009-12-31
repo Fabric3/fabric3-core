@@ -75,22 +75,6 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.transform.property.Property2URLTransformer"/>
     </component>
 
-    <component name="Property2MapOfStringsTransformer">
-        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.map.Property2MapOfStringsTransformer"/>
-    </component>
-
-    <component name="Property2MapOfQName2ClassTransformer">
-        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.map.Property2MapOfQName2ClassTransformer"/>
-    </component>
-
-    <component name="Property2ListOfStringTransformer">
-        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.list.Property2ListOfStringTransformer"/>
-    </component>
-
-    <component name="Property2ListOfQNameTransformer">
-        <f3-impl:implementation.system class="org.fabric3.transform.property.collection.list.Property2ListOfQNameTransformer"/>
-    </component>
-
     <component name="Property2PropertiesTransformer">
         <f3-impl:implementation.system class="org.fabric3.transform.property.Property2PropertiesTransformer"/>
     </component>
