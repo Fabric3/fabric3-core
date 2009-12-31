@@ -46,11 +46,8 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -66,7 +63,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
 
     private URI uri;
     private ComponentDefinition<I> definition;
-    private Map<String, List<Document>> propertyValues = new HashMap<String, List<Document>>();
+    private Map<String, LogicalProperty> properties = new HashMap<String, LogicalProperty>();
     private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
     private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
@@ -239,32 +236,31 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Returns the resolved property values for the component.
+     * Returns the resolved properties for the component.
      *
-     * @return the resolved property values for the component
+     * @return the resolved properties for the component
      */
-    public Map<String, List<Document>> getAllPropertyValues() {
-        return propertyValues;
+    public Map<String, LogicalProperty> getAllProperties() {
+        return properties;
     }
 
     /**
-     * Gets the values of a property.
+     * Gets a property.
      *
-     * @param name Name of the property.
-     * @return Property value for the specified property.
+     * @param name the name of the property.
+     * @return the property or null if not found
      */
-    public List<Document> getPropertyValues(String name) {
-        return propertyValues.get(name);
+    public LogicalProperty getProperties(String name) {
+        return properties.get(name);
     }
 
     /**
      * Sets a collection of resolved property values
      *
-     * @param name  the property name
-     * @param values the property values
+     * @param property  the parsed property
      */
-    public void setPropertyValues(String name, List<Document> values) {
-        propertyValues.put(name, values);
+    public void setProperties(LogicalProperty property) {
+        properties.put(property.getName(), property);
     }
 
     /**

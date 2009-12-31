@@ -44,7 +44,6 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
@@ -57,8 +56,6 @@ import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl
 import org.fabric3.fabric.runtime.FabricNames;
 import org.fabric3.fabric.runtime.RuntimeServices;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
@@ -91,6 +88,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.fabric3.spi.xml.XMLFactory;
@@ -134,8 +132,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         // create components needed for to bootstrap the runtime
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
-        DocumentLoader documentLoader = new DocumentLoaderImpl();
-        instantiator = new AtomicComponentInstantiatorImpl(documentLoader);
+        instantiator = new AtomicComponentInstantiatorImpl();
         systemImplementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
@@ -199,9 +196,8 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
             // load system configuration
             Document systemConfig = loadSystemConfig();
             if (systemConfig != null) {
-                List<Document> values = new ArrayList<Document>();
-                values.add(systemConfig);
-                domain.setPropertyValues("systemConfig", values);
+                LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
+                domain.setProperties(logicalProperty);
             }
 
             // deploy the composite to the runtime domain

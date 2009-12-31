@@ -34,28 +34,34 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
+
 package org.fabric3.implementation.pojo.builder;
 
+import org.w3c.dom.Document;
+
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 
 /**
+ * Creates ObjectFactory instances for property values.
+ *
  * @version $Rev$ $Date$
  */
-public class PropertyTransformException extends BuilderException {
-    private static final long serialVersionUID = -8543494515576133797L;
+public interface PropertyObjectFactoryBuilder {
 
-    public PropertyTransformException(String message) {
-        super(message);
-    }
-
-    public PropertyTransformException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Create the ObjectFactory from the given DOM value.
+     *
+     * @param name        the property name
+     * @param dataType    the property type
+     * @param value       the DOM to transform
+     * @param many        true if the property is many-valued
+     * @param classLoader the classloader for the target type
+     * @return the ObjectFactory
+     * @throws BuilderException if there is an error building the factory
+     */
+    ObjectFactory<?> createObjectFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader)
+            throws BuilderException;
 }

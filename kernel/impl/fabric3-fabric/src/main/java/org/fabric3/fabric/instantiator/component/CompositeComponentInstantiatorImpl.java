@@ -47,7 +47,6 @@ import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -74,9 +73,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
     private WireInstantiator wireInstantiator;
 
     public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,
-                                              @Reference WireInstantiator wireInstantiator,
-                                              @Reference DocumentLoader documentLoader) {
-        super(documentLoader);
+                                              @Reference WireInstantiator wireInstantiator) {
         this.atomicInstantiator = atomicInstantiator;
         this.wireInstantiator = wireInstantiator;
     }

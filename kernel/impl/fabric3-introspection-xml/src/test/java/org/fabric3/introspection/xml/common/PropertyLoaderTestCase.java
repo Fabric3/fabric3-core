@@ -80,7 +80,7 @@ public class PropertyLoaderTestCase extends TestCase {
         Property property = loader.load(reader, context);
         assertEquals("prop", property.getName());
         assertFalse(property.isMany());
-        assertEquals("value", property.getDefaultValues().get(0).getDocumentElement().getTextContent());
+        assertEquals("value", property.getDefaultValue().getDocumentElement().getFirstChild().getTextContent());
     }
 
     public void testLoadAttribute() throws Exception {
@@ -89,7 +89,7 @@ public class PropertyLoaderTestCase extends TestCase {
         Property property = loader.load(reader, context);
         assertEquals("prop", property.getName());
         assertFalse(property.isMany());
-        assertEquals("value", property.getDefaultValues().get(0).getDocumentElement().getTextContent());
+        assertEquals("value", property.getDefaultValue().getDocumentElement().getFirstChild().getTextContent());
     }
 
     public void testInvalidValue() throws Exception {
@@ -103,7 +103,7 @@ public class PropertyLoaderTestCase extends TestCase {
         XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(MULTIPLE_VALUES.getBytes()));
         reader.nextTag();
         Property property = loader.load(reader, context);
-        assertEquals(2, property.getDefaultValues().size());
+        assertEquals(2, property.getDefaultValue().getDocumentElement().getChildNodes().getLength());
     }
 
     public void testInvalidMultipleValues() throws Exception {

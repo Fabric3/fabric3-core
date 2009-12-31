@@ -64,6 +64,7 @@ import static javax.xml.stream.XMLStreamConstants.SPACE;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.XMLConstants;
 
 import org.oasisopen.sca.Constants;
 import org.w3c.dom.Document;
@@ -221,7 +222,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
     }
 
-    public List<Document> loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
+    public Document loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
         DocumentBuilder builder;
         try {
             builder = documentBuilderFactory.newDocumentBuilder();
@@ -229,11 +230,18 @@ public class DefaultLoaderHelper implements LoaderHelper {
             throw new AssertionError(e);
         }
 
-        List<Document> documents = new ArrayList<Document>();
-
         int depth = 0;
-        Document document = null;
-        Node element = null;
+        Document document = builder.newDocument();
+
+        Element root = document.createElementNS("", "values");
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            root.setAttributeNS(reader.getAttributeNamespace(i),
+                                reader.getAttributeLocalName(i),
+                                reader.getAttributeValue(i));
+        }
+        populateNamespaces(reader, root);
+        document.appendChild(root);
+        Node element = root;
 
         while (true) {
             int next = reader.next();
@@ -243,22 +251,12 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 String name = reader.getLocalName();
 
                 if (depth == 0) {
-                    document = builder.newDocument();
-                    documents.add(document);
                     if (!"value".equals(name)) {
-                        element = document;
+                        element = document.getDocumentElement();
                     }
                 }
 
                 Element child = document.createElementNS(namespace, name);
-
-                for (int i = 0; i < reader.getAttributeCount(); i++) {
-                    child.setAttributeNS(reader.getAttributeNamespace(i),
-                                         reader.getAttributeLocalName(i),
-                                         reader.getAttributeValue(i));
-                }
-
-                populateNamespaces(reader, child);
 
                 if (element != null) {
                     element.appendChild(child);
@@ -277,10 +275,8 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 }
                 if (depth == 0) {
                     // simple value, e.g. <property..>val</property>
-                    document = builder.newDocument();
                     element = document.createElement("value");
-                    document.appendChild(element);
-                    documents.add(document);
+                    root.appendChild(element);
                 }
                 Text text = document.createTextNode(value);
                 element.appendChild(text);
@@ -290,13 +286,12 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 String localPart = elementName.getLocalPart();
                 String ns = elementName.getNamespaceURI();
                 if (localPart.equals("property") && ("".equals(ns) || Constants.SCA_NS.equals(ns))) {
-                    return documents;
+                    return document;
                 }
                 depth--;
                 if (depth == 0) {
                     // property has multiple values, reset the curent element and document
-                    element = null;
-                    document = null;
+                    element = root;
                 } else {
                     element = element.getParentNode();
                 }
@@ -310,7 +305,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         }
     }
 
-    public List<Document> loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
+    public Document loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
         DocumentBuilder builder;
         try {
             builder = documentBuilderFactory.newDocumentBuilder();
@@ -318,15 +313,14 @@ public class DefaultLoaderHelper implements LoaderHelper {
             throw new AssertionError(e);
         }
 
-        List<Document> documents = new ArrayList<Document>();
         Document document = builder.newDocument();
+        Element root = document.createElement("values");
+        document.appendChild(root);
         Element element = document.createElement("value");
-        document.appendChild(element);
-        documents.add(document);
+        root.appendChild(element);
         Text text = document.createTextNode(content);
         element.appendChild(text);
-        documents.add(document);
-        return documents;
+        return document;
     }
 
     private void populateNamespaces(XMLStreamReader reader, Element element) {
@@ -334,7 +328,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
             String prefix = reader.getNamespacePrefix(i);
             String uri = reader.getNamespaceURI(i);
             prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
-            element.setAttribute(prefix, uri);
+            element.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, uri);
         }
     }
 

@@ -110,10 +110,10 @@ import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.AutowireNormalizerImpl;
-import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
+import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
+import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
 import org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl;
@@ -124,12 +124,12 @@ import org.fabric3.fabric.monitor.MonitorTargetDefinition;
 import org.fabric3.fabric.monitor.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
 import org.fabric3.fabric.policy.NullPolicyResolver;
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
+import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
 import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
@@ -246,12 +246,11 @@ public class BootstrapAssemblyFactory {
 
         PromotionNormalizer promotionNormalizer = new PromotionNormalizerImpl();
         AutowireNormalizer autowireNormalizer = new AutowireNormalizerImpl();
-        DocumentLoader documentLoader = new DocumentLoaderImpl();
-        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl(documentLoader);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(resolver, matcher);
         CompositeComponentInstantiator compositeInstantiator =
-                new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, documentLoader);
+                new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,
@@ -313,10 +312,12 @@ public class BootstrapAssemblyFactory {
 
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
 
+        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
+
         SystemComponentBuilder<?> builder = new SystemComponentBuilder<Object>(scopeRegistry,
                                                                                factoryBuilder,
                                                                                classLoaderRegistry,
-                                                                               transformerRegistry,
+                                                                               propertyBuilder,
                                                                                helper);
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
         builders.put(SystemComponentDefinition.class, builder);

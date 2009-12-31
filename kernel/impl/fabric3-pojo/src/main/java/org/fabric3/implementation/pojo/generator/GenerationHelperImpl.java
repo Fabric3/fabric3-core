@@ -38,7 +38,6 @@
 package org.fabric3.implementation.pojo.generator;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +46,7 @@ import org.w3c.dom.Document;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -92,11 +92,12 @@ public class GenerationHelperImpl implements GenerationHelper {
     }
 
     public void processPropertyValues(LogicalComponent<?> component, PojoComponentDefinition physical) {
-        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
-            String name = entry.getKey();
-            List<Document> documents = entry.getValue();
-            if (documents != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
+        for (LogicalProperty property : component.getAllProperties().values()) {
+           Document document = property.getValue();
+            if (document != null) {
+                String name = property.getName();
+                boolean many = property.isMany();
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
                 physical.setPropertyDefinition(definition);
             }
         }

@@ -83,11 +83,11 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBootstrapper {
 
-    private final DocumentLoader documentLoader;
+    private DocumentLoader documentLoader;
 
     private URL scdlLocation;
     private URL systemConfig;
-    private InputSource systemConfigDocument;
+    private InputSource systemConfigSource;
 
     public ScdlBootstrapperImpl() {
         this(new XMLFactoryImpl());
@@ -107,7 +107,7 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
     }
 
     public void setSystemConfig(InputSource source) {
-        this.systemConfigDocument = source;
+        this.systemConfigSource = source;
     }
 
     protected Composite loadSystemComposite(URI contributionUri,
@@ -135,29 +135,33 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
     }
 
     protected Document loadSystemConfig() throws InitializationException {
-        if (systemConfigDocument != null) {
-            try {
-                // load from an external URL
-                return documentLoader.load(systemConfigDocument);
-            } catch (IOException e) {
-                throw new InitializationException(e);
-            } catch (SAXException e) {
-                throw new InitializationException(e);
-            }
-        }
-        if (systemConfig == null) {
-            // none specified, create a default one
+        if (systemConfigSource == null && systemConfig == null) {
+            // no system configuration specified, create a default one
             return createDefaultConfigProperty();
         }
+        Document document;
         try {
-            // load from an external URL
-            return documentLoader.load(systemConfig);
+            if (systemConfigSource != null) {
+                // load from an external URL
+                document = documentLoader.load(systemConfigSource, true);
+            } else {
+                // load from an external URL
+                document = documentLoader.load(systemConfig, true);
+            }
         } catch (IOException e) {
             throw new InitializationException(e);
         } catch (SAXException e) {
             throw new InitializationException(e);
         }
+        // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
+        Element oldRoot = document.getDocumentElement();
+        Element newRoot = document.createElement("values");
+        document.removeChild(oldRoot);
+        document.appendChild(newRoot);
+        newRoot.appendChild(oldRoot);
+        return document;
     }
+
 
     /**
      * Creates a default configuration domain property.
@@ -169,8 +173,10 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             Document document = factory.newDocumentBuilder().newDocument();
-            Element root = document.createElement("config");
+            Element root = document.createElement("values");
             document.appendChild(root);
+            Element config = document.createElement("config");
+            root.appendChild(config);
             return document;
         } catch (ParserConfigurationException e) {
             throw new AssertionError(e);

@@ -56,7 +56,9 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -65,6 +67,7 @@ import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.PropertyMany;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
@@ -118,9 +121,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     @Constructor
-    public ComponentLoader(@Reference LoaderRegistry registry,
-                           @Reference(name = "loaderHelper") LoaderHelper loaderHelper,
-                           @Reference ContractMatcher contractMatcher) {
+    public ComponentLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper, @Reference ContractMatcher contractMatcher) {
         super(registry);
         this.loaderHelper = loaderHelper;
         this.contractMatcher = contractMatcher;
@@ -178,7 +179,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (PROPERTY.equals(qname)) {
-                        parseProperty(definition, componentType, reader, context);
+                        parsePropertyValue(definition, componentType, reader, context);
                     } else if (REFERENCE.equals(qname)) {
                         parseReference(definition, componentType, reader, context);
                     } else if (SERVICE.equals(qname)) {
@@ -206,7 +207,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         return COMPONENT;
     }
 
-    private void parseService(ComponentDefinition<Implementation<?>> definition,
+    private void parseService(ComponentDefinition<?> definition,
                               AbstractComponentType<?, ?, ?, ?> componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
@@ -235,7 +236,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
-    private void parseReference(ComponentDefinition<Implementation<?>> definition,
+    private void parseReference(ComponentDefinition<?> definition,
                                 AbstractComponentType<?, ?, ?, ?> componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
@@ -268,17 +269,19 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     }
 
-    private void parseProperty(ComponentDefinition<Implementation<?>> definition,
-                               AbstractComponentType<?, ?, ?, ?> componentType,
-                               XMLStreamReader reader,
-                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+    private void parsePropertyValue(ComponentDefinition<?> definition,
+                                    AbstractComponentType<?, ?, ?, ?> componentType,
+                                    XMLStreamReader reader,
+                                    IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         PropertyValue value;
         value = registry.load(reader, PropertyValue.class, context);
         if (value == null) {
             // there was an error with the property configuration, just skip it
             return;
         }
-        if (componentType.getProperties().get(value.getName()) == null) {
+        String name = value.getName();
+        Property property = componentType.getProperties().get(name);
+        if (property == null) {
             // ensure the property exists
             ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, reader);
             context.addError(failure);
@@ -292,7 +295,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             definition.add(value);
         }
     }
-    
+
     /**
      * Sets the composite service contract from the comonent type reference if not explicitly configured. If configured, validates the contract
      * matches the component type service contract.
@@ -350,8 +353,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     /**
-     * Sets the composite multiplicity to inherit from the component type reference if not explicitly configured. If configured, validates the
-     * setting against the component type setting.
+     * Sets the composite multiplicity to inherit from the component type reference if not explicitly configured. If configured, validates the setting
+     * against the component type setting.
      *
      * @param reference     the reference
      * @param typeReference the promoted reference
@@ -380,17 +383,51 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
-    private void validateRequiredProperties(ComponentDefinition<? extends Implementation<?>> definition,
-                                            XMLStreamReader reader,
-                                            IntrospectionContext context) {
+    private void validateRequiredProperties(ComponentDefinition<?> definition, XMLStreamReader reader, IntrospectionContext context) {
         AbstractComponentType<?, ?, ?, ?> type = definition.getImplementation().getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();
         for (Property property : properties.values()) {
-            if (property.isRequired() && !values.containsKey(property.getName())) {
+            PropertyValue value = values.get(property.getName());
+            if (property.isRequired() && value == null) {
                 RequiredPropertyNotProvided failure = new RequiredPropertyNotProvided(property, definition.getName(), reader);
                 context.addError(failure);
+                continue;
             }
+            if (value != null) {
+                // null check since an optional property may not be configured on the component
+                validateAndSetMany(value, property, reader, context);
+            }
+        }
+    }
+
+    private void validateAndSetMany(PropertyValue propertyValue, Property property, XMLStreamReader reader, IntrospectionContext context) {
+        PropertyMany propertyMany = propertyValue.getMany();
+        if (PropertyMany.NOT_SPECIFIED == propertyMany) {
+            if (property.isMany()) {
+                propertyValue.setMany(PropertyMany.MANY);
+            } else {
+                propertyValue.setMany(PropertyMany.SINGLE);
+            }
+        } else if (PropertyMany.MANY == propertyMany) {
+            if (!property.isMany()) {
+                InvalidPropertyConfiguration error = new InvalidPropertyConfiguration("Illegal attempt to make a property many-valued when its " +
+                        "component type is single-valued", reader);
+                context.addError(error);
+                return;
+
+            }
+            propertyValue.setMany(PropertyMany.MANY);
+        } else {
+            propertyValue.setMany(PropertyMany.SINGLE);
+        }
+        Document value = propertyValue.getValue();
+        if (value != null && PropertyMany.MANY != propertyValue.getMany() && value.getDocumentElement().getChildNodes().getLength() > 1) {
+            // null check since optional properties may have null values
+            // validate the many
+            String name = propertyValue.getName();
+            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
+            context.addError(error);
         }
     }
 

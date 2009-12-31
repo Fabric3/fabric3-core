@@ -39,11 +39,8 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Reference;
-
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -64,10 +61,6 @@ import org.fabric3.spi.model.instance.LogicalService;
  * @version $Rev$ $Date$
  */
 public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiator implements AtomicComponentInstantiator {
-
-    public AtomicComponentInstantiatorImpl(@Reference DocumentLoader documentLoader) {
-        super(documentLoader);
-    }
 
     @SuppressWarnings({"unchecked"})
     public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
@@ -140,6 +133,5 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
             component.addResource(logicalResource);
         }
     }
-
 
 }

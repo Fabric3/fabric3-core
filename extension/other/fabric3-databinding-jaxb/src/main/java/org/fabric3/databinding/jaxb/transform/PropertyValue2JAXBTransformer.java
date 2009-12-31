@@ -82,10 +82,9 @@ public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            if ("value".equals(source.getNodeName())) {
+            if ("value".equals(source.getNodeName()) || "key".equals(source.getNodeName())) {
                 NodeList children = source.getChildNodes();
                 for (int i = 0; i < children.getLength(); i++) {
-                    // TODO support multi property values
                     if (children.item(i) instanceof Element) {
                         return jaxbContext.createUnmarshaller().unmarshal(children.item(i));
                     }

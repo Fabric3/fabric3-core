@@ -44,7 +44,6 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
-import java.util.List;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
@@ -64,15 +63,15 @@ public class PropertyValue extends ModelObject {
     private String source;
     private URI file;
     private DataType<QName> valueType;
-    private List<Document> values;
+    private Document value;
     private NamespaceContext namespaceContext;
-    private boolean many;
+    private PropertyMany many;
 
     /**
      * Constructor specifying the name of a property and the XPath source expression.
      *
-     * @param name             the name of the property which this value is for
-     * @param source           an XPath expression whose result will be the actual value
+     * @param name   the name of the property which this value is for
+     * @param source an XPath expression whose result will be the actual value
      */
     public PropertyValue(String name, String source) {
         this.name = name;
@@ -82,8 +81,8 @@ public class PropertyValue extends ModelObject {
     /**
      * Constructor specifying the name of a property loaded from an exteral resource.
      *
-     * @param name             the name of the property which this value is for
-     * @param file             A URI that the property value can be loaded from
+     * @param name the name of the property which this value is for
+     * @param file A URI that the property value can be loaded from
      */
     public PropertyValue(String name, URI file) {
         this.name = name;
@@ -91,14 +90,16 @@ public class PropertyValue extends ModelObject {
     }
 
     /**
-     * @param name             the name of the property
-     * @param valueType        the XML type of the value
-     * @param values            the property values
+     * @param name      the name of the property
+     * @param valueType the XML type of the value
+     * @param value     the property value
+     * @param many      the property many parameter
      */
-    public PropertyValue(String name, DataType<QName> valueType, List<Document> values) {
+    public PropertyValue(String name, DataType<QName> valueType, Document value, PropertyMany many) {
         this.name = name;
         this.valueType = valueType;
-        this.values = values;
+        this.value = value;
+        this.many = many;
     }
 
     /**
@@ -124,7 +125,7 @@ public class PropertyValue extends ModelObject {
      *
      * @return true if the property is many-valued
      */
-    public boolean isMany() {
+    public PropertyMany getMany() {
         return many;
     }
 
@@ -133,7 +134,7 @@ public class PropertyValue extends ModelObject {
      *
      * @param many true if the property is many-valued
      */
-    public void setMany(boolean many) {
+    public void setMany(PropertyMany many) {
         this.many = many;
     }
 
@@ -178,17 +179,17 @@ public class PropertyValue extends ModelObject {
      *
      * @return the XML value of the property
      */
-    public List<Document> getValues() {
-        return values;
+    public Document getValue() {
+        return value;
     }
 
     /**
      * Sets the XML values of the property.
      *
-     * @param values the XML value of the property
+     * @param value the XML value of the property
      */
-    public void setValues(List<Document> values) {
-        this.values = values;
+    public void setValue(Document value) {
+        this.value = value;
     }
 
     /**

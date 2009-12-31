@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -89,23 +88,23 @@ public class PropertyLoader implements TypeLoader<Property> {
         }
         String valueAttribute = reader.getAttributeValue(null, VALUE);
 
-        List<Document> values = helper.loadPropertyValues(reader);
+        Document value = helper.loadPropertyValues(reader);
 
-        if (valueAttribute != null && values.size() > 0) {
+        if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
             InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, reader);
             context.addError(error);
         }
         Property property = new Property(name);
         property.setRequired(mustSupply);
         property.setMany(many);
-        if (!many && values.size() > 1) {
+        if (!many && value.getDocumentElement().getChildNodes().getLength() > 1) {
             InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
             context.addError(error);
         } else {
             if (valueAttribute != null) {
-                values = helper.loadPropertyValue(valueAttribute, reader);
+                value = helper.loadPropertyValue(valueAttribute, reader);
             }
-            property.setDefaultValues(values);
+            property.setDefaultValue(value);
         }
 
         return property;

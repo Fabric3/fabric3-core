@@ -44,6 +44,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Document;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -54,6 +55,7 @@ import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  * @version $Rev$ $Date$
@@ -124,13 +126,16 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private void includeProperties(Composite composite, LogicalCompositeComponent domain, InstantiationContext context) {
         for (Property property : composite.getProperties().values()) {
             String name = property.getName();
-            if (domain.getAllPropertyValues().containsKey(name)) {
+            if (domain.getAllProperties().containsKey(name)) {
                 URI parentUri = domain.getUri();
                 URI contributionUri = domain.getDefinition().getContributionUri();
                 DuplicateProperty error = new DuplicateProperty(name, parentUri, contributionUri);
                 context.addError(error);
             } else {
-                domain.setPropertyValues(name, property.getDefaultValues());
+                Document value = property.getDefaultValue();
+                boolean many = property.isMany();
+                LogicalProperty logicalProperty = new LogicalProperty(name, value, many, domain);
+                domain.setProperties(logicalProperty);
             }
         }
     }

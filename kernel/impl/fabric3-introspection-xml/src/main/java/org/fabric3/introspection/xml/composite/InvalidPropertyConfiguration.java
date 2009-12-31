@@ -35,41 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.xml;
+package org.fabric3.introspection.xml.composite;
 
-import java.io.IOException;
-import java.net.URL;
+import javax.xml.stream.XMLStreamReader;
 
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Loads XML documents as DOM objects.
  *
  * @version $Rev$ $Date$
  */
-public interface DocumentLoader {
+public class InvalidPropertyConfiguration extends XmlValidationFailure {
 
-    /**
-     * Loads a Document from a URL.
-     *
-     * @param url             the location of the resource
-     * @param stripWhitespace true if whitespace should be stripped from the document
-     * @return the content of the resource as a Document
-     * @throws IOException  if there was a problem reading the resource
-     * @throws SAXException if there was a problem with the document
-     */
-    Document load(URL url, boolean stripWhitespace) throws IOException, SAXException;
-
-    /**
-     * Loads a Document from an InputSource.
-     *
-     * @param source          the source of the document text
-     * @param stripWhitespace true if whitespace should be stripped from the document
-     * @return the content as a Document
-     * @throws IOException  if there was a problem reading the content
-     * @throws SAXException if there was a problem with the document
-     */
-    Document load(InputSource source, boolean stripWhitespace) throws IOException, SAXException;
+    public InvalidPropertyConfiguration(String message, XMLStreamReader reader) {
+        super(message, reader);
+    }
 }

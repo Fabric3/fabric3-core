@@ -38,11 +38,7 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
 
 /**
  * Utilities for copying a logical model graph.
@@ -79,8 +75,8 @@ public class CopyUtil {
         copy.setZone(composite.getZone());
         copy.addIntents(composite.getIntents());
         copy.addPolicySets(composite.getPolicySets());
-        for (Map.Entry<String, List<Document>> entry : composite.getAllPropertyValues().entrySet()) {
-            copy.setPropertyValues(entry.getKey(), entry.getValue());
+        for (LogicalProperty property : composite.getAllProperties().values()) {
+            copy.setProperties(property);
         }
         for (LogicalComponent<?> component : composite.getComponents()) {
             copy(component, copy);

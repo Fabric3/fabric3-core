@@ -39,8 +39,6 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -60,12 +58,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  * Contains functionality common to different component instantiators.
@@ -82,11 +80,6 @@ public abstract class AbstractComponentInstantiator {
         XPATH_FACTORY = XPathFactory.newInstance();
     }
 
-    private final DocumentLoader documentLoader;
-
-    protected AbstractComponentInstantiator(DocumentLoader documentLoader) {
-        this.documentLoader = documentLoader;
-    }
 
     /**
      * Set the initial actual property values of a component.
@@ -104,20 +97,20 @@ public abstract class AbstractComponentInstantiator {
 
             String name = property.getName();
             PropertyValue propertyValue = propertyValues.get(name);
-            List<Document> values;
+            Document value;
 
             if (propertyValue == null) {
                 // use default value from component type
-                values = property.getDefaultValues();
+                value = property.getDefaultValue();
             } else {
                 // the spec defines the following sequence
                 if (propertyValue.getFile() != null) {
                     // load the value from an external resource
-                    values = loadValueFromFile(component, property.getName(), propertyValue.getFile(), context);
+                    value = loadValueFromFile(property.getName(), propertyValue.getFile(), component, context);
                 } else if (propertyValue.getSource() != null) {
                     // get the value by evaluating an XPath against the composite properties
                     try {
-                        values = deriveValueFromXPath(propertyValue.getSource(), component.getParent(), propertyValue.getNamespaceContext());
+                        value = deriveValueFromXPath(propertyValue.getSource(), component.getParent(), propertyValue.getNamespaceContext());
                     } catch (XPathExpressionException e) {
                         URI uri = component.getUri();
                         URI contributionUri = component.getDefinition().getContributionUri();
@@ -127,46 +120,52 @@ public abstract class AbstractComponentInstantiator {
                     }
                 } else {
                     // use inline XML file
-                    values = propertyValue.getValues();
+                    value = propertyValue.getValue();
                 }
 
             }
-            if (property.isRequired() && values == null) {
+            if (property.isRequired() && value == null) {
                 // The XPath expression returned an empty value. Since the property is required, throw an exception
                 URI uri = component.getUri();
                 URI contributionUri = component.getDefinition().getContributionUri();
                 PropertySourceNotFound error = new PropertySourceNotFound(name, uri, contributionUri);
                 context.addError(error);
-            } else if (!property.isRequired() && values == null) {
+            } else if (!property.isRequired() && value == null) {
                 // The XPath expression returned an empty value. Since the property is optional, ignore it
                 continue;
             } else {
                 // set the property value
-                component.setPropertyValues(name, values);
+                boolean many = property.isMany();
+                LogicalProperty logicalProperty = new LogicalProperty(name, value, many, component);
+                component.setProperties(logicalProperty);
             }
 
         }
 
     }
 
-    List<Document> deriveValueFromXPath(String source, final LogicalComponent<?> parent, NamespaceContext nsContext) throws XPathExpressionException {
+    Document deriveValueFromXPath(String source, final LogicalComponent<?> parent, NamespaceContext nsContext) throws XPathExpressionException {
 
         XPathVariableResolver variableResolver = new XPathVariableResolver() {
             public Object resolveVariable(QName qName) {
                 String name = qName.getLocalPart();
-                List<Document> values = parent.getPropertyValues(name);
-                if (values == null || values.isEmpty()) {
+                LogicalProperty property = parent.getProperties(name);
+                if (property == null) {
+                    return null;
+                }
+                Document value = property.getValue();
+                if (value == null || value.getDocumentElement().getChildNodes().getLength() == 0) {
                     return null;
                 }
                 // select the first value
-                return values.get(0).getDocumentElement();
+                return value.getDocumentElement().getFirstChild();
             }
         };
 
         XPath xpath = XPATH_FACTORY.newXPath();
         xpath.setXPathVariableResolver(variableResolver);
         xpath.setNamespaceContext(nsContext);
-        
+
         DocumentBuilder builder;
         try {
             builder = DOCUMENT_FACTORY.newDocumentBuilder();
@@ -174,29 +173,38 @@ public abstract class AbstractComponentInstantiator {
             throw new AssertionError(e);
         }
 
-        Document value = builder.newDocument();
-        Element root = value.createElement("value");
+        Document document = builder.newDocument();
+        Element root = document.createElement("values");
         // TODO do we need to copy namespace declarations to this root
-        value.appendChild(root);
+        document.appendChild(root);
         try {
-            NodeList result = (NodeList) xpath.evaluate(source, value, XPathConstants.NODESET);
+            NodeList result = (NodeList) xpath.evaluate(source, document, XPathConstants.NODESET);
 
             if (result.getLength() == 0) {
                 return null;
             }
+
             for (int i = 0; i < result.getLength(); i++) {
                 Node node = result.item(i);
+                Element value;
+                if (!"value".equals(node.getNodeName())){
+                    value = document.createElement("value");
+                    root.appendChild(value);
+                } else {
+                    // value is already specified as the root of the XPath select, append directly to it
+                    value = root;
+                }
                 // clone the node as the original may be accessed multiple times
                 Node cloned = node.cloneNode(true);
-                value.adoptNode(cloned);
+                document.adoptNode(cloned);
                 short type = cloned.getNodeType();
                 if (Node.ELEMENT_NODE == type || Node.TEXT_NODE == type) {
-                    root.appendChild(cloned);
+                    value.appendChild(cloned);
                 } else if (Node.ATTRIBUTE_NODE == type) {
                     // convert the attribute to an element in the property DOM
-                    Element element = value.createElement(cloned.getNodeName());
+                    Element element = document.createElement(cloned.getNodeName());
                     element.setTextContent(cloned.getNodeValue());
-                    root.appendChild(element);
+                    value.appendChild(element);
                 } else {
                     throw new XPathExpressionException("Unsupported node type: " + type);
                 }
@@ -209,30 +217,47 @@ public abstract class AbstractComponentInstantiator {
             // are used to this behaviour
             throw e;
         }
-        List<Document> values = new ArrayList<Document>();
-        values.add(value);
-        return values;
+        return document;
 
     }
 
-    private List<Document> loadValueFromFile(LogicalComponent<?> parent, String name, URI file, InstantiationContext context) {
+
+    public Document loadValueFromFile(String name, URI fileUri, LogicalComponent<?> parent, InstantiationContext context) {
         try {
-            Document document = documentLoader.load(file);
-            List<Document> documents = new ArrayList<Document>();
-            documents.add(document);
-            return documents;
+            DocumentBuilder builder = DOCUMENT_FACTORY.newDocumentBuilder();
+            Document document = builder.parse(fileUri.toString());
+            Element root = document.getDocumentElement();
+            // support documents in various formats: with a root <values>, <value>, or no root element
+            if (!"values".equals(root.getNodeName())) {
+                if ("value".equals(root.getNodeName())) {
+                    Element newRoot = document.createElement("values");
+                    document.removeChild(root);
+                    document.appendChild(newRoot);
+                    newRoot.appendChild(root);
+                } else {
+                    Element newRoot = document.createElement("values");
+                    document.removeChild(root);
+                    document.appendChild(newRoot);
+                    Element value = document.createElement("value");
+                    newRoot.appendChild(value);
+                    value.appendChild(root);
+                }
+            }
+            return document;
         } catch (IOException e) {
             URI uri = parent.getUri();
             URI contributionUri = parent.getDefinition().getContributionUri();
-            InvalidPropertyFile error = new InvalidPropertyFile(name, e, file, uri, contributionUri);
+            InvalidPropertyFile error = new InvalidPropertyFile(name, e, fileUri, uri, contributionUri);
             context.addError(error);
             return null;
         } catch (SAXException e) {
             URI uri = parent.getUri();
             URI contributionUri = parent.getDefinition().getContributionUri();
-            InvalidPropertyFile error = new InvalidPropertyFile(name, e, file, uri, contributionUri);
+            InvalidPropertyFile error = new InvalidPropertyFile(name, e, fileUri, uri, contributionUri);
             context.addError(error);
             return null;
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e);
         }
     }
 

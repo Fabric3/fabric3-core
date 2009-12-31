@@ -22,8 +22,12 @@
         <f3-impl:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder"/>
     </component>
 
-    <component name="GenerationHelperImpl">
+    <component name="GenerationHelper">
         <f3-impl:implementation.system class="org.fabric3.implementation.pojo.generator.GenerationHelperImpl"/>
+    </component>
+
+    <component name="PropertyObjectFactoryBuilder">
+        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl"/>
     </component>
 
 </composite>

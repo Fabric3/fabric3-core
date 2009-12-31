@@ -38,16 +38,18 @@
 package org.fabric3.fabric.xml;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -68,30 +70,28 @@ public class DocumentLoaderImpl implements DocumentLoader {
         DOCUMENT_FACTORY.setNamespaceAware(true);
     }
 
-    public Document load(File file) throws IOException, SAXException {
-        DocumentBuilder builder = getBuilder();
-        return builder.parse(file);
-    }
-
-    public Document load(URL url) throws IOException, SAXException {
+    public Document load(URL url, boolean stripWhitespace) throws IOException, SAXException {
         InputStream stream = url.openStream();
         try {
             stream = new BufferedInputStream(stream);
             DocumentBuilder builder = getBuilder();
-            return builder.parse(stream);
+            Document document = builder.parse(stream);
+            if (stripWhitespace) {
+                stripWhitespace(document.getDocumentElement());
+            }
+            return document;
         } finally {
             IOHelper.closeQueitly(stream);
         }
     }
 
-    public Document load(URI uri) throws IOException, SAXException {
+    public Document load(InputSource source, boolean stripWhitespace) throws IOException, SAXException {
         DocumentBuilder builder = getBuilder();
-        return builder.parse(uri.toString());
-    }
-
-    public Document load(InputSource source) throws IOException, SAXException {
-        DocumentBuilder builder = getBuilder();
-        return builder.parse(source);
+        Document document = builder.parse(source);
+        if (stripWhitespace) {
+            stripWhitespace(document.getDocumentElement());
+        }
+        return document;
     }
 
     private DocumentBuilder getBuilder() {
@@ -99,6 +99,26 @@ public class DocumentLoaderImpl implements DocumentLoader {
             return DOCUMENT_FACTORY.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new AssertionError(e);
+        }
+    }
+
+    /**
+     * Recursively strips whitepsace nodes starting at a DOM element.
+     * <p>
+     * This is necessary as <code>DocumentBuilderFactory.setIgnoringElementContentWhitespace(boolean)</code> is broken in JDK 6:
+     * <p>
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6564400
+     * @param element the element
+     */
+    public void stripWhitespace(Element element) {
+        NodeList children = element.getChildNodes();
+        for (int i = children.getLength() - 1; i >= 0; i--) {
+            Node child = children.item(i);
+            if (child instanceof Text && ((Text) child).getData().trim().length() == 0) {
+                element.removeChild(child);
+            } else if (child instanceof Element) {
+                stripWhitespace((Element) child);
+            }
         }
     }
 }

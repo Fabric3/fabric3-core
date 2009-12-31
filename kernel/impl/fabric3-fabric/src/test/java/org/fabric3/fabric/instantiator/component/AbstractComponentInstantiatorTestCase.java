@@ -44,8 +44,6 @@
 package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -58,6 +56,7 @@ import org.w3c.dom.NodeList;
 import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  * @version $Rev$ $Date$
@@ -66,25 +65,25 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
     private AbstractComponentInstantiator componentInstantiator;
     private LogicalComponent<CompositeImplementation> domain;
-    private Element root;
+    private Element value;
     private Document property;
 
     public void testSimpleProperty() throws Exception {
-        root.setTextContent("Hello World");
-        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
-        Node child = values.get(0).getDocumentElement().getFirstChild();
+        value.setTextContent("Hello World");
+        Document value = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
+        Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.TEXT_NODE, child.getNodeType());
         assertEquals("Hello World", child.getTextContent());
     }
 
     public void testComplexProperty() throws Exception {
         Element http = property.createElement("http");
-        root.appendChild(http);
+        value.appendChild(http);
         Element port = property.createElement("port");
         http.appendChild(port);
         port.setTextContent("8080");
-        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain,  new StatefulNamespaceContext());
-        Node child = values.get(0).getDocumentElement().getFirstChild();
+        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain, new StatefulNamespaceContext());
+        Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
         assertEquals("8080", child.getTextContent());
@@ -93,9 +92,9 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     public void testAttributeProperty() throws Exception {
         Element http = property.createElement("http");
         http.setAttribute("port", "8080");
-        root.appendChild(http);
-        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain,  new StatefulNamespaceContext());
-        Node child = values.get(0).getDocumentElement().getFirstChild();
+        value.appendChild(http);
+        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain, new StatefulNamespaceContext());
+        Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
         assertEquals("8080", child.getTextContent());
@@ -103,24 +102,28 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
 
     public void testComplexPropertyWithMultipleValues() throws Exception {
         Element http1 = property.createElement("http");
-        root.appendChild(http1);
+        this.value.appendChild(http1);
         http1.setAttribute("index", "1");
         Element http2 = property.createElement("http");
-        root.appendChild(http2);
+        this.value.appendChild(http2);
         http2.setAttribute("index", "2");
-        List<Document> values = componentInstantiator.deriveValueFromXPath("$domain/http", domain,  new StatefulNamespaceContext());
-        Node child = values.get(0).getDocumentElement();
-        NodeList list = child.getChildNodes();
-        assertEquals(2, list.getLength());
+        Document values = componentInstantiator.deriveValueFromXPath("$domain/http", domain, new StatefulNamespaceContext());
+        Node value = values.getDocumentElement().getChildNodes().item(0);
+        NodeList list = value.getChildNodes();
+        assertEquals(1, list.getLength());
         assertEquals("http", list.item(0).getNodeName());
         assertEquals("1", ((Element) list.item(0)).getAttribute("index"));
-        assertEquals("http", list.item(1).getNodeName());
-        assertEquals("2", ((Element) list.item(1)).getAttribute("index"));
+
+        Node value2 = values.getDocumentElement().getChildNodes().item(1);
+        NodeList list2 = value2.getChildNodes();
+        assertEquals(1, list2.getLength());
+        assertEquals("http", list2.item(0).getNodeName());
+        assertEquals("2", ((Element) list2.item(0)).getAttribute("index"));
     }
 
     public void testUnknownVariable() {
         try {
-            componentInstantiator.deriveValueFromXPath("$foo", domain,  new StatefulNamespaceContext());
+            componentInstantiator.deriveValueFromXPath("$foo", domain, new StatefulNamespaceContext());
             fail();
         } catch (XPathExpressionException e) {
             // this is ok?
@@ -129,17 +132,18 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        componentInstantiator = new AbstractComponentInstantiator(null) {
 
+        componentInstantiator = new AbstractComponentInstantiator() {
         };
-        domain = new LogicalComponent<CompositeImplementation>(URI.create("fabric3://domain"), null, null);
 
+        domain = new LogicalComponent<CompositeImplementation>(URI.create("fabric3://domain"), null, null);
         property = FACTORY.newDocumentBuilder().newDocument();
-        root = property.createElement("value");
+        Element root = property.createElement("values");
         property.appendChild(root);
-        List<Document> properties = new ArrayList<Document>();
-        properties.add(property);
-        domain.setPropertyValues("domain", properties);
+        value = property.createElement("value");
+        root.appendChild(value);
+        LogicalProperty logicalProperty = new LogicalProperty("domain", property, false, domain);
+        domain.setProperties(logicalProperty);
     }
 
 }

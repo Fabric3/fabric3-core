@@ -109,9 +109,9 @@ public class InstantiationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl(null);
+        AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(null, null);
-        CompositeComponentInstantiatorImpl compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, null);
+        CompositeComponentInstantiatorImpl compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
         AutowireInstantiator autowireService = EasyMock.createMock(AutowireInstantiator.class);
         PromotionResolutionService promotionResolutionService = EasyMock.createMock(PromotionResolutionService.class);
         PromotionNormalizer normalizer = EasyMock.createMock(PromotionNormalizer.class);

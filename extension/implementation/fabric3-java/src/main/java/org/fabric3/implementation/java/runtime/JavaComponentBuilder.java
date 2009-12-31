@@ -44,17 +44,17 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
+import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Builds a JavaComponent from a physical definition.
@@ -70,9 +70,9 @@ public class JavaComponentBuilder<T> extends PojoComponentBuilder<T, JavaCompone
     public JavaComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                 @Reference InstanceFactoryBuilder<T> factoryBuilder,
                                 @Reference ClassLoaderRegistry classLoaderRegistry,
-                                @Reference TransformerRegistry transformerRegistry,
+                                @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                 @Reference IntrospectionHelper helper) {
-        super(classLoaderRegistry, transformerRegistry, helper);
+        super(classLoaderRegistry, propertyBuilder, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }

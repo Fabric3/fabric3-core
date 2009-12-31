@@ -41,7 +41,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.EagerInit;
@@ -68,6 +67,7 @@ import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -229,11 +229,12 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     }
 
     private void processPropertyValues(LogicalComponent<?> component, WebComponentDefinition physical) {
-        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
-            String name = entry.getKey();
-            List<Document> documents = entry.getValue();
-            if (documents != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
+        for (LogicalProperty property : component.getAllProperties().values()) {
+            Document document = property.getValue();
+            if (document != null) {
+                String name = property.getName();
+                boolean many = property.isMany();
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document,many);
                 physical.setPropertyDefinition(definition);
             }
         }

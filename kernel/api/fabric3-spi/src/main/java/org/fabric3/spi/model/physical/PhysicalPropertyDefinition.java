@@ -38,7 +38,6 @@
 package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.w3c.dom.Document;
 
@@ -50,11 +49,13 @@ import org.w3c.dom.Document;
 public class PhysicalPropertyDefinition implements Serializable {
     private static final long serialVersionUID = -9068366603932114615L;
     private String name;
-    private List<Document> values;
+    private Document value;
+    private boolean many;
 
-    public PhysicalPropertyDefinition(String name, List<Document> values) {
+    public PhysicalPropertyDefinition(String name, Document value, boolean many) {
         this.name = name;
-        this.values = values;
+        this.value = value;
+        this.many = many;
     }
 
     /**
@@ -67,11 +68,20 @@ public class PhysicalPropertyDefinition implements Serializable {
     }
 
     /**
-     * The property values. Properties may be single-valued or multi-valued.
+     * The property values. Properties may be single-valued or multi-valued. Values are stored as child nodes of the root.
      *
      * @return the property value
      */
-    public List<Document> getValues() {
-        return values;
+    public Document getValue() {
+        return value;
+    }
+
+    /**
+     * Returns true if the property is multi-valued.
+     *
+     * @return true if the property is multi-valued
+     */
+    public boolean isMany() {
+        return many;
     }
 }

@@ -67,6 +67,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
@@ -186,11 +187,12 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     private void processPropertyValues(LogicalComponent<XQueryImplementation> component, XQueryComponentDefinition physical) {
-        for (Map.Entry<String, List<Document>> entry : component.getAllPropertyValues().entrySet()) {
-            String name = entry.getKey();
-            List<Document> documents = entry.getValue();
-            if (documents != null) {
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, documents);
+        for (LogicalProperty property : component.getAllProperties().values()) {
+            Document document = property.getValue();
+            if (document != null) {
+                String name = property.getName();
+                boolean many = property.isMany();
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
                 physical.setPropertyDefinition(definition);
             }
         }

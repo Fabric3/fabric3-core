@@ -44,13 +44,9 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import org.fabric3.implementation.pojo.component.OASISPojoComponentContext;
 import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
@@ -68,7 +64,6 @@ import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.expression.ExpressionExpander;
-import org.fabric3.spi.expression.ExpressionExpansionException;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
@@ -77,40 +72,23 @@ import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
-import org.fabric3.spi.transform.TransformationException;
-import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.ParamTypes;
 
 /**
- * Base class for ComponentBuilders that build components based on POJOs.
+ * Base class for component builders that build Java-based components.
  *
  * @version $Rev$ $Date$
  */
 public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
-
     protected ClassLoaderRegistry classLoaderRegistry;
-    protected TransformerRegistry transformerRegistry;
     protected ExpressionExpander expander;
-
     protected IntrospectionHelper helper;
+    private PropertyObjectFactoryBuilder propertyBuilder;
 
-    protected PojoComponentBuilder(ClassLoaderRegistry classLoaderRegistry, TransformerRegistry transformerRegistry, IntrospectionHelper helper) {
-        this.classLoaderRegistry = classLoaderRegistry;
-        this.transformerRegistry = transformerRegistry;
+    protected PojoComponentBuilder(ClassLoaderRegistry registry, PropertyObjectFactoryBuilder propertyBuilder, IntrospectionHelper helper) {
+        this.classLoaderRegistry = registry;
+        this.propertyBuilder = propertyBuilder;
         this.helper = helper;
-    }
-
-    /**
-     * Optional ExpressionExpander for substituting values for properties containing expressions of the form '${..}'. Values may be sourced from a
-     * variety of places, including a file or system property.
-     *
-     * @param expander the injected expander
-     */
-    @Reference(required = false)
-    public void setExpander(ExpressionExpander expander) {
-        this.expander = expander;
     }
 
     protected void createPropertyFactories(PCD definition, InstanceFactoryProvider<T> provider) throws BuilderException {
@@ -121,15 +99,15 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
 
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
-            List<Document> values = propertyDefinition.getValues();
-            Element element = values.get(0).getDocumentElement();
+            Document value = propertyDefinition.getValue();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
 
             Type type = provider.getGenericType(source);
             DataType<?> dataType = getDataType(type, typeMapping);
 
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
-            ObjectFactory<?> objectFactory = createObjectFactory(name, dataType, element, classLoader);
+            boolean many = propertyDefinition.isMany();
+            ObjectFactory<?> objectFactory = propertyBuilder.createObjectFactory(name, dataType, value, many, classLoader);
             provider.setObjectFactory(source, objectFactory);
         }
     }
@@ -154,7 +132,7 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
         provider.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, oasisComponentFactory);
 
     }
-    
+
     @SuppressWarnings({"unchecked"})
     private DataType<?> getDataType(Type type, TypeMapping typeMapping) {
         if (type instanceof Class) {
@@ -171,30 +149,6 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
             return new JavaGenericType(info);
 
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private ObjectFactory<?> createObjectFactory(String name, DataType<?> dataType, Element value, ClassLoader classLoader) throws BuilderException {
-        try {
-            Class<?> physical = dataType.getPhysical();
-            List<Class<?>> types = new ArrayList<Class<?>>();
-            types.add(physical);
-            Transformer<Node, ?> transformer = (Transformer<Node, ?>) transformerRegistry.getTransformer(PROPERTY_TYPE, dataType, types, types);
-            if (transformer == null) {
-                throw new PropertyTransformException("No transformer for property " + name + " of type: " + dataType);
-            }
-            Object instance = transformer.transform(value, classLoader);
-            if (instance instanceof String && expander != null) {
-                // if the property value is a string, expand it if it contains expressions
-                instance = expander.expand((String) instance);
-            }
-            return new SingletonObjectFactory(instance);
-        } catch (TransformationException e) {
-            throw new PropertyTransformException("Unable to transform property value: " + name, e);
-        } catch (ExpressionExpansionException e) {
-            throw new PropertyTransformException("Unable to expand property value: " + name, e);
-        }
-
     }
 
 }

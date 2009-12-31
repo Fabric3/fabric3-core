@@ -34,28 +34,15 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.implementation.pojo.builder;
-
-import org.fabric3.spi.builder.BuilderException;
+*/
+package org.fabric3.model.type.component;
 
 /**
+ * Specifies the many setting for a property value configuration
  * @version $Rev$ $Date$
  */
-public class PropertyTransformException extends BuilderException {
-    private static final long serialVersionUID = -8543494515576133797L;
-
-    public PropertyTransformException(String message) {
-        super(message);
-    }
-
-    public PropertyTransformException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public enum PropertyMany {
+    SINGLE,
+    MANY,
+    NOT_SPECIFIED
 }

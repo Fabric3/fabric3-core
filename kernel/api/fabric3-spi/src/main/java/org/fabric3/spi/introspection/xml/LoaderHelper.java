@@ -72,26 +72,26 @@ public interface LoaderHelper {
     String loadKey(XMLStreamReader reader);
 
     /**
-     * Loads one or more property values configured in a composite or on a component from a Stax stream. Each property value is returned as an entry
-     * in the document collection.
+     * Loads one or more property values configured in a composite or on a component from a Stax stream. Each property value is returned as chld of
+     * the document root.
      * <p/>
      * The reader must be positioned at the composite or component &lt;property&gt; element.
      *
      * @param reader the stream reader
-     * @return a collection of documents containing the values
+     * @return a  document containing the values
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    List<Document> loadPropertyValues(XMLStreamReader reader) throws XMLStreamException;
+    Document loadPropertyValues(XMLStreamReader reader) throws XMLStreamException;
 
     /**
      * Loads a property value configured in a composite or on a component using the @value attribute from a String.
      *
      * @param reader  the stream reader
      * @param content String content
-     * @return a collection of documents containing the values
+     * @return a document containing the values
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    List<Document> loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException;
+    Document loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException;
 
     /**
      * Loads policy sets and intents. Errors will be collated in the IntrospectionContext.

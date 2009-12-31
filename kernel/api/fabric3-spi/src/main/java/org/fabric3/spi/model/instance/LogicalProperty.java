@@ -34,28 +34,55 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.implementation.pojo.builder;
+*/
+package org.fabric3.spi.model.instance;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.w3c.dom.Document;
 
 /**
+ * Holds a parsed component property as a DOM.
+ *
  * @version $Rev$ $Date$
  */
-public class PropertyTransformException extends BuilderException {
-    private static final long serialVersionUID = -8543494515576133797L;
+public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
+    private static final long serialVersionUID = 4648573312983221666L;
 
-    public PropertyTransformException(String message) {
-        super(message);
+    private String name;
+    private Document value;
+    private boolean many;
+
+    public LogicalProperty(String name, Document value, boolean many, LogicalComponent<?> parent) {
+        super(parent);
+        this.name = name;
+        this.value = value;
+        this.many = many;
     }
 
-    public PropertyTransformException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Returns the property name.
+     *
+     * @return the property name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * The parsed property value.
+     *
+     * @return the value
+     */
+    public Document getValue() {
+        return value;
+    }
+
+    /**
+     * True if this property is many-valued.
+     *
+     * @return true if this property is many-valued
+     */
+    public boolean isMany() {
+        return many;
     }
 }
+

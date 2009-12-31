@@ -72,7 +72,7 @@ public class F3FtpHostTest extends TestCase {
         Map<String, RequestHandler> requestHandlers = new HashMap<String, RequestHandler>();
 
         Map<String, String> users = new HashMap<String, String>();
-        users.put("meeraj", "password");
+        users.put("user", "password");
         FileSystemUserManager userManager = new FileSystemUserManager();
         userManager.setUsers(users);
         requestHandlers.put("USER", new UserRequestHandler());
@@ -117,21 +117,21 @@ public class F3FtpHostTest extends TestCase {
     public void testValidLogin() throws IOException {
         FTPClient ftpClient = new FTPClient();
         ftpClient.connect(InetAddress.getLocalHost(), 1234);
-        ftpClient.user("meeraj");
+        ftpClient.user("user");
         assertEquals(230, ftpClient.pass("password"));
     }
 
     public void testInvalidLogin() throws IOException {
         FTPClient ftpClient = new FTPClient();
         ftpClient.connect(InetAddress.getLocalHost(), 1234);
-        ftpClient.user("meeraj");
+        ftpClient.user("user");
         assertEquals(530, ftpClient.pass("password1"));
     }
 
     public void testStor() throws IOException {
         FTPClient ftpClient = new FTPClient();
         ftpClient.connect(InetAddress.getLocalHost(), 1234);
-        ftpClient.user("meeraj");
+        ftpClient.user("user");
         ftpClient.pass("password");
         ftpClient.enterLocalPassiveMode();
         ftpClient.storeFile("/resource/test.dat", new ByteArrayInputStream("TEST\r\n".getBytes()));
