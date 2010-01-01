@@ -44,6 +44,10 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 /**
  * Instantiates explicit wires, i.e. those declared by a <code>wire<code> wire element or using the <code>target</code> attribute on a
  * <code>reference</code> element. During instantiation, wires will be validated.
+ * <p/>
+ * Note {@link #instantiateCompositeWires(Composite, LogicalCompositeComponent, InstantiationContext)} must be called after {@link
+ * #instantiateReferenceWires(LogicalComponent, InstantiationContext)} as composite <code>&lt;wire&gt;</code> elements may use the @replace attribute
+ * to overwrite wires created using the @target attribute on a <code>&lt;reference&gt;</code> element
  *
  * @version $Rev$ $Date$
  */
