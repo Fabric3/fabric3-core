@@ -89,8 +89,8 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         initializeProperties(component, definition, context);
         instantiateChildComponents(component, composite, context);
         instantiateCompositeServices(component, composite);
-        instantiateCompositeReferences(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
+        instantiateCompositeReferences(component, composite);
         parent.addComponent(component);
         return component;
     }

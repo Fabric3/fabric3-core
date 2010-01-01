@@ -161,10 +161,12 @@ public class CopyUtil {
     private static void copyWires(LogicalCompositeComponent composite, LogicalReference reference, LogicalCompositeComponent parent) {
         for (LogicalWire wire : composite.getWires(reference)) {
             QName deployable = wire.getTargetDeployable();
+            boolean replaceable = wire.isReplaceable();
             LogicalService target = wire.getTarget();
-            LogicalWire wireCopy = new LogicalWire(parent, reference, target, deployable);
+            LogicalWire wireCopy = new LogicalWire(parent, reference, target, deployable, replaceable);
             wireCopy.setSourceBinding(wire.getSourceBinding());
             wireCopy.setTargetBinding(wire.getTargetBinding());
+            wireCopy.setReplaces(wire.isReplaces());
             parent.addWire(reference, wireCopy);
         }
     }

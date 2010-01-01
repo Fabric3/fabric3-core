@@ -102,6 +102,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
             // create the wire
             QName deployable = parent.getDeployable();
             LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+            wire.setReplaces(definition.isReplace());
             String referenceBindingName = referenceTarget.getBinding();
             String serviceBindingName = serviceTarget.getBinding();
             resolveBindings(reference, referenceBindingName, service, wire, serviceBindingName, context);
@@ -129,6 +130,16 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return;
         }
 
+        // Check if any composite level wires with @replace=true exist. If so, ignore wires specified using the @target attribute on the reference
+        // since they are overriden by the existing composite level wires.
+        List<LogicalWire> existingWires = reference.getWires();
+        for (LogicalWire wire : existingWires) {
+            if (wire.isReplaces()) {
+                reference.setResolved(true);
+                return;
+            }
+        }
+
         // resolve the targets and create logical wires
         List<LogicalWire> wires = new ArrayList<LogicalWire>();
         for (Target serviceTarget : serviceTargets) {
@@ -137,12 +148,12 @@ public class WireInstantiatorImpl implements WireInstantiator {
                 return;
             }
             QName deployable = service.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+            LogicalWire wire = new LogicalWire(parent, reference, service, deployable, true);
             String serviceBindingName = serviceTarget.getBinding();
             resolveBindings(reference, null, service, wire, serviceBindingName, context);
             wires.add(wire);
         }
-        parent.overrideWires(reference, wires);
+        parent.addWires(reference, wires);
         reference.setResolved(true);
     }
 

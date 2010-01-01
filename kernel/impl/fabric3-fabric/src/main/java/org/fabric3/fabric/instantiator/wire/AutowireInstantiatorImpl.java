@@ -190,7 +190,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         for (LogicalService target : candidates) {
             // for autowires, the deployable of the wire is the target since the wire must be removed when the target is undeployed
             QName deployable = target.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(composite, logicalReference, target, deployable);
+            LogicalWire wire = new LogicalWire(composite, logicalReference, target, deployable, true);
             LogicalComponent parent = logicalReference.getParent();
             LogicalCompositeComponent grandParent = (LogicalCompositeComponent) parent.getParent();
             if (grandParent != null) {

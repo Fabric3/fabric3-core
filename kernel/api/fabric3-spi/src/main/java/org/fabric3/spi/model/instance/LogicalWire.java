@@ -63,6 +63,8 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     private LogicalService target;
     private LogicalBinding sourceBinding;
     private LogicalBinding targetBinding;
+    private boolean replaces;
+    private boolean replaceable;
 
     private QName deployable;
     private LogicalState state = LogicalState.NEW;
@@ -83,6 +85,24 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     }
 
     /**
+     * Instantiates a logical wire.
+     *
+     * @param parent      component within which the wire is defined.
+     * @param source      the source reference of the wire
+     * @param target      the target service
+     * @param deployable  the target service deployable
+     * @param replaceable true if the wire was created from a reference @target attribute and can be replaced by a wire created from an explicit wire
+     *                    element at the composite level.
+     */
+    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, QName deployable, boolean replaceable) {
+        super(parent);
+        this.source = source;
+        this.target = target;
+        this.deployable = deployable;
+        this.replaceable = replaceable;
+    }
+
+    /**
      * Gets the source of the wire.
      *
      * @return source of the wire.
@@ -98,6 +118,35 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public LogicalService getTarget() {
         return target;
+    }
+
+    /**
+     * Returns true if the wire replaces wires specified by the @target attribute on a reference.
+     *
+     * @return true if the wire replaces wires specified by the @target attribute on a reference
+     */
+    public boolean isReplaces() {
+        return replaces;
+    }
+
+    /**
+     * Ses if the wire replaces wires specified by the @target attribute on a reference.
+     *
+     * @param replaces true if the wire replaces wires specified by the @target attribute on a reference
+     */
+    public void setReplaces(boolean replaces) {
+        this.replaces = replaces;
+    }
+
+
+    /**
+     * Returns true if the wire was created from a reference @target attribute and can be replaced by a wire created from an explicit wire element at
+     * the composite level.
+     *
+     * @return true if the wire is replaceable
+     */
+    public boolean isReplaceable() {
+        return replaceable;
     }
 
     /**

@@ -86,6 +86,21 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * Adds a set of wires to this composite component.
      *
      * @param logicalReference the source for the wires
+     * @param newWires     the wires to add
+     */
+    public void addWires(LogicalReference logicalReference, List<LogicalWire> newWires) {
+        List<LogicalWire> logicalWires = wires.get(logicalReference);
+        if (logicalWires == null) {
+            logicalWires = new ArrayList<LogicalWire>();
+            wires.put(logicalReference, logicalWires);
+        }
+        logicalWires.addAll(newWires);
+    }
+
+    /**
+     * Adds a set of wires to this composite component, overriding any existing ones.
+     *
+     * @param logicalReference the source for the wires
      * @param logicalWires     the list of wires
      */
     public void overrideWires(LogicalReference logicalReference, List<LogicalWire> logicalWires) {
