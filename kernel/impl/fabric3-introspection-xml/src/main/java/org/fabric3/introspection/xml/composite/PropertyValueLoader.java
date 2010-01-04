@@ -143,7 +143,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             if (elementAttribute != null) {
                 InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, reader);
                 context.addError(failure);
-                return null;
             }
             try {
                 type = helper.createQName(typeAttribute, reader);
