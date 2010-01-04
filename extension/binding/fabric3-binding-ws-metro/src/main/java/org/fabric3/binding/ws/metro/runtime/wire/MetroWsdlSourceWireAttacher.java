@@ -84,6 +84,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
     }
 
     public void attach(MetroWsdlSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
             QName serviceName = endpointDefinition.getServiceName();
@@ -92,6 +93,8 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             List<InvocationChain> invocationChains = wire.getInvocationChains();
             List<QName> requestedIntents = source.getIntents();
 
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
             BindingID bindingId = bindingIdResolver.resolveBindingId(requestedIntents);
             WebServiceFeature[] features = featureResolver.getFeatures(requestedIntents);
 
@@ -99,7 +102,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             if (!path.startsWith("/")) {
                 path = "/" + path;
             }
-            
+
             String wsdl = source.getWsdl();
             URL wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
             List<URL> generatedSchemas = null;
@@ -120,6 +123,8 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             throw new WiringException(e);
         } catch (EndpointException e) {
             throw new WiringException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 

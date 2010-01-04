@@ -112,7 +112,9 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
         DataType<?> outputType = getOutputType(output, collection, portType, context);
 
         String name = operation.getName();
-        return new Operation(name, inputTypes, outputType, faultTypes);
+        Operation op = new Operation(name, inputTypes, outputType, faultTypes);
+        op.setRemotable(true);
+        return op;
     }
 
     @SuppressWarnings({"unchecked"})

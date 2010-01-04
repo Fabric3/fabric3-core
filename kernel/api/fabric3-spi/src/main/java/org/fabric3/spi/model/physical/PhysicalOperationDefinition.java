@@ -73,6 +73,7 @@ public class PhysicalOperationDefinition implements Serializable {
     private boolean callback;
     private boolean oneWay;
     private boolean endsConversation;
+    private boolean remotable;
 
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
@@ -283,5 +284,24 @@ public class PhysicalOperationDefinition implements Serializable {
     public void setOneWay(boolean oneWay) {
         this.oneWay = oneWay;
     }
+
+    /**
+     * Returns true if the operation is part of a remotable interface.
+     *
+     * @return true if the operation is part of a remotable interface
+     */
+    public boolean isRemotable() {
+        return remotable;
+    }
+
+    /**
+     * Sets if the operation is part of a remotable interface.
+     *
+     * @param remotable true if the operation is part of a remotable interface
+     */
+    public void setRemotable(boolean remotable) {
+        this.remotable = remotable;
+    }
+
 
 }

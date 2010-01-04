@@ -104,7 +104,12 @@ public class WireGeneratorImpl implements WireGenerator {
         }
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
-        ServiceContract contract = service.getServiceContract();
+
+        // Use the leaf service contract to bind to the transport in case of service promotions.
+        // The overriding service contract (i.e. the one on the promoted service) is used for wire matching but not for binding to the transport
+        // since doing so would require matching to the original contract and potential parameter data transformation. For example, a promoted
+        // service contract may be expressed in WSDL and the target service contract in Java.
+        ServiceContract contract = service.getLeafService().getServiceContract();
 
         LogicalBinding<RemoteBindingDefinition> targetBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
@@ -137,7 +142,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
 
-        ServiceContract contract = service.getServiceContract();
+        ServiceContract contract = service.getLeafService().getServiceContract();
         ServiceContract callbackContract = contract.getCallbackContract();
 
         LogicalBinding<RemoteBindingDefinition> sourceBinding =

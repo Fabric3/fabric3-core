@@ -61,6 +61,7 @@ public class Operation extends AbstractPolicyAware {
     private static final long serialVersionUID = 5279880534105654066L;
     private String name;
     private String wsdlName;
+    private boolean remotable;
     private DataType<?> outputType;
     private List<DataType<?>> inputTypes;
     private List<DataType<?>> faultTypes;
@@ -175,6 +176,24 @@ public class Operation extends AbstractPolicyAware {
      */
     public void setConversationSequence(int conversationSequence) {
         this.conversationSequence = conversationSequence;
+    }
+
+    /**
+     * Returns true if the operation is part of a remotable interface.
+     *
+     * @return true if the operation is part of a remotable interface
+     */
+    public boolean isRemotable() {
+        return remotable;
+    }
+
+    /**
+     * Sets if the operation is part of a remotable interface.
+     *
+     * @param remotable true if the operation is part of a remotable interface
+     */
+    public void setRemotable(boolean remotable) {
+        this.remotable = remotable;
     }
 
     public String toString() {

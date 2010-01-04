@@ -82,11 +82,8 @@ public class WsdlSynthesizerImpl implements WsdlSynthesizer {
                                           String endpointAddress,
                                           WsdlServiceContract contract,
                                           EffectivePolicy policy,
-                                          Definition wsdl) throws WsdlSynthesisException {
-        URI targetUri = logicalBinding.getDefinition().getTargetUri();
-        if (targetUri == null) {
-            throw new WsdlSynthesisException("Target uri not specified on binding for " + logicalBinding.getParent().getUri());
-        }
+                                          Definition wsdl,
+                                          URI targetUri) throws WsdlSynthesisException {
 
         Definition copy = clone(wsdl);
 

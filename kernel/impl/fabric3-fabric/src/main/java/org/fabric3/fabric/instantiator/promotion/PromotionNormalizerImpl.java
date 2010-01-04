@@ -48,6 +48,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.model.type.component.Autowire;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -168,6 +169,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      *
      * @param references the sorted reference promotion hierarchy
      */
+    @SuppressWarnings({"unchecked"})
     private void processReferencePromotions(LinkedList<LogicalReference> references) {
         if (references.size() < 2) {
             // no promotion evaluation needed
@@ -185,7 +187,16 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             }
             // TODO determine if bindings should be overriden - for now, override
             if (reference.getBindings().isEmpty()) {
-                reference.overrideBindings(bindings);
+                List<LogicalBinding<?>> newBindings = new ArrayList<LogicalBinding<?>>();
+
+                for (LogicalBinding<?> binding : bindings) {
+                    // create a new logical binding based on the promoted one
+                    BindingDefinition definition = binding.getDefinition();
+                    QName deployable = binding.getDeployable();
+                    LogicalBinding<?> newBinding = new LogicalBinding(definition, reference, deployable);
+                    newBindings.add(newBinding);
+                }
+                reference.overrideBindings(newBindings);
             } else {
                 bindings = new ArrayList<LogicalBinding<?>>();
                 bindings.addAll(reference.getBindings());
@@ -254,7 +265,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * @return true if the validation was successful
      */
     private boolean validateMultiplicity(LogicalReference reference, List<LogicalService> targets, InstantiationContext context) {
-        if (reference.getParent().getAutowire() == Autowire.ON) {
+        if (reference.getParent().getAutowire() == Autowire.ON || !reference.getBindings().isEmpty()) {
             return true;
         }
         Multiplicity multiplicity = reference.getDefinition().getMultiplicity();

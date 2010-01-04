@@ -81,6 +81,7 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.policy.EffectivePolicy;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
@@ -136,7 +137,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl, targetUri);
             } else {
                 // A port type is used. Synthesize concrete WSDL for the port type.
-                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl);
+                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 endpointDefinition = new ServiceEndpointDefinition(result.getServiceName(), result.getPortName(), targetUri);
             }
@@ -144,11 +145,17 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             // no target uri specified, check wsdlElement
             String wsdlElementString = binding.getDefinition().getWsdlElement();
             if (wsdlElementString == null) {
-                URI bindableUri = binding.getParent().getUri();
-                throw new GenerationException("Either a uri or wsdlElement must be specified for the web service binding on " + bindableUri);
+                // A port type is used. Synthesize concrete WSDL for the port type.
+                Bindable service = binding.getParent();
+                targetUri = URI.create(service.getUri().getFragment());
+                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
+                wsdl = result.getDefiniton();
+                QName serviceName = result.getServiceName();
+                endpointDefinition = new ServiceEndpointDefinition(serviceName, result.getPortName(), targetUri);
+            } else {
+                WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(wsdlElementString);
+                endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl, targetUri);
             }
-            WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(wsdlElementString);
-            endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl, targetUri);
         }
 
         // handle endpoint-level intents provided by Metro
@@ -233,7 +240,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             } else {
                 // A port type is used. Synthesize concrete WSDL for the port type.
                 String endpointAddress = targetUrl.toString();
-                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl);
+                URI targetUri = binding.getDefinition().getTargetUri();
+                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 // FIXME null service name
                 QName portTypeName = contract.getPortTypeQname();

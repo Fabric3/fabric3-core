@@ -90,27 +90,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         // attach the invoker interceptor to forward invocation chains
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            List<String> params = operation.getTargetParameterTypes();
-            Class<?>[] paramTypes = new Class<?>[params.size()];
-            assert loader != null;
-            for (int i = 0; i < params.size(); i++) {
-                String param = params.get(i);
-                try {
-                    paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
-                } catch (ClassNotFoundException e) {
-                    URI sourceUri = sourceDefinition.getUri();
-                    URI targetUri = targetDefinition.getUri();
-                    throw new WireAttachException("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
-                }
-            }
-            Method method;
-            try {
-                method = implementationClass.getMethod(operation.getName(), paramTypes);
-            } catch (NoSuchMethodException e) {
-                URI sourceUri = sourceDefinition.getUri();
-                URI targetUri = targetDefinition.getUri();
-                throw new WireAttachException("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
-            }
+            Method method = findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader);
             boolean endsConversation = operation.isEndsConversation();
             boolean callback = targetDefinition.isCallback();
             if (callback) {
@@ -140,6 +120,53 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         JavaComponent<?> targetComponent = (JavaComponent<?>) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();
+    }
+
+    private Method findMethod(PhysicalSourceDefinition sourceDefinition,
+                              JavaTargetDefinition targetDefinition,
+                              PhysicalOperationDefinition operation,
+                              Class<?> implementationClass,
+                              ClassLoader loader) throws WireAttachException {
+        List<String> params = operation.getTargetParameterTypes();
+        Class<?>[] paramTypes = new Class<?>[params.size()];
+        assert loader != null;
+        for (int i = 0; i < params.size(); i++) {
+            String param = params.get(i);
+            try {
+                paramTypes[i] = classLoaderRegistry.loadClass(loader, param);
+            } catch (ClassNotFoundException e) {
+                URI sourceUri = sourceDefinition.getUri();
+                URI targetUri = targetDefinition.getUri();
+                throw new WireAttachException("Implementation class not found when wiring " + sourceUri + " to " + targetUri, e);
+            }
+        }
+        Method method = null;
+        if (operation.isRemotable()) {
+            // if the operation is remotable, do not match on parameter types since method names cannot be overloaded
+            Method[] methods = implementationClass.getMethods();
+            String name = operation.getName();
+            for (Method entry : methods) {
+                if (name.equals(entry.getName())) {
+                    method = entry;
+                    break;
+                }
+            }
+            if (method == null) {
+                URI sourceUri = sourceDefinition.getUri();
+                URI targetUri = targetDefinition.getUri();
+                throw new WireAttachException("No matching method found when wiring " + sourceUri + " to " + targetUri);
+            }
+        } else {
+            // operation is remove, match on operation names and parameter types
+            try {
+                method = implementationClass.getMethod(operation.getName(), paramTypes);
+            } catch (NoSuchMethodException e) {
+                URI sourceUri = sourceDefinition.getUri();
+                URI targetUri = targetDefinition.getUri();
+                throw new WireAttachException("No matching method found when wiring " + sourceUri + " to " + targetUri, e);
+            }
+        }
+        return method;
     }
 
     private <T> InvokerInterceptor<T> createInterceptor(Method method,

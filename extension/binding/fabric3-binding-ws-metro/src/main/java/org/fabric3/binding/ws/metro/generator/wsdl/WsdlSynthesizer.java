@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.generator.wsdl;
 
+import java.net.URI;
 import javax.wsdl.Definition;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
@@ -59,6 +60,7 @@ public interface WsdlSynthesizer {
      * @param contract        the endpoint service contract
      * @param policy          configured policy for the service
      * @param wsdl            the abstract WSDL
+     * @param targetUri       the endpoint URI
      * @return a result containing the concrete WSDL and the generated service and port names
      * @throws WsdlSynthesisException if an error occurs during synthesis
      */
@@ -66,7 +68,8 @@ public interface WsdlSynthesizer {
                                    String endpointAddress,
                                    WsdlServiceContract contract,
                                    EffectivePolicy policy,
-                                   Definition wsdl) throws WsdlSynthesisException;
+                                   Definition wsdl,
+                                   URI targetUri) throws WsdlSynthesisException;
 
 
 }

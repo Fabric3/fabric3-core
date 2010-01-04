@@ -171,6 +171,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             int conversationSequence = introspectConversationSequence(conversational, method, context);
 
             Operation operation = new Operation(name, paramTypes, returnType, faultTypes, conversationSequence);
+            operation.setRemotable(remotable);
 
             if (method.isAnnotationPresent(org.oasisopen.sca.annotation.OneWay.class) || method.isAnnotationPresent(OneWay.class)) {
                 operation.addIntent(ONEWAY_INTENT);

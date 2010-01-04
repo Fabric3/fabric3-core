@@ -182,6 +182,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
         }
+        operation.setRemotable(o.isRemotable());
         // the source and target in-, out- and fault types are the same since the source and target contracts are the same
         Class<?> returnType = o.getOutputType().getPhysical();
         String returnName = returnType.getName();
@@ -217,6 +218,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Operation o = source.getDefinition();
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(o.getName());
+        operation.setRemotable(o.isRemotable());
         operation.setEndsConversation(o.getConversationSequence() == Operation.CONVERSATION_END);
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
@@ -251,7 +253,6 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         }
 
         return operation;
-
     }
 
 }
