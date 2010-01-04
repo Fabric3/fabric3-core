@@ -55,18 +55,18 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.PropertyMany;
 import org.fabric3.model.type.component.PropertyValue;
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-import org.fabric3.spi.model.type.xsd.XSDConstants;
 
 /**
  * Loads property values configured on a component.
@@ -131,26 +131,33 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
     }
 
     private PropertyValue loadInlinePropertyValue(String name, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        DataType<QName> dataType;
-        String type = reader.getAttributeValue(null, "type");
-        String element = reader.getAttributeValue(null, "element");
+        String typeAttribute = reader.getAttributeValue(null, "type");
+        String elementAttribute = reader.getAttributeValue(null, "element");
         PropertyMany many = parseMany(reader);
         String valueAttribute = reader.getAttributeValue(null, "value");
-        if (type != null) {
-            if (element != null) {
+
+        QName type = null;
+        QName element = null;
+
+        if (typeAttribute != null) {
+            if (elementAttribute != null) {
                 InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, reader);
                 context.addError(failure);
                 return null;
             }
-            dataType = XSDConstants.PROPERTY_TYPE;
-            // TODO support type attribute
-//            throw new UnsupportedOperationException();
-        } else if (element != null) {
-            // TODO support element attribute
-            dataType = XSDConstants.PROPERTY_TYPE;
-//            throw new UnsupportedOperationException();
-        } else {
-            dataType = XSDConstants.PROPERTY_TYPE;
+            try {
+                type = helper.createQName(typeAttribute, reader);
+            } catch (InvalidPrefixException e) {
+                InvalidAtttributes error = new InvalidAtttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                context.addError(error);
+            }
+        } else if (elementAttribute != null) {
+            try {
+                element = helper.createQName(elementAttribute, reader);
+            } catch (InvalidPrefixException e) {
+                InvalidAtttributes error = new InvalidAtttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                context.addError(error);
+            }
         }
 
         Document value = helper.loadPropertyValues(reader);
@@ -164,8 +171,10 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             value = helper.loadPropertyValue(valueAttribute, reader);
         }
 
-        return new PropertyValue(name, dataType, value, many);
-
+        PropertyValue propertyValue = new PropertyValue(name, value, many);
+        propertyValue.setElement(element);
+        propertyValue.setType(type);
+        return propertyValue;
     }
 
     private PropertyMany parseMany(XMLStreamReader reader) {

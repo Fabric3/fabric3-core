@@ -50,7 +50,6 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.DataType;
 
 /**
  * The value of a configured component property.
@@ -62,7 +61,8 @@ public class PropertyValue extends ModelObject {
     private String name;
     private String source;
     private URI file;
-    private DataType<QName> valueType;
+    private QName type;
+    private QName element;
     private Document value;
     private NamespaceContext namespaceContext;
     private PropertyMany many;
@@ -90,14 +90,14 @@ public class PropertyValue extends ModelObject {
     }
 
     /**
+     * Constructor for inline property values.
+     *
      * @param name      the name of the property
-     * @param valueType the XML type of the value
      * @param value     the property value
      * @param many      the property many parameter
      */
-    public PropertyValue(String name, DataType<QName> valueType, Document value, PropertyMany many) {
+    public PropertyValue(String name, Document value, PropertyMany many) {
         this.name = name;
-        this.valueType = valueType;
         this.value = value;
         this.many = many;
     }
@@ -193,21 +193,39 @@ public class PropertyValue extends ModelObject {
     }
 
     /**
-     * Returns the value's XML Schema type.
+     * Returns the property XSD type or null if it is not an XSD type.
      *
-     * @return the value's XML Schema type
+     * @return the XSD type
      */
-    public DataType<QName> getValueType() {
-        return valueType;
+    public QName getType() {
+        return type;
     }
 
     /**
-     * Sets the value's XML Schema type.
+     * Sets the XSD type
      *
-     * @param valueType the value's XML Schema type
+     * @param type the XSD type
      */
-    public void setValueType(DataType<QName> valueType) {
-        this.valueType = valueType;
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    /**
+     * Gets the property XSD element or null if the property is not an XSD element type
+     *
+     * @return XSD element
+     */
+    public QName getElement() {
+        return element;
+    }
+
+    /**
+     * Sets the property XSD element
+     *
+     * @param element XSD element
+     */
+    public void setElement(QName element) {
+        this.element = element;
     }
 
     /**

@@ -43,6 +43,7 @@
  */
 package org.fabric3.introspection.xml.common;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -51,6 +52,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
@@ -80,11 +82,30 @@ public class PropertyLoader implements TypeLoader<Property> {
         String name = reader.getAttributeValue(null, NAME);
         boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, MANY));
         boolean mustSupply = Boolean.parseBoolean(reader.getAttributeValue(null, MUST_SUPPLY));
-        String type = reader.getAttributeValue(null, TYPE);
-        String element = reader.getAttributeValue(null, ELEMENT);
+        String typeAttribute = reader.getAttributeValue(null, TYPE);
+        String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
-        if (type != null && element != null) {
-            context.addError(new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader));
+        if (typeAttribute != null && elementAttribute != null) {
+            InvalidAtttributes error = new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader);
+            context.addError(error);
+        }
+
+        QName type = null;
+        QName element = null;
+        if (typeAttribute != null) {
+            try {
+                type = helper.createQName(typeAttribute, reader);
+            } catch (InvalidPrefixException e) {
+                InvalidAtttributes error = new InvalidAtttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                context.addError(error);
+            }
+        } else if (elementAttribute != null) {
+            try {
+                element = helper.createQName(elementAttribute, reader);
+            } catch (InvalidPrefixException e) {
+                InvalidAtttributes error = new InvalidAtttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                context.addError(error);
+            }
         }
         String valueAttribute = reader.getAttributeValue(null, VALUE);
 
@@ -96,6 +117,8 @@ public class PropertyLoader implements TypeLoader<Property> {
         }
         Property property = new Property(name);
         property.setRequired(mustSupply);
+        property.setType(type);
+        property.setElement(element);
         property.setMany(many);
         if (!many && value.getDocumentElement().getChildNodes().getLength() > 1) {
             InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);

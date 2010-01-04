@@ -58,6 +58,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
@@ -287,6 +288,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             context.addError(failure);
             return;
         }
+        validatePropertyType(value, property, reader, context);
         if (definition.getPropertyValues().containsKey(value.getName())) {
             String id = value.getName();
             DuplicateConfiguredProperty failure = new DuplicateConfiguredProperty(id, definition, reader);
@@ -431,6 +433,35 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
     }
 
+    private void validatePropertyType(PropertyValue value, Property property, XMLStreamReader reader, IntrospectionContext context) {
+        QName propType = property.getType();
+        QName propElement = property.getElement();
+        QName valType = value.getType();
+        QName valElement = value.getElement();
+        if (propType != null) {
+            if (valElement != null) {
+                InvalidAtttributes error = new InvalidAtttributes("Cannot specify property schema type and element type on property configuration: "
+                        + value.getName(), reader);
+                context.addError(error);
+            } else if (valType != null && !valType.equals(propType)) {
+                InvalidAtttributes error = new InvalidAtttributes("Property type " + propType + " and property configuration type " + valType
+                        + " do not match: " + value.getName(), reader);
+                context.addError(error);
+            }
+        } else if (propElement != null) {
+            if (valType != null) {
+                InvalidAtttributes error = new InvalidAtttributes("Cannot specify property element type and property configuration schema type: "
+                        + value.getName(), reader);
+                context.addError(error);
+            } else if (valElement != null && !valElement.equals(propElement)) {
+                InvalidAtttributes error = new InvalidAtttributes("Property element type " + propElement + " and property configuration element type "
+                        + valElement + " do not match: " + value.getName(), reader);
+                context.addError(error);
+            }
+        }
+
+    }
+    
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
