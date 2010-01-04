@@ -47,6 +47,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ReferenceDefinition;
 
@@ -61,6 +62,8 @@ public class LogicalReference extends Bindable {
     private ReferenceDefinition definition;
     private List<URI> promotedUris;
     private boolean resolved;
+    private Autowire autowire = Autowire.INHERITED;
+    private LogicalReference leafReference;
 
     /**
      * Constructor.
@@ -73,6 +76,7 @@ public class LogicalReference extends Bindable {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         promotedUris = new ArrayList<URI>();
+        leafReference = this;
         if (definition != null) {
             // null check for testing so full model does not need to be instantiated
             addIntents(definition.getIntents());
@@ -126,6 +130,14 @@ public class LogicalReference extends Bindable {
         promotedUris.set(index, uri);
     }
 
+    public Autowire getAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(Autowire autowire) {
+        this.autowire = autowire;
+    }
+
     /**
      * Returns true if this reference's target (or targets) has been resolved.
      *
@@ -151,6 +163,14 @@ public class LogicalReference extends Bindable {
      */
     public ComponentReference getComponentReference() {
         return getParent().getDefinition().getReferences().get(getDefinition().getName());
+    }
+
+    public LogicalReference getLeafReference() {
+        return leafReference;
+    }
+
+    public void setLeafReference(LogicalReference leafReference) {
+        this.leafReference = leafReference;
     }
 
     @Override

@@ -57,6 +57,7 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -187,7 +188,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
                 new ComponentDefinition<MockAtomicImpl>(SOURCE_URI.toString());
         definition.setImplementation(impl);
         ComponentReference target = new ComponentReference(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
-        target.setAutowire(true);
+        target.setAutowire(Autowire.ON);
         definition.add(target);
         LogicalComponent<?> component =
                 new LogicalComponent<MockAtomicImpl>(SOURCE_URI, definition, parent);

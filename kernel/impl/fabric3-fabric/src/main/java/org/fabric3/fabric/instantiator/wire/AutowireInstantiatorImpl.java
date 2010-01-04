@@ -127,7 +127,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            if (componentReference.isAutowire()) {
+            if (componentReference.getAutowire() == Autowire.ON) {
                 ReferenceDefinition referenceDefinition = logicalReference.getDefinition();
                 ServiceContract requiredContract = referenceDefinition.getServiceContract();
                 boolean resolved = resolveByType(component.getParent(), logicalReference, requiredContract);
@@ -137,7 +137,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             }
         }
 
-        boolean targetted = !logicalReference.getWires().isEmpty();
+        boolean targetted = !logicalReference.getLeafReference().getWires().isEmpty();
         if (!targetted && logicalReference.getDefinition().isRequired() && logicalReference.getBindings().isEmpty()) {
             String referenceUri = logicalReference.getUri().toString();
             URI componentUri = component.getUri();
@@ -164,6 +164,10 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         Multiplicity refMultiplicity = logicalReference.getDefinition().getMultiplicity();
         boolean multiplicity = Multiplicity.ZERO_N.equals(refMultiplicity) || Multiplicity.ONE_N.equals(refMultiplicity);
         for (LogicalComponent<?> child : composite.getComponents()) {
+            if (logicalReference.getParent() == child) {
+                // don't wire to self
+                continue;
+            }
             if (validKey(logicalReference, child)) {  // if the reference is keyed and the target does not have a key, skip
                 for (LogicalService service : child.getServices()) {
                     ServiceContract targetContract = resolver.determineContract(service);
@@ -190,15 +194,13 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         for (LogicalService target : candidates) {
             // for autowires, the deployable of the wire is the target since the wire must be removed when the target is undeployed
             QName deployable = target.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(composite, logicalReference, target, deployable, true);
-            LogicalComponent parent = logicalReference.getParent();
-            LogicalCompositeComponent grandParent = (LogicalCompositeComponent) parent.getParent();
-            if (grandParent != null) {
-                grandParent.addWire(logicalReference, wire);
-            } else {
-                ((LogicalCompositeComponent) parent).addWire(logicalReference, wire);
-            }
-
+            // Set the wire on the leaf component reference since the reference may be a composite reference and only leaf/atomic references
+            // are generated.
+            LogicalReference leafReference = logicalReference.getLeafReference();
+            LogicalComponent<?> parent = leafReference.getParent();
+            LogicalCompositeComponent parentComposite = parent.getParent();
+            LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable, true);
+            parentComposite.addWire(leafReference, wire);
         }
         return true;
     }

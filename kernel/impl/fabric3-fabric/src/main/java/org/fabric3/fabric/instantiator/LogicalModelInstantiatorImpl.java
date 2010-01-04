@@ -72,7 +72,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private WireInstantiator wireInstantiator;
     private AutowireNormalizer autowireNormalizer;
     private PromotionResolutionService promotionResolutionService;
-    private AutowireInstantiator autowireService;
+    private AutowireInstantiator autowireInstantiator;
 
     public LogicalModelInstantiatorImpl(@Reference CompositeComponentInstantiator compositeComponentInstantiator,
                                         @Reference AtomicComponentInstantiator atomicComponentInstantiator,
@@ -80,14 +80,14 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                         @Reference PromotionNormalizer promotionNormalizer,
                                         @Reference AutowireNormalizer autowireNormalizer,
                                         @Reference PromotionResolutionService promotionResolutionService,
-                                        @Reference AutowireInstantiator autowireService) {
+                                        @Reference AutowireInstantiator autowireInstantiator) {
         this.promotionNormalizer = promotionNormalizer;
         this.atomicComponentInstantiator = atomicComponentInstantiator;
         this.compositeComponentInstantiator = compositeComponentInstantiator;
         this.wireInstantiator = wireInstantiator;
         this.autowireNormalizer = autowireNormalizer;
         this.promotionResolutionService = promotionResolutionService;
-        this.autowireService = autowireService;
+        this.autowireInstantiator = autowireInstantiator;
     }
 
     public InstantiationContext include(Composite composite, LogicalCompositeComponent domain) {
@@ -118,7 +118,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         // resolve services and references - evaluate all references since reinjection may apply
         for (LogicalComponent<?> component : domain.getComponents()) {
             promotionResolutionService.resolve(component, context);
-            autowireService.instantiate(component, context);
+            autowireInstantiator.instantiate(component, context);
         }
         return context;
     }
@@ -211,7 +211,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
 
     /**
-     * Normalizes the component hierarchy autowire and promotion settings.
+     * Normalizes the component hierarchy by calculating autowire and promotion settings through a depth-first traversal of leaf/atomic components.
      *
      * @param component the component to normalize
      * @param context   the instantiation context

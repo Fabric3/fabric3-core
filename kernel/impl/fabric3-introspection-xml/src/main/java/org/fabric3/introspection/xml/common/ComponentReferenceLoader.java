@@ -59,6 +59,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
@@ -112,7 +113,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             return null;
         }
 
-        boolean autowire = Boolean.parseBoolean(reader.getAttributeValue(null, "autowire"));
+        String autowire = reader.getAttributeValue(null, "autowire");
 
         String value = reader.getAttributeValue(null, "multiplicity");
         Multiplicity multiplicity = null;
@@ -125,7 +126,13 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             context.addError(failure);
         }
         ComponentReference reference = new ComponentReference(name, multiplicity);
-        reference.setAutowire(autowire);
+
+        if ("true".equalsIgnoreCase(autowire)) {
+            reference.setAutowire(Autowire.ON);
+        } else if ("false".equalsIgnoreCase(autowire)) {
+            reference.setAutowire(Autowire.OFF);
+        }
+
 
         String targetAttribute = reader.getAttributeValue(null, "target");
         List<Target> targets = new ArrayList<Target>();

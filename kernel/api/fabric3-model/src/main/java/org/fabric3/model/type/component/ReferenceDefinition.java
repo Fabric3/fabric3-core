@@ -62,6 +62,7 @@ public class ReferenceDefinition extends AbstractPolicyAware {
     private Multiplicity multiplicity;
     private boolean keyed;
     private DataType<?> keyDataType;
+    private Autowire autowire = Autowire.INHERITED;
 
     private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
     private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
@@ -219,4 +220,23 @@ public class ReferenceDefinition extends AbstractPolicyAware {
     public void setKeyDataType(DataType<?> keyDataType) {
         this.keyDataType = keyDataType;
     }
+
+    /**
+     * Returns the autowire setting for the reference.
+     *
+     * @return true if autowire is enabled for the reference.
+     */
+    public Autowire getAutowire() {
+        return autowire;
+    }
+
+    /**
+     * Sets autowire enablement for the reference.
+     *
+     * @param autowire true if autowire is enabled.
+     */
+    public void setAutowire(Autowire autowire) {
+        this.autowire = autowire;
+    }
+
 }

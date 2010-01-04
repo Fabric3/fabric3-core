@@ -53,7 +53,6 @@ import java.util.List;
  */
 public class ComponentReference extends ReferenceDefinition {
     private static final long serialVersionUID = 2072898078368317712L;
-    private boolean autowire;
     private List<Target> targets = new ArrayList<Target>();
 
     /**
@@ -64,24 +63,6 @@ public class ComponentReference extends ReferenceDefinition {
      */
     public ComponentReference(String name, Multiplicity multiplicity) {
         super(name, multiplicity);
-    }
-
-    /**
-     * Returns true if autowire is enabled for the reference.
-     *
-     * @return true if autowire is enabled for the reference.
-     */
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets autowire enablement for the reference.
-     *
-     * @param autowire true if autowire is enabled.
-     */
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
     }
 
     public List<Target> getTargets() {

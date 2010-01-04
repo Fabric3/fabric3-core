@@ -51,6 +51,7 @@ import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -180,10 +181,17 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         ServiceContract contract = leafReference.getDefinition().getServiceContract();
         Set<QName> intents = new HashSet<QName>();
         Set<QName> policySets = new HashSet<QName>();
+        Autowire autowire = Autowire.INHERITED;
 
         for (LogicalReference reference : references) {
-            if (reference.getDefinition().getServiceContract() == null) {
+            ReferenceDefinition referenceDefinition = reference.getDefinition();
+            if (referenceDefinition.getServiceContract() == null) {
                 reference.setServiceContract(contract);
+            }
+            if (referenceDefinition.getAutowire() == Autowire.INHERITED) {
+                reference.setAutowire(autowire);
+            } else {
+                autowire = referenceDefinition.getAutowire();
             }
             // TODO determine if bindings should be overriden - for now, override
             if (reference.getBindings().isEmpty()) {
@@ -213,6 +221,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 policySets = new HashSet<QName>();
                 policySets.addAll(reference.getPolicySets());
             }
+            reference.setLeafReference(leafReference);
         }
 
     }
@@ -265,7 +274,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * @return true if the validation was successful
      */
     private boolean validateMultiplicity(LogicalReference reference, List<LogicalService> targets, InstantiationContext context) {
-        if (reference.getParent().getAutowire() == Autowire.ON || !reference.getBindings().isEmpty()) {
+        if (reference.getParent().getAutowire() == Autowire.ON
+                || !reference.getBindings().isEmpty()
+                || reference.getAutowire() == Autowire.ON
+                || reference.getComponentReference() != null) {
             return true;
         }
         Multiplicity multiplicity = reference.getDefinition().getMultiplicity();
@@ -354,8 +366,8 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * @param references the list
      */
     private void getPromotionHierarchy(LogicalReference reference, LinkedList<LogicalReference> references) {
-        LogicalComponent<CompositeImplementation> parent = reference.getParent().getParent();
         URI referenceUri = reference.getUri();
+        LogicalComponent<CompositeImplementation> parent = reference.getParent().getParent();
         for (LogicalReference promotion : parent.getReferences()) {
             List<URI> promotedUris = promotion.getPromotedUris();
             for (URI promotedUri : promotedUris) {
