@@ -39,8 +39,8 @@ package org.fabric3.contribution.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -107,6 +107,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             QNameSymbol symbol = new QNameSymbol(compositeName);
             ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
             resource.addResourceElement(element);
+            validateUnique(contribution, resource, element, reader, context);
             contribution.addResource(resource);
         } catch (XMLStreamException e) {
             throw new InstallException(e);
@@ -163,6 +164,25 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         }
         resource.setProcessed(true);
 
+    }
+
+    private void validateUnique(Contribution contribution,
+                                Resource resource,
+                                ResourceElement<QNameSymbol, Composite> element,
+                                XMLStreamReader reader,
+                                IntrospectionContext context) {
+        for (Resource entry : contribution.getResources()) {
+            if (resource.getContentType().equals(entry.getContentType())) {
+                for (ResourceElement<?, ?> elementEntry : entry.getResourceElements()) {
+                    if (element.getSymbol().equals(elementEntry.getSymbol())) {
+                        QName name = element.getSymbol().getKey();
+                        DuplicateComposite error = new DuplicateComposite("Duplicate composite found with name: " + name, reader);
+                        context.addError(error);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 
