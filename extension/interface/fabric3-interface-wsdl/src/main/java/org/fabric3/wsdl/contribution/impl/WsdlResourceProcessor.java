@@ -197,7 +197,13 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private Definition parseWsdl(URL wsdlLocation) throws InstallException {
         try {
             WSDLReader reader = factory.newReader();
-            return reader.readWSDL(wsdlLocation.toURI().toString());
+            Definition definition = reader.readWSDL(wsdlLocation.toURI().toString());
+            if (!definition.getNamespaces().values().contains("http://schemas.xmlsoap.org/wsdl/soap/")) {
+                // Workaround for a bug in WSDL4J where a WSDL document does not reference the SOAP namespace and an attempt is made to serialize it,
+                // an exception is thrown. 
+                definition.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
+            }
+            return definition;
         } catch (WSDLException e) {
             throw new InstallException(e);
         } catch (URISyntaxException e) {
