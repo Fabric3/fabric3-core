@@ -148,6 +148,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                     }
                     logicalService.overrideBindings(bindings);
                 }
+                logicalService.addIntents(componentService.getIntents());
             }
             component.addService(logicalService);
         }
@@ -189,6 +190,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                     }
                     logicalReference.overrideBindings(bindings);
                 }
+                logicalReference.addIntents(componentReference.getIntents());
             }
             component.addReference(logicalReference);
         }
