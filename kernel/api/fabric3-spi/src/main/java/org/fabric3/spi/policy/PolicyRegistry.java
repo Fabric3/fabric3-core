@@ -40,6 +40,7 @@ package org.fabric3.spi.policy;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
@@ -55,21 +56,31 @@ public interface PolicyRegistry {
     /**
      * Returns all the definitions of a given type.
      *
-     * @param <D>             Definition type.
-     * @param definitionClass Definition class.
-     * @return All definitions of the given type.
+     * @param <D>             definition type.
+     * @param definitionClass definition class.
+     * @return all definitions of the given type.
      */
     <D extends AbstractPolicyDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass);
 
     /**
      * Returns the definition of specified type and qualified name.
      *
-     * @param <D>             Definition type.
-     * @param name            Qualified name of the definition object.
-     * @param definitionClass Definition class.
+     * @param <D>             dDefinition type.
+     * @param name            qualified name of the definition object.
+     * @param definitionClass definition class.
      * @return Requested definition object if available, otherwise null.
      */
     <D extends AbstractPolicyDefinition> D getDefinition(QName name, Class<D> definitionClass);
+
+    /**
+     * Returns the definitions of specified type for the set of qualified names.
+     *
+     * @param <D>             definition type.
+     * @param names           qualified names of the definition object.
+     * @param definitionClass definition class.
+     * @return Requested definition object if available, otherwise null.
+     */
+    <D extends AbstractPolicyDefinition> Set<D> getDefinitions(Set<QName> names, Class<D> definitionClass);
 
     /**
      * Returns a list of active PolicySets that use external attachment.

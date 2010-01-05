@@ -45,6 +45,9 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Reference;
+
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.model.type.component.Autowire;
@@ -53,12 +56,15 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.policy.PolicyRegistry;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -86,13 +92,25 @@ import org.fabric3.spi.util.UriHelper;
  * @version $Rev$ $Date$
  */
 public class PromotionNormalizerImpl implements PromotionNormalizer {
+    private PolicyRegistry registry;
+
+    /**
+     * Bootstrap constructor.
+     */
+    public PromotionNormalizerImpl() {
+    }
+
+    @Constructor
+    public PromotionNormalizerImpl(@Reference PolicyRegistry registry) {
+        this.registry = registry;
+    }
 
     public void normalize(LogicalComponent<?> component, InstantiationContext context) {
-        normalizeServicePromotions(component);
+        normalizeServicePromotions(component, context);
         normalizeReferenceAndWirePromotions(component, context);
     }
 
-    private void normalizeServicePromotions(LogicalComponent<?> component) {
+    private void normalizeServicePromotions(LogicalComponent<?> component, InstantiationContext context) {
         for (LogicalService service : component.getServices()) {
             LinkedList<LogicalService> services = new LinkedList<LogicalService>();
             // add the leaf service as the last element
@@ -101,7 +119,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             if (services.isEmpty()) {
                 continue;
             }
-            processServicePromotions(services);
+            processServicePromotions(services, context);
         }
     }
 
@@ -114,7 +132,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             if (references.isEmpty()) {
                 continue;
             }
-            processReferencePromotions(references);
+            processReferencePromotions(references, context);
             processWirePromotions(references, context);
         }
     }
@@ -123,8 +141,9 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * Processes the service promotion hierarchy by updating bindings, policies, and the service contract.
      *
      * @param services the sorted service promotion hierarchy
+     * @param context  the instantiation  context
      */
-    private void processServicePromotions(LinkedList<LogicalService> services) {
+    private void processServicePromotions(LinkedList<LogicalService> services, InstantiationContext context) {
         if (services.size() < 2) {
             // no promotion evaluation needed
             return;
@@ -162,6 +181,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             service.setLeafComponent(leafComponent);
             service.setLeafService(leafService);
         }
+        validateIntents(leafService, context);
 
     }
 
@@ -169,9 +189,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
      * Processes the reference promotion hierarchy by updating bindings, policies, and the service contract.
      *
      * @param references the sorted reference promotion hierarchy
+     * @param context    the instantiation  context
      */
     @SuppressWarnings({"unchecked"})
-    private void processReferencePromotions(LinkedList<LogicalReference> references) {
+    private void processReferencePromotions(LinkedList<LogicalReference> references, InstantiationContext context) {
         if (references.size() < 2) {
             // no promotion evaluation needed
             return;
@@ -223,7 +244,34 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             }
             reference.setLeafReference(leafReference);
         }
+        validateIntents(leafReference, context);
+    }
 
+    private void validateIntents(Bindable bindable, InstantiationContext context) {
+        if (registry == null) {
+            // don't validate intents during bootstrap
+            return;
+        }
+        Set<QName> intents = bindable.getIntents();
+        if (intents.isEmpty()) {
+            return;
+        }
+        Set<Intent> resolved = registry.getDefinitions(intents, Intent.class);
+
+        // check for mutually exclusive intents
+        for (Intent intent : resolved) {
+            for (QName exclude : intent.getExcludes()) {
+                if (intents.contains(exclude)) {
+                    LogicalComponent<?> component = bindable.getParent();
+                    URI componentUri = component.getUri();
+                    URI contributionUri = component.getDefinition().getContributionUri();
+                    String prefix = bindable instanceof LogicalReference ? "Reference " : "Service ";
+                    MutuallyExclusiveIntents error = new MutuallyExclusiveIntents(prefix + bindable.getUri()
+                            + " is configured with mutually exclusive intents: " + intent.getName() + "," + exclude, componentUri, contributionUri);
+                    context.addError(error);
+                }
+            }
+        }
     }
 
     /**
