@@ -356,7 +356,13 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             context.addError(failure);
             return;
         }
-        for (ComponentDefinition definition : include.getIncluded().getComponents().values()) {
+        Composite included = include.getIncluded();
+        if (type.isLocal() != included.isLocal()) {
+            InvalidInclude error = new InvalidInclude("Composite " + type.getName() + " has a local value of " + type.isLocal()
+                    + " and the included composite " + includeName + " has a value of " + included.isLocal(), reader);
+            context.addError(error);
+        }
+        for (ComponentDefinition definition : included.getComponents().values()) {
             String key = definition.getName();
             if (type.getComponents().containsKey(key)) {
                 DuplicateComponentName failure = new DuplicateComponentName(key, reader);
