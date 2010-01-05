@@ -39,6 +39,7 @@ package org.fabric3.introspection.xml.definitions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -81,12 +82,10 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 public class DefinitionsLoader implements XmlResourceElementLoader {
 
     static final QName INTENT = new QName(SCA_NS, "intent");
-    static final QName DESCRIPTION = new QName(SCA_NS, "description");
     static final QName POLICY_SET = new QName(SCA_NS, "policySet");
     static final QName BINDING_TYPE = new QName(SCA_NS, "bindingType");
     static final QName IMPLEMENTATION_TYPE = new QName(SCA_NS, "implementationType");
-
-    private static final QName DEFINITIONS = new QName(SCA_NS, "definitions");
+    static final QName DEFINITIONS = new QName(SCA_NS, "definitions");
 
     private XmlResourceElementLoaderRegistry elementLoaderRegistry;
     private Loader loaderRegistry;
@@ -181,15 +180,32 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
      * @param resource the contribution resource containing the intents
      */
     private void expandQualifiers(Intent intent, Resource resource) {
+        String ns = intent.getName().getNamespaceURI();
+        String localPart = intent.getName().getLocalPart();
         for (Qualifier qualifier : intent.getQualifiers()) {
-            String ns = intent.getName().getNamespaceURI();
-            String localPart = intent.getName().getLocalPart();
             QName qualifierName = new QName(ns, localPart + "." + qualifier.getName());
             QName constrains = intent.getConstrains();
             Set<QName> requires = intent.getRequires();
             IntentType intentType = intent.getIntentType();
-            boolean def = qualifier.isDefault();
-            Intent qualified = new Intent(qualifierName, constrains, requires, Collections.<Qualifier>emptySet(), intentType, def);
+            boolean isDefault = qualifier.isDefault();
+            Set<QName> excludes = new HashSet<QName>(intent.getExcludes());
+            if (intent.isMutuallyExclusive()) {
+                // for each qualified intent, add the others as excludes
+                for (Qualifier entry : intent.getQualifiers()) {
+                    if (entry == qualifier) {
+                        continue;  // skip self
+                    }
+                    excludes.add(new QName(ns, localPart + "." + entry.getName()));
+                }
+            }
+            Intent qualified = new Intent(qualifierName,
+                                          constrains,
+                                          requires,
+                                          Collections.<Qualifier>emptySet(),
+                                          false,
+                                          excludes,
+                                          intentType,
+                                          isDefault);
             QNameSymbol symbol = new QNameSymbol(qualifierName);
             ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
             element.setValue(qualified);

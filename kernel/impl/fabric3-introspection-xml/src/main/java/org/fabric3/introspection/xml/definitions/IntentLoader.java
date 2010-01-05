@@ -40,7 +40,6 @@ package org.fabric3.introspection.xml.definitions;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -104,23 +103,30 @@ public class IntentLoader implements TypeLoader<Intent> {
                 return null;
             }
         }
-        String requiresVal = reader.getAttributeValue(null, "requires");
-        Set<QName> requires = new HashSet<QName>();
-        if (requiresVal != null) {
-            StringTokenizer tok = new StringTokenizer(requiresVal);
-            while (tok.hasMoreElements()) {
-                try {
-                    QName id = helper.createQName(tok.nextToken(), reader);
-                    requires.add(id);
-                } catch (InvalidPrefixException e) {
-                    String prefix = e.getPrefix();
-                    URI uri = context.getContributionUri();
-                    context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                            + " is invalid", reader));
-                    return null;
-                }
-            }
+        Set<QName> requires;
+        try {
+            requires = helper.parseListOfQNames(reader, "requires");
+        } catch (InvalidPrefixException e) {
+            String prefix = e.getPrefix();
+            URI uri = context.getContributionUri();
+            context.addError(new InvalidQNamePrefix("The requires prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                    + " is invalid", reader));
+            return null;
         }
+
+        boolean mutuallyExclusive = Boolean.parseBoolean(reader.getAttributeValue(null, "mutuallyExclusive"));
+
+        Set<QName> excludes;
+        try {
+            excludes = helper.parseListOfQNames(reader, "excludes");
+        } catch (InvalidPrefixException e) {
+            String prefix = e.getPrefix();
+            URI uri = context.getContributionUri();
+            context.addError(new InvalidQNamePrefix("The excludes prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                    + " is invalid", reader));
+            return null;
+        }
+
         Set<Qualifier> qualifiers = new HashSet<Qualifier>();
         while (true) {
             switch (reader.next()) {
@@ -138,7 +144,7 @@ public class IntentLoader implements TypeLoader<Intent> {
                 break;
             case END_ELEMENT:
                 if (DefinitionsLoader.INTENT.equals(reader.getName())) {
-                    return new Intent(qName, constrains, requires, qualifiers, intentType, false);
+                    return new Intent(qName, constrains, requires, qualifiers, mutuallyExclusive, excludes, intentType, false);
                 }
             }
         }

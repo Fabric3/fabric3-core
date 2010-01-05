@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
         <description>Intercepted intent</description>
     </intent>
 
-    <intent name="qualifier" constrains="binding">
+    <intent name="qualifier" constrains="binding" mutuallyExclusive="true">
         <description>Qualifier intent</description>
         <qualifier name="qualifier1" default="true"/>
         <qualifier name="qualifier2"/>
@@ -28,7 +28,7 @@ Public License. See the accompanying license file for details.
         <f3-policy:interceptor class="FooInterceptor"/>
     </policySet>
 
-    <policySet name="providedPolicy" appliesTo="sca:binding.fo" provides="f3-policy:provided">
+    <policySet name="providedPolicy" appliesTo="sca:binding.foo" provides="f3-policy:provided">
         <f3-policy:someElement f3-policy:phase="provided"/>
     </policySet>
 

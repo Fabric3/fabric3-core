@@ -65,20 +65,33 @@ public final class Intent extends AbstractPolicyDefinition {
     private QName constrains;
     private Set<Qualifier> qualifiers;
     private boolean defaultIntent;
+    private boolean mutuallyExclusive;
+    private Set<QName> excludes;
 
     /**
      * Initializes the name, description and the constrained artifacts.
      *
-     * @param name          the name of the intent.
-     * @param constrains    the SCA artifact constrained by this intent.
-     * @param requires      the intents this intent requires if this is a profile intent
-     * @param qualifiers    any qualifiers defined inline using the <qualifier> element
-     * @param intentType    the intent type (interaction or implementation)
-     * @param defaultIntent true if this is a default qualified intent
+     * @param name              the name of the intent
+     * @param constrains        the SCA artifact constrained by this intent
+     * @param requires          the intents this intent requires if this is a profile intent
+     * @param qualifiers        any qualifiers defined inline using the <qualifier> element
+     * @param mutuallyExclusive true if the qualified intents are mutually exclusive
+     * @param excludes          the list of intents excluded by this one
+     * @param intentType        the intent type (interaction or implementation)
+     * @param defaultIntent     true if this is a default qualified intent
      */
-    public Intent(QName name, QName constrains, Set<QName> requires, Set<Qualifier> qualifiers, IntentType intentType, boolean defaultIntent) {
+    public Intent(QName name,
+                  QName constrains,
+                  Set<QName> requires,
+                  Set<Qualifier> qualifiers,
+                  boolean mutuallyExclusive,
+                  Set<QName> excludes,
+                  IntentType intentType,
+                  boolean defaultIntent) {
         super(name);
         this.qualifiers = qualifiers;
+        this.mutuallyExclusive = mutuallyExclusive;
+        this.excludes = excludes;
         this.defaultIntent = defaultIntent;
         if (constrains != null) {
             if (!BINDING.equals(constrains) && !IMPLEMENTATION.equals(constrains)) {
@@ -148,6 +161,24 @@ public final class Intent extends AbstractPolicyDefinition {
      */
     public Set<Qualifier> getQualifiers() {
         return qualifiers;
+    }
+
+    /**
+     * True if the qualified intents are mutually exclusive
+     *
+     * @return true if the qualified intents are mutually exclusive
+     */
+    public boolean isMutuallyExclusive() {
+        return mutuallyExclusive;
+    }
+
+    /**
+     * Returns the set of intents excluded by this intent.
+     *
+     * @return the set of intents excluded by this intent.
+     */
+    public Set<QName> getExcludes() {
+        return excludes;
     }
 
     /**

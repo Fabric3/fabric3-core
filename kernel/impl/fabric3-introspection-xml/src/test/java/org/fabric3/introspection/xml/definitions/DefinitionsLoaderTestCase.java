@@ -134,7 +134,17 @@ public class DefinitionsLoaderTestCase extends TestCase {
         for (ResourceElement<?, ?> element : elements) {
             Symbol symbol = element.getSymbol();
             Object key = symbol.getKey();
-            if (QUALIFIER_INTENT.equals(key) || QUALIFIER_QUALFIED1_INTENT.equals(key) || QUALIFIER_QUALFIED2_INTENT.equals(key)) {
+            if (QUALIFIER_INTENT.equals(key)) {
+                count++;
+            } else if (QUALIFIER_QUALFIED1_INTENT.equals(key)) {
+                Intent intent = (Intent) element.getValue();
+                assertEquals(1, intent.getExcludes().size());
+                assertTrue(intent.getExcludes().contains(QUALIFIER_QUALFIED2_INTENT));
+                count++;
+            } else if (QUALIFIER_QUALFIED2_INTENT.equals(key)) {
+                Intent intent = (Intent) element.getValue();
+                assertEquals(1, intent.getExcludes().size());
+                assertTrue(intent.getExcludes().contains(QUALIFIER_QUALFIED1_INTENT));
                 count++;
             }
         }

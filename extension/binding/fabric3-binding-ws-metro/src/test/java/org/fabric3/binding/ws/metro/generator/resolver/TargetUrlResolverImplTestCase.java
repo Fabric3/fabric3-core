@@ -136,7 +136,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
     private EffectivePolicy createSecurityPolicy() {
         Set<Intent> intents = new HashSet<Intent>();
         QName qname = new QName(Constants.SCA_NS, "confidentiality");
-        Intent intent = new Intent(qname, null, null, null, null, false);
+        Intent intent = new Intent(qname, null, null, null, false, null, null, false);
         intents.add(intent);
         EffectivePolicy policy = EasyMock.createMock(EffectivePolicy.class);
         EasyMock.expect(policy.getEndpointIntents()).andReturn(intents);
