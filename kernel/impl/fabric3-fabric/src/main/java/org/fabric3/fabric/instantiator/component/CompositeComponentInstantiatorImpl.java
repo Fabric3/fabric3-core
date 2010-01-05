@@ -64,6 +64,9 @@ import org.fabric3.spi.model.instance.LogicalService;
 
 /**
  * Instatiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
+ * <p/>
+ * Service and reference information configured as part of a <code>&lt;component&gt;</code> entry and component type will be merged into a single
+ * logical artifact.
  *
  * @version $Rev$ $Date$
  */
