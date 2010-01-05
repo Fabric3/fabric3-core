@@ -177,8 +177,17 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                     }
                     MatchResult result = matcher.isAssignableFrom(contract, targetContract, false);
                     if (result.isAssignable()) {
-                        candidates.add(service);
-                        break;
+                        boolean intentsMatch = true;
+                        for (QName intent : logicalReference.getIntents()) {
+                            if (!service.getIntents().contains(intent)) {
+                                intentsMatch = false;
+                                break;
+                            }
+                        }
+                        if (intentsMatch) {
+                            candidates.add(service);
+                            break;
+                        }
                     }
                 }
             }
