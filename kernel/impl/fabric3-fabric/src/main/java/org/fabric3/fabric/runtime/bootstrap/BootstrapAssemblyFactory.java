@@ -115,8 +115,6 @@ import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorI
 import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
-import org.fabric3.fabric.instantiator.wire.ServiceContractResolver;
-import org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.monitor.MonitorGenerator;
 import org.fabric3.fabric.monitor.MonitorResource;
@@ -238,14 +236,13 @@ public class BootstrapAssemblyFactory {
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
         PromotionResolutionService promotionResolutionService = new PromotionResolutionServiceImpl();
-        ServiceContractResolver resolver = new ServiceContractResolverImpl();
-        AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(resolver, matcher);
+        AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(matcher);
 
         PromotionNormalizer promotionNormalizer = new PromotionNormalizerImpl();
         AutowireNormalizer autowireNormalizer = new AutowireNormalizerImpl();
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
-        WireInstantiator wireInstantiator = new WireInstantiatorImpl(resolver, matcher);
+        WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
         CompositeComponentInstantiator compositeInstantiator =
                 new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,

@@ -51,10 +51,6 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl"/>
     </component>
 
-    <component name="ServiceContractResolver">
-        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.ServiceContractResolverImpl"/>
-    </component>
-
     <component name="DocumentLoader">
         <f3-impl:implementation.system class="org.fabric3.fabric.xml.DocumentLoaderImpl"/>
     </component>

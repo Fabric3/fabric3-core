@@ -156,9 +156,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         Set<QName> policySets = new HashSet<QName>();
 
         for (LogicalService service : services) {
-            if (service.getDefinition().getServiceContract() == null) {
-                service.setServiceContract(contract);
-            }
             // TODO determine if bindings should be overriden - for now, override
             if (service.getBindings().isEmpty()) {
                 service.overrideBindings(bindings);
@@ -206,9 +203,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
 
         for (LogicalReference reference : references) {
             ReferenceDefinition referenceDefinition = reference.getDefinition();
-            if (referenceDefinition.getServiceContract() == null) {
-                reference.setServiceContract(contract);
-            }
             if (referenceDefinition.getAutowire() == Autowire.INHERITED) {
                 reference.setAutowire(autowire);
             } else {

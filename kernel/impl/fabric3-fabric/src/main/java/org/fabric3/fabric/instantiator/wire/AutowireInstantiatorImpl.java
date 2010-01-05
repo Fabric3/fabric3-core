@@ -67,11 +67,9 @@ import org.fabric3.spi.model.instance.LogicalWire;
  * @version $Revsion$ $Date$
  */
 public class AutowireInstantiatorImpl implements AutowireInstantiator {
-    private ServiceContractResolver resolver;
     private ContractMatcher matcher;
 
-    public AutowireInstantiatorImpl(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
-        this.resolver = resolver;
+    public AutowireInstantiatorImpl(@Reference ContractMatcher matcher) {
         this.matcher = matcher;
     }
 
@@ -113,7 +111,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            ServiceContract requiredContract = resolver.determineContract(logicalReference);
+            ServiceContract requiredContract = logicalReference.getServiceContract();
 
             Autowire autowire = component.getAutowire();
             if (autowire == Autowire.ON) {
@@ -170,7 +168,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             }
             if (validKey(logicalReference, child)) {  // if the reference is keyed and the target does not have a key, skip
                 for (LogicalService service : child.getServices()) {
-                    ServiceContract targetContract = resolver.determineContract(service);
+                    ServiceContract targetContract = service.getServiceContract();
                     if (targetContract == null) {
                         // This is a programming error since a non-composite service must have a service contract
                         throw new AssertionError("No service contract specified on service: " + service.getUri());

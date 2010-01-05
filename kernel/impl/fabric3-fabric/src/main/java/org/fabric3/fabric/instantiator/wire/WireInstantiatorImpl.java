@@ -70,11 +70,9 @@ import org.fabric3.spi.model.instance.LogicalWire;
  * @version $Rev$ $Date$
  */
 public class WireInstantiatorImpl implements WireInstantiator {
-    private ServiceContractResolver resolver;
     private ContractMatcher matcher;
 
-    public WireInstantiatorImpl(@Reference ServiceContractResolver resolver, @Reference ContractMatcher matcher) {
-        this.resolver = resolver;
+    public WireInstantiatorImpl(@Reference ContractMatcher matcher) {
         this.matcher = matcher;
     }
 
@@ -356,8 +354,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param context   the logical context
      */
     private void validateContracts(LogicalReference reference, LogicalService service, InstantiationContext context) {
-        ServiceContract referenceContract = resolver.determineContract(reference);
-        ServiceContract serviceContract = resolver.determineContract(service);
+        ServiceContract referenceContract = reference.getServiceContract();
+        ServiceContract serviceContract = service.getServiceContract();
         MatchResult result = matcher.isAssignableFrom(referenceContract, serviceContract, true);
         if (!result.isAssignable()) {
             URI uri = reference.getParent().getUri();

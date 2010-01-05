@@ -142,11 +142,10 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ServiceContractResolver resolver = new ServiceContractResolverImpl();
         DefaultContractMatcher matcher = new DefaultContractMatcher();
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
-        resolutionService = new AutowireInstantiatorImpl(resolver, matcher);
+        resolutionService = new AutowireInstantiatorImpl(matcher);
         URI domainUri = URI.create("fabric3://runtime");
         domain = new LogicalCompositeComponent(domainUri, null, null);
     }
