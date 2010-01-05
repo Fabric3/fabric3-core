@@ -130,6 +130,13 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         // the base class for the callback interface is always itself since it is not referenceable in Java from the service implementation
         // or client implementation where the reference is injected
         JavaServiceContract callbackContract = introspectInterface(callbackClass, callbackClass, context);
+        if (contract.isRemotable() != callbackContract.isRemotable()) {
+            String forwardName = contract.getInterfaceName();
+            String callbackName = callbackContract.getInterfaceName();
+            InvalidCallbackContract error = new InvalidCallbackContract("The remotable attribute on the forward and callback contract do not match: "
+                    + forwardName + "," + callbackName);
+            context.addError(error);
+        }
         contract.setCallbackContract(callbackContract);
     }
 
