@@ -14,7 +14,7 @@
     </intent>
 
     <!-- note this policy only applies to collocated wires as bindings are expected to handle one-way semantics natively -->
-    <policySet name="oneWayPolicy" provides="sca:oneWay" appliesTo="f3-core:binding.local">
+    <policySet name="oneWayPolicy" provides="sca:oneWay" appliesTo="f3-binding:binding.local">
         <f3-policy:oneWayPolicy/>
     </policySet>
 
