@@ -103,7 +103,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
         // create the child components
         List<LogicalComponent<?>> children = new ArrayList<LogicalComponent<?>>();
-        for (ComponentDefinition<? extends Implementation<?>> child : composite.getDeclaredComponents().values()) {
+        for (ComponentDefinition<? extends Implementation<?>> child : composite.getComponents().values()) {
 
             LogicalComponent<?> childComponent;
             if (child.getImplementation() instanceof CompositeImplementation) {

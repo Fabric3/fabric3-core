@@ -153,7 +153,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                                                   LogicalCompositeComponent domain,
                                                   boolean synthetic,
                                                   InstantiationContext context) {
-
         // instantiate the declared components
         Collection<ComponentDefinition<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
         List<LogicalComponent<?>> newComponents = new ArrayList<LogicalComponent<?>>(definitions.size());
@@ -164,29 +163,14 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         }
 
         // instantiate the included components
-        for (Include include : composite.getIncludes().values()) {
-            // xcv FIXME need to recurse down included hierarchy
-            for (ComponentDefinition<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
-                LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
-                if (synthetic) {
-                    // If it is a synthetic composite, included composites are the deployables.
-                    // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
-                    // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
-                    setDeployable(logicalComponent, include.getIncluded().getName());
-                } else {
-                    setDeployable(logicalComponent, composite.getName());
-                }
-                newComponents.add(logicalComponent);
-                domain.addComponent(logicalComponent);
-            }
-        }
+        instantiateIncludes(composite, newComponents, synthetic, domain, context);
 
         // instantiate wires - note this must be done after the included components as wire targets may resolve to an included service
         wireInstantiator.instantiateCompositeWires(composite, domain, context);
-
         for (LogicalComponent<?> component : newComponents) {
             wireInstantiator.instantiateReferenceWires(component, context);
         }
+
         return newComponents;
     }
 
@@ -209,6 +193,38 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         }
     }
 
+    /**
+     * Instantiates components in included composites.
+     *
+     * @param composite     the root composite to instantiate
+     * @param newComponents the collection to hold instantiated components
+     * @param synthetic     true if the root composite is synthetic
+     * @param domain        the domain
+     * @param context       the instantiation context
+     */
+    private void instantiateIncludes(Composite composite,
+                                     List<LogicalComponent<?>> newComponents,
+                                     boolean synthetic,
+                                     LogicalCompositeComponent domain,
+                                     InstantiationContext context) {
+        // instantiate the included components
+        for (Include include : composite.getIncludes().values()) {
+            for (ComponentDefinition<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
+                LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
+                if (synthetic) {
+                    // If it is a synthetic composite, included composites are the deployables.
+                    // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
+                    // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
+                    setDeployable(logicalComponent, include.getIncluded().getName());
+                } else {
+                    setDeployable(logicalComponent, composite.getName());
+                }
+                newComponents.add(logicalComponent);
+                // add to the domain since includes starting from a deployable composite are "collapsed" to the domain level
+                domain.addComponent(logicalComponent);
+            }
+        }
+    }
 
     /**
      * Normalizes the component hierarchy by calculating autowire and promotion settings through a depth-first traversal of leaf/atomic components.
