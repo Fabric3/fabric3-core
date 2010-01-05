@@ -53,7 +53,7 @@ import org.oasisopen.sca.Constants;
  *
  * @version $Rev$ $Date$
  */
-public final class Intent extends AbstractDefinition {
+public final class Intent extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -3075153359030949561L;
 
     public static final QName BINDING = new QName(Constants.SCA_NS, "binding");

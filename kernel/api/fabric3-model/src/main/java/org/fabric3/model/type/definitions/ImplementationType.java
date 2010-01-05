@@ -51,7 +51,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public class ImplementationType extends AbstractType {
+public class ImplementationType extends AbstractPolicyType {
     private static final long serialVersionUID = 7889726615312552169L;
 
     /**

@@ -52,7 +52,7 @@ import org.fabric3.model.type.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractDefinition extends ModelObject {
+public abstract class AbstractPolicyDefinition extends ModelObject {
     private static final long serialVersionUID = -4450566760116409021L;
 
     private final QName name;
@@ -62,7 +62,7 @@ public abstract class AbstractDefinition extends ModelObject {
      *
      * @param name qualified mame of the definition object.
      */
-    public AbstractDefinition(QName name) {
+    public AbstractPolicyDefinition(QName name) {
         this.name = name;
     }
 
@@ -77,7 +77,7 @@ public abstract class AbstractDefinition extends ModelObject {
 
     @Override
     public boolean equals(Object other) {
-        return other != null && this.getClass() == other.getClass() && ((AbstractDefinition) other).name.equals(name);
+        return other != null && this.getClass() == other.getClass() && ((AbstractPolicyDefinition) other).name.equals(name);
     }
 
     @Override

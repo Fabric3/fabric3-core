@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
  *
  * @version $Rev$ $Date$
  */
-public final class PolicySet extends AbstractDefinition {
+public final class PolicySet extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -4507145141780962741L;
 
     private final Set<QName> providedIntents;

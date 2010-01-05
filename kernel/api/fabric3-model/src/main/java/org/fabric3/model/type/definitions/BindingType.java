@@ -51,7 +51,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public class BindingType extends AbstractType {
+public class BindingType extends AbstractPolicyType {
     private static final long serialVersionUID = 6187269257530837534L;
 
     /**

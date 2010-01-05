@@ -51,7 +51,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public class AbstractType extends AbstractDefinition {
+public class AbstractPolicyType extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -2910491671004468756L;
 
     private final Set<QName> alwaysProvide;
@@ -62,7 +62,7 @@ public class AbstractType extends AbstractDefinition {
      * @param alwaysProvide Intents this binding always provide.
      * @param mayProvide    Intents this binding may provide.
      */
-    public AbstractType(final QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
+    public AbstractPolicyType(final QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
         super(name);
         this.alwaysProvide = alwaysProvide;
         this.mayProvide = mayProvide;
