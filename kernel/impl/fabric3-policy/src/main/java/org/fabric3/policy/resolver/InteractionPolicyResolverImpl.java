@@ -88,7 +88,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         Set<QName> mayProvidedIntents = new LinkedHashSet<QName>();
 
         if (bindingType != null) {
-            // tolderate a bnding type not being registered
+            // tolerate a binding type not being registered
             alwaysProvidedIntents = bindingType.getAlwaysProvide();
             mayProvidedIntents = bindingType.getMayProvide();
         }
