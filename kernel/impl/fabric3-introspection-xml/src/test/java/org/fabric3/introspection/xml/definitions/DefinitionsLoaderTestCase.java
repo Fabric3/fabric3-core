@@ -52,7 +52,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
@@ -213,15 +213,15 @@ public class DefinitionsLoaderTestCase extends TestCase {
         // setup indexed resource
         resource = new Resource(null, "application/xml");
         // setup up indexed resource elements
-        ResourceElement<QNameSymbol, ?> element = new ResourceElement<QNameSymbol, AbstractDefinition>(new QNameSymbol(INTERCEPTED_INTENT));
+        ResourceElement<QNameSymbol, ?> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(INTERCEPTED_INTENT));
         resource.addResourceElement(element);
-        element = new ResourceElement<QNameSymbol, AbstractDefinition>(new QNameSymbol(QUALIFIER_INTENT));
+        element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(QUALIFIER_INTENT));
         resource.addResourceElement(element);
-        element = new ResourceElement<QNameSymbol, AbstractDefinition>(new QNameSymbol(PROVIDED_POLICY));
+        element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(PROVIDED_POLICY));
         resource.addResourceElement(element);
-        element = new ResourceElement<QNameSymbol, AbstractDefinition>(new QNameSymbol(INTERCEPTED_POLICY));
+        element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(INTERCEPTED_POLICY));
         resource.addResourceElement(element);
-        element = new ResourceElement<QNameSymbol, AbstractDefinition>(new QNameSymbol(WS_POLICY));
+        element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(WS_POLICY));
         resource.addResourceElement(element);
 
         // setup reader

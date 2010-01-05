@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
@@ -67,8 +67,8 @@ import org.fabric3.spi.policy.PolicyRegistry;
 public class DefaultPolicyRegistry implements PolicyRegistry {
 
     private MetaDataStore metaDataStore;
-    private Map<Class<? extends AbstractDefinition>, Map<QName, ? extends AbstractDefinition>> cache =
-            new ConcurrentHashMap<Class<? extends AbstractDefinition>, Map<QName, ? extends AbstractDefinition>>();
+    private Map<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>> cache =
+            new ConcurrentHashMap<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>>();
 
     /**
      * Initializes the cache.
@@ -83,7 +83,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         cache.put(ImplementationType.class, new ConcurrentHashMap<QName, ImplementationType>());
     }
 
-    public <D extends AbstractDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass) {
+    public <D extends AbstractPolicyDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass) {
         return getSubCache(definitionClass).values();
     }
 
@@ -98,7 +98,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         return policySets;
     }
 
-    public <D extends AbstractDefinition> D getDefinition(QName name, Class<D> definitionClass) {
+    public <D extends AbstractPolicyDefinition> D getDefinition(QName name, Class<D> definitionClass) {
         return getSubCache(definitionClass).get(name);
     }
 
@@ -108,15 +108,15 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
                     Object value = resourceElement.getValue();
-                    if (value instanceof AbstractDefinition) {
-                        activate((AbstractDefinition) value);
+                    if (value instanceof AbstractPolicyDefinition) {
+                        activate((AbstractPolicyDefinition) value);
                     }
                 }
             }
         }
     }
 
-    public void activate(AbstractDefinition definition) throws PolicyActivationException {
+    public void activate(AbstractPolicyDefinition definition) throws PolicyActivationException {
         if (definition instanceof Intent) {
             getSubCache(Intent.class).put(definition.getName(), (Intent) definition);
         } else if (definition instanceof PolicySet) {
@@ -134,15 +134,15 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
                     Object value = resourceElement.getValue();
-                    if (value instanceof AbstractDefinition) {
-                        deactivate((AbstractDefinition) value);
+                    if (value instanceof AbstractPolicyDefinition) {
+                        deactivate((AbstractPolicyDefinition) value);
                     }
                 }
             }
         }
     }
 
-    public void deactivate(AbstractDefinition definition) throws PolicyActivationException {
+    public void deactivate(AbstractPolicyDefinition definition) throws PolicyActivationException {
         if (definition instanceof Intent) {
             getSubCache(Intent.class).remove(definition.getName());
         } else if (definition instanceof PolicySet) {
@@ -155,7 +155,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <D extends AbstractDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {
+    private <D extends AbstractPolicyDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {
         return (Map<QName, D>) cache.get(definitionClass);
     }
 

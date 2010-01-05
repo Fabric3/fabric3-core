@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.PolicySet;
 
 /**
@@ -59,7 +59,7 @@ public interface PolicyRegistry {
      * @param definitionClass Definition class.
      * @return All definitions of the given type.
      */
-    <D extends AbstractDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass);
+    <D extends AbstractPolicyDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass);
 
     /**
      * Returns the definition of specified type and qualified name.
@@ -69,7 +69,7 @@ public interface PolicyRegistry {
      * @param definitionClass Definition class.
      * @return Requested definition object if available, otherwise null.
      */
-    <D extends AbstractDefinition> D getDefinition(QName name, Class<D> definitionClass);
+    <D extends AbstractPolicyDefinition> D getDefinition(QName name, Class<D> definitionClass);
 
     /**
      * Returns a list of active PolicySets that use external attachment.
@@ -92,7 +92,7 @@ public interface PolicyRegistry {
      * @param definition the definition
      * @throws PolicyActivationException If unable to find definition.
      */
-    void activate(AbstractDefinition definition) throws PolicyActivationException;
+    void activate(AbstractPolicyDefinition definition) throws PolicyActivationException;
 
     /**
      * Deactivates all the policy definitions in the specified contributions.
@@ -108,6 +108,6 @@ public interface PolicyRegistry {
      * @param definition the definition
      * @throws PolicyActivationException If unable to find definition.
      */
-    void deactivate(AbstractDefinition definition) throws PolicyActivationException;
+    void deactivate(AbstractPolicyDefinition definition) throws PolicyActivationException;
 
 }

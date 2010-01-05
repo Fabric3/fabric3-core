@@ -62,7 +62,7 @@ import org.fabric3.host.domain.UndeploymentException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
@@ -247,11 +247,11 @@ public abstract class AbstractDomain implements Domain {
             // a composite may not be associated with a contribution, e.g. a bootstrap composite
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
-        Set<AbstractDefinition> definitions = activateDefinitions(contribution);
+        Set<AbstractPolicyDefinition> definitions = activateDefinitions(contribution);
 
         if (apply) {
             List<PolicySet> policySets = new ArrayList<PolicySet>();
-            for (AbstractDefinition definition : definitions) {
+            for (AbstractPolicyDefinition definition : definitions) {
                 if (definition instanceof PolicySet) {
                     PolicySet policySet = (PolicySet) definition;
                     if (policySet.getAttachTo() != null) {
@@ -274,10 +274,10 @@ public abstract class AbstractDomain implements Domain {
         List<PolicySet> policySets = new ArrayList<PolicySet>();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (!(element.getValue() instanceof AbstractDefinition)) {
+                if (!(element.getValue() instanceof AbstractPolicyDefinition)) {
                     break;
                 }
-                AbstractDefinition definition = (AbstractDefinition) element.getValue();
+                AbstractPolicyDefinition definition = (AbstractPolicyDefinition) element.getValue();
                 try {
                     policyRegistry.deactivate(definition);
                     if (definition instanceof PolicySet) {
@@ -491,19 +491,19 @@ public abstract class AbstractDomain implements Domain {
      * @return the policy definitions activated
      * @throws DeploymentException if an exception occurs when the definitions are activated
      */
-    private Set<AbstractDefinition> activateDefinitions(Contribution contribution) throws DeploymentException {
+    private Set<AbstractPolicyDefinition> activateDefinitions(Contribution contribution) throws DeploymentException {
         if (policyRegistry == null) {
             // registry not available until after bootstrap
             return Collections.emptySet();
         }
-        Set<AbstractDefinition> definitions = new HashSet<AbstractDefinition>();
+        Set<AbstractPolicyDefinition> definitions = new HashSet<AbstractPolicyDefinition>();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (!(element.getValue() instanceof AbstractDefinition)) {
+                if (!(element.getValue() instanceof AbstractPolicyDefinition)) {
                     break;
                 }
                 try {
-                    AbstractDefinition definition = (AbstractDefinition) element.getValue();
+                    AbstractPolicyDefinition definition = (AbstractPolicyDefinition) element.getValue();
                     definitions.add(definition);
                     policyRegistry.activate(definition);
                 } catch (PolicyActivationException e) {

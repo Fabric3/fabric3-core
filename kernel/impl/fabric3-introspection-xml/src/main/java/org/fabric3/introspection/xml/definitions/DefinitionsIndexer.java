@@ -50,7 +50,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
@@ -110,7 +110,7 @@ public class DefinitionsIndexer implements XmlIndexer {
                     NamespaceContext namespaceContext = reader.getNamespaceContext();
                     QName name = LoaderUtil.getQName(nameAttr, targetNamespace, namespaceContext);
                     QNameSymbol symbol = new QNameSymbol(name);
-                    ResourceElement<QNameSymbol, AbstractDefinition> element = new ResourceElement<QNameSymbol, AbstractDefinition>(symbol);
+                    ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
                     resource.addResourceElement(element);
                     break;
                 case XMLStreamConstants.END_DOCUMENT:

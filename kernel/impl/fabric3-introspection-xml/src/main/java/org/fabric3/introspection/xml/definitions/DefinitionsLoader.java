@@ -53,7 +53,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
-import org.fabric3.model.type.definitions.AbstractDefinition;
+import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
@@ -108,7 +108,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
     public void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws InstallException, XMLStreamException {
 
         validateAttributes(reader, context);
-        List<AbstractDefinition> definitions = new ArrayList<AbstractDefinition>();
+        List<AbstractPolicyDefinition> definitions = new ArrayList<AbstractPolicyDefinition>();
         String oldNamespace = context.getTargetNamespace();
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
         context.setTargetNamespace(targetNamespace);
@@ -116,7 +116,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             switch (reader.next()) {
             case START_ELEMENT:
                 QName qname = reader.getName();
-                AbstractDefinition definition = null;
+                AbstractPolicyDefinition definition = null;
                 if (INTENT.equals(qname)) {
                     try {
                         definition = loaderRegistry.load(reader, Intent.class, context);
@@ -149,7 +149,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             case END_ELEMENT:
                 assert DEFINITIONS.equals(reader.getName());
                 // update indexed elements with the loaded definitions
-                for (AbstractDefinition candidate : definitions) {
+                for (AbstractPolicyDefinition candidate : definitions) {
                     boolean found = false;
                     for (ResourceElement element : resource.getResourceElements()) {
                         Symbol candidateSymbol = new QNameSymbol(candidate.getName());
@@ -191,7 +191,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             boolean def = qualifier.isDefault();
             Intent qualified = new Intent(qualifierName, constrains, requires, Collections.<Qualifier>emptySet(), intentType, def);
             QNameSymbol symbol = new QNameSymbol(qualifierName);
-            ResourceElement<QNameSymbol, AbstractDefinition> element = new ResourceElement<QNameSymbol, AbstractDefinition>(symbol);
+            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
             element.setValue(qualified);
             resource.addResourceElement(element);
         }
