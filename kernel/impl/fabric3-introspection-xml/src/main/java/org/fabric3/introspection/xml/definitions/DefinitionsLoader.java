@@ -142,6 +142,11 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                     }
                 }
                 if (definition != null) {
+                    if (definitions.contains(definition)){
+                        QName name = definition.getName();
+                        DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, reader);
+                        context.addError(error);
+                    }
                     definitions.add(definition);
                 }
                 break;

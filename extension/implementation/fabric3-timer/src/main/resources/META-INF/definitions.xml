@@ -13,8 +13,7 @@ Public License. See the accompanying license file for details.
         xmlns:oasis="http://docs.oasis-open.org/ns/opencsa/sca/200903"
         targetNamespace="urn:fabric3.org:policy">
 
-    <implementationType name="f3-impl:implementation.timer" mayProvide="sca:managedTransaction"/>
+    <implementationType name="f3-impl:implementation.timer" mayProvide="sca:managedTransaction oasis:managedTransaction"/>
 
-    <implementationType name="f3-impl:implementation.timer" mayProvide="oasis:managedTransaction"/>
 
 </definitions>

@@ -35,23 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.policy;
+package org.fabric3.introspection.xml.definitions;
 
-import org.fabric3.host.Fabric3Exception;
+import javax.xml.stream.XMLStreamReader;
+
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Execption thrown if unable to activate definition.
- *
  * @version $Rev$ $Date$
  */
-public class PolicyActivationException extends Fabric3Exception {
-    private static final long serialVersionUID = -7879956099570998326L;
+public class DuplicatePolicyDefinition extends XmlValidationFailure {
 
-    /**
-     * @param message    Message for the exception.
-     */
-    public PolicyActivationException(String message) {
-        super(message);
+    public DuplicatePolicyDefinition(String message, XMLStreamReader reader) {
+        super(message, reader);
     }
 
 }

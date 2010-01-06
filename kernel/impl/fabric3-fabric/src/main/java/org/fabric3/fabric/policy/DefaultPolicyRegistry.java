@@ -129,13 +129,33 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     public void activate(AbstractPolicyDefinition definition) throws PolicyActivationException {
         if (definition instanceof Intent) {
-            getSubCache(Intent.class).put(definition.getName(), (Intent) definition);
+            Map<QName, Intent> subCache = getSubCache(Intent.class);
+            QName name = definition.getName();
+            if (subCache.containsKey(name)){
+                throw new PolicyActivationException("Duplicate intent found:" + name);
+            }
+            subCache.put(name, (Intent) definition);
         } else if (definition instanceof PolicySet) {
-            getSubCache(PolicySet.class).put(definition.getName(), (PolicySet) definition);
+            Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
+            QName name = definition.getName();
+            if (subCache.containsKey(name)){
+                throw new PolicyActivationException("Duplicate policy set found:" + name);
+            }
+            subCache.put(name, (PolicySet) definition);
         } else if (definition instanceof BindingType) {
-            getSubCache(BindingType.class).put(definition.getName(), (BindingType) definition);
+            Map<QName, BindingType> subCache = getSubCache(BindingType.class);
+            QName name = definition.getName();
+            if (subCache.containsKey(name)){
+                throw new PolicyActivationException("Duplicate binding type found:" + name);
+            }
+            subCache.put(name, (BindingType) definition);
         } else if (definition instanceof ImplementationType) {
-            getSubCache(ImplementationType.class).put(definition.getName(), (ImplementationType) definition);
+            Map<QName, ImplementationType> subCache = getSubCache(ImplementationType.class);
+            QName name = definition.getName();
+            if (subCache.containsKey(name)){
+                throw new PolicyActivationException("Duplicate implementation type found:" + name);
+            }
+            subCache.put(name, (ImplementationType) definition);
         }
     }
 
