@@ -80,6 +80,7 @@ import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -87,7 +88,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
-import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -502,6 +502,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
                                 + promotedService.getName() + ": " + result.getError(), reader);
                 context.addError(error);
+            } else {
+                matchServiceCallbackContracts(service, promotedService, reader, context);
             }
         }
     }
@@ -532,9 +534,76 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 IncompatibleContracts error = new IncompatibleContracts("The composite service interface " + name
                         + " is not compatible with the promoted service " + promotedReference.getName() + ": " + result.getError(), reader);
                 context.addError(error);
+            } else {
+                matchReferenceCallbackContracts(reference, promotedReference, reader, context);
             }
         }
     }
+
+    /**
+     * Matches the service contract declared on the promoted service and the component service.
+     *
+     * @param service         the service
+     * @param promotedService the component type service
+     * @param reader          the reader
+     * @param context         the context
+     */
+    private void matchServiceCallbackContracts(CompositeService service,
+                                               ServiceDefinition promotedService,
+                                               XMLStreamReader reader,
+                                               IntrospectionContext context) {
+        ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
+        if (callbackContract == null) {
+            return;
+        }
+        ServiceContract promotedCallbackContract = promotedService.getServiceContract().getCallbackContract();
+        if (promotedCallbackContract == null) {
+            IncompatibleContracts error =
+                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", reader);
+            context.addError(error);
+            return;
+        }
+        MatchResult result = contractMatcher.isAssignableFrom(promotedCallbackContract, callbackContract, true);
+        if (!result.isAssignable()) {
+            String name = service.getName();
+            IncompatibleContracts error = new IncompatibleContracts("The composite service " + name + " callback contract is not compatible with " +
+                    "the promoted service " + promotedService.getName() + " callback contract: " + result.getError(), reader);
+            context.addError(error);
+        }
+    }
+
+    /**
+     * Matches the service contract declared on the promoted reference and the component reference.
+     *
+     * @param reference         the reference
+     * @param promotedReference the promoted reference
+     * @param reader            the reader
+     * @param context           the context
+     */
+    private void matchReferenceCallbackContracts(CompositeReference reference,
+                                                 ReferenceDefinition promotedReference,
+                                                 XMLStreamReader reader,
+                                                 IntrospectionContext context) {
+        ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
+        if (callbackContract == null) {
+            return;
+        }
+        ServiceContract promotedCallbackContract = promotedReference.getServiceContract().getCallbackContract();
+        if (promotedCallbackContract == null) {
+            IncompatibleContracts error =
+                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", reader);
+            context.addError(error);
+            return;
+        }
+        MatchResult result = contractMatcher.isAssignableFrom(promotedCallbackContract, callbackContract, true);
+        if (!result.isAssignable()) {
+            String name = reference.getName();
+            IncompatibleContracts error = new IncompatibleContracts("The composite reference " + name + " callback contract is not compatible with " +
+                    "the promoted reference " + promotedReference.getName() + " callback contract: " + result.getError(), reader);
+            context.addError(error);
+        }
+    }
+
 
     /**
      * Sets the composite multiplicity to inherit from the promoted reference if not explicitly configured. If configured, validates the setting
