@@ -177,6 +177,19 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
+        validateRemotable(reader, context);
     }
+
+    private void validateRemotable(XMLStreamReader reader, IntrospectionContext context) {
+        String remotableAttr = reader.getAttributeValue(null, "remotable");
+        if (remotableAttr != null) {
+            boolean remotable = Boolean.parseBoolean(remotableAttr);
+            if (!remotable) {
+                InvalidValue error = new InvalidValue("WSDL interfaces cannot set remotable to false", reader);
+                context.addError(error);
+            }
+        }
+    }
+
 
 }
