@@ -73,6 +73,7 @@ import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.Target;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -266,7 +267,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
 
         processMultiplicity(reference, typeReference, reader, context);
-
         definition.add(reference);
 
     }
@@ -323,12 +323,14 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 IncompatibleContracts error = new IncompatibleContracts("The component service interface " + name
                         + " is not compatible with the promoted service " + typeService.getName() + ": " + result.getError(), reader);
                 context.addError(error);
+            } else {
+                matchServiceCallbackContracts(service, typeService, reader, context);
             }
         }
     }
 
     /**
-     * Sets the composite reference service contract from the comonent type reference if not explicitly configured. If configured, validates the
+     * Sets the composite reference service contract from the component type reference if not explicitly configured. If configured, validates the
      * contract matches the promoted reference contract.
      *
      * @param reference     the reference
@@ -348,12 +350,79 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             MatchResult result = contractMatcher.isAssignableFrom(typeReference.getServiceContract(), reference.getServiceContract(), true);
             if (!result.isAssignable()) {
                 String name = reference.getName();
-                IncompatibleContracts error = new IncompatibleContracts("The component reference interface " + name
+                IncompatibleContracts error = new IncompatibleContracts("The component reference contract " + name
                         + " is not compatible with the promoted reference " + typeReference.getName() + ": " + result.getError(), reader);
                 context.addError(error);
+            } else {
+                matchReferenceCallbackContracts(reference, typeReference, reader, context);
             }
         }
     }
+
+    /**
+     * Matches the service contract declared on the promoted service and component type service.
+     *
+     * @param service     the service
+     * @param typeService the component type service
+     * @param reader      the reader
+     * @param context     the context
+     */
+    private void matchServiceCallbackContracts(ComponentService service,
+                                               ServiceDefinition typeService,
+                                               XMLStreamReader reader,
+                                               IntrospectionContext context) {
+        ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
+        if (callbackContract == null) {
+            return;
+        }
+        ServiceContract typeCallbackContract = typeService.getServiceContract().getCallbackContract();
+        if (typeCallbackContract == null) {
+            IncompatibleContracts error =
+                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", reader);
+            context.addError(error);
+            return;
+        }
+        MatchResult result = contractMatcher.isAssignableFrom(typeCallbackContract, callbackContract, true);
+        if (!result.isAssignable()) {
+            String name = service.getName();
+            IncompatibleContracts error = new IncompatibleContracts("The component service " + name + " callback contract is not compatible with " +
+                    "the promoted service " + typeService.getName() + " callback contract: " + result.getError(), reader);
+            context.addError(error);
+        }
+    }
+
+    /**
+     * Matches the service contract declared on the promoted reference and component type reference.
+     *
+     * @param reference     the reference
+     * @param typeReference the component type reference
+     * @param reader        the reader
+     * @param context       the context
+     */
+    private void matchReferenceCallbackContracts(ComponentReference reference,
+                                                 ReferenceDefinition typeReference,
+                                                 XMLStreamReader reader,
+                                                 IntrospectionContext context) {
+        ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
+        if (callbackContract == null) {
+            return;
+        }
+        ServiceContract typeCallbackContract = typeReference.getServiceContract().getCallbackContract();
+        if (typeCallbackContract == null) {
+            IncompatibleContracts error =
+                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", reader);
+            context.addError(error);
+            return;
+        }
+        MatchResult result = contractMatcher.isAssignableFrom(typeCallbackContract, callbackContract, true);
+        if (!result.isAssignable()) {
+            String name = reference.getName();
+            IncompatibleContracts error = new IncompatibleContracts("The component reference " + name + " callback contract is not compatible with " +
+                    "the promoted reference " + typeReference.getName() + " callback contract: " + result.getError(), reader);
+            context.addError(error);
+        }
+    }
+
 
     /**
      * Sets the composite multiplicity to inherit from the component type reference if not explicitly configured. If configured, validates the setting
