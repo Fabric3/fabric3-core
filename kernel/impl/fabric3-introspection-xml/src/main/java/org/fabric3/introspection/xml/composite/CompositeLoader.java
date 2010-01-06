@@ -87,6 +87,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -493,8 +494,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             // if a service contract is not set on the composite service, inherit from the promoted service
             service.setServiceContract(promotedService.getServiceContract());
         } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-            // verify service contracts are compatible
-            MatchResult result = contractMatcher.isAssignableFrom(promotedService.getServiceContract(), service.getServiceContract(), true);
+            // verify service contracts are compatible - the composite service contract can be a subset of the promoted service contract
+            MatchResult result = contractMatcher.isAssignableFrom(service.getServiceContract(), promotedService.getServiceContract(), true);
             if (!result.isAssignable()) {
                 String name = service.getName();
                 IncompatibleContracts error =
@@ -522,7 +523,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             // if a reference contract is not set on the composite service, inherit from the promoted reference
             reference.setServiceContract(promotedReference.getServiceContract());
         } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-            // verify service contracts are compatible
+            // verify service contracts are compatible - the promoted reference contract can be a subset of the composite reference contract
             ServiceContract promotedContract = promotedReference.getServiceContract();
             ServiceContract contract = reference.getServiceContract();
             MatchResult result = contractMatcher.isAssignableFrom(promotedContract, contract, true);

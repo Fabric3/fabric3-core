@@ -75,9 +75,11 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
 
     // TODO throw explicit error if DataType.getXsdType() == null saying XSD mapping extension is not installed
     protected MatchResult matchOperation(Operation operation, List<Operation> operations, boolean reportErrors) {
+        boolean matched = false;
         for (Operation candidate : operations) {
             String name = operation.getName();
-            if (!name.equalsIgnoreCase(candidate.getName())) {
+            String wsdlName = operation.getWsdlName();
+            if (!name.equalsIgnoreCase(candidate.getName()) && !(wsdlName != null && wsdlName.equals(candidate.getWsdlName()))) {
                 continue;
             }
             // check input types
@@ -120,12 +122,16 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
             if (outputXsdType == null || !outputXsdType.equals(candidateOutputXsdType)) {
                 if (outputType instanceof XSDComplexType) {
                     if (checkSequence((XSDComplexType) outputType, candidateOutputType)) {
-                        continue;
+                        matched = true;
+                        // found operation
+                        break;
                     }
                 }
                 if (candidateOutputType instanceof XSDComplexType) {
                     if (checkSequence((XSDComplexType) candidateOutputType, outputType)) {
-                        continue;
+                        matched = true;
+                        // found operation
+                        break;
                     }
                 }
                 if (reportErrors) {
@@ -135,6 +141,7 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                     return NO_MATCH;
                 }
             }
+            matched = true;
             // check fault types
             // FIXME handle web faults
 //            List<DataType<?>> faultTypes = operation.getFaultTypes();
@@ -147,7 +154,15 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
 //                }
 //            }
         }
-        return MATCH;
+        if (matched) {
+            return MATCH;
+        } else {
+            if (reportErrors) {
+                return new MatchResult("No matching operation for: " + operation.getName());
+            } else {
+                return NO_MATCH;
+            }
+        }
     }
 
     /**

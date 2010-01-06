@@ -39,6 +39,7 @@ package org.fabric3.wsdl.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.contract.ServiceContract;
@@ -51,16 +52,16 @@ import org.fabric3.model.type.contract.ServiceContract;
 public class WsdlServiceContract extends ServiceContract {
     private static final long serialVersionUID = 8084985972954894699L;
     private Map<QName, Object> extensionElements = new HashMap<QName, Object>();
-    private QName portTypeQname;
+    private PortType portType;
     private QName wsdlQName;
 
-    public WsdlServiceContract(QName portTypeQname, QName wsdlQName) {
-        this.portTypeQname = portTypeQname;
+    public WsdlServiceContract(PortType portType, QName wsdlQName) {
+        this.portType = portType;
         this.wsdlQName = wsdlQName;
     }
 
     public String getQualifiedInterfaceName() {
-        return portTypeQname.toString();
+        return portType.getQName().toString();
     }
 
     @Override
@@ -76,12 +77,12 @@ public class WsdlServiceContract extends ServiceContract {
     }
 
     /**
-     * Returns the qualified name for the port type/interface.
+     * Returns the PortType this contract is defined by.
      *
-     * @return the qualified name for the port type/interface
+     * @return the PortType
      */
-    public QName getPortTypeQname() {
-        return portTypeQname;
+    public PortType getPortType() {
+        return portType;
     }
 
     /**
@@ -121,5 +122,24 @@ public class WsdlServiceContract extends ServiceContract {
      */
     public Map<QName, Object> getExtensionElements() {
         return extensionElements;
+    }
+
+    /**
+     * Performs a shallow instance copy.
+     *
+     * @return a copy of the current instance.
+     */
+    public WsdlServiceContract copy() {
+        WsdlServiceContract copy = new WsdlServiceContract(portType, wsdlQName);
+        copy.setCallbackContract(callbackContract);
+        copy.setConversational(conversational);
+        copy.setIntents(getIntents());
+        copy.setInterfaceName(interfaceName);
+        copy.setOperations(operations);
+        copy.setPolicySets(getPolicySets());
+        for (Map.Entry<QName, Object> entry : extensionElements.entrySet()) {
+            copy.addExtensonElement(entry.getKey(), entry.getValue());
+        }
+        return copy;
     }
 }

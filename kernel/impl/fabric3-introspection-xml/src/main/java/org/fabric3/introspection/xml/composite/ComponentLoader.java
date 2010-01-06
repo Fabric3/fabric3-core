@@ -76,6 +76,7 @@ import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -315,8 +316,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
         } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-            // verify service contracts are compatible
-            MatchResult result = contractMatcher.isAssignableFrom(typeService.getServiceContract(), service.getServiceContract(), true);
+            // verify service contracts are compatible - the component service contract can be a subset of the component type service contract
+            MatchResult result = contractMatcher.isAssignableFrom(service.getServiceContract(), typeService.getServiceContract(), true);
             if (!result.isAssignable()) {
                 String name = service.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The component service interface " + name
@@ -343,7 +344,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // if the reference contract is not set, inherit from the component type service
             reference.setServiceContract(typeReference.getServiceContract());
         } else if (contractMatcher != null) { // null check for contract matcher as it is not used during bootstrap
-            // verify service contracts are compatible
+            // verify service contracts are compatible - the component type reference contract can be a subset of the component reference contract
             MatchResult result = contractMatcher.isAssignableFrom(typeReference.getServiceContract(), reference.getServiceContract(), true);
             if (!result.isAssignable()) {
                 String name = reference.getName();
@@ -461,7 +462,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
 
     }
-    
+
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);

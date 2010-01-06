@@ -81,11 +81,9 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
             Operation operation = createOperation(wsdlOperation, collection, portType, context);
             operations.add(operation);
         }
-        QName portTypeQName = portType.getQName();
-        WsdlServiceContract contract = new WsdlServiceContract(portTypeQName, wsdlQName);
+        WsdlServiceContract contract = new WsdlServiceContract(portType, wsdlQName);
         contract.setOperations(operations);
         return contract;
-
     }
 
     /**

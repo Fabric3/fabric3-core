@@ -5,6 +5,7 @@
              xmlns:tns="http://example.com/stockquote.wsdl"
              xmlns:xsd1="http://example.com/stockquote.xsd"
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
              xmlns="http://schemas.xmlsoap.org/wsdl/">
 
     <types>
@@ -22,7 +23,7 @@
         <part name="body" element="xsd1:price"/>
     </message>
 
-    <portType name="StockQuotePortType">
+    <portType name="StockQuotePortType" sca:callback="tns:StockQuoteCallback">
         <operation name="GetLastTradePrice">
             <input message="tns:GetLastTradePriceInput"/>
             <output message="tns:GetLastTradePriceOutput"/>

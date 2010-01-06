@@ -35,30 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.wsdl.loader;
+package org.fabric3.wsdl.contribution.impl;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InterfaceWsdlLoaderTestCase extends TestCase {
+public class CallbackContractLoadError extends ValidationFailure {
+    private String message;
+    private Throwable cause;
 
-    public void testParseUri() throws Exception {
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        InterfaceWsdlLoader loader = new InterfaceWsdlLoader(null, null, helper);
-        XMLStreamReader reader = EasyMock.createNiceMock(XMLStreamReader.class);
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl.portType(StockQuote)", reader, context);
-        assertEquals("http://www.stockquote.org/StockQuoteService", name.getNamespaceURI());
-        assertEquals("StockQuote", name.getLocalPart());
+    public CallbackContractLoadError(String message, Throwable cause) {
+        this.message = message;
+        this.cause = cause;
     }
 
+    public String getMessage() {
+        return message + ". Original error was: \n" + cause;
+    }
 }

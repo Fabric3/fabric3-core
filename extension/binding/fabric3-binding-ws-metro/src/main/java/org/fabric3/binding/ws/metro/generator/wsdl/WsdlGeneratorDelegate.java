@@ -244,7 +244,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 // FIXME null service name
-                QName portTypeName = contract.getPortTypeQname();
+                QName portTypeName = contract.getPortType().getQName();
                 QName portName = result.getPortName();
                 endpointDefinition = new ReferenceEndpointDefinition(result.getServiceName(), false, portName, portTypeName, targetUrl);
             }

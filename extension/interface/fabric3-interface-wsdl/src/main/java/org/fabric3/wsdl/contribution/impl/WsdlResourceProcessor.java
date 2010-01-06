@@ -39,6 +39,7 @@ package org.fabric3.wsdl.contribution.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,13 +57,16 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Element;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.StoreException;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
@@ -74,6 +78,7 @@ import org.fabric3.wsdl.contribution.WsdlResourceProcessorExtension;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.fabric3.wsdl.loader.PortTypeNotFound;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.fabric3.wsdl.processor.WsdlContractProcessor;
 
@@ -86,18 +91,22 @@ import org.fabric3.wsdl.processor.WsdlContractProcessor;
 @EagerInit
 public class WsdlResourceProcessor implements ResourceProcessor {
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl", "definitions");
+    private static final QName CALLBACK_ATTRIBUTE = new QName(Constants.SCA_NS, "callback");
     private static final String MIME_TYPE = "text/wsdl+xml";
 
     private ProcessorRegistry registry;
     private WsdlContractProcessor processor;
+    private MetaDataStore store;
     private Wsdl4JFactory factory;
     private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
                                  @Reference WsdlContractProcessor processor,
+                                 @Reference MetaDataStore store,
                                  @Reference Wsdl4JFactory factory) {
         this.registry = registry;
         this.processor = processor;
+        this.store = store;
         this.factory = factory;
     }
 
@@ -126,7 +135,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             // eagerly process the WSDL since port types need to be available during contribution processing.
             Resource resource = new Resource(url, MIME_TYPE);
             parse(resource, context);
-            resource.setProcessed(true);
             contribution.addResource(resource);
         } catch (IOException e) {
             throw new InstallException(e);
@@ -143,7 +151,36 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     }
 
     public void process(Resource resource, IntrospectionContext context) throws InstallException {
-        // no-op since the WSDL was eagerly processed.
+        // Process callbacks here (as opposed to eagerly in #index(..) since the SCA callback attribute may reference a portType in another document.
+        // Processing at this point guarentees the callback portType will be indexed and referenceable.
+        for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+            if (element.getSymbol() instanceof WsdlServiceContractSymbol) {
+                WsdlServiceContract contract = (WsdlServiceContract) element.getValue();
+                PortType portType = contract.getPortType();
+                QName callbackPortType = (QName) portType.getExtensionAttribute(CALLBACK_ATTRIBUTE);
+                if (callbackPortType != null) {
+                    WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(callbackPortType);
+                    URI contributionUri = context.getContributionUri();
+                    ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> resolved;
+                    try {
+                        resolved = store.resolve(contributionUri, WsdlServiceContract.class, symbol, context);
+                    } catch (StoreException e) {
+                        CallbackContractLoadError error = new CallbackContractLoadError("Error resolving callback port type:" + callbackPortType, e);
+                        context.addError(error);
+                        continue;
+                    }
+                    if (resolved == null) {
+                        PortTypeNotFound error = new PortTypeNotFound("Callback port type not found: " + callbackPortType);
+                        context.addError(error);
+                        continue;
+
+                    }
+                    WsdlServiceContract callbackContract = resolved.getValue();
+                    contract.setCallbackContract(callbackContract);
+                }
+            }
+        }
+        resource.setProcessed(true);
     }
 
     @SuppressWarnings({"unchecked"})

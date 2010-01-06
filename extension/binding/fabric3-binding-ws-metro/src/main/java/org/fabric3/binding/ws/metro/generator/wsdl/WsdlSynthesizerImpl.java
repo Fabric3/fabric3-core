@@ -95,7 +95,7 @@ public class WsdlSynthesizerImpl implements WsdlSynthesizer {
         String localPortName = localName + "Port";
 
         Binding binding = copy.createBinding();
-        binding.setPortType(copy.getPortType(contract.getPortTypeQname()));
+        binding.setPortType(copy.getPortType(contract.getPortType().getQName()));
         binding.setQName(new QName(targetNamespace, localName + "Binding"));
         try {
             SOAPBinding soapBinding = (SOAPBinding) copy.getExtensionRegistry().createExtension(Binding.class, SOAP_BINDING);

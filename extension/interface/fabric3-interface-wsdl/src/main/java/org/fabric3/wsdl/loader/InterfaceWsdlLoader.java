@@ -47,10 +47,14 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
+import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -69,10 +73,12 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 @EagerInit
 public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
     private MetaDataStore store;
+    private ContractMatcher matcher;
     private LoaderHelper helper;
 
-    public InterfaceWsdlLoader(@Reference MetaDataStore store, @Reference LoaderHelper helper) {
+    public InterfaceWsdlLoader(@Reference MetaDataStore store, @Reference ContractMatcher matcher, @Reference LoaderHelper helper) {
         this.store = store;
+        this.matcher = matcher;
         this.helper = helper;
     }
 
@@ -107,6 +113,17 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
                 return;
             }
             WsdlServiceContract callbackContract = resolveContract(callbackName, reader, context);
+            // validate callback contract specified in WSDL is compatible with the one specified in the interface.wsdl entry
+            ServiceContract originalContract = wsdlContract.getCallbackContract();
+            if (originalContract != null) {
+                MatchResult result = matcher.isAssignableFrom(callbackContract, originalContract, true);
+                if (!result.isAssignable()) {
+                    IncompatibleContracts error =
+                            new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
+                                    " the one specified in the WSDL portType: " + result.getError(), reader);
+                    context.addError(error);
+                }
+            }
             wsdlContract.setCallbackContract(callbackContract);
         }
     }
@@ -148,7 +165,9 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
             return new WsdlServiceContract(null, null);
 
         }
-        return element.getValue();
+        WsdlServiceContract contract = element.getValue();
+        // return a copy as it may be modified
+        return contract.copy();
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
