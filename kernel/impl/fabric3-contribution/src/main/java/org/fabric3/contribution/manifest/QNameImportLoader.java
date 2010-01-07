@@ -82,7 +82,7 @@ public class QNameImportLoader implements TypeLoader<QNameImport> {
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"namespace".equals(name)) {
+            if (!"namespace".equals(name) && !"location".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
