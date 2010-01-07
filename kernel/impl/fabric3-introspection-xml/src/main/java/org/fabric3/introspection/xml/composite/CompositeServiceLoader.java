@@ -43,6 +43,8 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -58,6 +60,7 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeService;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -94,7 +97,15 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
             MissingPromotion error = new MissingPromotion("Promotion not specied on composite service " + name, reader);
             context.addError(error);
         }
-        CompositeService def = new CompositeService(name, null, loaderHelper.parseUri(promote));
+        URI uri;
+        try {
+            uri = loaderHelper.parseUri(promote);
+        } catch (URISyntaxException e) {
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, reader, e);
+            context.addError(error);
+            uri = URI.create("");
+        }
+        CompositeService def = new CompositeService(name, null, uri);
 
         loaderHelper.loadPolicySetsAndIntents(def, reader, context);
         boolean callback = false;

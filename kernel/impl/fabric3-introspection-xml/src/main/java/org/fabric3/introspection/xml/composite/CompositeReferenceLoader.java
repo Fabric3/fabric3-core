@@ -44,6 +44,8 @@
 package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +109,17 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
             return null;
         }
 
-        List<URI> promotedUris = loaderHelper.parseListOfUris(reader, "promote");
-        if (promotedUris == null || promotedUris.isEmpty()) {
+        List<URI> promotedUris;
+        boolean promoteError = false;
+        try {
+            promotedUris = loaderHelper.parseListOfUris(reader, "promote");
+        } catch (URISyntaxException e) {
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on reference: " + name, reader, e);
+            context.addError(error);
+            promotedUris = Collections.emptyList();
+            promoteError = true;
+        }
+        if (!promoteError && (promotedUris == null || promotedUris.isEmpty())) {
             MissingPromotion error = new MissingPromotion("Promotion not specied on composite reference " + name, reader);
             context.addError(error);
         }

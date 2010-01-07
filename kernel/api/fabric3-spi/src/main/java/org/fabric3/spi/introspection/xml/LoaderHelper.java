@@ -44,6 +44,7 @@
 package org.fabric3.spi.introspection.xml;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -106,10 +107,11 @@ public interface LoaderHelper {
     /**
      * Convert a URI from a String form of <code>component/service</code> to a URI form of <code>component/service</code>.
      *
-     * @param target the URI to convert
+     * @param value the URI to convert
      * @return a URI where the fragment represents the service name
+     * @throws URISyntaxException if the value is an invalid URI
      */
-    URI parseUri(String target);
+    URI parseUri(String value) throws URISyntaxException;
 
     /**
      * Convert a URI from a String form of <code>component/service/binding</code> to a Target.
@@ -147,8 +149,9 @@ public interface LoaderHelper {
      * @param reader    the XML stream reader
      * @param attribute the attribute to parse
      * @return the list of URIs contained in that attribute, or null if the attribute is not present
+     * @throws URISyntaxException if the attribute contains an invalid URI
      */
-    List<URI> parseListOfUris(XMLStreamReader reader, String attribute);
+    List<URI> parseListOfUris(XMLStreamReader reader, String attribute) throws URISyntaxException;
 
     /**
      * Determines if the first multiplicity setting can narrow the second

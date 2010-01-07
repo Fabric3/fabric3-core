@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -162,18 +163,20 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return qName;
     }
 
-    public URI parseUri(String target) {
+    public URI parseUri(String target) throws URISyntaxException {
         if (target == null) {
             return null;
         }
 
         int index = target.lastIndexOf('/');
         if (index == -1) {
-            return URI.create(target);
+            URI newUri = new URI(target);
+            return newUri;
         } else {
             String uri = target.substring(0, index);
             String fragment = target.substring(index + 1);
-            return URI.create(uri + '#' + fragment);
+            URI newUri = new URI(uri + '#' + fragment);
+            return newUri;
         }
     }
 
@@ -193,7 +196,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         }
     }
 
-    public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) {
+    public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) throws URISyntaxException {
         String value = reader.getAttributeValue(null, attribute);
         if (value == null || value.length() == 0) {
             return null;
