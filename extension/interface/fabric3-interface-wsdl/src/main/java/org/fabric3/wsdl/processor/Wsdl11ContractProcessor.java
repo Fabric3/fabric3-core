@@ -119,10 +119,16 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
     private List<DataType<?>> getInputTypes(Message message, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         List<DataType<?>> types = new ArrayList<DataType<?>>();
         // Note Message.getParts() may not return the parts in proper order; Message.getOrderedParts(null) does
-        for (Part part : (Collection<Part>) message.getOrderedParts(null)) {
-            XSDType dataType = getDataType(part, collection, portType, context);
-            if (dataType != null) {
-                types.add(dataType);
+        List parts = message.getOrderedParts(null);
+        if (parts.isEmpty()) {
+            DataType<?> type = getElementDataType(message.getQName(), collection, portType, context);
+            types.add(type);
+        } else {
+            for (Part part : (Collection<Part>) parts) {
+                XSDType dataType = getDataType(part, collection, portType, context);
+                if (dataType != null) {
+                    types.add(dataType);
+                }
             }
         }
         return types;
@@ -147,8 +153,13 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
             return null;
         }
         Message message = output.getMessage();
-        Part part = (Part) message.getOrderedParts(null).get(0);
-        return getDataType(part, collection, portType, context);
+        List parts = message.getOrderedParts(null);
+        if (parts.isEmpty()) {
+            return getElementDataType(message.getQName(), collection, portType, context);
+        } else {
+            Part part = (Part) parts.get(0);
+            return getDataType(part, collection, portType, context);
+        }
     }
 
     private XSDType getDataType(Part part, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {

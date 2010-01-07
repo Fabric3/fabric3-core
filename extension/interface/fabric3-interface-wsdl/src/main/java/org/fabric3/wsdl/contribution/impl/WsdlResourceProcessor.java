@@ -54,13 +54,19 @@ import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLReader;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaException;
 import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.fabric3.host.contribution.InstallException;
@@ -90,6 +96,9 @@ import org.fabric3.wsdl.processor.WsdlContractProcessor;
  */
 @EagerInit
 public class WsdlResourceProcessor implements ResourceProcessor {
+    private static final QName SCHEMA_NAME = new QName(W3C_XML_SCHEMA_NS_URI, "schema");
+    private static final QName IMPORT_NAME = new QName(W3C_XML_SCHEMA_NS_URI, "import");
+    private static final QName SCHEMA_LOCATION = new QName("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl", "definitions");
     private static final QName CALLBACK_ATTRIBUTE = new QName(Constants.SCA_NS, "callback");
     private static final String MIME_TYPE = "text/wsdl+xml";
@@ -98,6 +107,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private WsdlContractProcessor processor;
     private MetaDataStore store;
     private Wsdl4JFactory factory;
+    private DocumentBuilderFactory documentBuilderFactory;
     private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
@@ -108,6 +118,9 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         this.processor = processor;
         this.store = store;
         this.factory = factory;
+        documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+
     }
 
     @Reference(required = false)
@@ -183,11 +196,18 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         resource.setProcessed(true);
     }
 
+    /**
+     * Parse all WSDL-related elements in a resource pointing to a WSDL document.
+     *
+     * @param resource the resource
+     * @param context  introspection context
+     * @throws InstallException if an unexpected error occurs
+     */
     @SuppressWarnings({"unchecked"})
     private void parse(Resource resource, IntrospectionContext context) throws InstallException {
         // parse the WSDL
         URL wsdlLocation = resource.getUrl();
-        Definition definition = parseWsdl(wsdlLocation);
+        Definition definition = parseWsdl(wsdlLocation, context);
         QName wsdlQName = definition.getQName();
         WsdlSymbol wsdlSymbol = new WsdlSymbol(wsdlQName);
         ResourceElement<WsdlSymbol, Definition> wsdlElement = new ResourceElement<WsdlSymbol, Definition>(wsdlSymbol, definition);
@@ -211,7 +231,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             resource.addResourceElement(element);
         }
         // parse WSDL schemas
-        XmlSchemaCollection schemaCollection = parseSchema(definition);
+        XmlSchemaCollection schemaCollection = parseSchema(definition, context);
         // TODO index XML schema elements and types?
 
         // introspect port type service contracts
@@ -231,7 +251,15 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         }
     }
 
-    private Definition parseWsdl(URL wsdlLocation) throws InstallException {
+    /**
+     * Parses the WSDL document.
+     *
+     * @param wsdlLocation the document location
+     * @param context      the introspection context
+     * @return the parsed WSDL
+     * @throws InstallException if an unexpected error occurs
+     */
+    private Definition parseWsdl(URL wsdlLocation, IntrospectionContext context) throws InstallException {
         try {
             WSDLReader reader = factory.newReader();
             Definition definition = reader.readWSDL(wsdlLocation.toURI().toString());
@@ -240,6 +268,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                 // an exception is thrown. 
                 definition.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
             }
+            parseSchemaLocation(definition, context);
             return definition;
         } catch (WSDLException e) {
             throw new InstallException(e);
@@ -248,25 +277,108 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         }
     }
 
-    private XmlSchemaCollection parseSchema(Definition definition) {
-        XmlSchemaCollection collection = new XmlSchemaCollection();
-        Types types = definition.getTypes();
-        if (types == null) {
-            // types not defined
-            return collection;
+    /**
+     * Parses the schemaLocation attribute if present.
+     *
+     * @param definition the WSDL
+     * @param context    the introspection context
+     * @throws InstallException if an unexpected error parsing the schema occurs
+     */
+    private void parseSchemaLocation(Definition definition, IntrospectionContext context) throws InstallException {
+        QName schemaLocation = (QName) definition.getExtensionAttribute(SCHEMA_LOCATION);
+        if (schemaLocation == null) {
+            // no schema location present, skip
+            return;
         }
-        for (Object obj : types.getExtensibilityElements()) {
-            if (obj instanceof Schema) {
-                Schema schema = (Schema) obj;
-                Element element = schema.getElement();
-                collection.setBaseUri(schema.getDocumentBaseURI());
-                // create a synthetic id to work around issue where XmlSchema cannot handle elements with the same targetnamespace
-                String syntheticId = UUID.randomUUID().toString();
-                collection.read(element, syntheticId);
+        // strip extra whitespace
+        String trimmed = schemaLocation.getLocalPart().replaceAll("\\s{2,}", " ");
+        String[] locationValue = trimmed.split(" ");
+        int len = locationValue.length;
+        if (len == 1) {
+            populateSchemaTypes(definition, "", locationValue[0]);
+        } else if (len > 1) {
+            if (len % 2 != 0) {
+                // make sure the schema location contains pairs of values if more than one
+                InvalidSchemaLocation error = new InvalidSchemaLocation("Invalid schemaLocation value: " + schemaLocation.getLocalPart());
+                context.addError(error);
+                return;
             }
+            for (int i = 0; i < locationValue.length - 1; i++) {
+                String namespace = locationValue[i];
+                String location = locationValue[i + 1];
+                populateSchemaTypes(definition, namespace, location);
+            }
+        }
+    }
 
+    /**
+     * Populate the WSDL with an import for the schema location value.
+     *
+     * @param definition      the WSDL
+     * @param targetNamespace the schema target namespace
+     * @param schemaLocation  the dereferenceable schema location
+     * @throws InstallException if an unexpected error parsing the schema occurs
+     */
+    private void populateSchemaTypes(Definition definition, String targetNamespace, String schemaLocation) throws InstallException {
+        Types types = definition.createTypes();
+        Schema schema;
+        try {
+            schema = (Schema) definition.getExtensionRegistry().createExtension(Types.class, SCHEMA_NAME);
+        } catch (WSDLException e) {
+            throw new InstallException(e);
+        }
+        Document document;
+        try {
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            document = documentBuilder.newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new InstallException(e);
+        }
+        Element schemaElement = document.createElementNS(SCHEMA_NAME.getNamespaceURI(), "xsd:schema");
+        schema.setElement(schemaElement);
+        Element importElement = document.createElementNS(IMPORT_NAME.getNamespaceURI(), "xsd:import");
+        importElement.setAttribute("namespace", targetNamespace);
+        importElement.setAttribute("schemaLocation", schemaLocation);
+        schemaElement.appendChild(importElement);
+        types.addExtensibilityElement(schema);
+        definition.setTypes(types);
+    }
+
+
+    /**
+     * Parses the contents of schema entries and imported documents using Apache Commons XmlSchema.
+     *
+     * @param definition the WSDL
+     * @param context    the introspection context
+     * @return the parsed schema values
+     */
+    private XmlSchemaCollection parseSchema(Definition definition, IntrospectionContext context) {
+        XmlSchemaCollection collection = new XmlSchemaCollection();
+        try {
+            Types types = definition.getTypes();
+            if (types == null) {
+                // types not defined
+                return collection;
+            }
+            for (Object obj : types.getExtensibilityElements()) {
+                if (obj instanceof Schema) {
+                    Schema schema = (Schema) obj;
+                    Element element = schema.getElement();
+                    collection.setBaseUri(schema.getDocumentBaseURI());
+                    // create a synthetic id to work around issue where XmlSchema cannot handle elements with the same targetnamespace
+                    String syntheticId = UUID.randomUUID().toString();
+                    collection.read(element, syntheticId);
+                }
+
+            }
+        } catch (RuntimeException e) {
+            // For some reason, Apache XmlSchema wraps schema exceptions in a generic RuntimeException. Check if that is the case. 
+            if (!(e.getCause() instanceof XmlSchemaException)) {
+                throw e;
+            }
+            InvalidWsdl error = new InvalidWsdl("Error parsing Schema", e.getCause());
+            context.addError(error);
         }
         return collection;
     }
-
 }
