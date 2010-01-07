@@ -224,6 +224,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
 
     public List<Contribution> resolve(URI uri, Import imprt) {
         Map<Export, List<Contribution>> exports = exportsToContributionCache.get(imprt.getType());
+        URI location = imprt.getLocation();
         List<Contribution> resolved = new ArrayList<Contribution>();
         if (exports != null) {
             for (Map.Entry<Export, List<Contribution>> entry : exports.entrySet()) {
@@ -231,8 +232,16 @@ public class MetaDataStoreImpl implements MetaDataStore {
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
                 if (Export.EXACT_MATCH == export.match(imprt)) {
                     for (Contribution contribution : entry.getValue()) {
-                        if (!uri.equals(contribution.getUri())) {
-                            resolved.add(contribution);
+                        if (location != null) {
+                            // location is specified, resolve to the explicit contribution with that export
+                            if (location.equals(contribution.getUri())) {
+                                resolved.add(contribution);
+                                return resolved;   // finished, since location is used to specify exactly one contribution
+                            }
+                        } else {
+                            if (!uri.equals(contribution.getUri())) {
+                                resolved.add(contribution);
+                            }
                         }
                     }
 
@@ -258,10 +267,18 @@ public class MetaDataStoreImpl implements MetaDataStore {
                 }
                 for (Contribution contribution : entry.getValue()) {
                     URI exportUri = contribution.getUri();
-                    ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
-                    wires.add(wire);
-                    if (!imprt.isMultiplicity()) {
+                    URI location = imprt.getLocation();
+                    if (location != null && location.equals(exportUri)) {
+                        // location specified, resolve to exact contribution
+                        ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
+                        wires.add(wire);
                         return wires;
+                    } else if (location == null) {
+                        ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
+                        wires.add(wire);
+                        if (!imprt.isMultiplicity()) {
+                            return wires;
+                        }
                     }
                 }
             }

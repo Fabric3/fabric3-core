@@ -197,15 +197,24 @@ public class DependencyServiceImpl implements DependencyService {
             Contribution contribution = vertex.getEntity();
             ContributionManifest manifest = contribution.getManifest();
             assert manifest != null;
+            URI location = imprt.getLocation();
             for (Export export : manifest.getExports()) {
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
                 if (Export.EXACT_MATCH == export.match(imprt) && !contributionUri.equals(contribution.getUri())) {
-                    vertices.add(vertex);
-                    if (!imprt.isMultiplicity()) {
-                        return vertices;
+                    if (location != null) {
+                        // explicit location specified
+                        if (location.equals(contribution.getUri())) {
+                            vertices.add(vertex);
+                            return vertices; // done since explicit locations must resolve to one contribution
+                        }
+                    } else {
+                        vertices.add(vertex);
+                        if (!imprt.isMultiplicity()) {
+                            return vertices;
+                        }
+                        // multiplicity, check other vertices
+                        break;
                     }
-                    // multiplicity, check other vertices
-                    break;
                 }
             }
         }
