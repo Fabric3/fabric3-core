@@ -171,48 +171,70 @@ public class ConnectorImpl implements Connector {
         return wire;
     }
 
+    /**
+     * Handles adding required paramter data transformers to a wire.
+     *
+     * @param wire       the wire
+     * @param definition the physical wire definition
+     * @throws WiringException if there is an error creating a transformer
+     */
     private void processTransform(Wire wire, PhysicalWireDefinition definition) throws WiringException {
-        if (!transform) {
-            // short-circuit during bootstrap
+        if (!transform || definition.isOptimizable()) {
+            // short-circuit during bootstrap and when the wire is optimizable
             return;
         }
         PhysicalSourceDefinition sourceDefinition = definition.getSource();
         PhysicalTargetDefinition targetDefinition = definition.getTarget();
         for (DataType<?> sourceType : sourceDefinition.getPhysicalDataTypes()) {
             if (targetDefinition.getPhysicalDataTypes().contains(sourceType)) {
-                // no transform necessary
-                // TODO record source and target types on physical operation definition
+                // transform for pass-by-value and not for different datatypes.
+                addTransformer(wire, definition, true);
                 return;
             }
         }
+        addTransformer(wire, definition, false);
+    }
+
+    /**
+     * Adds a transformer if parameter data needs to be copied from one format to another or pass-by-value semantics must be enforced.
+     *
+     * @param wire           the wire
+     * @param definition     the physical wire definition
+     * @param checkPassByRef true if a check needs to be performed for support of pass-by-reference
+     * @throws WiringException if there is an error creating a transformer
+     */
+    private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws WiringException {
+        PhysicalSourceDefinition sourceDefinition = definition.getSource();
+        PhysicalTargetDefinition targetDefinition = definition.getTarget();
         URI targetId = targetDefinition.getClassLoaderId();
         ClassLoader targetLoader = classLoaderRegistry.getClassLoader(targetId);
         URI sourceId = sourceDefinition.getClassLoaderId();
         ClassLoader sourceLoader = classLoaderRegistry.getClassLoader(sourceId);
         for (InvocationChain chain : wire.getInvocationChains()) {
+            if (checkPassByRef && chain.getPhysicalOperation().isAllowsPassByReference()) {
+                continue;
+            }
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             List<DataType<?>> sourceTypes = sourceDefinition.getPhysicalDataTypes();
             List<DataType<?>> targetTypes = targetDefinition.getPhysicalDataTypes();
             Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
-            // TODO record source and target types on physical operation definition
             chain.addInterceptor(interceptor);
         }
     }
 
-
     @SuppressWarnings("unchecked")
-    protected <PID extends PhysicalInterceptorDefinition> InterceptorBuilder<PID> getBuilder(PID definition) {
+    private <PID extends PhysicalInterceptorDefinition> InterceptorBuilder<PID> getBuilder(PID definition) {
         return (InterceptorBuilder<PID>) interceptorBuilders.get(definition.getClass());
 
     }
 
     @SuppressWarnings("unchecked")
-    protected <PSD extends PhysicalSourceDefinition> SourceWireAttacher<PSD> getAttacher(PSD source) {
+    private <PSD extends PhysicalSourceDefinition> SourceWireAttacher<PSD> getAttacher(PSD source) {
         return (SourceWireAttacher<PSD>) sourceAttachers.get(source.getClass());
     }
 
     @SuppressWarnings("unchecked")
-    protected <PSD extends PhysicalTargetDefinition> TargetWireAttacher<PSD> getAttacher(PSD target) {
+    private <PSD extends PhysicalTargetDefinition> TargetWireAttacher<PSD> getAttacher(PSD target) {
         return (TargetWireAttacher<PSD>) targetAttachers.get(target.getClass());
     }
 }

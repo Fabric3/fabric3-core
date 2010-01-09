@@ -123,11 +123,11 @@ public class WireGeneratorImpl implements WireGenerator {
         targetDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallbackUri(callbackUri);
         BindingGenerator<T> sourceGenerator = getGenerator(binding);
-        List<LogicalOperation> logicalOperations = service.getOperations();
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, logicalOperations, sourcePolicy);
+        List<LogicalOperation> sourceOperations = service.getOperations();
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, sourceOperations, sourcePolicy);
         sourceDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
 
-        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(logicalOperations, policyResult);
+        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
         PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
         boolean optimizable = sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(contract, operations);
         pwd.setOptimizable(optimizable);
@@ -161,7 +161,8 @@ public class WireGeneratorImpl implements WireGenerator {
                 bindingGenerator.generateTarget(binding, callbackContract, callbackOperations, targetPolicy);
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
-        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(service.getCallbackOperations(), policyResult);
+        List<LogicalOperation> sourceOperations = service.getCallbackOperations();
+        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
     }
 
@@ -197,7 +198,7 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
-        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(operations, policyResult);
+        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(operations, true, policyResult);
 
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
 
@@ -231,7 +232,7 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalTargetDefinition targetDefinition = componentGenerator.generateTarget(callbackService, sourcePolicy);
         targetDefinition.setClassLoaderId(callbackService.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallback(true);
-        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(logicalOperations, policyResult);
+        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(logicalOperations, true, policyResult);
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
 
     }
@@ -265,11 +266,11 @@ public class WireGeneratorImpl implements WireGenerator {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (referenceCallbackContract.getClass().equals(callbackContract.getClass())) {
             List<LogicalOperation> operations = callbackTargetService.getOperations();
-            callbackOperations = operationGenerator.generateOperations(operations, policyResult);
+            callbackOperations = operationGenerator.generateOperations(operations, false, policyResult);
         } else {
             List<LogicalOperation> targetOperations = callbackTargetService.getOperations();
             List<LogicalOperation> sourceOperations = service.getCallbackOperations();
-            callbackOperations = operationGenerator.generateOperations(targetOperations, sourceOperations, policyResult);
+            callbackOperations = operationGenerator.generateOperations(targetOperations, sourceOperations, false, policyResult);
         }
 
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
@@ -299,7 +300,8 @@ public class WireGeneratorImpl implements WireGenerator {
         boolean optimizable = targetDefinition.isOptimizable();
 
         // Create the wire from the component to the resource
-        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(resource.getOperations(), null);
+        List<LogicalOperation> sourceOperations = resource.getOperations();
+        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, false, null);
         PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
         wireDefinition.setOptimizable(optimizable);
 
@@ -351,9 +353,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         Set<PhysicalOperationDefinition> operations;
         if (referenceContract.getClass().equals(serviceContract.getClass())) {
-            operations = operationGenerator.generateOperations(reference.getOperations(), policyResult);
+            List<LogicalOperation> sourceOperations = reference.getOperations();
+            operations = operationGenerator.generateOperations(sourceOperations, false, policyResult);
         } else {
-            operations = operationGenerator.generateOperations(reference.getOperations(), service.getOperations(), policyResult);
+            List<LogicalOperation> sourceOperations = reference.getOperations();
+            List<LogicalOperation> targetOperations = service.getOperations();
+            operations = operationGenerator.generateOperations(sourceOperations, targetOperations, false, policyResult);
         }
         QName sourceDeployable = null;
         QName targetDeployable = null;
@@ -376,7 +381,7 @@ public class WireGeneratorImpl implements WireGenerator {
      * <p/>
      * The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the reference
      * binding. Note that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from
-     * another deployable composite or when metadata for the bound service is created by another generator. 
+     * another deployable composite or when metadata for the bound service is created by another generator.
      *
      * @param wire the logical wire
      * @return the physical wire definiton
@@ -420,9 +425,12 @@ public class WireGeneratorImpl implements WireGenerator {
 
         Set<PhysicalOperationDefinition> operations;
         if (referenceContract.getClass().equals(serviceContract.getClass())) {
-            operations = operationGenerator.generateOperations(reference.getOperations(), policyResult);
+            List<LogicalOperation> sourceOperations = reference.getOperations();
+            operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
         } else {
-            operations = operationGenerator.generateOperations(reference.getOperations(), service.getOperations(), policyResult);
+            List<LogicalOperation> sourceOperations = reference.getOperations();
+            List<LogicalOperation> targetOperations = service.getOperations();
+            operations = operationGenerator.generateOperations(sourceOperations, targetOperations, true, policyResult);
         }
         QName sourceDeployable = null;
         QName targetDeployable = null;

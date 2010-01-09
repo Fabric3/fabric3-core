@@ -25,6 +25,7 @@
 
     <component name="PhysicalOperationGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl"/>
+        <property name="passByValueEnabled" source="$systemConfig//sca/@enableByValue"/>
     </component>
 
     <component name="OperationResolver">
@@ -105,6 +106,10 @@
     <component name="StopComponentCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
         <property name="order">3</property>
+    </component>
+
+     <component f3-core:key="{urn:fabric3.org:policy}allowsPassByReferencePolicy" name="ByReferenceInterceptorGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
     </component>
 
 </composite>

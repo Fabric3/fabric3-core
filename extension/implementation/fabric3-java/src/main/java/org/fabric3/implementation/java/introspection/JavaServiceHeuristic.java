@@ -54,6 +54,7 @@ import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
@@ -80,8 +81,19 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
     public void applyHeuristics(JavaImplementation implementation, Class<?> implClass, IntrospectionContext context) {
         InjectingComponentType componentType = implementation.getComponentType();
 
-        // if any services have been defined, then there's nothing to do
+        // if any services have been defined, just introspect policy
         if (!componentType.getServices().isEmpty()) {
+            for (ServiceDefinition definition : componentType.getServices().values()) {
+                JavaServiceContract contract = (JavaServiceContract) definition.getServiceContract();
+                Class<?> serviceInterface;
+                try {
+                    serviceInterface = implClass.getClassLoader().loadClass(contract.getInterfaceClass());
+                } catch (ClassNotFoundException e) {
+                    // should not happen
+                    throw new AssertionError(e);
+                }
+                introspectPolicy(serviceInterface, implClass, contract, definition, context);
+            }
             return;
         }
 
@@ -112,7 +124,7 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
                 componentType.add(serviceDefinition);
             }
         } else {
-            // <ultiple interfaces, use the impl class per SCA rules
+            // multiple interfaces, use the impl class per SCA rules
             ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
             componentType.add(serviceDefinition);
         }
@@ -121,8 +133,16 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
     @SuppressWarnings({"unchecked"})
     private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, Class<?> implClass, IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
-
         ServiceDefinition definition = new ServiceDefinition(contract.getInterfaceName(), contract);
+        introspectPolicy(serviceInterface, implClass, contract, definition, context);
+        return definition;
+    }
+
+    private void introspectPolicy(Class<?> serviceInterface,
+                                  Class<?> implClass,
+                                  ServiceContract contract,
+                                  ServiceDefinition definition,
+                                  IntrospectionContext context) {
         Annotation[] annotations = serviceInterface.getAnnotations();
         if (policyProcessor != null) {
             for (Annotation annotation : annotations) {
@@ -132,7 +152,6 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
             policyIntrospector.introspectPolicyOnOperations(contract, implClass, context);
 
         }
-        return definition;
     }
 
     private ServiceDefinition createManagementServiceDefinition(Class<?> serviceInterface, Class<?> implClass, IntrospectionContext context) {

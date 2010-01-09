@@ -145,6 +145,11 @@
 
     <component name="PolicyAnnotationProcessor">
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.PolicyAnnotationProcessorImpl"/>
+        <property name="intentsToQualifiers">
+            <value>
+                <entry><key>org.oasisopen.sca.annotation.AllowsPassByReference</key><value>{urn:fabric3.org:policy}allowsPassByReference</value></entry>
+            </value>
+        </property>
     </component>
 
 </composite>

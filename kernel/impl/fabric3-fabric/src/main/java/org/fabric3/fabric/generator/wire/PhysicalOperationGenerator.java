@@ -46,7 +46,8 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.policy.PolicyResult;
 
 /**
- * Generates PhysicalOperationDefinitions which are used to instantiate interceptor chains for a service operation on a runtime.
+ * Generates PhysicalOperationDefinitions which are used to instantiate interceptor chains for a wire, bound service, or bound reference on a
+ * runtime.
  *
  * @version $Rev$ $Date$
  */
@@ -56,11 +57,14 @@ public interface PhysicalOperationGenerator {
      * Generates a PhysicalOperationDefinition when the source reference and target service contracts are the same.
      *
      * @param operations the logical operations to generate from
+     * @param remote  true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process
+     *                wire.
      * @param result     resolved policy metadata
      * @return the PhysicalOperationDefinition
      * @throws GenerationException if there is an error generatoring the operations
      */
-    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations, PolicyResult result) throws GenerationException;
+    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> operations, boolean remote, PolicyResult result)
+            throws GenerationException;
 
 
     /**
@@ -68,11 +72,15 @@ public interface PhysicalOperationGenerator {
      *
      * @param sources the source logical operations to generate from
      * @param targets the target logical operations to generate from
+     * @param remote  true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process
+     *                wire.
      * @param result  resolved policy metadata
      * @return the PhysicalOperationDefinition
      * @throws GenerationException if there is an error generatoring the operations
      */
-    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources, List<LogicalOperation> targets, PolicyResult result)
-            throws GenerationException;
+    Set<PhysicalOperationDefinition> generateOperations(List<LogicalOperation> sources,
+                                                        List<LogicalOperation> targets,
+                                                        boolean remote,
+                                                        PolicyResult result) throws GenerationException;
 
 }

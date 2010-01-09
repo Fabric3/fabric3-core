@@ -10,6 +10,7 @@ Public License. See the accompanying license file for details.
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
         xmlns:f3-binding="urn:fabric3.org:binding"
+        xmlns:f3-policy="urn:fabric3.org:policy"
         targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903">
 
     <intent name="serverAuthentication" constrains="sca:binding" intentType="interaction">
@@ -67,7 +68,7 @@ Public License. See the accompanying license file for details.
     </intent>
 
     <bindingType name="f3-binding:binding.local" mayProvide="sca:confidentiality sca:integrity"/>
-    
+
     <!-- Reliable messaging related intents -->
     <intent name="atLeastOnce" constrains="sca:binding" intentType="interaction">
         <description>
@@ -189,5 +190,16 @@ Public License. See the accompanying license file for details.
             client to the server or by having the client poll the server for messages.
         </description>
     </intent>
+
+    <intent name="f3-policy:allowsPassByReference" constrains="sca:implementation" intentType="interaction">
+        <description>
+            Used to indicate the implementation allows pass-by-reference semantics.
+        </description>
+    </intent>
+
+    <policySet name="allowsPassByReferencePolicy" provides="f3-policy:allowsPassByReference">
+        <f3-policy:allowsPassByReferencePolicy/>
+    </policySet>
+
 
 </definitions>

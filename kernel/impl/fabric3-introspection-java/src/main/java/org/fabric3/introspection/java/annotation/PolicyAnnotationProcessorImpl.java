@@ -46,12 +46,15 @@ package org.fabric3.introspection.java.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Intent;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
+import org.osoa.sca.annotations.Property;
 
 import org.fabric3.api.annotation.IntentMetaData;
 import org.fabric3.model.type.PolicyAware;
@@ -62,6 +65,12 @@ import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
  * @version $Rev$ $Date$
  */
 public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor {
+    private Map<String, QName> intentsToQualifiers = new HashMap<String, QName>();
+
+    @Property(required = false)
+    public void setIntentsToQualifiers(Map<String, QName> intentsToQualifiers) {
+        this.intentsToQualifiers = intentsToQualifiers;
+    }
 
     public void process(Annotation annotation, PolicyAware modelObject, IntrospectionContext context) {
         if (annotation instanceof Requires) {
@@ -147,6 +156,12 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                 context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), e));
             } catch (InvocationTargetException e) {
                 context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), e));
+            }
+        } else {
+            // check if the annotation is an intent annotation but not marked with the @Intent annotation
+            QName qualifier = intentsToQualifiers.get(annotation.annotationType().getName());
+            if (qualifier != null) {
+                modelObject.addIntent(qualifier);
             }
         }
     }

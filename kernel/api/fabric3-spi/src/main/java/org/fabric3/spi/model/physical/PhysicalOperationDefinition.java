@@ -46,7 +46,6 @@ package org.fabric3.spi.model.physical;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -62,8 +61,8 @@ public class PhysicalOperationDefinition implements Serializable {
 
     private String name;
 
-    private List<String> parameterTypes = new LinkedList<String>();
-    private List<String> faultTypes = new LinkedList<String>();
+    private List<String> parameterTypes = new ArrayList<String>();
+    private List<String> faultTypes = new ArrayList<String>();
     private String returnType;
 
     private List<String> targetParameterTypes = new ArrayList<String>();
@@ -74,6 +73,7 @@ public class PhysicalOperationDefinition implements Serializable {
     private boolean oneWay;
     private boolean endsConversation;
     private boolean remotable;
+    private boolean allowsPassByReference = true;
 
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
@@ -303,5 +303,21 @@ public class PhysicalOperationDefinition implements Serializable {
         this.remotable = remotable;
     }
 
+    /**
+     * Return true if the operation allows pass-by-reference
+     *
+     * @return true if the operation allows pass-by-reference
+     */
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
 
+    /**
+     * Sets if the operation allows pass-by-reference
+     *
+     * @param allowsPassByReference true if the operation allows pass-by-reference
+     */
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
+    }
 }

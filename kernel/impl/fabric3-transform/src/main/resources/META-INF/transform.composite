@@ -95,4 +95,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.transform.string2java.String2IntegerTransformer"/>
     </component>
 
+    <component name="Java2JavaTransformerFactory">
+        <f3-impl:implementation.system class="org.fabric3.transform.java2java.Java2JavaTransformerFactory"/>
+    </component>
+
 </composite>
