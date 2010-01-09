@@ -52,11 +52,11 @@ import java.util.Map;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Default ClassVisitor implementation.
@@ -120,7 +120,7 @@ public class DefaultClassVisitor<I extends Implementation<? extends InjectingCom
 
     private void walkSuperClasses(I implementation, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         Class<?> superClass = clazz.getSuperclass();
-        if (superClass != null) {
+        if (superClass != null && !superClass.equals(Object.class)) {
             walk(implementation, superClass, implClass, true, context);
         }
     }
