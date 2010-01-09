@@ -176,6 +176,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.transform.DefaultTransformerRegistry;
 import org.fabric3.transform.property.Property2BooleanTransformer;
 import org.fabric3.transform.property.Property2IntegerTransformer;
+import org.fabric3.transform.property.Property2QNameTransformer;
 import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
@@ -270,6 +271,7 @@ public class BootstrapAssemblyFactory {
         transformers.add(new Property2StringTransformer());
         transformers.add(new Property2IntegerTransformer());
         transformers.add(new Property2BooleanTransformer());
+        transformers.add(new Property2QNameTransformer());
         transformers.add(new String2ClassTransformer(classLoaderRegistry));
         transformers.add(new String2QNameTransformer());
         transformers.add(new String2IntegerTransformer());
