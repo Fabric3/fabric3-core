@@ -104,7 +104,7 @@ public class BindingSelectorImpl implements BindingSelector {
                         // components are local, no need for a binding
                         continue;
                     }
-                    selectBinding(reference, targetService);
+                    selectBinding(wire);
                 }
             }
         }
@@ -113,17 +113,19 @@ public class BindingSelectorImpl implements BindingSelector {
     /**
      * Selects and configures a binding to connect the source to the target.
      *
-     * @param source the source reference
-     * @param target the target reference
+     * @param wire the wire
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
-    private void selectBinding(LogicalReference source, LogicalService target) throws BindingSelectionException {
+    private void selectBinding(LogicalWire wire) throws BindingSelectionException {
         List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
-
+        LogicalReference source = wire.getSource();
+        LogicalService target = wire.getTarget();
         for (BindingProvider provider : providers) {
             BindingMatchResult result = provider.canBind(source, target);
             if (result.isMatch()) {
                 provider.bind(source, target);
+                wire.setSourceBinding(source.getBindings().get(0));
+                wire.setTargetBinding(target.getBindings().get(0));
                 return;
             }
             results.add(result);
