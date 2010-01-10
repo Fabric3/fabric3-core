@@ -69,8 +69,6 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
-import org.fabric3.spi.model.type.binding.LocalBindingDefinition;
-import org.fabric3.spi.model.type.binding.RemoteBindingDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 import org.fabric3.spi.policy.PolicyResolutionException;
 import org.fabric3.spi.policy.PolicyResolver;
@@ -99,9 +97,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
     public <T extends BindingDefinition> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri)
             throws GenerationException {
-        if (!(binding.getParent() instanceof LogicalService)) {
-            throw new AssertionError("Expected " + LogicalService.class.getName() + " as parent to binding");
-        }
+        checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
 
@@ -114,7 +110,8 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<RemoteBindingDefinition> targetBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
 
-        PolicyResult policyResult = resolvePolicies(service.getOperations(), binding, targetBinding, null, component);
+        List<LogicalOperation> operations = service.getOperations();
+        PolicyResult policyResult = resolvePolicies(operations, binding, targetBinding, null, component);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -122,23 +119,20 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
         targetDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallbackUri(callbackUri);
+
         BindingGenerator<T> sourceGenerator = getGenerator(binding);
-        List<LogicalOperation> sourceOperations = service.getOperations();
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, sourceOperations, sourcePolicy);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, contract, operations, sourcePolicy);
         sourceDefinition.setClassLoaderId(service.getParent().getDefinition().getContributionUri());
 
-        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
-        PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
-        boolean optimizable = sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(contract, operations);
+        Set<PhysicalOperationDefinition> physicalOperations = operationGenerator.generateOperations(operations, true, policyResult);
+        PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
+        boolean optimizable = sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(contract, physicalOperations);
         pwd.setOptimizable(optimizable);
         return pwd;
     }
 
     public <T extends BindingDefinition> PhysicalWireDefinition generateBoundServiceCallback(LogicalBinding<T> binding) throws GenerationException {
-        if (!(binding.getParent() instanceof LogicalService)) {
-            throw new AssertionError("Expected " + LogicalService.class.getName() + " as parent to binding");
-        }
-
+        checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
 
@@ -147,67 +141,58 @@ public class WireGeneratorImpl implements WireGenerator {
 
         LogicalBinding<RemoteBindingDefinition> sourceBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
-        List<LogicalOperation> callbackOperations = service.getCallbackOperations();
-        PolicyResult policyResult = resolvePolicies(callbackOperations, sourceBinding, binding, component, null);
+        List<LogicalOperation> operations = service.getCallbackOperations();
+        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
-        ComponentGenerator componentGenerator = getGenerator(component);
-        PhysicalSourceDefinition sourceDefinition = componentGenerator.generateCallbackSource(service, sourcePolicy);
+        ComponentGenerator sourceGenerator = getGenerator(component);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
         BindingGenerator<T> bindingGenerator = getGenerator(binding);
         PhysicalTargetDefinition targetDefinition =
-                bindingGenerator.generateTarget(binding, callbackContract, callbackOperations, targetPolicy);
+                bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
-        List<LogicalOperation> sourceOperations = service.getCallbackOperations();
-        Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
-        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
+        Set<PhysicalOperationDefinition> physicalOperations = operationGenerator.generateOperations(operations, true, policyResult);
+        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
     public <T extends BindingDefinition> PhysicalWireDefinition generateBoundReference(LogicalBinding<T> binding) throws GenerationException {
-        if (!(binding.getParent() instanceof LogicalReference)) {
-            throw new AssertionError("Expected " + LogicalReference.class.getName() + " as parent to binding");
-        }
+        checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
         LogicalComponent component = reference.getParent();
-        ReferenceDefinition referenceDefinition = reference.getDefinition();
         ServiceContract contract = reference.getServiceContract();
+        ServiceContract callbackContract = contract.getCallbackContract();
         LogicalBinding<RemoteBindingDefinition> sourceBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, reference);
 
-        PolicyResult policyResult = resolvePolicies(reference.getOperations(), sourceBinding, binding, component, null);
+        List<LogicalOperation> operations = reference.getOperations();
+        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
         BindingGenerator<T> targetGenerator = getGenerator(binding);
-        List<LogicalOperation> operations = reference.getOperations();
         PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations, targetPolicy);
-        ServiceContract callbackContract = contract.getCallbackContract();
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
+            ReferenceDefinition referenceDefinition = reference.getDefinition();
             URI callbackUri = generateCallbackUri(component, callbackContract, referenceDefinition.getName());
             targetDefinition.setCallbackUri(callbackUri);
         }
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
-
         ComponentGenerator sourceGenerator = getGenerator(component);
-
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
-        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(operations, true, policyResult);
-
-        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
-
+        Set<PhysicalOperationDefinition> physicalOperations = operationGenerator.generateOperations(operations, true, policyResult);
+        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
     public <T extends BindingDefinition> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws GenerationException {
-        if (!(binding.getParent() instanceof LogicalReference)) {
-            throw new AssertionError("Expected " + LogicalReference.class.getName() + " as parent to binding");
-        }
+        checkReference(binding);
         LogicalReference reference = (LogicalReference) binding.getParent();
 
         LogicalComponent<?> component = reference.getParent();
@@ -219,22 +204,22 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<RemoteBindingDefinition> sourceBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, reference);
 
-        List<LogicalOperation> logicalOperations = reference.getCallbackOperations();
-        PolicyResult policyResult = resolvePolicies(logicalOperations, sourceBinding, binding, component, null);
+        List<LogicalOperation> operations = reference.getCallbackOperations();
+        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
-        BindingGenerator<T> bindingGenerator = getGenerator(binding);
-        ComponentGenerator componentGenerator = getGenerator(component);
 
-        PhysicalSourceDefinition sourceDefinition =
-                bindingGenerator.generateSource(binding, callbackContract, logicalOperations, targetPolicy);
+        BindingGenerator<T> sourceGenerator = getGenerator(binding);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(binding, callbackContract, operations, targetPolicy);
         sourceDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
-        PhysicalTargetDefinition targetDefinition = componentGenerator.generateTarget(callbackService, sourcePolicy);
+
+        ComponentGenerator targetGenerator = getGenerator(component);
+        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, sourcePolicy);
         targetDefinition.setClassLoaderId(callbackService.getParent().getDefinition().getContributionUri());
         targetDefinition.setCallback(true);
-        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(logicalOperations, true, policyResult);
-        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
 
+        Set<PhysicalOperationDefinition> operation = operationGenerator.generateOperations(operations, true, policyResult);
+        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, operation);
     }
 
     public PhysicalWireDefinition generateWire(LogicalWire wire) throws GenerationException {
@@ -246,42 +231,12 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     public PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws GenerationException {
-        LogicalReference reference = wire.getSource();
-        LogicalService service = wire.getTarget();
-        LogicalComponent<?> targetComponent = reference.getParent();
-        ServiceContract referenceCallbackContract = reference.getServiceContract().getCallbackContract();
-        // FIXME getInterfaceName
-        LogicalService callbackTargetService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
-        LogicalBinding<LocalBindingDefinition> sourceBinding =
-                new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackTargetService);
-        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
-        LogicalComponent sourceComponent = service.getLeafComponent();
-        ComponentGenerator sourceGenerator = getGenerator(sourceComponent);
-        ComponentGenerator targetGenerator = getGenerator(targetComponent);
-        PolicyResult policyResult = resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
-        EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
-        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
-
-        Set<PhysicalOperationDefinition> callbackOperations;
-        ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
-        if (referenceCallbackContract.getClass().equals(callbackContract.getClass())) {
-            List<LogicalOperation> operations = callbackTargetService.getOperations();
-            callbackOperations = operationGenerator.generateOperations(operations, false, policyResult);
+        if (wire.getSourceBinding() != null && wire.getTargetBinding() != null) {
+            // use forward bindings to determine if the wire is remote
+            return generateRemoteWireCallback(wire);
         } else {
-            List<LogicalOperation> targetOperations = callbackTargetService.getOperations();
-            List<LogicalOperation> sourceOperations = service.getCallbackOperations();
-            callbackOperations = operationGenerator.generateOperations(targetOperations, sourceOperations, false, policyResult);
+            return generateLocalWireCallback(wire);
         }
-
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
-        sourceDefinition.setClassLoaderId(sourceComponent.getDefinition().getContributionUri());
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackTargetService, targetPolicy);
-        targetDefinition.setClassLoaderId(targetComponent.getDefinition().getContributionUri());
-        targetDefinition.setCallback(true);
-        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, callbackOperations);
-        wireDefinition.setOptimizable(false);
-
-        return wireDefinition;
     }
 
     public <T extends ResourceDefinition> PhysicalWireDefinition generateResource(LogicalResource<T> resource) throws GenerationException {
@@ -302,10 +257,9 @@ public class WireGeneratorImpl implements WireGenerator {
         // Create the wire from the component to the resource
         List<LogicalOperation> sourceOperations = resource.getOperations();
         Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, false, null);
-        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
-        wireDefinition.setOptimizable(optimizable);
-
-        return wireDefinition;
+        PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
+        pwd.setOptimizable(optimizable);
+        return pwd;
     }
 
     /**
@@ -360,6 +314,7 @@ public class WireGeneratorImpl implements WireGenerator {
             List<LogicalOperation> targetOperations = service.getOperations();
             operations = operationGenerator.generateOperations(sourceOperations, targetOperations, false, policyResult);
         }
+
         QName sourceDeployable = null;
         QName targetDeployable = null;
         if (LogicalState.NEW == target.getState()) {
@@ -367,12 +322,12 @@ public class WireGeneratorImpl implements WireGenerator {
             targetDeployable = target.getDeployable();
         }
 
-        PhysicalWireDefinition wireDefinition =
+        PhysicalWireDefinition pwd =
                 new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
         boolean optimizable =
                 sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(referenceContract, operations);
-        wireDefinition.setOptimizable(optimizable);
-        return wireDefinition;
+        pwd.setOptimizable(optimizable);
+        return pwd;
     }
 
     /**
@@ -400,22 +355,23 @@ public class WireGeneratorImpl implements WireGenerator {
 
         LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
 
-        PolicyResult policyResult = resolvePolicies(reference.getOperations(), serviceBinding, serviceBinding, source, target);
+        List<LogicalOperation> sourceOperations = reference.getOperations();
+        PolicyResult policyResult = resolvePolicies(sourceOperations, serviceBinding, serviceBinding, source, target);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
-        ComponentGenerator componentGenerator = getGenerator(reference.getParent());
+        ComponentGenerator sourceGenerator = getGenerator(reference.getParent());
 
-        PhysicalSourceDefinition sourceDefinition = componentGenerator.generateSource(reference, sourcePolicy);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
         String key = source.getDefinition().getKey();
         sourceDefinition.setKey(key);
 
-        BindingGenerator<BD> bindingGenerator = getGenerator(serviceBinding);
+        BindingGenerator<BD> targetGenerator = getGenerator(serviceBinding);
 
-        // generate metadata for the target side of the wire which it the reference binding
+        // generate metadata for the target side of the wire which is the reference binding
         PhysicalTargetDefinition targetDefinition =
-                bindingGenerator.generateServiceBindingTarget(serviceBinding, serviceContract, reference.getOperations(), targetPolicy);
+                targetGenerator.generateServiceBindingTarget(serviceBinding, serviceContract, sourceOperations, targetPolicy);
         targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
@@ -423,15 +379,14 @@ public class WireGeneratorImpl implements WireGenerator {
             targetDefinition.setCallbackUri(callbackUri);
         }
 
-        Set<PhysicalOperationDefinition> operations;
+        Set<PhysicalOperationDefinition> physicalOperations;
         if (referenceContract.getClass().equals(serviceContract.getClass())) {
-            List<LogicalOperation> sourceOperations = reference.getOperations();
-            operations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
+            physicalOperations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
         } else {
-            List<LogicalOperation> sourceOperations = reference.getOperations();
             List<LogicalOperation> targetOperations = service.getOperations();
-            operations = operationGenerator.generateOperations(sourceOperations, targetOperations, true, policyResult);
+            physicalOperations = operationGenerator.generateOperations(sourceOperations, targetOperations, true, policyResult);
         }
+
         QName sourceDeployable = null;
         QName targetDeployable = null;
         if (LogicalState.NEW == target.getState()) {
@@ -439,7 +394,80 @@ public class WireGeneratorImpl implements WireGenerator {
             targetDeployable = target.getDeployable();
         }
 
-        return new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
+        return new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, physicalOperations);
+    }
+    
+    private PhysicalWireDefinition generateLocalWireCallback(LogicalWire wire) throws GenerationException {
+        LogicalReference reference = wire.getSource();
+        LogicalService service = wire.getTarget();
+        LogicalComponent<?> targetComponent = reference.getParent();
+        ServiceContract referenceCallbackContract = reference.getServiceContract().getCallbackContract();
+        LogicalService callbackService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
+
+        LogicalBinding<LocalBindingDefinition> sourceBinding =
+                new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
+        LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
+        LogicalComponent sourceComponent = service.getLeafComponent();
+        PolicyResult policyResult = resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
+        EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
+        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
+
+        Set<PhysicalOperationDefinition> callbackOperations;
+        ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
+        if (referenceCallbackContract.getClass().equals(callbackContract.getClass())) {
+            List<LogicalOperation> operations = callbackService.getOperations();
+            callbackOperations = operationGenerator.generateOperations(operations, false, policyResult);
+        } else {
+            List<LogicalOperation> targetOperations = callbackService.getOperations();
+            List<LogicalOperation> sourceOperations = service.getCallbackOperations();
+            callbackOperations = operationGenerator.generateOperations(targetOperations, sourceOperations, false, policyResult);
+        }
+
+        ComponentGenerator sourceGenerator = getGenerator(sourceComponent);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateCallbackSource(service, sourcePolicy);
+        sourceDefinition.setClassLoaderId(sourceComponent.getDefinition().getContributionUri());
+
+        ComponentGenerator targetGenerator = getGenerator(targetComponent);
+        PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(callbackService, targetPolicy);
+        targetDefinition.setClassLoaderId(targetComponent.getDefinition().getContributionUri());
+        targetDefinition.setCallback(true);
+
+        PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, callbackOperations);
+        pwd.setOptimizable(false);
+        return pwd;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private PhysicalWireDefinition generateRemoteWireCallback(LogicalWire wire) throws GenerationException {
+        LogicalReference reference = wire.getSource();
+        LogicalComponent target = reference.getParent();
+        ServiceContract referenceContract = reference.getServiceContract();
+        ServiceContract referenceCallbackContract = referenceContract.getCallbackContract();
+        LogicalBinding<?> referenceBinding = reference.getCallbackBindings().get(0);
+        LogicalService callbackService = target.getService(referenceCallbackContract.getInterfaceName());
+        List<LogicalOperation> operations = reference.getCallbackOperations();
+
+        LogicalBinding<LocalBindingDefinition> sourceBinding =
+                new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
+        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, referenceBinding, target, null);
+
+        EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
+
+        ComponentGenerator componentGenerator = getGenerator(target);
+
+        PhysicalTargetDefinition targetDefinition = componentGenerator.generateTarget(callbackService, targetPolicy);
+        targetDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
+
+        BindingGenerator bindingGenerator = getGenerator(referenceBinding);
+
+        // generate metadata for the target side of the wire which is the reference binding
+        PhysicalSourceDefinition sourceDefinition =
+                bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations, targetPolicy);
+        URI contributionUri = target.getDefinition().getContributionUri();
+        sourceDefinition.setClassLoaderId(contributionUri);
+
+        Set<PhysicalOperationDefinition> physicalOperations = operationGenerator.generateOperations(operations, true, policyResult);
+        return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
     private PolicyResult resolvePolicies(List<LogicalOperation> operations,
@@ -454,7 +482,7 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String sourceName)
+    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName)
             throws GenerationException {
         LogicalService candidate = null;
         for (LogicalService entry : source.getServices()) {
@@ -468,9 +496,25 @@ public class WireGeneratorImpl implements WireGenerator {
             String name = contract.getInterfaceName();
             URI uri = source.getUri();
             throw new CallbackServiceNotFoundException("Callback service not found: "
-                    + name + " on component: " + uri + " originating from reference :" + sourceName, name);
+                    + name + " on component: " + uri + " originating from reference :" + referenceName, name);
         }
         return URI.create(source.getUri().toString() + "#" + candidate.getDefinition().getName());
+    }
+
+    private boolean checkOptimization(ServiceContract serviceContract, Set<PhysicalOperationDefinition> operationDefinitions) {
+        if (serviceContract.isConversational()) {
+            return false;
+        }
+        if (serviceContract.isRemotable()) {
+            return false;
+        }
+        for (PhysicalOperationDefinition operation : operationDefinitions) {
+            if (!operation.getInterceptors().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -489,20 +533,16 @@ public class WireGeneratorImpl implements WireGenerator {
         return (BindingGenerator<T>) generatorRegistry.getBindingGenerator(binding.getDefinition().getClass());
     }
 
-    private boolean checkOptimization(ServiceContract serviceContract, Set<PhysicalOperationDefinition> operationDefinitions) {
-        if (serviceContract.isConversational()) {
-            return false;
+    private void checkService(LogicalBinding<?> binding) {
+        if (!(binding.getParent() instanceof LogicalService)) {
+            throw new AssertionError("Expected " + LogicalService.class.getName() + " as parent to binding");
         }
-        if (serviceContract.isRemotable()) {
-            return false;
-        }
-        for (PhysicalOperationDefinition operation : operationDefinitions) {
-            if (!operation.getInterceptors().isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+    }
 
+    private void checkReference(LogicalBinding binding) {
+        if (!(binding.getParent() instanceof LogicalReference)) {
+            throw new AssertionError("Expected " + LogicalReference.class.getName() + " as parent to binding");
+        }
     }
 
 }
