@@ -79,8 +79,9 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
     public void attach(PhysicalSourceDefinition sourceDefinition, JavaTargetDefinition targetDefinition, Wire wire) throws WireAttachException {
         URI targetName = UriHelper.getDefragmentedName(targetDefinition.getUri());
         Component component = manager.getComponent(targetName);
-        assert component instanceof JavaComponent;
-
+        if (component == null) {
+            throw new WireAttachException("Target not found: "+ targetName);
+        }
         JavaComponent<?> target = (JavaComponent<?>) component;
 
         ScopeContainer scopeContainer = target.getScopeContainer();

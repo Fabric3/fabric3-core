@@ -85,6 +85,9 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
         JavaComponent<?> source = (JavaComponent) manager.getComponent(sourceName);
+        if (source == null) {
+            throw new WiringException("Source callback not found: " + sourceName);
+        }
         Injectable injectable = sourceDefinition.getInjectable();
 
         Class<?> type;
