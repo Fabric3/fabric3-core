@@ -52,6 +52,7 @@ import org.fabric3.contribution.DependencyService;
 import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;
+import org.fabric3.host.Names;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionUriEncoder;
@@ -177,6 +178,9 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
             String zone = entry.getKey();
             for (Contribution contribution : entry.getValue()) {
                 URI uri = contribution.getUri();
+                if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)){
+                    continue;
+                }
                 PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri);
                 if (zone == null) {
                     // If the contribution is provisioned to this runtime, its URI should not be encoded
