@@ -178,10 +178,11 @@ public class ZoneDeploymentCommandExecutor implements CommandExecutor<ZoneDeploy
 
     }
 
-    private void routeLocally(ZoneDeploymentCommand command) throws ExecutionException {
+    private synchronized void routeLocally(ZoneDeploymentCommand command) throws ExecutionException {
         String runtimeName = runtimeService.getRuntimeName();
         String id = command.getId();
         monitor.routed(runtimeName, id);
+        eventService.publish(new RuntimeSynchronized());
 
         // execute the extension commands first before deserializing the other commands as they may contain extension-specific metadata classes
         byte[] serializedExtensionCommands = command.getExtensionCommands();
@@ -205,7 +206,6 @@ public class ZoneDeploymentCommandExecutor implements CommandExecutor<ZoneDeploy
         } catch (InstanceLifecycleException e) {
             throw new ExecutionException(e);
         }
-        eventService.publish(new RuntimeSynchronized());
     }
 
     private byte[] serializeRuntimeCommand(ZoneDeploymentCommand command) throws IOException {
