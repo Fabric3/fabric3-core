@@ -49,6 +49,7 @@ import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.NoServiceOnComponent;
 import org.fabric3.fabric.instantiator.ServiceNotFound;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Target;
@@ -63,6 +64,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Default implementation of the WireInstantiator.
@@ -123,7 +125,14 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
 
         List<Target> serviceTargets = componentReference.getTargets();
-        if (serviceTargets.isEmpty()) {
+        List<SCABinding> scaBindings = new ArrayList<SCABinding>();
+        for (BindingDefinition binding : componentReference.getBindings()) {
+            if (binding instanceof SCABinding) {
+                SCABinding scaBinding = (SCABinding) binding;
+                scaBindings.add(scaBinding);
+            }
+        }
+        if (serviceTargets.isEmpty() && scaBindings.isEmpty()) {
             // no targets are specified
             return;
         }
@@ -138,21 +147,56 @@ public class WireInstantiatorImpl implements WireInstantiator {
             }
         }
 
-        // resolve the targets and create logical wires
         List<LogicalWire> wires = new ArrayList<LogicalWire>();
-        for (Target serviceTarget : serviceTargets) {
-            LogicalService service = resolveService(reference, serviceTarget, parent, context);
-            if (service == null) {
-                return;
+        if (!scaBindings.isEmpty()) {
+            // resolve the reference targets and create logical wires
+            for (SCABinding binding : scaBindings) {
+                Target target = binding.getTarget();
+                String bindingName = binding.getName();
+                LogicalWire wire = createWire(target, reference, bindingName, parent, context);
+                if (wire == null) {
+                    continue;
+                }
+                wires.add(wire);
             }
-            QName deployable = service.getParent().getDeployable();
-            LogicalWire wire = new LogicalWire(parent, reference, service, deployable, true);
-            String serviceBindingName = serviceTarget.getBinding();
-            resolveBindings(reference, null, service, wire, serviceBindingName, context);
-            wires.add(wire);
+        } else {
+            // resolve the reference targets and create logical wires
+            for (Target target : serviceTargets) {
+                LogicalWire wire = createWire(target, reference, null, parent, context);
+                if (wire == null) {
+                    continue;
+                }
+                wires.add(wire);
+            }
         }
         parent.addWires(reference, wires);
         reference.setResolved(true);
+    }
+
+    /**
+     * Creates a wire by resolving a Target.
+     *
+     * @param target      the target
+     * @param reference   the source reference
+     * @param bindingName the binding name or null
+     * @param parent      the parent component
+     * @param context     the instiatin context
+     * @return the wire or null if it could not be created
+     */
+    private LogicalWire createWire(Target target,
+                                   LogicalReference reference,
+                                   String bindingName,
+                                   LogicalCompositeComponent parent,
+                                   InstantiationContext context) {
+        LogicalService service = resolveService(reference, target, parent, context);
+        if (service == null) {
+            return null;
+        }
+        QName deployable = service.getParent().getDeployable();
+        LogicalWire wire = new LogicalWire(parent, reference, service, deployable, true);
+        String serviceBindingName = target.getBinding();
+        resolveBindings(reference, bindingName, service, wire, serviceBindingName, context);
+        return wire;
     }
 
     /**
@@ -161,7 +205,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param target          the reference target
      * @param parent          the parent composite
      * @param contributionUri the contribution uri
-     * @param context         the logical context to report errors against  @return the resolve reference
+     * @param context         the logical context to report errors against
      * @return the resolved reference or null if not found
      */
     private LogicalReference resolveReference(Target target, LogicalCompositeComponent parent, URI contributionUri, InstantiationContext context) {

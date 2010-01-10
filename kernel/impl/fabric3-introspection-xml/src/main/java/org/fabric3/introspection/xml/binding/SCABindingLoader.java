@@ -38,8 +38,6 @@
 
 package org.fabric3.introspection.xml.binding;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -51,7 +49,9 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -61,13 +61,14 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
+ * Processes the <code>binding.sca</code> element.
+ *
  * @version $Rev$ $Date$
  */
-public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding>  {
+public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
     private static final QName BINDING = new QName(Constants.SCA_NS, "binding.sca");
     private LoaderRegistry registry;
     private LoaderHelper helper;
-
 
     public SCABindingLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper helper) {
         super(registry);
@@ -81,18 +82,19 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding>  
 
     public SCABinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
-        URI uri = null;
+        Target target = null;
         String uriAttr = reader.getAttributeValue(null, "uri");
+
         if (uriAttr != null) {
             try {
-              uri = new URI(uriAttr);
-            } catch (URISyntaxException e) {
+                target = helper.parseTarget(uriAttr, reader);
+            } catch (InvalidTargetException e) {
                 InvalidValue error = new InvalidValue("Invalid URI specified on binding.sca", reader);
                 context.addError(error);
             }
         }
-        String name = reader.getAttributeValue(null, "uri");
-        SCABinding binding = new SCABinding(name, uri);
+        String name = reader.getAttributeValue(null, "name");
+        SCABinding binding = new SCABinding(name, target);
         helper.loadPolicySetsAndIntents(binding, reader, context);
         while (true) {
             switch (reader.next()) {
@@ -106,17 +108,17 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding>  
                 }
                 break;
             case END_ELEMENT:
-                if ("binding.sca".equals(name)) {
+                if ("binding.sca".equals(reader.getName().getLocalPart())) {
                     return binding;
                 }
             }
         }
     }
 
-     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"uri".equals(name) && !"requires".equals(name) & !"policySets".equals(name)) {
+            if (!"uri".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"name".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

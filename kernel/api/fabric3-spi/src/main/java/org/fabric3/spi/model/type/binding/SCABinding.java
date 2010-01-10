@@ -37,12 +37,12 @@
 */
 package org.fabric3.spi.model.type.binding;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.model.type.component.Target;
 
 /**
  * Represents a service or reference explicitly bound using <code>binding.sca</code>.
@@ -52,9 +52,14 @@ import org.fabric3.model.type.component.BindingDefinition;
 public class SCABinding extends BindingDefinition {
     private static final long serialVersionUID = 5329743408485507984L;
     private static final QName TYPE = new QName(Constants.SCA_NS, "binding.sca");
+    private Target target;
 
-    public SCABinding(String name, URI uri) {
-        super(name, uri, TYPE);
+    public SCABinding(String name, Target target) {
+        super(name, null, TYPE);
+        this.target = target;
     }
 
+    public Target getTarget() {
+        return target;
+    }
 }
