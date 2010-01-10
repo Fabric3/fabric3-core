@@ -55,6 +55,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.topology.DomainManager;
 
 /**
@@ -89,10 +90,11 @@ public class HttpBindingProvider implements BindingProvider {
         return HTTP_BINDING;
     }
 
-    public BindingMatchResult canBind(LogicalReference source, LogicalService target) {
+    public BindingMatchResult canBind(LogicalWire wire) {
         if (!enabled) {
             return NO_MATCH;
         }
+        LogicalReference source = wire.getSource().getLeafReference();
         ServiceContract contract = source.getDefinition().getServiceContract();
         for (Operation operation : contract.getOperations()) {
             if (operation.getInputTypes().size() > 1) {
@@ -114,10 +116,12 @@ public class HttpBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, HTTP_BINDING);
     }
 
-    public void bind(LogicalReference source, LogicalService target) throws BindingSelectionException {
+    public void bind(LogicalWire wire) throws BindingSelectionException {
         if (domainManager == null) {
             throw new BindingSelectionException("Domain manager not configured");
         }
+        LogicalReference source = wire.getSource().getLeafReference();
+        LogicalService target = wire.getTarget().getLeafService();
         LogicalComponent<?> targetComponent = target.getParent();
         String targetZone = targetComponent.getZone();
         if (targetZone == null) {

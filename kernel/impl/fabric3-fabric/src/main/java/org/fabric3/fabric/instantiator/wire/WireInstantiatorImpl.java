@@ -302,7 +302,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
         return null;
     }
 
-
     /**
      * Returns a binding matching the name
      *
@@ -320,7 +319,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
         return selectedBinding;
     }
-
 
     private void validate(LogicalReference reference, LogicalService service, InstantiationContext context) {
         validateKeyedReference(reference, service, context);

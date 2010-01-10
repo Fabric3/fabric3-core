@@ -50,6 +50,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.topology.DomainManager;
 
 /**
@@ -71,7 +72,8 @@ public class HttpBindingProviderTestCase extends TestCase {
         LogicalReference reference = new LogicalReference(URI.create("fabric3://runtime/source#reference"), referenceDefinition, source);
         ServiceDefinition serviceDefinition = new ServiceDefinition("service", contract);
         LogicalService service = new LogicalService(URI.create("fabric3://runtime/source#service"), serviceDefinition, target);
-        bindingProvider.bind(reference, service);
+        LogicalWire wire = new LogicalWire(null, reference, service, null);
+        bindingProvider.bind(wire);
 
         // verify reference
         LogicalBinding generatedReference = reference.getBindings().get(0);

@@ -38,21 +38,88 @@
 
 package org.fabric3.introspection.xml.binding;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Reference;
+
+import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SCABindingLoader implements TypeLoader<BindingDefinition> {
+public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding>  {
+    private static final QName BINDING = new QName(Constants.SCA_NS, "binding.sca");
+    private LoaderRegistry registry;
+    private LoaderHelper helper;
 
-    public BindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        LoaderUtil.skipToEndElement(reader);
-        return null;
+
+    public SCABindingLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper helper) {
+        super(registry);
+        this.registry = registry;
+        this.helper = helper;
     }
+
+    public QName getXMLType() {
+        return BINDING;
+    }
+
+    public SCABinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+        URI uri = null;
+        String uriAttr = reader.getAttributeValue(null, "uri");
+        if (uriAttr != null) {
+            try {
+              uri = new URI(uriAttr);
+            } catch (URISyntaxException e) {
+                InvalidValue error = new InvalidValue("Invalid URI specified on binding.sca", reader);
+                context.addError(error);
+            }
+        }
+        String name = reader.getAttributeValue(null, "uri");
+        SCABinding binding = new SCABinding(name, uri);
+        helper.loadPolicySetsAndIntents(binding, reader, context);
+        while (true) {
+            switch (reader.next()) {
+            case START_ELEMENT:
+                try {
+                    registry.load(reader, ModelObject.class, context);
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement error = new UnrecognizedElement(reader);
+                    context.addError(error);
+                    continue;
+                }
+                break;
+            case END_ELEMENT:
+                if ("binding.sca".equals(name)) {
+                    return binding;
+                }
+            }
+        }
+    }
+
+     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"uri".equals(name) && !"requires".equals(name) & !"policySets".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
+    }
+
 }

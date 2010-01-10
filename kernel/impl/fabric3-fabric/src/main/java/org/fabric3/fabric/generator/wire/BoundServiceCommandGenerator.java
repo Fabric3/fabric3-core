@@ -109,8 +109,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
 
     private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command, boolean incremental) throws GenerationException {
         for (LogicalService service : component.getServices()) {
-            List<LogicalBinding<?>> bindings = service.getBindings();
-            if (bindings.isEmpty()) {
+            if (!service.isConcreteBound()) {
                 continue;
             }
             ServiceContract callbackContract = service.getServiceContract().getCallbackContract();

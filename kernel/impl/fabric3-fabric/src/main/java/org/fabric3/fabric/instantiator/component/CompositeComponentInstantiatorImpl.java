@@ -131,11 +131,13 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
             logicalService.setPromotedUri(URI.create(uriBase + service.getPromote()));
 
             for (BindingDefinition binding : service.getBindings()) {
-                logicalService.addBinding(new LogicalBinding<BindingDefinition>(binding, logicalService));
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                logicalService.addBinding(logicalBinding);
             }
 
             for (BindingDefinition binding : service.getCallbackBindings()) {
-                logicalService.addCallbackBinding(new LogicalBinding<BindingDefinition>(binding, logicalService));
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                logicalService.addCallbackBinding(logicalBinding);
             }
 
             ComponentService componentService = definition.getServices().get(name);
@@ -147,7 +149,8 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                 if (!componentService.getBindings().isEmpty()) {
                     List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
                     for (BindingDefinition binding : componentService.getBindings()) {
-                        bindings.add(new LogicalBinding<BindingDefinition>(binding, logicalService));
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
+                        bindings.add(logicalBinding);
                     }
                     logicalService.overrideBindings(bindings);
                 }
@@ -168,11 +171,13 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
 
             for (BindingDefinition binding : reference.getBindings()) {
-                logicalReference.addBinding(new LogicalBinding<BindingDefinition>(binding, logicalReference));
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                logicalReference.addBinding(logicalBinding);
             }
 
             for (BindingDefinition binding : reference.getCallbackBindings()) {
-                logicalReference.addCallbackBinding(new LogicalBinding<BindingDefinition>(binding, logicalReference));
+                LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                logicalReference.addCallbackBinding(logicalBinding);
             }
 
             for (URI promotedUri : reference.getPromotedUris()) {
@@ -189,7 +194,8 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                 if (!componentReference.getBindings().isEmpty()) {
                     List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
                     for (BindingDefinition binding : componentReference.getBindings()) {
-                        bindings.add(new LogicalBinding<BindingDefinition>(binding, logicalReference));
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                        bindings.add(logicalBinding);
                     }
                     logicalReference.overrideBindings(bindings);
                 }

@@ -62,6 +62,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Allows ActiveMQ to be used for sca.binding in a domain. By default, this provider configures a wire to use an embedded broker, which forwards
@@ -99,7 +100,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return JmsBindingDefinition.BINDING_QNAME;
     }
 
-    public BindingMatchResult canBind(LogicalReference source, LogicalService target) {
+    public BindingMatchResult canBind(LogicalWire wire) {
         if (!enabled) {
             return NO_MATCH;
         }
@@ -107,7 +108,9 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, getType());
     }
 
-    public void bind(LogicalReference source, LogicalService target) throws BindingSelectionException {
+    public void bind(LogicalWire wire) throws BindingSelectionException {
+        LogicalReference source = wire.getSource().getLeafReference();
+        LogicalService target = wire.getTarget().getLeafService();
         // setup forward bindings
         // derive the forward queue name from the service name
         String forwardQueue = target.getUri().toString();

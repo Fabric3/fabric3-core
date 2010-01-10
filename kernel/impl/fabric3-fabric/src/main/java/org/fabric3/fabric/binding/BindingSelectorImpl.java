@@ -121,9 +121,12 @@ public class BindingSelectorImpl implements BindingSelector {
         LogicalReference source = wire.getSource();
         LogicalService target = wire.getTarget();
         for (BindingProvider provider : providers) {
-            BindingMatchResult result = provider.canBind(source, target);
+            BindingMatchResult result = provider.canBind(wire);
             if (result.isMatch()) {
-                provider.bind(source, target);
+                // clear binding.sca
+                source.getBindings().clear();
+                target.getBindings().clear();
+                provider.bind(wire);
                 wire.setSourceBinding(source.getBindings().get(0));
                 wire.setTargetBinding(target.getBindings().get(0));
                 return;

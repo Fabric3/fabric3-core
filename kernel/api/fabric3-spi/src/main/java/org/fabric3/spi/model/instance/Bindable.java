@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Super class for logical services and references.
@@ -107,6 +108,23 @@ public abstract class Bindable extends LogicalAttachPoint {
     }
 
     /**
+     * Returns true if this bindable has been configured with a concrete binding as opposed to using binding.sca.
+     *
+     * @return true if this bindable has been configured with a concrete binding as opposed to using binding.sca
+     */
+    public boolean isConcreteBound() {
+        if (bindings.isEmpty()) {
+            return false;
+        }
+        for (LogicalBinding<?> binding : bindings) {
+            if (!(binding.getDefinition() instanceof SCABinding)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns all the callback bindings on the service or the reference.
      *
      * @return The bindings available on the service or the reference.
@@ -162,5 +180,5 @@ public abstract class Bindable extends LogicalAttachPoint {
         this.serviceContract = serviceContract;
         createOperations(serviceContract);
     }
-    
+
 }

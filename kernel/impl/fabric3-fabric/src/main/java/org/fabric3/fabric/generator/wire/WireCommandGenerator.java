@@ -93,8 +93,7 @@ public class WireCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateWires(LogicalReference reference, ConnectionCommand command, boolean incremental)
-            throws GenerationException {
+    private void generateWires(LogicalReference reference, ConnectionCommand command, boolean incremental) throws GenerationException {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
         boolean reinjection = isReinjection(reference, incremental);

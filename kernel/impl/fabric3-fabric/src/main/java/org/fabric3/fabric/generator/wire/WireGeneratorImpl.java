@@ -69,6 +69,7 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 import org.fabric3.spi.policy.EffectivePolicy;
 import org.fabric3.spi.policy.PolicyResolutionException;
 import org.fabric3.spi.policy.PolicyResolver;
@@ -223,19 +224,18 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     public PhysicalWireDefinition generateWire(LogicalWire wire) throws GenerationException {
-        if (wire.getSourceBinding() != null && wire.getTargetBinding() != null) {
-            return generateRemoteWire(wire);
-        } else {
+        if (isLocal(wire)) {
             return generateLocalWire(wire);
+        } else {
+            return generateRemoteWire(wire);
         }
     }
 
     public PhysicalWireDefinition generateWireCallback(LogicalWire wire) throws GenerationException {
-        if (wire.getSourceBinding() != null && wire.getTargetBinding() != null) {
-            // use forward bindings to determine if the wire is remote
-            return generateRemoteWireCallback(wire);
-        } else {
+        if (isLocal(wire)) {
             return generateLocalWireCallback(wire);
+        } else {
+            return generateRemoteWireCallback(wire);
         }
     }
 
@@ -262,6 +262,13 @@ public class WireGeneratorImpl implements WireGenerator {
         return pwd;
     }
 
+    private boolean isLocal(LogicalWire wire) {
+        // at this point an SCA binding can only exist for local wires since SCA bindings for remote wires will have been replaced
+        // with concrete bindings
+        return (wire.getSourceBinding() == null ||wire.getSourceBinding().getDefinition() instanceof SCABinding)
+                && (wire.getTargetBinding() == null ||wire.getTargetBinding().getDefinition() instanceof SCABinding);
+    }
+    
     /**
      * Generates a physical wire definition for a wire that is not bound to a remote transport - i.e. it is between two components hosted in the same
      * runtime.

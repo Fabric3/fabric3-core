@@ -93,7 +93,7 @@ public class BoundReferenceCommandGenerator implements CommandGenerator {
             }
             if (reference.getServiceContract().getCallbackContract() != null) {
                 List<LogicalBinding<?>> callbackBindings = reference.getCallbackBindings();
-                boolean bindings = !reference.getBindings().isEmpty();
+                boolean bindings = reference.isConcreteBound();
                 if (bindings) {
                     if (callbackBindings.size() != 1) {
                         // if the reference is explicitly bound, it must have one callback binding

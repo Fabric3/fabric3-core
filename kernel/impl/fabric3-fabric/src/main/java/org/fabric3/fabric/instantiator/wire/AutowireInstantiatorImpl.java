@@ -136,7 +136,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
 
         boolean targetted = !logicalReference.getLeafReference().getWires().isEmpty();
-        if (!targetted && logicalReference.getDefinition().isRequired() && logicalReference.getBindings().isEmpty()) {
+        if (!targetted && logicalReference.getDefinition().isRequired() && !logicalReference.isConcreteBound()) {
             String referenceUri = logicalReference.getUri().toString();
             URI componentUri = component.getUri();
             URI contributionUri = component.getDefinition().getContributionUri();
