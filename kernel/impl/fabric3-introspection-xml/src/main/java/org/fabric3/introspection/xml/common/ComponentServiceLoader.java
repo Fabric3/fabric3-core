@@ -124,13 +124,20 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                             // set the default binding name
                             BindingHelper.configureName(binding, name, definition.getCallbackBindings(), reader, context);
                         }
-                        definition.addCallbackBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), reader, context);
+                        if (check) {
+                            definition.addCallbackBinding(binding);
+                        }
+
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, definition.getBindings(), reader, context);
                         }
-                        definition.addBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), reader, context);
+                        if (check) {
+                            definition.addBinding(binding);
+                        }
                     }
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported

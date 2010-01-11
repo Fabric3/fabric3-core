@@ -163,14 +163,19 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                             // set the default binding name
                             BindingHelper.configureName(binding, name, referenceDefinition.getCallbackBindings(), reader, context);
                         }
-                        referenceDefinition.addCallbackBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, referenceDefinition.getCallbackBindings(), reader, context);
+                        if (check) {
+                            referenceDefinition.addCallbackBinding(binding);
+                        }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, referenceDefinition.getBindings(), reader, context);
                         }
-                        referenceDefinition.addBinding(binding);
-
+                        boolean check = BindingHelper.checkDuplicateNames(binding, referenceDefinition.getBindings(), reader, context);
+                        if (check) {
+                            referenceDefinition.addBinding(binding);
+                        }
                     }
                 } else if (type == null) {
                     // there was an error loading the element, ingore it as the errors will have been reported

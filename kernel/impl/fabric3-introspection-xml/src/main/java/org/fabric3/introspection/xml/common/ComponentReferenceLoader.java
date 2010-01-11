@@ -199,7 +199,11 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                             // set the default binding name
                             BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
                         }
-                        reference.addBinding((BindingDefinition) type);
+
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
+                        if (check) {
+                            reference.addBinding(binding);
+                        }
                     }
                 } else if (type == null) {
                     // no type, continue processing

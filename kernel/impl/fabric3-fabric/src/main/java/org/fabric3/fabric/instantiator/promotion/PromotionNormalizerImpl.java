@@ -55,7 +55,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -151,7 +150,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         LogicalService leafService = services.getLast();
         LogicalComponent<?> leafComponent = leafService.getParent();
         List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-        ServiceContract contract = leafService.getDefinition().getServiceContract();
         Set<QName> intents = new HashSet<QName>();
         Set<QName> policySets = new HashSet<QName>();
 
@@ -196,7 +194,6 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         }
         LogicalReference leafReference = references.getLast();
         List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
-        ServiceContract contract = leafReference.getDefinition().getServiceContract();
         Set<QName> intents = new HashSet<QName>();
         Set<QName> policySets = new HashSet<QName>();
         Autowire autowire = Autowire.INHERITED;

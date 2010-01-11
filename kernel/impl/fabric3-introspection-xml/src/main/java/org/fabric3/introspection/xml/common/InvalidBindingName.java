@@ -47,14 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * @version $Rev$ $Date$
  */
 public class InvalidBindingName extends XmlValidationFailure {
-    private String bindingName;
-
-    public InvalidBindingName(String message, String bindingName, XMLStreamReader reader) {
+    public InvalidBindingName(String message, XMLStreamReader reader) {
         super(message, reader);
-        this.bindingName = bindingName;
-    }
-
-    public String getBindingName() {
-        return bindingName;
     }
 }

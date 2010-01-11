@@ -71,4 +71,29 @@ public class BindingHelper {
         }
         binding.setName(defaultName);
     }
+
+
+    /**
+     * Checks for duplicate binding names
+     *
+     * @param binding  the binding to check
+     * @param bindings the existing bindings
+     * @param reader   the stream reader
+     * @param context  the introspection context
+     * @return true if the bindings do not contain duplicates, otherwise false
+     */
+    public static boolean checkDuplicateNames(BindingDefinition binding,
+                                              List<BindingDefinition> bindings,
+                                              XMLStreamReader reader,
+                                              IntrospectionContext context) {
+        for (BindingDefinition definition : bindings) {
+            String bindingName = definition.getName();
+            if (bindingName.equals(binding.getName())) {
+                InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, reader);
+                context.addError(error);
+                return false;
+            }
+        }
+        return true;
+    }
 }

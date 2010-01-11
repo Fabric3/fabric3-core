@@ -48,6 +48,7 @@ import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ReferenceNotFound;
 import org.fabric3.model.type.component.Autowire;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -55,11 +56,13 @@ import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Resolves unspecified reference targets using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
@@ -86,18 +89,37 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private void resolveReferences(LogicalComponent<?> component, InstantiationContext context) {
         LogicalCompositeComponent parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
+            boolean scaTarget = isScaTarget(reference);
+            if (scaTarget) {
+                return;
+            }
             Multiplicity multiplicityValue = reference.getDefinition().getMultiplicity();
             boolean refMultiplicity = multiplicityValue.equals(Multiplicity.ZERO_N) || multiplicityValue.equals(Multiplicity.ONE_N);
             if (refMultiplicity || !reference.isResolved()) {
                 // Only resolve references that have not been resolved or ones that are multiplicities since the latter may be reinjected.
                 // Explicitly set the reference to unresolved, since if it was a multiplicity it may have been previously resolved.
                 reference.setResolved(false);
-                if (reference.isResolved()) {
-                    continue;
-                }
                 resolve(reference, parent, context);
             }
         }
+    }
+
+    /**
+     * Returns true if the reference is targetted through the binding.sca uri attribute.
+     *
+     * @param reference the reference
+     * @return true if the reference is targetted through the binding.sca uri attribute
+     */
+    private boolean isScaTarget(LogicalReference reference) {
+        boolean scaTarget = false;
+        for (LogicalBinding<?> binding : reference.getBindings()) {
+            BindingDefinition definition = binding.getDefinition();
+            if (definition instanceof SCABinding && ((SCABinding) definition).getTarget() != null) {
+                scaTarget = true;
+                break;
+            }
+        }
+        return scaTarget;
     }
 
     private void resolve(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {

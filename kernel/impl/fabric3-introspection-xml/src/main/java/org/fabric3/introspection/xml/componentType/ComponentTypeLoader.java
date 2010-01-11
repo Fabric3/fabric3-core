@@ -200,13 +200,19 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
                         }
-                        def.addCallbackBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), reader, context);
+                        if (check) {
+                            def.addCallbackBinding(binding);
+                        }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
                         }
-                        def.addBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), reader, context);
+                        if (check) {
+                            def.addBinding(binding);
+                        }
                     }
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
@@ -280,13 +286,19 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
                         }
-                        reference.addCallbackBinding(binding);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
+                        if (check) {
+                            reference.addCallbackBinding(binding);
+                        }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
                             BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
                         }
-                        reference.addBinding((BindingDefinition) type);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
+                        if (check) {
+                            reference.addBinding(binding);
+                        }
                     }
                 } else if (type == null) {
                     // no type, continue processing

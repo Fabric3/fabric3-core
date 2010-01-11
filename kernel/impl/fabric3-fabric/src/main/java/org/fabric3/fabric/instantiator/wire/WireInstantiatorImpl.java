@@ -132,6 +132,15 @@ public class WireInstantiatorImpl implements WireInstantiator {
                 scaBindings.add(scaBinding);
             }
         }
+        if (scaBindings.isEmpty()) {
+            //  if the component reference has no bindings, use the composite definiton's
+            for (BindingDefinition binding : reference.getDefinition().getBindings()) {
+                if (binding instanceof SCABinding) {
+                    SCABinding scaBinding = (SCABinding) binding;
+                    scaBindings.add(scaBinding);
+                }
+            }
+        }
         if (serviceTargets.isEmpty() && scaBindings.isEmpty()) {
             // no targets are specified
             return;
@@ -169,7 +178,9 @@ public class WireInstantiatorImpl implements WireInstantiator {
                 wires.add(wire);
             }
         }
-        parent.addWires(reference, wires);
+        if (!wires.isEmpty()) {
+            parent.addWires(reference, wires);
+        }
         reference.setResolved(true);
     }
 
