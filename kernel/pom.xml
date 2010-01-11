@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-modules-parent-pom</artifactId>
-	<version>1.4-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-kernel-parent-pom</artifactId>
