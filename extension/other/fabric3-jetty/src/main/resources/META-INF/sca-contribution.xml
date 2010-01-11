@@ -9,7 +9,7 @@ Public License. See the accompanying license file for details.
 
     $Rev$ $Date$
 -->
-<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:other="urn:fabric3.org:other"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true"

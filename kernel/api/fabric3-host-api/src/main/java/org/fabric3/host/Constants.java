@@ -58,7 +58,7 @@ public interface Constants {
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
     String DEFINITIONS_TYPE = "text/vnd.fabric3.definitions+xml";
 
-    QName COMPOSITE_TYPE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "composite");
+    QName COMPOSITE_TYPE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "composite");
 
 
 }

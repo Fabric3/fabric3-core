@@ -67,7 +67,7 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  */
 public class WireLoaderTestCase extends TestCase {
     public static final QName COMPOSITE = new QName(SCA_NS, "composite");
-    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' "
+    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' "
             + "targetNamespace='http://example.com' name='composite'>"
             + "<wire source='source' target='target'/>"
             + "<wire source='source/reference' target='target/service'/>"

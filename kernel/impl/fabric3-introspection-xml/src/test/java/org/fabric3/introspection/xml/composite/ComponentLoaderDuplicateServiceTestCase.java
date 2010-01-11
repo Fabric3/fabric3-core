@@ -66,7 +66,7 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 public class ComponentLoaderDuplicateServiceTestCase extends TestCase {
     public static final String REF_NAME = "notThere";
-     private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+     private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
              + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
              + "<f3:implementation.testing/>"
              + "<service name='ref' />"

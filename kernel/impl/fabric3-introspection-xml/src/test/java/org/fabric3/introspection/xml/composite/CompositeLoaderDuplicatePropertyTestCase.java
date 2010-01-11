@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
  */
 public class CompositeLoaderDuplicatePropertyTestCase extends TestCase {
     public static final String PROP_NAME = "notThere";
-    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' "
+    private String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' "
             + "targetNamespace='http://example.com' name='composite'>"
             + "<property name='prop'/>"
             + "<property name='prop'/>"

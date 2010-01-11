@@ -62,7 +62,7 @@ import org.fabric3.spi.xml.XMLFactory;
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
 public class ComponentLoaderNoPropertyTestCase extends TestCase {
-    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop'><value>val</value></property>"

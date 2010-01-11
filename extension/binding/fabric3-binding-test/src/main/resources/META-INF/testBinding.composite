@@ -19,7 +19,7 @@ destination uri the reference should flow invocations to as in:
 &gtbinding.test uri="MyService"&lt
 
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3-core="urn:fabric3.org:core"
            xmlns:f3-impl="urn:fabric3.org:implementation"
            xmlns:f3-binding="urn:fabric3.org:binding"

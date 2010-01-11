@@ -65,19 +65,19 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
 public class ComponentManyPropertyTestCase extends TestCase {
-    private String XML_NONE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+    private String XML_NONE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='true'><value>val</value></property>"
             + "</component>";
 
-    private String XML_MANY = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+    private String XML_MANY = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='true'><value>val</value></property>"
             + "</component>";
 
-    private String XML_SINGLE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200903' name='component' "
+    private String XML_SINGLE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + Namespaces.IMPLEMENTATION + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='false'><value>val</value></property>"

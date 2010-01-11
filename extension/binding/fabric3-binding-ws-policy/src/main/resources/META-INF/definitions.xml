@@ -14,8 +14,8 @@ Policy sets are based on policy definitions provided by the WS-* interop
 working group (http://mssoapinterop.org/ilab/) and the document: 
 http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              targetNamespace="urn:fabric3.org:policy"
              xmlns:f3-policy="urn:fabric3.org:policy"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"

@@ -74,7 +74,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
 
     private static final Object WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
 
-    private static final QName BINDING_QNAME = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "binding");
+    private static final QName BINDING_QNAME = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "binding");
     private static final QName INTERCEPTED_INTENT = new QName(Namespaces.POLICY, "intercepted");
     private static final QName QUALIFIER_INTENT = new QName(Namespaces.POLICY, "qualifier");
     private static final QName QUALIFIER_QUALFIED1_INTENT = new QName(Namespaces.POLICY, "qualifier.qualifier1");

@@ -6,7 +6,7 @@
 Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              targetNamespace="urn:fabric3.org:policy"
              xmlns:f3-policy="urn:fabric3.org:policy">
 
