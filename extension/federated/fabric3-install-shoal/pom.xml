@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-extension-federated-parent-pom</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-install-shoal</artifactId>
@@ -56,9 +56,9 @@
     </build>
 
     <scm>
-        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk/extension/federated/fabric3-install-shoal</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk/extension/federated/fabric3-install-shoal</developerConnection>
-        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk/extension/federated/fabric3-install-shoal</url>
+        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/tags/fabric3-modules-parent-pom-1.4/extension/federated/fabric3-install-shoal</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/tags/fabric3-modules-parent-pom-1.4/extension/federated/fabric3-install-shoal</developerConnection>
+        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/tags/fabric3-modules-parent-pom-1.4/extension/federated/fabric3-install-shoal</url>
     </scm>
 
 </project>
