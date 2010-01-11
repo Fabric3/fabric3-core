@@ -40,6 +40,7 @@ package org.fabric3.spi.model.instance;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,8 +126,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     public List<LogicalWire> getWires(LogicalReference logicalReference) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
         if (logicalWires == null) {
-            logicalWires = new ArrayList<LogicalWire>();
-            wires.put(logicalReference, logicalWires);
+            return Collections.emptyList();
         }
         return logicalWires;
     }
