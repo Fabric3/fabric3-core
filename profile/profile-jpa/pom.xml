@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-profile-parent-pom</artifactId>
-        <version>1.4</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
     <artifactId>profile-jpa</artifactId>
     <packaging>pom</packaging>
