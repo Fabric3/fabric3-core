@@ -10,8 +10,8 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:f3-core="urn:fabric3.org:core" f3-core:extension="true">
-    <import.java package="org.fabric3.host.*" version="1.4"/>
+    <import.java package="org.fabric3.host.*" version="1.5"/>
     <import.java package="javax.persistence" version="1.0.0"/>
-    <export.java package="org.fabric3.jpa.spi.*" version="1.4"/>
-    <export.java package="org.fabric3.jpa" version="1.4"/>
+    <export.java package="org.fabric3.jpa.spi.*" version="1.5"/>
+    <export.java package="org.fabric3.jpa" version="1.5"/>
 </contribution>

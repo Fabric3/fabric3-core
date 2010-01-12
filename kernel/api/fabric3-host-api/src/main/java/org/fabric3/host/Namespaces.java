@@ -69,11 +69,5 @@ public interface Namespaces {
      */
     String OTHER = "urn:fabric3.org:other";
 
-    /**
-     * Namespace URI used for fabric3 Maven extensions. Recommended prefix f3-maven.
-     */
-    String MAVEN = "urn:fabric3.org:maven";
-
-
 
 }

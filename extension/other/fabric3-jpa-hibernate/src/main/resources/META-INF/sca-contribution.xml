@@ -17,13 +17,13 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="1.0.0"/>
-    <import.java package="org.fabric3.spi.*" version="1.4"/>
-    <import.java package="org.fabric3.implementation.java.model" version="1.4"/>
-    <import.java package="org.fabric3.implementation.java.introspection" version="1.4"/>
-    <import.java package="org.fabric3.implementation.java.generator" version="1.4"/>
-    <import.java package="org.fabric3.jpa" version="1.4"/>
-    <import.java package="org.fabric3.jpa.spi.*" version="1.4"/>
-    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.4"/>
+    <import.java package="org.fabric3.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.implementation.java.model" version="1.5"/>
+    <import.java package="org.fabric3.implementation.java.introspection" version="1.5"/>
+    <import.java package="org.fabric3.implementation.java.generator" version="1.5"/>
+    <import.java package="org.fabric3.jpa" version="1.5"/>
+    <import.java package="org.fabric3.jpa.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.5"/>
     <export.java package="org.hibernate.*" version="3.3.1"/>
     <export.java package="javassist.util.proxy" version="3.4.0.GA"/>
     <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateJpaExtension"/>

@@ -13,8 +13,8 @@ Public License. See the accompanying license file for details.
               xmlns:f3-binding="urn:fabric3.org:binding"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.4"/>
-    <import.java package="org.fabric3.transport.ftp.api" version="1.4"/>
-    <import.java package="org.fabric3.transport.ftp.spi" version="1.4"/>
+    <import.java package="org.fabric3.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.transport.ftp.api" version="1.5"/>
+    <import.java package="org.fabric3.transport.ftp.spi" version="1.5"/>
     <deployable composite="f3-binding:FtpBindingExtension"/>
 </contribution>
