@@ -37,23 +37,21 @@
 */
 package org.fabric3.spi.topology;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
  * @version $Rev$ $Date$
  */
-public class MessageException extends Fabric3Exception {
-    private static final long serialVersionUID = 9222872325419816221L;
+public class MessageTimeoutException extends MessageException {
+    private static final long serialVersionUID = -1705962954917886183L;
 
-    public MessageException(String message) {
+    public MessageTimeoutException(String message) {
         super(message);
     }
 
-    public MessageException(String message, Throwable cause) {
+    public MessageTimeoutException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public MessageException(Throwable cause) {
+    public MessageTimeoutException(Throwable cause) {
         super(cause);
     }
 }

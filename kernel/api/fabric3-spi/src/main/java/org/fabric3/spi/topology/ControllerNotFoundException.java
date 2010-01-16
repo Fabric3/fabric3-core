@@ -37,23 +37,23 @@
 */
 package org.fabric3.spi.topology;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
+ * Raised when an attempt is made to contact the controller but one cannot be found in the domain.
+ *
  * @version $Rev$ $Date$
  */
-public class MessageException extends Fabric3Exception {
-    private static final long serialVersionUID = 9222872325419816221L;
+public class ControllerNotFoundException extends MessageException {
+    private static final long serialVersionUID = 6661874470150036437L;
 
-    public MessageException(String message) {
+    public ControllerNotFoundException(String message) {
         super(message);
     }
 
-    public MessageException(String message, Throwable cause) {
+    public ControllerNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public MessageException(Throwable cause) {
+    public ControllerNotFoundException(Throwable cause) {
         super(cause);
     }
 }
