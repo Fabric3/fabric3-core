@@ -51,14 +51,14 @@ public interface DomainTopologyService {
      *
      * @return the active zones in the domain or an empty list if none are active
      */
-    public List<Zone> getZones();
+    List<Zone> getZones();
 
     /**
      * Returns the active runtimes in the domain.
      *
      * @return the active runtimes in the domain or an empty list if none are active
      */
-    public List<RuntimeInstance> getRuntimes();
+    List<RuntimeInstance> getRuntimes();
 
     /**
      * Returns transport information such as port numbers in effect for a zone.
@@ -68,7 +68,7 @@ public interface DomainTopologyService {
      * @param transport the transport name
      * @return the transport information or null if not found
      */
-    public <T> T getTransportMetaData(String zone, Class<T> type, String transport);
+    <T> T getTransportMetaData(String zone, Class<T> type, String transport);
 
     /**
      * Sends a message asynchronously to all runtimes in the domain.
@@ -76,7 +76,7 @@ public interface DomainTopologyService {
      * @param payload the message payload
      * @throws MessageException if there is an error sending the message
      */
-    public void broadcastMessage(byte[] payload) throws MessageException;
+    void broadcastMessage(byte[] payload) throws MessageException;
 
     /**
      * Sends a message asynchronously to all runtimes in a zoone.
@@ -85,7 +85,7 @@ public interface DomainTopologyService {
      * @param payload  the message payload
      * @throws MessageException if there is an error sending the message
      */
-    public void broadcastMessage(String zoneName, byte[] payload) throws MessageException;
+    void broadcastMessage(String zoneName, byte[] payload) throws MessageException;
 
     /**
      * Sends a message synchronously to all runtimes in a zone.
@@ -96,7 +96,7 @@ public interface DomainTopologyService {
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    public List<byte[]> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException;
+    List<byte[]> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException;
 
     /**
      * Sends a message synchronously to a runtime.
@@ -107,6 +107,6 @@ public interface DomainTopologyService {
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    public byte[] sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException;
+    byte[] sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException;
 
 }
