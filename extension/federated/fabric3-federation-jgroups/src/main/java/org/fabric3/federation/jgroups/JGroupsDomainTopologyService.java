@@ -53,9 +53,9 @@ import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
-import org.jgroups.blocks.RequestHandler;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.runtime.HostInfo;
@@ -79,6 +79,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
+    private long defaultTimeout = 3000;
 
     public JGroupsDomainTopologyService(@Reference HostInfo info,
                                         @Reference CommandExecutorRegistry executorRegistry,
@@ -88,6 +89,10 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         super(info, executorRegistry, eventService, executor, helper);
     }
 
+    @Property(required = false)
+    public void setDefaultTimeout(long defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
+    }
 
     @Init
     public void init() throws ChannelException {
@@ -97,7 +102,10 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
         initializeChannel(domainChannel);
 
-        dispatcher = new MessageDispatcher(domainChannel, null, null, new DomainRequestHandler());
+        Fabric3MessageListener domainMessageListener = new Fabric3MessageListener();
+        Fabric3RequestHandler domainRequestHandler = new Fabric3RequestHandler();
+
+        dispatcher = new MessageDispatcher(domainChannel, domainMessageListener, null, domainRequestHandler);
 
         // setup runtime notifications
         joinListener = new JoinEventListener();
@@ -131,7 +139,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
         return runtimes;
     }
-
 
     public <T> T getTransportMetaData(String zone, Class<T> type, String transport) {
         return null;
@@ -233,14 +240,5 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             domainChannel.close();
         }
     }
-
-    private class DomainRequestHandler implements RequestHandler {
-
-        public Object handle(Message msg) {
-            System.out.println("--------------------handling: " + runtimeName);
-            return msg.getBuffer();
-        }
-    }
-
 
 }

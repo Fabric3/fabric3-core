@@ -52,6 +52,7 @@ import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
+import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.util.Rsp;
@@ -60,12 +61,15 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.federation.command.RuntimeSyncCommand;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.command.Command;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.topology.ControllerNotFoundException;
 import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.ZoneTopologyService;
@@ -75,10 +79,12 @@ import org.fabric3.spi.topology.ZoneTopologyService;
  */
 public class JGroupsZoneTopologyService extends AbstractTopologyService implements ZoneTopologyService {
     private String zoneName = "default.zone";
+    private long defaultTimeout = 3000;
     private Channel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
     private Fabric3EventListener<RuntimeStop> stopListener;
     private MessageDispatcher domainDispatcher;
+    private boolean synchronize = true;
 
     public JGroupsZoneTopologyService(@Reference HostInfo info,
                                       @Reference CommandExecutorRegistry executorRegistry,
@@ -93,10 +99,19 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         this.zoneName = zoneName;
     }
 
+    @Property(required = false)
+    public void setDefaultTimeout(long defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
+    }
+
+    @Property(required = false)
+    public void setSynchronize(boolean synchronize) {
+        this.synchronize = synchronize;
+    }
+
     @Init
     public void init() throws ChannelException {
         super.init();
-
         domainChannel = new JChannel();
         String runtimeName = domainName + ":participant:" + zoneName + ":" + runtimeId;
         domainChannel.setName(runtimeName);
@@ -113,6 +128,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         for (Address address : addresses) {
             sendAsync(address, payload);
         }
+    }
+
+    public void sendAsynchronousMessage(String runtimeName, byte[] payload) throws MessageException {
+        Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
+        sendAsync(address, payload);
     }
 
     public byte[] sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException {
@@ -185,7 +205,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-    public void sendAsync(Address adddress, byte[] payload) throws MessageException {
+    private void sendAsync(Address adddress, byte[] payload) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();
             Message message = new Message(adddress, sourceAddress, payload);
@@ -197,13 +217,39 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
+    private void synchronize() throws MessageException, ExecutionException {
+        // send the sync request
+        View view = domainChannel.getView();
+        Address address = helper.getController(view);
+        if (address == null) {
+            // controller not present
+            address = helper.getZoneLeader(zoneName, view);
+            if (domainChannel.getAddress().equals(address)) {
+                // current runtime is the zone. do nothing
+                return;
+            }
+        }
+        RuntimeSyncCommand commmand = new RuntimeSyncCommand(runtimeName, zoneName, null);
+        byte[] serialized = helper.serialize(commmand);
+        byte[] response = send(address, serialized, defaultTimeout);
+        Command command = (Command) helper.deserialize(response);
+        executorRegistry.execute(command);
+    }
+
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
             try {
                 domainChannel.connect(domainName);
                 domainDispatcher.start();
+                if (synchronize) {
+                    synchronize();
+                }
             } catch (ChannelException e) {
+                // TODO log error
+            } catch (MessageException e) {
+                // TODO log error
+            } catch (ExecutionException e) {
                 // TODO log error
             }
         }

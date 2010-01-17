@@ -37,6 +37,7 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -55,6 +56,7 @@ import org.osoa.sca.annotations.Property;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -158,7 +160,7 @@ public abstract class AbstractTopologyService {
         public void receive(Message msg) {
             System.out.println("--------------------handling message:" + runtimeName);
             try {
-                Command command = (Command) helper.deserialize(msg);
+                Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
             } catch (MessageException e) {
                 // TODO log
@@ -184,8 +186,12 @@ public abstract class AbstractTopologyService {
         public Object handle(Message msg) {
             System.out.println("--------------------handling request:" + getRuntimeName());
             try {
-                Command command = (Command) helper.deserialize(msg);
+                Object deserialized =  helper.deserialize(msg.getBuffer());
+                assert deserialized instanceof ResponseCommand;
+                ResponseCommand command = (ResponseCommand) deserialized;
                 executorRegistry.execute(command);
+                Serializable response = command.getResponse();
+                return helper.serialize(response);
             } catch (MessageException e) {
                 // TODO log and return an error response
                 e.printStackTrace();

@@ -37,10 +37,10 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.jgroups.Address;
-import org.jgroups.Message;
 import org.jgroups.View;
 
 import org.fabric3.spi.topology.MessageException;
@@ -59,6 +59,15 @@ public interface JGroupsHelper {
      * @return the controller or null if not present
      */
     Address getController(View view);
+
+    /**
+     * Returns the leader for the zone, which is the first runtime in the given view.
+     *
+     * @param zoneName the zone name
+     * @param view     the domain view
+     * @return the leader or null if no runtimes in the zone are present
+     */
+    Address getZoneLeader(String zoneName, View view);
 
     /**
      * Returns the addresses for runtimes in a zone.
@@ -89,10 +98,20 @@ public interface JGroupsHelper {
     /**
      * Deserializes a message payload.
      *
-     * @param message the message
+     * @param payload the message
      * @return the message payload
      * @throws MessageException if there is an error deserializing the payload
      */
-    Object deserialize(Message message) throws MessageException;
+    Object deserialize(byte[] payload) throws MessageException;
+
+
+    /**
+     * Serializes an object.
+     *
+     * @param object the object to serialize
+     * @return the serialized bytes
+     * @throws MessageException if there is an error serializing
+     */
+    byte[] serialize(Serializable object) throws MessageException;
 
 }

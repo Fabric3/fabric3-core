@@ -55,6 +55,15 @@ public interface ZoneTopologyService {
     void broadcastMessage(byte[] message) throws MessageException;
 
     /**
+     * Sends a message asynchronously to a runtime.
+     *
+     * @param runtimeName the runtime
+     * @param message     the serialized message
+     * @throws MessageException if an error occurs sending the message
+     */
+    void sendAsynchronousMessage(String runtimeName, byte[] message) throws MessageException;
+
+    /**
      * Sends a message synchronously to a runtime.
      *
      * @param runtimeName the runtime
@@ -81,7 +90,7 @@ public interface ZoneTopologyService {
      * @param message the serialized message
      * @param timeout the time to wait on a response
      * @return the response
-     * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller 
+     * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
      */
     byte[] sendSynchronousControllerMessage(byte[] message, long timeout) throws MessageException;
 

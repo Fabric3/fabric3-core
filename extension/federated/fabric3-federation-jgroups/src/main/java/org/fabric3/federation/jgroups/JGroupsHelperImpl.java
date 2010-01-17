@@ -38,19 +38,21 @@
 package org.fabric3.federation.jgroups;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jgroups.Address;
-import org.jgroups.Message;
 import org.jgroups.View;
 import org.jgroups.util.UUID;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
+import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.topology.MessageException;
 
 /**
@@ -69,6 +71,22 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         for (Address address : view.getMembers()) {
             String name = UUID.get(address);
             if (name != null && name.substring(name.indexOf(":")).startsWith(":controller:")) {
+                return address;
+            }
+        }
+        return null;
+    }
+
+    public Address getZoneLeader(String zoneName, View view) {
+        for (Address address : view.getMembers()) {
+            String name = UUID.get(address);
+            int pos = name.indexOf(":participant:");
+            if (pos < 0) {
+                continue;
+            }
+            name = name.substring(pos + 13);
+            name = name.substring(0, name.indexOf(":"));
+            if (zoneName.equals(name)) {
                 return address;
             }
         }
@@ -112,10 +130,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         return null;
     }
 
-    public Object deserialize(Message message) throws MessageException {
+    public Object deserialize(byte[] payload) throws MessageException {
         MultiClassLoaderObjectInputStream ois = null;
         try {
-            byte[] payload = message.getBuffer();
             InputStream stream = new ByteArrayInputStream(payload);
             // Deserialize the command set. As command set classes may be loaded in an extension classloader, use a MultiClassLoaderObjectInputStream
             // to deserialize classes in the appropriate classloader.
@@ -136,4 +153,16 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         }
     }
 
+    public byte[] serialize(Serializable object) throws MessageException {
+        try {
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            MultiClassLoaderObjectOutputStream stream;
+            stream = new MultiClassLoaderObjectOutputStream(bas);
+            stream.writeObject(object);
+            stream.close();
+            return bas.toByteArray();
+        } catch (IOException e) {
+            throw new MessageException(e);
+        }
+    }
 }
