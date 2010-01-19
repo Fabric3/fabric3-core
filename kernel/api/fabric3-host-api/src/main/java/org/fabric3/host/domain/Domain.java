@@ -164,14 +164,4 @@ public interface Domain {
      */
     void recover(List<URI> uris) throws DeploymentException;
 
-    /**
-     * Regenerates and routes deployment commands for the current state of the given zone.
-     *
-     * @param zoneId        the zone
-     * @param correlationId an id for correlating the deployment commands with a request
-     * @throws DeploymentException if an error is encountered during regeneration
-     */
-    @Deprecated
-    void regenerate(String zoneId, String correlationId) throws DeploymentException;
-
 }

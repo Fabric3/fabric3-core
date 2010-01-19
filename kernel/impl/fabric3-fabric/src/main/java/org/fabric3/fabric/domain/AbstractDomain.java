@@ -49,7 +49,6 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
-import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
@@ -67,7 +66,6 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -79,7 +77,7 @@ import org.fabric3.spi.domain.RoutingException;
 import org.fabric3.spi.domain.RoutingService;
 import org.fabric3.spi.generator.CommandMap;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ZoneCommands;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.CopyUtil;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -361,25 +359,6 @@ public abstract class AbstractDomain implements Domain {
     public void recover(List<URI> uris) throws DeploymentException {
         Set<Contribution> contributions = contributionHelper.resolveContributions(uris);
         instantiateAndDeploy(contributions, null, true, false);
-    }
-
-    public void regenerate(String zoneId, String correlationId) throws DeploymentException {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        Collection<LogicalComponent<?>> components = domain.getComponents();
-        try {
-            CommandMap commandMap = generator.generate(components, false);
-            ZoneCommands zoneCommands = commandMap.getZoneCommands(zoneId);
-            List<Command> extensionCommands = zoneCommands.getExtensionCommands();
-            List<Command> commands = zoneCommands.getCommands();
-            CommandMap filtered = new CommandMap(commandMap.getId());
-            filtered.addExtensionCommands(zoneId, extensionCommands);
-            filtered.addCommands(zoneId, commands);
-            routingService.route(filtered);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        } catch (RoutingException e) {
-            throw new DeploymentException(e);
-        }
     }
 
     /**

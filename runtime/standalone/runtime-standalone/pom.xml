@@ -232,12 +232,6 @@ licensed under the Apache 2.0 license.
             <version>${project.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.codehaus.fabric3</groupId>-->
-            <!--<artifactId>fabric3-federation-shoal</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.codehaus.fabric3.standalone</groupId>
             <artifactId>fabric3-standalone-admin</artifactId>
