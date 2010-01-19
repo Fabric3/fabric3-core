@@ -102,7 +102,7 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         EasyMock.expect(store.resolveCapability("bindingCapability")).andReturn(bindingExtensions);
 
         EasyMock.replay(store);
-        CommandMap commandMap = new CommandMap("123", "123", false);
+        CommandMap commandMap = new CommandMap("123");
         Map<String, Command> ret = generator.generate(map, components, commandMap, GenerationType.INCREMENTAL);
         Command commands = ret.get("zone1");
         ProvisionExtensionsCommand command = (ProvisionExtensionsCommand) commands;
@@ -144,6 +144,7 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
     }
 
     private class MockBinding extends BindingDefinition {
+        private static final long serialVersionUID = -7088192438672216044L;
 
         public MockBinding() {
             super(null, null);
@@ -151,6 +152,7 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
     }
 
     private class MockImplementation extends Implementation<InjectingComponentType> {
+        private static final long serialVersionUID = 7965669678990461548L;
 
         public QName getType() {
             return null;

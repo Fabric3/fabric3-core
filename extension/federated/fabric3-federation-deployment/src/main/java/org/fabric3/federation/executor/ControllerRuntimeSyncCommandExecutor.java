@@ -37,33 +37,51 @@
 */
 package org.fabric3.federation.executor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.RuntimeSyncCommand;
+import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
+import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
+import org.fabric3.spi.command.Command;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.Generator;
+import org.fabric3.spi.generator.ZoneCommands;
+import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Processes a {@link RuntimeSyncCommand} on the controller by regenerating a set of deployment commands for the current state of the zone.
+ * Processes a {@link RuntimeSyncCommand} on the controller by regenerating deployment commands for the current state of the zone.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class ControllerRuntimeSyncCommandExecutor implements CommandExecutor<RuntimeSyncCommand> {
-    private Domain domain;
     private CommandExecutorRegistry executorRegistry;
-    private ZoneSyncCommandExecutorMonitor monitor;
+    private RuntimeSyncMonitor monitor;
+    private LogicalComponentManager lcm;
+    private Generator generator;
 
-    public ControllerRuntimeSyncCommandExecutor(@Reference(name = "domain") Domain domain,
-                                   @Reference CommandExecutorRegistry executorRegistry,
-                                   @Monitor ZoneSyncCommandExecutorMonitor monitor) {
-        this.domain = domain;
+    public ControllerRuntimeSyncCommandExecutor(@Reference(name = "lcm") LogicalComponentManager lcm,
+                                                @Reference(name = "generator") Generator generator,
+                                                @Reference CommandExecutorRegistry executorRegistry,
+                                                @Monitor RuntimeSyncMonitor monitor) {
+        this.lcm = lcm;
+        this.generator = generator;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;
     }
@@ -76,8 +94,35 @@ public class ControllerRuntimeSyncCommandExecutor implements CommandExecutor<Run
     public void execute(RuntimeSyncCommand command) throws ExecutionException {
         try {
             monitor.receivedSyncRequest(command.getRuntimeName());
-            domain.regenerate(command.getZoneName(), command.getRuntimeName());
+            ZoneCommands commands = regenerate(command.getZoneName());
+            List<Command> extensionCommands = commands.getExtensionCommands();
+            byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
+            List<Command> zoneCommands = commands.getCommands();
+            byte[] serializedCommands = serialize((Serializable) zoneCommands);
+            command.setResponse(new DeploymentCommand(serializedExtensionCommands, serializedCommands));
         } catch (DeploymentException e) {
+            throw new ExecutionException(e);
+        }
+    }
+
+    private ZoneCommands regenerate(String zoneId) throws DeploymentException {
+        LogicalCompositeComponent domain = lcm.getRootComponent();
+        Collection<LogicalComponent<?>> components = domain.getComponents();
+        try {
+            CommandMap commandMap = generator.generate(components, false);
+            return commandMap.getZoneCommands(zoneId);
+        } catch (GenerationException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
+    private byte[] serialize(Serializable serializable) throws ExecutionException {
+        try {
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
+            stream.writeObject(serializable);
+            return bas.toByteArray();
+        } catch (IOException e) {
             throw new ExecutionException(e);
         }
     }

@@ -41,7 +41,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.jgroups.ChannelException;
 
-import org.fabric3.federation.command.RuntimeDeploymentCommand;
+import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.RuntimeSyncCommand;
 
 /**
@@ -54,12 +54,12 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>(){
             public Object answer() throws Throwable {
                 RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
-                RuntimeDeploymentCommand deploymentCommand = new RuntimeDeploymentCommand(null, null, null, false);
+                DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
                 command.setResponse(deploymentCommand);
                 return null;
             }
         });
-        executorRegistry.execute(EasyMock.isA(RuntimeDeploymentCommand.class));
+        executorRegistry.execute(EasyMock.isA(DeploymentCommand.class));
         EasyMock.expectLastCall();
         EasyMock.replay(executorRegistry);
 
@@ -80,12 +80,12 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>(){
             public Object answer() throws Throwable {
                 RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
-                RuntimeDeploymentCommand deploymentCommand = new RuntimeDeploymentCommand(null, null, null, false);
+                DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
                 command.setResponse(deploymentCommand);
                 return null;
             }
         });
-        executorRegistry.execute(EasyMock.isA(RuntimeDeploymentCommand.class));
+        executorRegistry.execute(EasyMock.isA(DeploymentCommand.class));
         EasyMock.expectLastCall();
         EasyMock.replay(executorRegistry);
 

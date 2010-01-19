@@ -44,6 +44,7 @@ import org.fabric3.spi.command.Command;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class ZoneSyncCommand implements Command {
     private static final long serialVersionUID = 6531949467055199113L;
     private String zoneId;

@@ -41,12 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.generator;
+package org.fabric3.spi.generator;
 
 import java.util.Collection;
 
-import org.fabric3.spi.generator.CommandMap;
-import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**

@@ -42,6 +42,7 @@ import org.fabric3.api.annotation.logging.Info;
 /**
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface RuntimeDeploymentCommandExecutorMonitor {
 
     /**

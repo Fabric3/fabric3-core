@@ -35,19 +35,58 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.command;
 
-import org.fabric3.spi.executor.ExecutionException;
+import java.io.Serializable;
+
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Thrown when a target runtime cannot be found to deploy to.
+ * Aggregates a set of commands for a deployment. A deployment
  *
  * @version $Rev$ $Date$
  */
-public class NoTargetRuntimeException extends ExecutionException {
-    private static final long serialVersionUID = 5115365218091847896L;
+public class DeploymentCommand implements ResponseCommand {
+    private static final long serialVersionUID = 8673100303949676875L;
 
-    public NoTargetRuntimeException(String message) {
-        super(message);
+    private byte[] extensionCommands;
+    private byte[] commands;
+    private Serializable response;
+
+    /**
+     * Constructor.
+     *
+     * @param extensionCommands the serialized commands that install extensions required to run the deployment
+     * @param commands          the serialized commands to deploy a set of composites
+     */
+    public DeploymentCommand(byte[] extensionCommands, byte[] commands) {
+        this.extensionCommands = extensionCommands;
+        this.commands = commands;
+    }
+
+    /**
+     * Returns the serialized commands that install extensions required to run the deployment.
+     *
+     * @return the serialized extension commands
+     */
+    public byte[] getExtensionCommands() {
+        return extensionCommands;
+    }
+
+    /**
+     * Returns the serialized composite deployment commands.
+     *
+     * @return the serialized composite deployment commands
+     */
+    public byte[] getCommands() {
+        return commands;
+    }
+
+    public void setResponse(Serializable response) {
+        this.response = response;
+    }
+
+    public Serializable getResponse() {
+        return response;
     }
 }

@@ -44,6 +44,7 @@ import org.fabric3.spi.command.Command;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class PaticipantSyncCommand implements Command {
     private static final long serialVersionUID = -6969171512764646396L;
     private String runtimeId;

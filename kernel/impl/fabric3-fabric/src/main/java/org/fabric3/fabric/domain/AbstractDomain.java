@@ -49,7 +49,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
-import org.fabric3.fabric.generator.Generator;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
@@ -371,7 +371,7 @@ public abstract class AbstractDomain implements Domain {
             ZoneCommands zoneCommands = commandMap.getZoneCommands(zoneId);
             List<Command> extensionCommands = zoneCommands.getExtensionCommands();
             List<Command> commands = zoneCommands.getCommands();
-            CommandMap filtered = new CommandMap(commandMap.getId(), correlationId, true);
+            CommandMap filtered = new CommandMap(commandMap.getId());
             filtered.addExtensionCommands(zoneId, extensionCommands);
             filtered.addCommands(zoneId, commands);
             routingService.route(filtered);

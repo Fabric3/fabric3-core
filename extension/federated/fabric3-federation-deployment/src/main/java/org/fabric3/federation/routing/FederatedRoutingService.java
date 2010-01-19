@@ -43,56 +43,80 @@
  */
 package org.fabric3.federation.routing;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.ZoneDeploymentCommand;
+import org.fabric3.federation.command.DeploymentCommand;
+import org.fabric3.federation.command.DeploymentResponse;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.domain.RoutingException;
 import org.fabric3.spi.domain.RoutingMonitor;
 import org.fabric3.spi.domain.RoutingService;
 import org.fabric3.spi.generator.CommandMap;
-import org.fabric3.spi.topology.DomainManager;
+import org.fabric3.spi.generator.ZoneCommands;
+import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 
 /**
- * A routing service implementation that routes commands to a zone.
+ * A routing service implementation that broadcasts a deployment to a zone.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class FederatedRoutingService implements RoutingService {
-    private final DomainManager domainManager;
-    private final RoutingMonitor monitor;
+    private RoutingMonitor monitor;
+    private DomainTopologyService topologyService;
+    private long timeout = 3000;
+    private ClassLoaderRegistry classLoaderRegistry;
 
-    public FederatedRoutingService(@Reference DomainManager domainManager, @Monitor RoutingMonitor monitor) {
-        this.domainManager = domainManager;
+    public FederatedRoutingService(@Reference DomainTopologyService topologyService,
+                                   @Reference ClassLoaderRegistry classLoaderRegistry,
+                                   @Monitor RoutingMonitor monitor) {
+        this.topologyService = topologyService;
+        this.classLoaderRegistry = classLoaderRegistry;
         this.monitor = monitor;
     }
 
+    // TODO FIXME add timeout property and check return for rollback
+    @Property(required = false)
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
     public void route(CommandMap commandMap) throws RoutingException {
-        String id = commandMap.getId();
         for (String zone : commandMap.getZones()) {
             try {
                 monitor.routeCommands(zone);
-                List<Command> extensionCommands = commandMap.getZoneCommands(zone).getExtensionCommands();
+                ZoneCommands zoneCommands = commandMap.getZoneCommands(zone);
+                List<Command> extensionCommands = zoneCommands.getExtensionCommands();
                 byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-                List<Command> commands = commandMap.getZoneCommands(zone).getCommands();
+                List<Command> commands = zoneCommands.getCommands();
                 byte[] serializedCommands = serialize((Serializable) commands);
-                String correlationId = commandMap.getCorrelationId();
-                boolean synchronization = commandMap.isSynchornization();
-                Command command = new ZoneDeploymentCommand(id, serializedExtensionCommands, serializedCommands, correlationId, synchronization);
+                Command command = new DeploymentCommand(serializedExtensionCommands, serializedCommands);
                 ByteArrayOutputStream bas = new ByteArrayOutputStream();
                 MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
                 stream.writeObject(command);
-                domainManager.sendMessage(zone, bas.toByteArray());
+                byte[] serialized = bas.toByteArray();
+                List<byte[]> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
+                List<DeploymentResponse> responses = new ArrayList<DeploymentResponse>(serializedResponses.size());
+                for (byte[] serializedResponse : serializedResponses) {
+                    DeploymentResponse response = deserialize(serializedResponse);
+                    responses.add(response);
+                }
+                // TODO check responses
             } catch (IOException e) {
                 throw new RoutingException(e);
             } catch (MessageException e) {
@@ -107,5 +131,31 @@ public class FederatedRoutingService implements RoutingService {
         MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
         stream.writeObject(serializable);
         return bas.toByteArray();
+    }
+
+
+    // FIXME duplicate code with DeploymantCommandExecutor
+    @SuppressWarnings({"unchecked"})
+    private DeploymentResponse deserialize(byte[] commands) throws RoutingException {
+        MultiClassLoaderObjectInputStream ois = null;
+        try {
+            InputStream stream = new ByteArrayInputStream(commands);
+            // Deserialize the command set. As command set classes may be loaded in an extension classloader, use a MultiClassLoaderObjectInputStream
+            // to deserialize classes in the appropriate classloader.
+            ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
+            return (DeploymentResponse) ois.readObject();
+        } catch (IOException e) {
+            throw new RoutingException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RoutingException(e);
+        } finally {
+            try {
+                if (ois != null) {
+                    ois.close();
+                }
+            } catch (IOException e) {
+                // ignore;
+            }
+        }
     }
 }

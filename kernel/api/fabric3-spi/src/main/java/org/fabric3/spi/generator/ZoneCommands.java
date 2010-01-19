@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.generator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,8 @@ import org.fabric3.spi.command.Command;
  *
  * @version $Rev$ $Date$
  */
-public class ZoneCommands {
+public class ZoneCommands implements Serializable {
+    private static final long serialVersionUID = -5868891769973094096L;
 
     private List<Command> extensionCommands = new ArrayList<Command>();
     private List<Command> commands = new ArrayList<Command>();

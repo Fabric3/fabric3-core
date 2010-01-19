@@ -58,11 +58,11 @@ import org.fabric3.spi.topology.ZoneTopologyService;
 public class RuntimeSyncCommandExecutor implements CommandExecutor<RuntimeSyncCommand> {
     private ZoneTopologyService topologyService;
     private CommandExecutorRegistry executorRegistry;
-    private ZoneSyncCommandExecutorMonitor monitor;
+    private RuntimeSyncMonitor monitor;
 
     public RuntimeSyncCommandExecutor(@Reference ZoneTopologyService topologyService,
                                       @Reference CommandExecutorRegistry executorRegistry,
-                                      @Monitor ZoneSyncCommandExecutorMonitor monitor) {
+                                      @Monitor RuntimeSyncMonitor monitor) {
         this.topologyService = topologyService;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;

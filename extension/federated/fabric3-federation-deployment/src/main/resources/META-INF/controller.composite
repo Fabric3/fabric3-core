@@ -29,5 +29,10 @@ Public License. See the accompanying license file for details.
         <reference name="domain" target="ApplicationDomain"/>
     </component>
 
+    <component name="ControllerRuntimeSyncCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.federation.executor.ControllerRuntimeSyncCommandExecutor"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+        <reference name="generator" target="Generator"/>
+    </component>
 
 </composite>

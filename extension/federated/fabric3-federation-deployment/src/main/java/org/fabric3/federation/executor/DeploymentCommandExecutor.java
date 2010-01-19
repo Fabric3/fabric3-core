@@ -47,88 +47,72 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.RuntimeDeploymentCommand;
-import org.fabric3.federation.event.RuntimeSynchronized;
+import org.fabric3.federation.command.DeploymentCommand;
+import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * A CommandExecutor that processes deployment commands on a participant node.
+ * Processes a DeploymentCommand.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Deprecated
-public class RuntimeDeploymentCommandExecutor implements CommandExecutor<RuntimeDeploymentCommand> {
+public class DeploymentCommandExecutor implements CommandExecutor<DeploymentCommand> {
     private CommandExecutorRegistry executorRegistry;
-    private EventService eventService;
+    private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
-    private RuntimeDeploymentCommandExecutorMonitor monitor;
-    // indicates whether the runtime has been synchronized with the domain
-    private boolean domainSynchronized;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public RuntimeDeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
-                                            @Reference EventService eventService,
-                                            @Reference ScopeRegistry scopeRegistry,
-                                            @Reference ClassLoaderRegistry classLoaderRegistry,
-                                            @Monitor RuntimeDeploymentCommandExecutorMonitor monitor) {
+    public DeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
+                                     @Reference ScopeRegistry scopeRegistry,
+                                     @Reference ClassLoaderRegistry classLoaderRegistry,
+                                     @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
-        this.eventService = eventService;
-        this.scopeRegistry = scopeRegistry;
         this.monitor = monitor;
+        this.scopeRegistry = scopeRegistry;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
     @Init
     public void init() {
-        executorRegistry.register(RuntimeDeploymentCommand.class, this);
+        executorRegistry.register(DeploymentCommand.class, this);
     }
 
-    public void execute(RuntimeDeploymentCommand command) throws ExecutionException {
-        if (domainSynchronized && command.isSynchronization()) {
-            // When a participant boots, it periodiclly issues synchronization requests to the zone manager until the first deployment command is
-            // received. Since communications are asynchronous, it is possible multiple requests may be issued if a response is not received during
-            // the elapsed time period. If this happens, only the first deployment command should be processed.
-            eventService.publish(new RuntimeSynchronized());
-            return;
-        }
-        String id = command.getId();
-        monitor.receivedDeploymentCommand(id);
-
+    public void execute(DeploymentCommand command) throws ExecutionException {
+        monitor.receivedDeployment();
         // execute the extension commands first before deserializing the other commands as they may contain extension-specific metadata classes
-        byte[] serializedExtensionCommands = command.getExtensionCommands();
-        List<Command> extensionCommands = deserialize(serializedExtensionCommands);
-        for (Command cmd : extensionCommands) {
-            executorRegistry.execute(cmd);
-        }
         try {
-            scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            byte[] serializedExtensionCommands = command.getExtensionCommands();
+            List<Command> extensionCommands = deserialize(serializedExtensionCommands);
+            for (Command cmd : extensionCommands) {
+                executorRegistry.execute(cmd);
+            }
+            if (!extensionCommands.isEmpty()) {
+                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            }
+            byte[] serializedCommands = command.getCommands();
+            List<Command> commands = deserialize(serializedCommands);
+            for (Command cmd : commands) {
+                executorRegistry.execute(cmd);
+            }
+            if (!commands.isEmpty()) {
+                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            }
+            DeploymentResponse response = new DeploymentResponse();
+            command.setResponse(response);
         } catch (InstanceLifecycleException e) {
-            throw new ExecutionException(e);
+            monitor.error(e);
+            DeploymentResponse response = new DeploymentResponse(e);
+            command.setResponse(response);
         }
-
-        byte[] serializedCommands = command.getCommands();
-        List<Command> commands = deserialize(serializedCommands);
-        for (Command cmd : commands) {
-            executorRegistry.execute(cmd);
-        }
-        try {
-            scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-        } catch (InstanceLifecycleException e) {
-            throw new ExecutionException(e);
-        }
-
-        eventService.publish(new RuntimeSynchronized());
-        domainSynchronized = true;
     }
 
     @SuppressWarnings({"unchecked"})

@@ -57,8 +57,6 @@ import org.fabric3.spi.command.Command;
  */
 public class CommandMap {
     private String id;
-    private String correlationId;
-    private boolean synchornization;
 
     private Map<String, ZoneCommands> commands = new HashMap<String, ZoneCommands>();
 
@@ -66,22 +64,8 @@ public class CommandMap {
         this.id = id;
     }
 
-    public CommandMap(String id, String correlationId, boolean synchornization) {
-        this.id = id;
-        this.correlationId = correlationId;
-        this.synchornization = synchornization;
-    }
-
     public String getId() {
         return id;
-    }
-
-    public String getCorrelationId() {
-        return correlationId;
-    }
-
-    public boolean isSynchornization() {
-        return synchornization;
     }
 
     public void addCommand(String zone, Command command) {

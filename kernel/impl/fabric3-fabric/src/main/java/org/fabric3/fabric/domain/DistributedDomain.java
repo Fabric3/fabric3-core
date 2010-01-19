@@ -43,7 +43,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
-import org.fabric3.fabric.generator.Generator;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;

@@ -35,17 +35,24 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.allocator;
+package org.fabric3.federation.executor;
 
-import org.fabric3.spi.allocator.AllocationException;
+import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.logging.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ZoneNotFoundException extends AllocationException {
-    private static final long serialVersionUID = -4116461999930783927L;
+public interface DeploymentCommandExecutorMonitor {
 
-    public ZoneNotFoundException(String message) {
-        super(message);
-    }
+    /**
+     * Callback when a deployment is received.
+     *
+     */
+    @Info
+    void receivedDeployment();
+
+    @Severe
+    void error(Throwable e);
+
 }

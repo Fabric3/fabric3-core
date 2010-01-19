@@ -171,6 +171,7 @@ public interface Domain {
      * @param correlationId an id for correlating the deployment commands with a request
      * @throws DeploymentException if an error is encountered during regeneration
      */
+    @Deprecated
     void regenerate(String zoneId, String correlationId) throws DeploymentException;
 
 }

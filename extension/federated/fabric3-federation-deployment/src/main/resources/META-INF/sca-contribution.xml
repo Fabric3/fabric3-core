@@ -19,4 +19,5 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.federation.event" version="1.5"/>
 
     <deployable composite="federation:FederationControllerDeploymentExtension" modes="controller"/>
+    <deployable composite="federation:FederationParticipantDeploymentExtension" modes="participant"/>
 </contribution>

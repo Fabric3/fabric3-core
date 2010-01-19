@@ -44,5 +44,6 @@ import org.fabric3.spi.event.Fabric3Event;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class RuntimeSynchronized implements Fabric3Event {
 }

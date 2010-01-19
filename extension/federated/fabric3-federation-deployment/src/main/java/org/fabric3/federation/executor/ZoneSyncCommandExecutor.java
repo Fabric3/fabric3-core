@@ -55,6 +55,7 @@ import org.fabric3.spi.executor.ExecutionException;
  * @version $Rev$ $Date$
  */
 @EagerInit
+@Deprecated
 public class ZoneSyncCommandExecutor implements CommandExecutor<ZoneSyncCommand> {
     private Domain domain;
     private CommandExecutorRegistry executorRegistry;

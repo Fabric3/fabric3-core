@@ -42,23 +42,14 @@ import org.fabric3.api.annotation.logging.Info;
 /**
  * @version $Rev$ $Date$
  */
-public interface ZoneDeploymentCommandExecutorMonitor {
+public interface RuntimeSyncMonitor {
 
     /**
-     * Callback when a deployment command is received.
+     * Callback when a sync command is received from a runtime.
      *
-     * @param description the deployment description, usually the deployment composite name.
+     * @param id the runtime id.
      */
     @Info
-    void receivedDeploymentCommand(String description);
-
-    /**
-     * Callback received when a deployment command is routed to a runtime in the zone
-     *
-     * @param runtimeName the runtime the deployment is routed to
-     * @param description the deployment description, usually the deployment composite name.
-     */
-    @Info
-    void routed(String runtimeName, String description);
+    void receivedSyncRequest(String id);
 
 }

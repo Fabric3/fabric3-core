@@ -42,6 +42,7 @@ import org.fabric3.spi.command.Command;
 /**
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class RuntimeDeploymentCommand implements Command {
     private static final long serialVersionUID = -3864446712541806877L;
 

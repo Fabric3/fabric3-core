@@ -78,7 +78,7 @@ import org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor;
 import org.fabric3.fabric.executor.ReferenceConnectionCommandExecutor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
-import org.fabric3.fabric.generator.Generator;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl;
