@@ -80,6 +80,7 @@ public abstract class AbstractTopologyService {
     protected JGroupsHelper helper;
     protected CommandExecutorRegistry executorRegistry;
     protected EventService eventService;
+    protected TopologyServiceMonitor monitor;
 
     protected boolean printlocalAddress;
     protected String logLevel = "error";
@@ -90,12 +91,14 @@ public abstract class AbstractTopologyService {
                                    CommandExecutorRegistry executorRegistry,
                                    EventService eventService,
                                    Executor executor,
-                                   JGroupsHelper helper) {
+                                   JGroupsHelper helper,
+                                   TopologyServiceMonitor monitor) {
         this.info = info;
         this.executorRegistry = executorRegistry;
         this.eventService = eventService;
         this.executor = executor;
         this.helper = helper;
+        this.monitor = monitor;
     }
 
     @Property(required = false)
@@ -158,8 +161,9 @@ public abstract class AbstractTopologyService {
     protected class Fabric3MessageListener implements MessageListener {
 
         public void receive(Message msg) {
-            System.out.println("--------------------handling message:" + runtimeName);
             try {
+                String runtimeName = org.jgroups.util.UUID.get(msg.getSrc());
+                monitor.receiveMessage(runtimeName);
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
             } catch (MessageException e) {
@@ -184,8 +188,9 @@ public abstract class AbstractTopologyService {
     protected class Fabric3RequestHandler implements RequestHandler {
 
         public Object handle(Message msg) {
-            System.out.println("--------------------handling request:" + getRuntimeName());
             try {
+                String runtimeName = org.jgroups.util.UUID.get(msg.getSrc());
+                monitor.handleMessage(runtimeName);
                 Object deserialized =  helper.deserialize(msg.getBuffer());
                 assert deserialized instanceof ResponseCommand;
                 ResponseCommand command = (ResponseCommand) deserialized;

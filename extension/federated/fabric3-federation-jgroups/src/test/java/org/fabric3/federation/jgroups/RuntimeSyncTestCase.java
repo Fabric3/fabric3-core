@@ -51,7 +51,7 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
 
     public void _testControllerSync() throws Exception {
         executorRegistry.execute(EasyMock.isA(RuntimeSyncCommand.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>(){
+        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
                 DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
@@ -63,7 +63,8 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         EasyMock.expectLastCall();
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 
@@ -77,7 +78,7 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
 
     public void _testZoneLeaderSync() throws Exception {
         executorRegistry.execute(EasyMock.isA(RuntimeSyncCommand.class));
-        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>(){
+        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
                 DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
@@ -100,13 +101,14 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
 
 
     protected JGroupsZoneTopologyService createAndSync(String name) throws ChannelException {
-        JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper);
+        TopologyServiceMonitor monitor = EasyMock.createNiceMock(TopologyServiceMonitor.class);
+        EasyMock.replay(monitor);
+        JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         service.setRuntimeId(name);
         service.init();
         joinDomain(service);
         return service;
     }
-
 
 
 }

@@ -58,10 +58,13 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Monitor;
+import org.fabric3.federation.command.ControllerAvailableCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
+import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.topology.DomainTopologyService;
@@ -85,8 +88,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                                         @Reference CommandExecutorRegistry executorRegistry,
                                         @Reference EventService eventService,
                                         @Reference Executor executor,
-                                        @Reference JGroupsHelper helper) {
-        super(info, executorRegistry, eventService, executor, helper);
+                                        @Reference JGroupsHelper helper,
+                                        @Monitor TopologyServiceMonitor monitor) {
+        super(info, executorRegistry, eventService, executor, helper, monitor);
     }
 
     @Property(required = false)
@@ -110,6 +114,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         // setup runtime notifications
         joinListener = new JoinEventListener();
         eventService.subscribe(JoinDomain.class, joinListener);
+        eventService.subscribe(RuntimeStart.class, new RuntimeStartEventListener());
         stopListener = new RuntimeStopEventListener();
         eventService.subscribe(RuntimeStop.class, stopListener);
     }
@@ -228,6 +233,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 dispatcher.start();
             } catch (ChannelException e) {
                 // TODO log error
+                e.printStackTrace();
             }
         }
     }
@@ -238,6 +244,19 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             dispatcher.stop();
             domainChannel.disconnect();
             domainChannel.close();
+        }
+    }
+
+    class RuntimeStartEventListener implements Fabric3EventListener<RuntimeStart> {
+
+        public void onEvent(RuntimeStart event) {
+            try {
+                byte[] payload = helper.serialize(new ControllerAvailableCommand((runtimeName)));
+                broadcastMessage(payload);
+            } catch (MessageException e) {
+                // TODO log error
+                e.printStackTrace();
+            }
         }
     }
 

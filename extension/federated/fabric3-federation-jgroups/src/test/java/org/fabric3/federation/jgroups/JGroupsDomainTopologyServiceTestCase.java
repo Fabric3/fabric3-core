@@ -49,7 +49,8 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 
@@ -73,7 +74,8 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         EasyMock.expectLastCall().times(1);
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 
@@ -95,7 +97,8 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 
@@ -118,7 +121,8 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 

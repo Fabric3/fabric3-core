@@ -102,7 +102,8 @@ public class JGroupsZoneTopologyServiceTestCase extends AbstractJGroupsTestCase 
     public void _testSendSynchronousControllerMessage() throws Exception {
         EasyMock.replay(executorRegistry);
 
-        JGroupsDomainTopologyService domainTopologyService = new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsDomainTopologyService domainTopologyService =
+                new JGroupsDomainTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         domainTopologyService.init();
         joinDomain(domainTopologyService);
 

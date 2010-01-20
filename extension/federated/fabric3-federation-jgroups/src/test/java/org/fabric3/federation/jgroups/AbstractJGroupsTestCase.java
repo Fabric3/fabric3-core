@@ -64,6 +64,7 @@ public class AbstractJGroupsTestCase extends TestCase {
     protected JGroupsHelper helper;
     protected Executor executor;
     protected byte[] serializedCommand;
+    protected TopologyServiceMonitor monitor;
 
 
     public void testBlank() {
@@ -71,7 +72,7 @@ public class AbstractJGroupsTestCase extends TestCase {
     }
 
     protected JGroupsZoneTopologyService createAndJoin(String name, String zoneName) throws ChannelException {
-        JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper);
+        JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
         service.setRuntimeId(name);
         service.setZoneName(zoneName);
         service.setSynchronize(false);
@@ -108,7 +109,8 @@ public class AbstractJGroupsTestCase extends TestCase {
         EasyMock.expect(info.getDomain()).andReturn(URI.create("fabric3://domain")).anyTimes();
         eventService = EasyMock.createNiceMock(EventService.class);
         executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
-        EasyMock.replay(info, eventService);
+        monitor = EasyMock.createNiceMock(TopologyServiceMonitor.class);
+        EasyMock.replay(info, eventService, monitor);
 
         MockClassLoaderRegistry classLoaderRegistry = new MockClassLoaderRegistry();
         helper = new JGroupsHelperImpl(classLoaderRegistry);

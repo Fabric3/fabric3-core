@@ -49,7 +49,6 @@ import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.JChannel;
-import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
@@ -58,11 +57,14 @@ import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.util.Rsp;
 import org.jgroups.util.RspList;
+import org.jgroups.util.UUID;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Monitor;
+import org.fabric3.federation.command.ControllerAvailableCommand;
 import org.fabric3.federation.command.RuntimeSyncCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
@@ -70,6 +72,7 @@ import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
+import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.topology.ControllerNotFoundException;
@@ -97,8 +100,9 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
                                       @Reference CommandExecutorRegistry executorRegistry,
                                       @Reference EventService eventService,
                                       @Reference Executor executor,
-                                      @Reference JGroupsHelper helper) {
-        super(info, executorRegistry, eventService, executor, helper);
+                                      @Reference JGroupsHelper helper,
+                                      @Monitor TopologyServiceMonitor monitor) {
+        super(info, executorRegistry, eventService, executor, helper, monitor);
     }
 
     @Property(required = false)
@@ -119,6 +123,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     @Init
     public void init() throws ChannelException {
         super.init();
+        ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
+        executorRegistry.register(ControllerAvailableCommand.class, executor);
         domainChannel = new JChannel();
         String runtimeName = domainName + ":participant:" + zoneName + ":" + runtimeId;
         domainChannel.setName(runtimeName);
@@ -126,8 +132,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
         Fabric3MessageListener messageListener = new Fabric3MessageListener();
         Fabric3RequestHandler requestHandler = new Fabric3RequestHandler();
-        Fabric3MembershipListener membershipListener = new Fabric3MembershipListener();
-        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, membershipListener, requestHandler);
+        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, null, requestHandler);
     }
 
     public void broadcastMessage(byte[] payload) throws MessageException {
@@ -245,6 +250,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             // controller is not present
             return;
         }
+        String controllerName = UUID.get(address);
+        monitor.synchronizing(controllerName);
         RuntimeSyncCommand commmand = new RuntimeSyncCommand(runtimeName, zoneName, null);
         byte[] serialized = helper.serialize(commmand);
         byte[] response = send(address, serialized, defaultTimeout);
@@ -256,6 +263,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         } catch (ExecutionException e) {
             throw new MessageException(e);
         }
+        monitor.completedSync();
     }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
@@ -288,27 +296,20 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-    private class Fabric3MembershipListener implements MembershipListener{
 
-        public void viewAccepted(View newView) {
-           if (synchronize && state == UNSYNCHRONIZED) {
-              if (helper.getController(newView) != null) {
-                  try {
-                      synchronize();
-                  } catch (MessageException e) {
-                      e.printStackTrace();
-                      // TODO log error
-                  }
-              }
-           }
-        }
+    private class ControllerAvailableCommandExecutor implements CommandExecutor<ControllerAvailableCommand> {
 
-        public void suspect(Address suspected_mbr) {
-
-        }
-
-        public void block() {
-
+        public void execute(ControllerAvailableCommand command) throws ExecutionException {
+            if (SYNCHRONIZED == state) {
+                return;
+            }
+            try {
+                synchronize();
+                state = SYNCHRONIZED;
+            } catch (MessageException e) {
+                e.printStackTrace();
+                // TODO log exception
+            }
         }
     }
 }
