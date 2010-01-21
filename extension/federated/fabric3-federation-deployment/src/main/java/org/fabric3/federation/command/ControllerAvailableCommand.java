@@ -41,7 +41,7 @@ import org.fabric3.spi.command.Command;
 
 /**
  * Announces the availability of a controller in the domain. Controllers announce availability after they have joined the domain and performed
- * recovery.
+ * recovery. After a controller has become available, participants may query it for deployment updates.
  *
  * @version $Rev$ $Date$
  */

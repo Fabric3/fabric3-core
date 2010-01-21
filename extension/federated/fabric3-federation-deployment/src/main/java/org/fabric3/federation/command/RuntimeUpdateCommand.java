@@ -35,38 +35,48 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.topology;
+package org.fabric3.federation.command;
+
+import java.io.Serializable;
+
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Represents a domain zone. A domain consists of one or more zones, which are partitions of homogenous runtimes. A zone may contain one or more
- * runtimes. A zone elects one member a leader, which is responsible for communicating with the domain controller.
+ * Sent by participant to receive deployment updates. The participant may send the update request to a controller or another zone member (typically
+ * the zone leader).
  *
  * @version $Rev$ $Date$
  */
-public class Zone {
-    private String name;
+public class RuntimeUpdateCommand implements ResponseCommand {
+    private static final long serialVersionUID = 1705187909349921487L;
+    private String runtimeName;
+    private String zoneName;
+    private byte[] checksum;
+    private Serializable response;
 
-    public Zone(String name) {
-        this.name = name;
+    public RuntimeUpdateCommand(String runtimeName, String zoneName, byte[] checksum) {
+        this.runtimeName = runtimeName;
+        this.zoneName = zoneName;
+        this.checksum = checksum;
     }
 
-    public String getName() {
-        return name;
+    public String getRuntimeName() {
+        return runtimeName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Zone zone = (Zone) o;
-
-        return !(name != null ? !name.equals(zone.name) : zone.name != null);
-
+    public String getZoneName() {
+        return zoneName;
     }
 
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+    public byte[] getChecksum() {
+        return checksum;
+    }
+
+    public Serializable getResponse() {
+        return response;
+    }
+
+    public void setResponse(Serializable response) {
+        this.response = response;
     }
 }

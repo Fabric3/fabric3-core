@@ -56,7 +56,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.topology.DomainManager;
+import org.fabric3.spi.topology.DomainTopologyService;
 
 /**
  * Creates logical configuration for binding.sca using the HTTP binding.
@@ -68,17 +68,17 @@ public class HttpBindingProvider implements BindingProvider {
     private static final QName HTTP_BINDING = new QName(Constants.SCA_NS, "binding.http");
     private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, HTTP_BINDING);
 
-    private DomainManager domainManager;
+    private DomainTopologyService topologyService;
     private boolean enabled = true;
 
     /**
      * Injects the domain manager. This reference is optional so the extension can be loaded on non-controller instances.
      *
-     * @param domainManager the domain manager
+     * @param topologyService the domain manager
      */
     @Reference(required = false)
-    public void setDomainManager(DomainManager domainManager) {
-        this.domainManager = domainManager;
+    public void setTopologyService(DomainTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @Property(required = false)
@@ -117,7 +117,7 @@ public class HttpBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalWire wire) throws BindingSelectionException {
-        if (domainManager == null) {
+        if (topologyService == null) {
             throw new BindingSelectionException("Domain manager not configured");
         }
         LogicalReference source = wire.getSource().getLeafReference();
@@ -130,7 +130,7 @@ public class HttpBindingProvider implements BindingProvider {
         }
 
         // get the base URL for the target cluster
-        String targetBaseUrl = domainManager.getTransportMetaData(targetZone, String.class, "binding.net.http");
+        String targetBaseUrl = topologyService.getTransportMetaData(targetZone, "binding.net.http");
         if (targetBaseUrl == null) {
             throw new BindingSelectionException("Target HTTP information not found");
         }
@@ -193,7 +193,7 @@ public class HttpBindingProvider implements BindingProvider {
         }
 
         // get the base URL for the source cluster
-        String sourceBaseUrl = domainManager.getTransportMetaData(sourceZone, String.class, "binding.net.http");
+        String sourceBaseUrl = topologyService.getTransportMetaData(sourceZone, "binding.net.http");
         if (sourceBaseUrl == null) {
             throw new BindingSelectionException("Source HTTP information not found");
         }

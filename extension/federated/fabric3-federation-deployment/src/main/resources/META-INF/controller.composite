@@ -25,7 +25,7 @@ Public License. See the accompanying license file for details.
     <wire source="ApplicationDomain/routingService" target="FederatedRoutingService"/>
 
     <component name="ControllerRuntimeSyncCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.executor.ControllerRuntimeSyncCommandExecutor"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.executor.ControllerRuntimeUpdateCommandExecutor"/>
         <reference name="lcm" target="LogicalComponentManager"/>
         <reference name="generator" target="Generator"/>
     </component>

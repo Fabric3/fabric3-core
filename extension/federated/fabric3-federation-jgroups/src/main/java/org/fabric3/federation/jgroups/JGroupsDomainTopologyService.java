@@ -39,7 +39,9 @@ package org.fabric3.federation.jgroups;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
@@ -48,11 +50,14 @@ import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.JChannel;
+import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
+import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.util.UUID;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -60,6 +65,8 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.ControllerAvailableCommand;
+import org.fabric3.federation.command.ZoneMetadataResponse;
+import org.fabric3.federation.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -71,9 +78,10 @@ import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.MessageTimeoutException;
 import org.fabric3.spi.topology.RuntimeInstance;
-import org.fabric3.spi.topology.Zone;
 
 /**
+ * JGroups implementation of the {@link DomainTopologyService}.
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -82,7 +90,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
-    private long defaultTimeout = 3000;
+    private long defaultTimeout = 10000;
+    private View previousView;
+    private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
 
     public JGroupsDomainTopologyService(@Reference HostInfo info,
                                         @Reference CommandExecutorRegistry executorRegistry,
@@ -108,8 +118,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
         Fabric3MessageListener domainMessageListener = new Fabric3MessageListener();
         Fabric3RequestHandler domainRequestHandler = new Fabric3RequestHandler();
+        DomainMembershipListener membershipListener = new DomainMembershipListener();
 
-        dispatcher = new MessageDispatcher(domainChannel, domainMessageListener, null, domainRequestHandler);
+        dispatcher = new MessageDispatcher(domainChannel, domainMessageListener, membershipListener, domainRequestHandler);
 
         // setup runtime notifications
         joinListener = new JoinEventListener();
@@ -119,20 +130,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         eventService.subscribe(RuntimeStop.class, stopListener);
     }
 
-    public List<Zone> getZones() {
-        Address controller = domainChannel.getAddress();
-        List<Zone> zones = new ArrayList<Zone>();
-        Vector<Address> members = domainChannel.getView().getMembers();
-        for (Address member : members) {
-            if (!member.equals(controller)) {
-                String zoneName = helper.getZoneName(member);
-                Zone zone = new Zone(zoneName);
-                if (!zones.contains(zone)) {
-                    zones.add(zone);
-                }
-            }
-        }
-        return zones;
+    public List<String> getZones() {
+        View view = domainChannel.getView();
+        return getZones(view);
     }
 
     public List<RuntimeInstance> getRuntimes() {
@@ -145,7 +145,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return runtimes;
     }
 
-    public <T> T getTransportMetaData(String zone, Class<T> type, String transport) {
+    public String getTransportMetaData(String zone, String transport) {
+        Map<String, String> zoneCache = transportMetadata.get(zone);
+        if (zoneCache != null) {
+            return zoneCache.get(transport);
+        }
         return null;
     }
 
@@ -225,6 +229,51 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return domainName + ":controller:" + runtimeId;
     }
 
+    /**
+     * Returns a list of zones in the given view
+     *
+     * @param view the view
+     * @return the list of zones
+     */
+    private List<String> getZones(View view) {
+        Address controller = domainChannel.getAddress();
+        List<String> zones = new ArrayList<String>();
+        Vector<Address> members = view.getMembers();
+        for (Address member : members) {
+            if (!member.equals(controller)) {
+                String zoneName = helper.getZoneName(member);
+                if (zoneName != null && !zones.contains(zoneName)) {
+                    zones.add(zoneName);
+                }
+            }
+        }
+        return zones;
+    }
+
+    /**
+     * Returns the list of new zones that came online from the previous view
+     *
+     * @param newView the new view
+     * @return the new zones
+     */
+    private List<Address> getNewZoneLeaders(View newView) {
+        final List<Address> newZoneLeaders = new ArrayList<Address>();
+        for (Address address : newView.getMembers()) {
+            if (previousView == null) {
+                String zone = helper.getZoneName(address);
+                if (zone != null && address.equals(helper.getZoneLeader(zone, newView))) {
+                    newZoneLeaders.add(address);
+                }
+            } else if (!previousView.getMembers().contains(address)) {
+                String zone = helper.getZoneName(address);
+                if (zone != null && address.equals(helper.getZoneLeader(zone, newView))) {
+                    newZoneLeaders.add(address);
+                }
+            }
+        }
+        return newZoneLeaders;
+    }
+
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
@@ -232,8 +281,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 domainChannel.connect(domainName);
                 dispatcher.start();
             } catch (ChannelException e) {
-                // TODO log error
-                e.printStackTrace();
+                monitor.error("Error joining the domain", e);
             }
         }
     }
@@ -251,12 +299,69 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
         public void onEvent(RuntimeStart event) {
             try {
-                byte[] payload = helper.serialize(new ControllerAvailableCommand((runtimeName)));
+                // broadcast availability
+                ControllerAvailableCommand command = new ControllerAvailableCommand(runtimeName);
+                byte[] payload = helper.serialize(command);
+                monitor.broadcastAvailability();
                 broadcastMessage(payload);
             } catch (MessageException e) {
-                // TODO log error
-                e.printStackTrace();
+                monitor.error("Error broadcasting availability", e);
             }
+        }
+    }
+
+    /**
+     * Membership listener that tracks transport metadata for zones in the domain.
+     */
+    private class DomainMembershipListener implements MembershipListener {
+
+        public void viewAccepted(View newView) {
+            // Send a ZoneMetadataUpdateCommand to any new zone leaders. Note that this must be done in a separate thread.
+            final List<Address> newZoneLeaders = getNewZoneLeaders(newView);
+            if (newZoneLeaders.isEmpty()) {
+                return;
+            }
+            previousView = newView;
+            executor.execute(new Runnable() {
+
+                public void run() {
+                    try {
+                        byte[] payload = helper.serialize(new ZoneMetadataUpdateCommand());
+                        for (Address address : newZoneLeaders) {
+                            String name = UUID.get(address);
+                            monitor.metadataUpdateRequest(name);
+                            byte[] value = sendSynchronousMessage(name, payload, defaultTimeout);
+                            ZoneMetadataResponse response = (ZoneMetadataResponse) helper.deserialize(value);
+                            transportMetadata.put(response.getZone(), response.getMetadata());
+                        }
+                    } catch (MessageException e) {
+                        monitor.error("Error requesting zone metadata", e);
+                    }
+                }
+            });
+
+
+        }
+
+        public void suspect(Address suspected) {
+            String name = helper.getZoneName(suspected);
+            if (name == null) {
+                return;
+            }
+            monitor.runtimeRemoved(UUID.get(suspected));
+            // Member is suspected. If it is a zone leader, remove the metadata from the cache
+            View view = domainChannel.getView();
+            if (view == null) {
+                return;
+            }
+            if (suspected.equals(helper.getZoneLeader(name, view))) {
+                transportMetadata.remove(name);
+            }
+
+        }
+
+        public void block() {
+            // no-op
         }
     }
 

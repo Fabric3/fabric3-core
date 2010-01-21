@@ -55,7 +55,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.spi.topology.DomainManager;
+import org.fabric3.spi.topology.DomainTopologyService;
 
 /**
  * @version $Rev$ $Date$
@@ -90,26 +90,26 @@ public class TargetUrlResolverImplTestCase extends TestCase {
     }
 
     public void testClusterVMHttp() throws Exception {
-        DomainManager domainManager = EasyMock.createMock(DomainManager.class);
-        EasyMock.expect(domainManager.getTransportMetaData("1", String.class, "http")).andReturn("clusteraddress:8080");
-        EasyMock.replay(domainManager);
+        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
+        EasyMock.expect(topologyService.getTransportMetaData("1", "http")).andReturn("clusteraddress:8080");
+        EasyMock.replay(topologyService);
 
         EffectivePolicy policy = createPolicy();
 
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, domainManager);
+        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, topologyService);
 
         URL url = resolver.resolveUrl(binding, policy);
         assertEquals("http://clusteraddress:8080/service", url.toString());
     }
 
     public void testClusterVMHttps() throws Exception {
-        DomainManager domainManager = EasyMock.createMock(DomainManager.class);
-        EasyMock.expect(domainManager.getTransportMetaData("1", String.class, "https")).andReturn("clusteraddress:8989");
-        EasyMock.replay(domainManager);
+        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
+        EasyMock.expect(topologyService.getTransportMetaData("1", "https")).andReturn("clusteraddress:8989");
+        EasyMock.replay(topologyService);
 
         EffectivePolicy policy = createSecurityPolicy();
 
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, domainManager);
+        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, topologyService);
 
         URL url = resolver.resolveUrl(binding, policy);
         assertEquals("https://clusteraddress:8989/service", url.toString());

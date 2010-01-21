@@ -35,47 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.executor;
 
-import java.io.Serializable;
-
-import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.api.annotation.logging.Info;
 
 /**
- * A command issued by a participant to synchronize with the domain.
- *
  * @version $Rev$ $Date$
  */
-public class RuntimeSyncCommand implements ResponseCommand {
-    private static final long serialVersionUID = 1705187909349921487L;
-    private String runtimeName;
-    private String zoneName;
-    private byte[] checksum;
-    private Serializable response;
+public interface RuntimeUpdateMonitor {
 
-    public RuntimeSyncCommand(String runtimeName, String zoneName, byte[] checksum) {
-        this.runtimeName = runtimeName;
-        this.zoneName = zoneName;
-        this.checksum = checksum;
-    }
+    /**
+     * Callback when an update request is received from a runtime.
+     *
+     * @param id the runtime id.
+     */
+    @Info
+    void updateRequest(String id);
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
-    public String getZoneName() {
-        return zoneName;
-    }
-
-    public byte[] getChecksum() {
-        return checksum;
-    }
-
-    public Serializable getResponse() {
-        return response;
-    }
-
-    public void setResponse(Serializable response) {
-        this.response = response;
-    }
 }

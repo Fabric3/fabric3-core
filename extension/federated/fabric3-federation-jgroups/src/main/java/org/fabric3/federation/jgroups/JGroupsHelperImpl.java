@@ -115,9 +115,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         String name = UUID.get(address);
         int pos = name.indexOf(":participant:");
         if (pos < 0) {
-            throw new IllegalArgumentException("Runtime is not a participant: " + name);
+            return null;
         }
-        return name.substring(pos + 13);
+        return name.substring(pos + 13, name.lastIndexOf(":"));
     }
 
     public Address getRuntimeAddress(String runtimeName, View view) {

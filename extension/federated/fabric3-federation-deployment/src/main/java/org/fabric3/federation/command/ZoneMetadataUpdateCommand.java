@@ -35,15 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.topology;
+package org.fabric3.federation.command;
+
+import java.io.Serializable;
+
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Represents the
+ * Sent by a controller to a zone leader to obtain transport metadata. A request is sent to existing zone leaders when a controller joins the domain.
+ * This occurs when a controller is activated after a zone leader.
  *
  * @version $Rev$ $Date$
  */
-public interface RuntimeService {
+public class ZoneMetadataUpdateCommand implements ResponseCommand {
+    private static final long serialVersionUID = -4288029718584274415L;
+    private ZoneMetadataResponse response;
 
-    String getRuntimeName();
+    public void setResponse(ZoneMetadataResponse response) {
+        this.response = response;
+    }
 
+    public Serializable getResponse() {
+        return response;
+    }
 }

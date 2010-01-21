@@ -35,21 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.command;
 
-import org.fabric3.api.annotation.logging.Info;
+import java.util.Map;
+
+import org.fabric3.spi.command.Command;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 8589 $ $Date: 2010-01-20 09:52:59 -0800 (Wed, 20 Jan 2010) $
  */
-public interface RuntimeSyncMonitor {
+public class ZoneMetadataResponse implements Command {
+    private static final long serialVersionUID = -4288029718584274415L;
+
+    private String zone;
+    private Map<String, String> metadata;
 
     /**
-     * Callback when a sync command is received from a runtime.
+     * Constructor.
      *
-     * @param id the runtime id.
+     * @param zone     the zone name
+     * @param metadata the metadata
      */
-    @Info
-    void receivedSyncRequest(String id);
+    public ZoneMetadataResponse(String zone, Map<String, String> metadata) {
+        this.zone = zone;
+        this.metadata = metadata;
+    }
 
+    /**
+     * Returns the zone name.
+     *
+     * @return the zone name
+     */
+    public String getZone() {
+        return zone;
+    }
+
+    /**
+     * The zone transport metadata keyed by transport type.
+     *
+     * @return the zone transport metadata
+     */
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
 }

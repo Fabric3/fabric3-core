@@ -42,7 +42,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.RuntimeSyncCommand;
+import org.fabric3.federation.command.RuntimeUpdateCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -50,19 +50,19 @@ import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.ZoneTopologyService;
 
 /**
- * Processes a {@link RuntimeSyncCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
+ * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
  *
  * @version $Rev: 7826 $ $Date: 2009-11-14 13:32:05 +0100 (Sat, 14 Nov 2009) $
  */
 @EagerInit
-public class RuntimeSyncCommandExecutor implements CommandExecutor<RuntimeSyncCommand> {
+public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {
     private ZoneTopologyService topologyService;
     private CommandExecutorRegistry executorRegistry;
-    private RuntimeSyncMonitor monitor;
+    private RuntimeUpdateMonitor monitor;
 
-    public RuntimeSyncCommandExecutor(@Reference ZoneTopologyService topologyService,
+    public RuntimeUpdateCommandExecutor(@Reference ZoneTopologyService topologyService,
                                       @Reference CommandExecutorRegistry executorRegistry,
-                                      @Monitor RuntimeSyncMonitor monitor) {
+                                      @Monitor RuntimeUpdateMonitor monitor) {
         this.topologyService = topologyService;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;
@@ -70,12 +70,12 @@ public class RuntimeSyncCommandExecutor implements CommandExecutor<RuntimeSyncCo
 
     @Init
     public void init() {
-        executorRegistry.register(RuntimeSyncCommand.class, this);
+        executorRegistry.register(RuntimeUpdateCommand.class, this);
     }
 
-    public void execute(RuntimeSyncCommand command) throws ExecutionException {
+    public void execute(RuntimeUpdateCommand command) throws ExecutionException {
         String runtime = command.getRuntimeName();
-        monitor.receivedSyncRequest(runtime);
+        monitor.updateRequest(runtime);
         // TODO pull from cache
         byte[] response = null;
         try {

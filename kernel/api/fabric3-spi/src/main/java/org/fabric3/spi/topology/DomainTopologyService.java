@@ -51,7 +51,7 @@ public interface DomainTopologyService {
      *
      * @return the active zones in the domain or an empty list if none are active
      */
-    List<Zone> getZones();
+    List<String> getZones();
 
     /**
      * Returns the active runtimes in the domain.
@@ -64,11 +64,10 @@ public interface DomainTopologyService {
      * Returns transport information such as port numbers in effect for a zone.
      *
      * @param zone      the zone
-     * @param type      the type representing the transport information
      * @param transport the transport name
      * @return the transport information or null if not found
      */
-    <T> T getTransportMetaData(String zone, Class<T> type, String transport);
+    String getTransportMetaData(String zone, String transport);
 
     /**
      * Sends a message asynchronously to all runtimes in the domain.

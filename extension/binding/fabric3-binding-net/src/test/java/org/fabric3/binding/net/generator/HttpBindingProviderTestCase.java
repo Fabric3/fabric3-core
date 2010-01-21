@@ -45,13 +45,13 @@ import org.easymock.EasyMock;
 import org.fabric3.binding.net.model.HttpBindingDefinition;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.topology.DomainManager;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.topology.DomainTopologyService;
 
 /**
  * @version $Rev$ $Date$
@@ -100,14 +100,14 @@ public class HttpBindingProviderTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        DomainManager manager = EasyMock.createMock(DomainManager.class);
-        manager.getTransportMetaData("zone2", String.class, "binding.net.http");
+        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
+        topologyService.getTransportMetaData("zone2", "binding.net.http");
         EasyMock.expectLastCall().andReturn("localhost:8082");
-        manager.getTransportMetaData("zone1", String.class, "binding.net.http");
+        topologyService.getTransportMetaData("zone1", "binding.net.http");
         EasyMock.expectLastCall().andReturn("localhost:8081");
-        EasyMock.replay(manager);
+        EasyMock.replay(topologyService);
         bindingProvider = new HttpBindingProvider();
-        bindingProvider.setDomainManager(manager);
+        bindingProvider.setTopologyService(topologyService);
     }
 
 }

@@ -48,7 +48,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.spi.topology.DomainManager;
+import org.fabric3.spi.topology.DomainTopologyService;
 
 /**
  * Default implementation of TargetUrlResolver.
@@ -56,19 +56,19 @@ import org.fabric3.spi.topology.DomainManager;
  * @version $Rev$ $Date$
  */
 public class TargetUrlResolverImpl implements TargetUrlResolver {
-    private DomainManager domainManager;
+    private DomainTopologyService topologyService;
     private ServletHost servletHost;
 
     /**
      * Constructor.
      *
      * @param servletHost   the servlet host, used for determining the endpoint port  in a single-VM environment
-     * @param domainManager the optional domain manager, used for determining the endpoint address and port in a multi-VM environment. The reference
+     * @param topologyService the optional domain manager, used for determining the endpoint address and port in a multi-VM environment. The reference
      *                      is optional since a domain manager will not be present in a single-VM environment.
      */
-    public TargetUrlResolverImpl(@Reference ServletHost servletHost, @Reference(required = false) DomainManager domainManager) {
+    public TargetUrlResolverImpl(@Reference ServletHost servletHost, @Reference(required = false) DomainTopologyService topologyService) {
         this.servletHost = servletHost;
-        this.domainManager = domainManager;
+        this.topologyService = topologyService;
     }
 
     public URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding, EffectivePolicy policy) throws GenerationException {
@@ -79,14 +79,14 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
                 path = serviceBinding.getParent().getUri().getFragment();
             }
             boolean https = requiresHttps(policy);
-            if (domainManager != null) {
+            if (topologyService != null) {
                 // distributed domain, get the remote node HTTP/S information
                 String zone = serviceBinding.getParent().getParent().getZone();
                 if (https) {
-                    String base = domainManager.getTransportMetaData(zone, String.class, "https");
+                    String base = topologyService.getTransportMetaData(zone, "https");
                     targetUrl = new URL("https://" + base + "/" + path);
                 } else {
-                    String base = domainManager.getTransportMetaData(zone, String.class, "http");
+                    String base = topologyService.getTransportMetaData(zone, "http");
                     targetUrl = new URL("http://" + base + "/" + path);
                 }
             } else {

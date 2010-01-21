@@ -48,8 +48,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.RuntimeSyncCommand;
 import org.fabric3.federation.command.DeploymentCommand;
+import org.fabric3.federation.command.RuntimeUpdateCommand;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
@@ -65,21 +65,21 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Processes a {@link RuntimeSyncCommand} on the controller by regenerating deployment commands for the current state of the zone.
+ * Processes a {@link RuntimeUpdateCommand} on the controller by regenerating deployment commands for the current state of the zone.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ControllerRuntimeSyncCommandExecutor implements CommandExecutor<RuntimeSyncCommand> {
+public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {
     private CommandExecutorRegistry executorRegistry;
-    private RuntimeSyncMonitor monitor;
+    private RuntimeUpdateMonitor monitor;
     private LogicalComponentManager lcm;
     private Generator generator;
 
-    public ControllerRuntimeSyncCommandExecutor(@Reference(name = "lcm") LogicalComponentManager lcm,
-                                                @Reference(name = "generator") Generator generator,
-                                                @Reference CommandExecutorRegistry executorRegistry,
-                                                @Monitor RuntimeSyncMonitor monitor) {
+    public ControllerRuntimeUpdateCommandExecutor(@Reference(name = "lcm") LogicalComponentManager lcm,
+                                                  @Reference(name = "generator") Generator generator,
+                                                  @Reference CommandExecutorRegistry executorRegistry,
+                                                  @Monitor RuntimeUpdateMonitor monitor) {
         this.lcm = lcm;
         this.generator = generator;
         this.executorRegistry = executorRegistry;
@@ -88,12 +88,12 @@ public class ControllerRuntimeSyncCommandExecutor implements CommandExecutor<Run
 
     @Init
     public void init() {
-        executorRegistry.register(RuntimeSyncCommand.class, this);
+        executorRegistry.register(RuntimeUpdateCommand.class, this);
     }
 
-    public void execute(RuntimeSyncCommand command) throws ExecutionException {
+    public void execute(RuntimeUpdateCommand command) throws ExecutionException {
         try {
-            monitor.receivedSyncRequest(command.getRuntimeName());
+            monitor.updateRequest(command.getRuntimeName());
             ZoneCommands commands = regenerate(command.getZoneName());
             List<Command> extensionCommands = commands.getExtensionCommands();
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);

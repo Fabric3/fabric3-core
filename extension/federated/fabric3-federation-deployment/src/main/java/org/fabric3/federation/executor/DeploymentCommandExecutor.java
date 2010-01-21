@@ -60,7 +60,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes a DeploymentCommand.
+ * Processes a {@link DeploymentCommand} on a participant.
  *
  * @version $Rev$ $Date$
  */
@@ -88,7 +88,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
 
     public void execute(DeploymentCommand command) throws ExecutionException {
         monitor.receivedDeployment();
-        // execute the extension commands first before deserializing the other commands as they may contain extension-specific metadata classes
+        // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         try {
             byte[] serializedExtensionCommands = command.getExtensionCommands();
             List<Command> extensionCommands = deserialize(serializedExtensionCommands);

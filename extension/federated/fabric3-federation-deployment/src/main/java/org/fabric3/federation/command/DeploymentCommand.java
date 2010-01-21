@@ -42,7 +42,8 @@ import java.io.Serializable;
 import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Aggregates a set of commands for a deployment. A deployment
+ * Broadcast by the controller to deploy a composite to all members in a zone.  Aggregates the set of commands to deploy the composite as well as
+ * required extensions.
  *
  * @version $Rev$ $Date$
  */

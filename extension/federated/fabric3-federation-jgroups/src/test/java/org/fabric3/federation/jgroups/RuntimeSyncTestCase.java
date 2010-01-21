@@ -42,7 +42,7 @@ import org.easymock.IAnswer;
 import org.jgroups.ChannelException;
 
 import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.RuntimeSyncCommand;
+import org.fabric3.federation.command.RuntimeUpdateCommand;
 
 /**
  * @version $Rev: 8584 $ $Date: 2010-01-16 20:18:48 +0100 (Sat, 16 Jan 2010) $
@@ -50,10 +50,10 @@ import org.fabric3.federation.command.RuntimeSyncCommand;
 public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
 
     public void _testControllerSync() throws Exception {
-        executorRegistry.execute(EasyMock.isA(RuntimeSyncCommand.class));
+        executorRegistry.execute(EasyMock.isA(RuntimeUpdateCommand.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
+                RuntimeUpdateCommand command = (RuntimeUpdateCommand) EasyMock.getCurrentArguments()[0];
                 DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
                 command.setResponse(deploymentCommand);
                 return null;
@@ -77,10 +77,10 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
     }
 
     public void _testZoneLeaderSync() throws Exception {
-        executorRegistry.execute(EasyMock.isA(RuntimeSyncCommand.class));
+        executorRegistry.execute(EasyMock.isA(RuntimeUpdateCommand.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                RuntimeSyncCommand command = (RuntimeSyncCommand) EasyMock.getCurrentArguments()[0];
+                RuntimeUpdateCommand command = (RuntimeUpdateCommand) EasyMock.getCurrentArguments()[0];
                 DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
                 command.setResponse(deploymentCommand);
                 return null;

@@ -82,7 +82,7 @@ public interface JGroupsHelper {
      * Returns the name of the zone the runtime is a member of.
      *
      * @param address the runtime address
-     * @return the zone name
+     * @return the zone name or null if the runtime is not part of a zone (e.g. it is a controller)
      */
     String getZoneName(Address address);
 

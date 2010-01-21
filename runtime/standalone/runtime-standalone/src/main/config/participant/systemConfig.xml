@@ -4,8 +4,10 @@
     </web.server>
     <federation>
         <transport>
-            <http>localhost:8181</http>
-            <binding.net.http>localhost:8282</binding.net.http>
+            <value>
+                <entry><key>http</key><value>localhost:8181</value></entry>
+                <entry><key>binding.net.http</key><value>localhost:8282</value></entry>
+            </value>
         </transport>
     </federation>
 </config>

@@ -38,6 +38,7 @@
 package org.fabric3.federation.jgroups;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -49,6 +50,7 @@ import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.JChannel;
+import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
@@ -65,7 +67,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.ControllerAvailableCommand;
-import org.fabric3.federation.command.RuntimeSyncCommand;
+import org.fabric3.federation.command.RuntimeUpdateCommand;
+import org.fabric3.federation.command.ZoneMetadataResponse;
+import org.fabric3.federation.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.event.EventService;
@@ -84,17 +88,20 @@ import org.fabric3.spi.topology.ZoneTopologyService;
  */
 @EagerInit
 public class JGroupsZoneTopologyService extends AbstractTopologyService implements ZoneTopologyService {
-    private static final int UNSYNCHRONIZED = -1;
-    private static final int SYNCHRONIZED = 1;
+    private static final int NOT_UPDATED = -1;
+    private static final int UPDATED = 1;
 
     private String zoneName = "default.zone";
-    private long defaultTimeout = 3000;
+    private long defaultTimeout = 10000;
+    private Map<String, String> transportMetadata = new HashMap<String, String>();
     private Channel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
     private Fabric3EventListener<RuntimeStop> stopListener;
     private MessageDispatcher domainDispatcher;
     private boolean synchronize = true;
-    private int state = UNSYNCHRONIZED;
+    private final Object viewLock = new Object();
+
+    private int state = NOT_UPDATED;
 
     public JGroupsZoneTopologyService(@Reference HostInfo info,
                                       @Reference CommandExecutorRegistry executorRegistry,
@@ -120,9 +127,16 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         this.synchronize = synchronize;
     }
 
+    @Property(required = false)
+    public void setTransportMetadata(Map<String, String> transportMetadata) {
+        this.transportMetadata = transportMetadata;
+    }
+
     @Init
     public void init() throws ChannelException {
         super.init();
+        ZoneMetadataUpdateCommandExecutor metadataExecutor = new ZoneMetadataUpdateCommandExecutor();
+        executorRegistry.register(ZoneMetadataUpdateCommand.class, metadataExecutor);
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
         executorRegistry.register(ControllerAvailableCommand.class, executor);
         domainChannel = new JChannel();
@@ -132,7 +146,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
         Fabric3MessageListener messageListener = new Fabric3MessageListener();
         Fabric3RequestHandler requestHandler = new Fabric3RequestHandler();
-        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, null, requestHandler);
+        ZoneMemberListener memberListener = new ZoneMemberListener();
+        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, memberListener, requestHandler);
     }
 
     public void broadcastMessage(byte[] payload) throws MessageException {
@@ -231,13 +246,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     /**
-     * Synchronizes the runtime with the domain when a {@link JoinDomain} event is received. Synchronization attempts to deploy the composites
-     * targeted to a zone by executing deployment commands returned from the controller. The zone leader (i.e. oldest runtime in the zone) is queried
-     * for the deployment commands. If the zone leader is unavailable or has not synchronized, the controller is queried.
+     * Attempts to update the runtime with the current set of deployments for the zone. The zone leader (i.e. oldest runtime in the zone) is queried
+     * for the deployment commands. If the zone leader is unavailable or has not been updated, the controller is queried.
      *
      * @throws MessageException if an error is encountered during synchronization
      */
-    private void synchronize() throws MessageException {
+    private void update() throws MessageException {
         // send the sync request
         View view = domainChannel.getView();
         Address address = helper.getZoneLeader(zoneName, view);
@@ -248,22 +262,23 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         address = helper.getController(view);
         if (address == null) {
             // controller is not present
+            monitor.updateDeferred();
             return;
         }
         String controllerName = UUID.get(address);
-        monitor.synchronizing(controllerName);
-        RuntimeSyncCommand commmand = new RuntimeSyncCommand(runtimeName, zoneName, null);
+        monitor.updating(controllerName);
+        RuntimeUpdateCommand commmand = new RuntimeUpdateCommand(runtimeName, zoneName, null);
         byte[] serialized = helper.serialize(commmand);
         byte[] response = send(address, serialized, defaultTimeout);
         Command command = (Command) helper.deserialize(response);
         // mark synchronized here to avoid multiple retries in case a deployment error is encountered
-        state = SYNCHRONIZED;
+        state = UPDATED;
         try {
             executorRegistry.execute(command);
         } catch (ExecutionException e) {
             throw new MessageException(e);
         }
-        monitor.completedSync();
+        monitor.updated();
     }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
@@ -272,13 +287,25 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             try {
                 domainChannel.connect(domainName);
                 domainDispatcher.start();
+                monitor.joiningDomain(runtimeName);
                 if (synchronize) {
-                    synchronize();
+                    while (domainChannel.getView() == null) {
+                        try {
+                            // Wait until the first view is available. Notification will happen when the ZoneMemberListener is called on a
+                            // different thread.
+                            viewLock.wait(defaultTimeout);
+                        } catch (InterruptedException e) {
+                            monitor.error("Timeout attempting to join the domain", e);
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                    }
+                    update();
                 }
             } catch (ChannelException e) {
-                // TODO log error
+                monitor.error("Error joining the domain", e);
             } catch (MessageException e) {
-                // TODO log error
+                monitor.error("Error joining the domain", e);
             }
         }
     }
@@ -296,20 +323,44 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-
     private class ControllerAvailableCommandExecutor implements CommandExecutor<ControllerAvailableCommand> {
 
         public void execute(ControllerAvailableCommand command) throws ExecutionException {
-            if (SYNCHRONIZED == state) {
+            if (UPDATED == state) {
                 return;
             }
             try {
-                synchronize();
-                state = SYNCHRONIZED;
+                // A controller is now available and this runtime has not been synchronized. This can happen when the first member in a zone becomes
+                // available before a controller.
+                update();
+                state = UPDATED;
             } catch (MessageException e) {
-                e.printStackTrace();
-                // TODO log exception
+                monitor.error("Error updating the runtime", e);
             }
+        }
+    }
+
+    private class ZoneMetadataUpdateCommandExecutor implements CommandExecutor<ZoneMetadataUpdateCommand> {
+
+        public void execute(ZoneMetadataUpdateCommand command) throws ExecutionException {
+            ZoneMetadataResponse response = new ZoneMetadataResponse(zoneName, transportMetadata);
+            command.setResponse(response);
+        }
+    }
+
+    private class ZoneMemberListener implements MembershipListener {
+        public void viewAccepted(View new_view) {
+            synchronized (viewLock) {
+                viewLock.notifyAll();
+            }
+        }
+
+        public void suspect(Address suspected_mbr) {
+            // no-op
+        }
+
+        public void block() {
+            // no-op
         }
     }
 }
