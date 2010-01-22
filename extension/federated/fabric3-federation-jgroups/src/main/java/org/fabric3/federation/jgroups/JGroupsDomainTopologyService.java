@@ -80,7 +80,7 @@ import org.fabric3.spi.topology.MessageTimeoutException;
 import org.fabric3.spi.topology.RuntimeInstance;
 
 /**
- * JGroups implementation of the {@link DomainTopologyService}.
+ * JGroups implementation of the {@link DomainTopologyService}. 
  *
  * @version $Rev$ $Date$
  */

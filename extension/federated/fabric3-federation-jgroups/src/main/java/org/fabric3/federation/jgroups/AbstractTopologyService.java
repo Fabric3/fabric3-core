@@ -167,16 +167,13 @@ public abstract class AbstractTopologyService {
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
             } catch (MessageException e) {
-                // TODO log
-                e.printStackTrace();
+                monitor.error("Error receiving message from: "+ runtimeName, e);
             } catch (ExecutionException e) {
-                // TODO log
-                e.printStackTrace();
+                monitor.error("Error receiving message from: "+ runtimeName, e);
             }
         }
 
         public byte[] getState() {
-            // TODO implement
             return new byte[0];
         }
 
@@ -198,11 +195,9 @@ public abstract class AbstractTopologyService {
                 Serializable response = command.getResponse();
                 return helper.serialize(response);
             } catch (MessageException e) {
-                // TODO log and return an error response
-                e.printStackTrace();
+                monitor.error("Error handling message from: "+ runtimeName, e);
             } catch (ExecutionException e) {
-                // TODO log and return an error response
-                e.printStackTrace();
+                monitor.error("Error handling message from: "+ runtimeName, e);
             }
             return msg.getBuffer();
         }

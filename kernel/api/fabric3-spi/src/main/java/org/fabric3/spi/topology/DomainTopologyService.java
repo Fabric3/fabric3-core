@@ -40,7 +40,10 @@ package org.fabric3.spi.topology;
 import java.util.List;
 
 /**
- * Responsible for group communications across a domain.
+ * Responsible for group communications across a federated (distributed) domain. Federated communication takes place between the controller
+ * responsible for a domain and participating runtimes, which are partitioned into zones. This service is present only on controller runtimes in a
+ * federated topology and provides low-level communications between a controller and participants. Higher-level communications semantics such as
+ * deployment can be layered over this service.
  *
  * @version $Rev$ $Date$
  */
