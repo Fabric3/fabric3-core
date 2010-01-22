@@ -62,7 +62,6 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.allocator.NoZonesAvailableException;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -128,26 +127,7 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
                     deployables.add(entry.getDeployable());
                 }
             }
-            int i = 0;
-            while (i < 11) {
-                try {
-                    i++;
-                    domain.recover(deployables, plans);
-                    return;
-                } catch (DeploymentException e) {
-                    if (e.getCause() instanceof NoZonesAvailableException) {
-                        // the zones may not have been discovered, retry
-                        try {
-                            monitor.status("No zones found in domain. Waiting...");
-                            Thread.sleep(2000);
-                            continue;
-                        } catch (InterruptedException ex) {
-                            // ignore, assuming this thread is not reused
-                        }
-                    }
-                    throw e;
-                }
-            }
+            domain.recover(deployables, plans);
         } catch (FileNotFoundException e) {
             monitor.error(e);
         } catch (XMLStreamException e) {
