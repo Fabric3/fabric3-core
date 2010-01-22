@@ -30,7 +30,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-            <module>fabric3-install-shoal</module>
             <module>fabric3-federation-allocation</module>
             <module>fabric3-federation-deployment</module>
             <module>fabric3-federation-jgroups</module>
