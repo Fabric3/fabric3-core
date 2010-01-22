@@ -113,6 +113,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
 
     public String getZoneName(Address address) {
         String name = UUID.get(address);
+        if (name == null) {
+            return null;
+        }
         int pos = name.indexOf(":participant:");
         if (pos < 0) {
             return null;
