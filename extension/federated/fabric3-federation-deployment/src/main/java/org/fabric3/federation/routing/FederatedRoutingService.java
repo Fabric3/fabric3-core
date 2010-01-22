@@ -123,7 +123,6 @@ public class FederatedRoutingService implements RoutingService {
                 throw new RoutingException(e);
             }
         }
-
     }
 
     private byte[] serialize(Serializable serializable) throws IOException {
@@ -133,8 +132,6 @@ public class FederatedRoutingService implements RoutingService {
         return bas.toByteArray();
     }
 
-
-    // FIXME duplicate code with DeploymantCommandExecutor
     @SuppressWarnings({"unchecked"})
     private DeploymentResponse deserialize(byte[] commands) throws RoutingException {
         MultiClassLoaderObjectInputStream ois = null;

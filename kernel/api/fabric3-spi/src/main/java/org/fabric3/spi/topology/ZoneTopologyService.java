@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and
- * provides low-level communications between a participant and other runtimes (a participant or controller) . Higher-level communications semantics
+ * provides low-level communications between a participant and other runtimes (a participant or controller). Higher-level communications semantics
  * such as deployment can be layered over this service.
  *
  * @version $Rev$ $Date$
