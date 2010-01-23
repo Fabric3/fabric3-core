@@ -56,7 +56,6 @@ import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.generator.CommandMap;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -86,7 +85,9 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
         sorter = new TopologicalSorterImpl<QName>();
     }
 
-    public Map<String, List<Command>> generate(List<LogicalComponent<?>> components, CommandMap map, boolean incremental) throws GenerationException {
+    public Map<String, List<Command>> generate(List<LogicalComponent<?>> components,
+                                               Map<String, List<Command>> deploymentCommands,
+                                               boolean incremental) throws GenerationException {
         Map<String, List<Command>> commands = new HashMap<String, List<Command>>();
         List<QName> deployables = new ArrayList<QName>();
         for (LogicalComponent<?> component : components) {
@@ -100,7 +101,7 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
             }
         }
         try {
-            sort(commands, map, deployables);
+            sort(commands, deploymentCommands, deployables);
         } catch (GraphException e) {
             throw new GenerationException(e);
         }
@@ -111,15 +112,15 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
     /**
      * Returns the list of commands by zone, creating one if necessary.
      *
-     * @param zone     the zone
-     * @param commands the list of commands maped by zone
+     * @param zone          the zone
+     * @param startCommands the list of commands maped by zone
      * @return the list of commands for a zone
      */
-    private List<Command> getCommands(String zone, Map<String, List<Command>> commands) {
-        List<Command> list = commands.get(zone);
+    private List<Command> getCommands(String zone, Map<String, List<Command>> startCommands) {
+        List<Command> list = startCommands.get(zone);
         if (list == null) {
             list = new ArrayList<Command>();
-            commands.put(zone, list);
+            startCommands.put(zone, list);
         }
         return list;
     }
@@ -127,19 +128,20 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
     /**
      * Sorts the start context commands by the order of the deployable contexts.
      *
-     * @param commands    the start context commands
-     * @param map         the sorted map of zone id to ordered list of start context commands
-     * @param deployables the list of deployables
+     * @param startCommands      the start context commands
+     * @param deploymentCommands the current deployment commands
+     * @param deployables        the list of deployables
      * @throws GraphException if an error occurs building the graph used to calculatre order occurs
      */
-    private void sort(Map<String, List<Command>> commands, CommandMap map, List<QName> deployables) throws GraphException {
-        for (Map.Entry<String, List<Command>> entry : map.getCommands().entrySet()) {
+    private void sort(Map<String, List<Command>> startCommands, Map<String, List<Command>> deploymentCommands, List<QName> deployables)
+            throws GraphException {
+        for (Map.Entry<String, List<Command>> entry : deploymentCommands.entrySet()) {
             Map<QName, Integer> order = calculateDeployableOrder(entry.getValue(), deployables);
             if (order.isEmpty()) {
                 return;
             }
             ContextComparator comparator = new ContextComparator(order);
-            List<Command> list = commands.get(entry.getKey());
+            List<Command> list = startCommands.get(entry.getKey());
             if (list == null) {
                 // no commands for zone
                 return;

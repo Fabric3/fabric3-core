@@ -163,7 +163,7 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
-import org.fabric3.spi.generator.CommandGenerator;
+import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -355,7 +355,7 @@ public class BootstrapAssemblyFactory {
                 new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
         generators.put(JavaContributionWire.class, javaGenerator);
         generators.put(LocationContributionWire.class, locationGenerator);
-        ClassLoaderCommandGenerator classLoaderCommandGenerator = new ClassLoaderCommandGeneratorImpl(generators);
+        ClassLoaderCommandGenerator classLoaderGenerator = new ClassLoaderCommandGeneratorImpl(generators);
 
         List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
         commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, 1));
@@ -366,7 +366,7 @@ public class BootstrapAssemblyFactory {
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
         ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
-        return new GeneratorImpl(commandGenerators, collator, classLoaderCommandGenerator, startContextGenerator, stopContextGenerator);
+        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, startContextGenerator, stopContextGenerator);
     }
 
     @SuppressWarnings({"unchecked"})

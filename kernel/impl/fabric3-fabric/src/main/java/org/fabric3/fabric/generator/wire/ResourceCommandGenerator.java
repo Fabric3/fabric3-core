@@ -42,7 +42,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
-import org.fabric3.spi.generator.CommandGenerator;
+import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

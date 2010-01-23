@@ -65,8 +65,8 @@ import org.fabric3.spi.command.Command;
 import org.fabric3.spi.domain.RoutingException;
 import org.fabric3.spi.domain.RoutingMonitor;
 import org.fabric3.spi.domain.RoutingService;
-import org.fabric3.spi.generator.CommandMap;
-import org.fabric3.spi.generator.ZoneCommands;
+import org.fabric3.spi.generator.Deployment;
+import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 
@@ -96,14 +96,14 @@ public class FederatedRoutingService implements RoutingService {
         this.timeout = timeout;
     }
 
-    public void route(CommandMap commandMap) throws RoutingException {
-        for (String zone : commandMap.getZones()) {
+    public void route(Deployment deployment) throws RoutingException {
+        for (String zone : deployment.getZones()) {
             try {
                 monitor.routeCommands(zone);
-                ZoneCommands zoneCommands = commandMap.getZoneCommands(zone);
-                List<Command> extensionCommands = zoneCommands.getExtensionCommands();
+                DeploymentUnit deploymentUnit = deployment.getDeploymentUnit(zone);
+                List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
                 byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-                List<Command> commands = zoneCommands.getCommands();
+                List<Command> commands = deploymentUnit.getCommands();
                 byte[] serializedCommands = serialize((Serializable) commands);
                 Command command = new DeploymentCommand(serializedExtensionCommands, serializedCommands);
                 ByteArrayOutputStream bas = new ByteArrayOutputStream();

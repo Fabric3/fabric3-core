@@ -43,32 +43,72 @@
  */
 package org.fabric3.spi.generator;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Generates a Command that must be applied to a zone based on changes to a logical component.
+ * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A
+ * DeploymentUnit is composed of 1..N {@link Command}s, which are executed on a participant runtime to perform tasks such as creating a component or
+ * wire.
  *
  * @version $Rev$ $Date$
  */
-public interface CommandGenerator {
+public class Deployment {
+    private String id;
 
-    /**
-     * Gets the order the command generator should be called in.
-     *
-     * @return an ascending  value where 0 is first
-     */
-    int getOrder();
+    private Map<String, DeploymentUnit> units = new HashMap<String, DeploymentUnit>();
 
-    /**
-     * Generates a command based on the contents of a logical component
-     *
-     * @param logicalComponent the logical component to generate the command from
-     * @param incremental      true if generation should be incremental, i.e. commands are only generated for new components as opposed to existing
-     *                         ones
-     * @return the generated command or null if no changes were detected
-     * @throws GenerationException if an error occurs during generation
-     */
-    Command generate(LogicalComponent<?> logicalComponent, boolean incremental) throws GenerationException;
+    public Deployment(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void addExtensionCommand(String zone, Command command) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addExtensionCommand(command);
+    }
+
+    public void addExtensionCommands(String zone, List<Command> commands) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addExtensionCommands(commands);
+    }
+
+    public void addCommand(String zone, Command command) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addCommand(command);
+    }
+
+    public void addCommands(String zone, List<Command> commands) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addCommands(commands);
+    }
+
+    public Set<String> getZones() {
+        return units.keySet();
+    }
+
+    public DeploymentUnit getDeploymentUnit(String zone) {
+        DeploymentUnit unit = units.get(zone);
+        if (unit == null) {
+            unit = new DeploymentUnit();
+            units.put(zone, unit);
+        }
+        return unit;
+    }
+
+    public Map<String, List<Command>> getCommands() {
+        Map<String, List<Command>> ret = new HashMap<String, List<Command>>();
+        for (Map.Entry<String, DeploymentUnit> entry : units.entrySet()) {
+            ret.put(entry.getKey(), entry.getValue().getCommands());
+        }
+        return ret;
+    }
 
 }

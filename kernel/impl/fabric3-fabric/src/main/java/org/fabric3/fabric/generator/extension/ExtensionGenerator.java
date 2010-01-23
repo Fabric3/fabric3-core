@@ -43,7 +43,6 @@ import java.util.Map;
 import org.fabric3.fabric.generator.GenerationType;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.generator.CommandMap;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
@@ -57,15 +56,15 @@ public interface ExtensionGenerator {
     /**
      * Generates the un/provision commands.
      *
-     * @param contributions the contributions being deployed or undeployed
-     * @param components    the components being deployed or undeployed
-     * @param commandMap    the CommandMap being generated
-     * @param type          the generation type being performed
-     * @return the provision commands keyed by zone
+     * @param contributions      the contributions being deployed or undeployed
+     * @param components         the components being deployed or undeployed
+     * @param deploymentCommands the current deployment commands
+     * @param type               the generation type being performed (full, incremental, undeploy)
+     * @return the extension deployment commands keyed by zone
      * @throws GenerationException if an error occurs generating the commands
      */
     Map<String, Command> generate(Map<String, List<Contribution>> contributions,
                                   List<LogicalComponent<?>> components,
-                                  CommandMap commandMap,
+                                  Map<String, List<Command>> deploymentCommands,
                                   GenerationType type) throws GenerationException;
 }

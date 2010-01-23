@@ -65,7 +65,6 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.generator.CommandMap;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -103,7 +102,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
 
     public Map<String, Command> generate(Map<String, List<Contribution>> contributions,
                                          List<LogicalComponent<?>> components,
-                                         CommandMap commandMap,
+                                         Map<String, List<Command>> deploymentCommands,
                                          GenerationType type) throws GenerationException {
         if (RuntimeMode.CONTROLLER != info.getRuntimeMode()) {
             // short circuit this unless running in distributed mode
@@ -117,7 +116,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
         // evaluate components for required capabilities
         evaluateComponents(components, commands, type);
         // evaluate policies on wires
-        evaluatePolicies(commands, contributions, commandMap, type);
+        evaluatePolicies(commands, contributions, deploymentCommands, type);
 
         if (commands.isEmpty()) {
             return null;
@@ -253,17 +252,17 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
     /**
      * Evaluates policy interceptors added to wires for required capabilities, resolving those capabilities to extensions.
      *
-     * @param contributions the contributions  to evaluate
-     * @param commandMap    the generated command map to introspect for policy interceptors
-     * @param type          the generation type
-     * @param commands      the list of commands to update with un/provison extension commands
+     * @param contributions      the contributions  to evaluate
+     * @param deploymentCommands the current deployment commands to introspect for policy interceptors
+     * @param type               the generation type
+     * @param commands           the list of commands to update with un/provison extension commands
      * @throws GenerationException if an exception occurs
      */
     private void evaluatePolicies(Map<String, Command> commands,
                                   Map<String, List<Contribution>> contributions,
-                                  CommandMap commandMap,
+                                  Map<String, List<Command>> deploymentCommands,
                                   GenerationType type) throws GenerationException {
-        for (Map.Entry<String, List<Command>> entry : commandMap.getCommands().entrySet()) {
+        for (Map.Entry<String, List<Command>> entry : deploymentCommands.entrySet()) {
             String zone = entry.getKey();
             if (zone == null) {
                 // skip local runtime

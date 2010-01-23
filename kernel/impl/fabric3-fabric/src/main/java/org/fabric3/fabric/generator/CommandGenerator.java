@@ -41,72 +41,35 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package org.fabric3.fabric.generator;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Contains commands mapped by the zone to which they are to be applied.
+ * Generates a Command that must be applied to a zone based on changes to a logical component.
  *
  * @version $Rev$ $Date$
  */
-public class CommandMap {
-    private String id;
+public interface CommandGenerator {
 
-    private Map<String, ZoneCommands> commands = new HashMap<String, ZoneCommands>();
+    /**
+     * Gets the order the command generator should be called in.
+     *
+     * @return an ascending  value where 0 is first
+     */
+    int getOrder();
 
-    public CommandMap(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void addCommand(String zone, Command command) {
-        ZoneCommands cmds = getZoneCommands(zone);
-        cmds.addCommand(command);
-    }
-
-    public void addExtensionCommand(String zone, Command command) {
-        ZoneCommands cmds = getZoneCommands(zone);
-        cmds.addExtensionCommand(command);
-    }
-
-    public void addExtensionCommands(String zone, List<Command> commands) {
-        ZoneCommands cmds = getZoneCommands(zone);
-        cmds.addExtensionCommands(commands);
-    }
-
-    public void addCommands(String zone, List<Command> commands) {
-        ZoneCommands cmds = getZoneCommands(zone);
-        cmds.addCommands(commands);
-    }
-
-    public Set<String> getZones() {
-        return commands.keySet();
-    }
-
-    public ZoneCommands getZoneCommands(String zone) {
-        ZoneCommands cmds = commands.get(zone);
-        if (cmds == null) {
-            cmds = new ZoneCommands();
-            commands.put(zone, cmds);
-        }
-        return cmds;
-    }
-
-    public Map<String, List<Command>> getCommands() {
-        Map<String, List<Command>> ret = new HashMap<String, List<Command>>();
-        for (Map.Entry<String, ZoneCommands> entry : commands.entrySet()) {
-            ret.put(entry.getKey(), entry.getValue().getCommands());
-        }
-        return ret;
-    }
+    /**
+     * Generates a command based on the contents of a logical component
+     *
+     * @param logicalComponent the logical component to generate the command from
+     * @param incremental      true if generation should be incremental, i.e. commands are only generated for new components as opposed to existing
+     *                         ones
+     * @return the generated command or null if no changes were detected
+     * @throws GenerationException if an error occurs during generation
+     */
+    Command generate(LogicalComponent<?> logicalComponent, boolean incremental) throws GenerationException;
 
 }

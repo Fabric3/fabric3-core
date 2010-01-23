@@ -56,10 +56,10 @@ import org.fabric3.spi.command.Command;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.Deployment;
+import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.generator.ZoneCommands;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -94,10 +94,10 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
     public void execute(RuntimeUpdateCommand command) throws ExecutionException {
         try {
             monitor.updateRequest(command.getRuntimeName());
-            ZoneCommands commands = regenerate(command.getZoneName());
-            List<Command> extensionCommands = commands.getExtensionCommands();
+            DeploymentUnit unit = regenerate(command.getZoneName());
+            List<Command> extensionCommands = unit.getExtensionCommands();
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-            List<Command> zoneCommands = commands.getCommands();
+            List<Command> zoneCommands = unit.getCommands();
             byte[] serializedCommands = serialize((Serializable) zoneCommands);
             command.setResponse(new DeploymentCommand(serializedExtensionCommands, serializedCommands));
         } catch (DeploymentException e) {
@@ -105,12 +105,12 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
         }
     }
 
-    private ZoneCommands regenerate(String zoneId) throws DeploymentException {
+    private DeploymentUnit regenerate(String zoneId) throws DeploymentException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         Collection<LogicalComponent<?>> components = domain.getComponents();
         try {
-            CommandMap commandMap = generator.generate(components, false);
-            return commandMap.getZoneCommands(zoneId);
+            Deployment deployment = generator.generate(components, false);
+            return deployment.getDeploymentUnit(zoneId);
         } catch (GenerationException e) {
             throw new DeploymentException(e);
         }

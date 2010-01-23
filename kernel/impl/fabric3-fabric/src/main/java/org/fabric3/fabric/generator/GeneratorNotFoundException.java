@@ -41,19 +41,17 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.fabric.generator;
 
 import javax.xml.namespace.QName;
+
+import org.fabric3.spi.generator.GenerationException;
 
 
 /**
  * @version $Rev$ $Date$
  */
 public class GeneratorNotFoundException extends GenerationException {
-
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = -4738988978020234242L;
 
     /**

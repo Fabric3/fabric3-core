@@ -51,11 +51,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GenerationType;
-import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.collator.ContributionCollator;
 import org.fabric3.fabric.generator.context.StartContextCommandGenerator;
@@ -63,9 +64,9 @@ import org.fabric3.fabric.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.generator.extension.ExtensionGenerator;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.generator.CommandGenerator;
-import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -89,6 +90,7 @@ public class GeneratorImpl implements Generator {
     private StopContextCommandGenerator stopContextCommandGenerator;
     private ExtensionGenerator extensionGenerator;
 
+    @Constructor
     public GeneratorImpl(@Reference List<CommandGenerator> commandGenerators,
                          @Reference ContributionCollator collator,
                          @Reference ClassLoaderCommandGenerator classLoaderCommandGenerator,
@@ -112,10 +114,10 @@ public class GeneratorImpl implements Generator {
         this.extensionGenerator = extensionGenerator;
     }
 
-    public CommandMap generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
+    public Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
         List<LogicalComponent<?>> sorted = topologicalSort(components);
         String id = UUID.randomUUID().toString();
-        CommandMap commandMap = new CommandMap(id);
+        Deployment deployment = new Deployment(id);
         Map<String, List<Contribution>> deployingContributions;
         if (incremental) {
             deployingContributions = collator.collateContributions(sorted, GenerationType.INCREMENTAL);
@@ -126,74 +128,76 @@ public class GeneratorImpl implements Generator {
         // generate classloader provision commands
         Map<String, List<Command>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
         for (Map.Entry<String, List<Command>> entry : commandsPerZone.entrySet()) {
-            commandMap.addCommands(entry.getKey(), entry.getValue());
+            deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
         // generate stop context information
         Map<String, List<Command>> stopCommands = stopContextCommandGenerator.generate(sorted);
         for (Map.Entry<String, List<Command>> entry : stopCommands.entrySet()) {
-            commandMap.addCommands(entry.getKey(), entry.getValue());
+            deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
         for (CommandGenerator generator : commandGenerators) {
             for (LogicalComponent<?> component : sorted) {
                 Command command = generator.generate(component, incremental);
                 if (command != null) {
-                    if (commandMap.getZoneCommands(component.getZone()).getCommands().contains(command)) {
+                    String zone = component.getZone();
+                    if (deployment.getDeploymentUnit(zone).getCommands().contains(command)) {
                         continue;
                     }
-                    commandMap.addCommand(component.getZone(), command);
+                    deployment.addCommand(zone, command);
                 }
             }
         }
 
         // start contexts
-        Map<String, List<Command>> startCommands = startContextCommandGenerator.generate(sorted, commandMap, incremental);
+        Map<String, List<Command>> deploymentCommands = deployment.getCommands();
+        Map<String, List<Command>> startCommands = startContextCommandGenerator.generate(sorted, deploymentCommands, incremental);
         for (Map.Entry<String, List<Command>> entry : startCommands.entrySet()) {
-            commandMap.addCommands(entry.getKey(), entry.getValue());
+            deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
         // release classloaders for components being undeployed that are no longer referenced
         Map<String, List<Contribution>> undeployingContributions = collator.collateContributions(sorted, GenerationType.UNDEPLOY);
         Map<String, List<Command>> releaseCommandsPerZone = classLoaderCommandGenerator.release(undeployingContributions);
         for (Map.Entry<String, List<Command>> entry : releaseCommandsPerZone.entrySet()) {
-            commandMap.addCommands(entry.getKey(), entry.getValue());
+            deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
         // generate extension provision commands - this must be done after policies are calculated for policy extensions to be included
         if (incremental) {
-            generateExtensionCommands(commandMap, deployingContributions, sorted, GenerationType.INCREMENTAL);
+            generateExtensionCommands(deployment, deployingContributions, sorted, GenerationType.INCREMENTAL);
         } else {
-            generateExtensionCommands(commandMap, deployingContributions, sorted, GenerationType.FULL);
+            generateExtensionCommands(deployment, deployingContributions, sorted, GenerationType.FULL);
         }
         // release extensions that are no longer used
-        generateExtensionCommands(commandMap, undeployingContributions, sorted, GenerationType.UNDEPLOY);
-
-        return commandMap;
+        generateExtensionCommands(deployment, undeployingContributions, sorted, GenerationType.UNDEPLOY);
+        return deployment;
     }
 
     /**
      * Generate extension provision commands for the contributions and components being deployed/undeployed
      *
-     * @param commandMap             the map of commands for deployment
+     * @param deployment             the map of commands for deployment
      * @param deployingContributions the contributions being deployed
      * @param components             the components being deployed
      * @param type                   the type of generation being performed
      * @throws GenerationException if an error during generation is encountered
      */
-    private void generateExtensionCommands(CommandMap commandMap,
+    private void generateExtensionCommands(Deployment deployment,
                                            Map<String, List<Contribution>> deployingContributions,
                                            List<LogicalComponent<?>> components,
                                            GenerationType type) throws GenerationException {
         if (extensionGenerator != null) {
-            Map<String, Command> extensionsPerZone = extensionGenerator.generate(deployingContributions, components, commandMap, type);
+            Map<String, List<Command>> deploymentCommands = deployment.getCommands();
+            Map<String, Command> extensionsPerZone = extensionGenerator.generate(deployingContributions, components, deploymentCommands, type);
             if (extensionsPerZone != null) {
                 for (Map.Entry<String, Command> entry : extensionsPerZone.entrySet()) {
                     if (type == GenerationType.UNDEPLOY) {
-                        commandMap.addCommand(entry.getKey(), entry.getValue());
+                        deployment.addCommand(entry.getKey(), entry.getValue());
                     } else {
                         // if an extension is being provisioned, the command needs to be executed before others
-                        commandMap.addExtensionCommand(entry.getKey(), entry.getValue());
+                        deployment.addExtensionCommand(entry.getKey(), entry.getValue());
                     }
                 }
             }

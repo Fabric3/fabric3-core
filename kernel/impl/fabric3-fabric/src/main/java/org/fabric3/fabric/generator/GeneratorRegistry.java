@@ -50,7 +50,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
-import org.fabric3.spi.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;

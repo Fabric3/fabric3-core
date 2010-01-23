@@ -48,21 +48,21 @@ import java.util.Collection;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Generates commands to provision a set of componets to zones in a domain.
+ * Generates a {@link Deployment} from the set of logical components.
  *
  * @version $Rev$ $Date$
  */
 public interface Generator {
 
     /**
-     * Generate commands to provision a set of newly instantiated components and wires to zones.
+     * Generates a DeploymentPackage from the set of logical components.
      *
-     * @param components  the logical components in the domain.
+     * @param components  the logical components.
      * @param incremental true if generation should be incremental, i.e. commands are only generated for new components and wires as opposed to
      *                    existing ones
-     * @return the command map containing the generated commands
-     * @throws GenerationException If unable to generate the command map.
+     * @return the deployment package
+     * @throws GenerationException If unable to generate the deployment package
      */
-    CommandMap generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException;
+    Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException;
 
 }

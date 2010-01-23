@@ -55,7 +55,7 @@ import org.fabric3.spi.domain.RoutingException;
 import org.fabric3.spi.domain.RoutingService;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.Deployment;
 
 /**
  * A routing service implementation that routes commands to the local runtime instance.
@@ -72,9 +72,9 @@ public class LocalRoutingService implements RoutingService {
         this.scopeRegistry = scopeRegistry;
     }
 
-    public void route(CommandMap commandMap) throws RoutingException {
+    public void route(Deployment deployment) throws RoutingException {
         // ignore extension commands since extensions will already be loaded locally
-        List<Command> commands = commandMap.getZoneCommands(null).getCommands();
+        List<Command> commands = deployment.getDeploymentUnit(null).getCommands();
         for (Command command : commands) {
             try {
                 registry.execute(command);

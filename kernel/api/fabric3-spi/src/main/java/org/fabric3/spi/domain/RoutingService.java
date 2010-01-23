@@ -43,21 +43,21 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.Deployment;
 
 /**
- * Implementations route commands to zones in a domain.
+ * Routes the contents of a {@link Deployment} to zones in a domain.
  *
  * @version $Rev$ $Date$
  */
 public interface RoutingService {
 
     /**
-     * Routes a set of commands to zones in a domain
+     * Routes the contents of a DeploymentPackage to zones in a domain.
      *
-     * @param commandMap the command map to route
-     * @throws RoutingException if an exception occurs routing the command map
+     * @param deployment the deployment to route
+     * @throws RoutingException if an exception occurs routing the deployment
      */
-    void route(CommandMap commandMap) throws RoutingException;
+    void route(Deployment deployment) throws RoutingException;
 
 }

@@ -75,7 +75,7 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.domain.RoutingException;
 import org.fabric3.spi.domain.RoutingService;
-import org.fabric3.spi.generator.CommandMap;
+import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -220,8 +220,8 @@ public abstract class AbstractDomain implements Domain {
         }
         collector.markForCollection(deployable, domain);
         try {
-            CommandMap commandMap = generator.generate(domain.getComponents(), true);
-            routingService.route(commandMap);
+            Deployment deployment = generator.generate(domain.getComponents(), true);
+            routingService.route(deployment);
         } catch (GenerationException e) {
             throw new UndeploymentException("Error undeploying: " + deployable, e);
         } catch (RoutingException e) {
@@ -305,8 +305,8 @@ public abstract class AbstractDomain implements Domain {
             policyAttacher.attachPolicies(policySets, domain, true);
             Collection<LogicalComponent<?>> components = domain.getComponents();
             // generate and provision any new components and new wires
-            CommandMap commandMap = generator.generate(components, true);
-            routingService.route(commandMap);
+            Deployment deployment = generator.generate(components, true);
+            routingService.route(deployment);
 
             logicalComponentManager.replaceRootComponent(domain);
         } catch (PolicyResolutionException e) {
@@ -329,8 +329,8 @@ public abstract class AbstractDomain implements Domain {
             policyAttacher.detachPolicies(policySets, domain);
             Collection<LogicalComponent<?>> components = domain.getComponents();
             // generate and provision any new components and new wires
-            CommandMap commandMap = generator.generate(components, true);
-            routingService.route(commandMap);
+            Deployment deployment = generator.generate(components, true);
+            routingService.route(deployment);
 
             logicalComponentManager.replaceRootComponent(domain);
         } catch (PolicyResolutionException e) {
@@ -573,8 +573,8 @@ public abstract class AbstractDomain implements Domain {
         selectBinding(components);
         try {
             // generate and provision any new components and new wires
-            CommandMap commandMap = generator.generate(components, true);
-            routingService.route(commandMap);
+            Deployment deployment = generator.generate(components, true);
+            routingService.route(deployment);
         } catch (GenerationException e) {
             throw new DeploymentException("Error deploying components", e);
         } catch (RoutingException e) {

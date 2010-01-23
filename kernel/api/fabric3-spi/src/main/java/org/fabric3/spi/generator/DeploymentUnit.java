@@ -44,12 +44,12 @@ import java.util.List;
 import org.fabric3.spi.command.Command;
 
 /**
- * A collection of commands sent to a zone. Extension-related commands are segregated so they may be deserialized and executed prior to other
- * commands.
+ * Used to deploy composites to a zone. Extension-related commands are segregated so they may be deserialized and executed prior to other commands as
+ * the latter may rely on extension classes and capabilities.
  *
  * @version $Rev$ $Date$
  */
-public class ZoneCommands implements Serializable {
+public class DeploymentUnit implements Serializable {
     private static final long serialVersionUID = -5868891769973094096L;
 
     private List<Command> extensionCommands = new ArrayList<Command>();

@@ -45,7 +45,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Generates to stop component contexts during undeployment.
+ * Generates stop component context commands for undeployment.
  *
  * @version $Rev$ $Date$
  */
