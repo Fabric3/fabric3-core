@@ -147,26 +147,4 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         }
     }
 
-    public static interface Monitor {
-        /**
-         * Event emitted when a StAX element loader is registered.
-         *
-         * @param xmlType the QName of the element the loader will handle
-         */
-        void registeringLoader(QName xmlType);
-
-        /**
-         * Event emitted when a StAX element loader is unregistered.
-         *
-         * @param xmlType the QName of the element the loader will handle
-         */
-        void unregisteringLoader(QName xmlType);
-
-        /**
-         * Event emitted when a request is made to load an element.
-         *
-         * @param xmlType the QName of the element that should be loaded
-         */
-        void elementLoad(QName xmlType);
-    }
 }
