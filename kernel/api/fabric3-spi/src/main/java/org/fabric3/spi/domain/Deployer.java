@@ -44,10 +44,10 @@
 package org.fabric3.spi.domain;
 
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.spi.generator.Deployment;
+import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
- * Routes the contents of a {@link Deployment} to zones in a domain.
+ * Processes a {@link DeploymentPackage} and applies its {@link DeploymentUnit}s to zones in a domain.
  *
  * @version $Rev$ $Date$
  */
