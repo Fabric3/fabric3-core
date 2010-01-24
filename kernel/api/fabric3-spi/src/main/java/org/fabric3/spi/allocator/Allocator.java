@@ -43,7 +43,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * Allocates a component to a service node.
+ * Allocates a component to a zone. If the component is a composite, allocation will be performed recursively.
  *
  * @version $Rev$ $Date$
  */
