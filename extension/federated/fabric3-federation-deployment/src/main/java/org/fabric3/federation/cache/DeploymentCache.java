@@ -44,8 +44,18 @@ package org.fabric3.federation.cache;
  */
 public interface DeploymentCache {
 
+    /**
+     * Cache the serialized deployment command.
+     *
+     * @param bytes the serialized deployment
+     */
     void cache(byte[] bytes);
 
+    /**
+     * Returns the serialized deployment command.
+     *
+     * @return the serialized deployment command.
+     */
     byte[] get();
 
 }
