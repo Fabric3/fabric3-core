@@ -42,45 +42,30 @@ import java.io.Serializable;
 import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Broadcast by the controller to deploy a composite to all members in a zone.  Aggregates the set of commands to deploy the composite as well as
- * required extensions.
+ * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
+ * deployment. The full deployment contains the complete list of commands required to update a participant runtime to the current zone state. The
+ * latter is cached by participants which can be used to bootstrap zone peers without the need to contact the controller.
  *
  * @version $Rev$ $Date$
  */
 public class DeploymentCommand implements ResponseCommand {
     private static final long serialVersionUID = 8673100303949676875L;
 
-    private byte[] extensionCommands;
-    private byte[] commands;
+    private SerializedDeploymentUnit currentDeploymentUnit;
+    private SerializedDeploymentUnit fullDeploymentUnit;
     private Serializable response;
 
-    /**
-     * Constructor.
-     *
-     * @param extensionCommands the serialized commands that install extensions required to run the deployment
-     * @param commands          the serialized commands to deploy a set of composites
-     */
-    public DeploymentCommand(byte[] extensionCommands, byte[] commands) {
-        this.extensionCommands = extensionCommands;
-        this.commands = commands;
+    public DeploymentCommand(SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
+        this.currentDeploymentUnit = currentDeploymentUnit;
+        this.fullDeploymentUnit = fullDeploymentUnit;
     }
 
-    /**
-     * Returns the serialized commands that install extensions required to run the deployment.
-     *
-     * @return the serialized extension commands
-     */
-    public byte[] getExtensionCommands() {
-        return extensionCommands;
+    public SerializedDeploymentUnit getCurrentDeploymentUnit() {
+        return currentDeploymentUnit;
     }
 
-    /**
-     * Returns the serialized composite deployment commands.
-     *
-     * @return the serialized composite deployment commands
-     */
-    public byte[] getCommands() {
-        return commands;
+    public SerializedDeploymentUnit getFullDeploymentUnit() {
+        return fullDeploymentUnit;
     }
 
     public void setResponse(Serializable response) {

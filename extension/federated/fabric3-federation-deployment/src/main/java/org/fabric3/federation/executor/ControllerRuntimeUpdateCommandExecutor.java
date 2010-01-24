@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.RuntimeUpdateCommand;
+import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
@@ -93,13 +94,21 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
 
     public void execute(RuntimeUpdateCommand command) throws ExecutionException {
         try {
-            monitor.updateRequest(command.getRuntimeName());
-            DeploymentUnit unit = regenerate(command.getZoneName());
+            String runtimeName = command.getRuntimeName();
+            monitor.updateRequest(runtimeName);
+            String zone = command.getZoneName();
+
+            // A full generation must be performed since the runtime requesting the update has no previous deployment state (i.e. it is booting).
+            // The full and current deployment will therefore be the same.
+            DeploymentUnit unit = regenerate(zone);
+
             List<Command> extensionCommands = unit.getExtensionCommands();
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-            List<Command> zoneCommands = unit.getCommands();
-            byte[] serializedCommands = serialize((Serializable) zoneCommands);
-            command.setResponse(new DeploymentCommand(serializedExtensionCommands, serializedCommands));
+            List<Command> commands = unit.getCommands();
+            byte[] serializedCommands = serialize((Serializable) commands);
+            SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+            DeploymentCommand deploymentCommand = new DeploymentCommand(serializedUnit, serializedUnit);
+            command.setResponse(deploymentCommand);
         } catch (DeploymentException e) {
             throw new ExecutionException(e);
         }

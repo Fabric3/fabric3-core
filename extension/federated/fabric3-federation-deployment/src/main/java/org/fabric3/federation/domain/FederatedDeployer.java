@@ -58,6 +58,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.DeploymentResponse;
+import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
@@ -98,21 +99,19 @@ public class FederatedDeployer implements Deployer {
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
-        Deployment deployment = deploymentPackage.getCurrentDeployment();
-        for (String zone : deployment.getZones()) {
+        Deployment currentDeployment = deploymentPackage.getCurrentDeployment();
+        Deployment fullDeployment = deploymentPackage.getFullDeployment();
+
+        for (String zone : currentDeployment.getZones()) {
             try {
                 monitor.deploy(zone);
-                DeploymentUnit deploymentUnit = deployment.getDeploymentUnit(zone);
-                List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
-                byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-                List<Command> commands = deploymentUnit.getCommands();
-                byte[] serializedCommands = serialize((Serializable) commands);
-                Command command = new DeploymentCommand(serializedExtensionCommands, serializedCommands);
-                ByteArrayOutputStream bas = new ByteArrayOutputStream();
-                MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
-                stream.writeObject(command);
-                byte[] serialized = bas.toByteArray();
+
+                Command command = createCommand(zone, currentDeployment, fullDeployment);
+
+                byte[] serialized = serialize(command);
+
                 List<byte[]> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
+
                 List<DeploymentResponse> responses = new ArrayList<DeploymentResponse>(serializedResponses.size());
                 for (byte[] serializedResponse : serializedResponses) {
                     DeploymentResponse response = deserialize(serializedResponse);
@@ -125,6 +124,22 @@ public class FederatedDeployer implements Deployer {
                 throw new DeploymentException(e);
             }
         }
+    }
+
+    private Command createCommand(String zone, Deployment currentDeployment, Deployment fullDeployment) throws IOException {
+        DeploymentUnit currentDeploymentUnit = currentDeployment.getDeploymentUnit(zone);
+        SerializedDeploymentUnit currentSerializedUnit = createSerializedUnit(currentDeploymentUnit);
+        DeploymentUnit fullDeploymentUnit = fullDeployment.getDeploymentUnit(zone);
+        SerializedDeploymentUnit fullSerializedUnit = createSerializedUnit(fullDeploymentUnit);
+        return new DeploymentCommand(currentSerializedUnit, fullSerializedUnit);
+    }
+
+    private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
+        List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
+        byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
+        List<Command> commands = deploymentUnit.getCommands();
+        byte[] serializedCommands = serialize((Serializable) commands);
+        return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
     }
 
     private byte[] serialize(Serializable serializable) throws IOException {

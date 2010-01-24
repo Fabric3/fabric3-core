@@ -90,7 +90,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         monitor.receivedDeployment();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         try {
-            byte[] serializedExtensionCommands = command.getExtensionCommands();
+            byte[] serializedExtensionCommands = command.getCurrentDeploymentUnit().getExtensionCommands();
             List<Command> extensionCommands = deserialize(serializedExtensionCommands);
             for (Command cmd : extensionCommands) {
                 executorRegistry.execute(cmd);
@@ -98,7 +98,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             if (!extensionCommands.isEmpty()) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-            byte[] serializedCommands = command.getCommands();
+            byte[] serializedCommands = command.getCurrentDeploymentUnit().getCommands();
             List<Command> commands = deserialize(serializedCommands);
             for (Command cmd : commands) {
                 executorRegistry.execute(cmd);
