@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
 
 
     <component name="FederatedDeployer">
-        <f3-impl:implementation.system class="org.fabric3.federation.routing.FederatedDeployer"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.domain.FederatedDeployer"/>
     </component>
 
     <!-- this wire reinjects the routing service into the application Domain -->

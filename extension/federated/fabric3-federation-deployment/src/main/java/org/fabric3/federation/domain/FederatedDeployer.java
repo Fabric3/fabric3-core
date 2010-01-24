@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.federation.routing;
+package org.fabric3.federation.domain;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
