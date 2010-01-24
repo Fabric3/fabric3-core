@@ -31,11 +31,11 @@
         <property name="autowire" source="$systemConfig/domain/@autowire"/>
     </component>
 
-    <component name="LocalRoutingService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.LocalRoutingService"/>
+    <component name="LocalDeployer">
+        <f3-impl:implementation.system class="org.fabric3.fabric.domain.LocalDeployer"/>
     </component>
-    <!-- this wire reinjects the routing service into the RuntimeDomain -->
-    <wire source="RuntimeDomain/routingService" target="LocalRoutingService"/>
+    <!-- this wire reinjects the deployer into the RuntimeDomain -->
+    <wire source="RuntimeDomain/deployer" target="LocalDeployer"/>
 
     <component name="SingletonComponentSynthesizer">
         <f3-impl:implementation.system class="org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer"/>

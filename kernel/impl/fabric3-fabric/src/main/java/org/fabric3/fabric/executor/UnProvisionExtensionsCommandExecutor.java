@@ -54,7 +54,7 @@ import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.domain.UndeploymentException;
+import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.contribution.ContributionUriResolver;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.executor.CommandExecutor;
@@ -115,7 +115,7 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
                         domain.undeploy(deployable.getName());
                     }
                     uninstall.add(uri);
-                } catch (UndeploymentException e) {
+                } catch (DeploymentException e) {
                     throw new ExecutionException(e);
                 } catch (ContributionNotFoundException e) {
                     throw new ExecutionException(e);

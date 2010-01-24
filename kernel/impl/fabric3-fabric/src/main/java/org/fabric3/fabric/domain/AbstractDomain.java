@@ -57,7 +57,6 @@ import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.ContributionNotInstalledException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.domain.UndeploymentException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
@@ -72,9 +71,9 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.DomainListener;
-import org.fabric3.spi.domain.RoutingException;
-import org.fabric3.spi.domain.RoutingService;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
@@ -96,11 +95,12 @@ import org.fabric3.spi.policy.PolicyResolutionException;
  */
 public abstract class AbstractDomain implements Domain {
 
-    protected RoutingService routingService;
+    protected Deployer deployer;
     protected Generator generator;
     // The service for allocating to remote zones. Domain subtypes may optionally inject this service if they support distributed domains.
     protected Allocator allocator;
     protected PolicyRegistry policyRegistry;
+    protected boolean generateFullDeployment;
 
     protected List<DomainListener> listeners;
 
@@ -122,7 +122,7 @@ public abstract class AbstractDomain implements Domain {
      * @param logicalModelInstantiator the logical model instantiator
      * @param policyAttacher           the attacher for applying external attachment policies
      * @param bindingSelector          the selector for binding.sca
-     * @param routingService           the service for routing deployment commands
+     * @param deployer                 the service for sending deployment commands
      * @param collector                the collector for undeploying components
      * @param contributionHelper       the contribution helper
      * @param info                     the host info
@@ -133,7 +133,7 @@ public abstract class AbstractDomain implements Domain {
                           LogicalModelInstantiator logicalModelInstantiator,
                           PolicyAttacher policyAttacher,
                           BindingSelector bindingSelector,
-                          RoutingService routingService,
+                          Deployer deployer,
                           Collector collector,
                           ContributionHelper contributionHelper,
                           HostInfo info) {
@@ -143,7 +143,7 @@ public abstract class AbstractDomain implements Domain {
         this.logicalComponentManager = logicalComponentManager;
         this.policyAttacher = policyAttacher;
         this.bindingSelector = bindingSelector;
-        this.routingService = routingService;
+        this.deployer = deployer;
         this.collector = collector;
         this.contributionHelper = contributionHelper;
         this.info = info;
@@ -208,11 +208,11 @@ public abstract class AbstractDomain implements Domain {
         instantiateAndDeploy(contributions, null, false, transactional);
     }
 
-    public synchronized void undeploy(QName deployable) throws UndeploymentException {
+    public synchronized void undeploy(QName deployable) throws DeploymentException {
         undeploy(deployable, false);
     }
 
-    public synchronized void undeploy(QName deployable, boolean transactional) throws UndeploymentException {
+    public synchronized void undeploy(QName deployable, boolean transactional) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         if (transactional) {
@@ -221,15 +221,17 @@ public abstract class AbstractDomain implements Domain {
         collector.markForCollection(deployable, domain);
         try {
             Deployment deployment = generator.generate(domain.getComponents(), true);
-            routingService.route(deployment);
+            collector.collect(domain);
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false);
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
         } catch (GenerationException e) {
-            throw new UndeploymentException("Error undeploying: " + deployable, e);
-        } catch (RoutingException e) {
-            throw new UndeploymentException("Error undeploying: " + deployable, e);
-
+            throw new DeploymentException("Error undeploying: " + deployable, e);
         }
         // TODO this should happen after nodes have undeployed the components and wires
-        collector.collect(domain);
         logicalComponentManager.replaceRootComponent(domain);
         QNameSymbol deployableSymbol = new QNameSymbol(deployable);
         Contribution contribution = metadataStore.resolveContainingContribution(deployableSymbol);
@@ -306,14 +308,16 @@ public abstract class AbstractDomain implements Domain {
             Collection<LogicalComponent<?>> components = domain.getComponents();
             // generate and provision any new components and new wires
             Deployment deployment = generator.generate(components, true);
-            routingService.route(deployment);
-
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false);
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
             logicalComponentManager.replaceRootComponent(domain);
         } catch (PolicyResolutionException e) {
             throw new DeploymentException(e);
         } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        } catch (RoutingException e) {
             throw new DeploymentException(e);
         }
     }
@@ -330,14 +334,16 @@ public abstract class AbstractDomain implements Domain {
             Collection<LogicalComponent<?>> components = domain.getComponents();
             // generate and provision any new components and new wires
             Deployment deployment = generator.generate(components, true);
-            routingService.route(deployment);
-
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false);
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
             logicalComponentManager.replaceRootComponent(domain);
         } catch (PolicyResolutionException e) {
             throw new DeploymentException(e);
         } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        } catch (RoutingException e) {
             throw new DeploymentException(e);
         }
     }
@@ -574,15 +580,18 @@ public abstract class AbstractDomain implements Domain {
         try {
             // generate and provision any new components and new wires
             Deployment deployment = generator.generate(components, true);
-            routingService.route(deployment);
+            collector.markAsProvisioned(domain);
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false);
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
         } catch (GenerationException e) {
-            throw new DeploymentException("Error deploying components", e);
-        } catch (RoutingException e) {
             throw new DeploymentException("Error deploying components", e);
         }
 
         // TODO this should happen after nodes have deployed the components and wires
-        collector.markAsProvisioned(domain);
         logicalComponentManager.replaceRootComponent(domain);
     }
 

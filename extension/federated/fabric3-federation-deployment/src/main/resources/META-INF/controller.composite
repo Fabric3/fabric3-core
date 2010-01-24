@@ -17,12 +17,12 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
 
-    <component name="FederatedRoutingService">
-        <f3-impl:implementation.system class="org.fabric3.federation.routing.FederatedRoutingService"/>
+    <component name="FederatedDeployer">
+        <f3-impl:implementation.system class="org.fabric3.federation.routing.FederatedDeployer"/>
     </component>
 
     <!-- this wire reinjects the routing service into the application Domain -->
-    <wire source="ApplicationDomain/routingService" target="FederatedRoutingService"/>
+    <wire source="ApplicationDomain/deployer" target="FederatedDeployer"/>
 
     <component name="ControllerRuntimeSyncCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.federation.executor.ControllerRuntimeUpdateCommandExecutor"/>

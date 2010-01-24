@@ -47,39 +47,39 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.domain.RoutingException;
-import org.fabric3.spi.domain.RoutingService;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.generator.Deployment;
 
 /**
- * A routing service implementation that routes commands to the local runtime instance.
+ * A Deployer that sends DeploymentUnits to the local runtime instance.
  *
  * @version $Rev$ $Date$
  */
-public class LocalRoutingService implements RoutingService {
+public class LocalDeployer implements Deployer {
 
     private CommandExecutorRegistry registry;
     private ScopeRegistry scopeRegistry;
 
-    public LocalRoutingService(@Reference CommandExecutorRegistry registry, @Reference ScopeRegistry scopeRegistry) {
+    public LocalDeployer(@Reference CommandExecutorRegistry registry, @Reference ScopeRegistry scopeRegistry) {
         this.registry = registry;
         this.scopeRegistry = scopeRegistry;
     }
 
-    public void route(Deployment deployment) throws RoutingException {
+    public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         // ignore extension commands since extensions will already be loaded locally
-        List<Command> commands = deployment.getDeploymentUnit(null).getCommands();
+        List<Command> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(null).getCommands();
         for (Command command : commands) {
             try {
                 registry.execute(command);
             } catch (ExecutionException e) {
-                throw new RoutingException(e);
+                throw new DeploymentException(e);
             }
         }
 
@@ -88,7 +88,7 @@ public class LocalRoutingService implements RoutingService {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
         } catch (InstanceLifecycleException e) {
-            throw new RoutingException(e);
+            throw new DeploymentException(e);
         }
 
     }

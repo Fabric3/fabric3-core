@@ -43,15 +43,22 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.api.annotation.logging.Fine;
+import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.spi.generator.Deployment;
 
 /**
- * Event monitor for the routing service
+ * Routes the contents of a {@link Deployment} to zones in a domain.
  *
  * @version $Rev$ $Date$
  */
-public interface RoutingMonitor {
+public interface Deployer {
 
-    @Fine
-    void routeCommands(String runtimeId);
+    /**
+     * Synchronously sends the contents of a DeploymentPackage to zones in a domain.
+     *
+     * @param deploymentPackage the deployment package to route
+     * @throws DeploymentException if an exception occurs during deployment
+     */
+    void deploy(DeploymentPackage deploymentPackage) throws DeploymentException;
+
 }

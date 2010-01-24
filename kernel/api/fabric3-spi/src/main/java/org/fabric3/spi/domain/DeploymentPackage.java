@@ -34,30 +34,49 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.spi.domain;
 
 import org.fabric3.spi.generator.Deployment;
 
 /**
- * Routes the contents of a {@link Deployment} to zones in a domain.
+ * Encapsulates a Deployment. The current Deployment contains the incremental DeploymentUnits which are to be applied to zones in the domain. The full
+ * Deployment contains the complete DeploymentUnits necessary to update a participant runtime to the current state of its zone. The full
+ * DeploymentUnits are cached by zone peers for fault-tolerance: a participant runtime may contact a peer when it boots to update to the current zone
+ * state without the need to contact the controller.
  *
  * @version $Rev$ $Date$
  */
-public interface RoutingService {
+public class DeploymentPackage {
+    private Deployment currentDeployment;
+    private Deployment fullDeployment;
 
     /**
-     * Routes the contents of a DeploymentPackage to zones in a domain.
+     * Constructor.
      *
-     * @param deployment the deployment to route
-     * @throws RoutingException if an exception occurs routing the deployment
+     * @param currentDeployment the current incremental deployment
+     * @param fullDeployment    the full deployment
      */
-    void route(Deployment deployment) throws RoutingException;
+    public DeploymentPackage(Deployment currentDeployment, Deployment fullDeployment) {
+        this.currentDeployment = currentDeployment;
+        this.fullDeployment = fullDeployment;
+    }
 
+    /**
+     * Returns the current incremental deployment.
+     *
+     * @return the current incremental deployment.
+     */
+    public Deployment getCurrentDeployment() {
+        return currentDeployment;
+    }
+
+    /**
+     * Returns the full deployment.
+     *
+     * @return the full deployment
+     */
+    public Deployment getFullDeployment() {
+        return fullDeployment;
+    }
 }

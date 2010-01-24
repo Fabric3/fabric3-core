@@ -43,36 +43,15 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.annotation.logging.Fine;
 
 /**
- * Base routing exception.
+ * Event monitor for the Deployer.
  *
  * @version $Rev$ $Date$
  */
-public class RoutingException extends Fabric3Exception {
-    private static final long serialVersionUID = -7865833725458046880L;
+public interface DeployerMonitor {
 
-    public RoutingException() {
-    }
-
-    public RoutingException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public RoutingException(Throwable cause) {
-        super(cause);
-    }
-
-    public RoutingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public RoutingException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public RoutingException(String message) {
-        super(message);
-    }
+    @Fine
+    void deploy(String runtimeId);
 }

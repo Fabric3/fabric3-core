@@ -69,7 +69,7 @@ import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
 import org.fabric3.fabric.domain.ContributionHelper;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
-import org.fabric3.fabric.domain.LocalRoutingService;
+import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.RuntimeDomain;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
@@ -208,7 +208,7 @@ public class BootstrapAssemblyFactory {
                                               metaDataStore,
                                               info);
 
-        LocalRoutingService routingService = new LocalRoutingService(commandRegistry, scopeRegistry);
+        LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry);
 
         PolicyAttacher policyAttacher = new NullPolicyAttacher();
         PolicyResolver policyResolver = new NullPolicyResolver();
@@ -229,7 +229,7 @@ public class BootstrapAssemblyFactory {
                                  policyAttacher,
                                  logicalComponentManager,
                                  bindingSelector,
-                                 routingService,
+                                 deployer,
                                  collector,
                                  contributionHelper,
                                  info);

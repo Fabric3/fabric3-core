@@ -43,14 +43,15 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
-import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.DomainListener;
-import org.fabric3.spi.domain.RoutingService;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.policy.PolicyAttacher;
 import org.fabric3.spi.policy.PolicyRegistry;
@@ -68,7 +69,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
                              @Reference LogicalModelInstantiator logicalModelInstantiator,
                              @Reference PolicyAttacher policyAttacher,
                              @Reference BindingSelector bindingSelector,
-                             @Reference RoutingService routingService,
+                             @Reference Deployer deployer,
                              @Reference Collector collector,
                              @Reference ContributionHelper contributionHelper,
                              @Reference HostInfo info) {
@@ -78,10 +79,11 @@ public class DistributedDomain extends AbstractDomain implements Domain {
               logicalModelInstantiator,
               policyAttacher,
               bindingSelector,
-              routingService,
+              deployer,
               collector,
               contributionHelper,
               info);
+        generateFullDeployment = RuntimeMode.CONTROLLER == info.getRuntimeMode();
     }
 
     /**
@@ -95,13 +97,13 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     }
 
     /**
-     * Used to optionally reinject a RoutingService
+     * Used to optionally reinject a Deployer
      *
-     * @param routingService the routing service
+     * @param deployer the deployer
      */
     @Reference
-    public void setRoutingService(RoutingService routingService) {
-        this.routingService = routingService;
+    public void setDeployer(Deployer deployer) {
+        this.deployer = deployer;
     }
 
     /**

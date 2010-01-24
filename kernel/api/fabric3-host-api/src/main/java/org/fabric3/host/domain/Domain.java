@@ -112,9 +112,9 @@ public interface Domain {
      * Remove a deployable Composite from the domain.
      *
      * @param deployable the name of the deployable composite to remove
-     * @throws UndeploymentException if an error is encountered during undeployment
+     * @throws DeploymentException if an error is encountered during undeployment
      */
-    void undeploy(QName deployable) throws UndeploymentException;
+    void undeploy(QName deployable) throws DeploymentException;
 
     /**
      * Remove a deployable Composite from the domain.
@@ -122,9 +122,9 @@ public interface Domain {
      * @param deployable    the name of the deployable composite to remove
      * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
      *                      after componnets have been deployed to a runtime or runtimes.
-     * @throws UndeploymentException if an error is encountered during undeployment
+     * @throws DeploymentException if an error is encountered during undeployment
      */
-    void undeploy(QName deployable, boolean transactional) throws UndeploymentException;
+    void undeploy(QName deployable, boolean transactional) throws DeploymentException;
 
     /**
      * Activates a set of definitions contained in the contribution.

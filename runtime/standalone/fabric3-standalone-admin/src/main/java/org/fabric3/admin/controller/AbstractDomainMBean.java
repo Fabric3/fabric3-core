@@ -51,7 +51,6 @@ import org.fabric3.host.domain.DeployableNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.domain.DomainException;
-import org.fabric3.host.domain.UndeploymentException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.domain.ComponentInfo;
 import org.fabric3.management.domain.ContributionNotFoundException;
@@ -133,7 +132,7 @@ public abstract class AbstractDomainMBean {
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
             try {
                 domain.undeploy(deployable.getName());
-            } catch (UndeploymentException e) {
+            } catch (DeploymentException e) {
                 reportError(uri, e);
             }
 

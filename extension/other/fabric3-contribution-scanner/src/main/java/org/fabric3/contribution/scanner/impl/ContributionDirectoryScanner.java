@@ -71,7 +71,6 @@ import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.domain.UndeploymentException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
@@ -422,7 +421,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     monitor.removed(filename);
                 } catch (ContributionException e) {
                     monitor.removalError(filename, e);
-                } catch (UndeploymentException e) {
+                } catch (DeploymentException e) {
                     monitor.removalError(filename, e);
                 }
             }

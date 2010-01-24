@@ -58,33 +58,34 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.DeploymentResponse;
+import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.domain.RoutingException;
-import org.fabric3.spi.domain.RoutingMonitor;
-import org.fabric3.spi.domain.RoutingService;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeployerMonitor;
+import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 
 /**
- * A routing service implementation that broadcasts a deployment to a zone.
+ * A Deployer that broadcasts a deployment to a zone.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class FederatedRoutingService implements RoutingService {
-    private RoutingMonitor monitor;
+public class FederatedDeployer implements Deployer {
+    private DeployerMonitor monitor;
     private DomainTopologyService topologyService;
     private long timeout = 3000;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public FederatedRoutingService(@Reference DomainTopologyService topologyService,
-                                   @Reference ClassLoaderRegistry classLoaderRegistry,
-                                   @Monitor RoutingMonitor monitor) {
+    public FederatedDeployer(@Reference DomainTopologyService topologyService,
+                             @Reference ClassLoaderRegistry classLoaderRegistry,
+                             @Monitor DeployerMonitor monitor) {
         this.topologyService = topologyService;
         this.classLoaderRegistry = classLoaderRegistry;
         this.monitor = monitor;
@@ -96,10 +97,11 @@ public class FederatedRoutingService implements RoutingService {
         this.timeout = timeout;
     }
 
-    public void route(Deployment deployment) throws RoutingException {
+    public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
+        Deployment deployment = deploymentPackage.getCurrentDeployment();
         for (String zone : deployment.getZones()) {
             try {
-                monitor.routeCommands(zone);
+                monitor.deploy(zone);
                 DeploymentUnit deploymentUnit = deployment.getDeploymentUnit(zone);
                 List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
                 byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
@@ -118,9 +120,9 @@ public class FederatedRoutingService implements RoutingService {
                 }
                 // TODO check responses
             } catch (IOException e) {
-                throw new RoutingException(e);
+                throw new DeploymentException(e);
             } catch (MessageException e) {
-                throw new RoutingException(e);
+                throw new DeploymentException(e);
             }
         }
     }
@@ -133,7 +135,7 @@ public class FederatedRoutingService implements RoutingService {
     }
 
     @SuppressWarnings({"unchecked"})
-    private DeploymentResponse deserialize(byte[] commands) throws RoutingException {
+    private DeploymentResponse deserialize(byte[] commands) throws DeploymentException {
         MultiClassLoaderObjectInputStream ois = null;
         try {
             InputStream stream = new ByteArrayInputStream(commands);
@@ -142,9 +144,9 @@ public class FederatedRoutingService implements RoutingService {
             ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
             return (DeploymentResponse) ois.readObject();
         } catch (IOException e) {
-            throw new RoutingException(e);
+            throw new DeploymentException(e);
         } catch (ClassNotFoundException e) {
-            throw new RoutingException(e);
+            throw new DeploymentException(e);
         } finally {
             try {
                 if (ois != null) {

@@ -45,7 +45,7 @@ import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.RoutingService;
+import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.policy.PolicyAttacher;
 import org.fabric3.spi.policy.PolicyRegistry;
@@ -65,7 +65,7 @@ public class RuntimeDomain extends AbstractDomain {
                          @Reference PolicyAttacher policyAttacher,
                          @Reference LogicalComponentManager logicalComponentManager,
                          @Reference BindingSelector bindingSelector,
-                         @Reference RoutingService routingService,
+                         @Reference Deployer deployer,
                          @Reference Collector collector,
                          @Reference ContributionHelper contributionHelper,
                          @Reference HostInfo info) {
@@ -75,7 +75,7 @@ public class RuntimeDomain extends AbstractDomain {
               logicalModelInstantiator,
               policyAttacher,
               bindingSelector,
-              routingService,
+              deployer,
               collector,
               contributionHelper,
               info);
@@ -94,11 +94,11 @@ public class RuntimeDomain extends AbstractDomain {
     /**
      * Used for reinjection.
      *
-     * @param routingService the routing service to reinject
+     * @param deployer the Deployer to reinject
      */
     @Reference
-    public void setRoutingService(RoutingService routingService) {
-        this.routingService = routingService;
+    public void setDeployer(Deployer deployer) {
+        this.deployer = deployer;
     }
 
     /**

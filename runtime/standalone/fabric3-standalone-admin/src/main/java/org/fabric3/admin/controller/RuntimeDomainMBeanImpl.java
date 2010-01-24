@@ -48,7 +48,6 @@ import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.domain.UndeploymentException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.domain.ContributionNotFoundException;
 import org.fabric3.management.domain.DeploymentManagementException;
@@ -101,7 +100,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements Runti
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 try {
                     domain.undeploy(deployable.getName());
-                } catch (UndeploymentException e) {
+                } catch (DeploymentException e) {
                     reportError(contributionUri, e);
                 }
 
