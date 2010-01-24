@@ -20,4 +20,12 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.federation.executor.DeploymentCommandExecutor"/>
     </component>
 
+    <component name="DeploymentCache">
+        <f3-impl:implementation.system class="org.fabric3.federation.cache.DeploymentCacheImpl"/>
+    </component>
+
+    <component name="RuntimeUpdateCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.federation.executor.RuntimeUpdateCommandExecutor"/>
+    </component>
+
 </composite>

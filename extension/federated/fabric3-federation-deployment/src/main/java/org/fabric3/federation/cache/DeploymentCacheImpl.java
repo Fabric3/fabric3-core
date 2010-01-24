@@ -35,38 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
-
-import java.io.Serializable;
+package org.fabric3.federation.cache;
 
 /**
- * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.
- *
  * @version $Rev$ $Date$
  */
-public class DeploymentResponse implements Serializable {
-    private static final long serialVersionUID = 411382659017602521L;
+public class DeploymentCacheImpl implements DeploymentCache {
+    private byte[] bytes;
 
-    public static final int SUCCESS = 1;
-    public static final int FAILURE = -1;
-
-    private int code;
-    private Exception exception;
-
-    public DeploymentResponse() {
-        this.code = SUCCESS;
+    public void cache(byte[] bytes) {
+        this.bytes = bytes;
     }
 
-    public DeploymentResponse(Exception exception) {
-        this.code = FAILURE;
-        this.exception = exception;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public Exception getDeploymentException() {
-        return exception;
+    public byte[] get() {
+        return bytes;
     }
 }

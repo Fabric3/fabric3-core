@@ -42,6 +42,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
+import org.fabric3.federation.cache.DeploymentCache;
 import org.fabric3.federation.command.RuntimeUpdateCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
@@ -57,13 +58,16 @@ import org.fabric3.spi.topology.ZoneTopologyService;
 @EagerInit
 public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {
     private ZoneTopologyService topologyService;
+    private DeploymentCache cache;
     private CommandExecutorRegistry executorRegistry;
     private RuntimeUpdateMonitor monitor;
 
     public RuntimeUpdateCommandExecutor(@Reference ZoneTopologyService topologyService,
-                                      @Reference CommandExecutorRegistry executorRegistry,
-                                      @Monitor RuntimeUpdateMonitor monitor) {
+                                        @Reference DeploymentCache cache,
+                                        @Reference CommandExecutorRegistry executorRegistry,
+                                        @Monitor RuntimeUpdateMonitor monitor) {
         this.topologyService = topologyService;
+        this.cache = cache;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;
     }
@@ -76,8 +80,8 @@ public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpda
     public void execute(RuntimeUpdateCommand command) throws ExecutionException {
         String runtime = command.getRuntimeName();
         monitor.updateRequest(runtime);
-        // TODO pull from cache
-        byte[] response = null;
+        // pull from cache
+        byte[] response = cache.get();
         try {
             topologyService.sendAsynchronousMessage(runtime, response);
         } catch (MessageException e) {

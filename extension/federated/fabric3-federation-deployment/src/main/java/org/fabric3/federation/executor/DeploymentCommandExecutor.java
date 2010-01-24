@@ -40,6 +40,8 @@ package org.fabric3.federation.executor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -47,11 +49,14 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
+import org.fabric3.federation.cache.DeploymentCache;
 import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.DeploymentResponse;
+import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
+import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -67,6 +72,7 @@ import org.fabric3.spi.executor.ExecutionException;
 @EagerInit
 public class DeploymentCommandExecutor implements CommandExecutor<DeploymentCommand> {
     private CommandExecutorRegistry executorRegistry;
+    private DeploymentCache cache;
     private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -74,8 +80,10 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     public DeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                      @Reference ScopeRegistry scopeRegistry,
                                      @Reference ClassLoaderRegistry classLoaderRegistry,
+                                     @Reference DeploymentCache cache,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
+        this.cache = cache;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
         this.classLoaderRegistry = classLoaderRegistry;
@@ -90,7 +98,8 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         monitor.receivedDeployment();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         try {
-            byte[] serializedExtensionCommands = command.getCurrentDeploymentUnit().getExtensionCommands();
+            SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
+            byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
             List<Command> extensionCommands = deserialize(serializedExtensionCommands);
             for (Command cmd : extensionCommands) {
                 executorRegistry.execute(cmd);
@@ -98,7 +107,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             if (!extensionCommands.isEmpty()) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-            byte[] serializedCommands = command.getCurrentDeploymentUnit().getCommands();
+            byte[] serializedCommands = currentDeploymentUnit.getCommands();
             List<Command> commands = deserialize(serializedCommands);
             for (Command cmd : commands) {
                 executorRegistry.execute(cmd);
@@ -106,13 +115,34 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             if (!commands.isEmpty()) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
+
+            cacheDeployment(command);
+
             DeploymentResponse response = new DeploymentResponse();
             command.setResponse(response);
         } catch (InstanceLifecycleException e) {
             monitor.error(e);
             DeploymentResponse response = new DeploymentResponse(e);
             command.setResponse(response);
+        } catch (IOException e) {
+            monitor.error(e);
+            DeploymentResponse response = new DeploymentResponse(e);
+            command.setResponse(response);
         }
+    }
+
+    private void cacheDeployment(DeploymentCommand command) throws IOException {
+        SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
+        DeploymentCommand deploymentCommand = new DeploymentCommand(fullDeploymentUnit, fullDeploymentUnit);
+        byte[] bytes = serialize(deploymentCommand);
+        cache.cache(bytes);
+    }
+
+    private byte[] serialize(Serializable serializable) throws IOException {
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
+        stream.writeObject(serializable);
+        return bas.toByteArray();
     }
 
     @SuppressWarnings({"unchecked"})
