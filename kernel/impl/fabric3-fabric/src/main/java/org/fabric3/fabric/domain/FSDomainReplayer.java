@@ -70,8 +70,7 @@ import org.fabric3.spi.xml.XMLFactory;
 /**
  * Replays the domain journal when the controller synchronizes with the domain. The domain journal records the state of the domain as composites are
  * included and undeployed. Replaying the journal has the affect of reinstating the logical assembly to its prior state before the controller went
- * offline (either as a result of a normal shutdown or system failure). Replaying the journal will also send physical change sets to all zones in the
- * domain. If a zone is up-to-date, it will discard the change set. Otherwise it will execute its commands, resulting in component reprovisioning.
+ * offline (either as a result of a normal shutdown or system failure).
  *
  * @version $Rev$ $Date$
  */
