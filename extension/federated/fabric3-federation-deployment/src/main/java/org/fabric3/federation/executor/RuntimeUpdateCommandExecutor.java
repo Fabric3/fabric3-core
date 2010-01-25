@@ -43,12 +43,11 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.cache.DeploymentCache;
+import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.RuntimeUpdateCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.topology.MessageException;
-import org.fabric3.spi.topology.ZoneTopologyService;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
@@ -57,16 +56,13 @@ import org.fabric3.spi.topology.ZoneTopologyService;
  */
 @EagerInit
 public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {
-    private ZoneTopologyService topologyService;
     private DeploymentCache cache;
     private CommandExecutorRegistry executorRegistry;
     private RuntimeUpdateMonitor monitor;
 
-    public RuntimeUpdateCommandExecutor(@Reference ZoneTopologyService topologyService,
-                                        @Reference DeploymentCache cache,
+    public RuntimeUpdateCommandExecutor(@Reference DeploymentCache cache,
                                         @Reference CommandExecutorRegistry executorRegistry,
                                         @Monitor RuntimeUpdateMonitor monitor) {
-        this.topologyService = topologyService;
         this.cache = cache;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;
@@ -81,11 +77,7 @@ public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpda
         String runtime = command.getRuntimeName();
         monitor.updateRequest(runtime);
         // pull from cache
-        byte[] response = cache.get();
-        try {
-            topologyService.sendAsynchronousMessage(runtime, response);
-        } catch (MessageException e) {
-            throw new ExecutionException("Error sending deployment command to " + runtime, e);
-        }
+        DeploymentCommand deploymentCommand = cache.get();
+        command.setResponse(deploymentCommand);
     }
 }

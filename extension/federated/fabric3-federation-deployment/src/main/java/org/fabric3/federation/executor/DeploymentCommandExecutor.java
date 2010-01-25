@@ -40,8 +40,6 @@ package org.fabric3.federation.executor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -56,7 +54,6 @@ import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -134,15 +131,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     private void cacheDeployment(DeploymentCommand command) throws IOException {
         SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
         DeploymentCommand deploymentCommand = new DeploymentCommand(fullDeploymentUnit, fullDeploymentUnit);
-        byte[] bytes = serialize(deploymentCommand);
-        cache.cache(bytes);
-    }
-
-    private byte[] serialize(Serializable serializable) throws IOException {
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
-        stream.writeObject(serializable);
-        return bas.toByteArray();
+        cache.cache(deploymentCommand);
     }
 
     @SuppressWarnings({"unchecked"})

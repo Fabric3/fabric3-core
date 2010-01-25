@@ -37,17 +37,19 @@
 */
 package org.fabric3.federation.cache;
 
+import org.fabric3.federation.command.DeploymentCommand;
+
 /**
  * @version $Rev$ $Date$
  */
 public class DeploymentCacheImpl implements DeploymentCache {
-    private byte[] bytes;
+    private DeploymentCommand command;
 
-    public void cache(byte[] bytes) {
-        this.bytes = bytes;
+    public void cache(DeploymentCommand command) {
+        this.command = command;
     }
 
-    public byte[] get() {
-        return bytes;
+    public DeploymentCommand get() {
+        return command;
     }
 }

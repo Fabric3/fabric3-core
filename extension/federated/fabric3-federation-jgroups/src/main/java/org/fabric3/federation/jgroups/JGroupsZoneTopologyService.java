@@ -249,24 +249,42 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
      * Attempts to update the runtime with the current set of deployments for the zone. The zone leader (i.e. oldest runtime in the zone) is queried
      * for the deployment commands. If the zone leader is unavailable or has not been updated, the controller is queried.
      *
-     * @throws MessageException if an error is encountered during synchronization
+     * @throws MessageException if an error is encountered during update
      */
     private void update() throws MessageException {
         // send the sync request
         View view = domainChannel.getView();
         Address address = helper.getZoneLeader(zoneName, view);
-        if (!domainChannel.getAddress().equals(address)) {
-            // check if current runtime is the zone
-            // TODO check zone leader for commands
+        if (address != null && !domainChannel.getAddress().equals(address)) {
+            // check if current runtime is the zone - if not, attempt to retrieve cached deployment from it
+// update against the zone leader disabled until contribution provisioning updated
+//            try {
+//                update(address);
+//                return;
+//            } catch (MessageException e) {
+//                monitor.error("Error retrieving deployment from zone leader: " + zoneName, e);
+//            }
         }
+        // check the controller
         address = helper.getController(view);
         if (address == null) {
             // controller is not present
             monitor.updateDeferred();
             return;
         }
-        String controllerName = UUID.get(address);
-        monitor.updating(controllerName);
+        update(address);
+        monitor.updated();
+    }
+
+    /**
+     * Performs the actual runtime update by querying the given runtime address.
+     *
+     * @param address the runtime address
+     * @throws MessageException if an error is encountered during update
+     */
+    private void update(Address address) throws MessageException {
+        String name = UUID.get(address);
+        monitor.updating(name);
         RuntimeUpdateCommand commmand = new RuntimeUpdateCommand(runtimeName, zoneName, null);
         byte[] serialized = helper.serialize(commmand);
         byte[] response = send(address, serialized, defaultTimeout);
@@ -278,7 +296,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         } catch (ExecutionException e) {
             throw new MessageException(e);
         }
-        monitor.updated();
     }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
