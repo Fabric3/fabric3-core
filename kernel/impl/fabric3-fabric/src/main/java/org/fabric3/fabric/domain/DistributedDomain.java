@@ -125,4 +125,9 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     public void setPolicyRegistry(PolicyRegistry policyRegistry) {
         this.policyRegistry = policyRegistry;
     }
+
+    protected boolean isLocal() {
+        // classloader isolation check needed for webapp runtime
+        return info.supportsClassLoaderIsolation() && RuntimeMode.CONTROLLER != info.getRuntimeMode();
+    }
 }

@@ -60,9 +60,10 @@ public interface Generator {
      * @param components  the logical components.
      * @param incremental true if generation should be incremental, i.e. commands are only generated for new components and wires as opposed to
      *                    existing ones
+     * @param local       true if the deployment is local, i.e. it is to the same runtime
      * @return the deployment package
      * @throws GenerationException If unable to generate the deployment package
      */
-    Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException;
+    Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental, boolean local) throws GenerationException;
 
 }

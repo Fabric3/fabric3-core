@@ -118,7 +118,7 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
         LogicalCompositeComponent domain = lcm.getRootComponent();
         Collection<LogicalComponent<?>> components = domain.getComponents();
         try {
-            Deployment deployment = generator.generate(components, false);
+            Deployment deployment = generator.generate(components, false, false);
             return deployment.getDeploymentUnit(zoneId);
         } catch (GenerationException e) {
             throw new DeploymentException(e);

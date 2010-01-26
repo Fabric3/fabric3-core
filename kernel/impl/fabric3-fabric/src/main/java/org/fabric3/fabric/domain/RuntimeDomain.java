@@ -41,11 +41,11 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
-import org.fabric3.spi.generator.Generator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.policy.PolicyAttacher;
 import org.fabric3.spi.policy.PolicyRegistry;
@@ -111,4 +111,8 @@ public class RuntimeDomain extends AbstractDomain {
         this.policyRegistry = policyRegistry;
     }
 
+    protected boolean isLocal() {
+        // classloader isolation check needed for webapp runtime
+        return info.supportsClassLoaderIsolation();
+    }
 }

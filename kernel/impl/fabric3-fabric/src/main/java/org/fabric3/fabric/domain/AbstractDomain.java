@@ -104,14 +104,14 @@ public abstract class AbstractDomain implements Domain {
 
     protected List<DomainListener> listeners;
 
-    private MetaDataStore metadataStore;
-    private LogicalComponentManager logicalComponentManager;
-    private LogicalModelInstantiator logicalModelInstantiator;
-    private PolicyAttacher policyAttacher;
-    private BindingSelector bindingSelector;
-    private Collector collector;
-    private ContributionHelper contributionHelper;
-    private HostInfo info;
+    protected MetaDataStore metadataStore;
+    protected LogicalComponentManager logicalComponentManager;
+    protected LogicalModelInstantiator logicalModelInstantiator;
+    protected PolicyAttacher policyAttacher;
+    protected BindingSelector bindingSelector;
+    protected Collector collector;
+    protected ContributionHelper contributionHelper;
+    protected HostInfo info;
 
     /**
      * Constructor.
@@ -220,11 +220,11 @@ public abstract class AbstractDomain implements Domain {
         }
         collector.markForCollection(deployable, domain);
         try {
-            Deployment deployment = generator.generate(domain.getComponents(), true);
+            Deployment deployment = generator.generate(domain.getComponents(), true, isLocal());
             collector.collect(domain);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain.getComponents(), false);
+                fullDeployment = generator.generate(domain.getComponents(), false, isLocal());
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
@@ -297,57 +297,6 @@ public abstract class AbstractDomain implements Domain {
 
     }
 
-    private void deployPolicySets(List<PolicySet> policySets, boolean transactional) throws DeploymentException {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (transactional) {
-            domain = CopyUtil.copy(domain);
-        }
-
-        try {
-            policyAttacher.attachPolicies(policySets, domain, true);
-            Collection<LogicalComponent<?>> components = domain.getComponents();
-            // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(components, true);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain.getComponents(), false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
-            logicalComponentManager.replaceRootComponent(domain);
-        } catch (PolicyResolutionException e) {
-            throw new DeploymentException(e);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        }
-    }
-
-
-    private void undeployPolicySet(List<PolicySet> policySets, boolean transactional) throws DeploymentException {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        if (transactional) {
-            domain = CopyUtil.copy(domain);
-        }
-
-        try {
-            policyAttacher.detachPolicies(policySets, domain);
-            Collection<LogicalComponent<?>> components = domain.getComponents();
-            // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(components, true);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain.getComponents(), false);
-            }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
-            logicalComponentManager.replaceRootComponent(domain);
-        } catch (PolicyResolutionException e) {
-            throw new DeploymentException(e);
-        } catch (GenerationException e) {
-            throw new DeploymentException(e);
-        }
-    }
-
     public void recover(List<QName> deployables, List<String> planNames) throws DeploymentException {
         Set<Contribution> contributions = new LinkedHashSet<Contribution>();
         for (QName deployable : deployables) {
@@ -366,6 +315,13 @@ public abstract class AbstractDomain implements Domain {
         Set<Contribution> contributions = contributionHelper.resolveContributions(uris);
         instantiateAndDeploy(contributions, null, true, false);
     }
+
+    /**
+     * Returns true if the domain is contained in a single VM.
+     *
+     * @return true if the domain is contained in a single VM
+     */
+    protected abstract boolean isLocal();
 
     /**
      * Instantiates and optionally deploys all deployables from a set of contributions. Deployment is performed if recovery mode is false or the
@@ -579,11 +535,11 @@ public abstract class AbstractDomain implements Domain {
         selectBinding(components);
         try {
             // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(components, true);
+            Deployment deployment = generator.generate(components, true, isLocal());
             collector.markAsProvisioned(domain);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain.getComponents(), false);
+                fullDeployment = generator.generate(domain.getComponents(), false, isLocal());
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
@@ -631,5 +587,57 @@ public abstract class AbstractDomain implements Domain {
             }
         }
     }
+
+    private void deployPolicySets(List<PolicySet> policySets, boolean transactional) throws DeploymentException {
+        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        if (transactional) {
+            domain = CopyUtil.copy(domain);
+        }
+
+        try {
+            policyAttacher.attachPolicies(policySets, domain, true);
+            Collection<LogicalComponent<?>> components = domain.getComponents();
+            // generate and provision any new components and new wires
+            Deployment deployment = generator.generate(components, true, isLocal());
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false, isLocal());
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
+            logicalComponentManager.replaceRootComponent(domain);
+        } catch (PolicyResolutionException e) {
+            throw new DeploymentException(e);
+        } catch (GenerationException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
+
+    private void undeployPolicySet(List<PolicySet> policySets, boolean transactional) throws DeploymentException {
+        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        if (transactional) {
+            domain = CopyUtil.copy(domain);
+        }
+
+        try {
+            policyAttacher.detachPolicies(policySets, domain);
+            Collection<LogicalComponent<?>> components = domain.getComponents();
+            // generate and provision any new components and new wires
+            Deployment deployment = generator.generate(components, true, isLocal());
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain.getComponents(), false, isLocal());
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
+            logicalComponentManager.replaceRootComponent(domain);
+        } catch (PolicyResolutionException e) {
+            throw new DeploymentException(e);
+        } catch (GenerationException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
 
 }

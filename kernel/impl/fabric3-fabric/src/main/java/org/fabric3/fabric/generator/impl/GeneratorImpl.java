@@ -101,7 +101,7 @@ public class GeneratorImpl implements Generator {
         this.startContextCommandGenerator = startContextCommandGenerator;
         this.stopContextCommandGenerator = stopContextCommandGenerator;
         // sort the command generators
-        this.commandGenerators = sort(commandGenerators);
+        this.commandGenerators = sortGenerators(commandGenerators);
     }
 
     /**
@@ -114,21 +114,18 @@ public class GeneratorImpl implements Generator {
         this.extensionGenerator = extensionGenerator;
     }
 
-    public Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
+    public Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental, boolean local) throws GenerationException {
+
         List<LogicalComponent<?>> sorted = topologicalSort(components);
+
         String id = UUID.randomUUID().toString();
         Deployment deployment = new Deployment(id);
-        Map<String, List<Contribution>> deployingContributions;
-        if (incremental) {
-            deployingContributions = collator.collateContributions(sorted, GenerationType.INCREMENTAL);
-        } else {
-            deployingContributions = collator.collateContributions(sorted, GenerationType.FULL);
-        }
 
-        // generate classloader provision commands
-        Map<String, List<Command>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
-        for (Map.Entry<String, List<Command>> entry : commandsPerZone.entrySet()) {
-            deployment.addCommands(entry.getKey(), entry.getValue());
+        Map<String, List<Contribution>> deployingContributions = null;
+
+        if (!local) {
+            // only generate classloader provision commands if the deployment is remote
+            deployingContributions = generateClassLoaders(deployment, sorted, incremental);
         }
 
         // generate stop context information
@@ -157,8 +154,52 @@ public class GeneratorImpl implements Generator {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
-        // release classloaders for components being undeployed that are no longer referenced
-        Map<String, List<Contribution>> undeployingContributions = collator.collateContributions(sorted, GenerationType.UNDEPLOY);
+        if (!local) {
+            // release classloaders for components being undeployed that are no longer referenced if the deployment is remote
+            generateReleaseClassLoaders(deployment, sorted, deployingContributions, incremental);
+        }
+        return deployment;
+    }
+
+    /**
+     * Generates classloader provision commands.
+     *
+     * @param deployment  the map of commands for deployment
+     * @param components  the components being deployed
+     * @param incremental the type of generation being performed
+     * @return the contributions being deployed
+     * @throws GenerationException if an error during generation is encountered
+     */
+    private Map<String, List<Contribution>> generateClassLoaders(Deployment deployment, List<LogicalComponent<?>> components, boolean incremental)
+            throws GenerationException {
+        Map<String, List<Contribution>> deployingContributions;
+        if (incremental) {
+            deployingContributions = collator.collateContributions(components, GenerationType.INCREMENTAL);
+        } else {
+            deployingContributions = collator.collateContributions(components, GenerationType.FULL);
+        }
+
+        Map<String, List<Command>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
+        for (Map.Entry<String, List<Command>> entry : commandsPerZone.entrySet()) {
+            deployment.addCommands(entry.getKey(), entry.getValue());
+        }
+        return deployingContributions;
+    }
+
+    /**
+     * Generates classloader release commands.
+     *
+     * @param deployment    the map of commands for deployment
+     * @param components    the components being deployed
+     * @param contributions the contributions being deployed
+     * @param incremental   the type of generation being performed
+     * @throws GenerationException if an error during generation is encountered
+     */
+    private void generateReleaseClassLoaders(Deployment deployment,
+                                             List<LogicalComponent<?>> components,
+                                             Map<String, List<Contribution>> contributions,
+                                             boolean incremental) throws GenerationException {
+        Map<String, List<Contribution>> undeployingContributions = collator.collateContributions(components, GenerationType.UNDEPLOY);
         Map<String, List<Command>> releaseCommandsPerZone = classLoaderCommandGenerator.release(undeployingContributions);
         for (Map.Entry<String, List<Command>> entry : releaseCommandsPerZone.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
@@ -166,13 +207,12 @@ public class GeneratorImpl implements Generator {
 
         // generate extension provision commands - this must be done after policies are calculated for policy extensions to be included
         if (incremental) {
-            generateExtensionCommands(deployment, deployingContributions, sorted, GenerationType.INCREMENTAL);
+            generateExtensionCommands(deployment, contributions, components, GenerationType.INCREMENTAL);
         } else {
-            generateExtensionCommands(deployment, deployingContributions, sorted, GenerationType.FULL);
+            generateExtensionCommands(deployment, contributions, components, GenerationType.FULL);
         }
         // release extensions that are no longer used
-        generateExtensionCommands(deployment, undeployingContributions, sorted, GenerationType.UNDEPLOY);
-        return deployment;
+        generateExtensionCommands(deployment, undeployingContributions, components, GenerationType.UNDEPLOY);
     }
 
     /**
@@ -239,7 +279,7 @@ public class GeneratorImpl implements Generator {
 
     }
 
-    private List<CommandGenerator> sort(List<? extends CommandGenerator> commandGenerators) {
+    private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {
         Comparator<CommandGenerator> generatorComparator = new Comparator<CommandGenerator>() {
 
             public int compare(CommandGenerator first, CommandGenerator second) {
