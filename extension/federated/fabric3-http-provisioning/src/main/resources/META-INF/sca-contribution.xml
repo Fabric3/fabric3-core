@@ -14,5 +14,7 @@ Public License. See the accompanying license file for details.
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <deployable composite="federation:HttpProvisioningExtension" modes="controller participant"/>
+    <import.java package="org.fabric3.util.*" version="1.5"/>
+    <deployable composite="federation:HttpControllerProvisioningExtension" modes="controller"/>
+    <deployable composite="federation:HttpParticipantProvisioningExtension" modes="participant"/>
 </contribution>

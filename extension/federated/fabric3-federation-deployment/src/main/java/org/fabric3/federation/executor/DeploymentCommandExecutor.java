@@ -37,9 +37,7 @@
 */
 package org.fabric3.federation.executor;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -53,7 +51,7 @@ import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
+import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -70,20 +68,21 @@ import org.fabric3.spi.executor.ExecutionException;
 public class DeploymentCommandExecutor implements CommandExecutor<DeploymentCommand> {
     private CommandExecutorRegistry executorRegistry;
     private DeploymentCache cache;
+    private SerializationService serializationService;
     private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
-    private ClassLoaderRegistry classLoaderRegistry;
 
     public DeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                      @Reference ScopeRegistry scopeRegistry,
                                      @Reference ClassLoaderRegistry classLoaderRegistry,
                                      @Reference DeploymentCache cache,
+                                     @Reference SerializationService serializationService,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.cache = cache;
+        this.serializationService = serializationService;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     @Init
@@ -91,13 +90,14 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         executorRegistry.register(DeploymentCommand.class, this);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void execute(DeploymentCommand command) throws ExecutionException {
         monitor.receivedDeployment();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         try {
             SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
             byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
-            List<Command> extensionCommands = deserialize(serializedExtensionCommands);
+            List<Command> extensionCommands = serializationService.deserialize(List.class, serializedExtensionCommands);
             for (Command cmd : extensionCommands) {
                 executorRegistry.execute(cmd);
             }
@@ -105,7 +105,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
             byte[] serializedCommands = currentDeploymentUnit.getCommands();
-            List<Command> commands = deserialize(serializedCommands);
+            List<Command> commands = serializationService.deserialize(List.class, serializedCommands);
             for (Command cmd : commands) {
                 executorRegistry.execute(cmd);
             }
@@ -125,6 +125,10 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             monitor.error(e);
             DeploymentResponse response = new DeploymentResponse(e);
             command.setResponse(response);
+        } catch (ClassNotFoundException e) {
+            monitor.error(e);
+            DeploymentResponse response = new DeploymentResponse(e);
+            command.setResponse(response);
         }
     }
 
@@ -134,28 +138,5 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         cache.cache(deploymentCommand);
     }
 
-    @SuppressWarnings({"unchecked"})
-    private List<Command> deserialize(byte[] commands) throws ExecutionException {
-        MultiClassLoaderObjectInputStream ois = null;
-        try {
-            InputStream stream = new ByteArrayInputStream(commands);
-            // Deserialize the command set. As command set classes may be loaded in an extension classloader, use a MultiClassLoaderObjectInputStream
-            // to deserialize classes in the appropriate classloader.
-            ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
-            return (List<Command>) ois.readObject();
-        } catch (IOException e) {
-            throw new ExecutionException(e);
-        } catch (ClassNotFoundException e) {
-            throw new ExecutionException(e);
-        } finally {
-            try {
-                if (ois != null) {
-                    ois.close();
-                }
-            } catch (IOException e) {
-                // ignore;
-            }
-        }
-    }
 
 }

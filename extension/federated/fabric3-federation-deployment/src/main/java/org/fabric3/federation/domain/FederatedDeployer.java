@@ -43,10 +43,7 @@
  */
 package org.fabric3.federation.domain;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +57,7 @@ import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
+import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
@@ -81,14 +76,14 @@ import org.fabric3.spi.topology.MessageException;
 public class FederatedDeployer implements Deployer {
     private DeployerMonitor monitor;
     private DomainTopologyService topologyService;
+    private SerializationService serializationService;
     private long timeout = 3000;
-    private ClassLoaderRegistry classLoaderRegistry;
 
     public FederatedDeployer(@Reference DomainTopologyService topologyService,
-                             @Reference ClassLoaderRegistry classLoaderRegistry,
+                             @Reference SerializationService serializationService,
                              @Monitor DeployerMonitor monitor) {
         this.topologyService = topologyService;
-        this.classLoaderRegistry = classLoaderRegistry;
+        this.serializationService = serializationService;
         this.monitor = monitor;
     }
 
@@ -108,17 +103,19 @@ public class FederatedDeployer implements Deployer {
 
                 Command command = createCommand(zone, currentDeployment, fullDeployment);
 
-                byte[] serialized = serialize(command);
+                byte[] serialized = serializationService.serialize(command);
 
                 List<byte[]> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
 
                 List<DeploymentResponse> responses = new ArrayList<DeploymentResponse>(serializedResponses.size());
                 for (byte[] serializedResponse : serializedResponses) {
-                    DeploymentResponse response = deserialize(serializedResponse);
+                    DeploymentResponse response = serializationService.deserialize(DeploymentResponse.class, serializedResponse);
                     responses.add(response);
                 }
                 // TODO check responses
             } catch (IOException e) {
+                throw new DeploymentException(e);
+            } catch (ClassNotFoundException e) {
                 throw new DeploymentException(e);
             } catch (MessageException e) {
                 throw new DeploymentException(e);
@@ -136,40 +133,10 @@ public class FederatedDeployer implements Deployer {
 
     private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
         List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
-        byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
+        byte[] serializedExtensionCommands = serializationService.serialize((Serializable) extensionCommands);
         List<Command> commands = deploymentUnit.getCommands();
-        byte[] serializedCommands = serialize((Serializable) commands);
+        byte[] serializedCommands = serializationService.serialize((Serializable) commands);
         return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
     }
 
-    private byte[] serialize(Serializable serializable) throws IOException {
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bas);
-        stream.writeObject(serializable);
-        return bas.toByteArray();
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private DeploymentResponse deserialize(byte[] commands) throws DeploymentException {
-        MultiClassLoaderObjectInputStream ois = null;
-        try {
-            InputStream stream = new ByteArrayInputStream(commands);
-            // Deserialize the command set. As command set classes may be loaded in an extension classloader, use a MultiClassLoaderObjectInputStream
-            // to deserialize classes in the appropriate classloader.
-            ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
-            return (DeploymentResponse) ois.readObject();
-        } catch (IOException e) {
-            throw new DeploymentException(e);
-        } catch (ClassNotFoundException e) {
-            throw new DeploymentException(e);
-        } finally {
-            try {
-                if (ois != null) {
-                    ois.close();
-                }
-            } catch (IOException e) {
-                // ignore;
-            }
-        }
-    }
 }

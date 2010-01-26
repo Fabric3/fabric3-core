@@ -43,65 +43,77 @@ import java.net.URI;
 import java.net.URL;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionUriResolver;
-import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
+import org.fabric3.spi.classloader.SerializationService;
+import org.fabric3.spi.contribution.ContributionUriResolver;
+import org.fabric3.spi.contribution.ResolutionException;
+import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.topology.ZoneTopologyService;
 
 /**
- * Resolves contributions using the <code>http</code> scheme, copying them to a local archive store.
+ * Resolves contributions using the <code>http</code> scheme, copying them to a local archive store. Resolution is done by first querying a zone
+ * leader for the contribution URL. If the current runtime is the zone leader, the controller is queried for the contribution URL.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class HttpContributionUriResolver implements ContributionUriResolver {
-    private static final String HTTP_SCHEME = "http";
-
+public class ZoneContributionUriResolver implements ContributionUriResolver {
     private ArtifactCache cache;
-    private MetaDataStore metaDataStore;
+    private ZoneTopologyService topologyService;
+    private SerializationService serializationService;
+    private long defaultTimeout = 10000;
 
-    public HttpContributionUriResolver(@Reference ArtifactCache cache, @Reference MetaDataStore store) {
+    public ZoneContributionUriResolver(@Reference ArtifactCache cache,
+                                       @Reference ZoneTopologyService topologyService,
+                                       @Reference SerializationService serializationService) {
         this.cache = cache;
-        this.metaDataStore = store;
+        this.topologyService = topologyService;
+        this.serializationService = serializationService;
+    }
+
+    @Property(required = false)
+    public void setDefaultTimeout(long defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
     }
 
     public URI decode(URI uri) {
-        if (!HTTP_SCHEME.equals(uri.getScheme())) {
-            // the contribution is being provisioned locally
-            return uri;
-        }
-        return URI.create(uri.getPath().substring(HttpProvisionConstants.REPOSITORY.length() + 2)); // +2 for leading and trailing '/'
+        return uri;
     }
 
     public URL resolve(URI uri) throws ResolutionException {
-        if (!HTTP_SCHEME.equals(uri.getScheme())) {
-            // the contribution is being provisioned locally, resolve it directly
-            Contribution contribution = metaDataStore.find(uri);
-            if (contribution == null) {
-                throw new ResolutionException("Contribution not found: " + uri);
-            }
-            return contribution.getLocation();
+        URI contributionUri = URI.create(uri.getAuthority());
+        URL url = cache.get(contributionUri);
+        if (url != null) {
+            return url;
         }
-        InputStream stream;
+        String zoneLeader = topologyService.getZoneLeader();
+        ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
-            URI decoded = URI.create(uri.getPath().substring(HttpProvisionConstants.REPOSITORY.length() + 2)); // +2 for leading and trailing '/'
-            // check to see if the archive is cached locally
-            URL localURL = cache.get(decoded);
-            if (localURL == null) {
-                // resolve remotely
-                URL url = uri.toURL();
-                stream = url.openStream();
-                localURL = cache.cache(decoded, stream);
+            byte[] message = serializationService.serialize(command);
+            byte[] val;
+            if (!topologyService.isZoneLeader() && zoneLeader != null) {
+                // query the zone leader
+                val = topologyService.sendSynchronousMessage(zoneLeader, message, defaultTimeout);
+            } else {
+                // query the controller
+                val = topologyService.sendSynchronousControllerMessage(message, defaultTimeout);
             }
-            return localURL;
+            ProvisionResponse response = serializationService.deserialize(ProvisionResponse.class, val);
+            // provision and cache the contribution
+            InputStream stream = response.getContributionUrl().openStream();
+            return cache.cache(contributionUri, stream);
+        } catch (MessageException e) {
+            throw new ResolutionException(e);
         } catch (IOException e) {
-            throw new ResolutionException("Error resolving artifact: " + uri, e);
+            throw new ResolutionException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ResolutionException(e);
         } catch (CacheException e) {
-            throw new ResolutionException("Error resolving artifact: " + uri, e);
+            throw new ResolutionException(e);
         }
     }
 
@@ -116,5 +128,6 @@ public class HttpContributionUriResolver implements ContributionUriResolver {
     public int getInUseCount(URI uri) {
         return cache.getCount(uri);
     }
-}
 
+
+}

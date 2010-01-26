@@ -37,55 +37,35 @@
 */
 package org.fabric3.federation.contribution.http;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.spi.contribution.ContributionUriEncoder;
-import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.host.ServletHost;
+import java.io.Serializable;
+import java.net.URL;
 
 /**
- * Encodes a contribution URI so it can be dereferenced in a domain via HTTP. The encoding maps from the contribution URI to an HTTP-based URI.
+ * The response to a {@link ProvisionCommand}.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
-public class HTTPContributionUriEncoder implements ContributionUriEncoder {
-    private ServletHost host;
-    private MetaDataStore store;
-    private String address;
-    private String mappingPath = HttpProvisionConstants.REPOSITORY;
+public class ProvisionResponse implements Serializable {
+    private static final long serialVersionUID = 8758275756367101501L;
 
-    public HTTPContributionUriEncoder(@Reference ServletHost host, @Reference MetaDataStore store) {
-        this.host = host;
-        this.store = store;
+    private URL contributionUrl;
+
+
+    /**
+     * Constructor.
+     *
+     * @param contributionUrl the provisioning URL of a contribution artifact
+     */
+    public ProvisionResponse(URL contributionUrl) {
+        this.contributionUrl = contributionUrl;
     }
 
-    @Property
-    public void setMappingPath(String path) {
-        mappingPath = path;
-    }
-
-    @Property
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Init
-    public void init() throws UnknownHostException {
-        if (address == null) {
-            address = InetAddress.getLocalHost().getHostAddress();
-        }
-        host.registerMapping("/" + mappingPath + "/*", new ArchiveResolverServlet(store));
-    }
-
-    public URI encode(URI uri) throws URISyntaxException {
-        String path = "/" + mappingPath + "/" + uri.getPath();
-        return new URI("http", null, address, host.getHttpPort(), path, null, null);
+    /**
+     * Returns the provisioning URL of a contribution artifact.
+     *
+     * @return the provisiong URL of a contribution artifact
+     */
+    public URL getContributionUrl() {
+        return contributionUrl;
     }
 }

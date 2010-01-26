@@ -28,6 +28,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.event.EventServiceImpl"/>
     </component>
 
+    <component name="SerializationService">
+        <f3-impl:implementation.system class="org.fabric3.fabric.classloader.SerializationServiceImpl"/>
+    </component>
+
     <component name="ExpressionExpander">
         <f3-impl:implementation.system class="org.fabric3.fabric.expression.ExpressionExpanderImpl"/>
     </component>

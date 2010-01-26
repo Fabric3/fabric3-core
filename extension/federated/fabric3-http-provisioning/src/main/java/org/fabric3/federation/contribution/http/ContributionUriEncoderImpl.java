@@ -37,57 +37,19 @@
 */
 package org.fabric3.federation.contribution.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.ContributionUriEncoder;
 
 /**
- * Returns the contents of a contribution associated with the encoded servlet path. The servlet path corresponds to the contribution URI.
+ * Encodes a contribution URI so it can be dereferenced in a domain via HTTP. The encoding maps from the contribution URI to an HTTP-based URI.
  *
  * @version $Rev$ $Date$
  */
-public class ArchiveResolverServlet extends HttpServlet {
-    private static final long serialVersionUID = -5822568715938454572L;
-    private MetaDataStore store;
+public class ContributionUriEncoderImpl implements ContributionUriEncoder {
 
-    public ArchiveResolverServlet(MetaDataStore store) {
-        this.store = store;
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String info = req.getPathInfo().substring(1);    // path info always begins with '/'
-        try {
-            URI uri = new URI(info);
-            Contribution contribution = store.find(uri);
-            if (contribution == null) {
-                throw new ServletException("Contribution not found: " + info + ". Request URL was: " + info);
-            }
-            URL url = contribution.getLocation();
-            copy(url.openStream(), resp.getOutputStream());
-        } catch (URISyntaxException e) {
-            throw new ServletException("Invalid URI: " + info, e);
-        }
-    }
-
-
-    public static int copy(InputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[4096];
-        int count = 0;
-        int n;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-            count += n;
-        }
-        return count;
+    public URI encode(URI uri) throws URISyntaxException {
+        return new URI("http://" + uri.getPath());
     }
 }

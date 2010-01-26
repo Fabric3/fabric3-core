@@ -37,11 +37,45 @@
 */
 package org.fabric3.federation.contribution.http;
 
-/**
- * @version $Rev$ $Date$
- */
-public interface HttpProvisionConstants {
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-    String REPOSITORY = "repository";
+import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.util.io.IOHelper;
+
+/**
+ * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cacge. The
+ * servlet path corresponds to the contribution URI.
+ *
+ * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
+ */
+public class ArtifactCacheResolverServlet extends HttpServlet {
+    private static final long serialVersionUID = 7721634599080335126L;
+    private ArtifactCache cache;
+
+    public ArtifactCacheResolverServlet(ArtifactCache cache) {
+        this.cache = cache;
+    }
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String info = req.getPathInfo().substring(1);    // path info always begins with '/'
+        try {
+            URI uri = new URI(info);
+            URL url = cache.get(uri);
+            if (url == null) {
+                throw new ServletException("Contribution not found: " + info + ". Request URL was: " + info);
+            }
+            IOHelper.copy(url.openStream(), resp.getOutputStream());
+        } catch (URISyntaxException e) {
+            throw new ServletException("Invalid URI: " + info, e);
+        }
+    }
+
 
 }

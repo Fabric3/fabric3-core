@@ -150,6 +150,29 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         domainDispatcher = new MessageDispatcher(domainChannel, messageListener, memberListener, requestHandler);
     }
 
+    public boolean isZoneLeader() {
+        View view = domainChannel.getView();
+        Address address = domainChannel.getAddress();
+        return view != null && address != null && address.equals(helper.getZoneLeader(zoneName, view));
+    }
+
+    public boolean isControllerAvailable() {
+        View view = domainChannel.getView();
+        return view != null && helper.getController(view) != null;
+    }
+
+    public String getZoneLeader() {
+        View view = domainChannel.getView();
+        if (view == null) {
+            return null;
+        }
+        Address address = helper.getZoneLeader(zoneName, view);
+        if (address == null) {
+            return null;
+        }
+        return UUID.get(address);
+    }
+
     public void broadcastMessage(byte[] payload) throws MessageException {
         // null address will send to everyone
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
@@ -257,13 +280,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         Address address = helper.getZoneLeader(zoneName, view);
         if (address != null && !domainChannel.getAddress().equals(address)) {
             // check if current runtime is the zone - if not, attempt to retrieve cached deployment from it
-// update against the zone leader disabled until contribution provisioning updated
-//            try {
-//                update(address);
-//                return;
-//            } catch (MessageException e) {
-//                monitor.error("Error retrieving deployment from zone leader: " + zoneName, e);
-//            }
+            try {
+                update(address);
+                return;
+            } catch (MessageException e) {
+                monitor.error("Error retrieving deployment from zone leader: " + zoneName, e);
+            }
         }
         // check the controller
         address = helper.getController(view);

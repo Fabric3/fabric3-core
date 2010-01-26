@@ -49,6 +49,28 @@ import java.util.List;
 public interface ZoneTopologyService {
 
     /**
+     * Returns true if the current runtime is the zone leader.
+     *
+     * @return true if the current runtime is the zone leader
+     */
+    boolean isZoneLeader();
+
+    /**
+     * Returns true if the domain controller is available.
+     *
+     * @return true if the domain controller is available
+     */
+    boolean isControllerAvailable();
+
+    /**
+     * Returns the name of the zone leader.
+     *
+     * @return the name of the zone leader or null if the current runtime has not joined the domain
+     */
+    String getZoneLeader();
+
+
+    /**
      * Sends a message asynchronously to all runtimes in the zone.
      *
      * @param message the serialized message
