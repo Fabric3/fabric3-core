@@ -71,15 +71,18 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
     private CommandExecutorRegistry commandExecutorRegistry;
     private ContributionService contributionService;
     private ContributionResolver resolver;
+    private ProvisionedExtensionTracker tracker;
 
     public UnProvisionExtensionsCommandExecutor(@Reference(name = "domain") Domain domain,
                                                 @Reference CommandExecutorRegistry commandExecutorRegistry,
                                                 @Reference ContributionService contributionService,
-                                                @Reference ContributionResolver resolver) {
+                                                @Reference ContributionResolver resolver,
+                                                @Reference ProvisionedExtensionTracker tracker) {
         this.commandExecutorRegistry = commandExecutorRegistry;
         this.contributionService = contributionService;
         this.domain = domain;
         this.resolver = resolver;
+        this.tracker = tracker;
     }
 
     @Init
@@ -91,8 +94,8 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
         // compile the list of extensions 
         List<URI> uninstall = new ArrayList<URI>();
         for (URI uri : command.getExtensionUris()) {
-            int count = resolver.getInUseCount(uri);
-            if (count == 1) {
+            int count = tracker.decrement(uri);
+            if (count == 0) {
                 try {
                     // no longer in use, undeploy and uninstall the extension
                     List<Deployable> deployables = contributionService.getDeployables(uri);
@@ -108,11 +111,11 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
                 } catch (ContributionNotFoundException e) {
                     throw new ExecutionException(e);
                 }
-            }
-            try {
-                resolver.release(uri);
-            } catch (ResolutionException e) {
-                throw new ExecutionException(e);
+                try {
+                    resolver.release(uri);
+                } catch (ResolutionException e) {
+                    throw new ExecutionException(e);
+                }
             }
         }
         try {

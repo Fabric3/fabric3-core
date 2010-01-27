@@ -116,8 +116,4 @@ public class DefaultContributionResolver implements ContributionResolver {
         }
     }
 
-    public int getInUseCount(URI uri) {
-        return cache.getCount(uri);
-    }
-
 }

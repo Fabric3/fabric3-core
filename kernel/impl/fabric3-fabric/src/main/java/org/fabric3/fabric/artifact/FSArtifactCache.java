@@ -44,7 +44,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -108,34 +107,14 @@ public class FSArtifactCache implements ArtifactCache {
         return entry.getEntryURL();
     }
 
-    public synchronized void increment(URI uri) {
-        Entry entry = entries.get(uri);
-        if (entry == null) {
-            throw new CacheRuntimeException("Entry for URI not found:" + uri);
-        }
-        entry.getCounter().getAndIncrement();
-    }
-
     public synchronized boolean release(URI uri) {
         Entry entry = entries.get(uri);
         if (entry == null) {
             return false;
         }
-        int i = entry.getCounter().decrementAndGet();
-        if (i == 0) {
-            entry.getFile().delete();
-            entries.remove(uri);
-            return true;
-        }
-        return false;
-    }
-
-    public synchronized int getCount(URI uri) {
-        Entry entry = entries.get(uri);
-        if (entry == null) {
-            return 0;
-        }
-        return entry.getCounter().get();
+        entry.getFile().delete();
+        entries.remove(uri);
+        return true;
     }
 
     /**
@@ -156,18 +135,12 @@ public class FSArtifactCache implements ArtifactCache {
     }
 
     private class Entry {
-        private AtomicInteger counter;
         private URL entryURL;
         private File file;
 
         private Entry(URL entryURL, File file) {
             this.entryURL = entryURL;
             this.file = file;
-            counter = new AtomicInteger(1);
-        }
-
-        public AtomicInteger getCounter() {
-            return counter;
         }
 
         public URL getEntryURL() {

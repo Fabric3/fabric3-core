@@ -63,9 +63,6 @@ public class FSArtifactCacheTestCase extends TestCase {
         assertNotNull(url);
         InputStream ret = url.openStream();
         ret.close();
-        cache.increment(uri);
-        assertNotNull(cache.get(uri));
-        cache.release(uri);
         assertNotNull(cache.get(uri));
         cache.release(uri);
         assertNull(cache.get(uri));

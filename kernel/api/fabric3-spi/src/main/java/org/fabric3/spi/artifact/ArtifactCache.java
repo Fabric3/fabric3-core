@@ -68,15 +68,7 @@ public interface ArtifactCache {
     URL get(URI uri);
 
     /**
-     * Increment the in-use count of an artifact.
-     *
-     * @param uri the artifact URI.
-     */
-    void increment(URI uri);
-
-    /**
-     * Release an artifact. If the in-use count is 1, the artifact can be evicted from local storage. If the in-use count is greater than 1, the count
-     * will be decremented.
+     * Evicts an artifact.
      *
      * @param uri the artifact URI.
      * @return returns true if the artifact was evicted
@@ -84,11 +76,4 @@ public interface ArtifactCache {
      */
     boolean release(URI uri) throws CacheException;
 
-    /**
-     * Returns the in-use count for the artifact.
-     *
-     * @param uri the artifact URI
-     * @return the in-use count
-     */
-    int getCount(URI uri);
 }

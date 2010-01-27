@@ -70,15 +70,18 @@ public class ProvisionExtensionsCommandExecutor implements CommandExecutor<Provi
     private ContributionService contributionService;
     private Domain domain;
     private ContributionResolver resolver;
+    private ProvisionedExtensionTracker tracker;
 
     public ProvisionExtensionsCommandExecutor(@Reference(name = "domain") Domain domain,
                                               @Reference CommandExecutorRegistry commandExecutorRegistry,
                                               @Reference ContributionService contributionService,
-                                              @Reference ContributionResolver resolver) {
+                                              @Reference ContributionResolver resolver,
+                                              @Reference ProvisionedExtensionTracker tracker) {
         this.commandExecutorRegistry = commandExecutorRegistry;
         this.contributionService = contributionService;
         this.domain = domain;
         this.resolver = resolver;
+        this.tracker = tracker;
     }
 
     @Init
@@ -98,6 +101,7 @@ public class ProvisionExtensionsCommandExecutor implements CommandExecutor<Provi
                 ContributionSource source = new FileContributionSource(uri, url, 0, new byte[]{});
                 contributionService.store(source);
                 stored.add(uri);
+                tracker.increment(uri);
             }
             if (stored.isEmpty()) {
                 return;

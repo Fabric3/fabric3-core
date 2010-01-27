@@ -22,6 +22,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.CommandExecutorRegistryImpl"/>
     </component>
 
+    <component name="ProvisionedExtensionTracker">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ProvisionedExtensionTrackerImpl"/>
+    </component>
+
     <component name="ClassloaderProvisionCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor"/>
     </component>
