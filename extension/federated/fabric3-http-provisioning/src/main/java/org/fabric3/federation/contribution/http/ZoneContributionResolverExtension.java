@@ -49,6 +49,7 @@ import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.topology.Response;
 import org.fabric3.spi.topology.ZoneTopologyService;
 
 /**
@@ -78,7 +79,7 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
             byte[] message = serializationService.serialize(command);
-            byte[] val;
+            Response val;
             if (!topologyService.isZoneLeader() && zoneLeader != null) {
                 // query the zone leader
                 val = topologyService.sendSynchronousMessage(zoneLeader, message, defaultTimeout);
@@ -86,13 +87,11 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
                 // query the controller
                 val = topologyService.sendSynchronousControllerMessage(message, defaultTimeout);
             }
-            ProvisionResponse response = serializationService.deserialize(ProvisionResponse.class, val);
+            ProvisionResponse response = (ProvisionResponse) val;
             return response.getContributionUrl().openStream();
         } catch (MessageException e) {
             throw new ResolutionException(e);
         } catch (IOException e) {
-            throw new ResolutionException(e);
-        } catch (ClassNotFoundException e) {
             throw new ResolutionException(e);
         }
     }

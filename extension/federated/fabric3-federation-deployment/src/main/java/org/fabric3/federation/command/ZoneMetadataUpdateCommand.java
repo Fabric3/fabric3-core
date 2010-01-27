@@ -37,9 +37,8 @@
 */
 package org.fabric3.federation.command;
 
-import java.io.Serializable;
-
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.topology.Response;
 
 /**
  * Sent by a controller to a zone leader to obtain transport metadata. A request is sent to existing zone leaders when a controller joins the domain.
@@ -55,7 +54,7 @@ public class ZoneMetadataUpdateCommand implements ResponseCommand {
         this.response = response;
     }
 
-    public Serializable getResponse() {
+    public Response getResponse() {
         return response;
     }
 }

@@ -69,7 +69,6 @@ public interface ZoneTopologyService {
      */
     String getZoneLeader();
 
-
     /**
      * Sends a message asynchronously to all runtimes in the zone.
      *
@@ -96,7 +95,7 @@ public interface ZoneTopologyService {
      * @return the response
      * @throws MessageException if an error occurs sending the message
      */
-    byte[] sendSynchronousMessage(String runtimeName, byte[] message, long timeout) throws MessageException;
+    Response sendSynchronousMessage(String runtimeName, byte[] message, long timeout) throws MessageException;
 
     /**
      * Sends a message synchronously to all runtimes in the zone.
@@ -106,7 +105,7 @@ public interface ZoneTopologyService {
      * @return the responses
      * @throws MessageException if an error occurs sending the message
      */
-    List<byte[]> sendSynchronousMessage(byte[] message, long timeout) throws MessageException;
+    List<Response> sendSynchronousMessage(byte[] message, long timeout) throws MessageException;
 
     /**
      * Sends a message synchronously to the controller.
@@ -116,7 +115,7 @@ public interface ZoneTopologyService {
      * @return the response
      * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
      */
-    byte[] sendSynchronousControllerMessage(byte[] message, long timeout) throws MessageException;
+    Response sendSynchronousControllerMessage(byte[] message, long timeout) throws MessageException;
 
     /**
      * Sends a message asynchronously to the controller.

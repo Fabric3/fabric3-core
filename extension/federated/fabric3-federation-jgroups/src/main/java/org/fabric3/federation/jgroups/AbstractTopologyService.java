@@ -64,6 +64,8 @@ import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.topology.RemoteSystemException;
+import org.fabric3.spi.topology.Response;
 
 /**
  * Provides base functionality for JGroups-based topology services.
@@ -192,14 +194,26 @@ public abstract class AbstractTopologyService {
                 assert deserialized instanceof ResponseCommand;
                 ResponseCommand command = (ResponseCommand) deserialized;
                 executorRegistry.execute(command);
-                Serializable response = command.getResponse();
+                Response response = command.getResponse();
                 return helper.serialize(response);
             } catch (MessageException e) {
                 monitor.error("Error handling message from: "+ runtimeName, e);
+                RemoteSystemException ex = new RemoteSystemException(e);
+                try {
+                    return helper.serialize(ex);
+                } catch (MessageException e1) {
+                    monitor.error("Error handling message from: "+ runtimeName, e);
+                }
             } catch (ExecutionException e) {
                 monitor.error("Error handling message from: "+ runtimeName, e);
+                RemoteSystemException ex = new RemoteSystemException(e);
+                try {
+                    return helper.serialize(ex);
+                } catch (MessageException e1) {
+                    monitor.error("Error handling message from: "+ runtimeName, e);
+                }
             }
-            return msg.getBuffer();
+            throw new MessageRuntimeException("Unable to handle request");
         }
     }
 

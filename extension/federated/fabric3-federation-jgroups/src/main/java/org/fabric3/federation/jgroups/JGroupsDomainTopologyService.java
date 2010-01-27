@@ -77,12 +77,13 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.MessageTimeoutException;
+import org.fabric3.spi.topology.Response;
 import org.fabric3.spi.topology.RuntimeInstance;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
- * <p>
- * This implementation 
+ * <p/>
+ * This implementation
  *
  * @version $Rev$ $Date$
  */
@@ -180,15 +181,16 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public List<byte[]> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException {
+    public List<Response> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException {
         try {
             List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
-            List<byte[]> responses = new ArrayList<byte[]>(addresses.size());
+            List<Response> responses = new ArrayList<Response>(addresses.size());
             for (Address address : addresses) {
                 Message message = new Message(address, domainChannel.getAddress(), payload);
                 Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
                 assert o instanceof byte[] : "Expected byte[] but was " + o;
-                responses.add((byte[]) o);
+                Response response = (Response) helper.deserialize((byte[]) o);
+                responses.add(response);
 
             }
             return responses;
@@ -199,13 +201,13 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public byte[] sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException {
+    public Response sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException {
         try {
             Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
             Message message = new Message(address, domainChannel.getAddress(), payload);
             Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
             assert o instanceof byte[] : "Expected byte[] but was " + o;
-            return (byte[]) o;
+            return (Response) helper.deserialize((byte[]) o);
         } catch (TimeoutException e) {
             throw new MessageTimeoutException("Timeout sending message to runtime: " + runtimeName, e);
         } catch (SuspectedException e) {
@@ -332,8 +334,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                         for (Address address : newZoneLeaders) {
                             String name = UUID.get(address);
                             monitor.metadataUpdateRequest(name);
-                            byte[] value = sendSynchronousMessage(name, payload, defaultTimeout);
-                            ZoneMetadataResponse response = (ZoneMetadataResponse) helper.deserialize(value);
+                            Response value = sendSynchronousMessage(name, payload, defaultTimeout);
+                            ZoneMetadataResponse response = (ZoneMetadataResponse) value;
                             transportMetadata.put(response.getZone(), response.getMetadata());
                         }
                     } catch (MessageException e) {

@@ -37,9 +37,8 @@
 */
 package org.fabric3.federation.command;
 
-import java.io.Serializable;
-
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.topology.Response;
 
 /**
  * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
@@ -48,12 +47,12 @@ import org.fabric3.spi.command.ResponseCommand;
  *
  * @version $Rev$ $Date$
  */
-public class DeploymentCommand implements ResponseCommand {
+public class DeploymentCommand implements ResponseCommand, Response {
     private static final long serialVersionUID = 8673100303949676875L;
 
     private SerializedDeploymentUnit currentDeploymentUnit;
     private SerializedDeploymentUnit fullDeploymentUnit;
-    private Serializable response;
+    private Response response;
 
     public DeploymentCommand(SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
         this.currentDeploymentUnit = currentDeploymentUnit;
@@ -68,11 +67,11 @@ public class DeploymentCommand implements ResponseCommand {
         return fullDeploymentUnit;
     }
 
-    public void setResponse(Serializable response) {
+    public void setResponse(Response response) {
         this.response = response;
     }
 
-    public Serializable getResponse() {
+    public Response getResponse() {
         return response;
     }
 }

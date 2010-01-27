@@ -35,38 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
-
-import org.fabric3.spi.topology.Response;
+package org.fabric3.spi.topology;
 
 /**
- * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.
+ * A response to a synchronous message returned when an exception is raised processing the original request.
  *
  * @version $Rev$ $Date$
  */
-public class DeploymentResponse implements Response {
-    private static final long serialVersionUID = 411382659017602521L;
+public class RemoteSystemException implements Response {
+    private static final long serialVersionUID = 3104883810536039817L;
 
-    public static final int SUCCESS = 1;
-    public static final int FAILURE = -1;
+    private Throwable throwable;
 
-    private int code;
-    private Exception exception;
-
-    public DeploymentResponse() {
-        this.code = SUCCESS;
+    public RemoteSystemException(Throwable throwable) {
+        this.throwable = throwable;
     }
 
-    public DeploymentResponse(Exception exception) {
-        this.code = FAILURE;
-        this.exception = exception;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public Exception getDeploymentException() {
-        return exception;
+    public Throwable getThrowable() {
+        return throwable;
     }
 }

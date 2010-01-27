@@ -45,7 +45,6 @@ package org.fabric3.federation.domain;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -54,7 +53,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
@@ -66,6 +64,7 @@ import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.topology.Response;
 
 /**
  * A Deployer that broadcasts a deployment to a zone.
@@ -105,17 +104,9 @@ public class FederatedDeployer implements Deployer {
 
                 byte[] serialized = serializationService.serialize(command);
 
-                List<byte[]> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
-
-                List<DeploymentResponse> responses = new ArrayList<DeploymentResponse>(serializedResponses.size());
-                for (byte[] serializedResponse : serializedResponses) {
-                    DeploymentResponse response = serializationService.deserialize(DeploymentResponse.class, serializedResponse);
-                    responses.add(response);
-                }
+                List<Response> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
                 // TODO check responses
             } catch (IOException e) {
-                throw new DeploymentException(e);
-            } catch (ClassNotFoundException e) {
                 throw new DeploymentException(e);
             } catch (MessageException e) {
                 throw new DeploymentException(e);

@@ -98,7 +98,7 @@ public interface DomainTopologyService {
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    List<byte[]> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException;
+    List<Response> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException;
 
     /**
      * Sends a message synchronously to a runtime.
@@ -109,6 +109,6 @@ public interface DomainTopologyService {
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    byte[] sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException;
+    Response sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException;
 
 }

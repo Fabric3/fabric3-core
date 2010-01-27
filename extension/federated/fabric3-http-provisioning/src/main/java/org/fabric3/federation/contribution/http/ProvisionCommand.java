@@ -37,10 +37,10 @@
 */
 package org.fabric3.federation.contribution.http;
 
-import java.io.Serializable;
 import java.net.URI;
 
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.topology.Response;
 
 /**
  * Sent to a controller or zone peer to return the provisioning URL of a contribution artifact.
@@ -64,7 +64,7 @@ public class ProvisionCommand implements ResponseCommand {
         this.response = response;
     }
 
-    public Serializable getResponse() {
+    public Response getResponse() {
         return response;
     }
 }

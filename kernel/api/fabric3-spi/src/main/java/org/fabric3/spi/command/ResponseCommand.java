@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.command;
 
-import java.io.Serializable;
+import org.fabric3.spi.topology.Response;
 
 /**
  * A Command that produces a response.
@@ -57,5 +57,5 @@ public interface ResponseCommand extends Command {
      *
      * @return the response
      */
-    Serializable getResponse();
+    Response getResponse();
 }
