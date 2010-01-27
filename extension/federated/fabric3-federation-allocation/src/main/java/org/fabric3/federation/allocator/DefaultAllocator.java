@@ -56,12 +56,12 @@ import org.fabric3.spi.plan.DeploymentPlan;
 @EagerInit
 public class DefaultAllocator implements Allocator {
 
-    public void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans, boolean recover) throws AllocationException {
+    public void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans) throws AllocationException {
         if (component.getZone() == null) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
-                    allocate(child, plans, recover);
+                    allocate(child, plans);
                 }
             }
             selectZone(component, plans);

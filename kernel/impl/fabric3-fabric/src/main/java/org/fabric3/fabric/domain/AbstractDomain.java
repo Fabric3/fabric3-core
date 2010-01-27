@@ -565,7 +565,7 @@ public abstract class AbstractDomain implements Domain {
         }
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW) {
-                allocator.allocate(component, plans, false);
+                allocator.allocate(component, plans);
             }
         }
     }

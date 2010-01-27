@@ -54,8 +54,7 @@ public interface Allocator {
      *
      * @param component the component to allocate
      * @param plans     the deployment plans to use for mapping components to domain zones
-     * @param recover   true if the allocator is called while the controller is recovering.
      * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans, boolean recover) throws AllocationException;
+    void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans) throws AllocationException;
 }
