@@ -78,12 +78,11 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
         URI classLoaderId = definition.getClassLoaderId();
         Map<String, Map<String, InjectionSite>> injectorMappings = definition.getInjectionSiteMappings();
         ClassLoader cl = activator.getWebComponentClassLoader(classLoaderId);
-        URI archiveUri = definition.getContributionUri();
         String contextUrl = definition.getContextUrl();
         return new WebComponent(uri,
                                 contextUrl,
                                 deployable,
-                                archiveUri,
+                                classLoaderId,
                                 cl,
                                 injectorFactory,
                                 activator,

@@ -19,8 +19,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ZoneProvisionCommandExecutor"/>
     </component>
 
-    <component name="ZoneContributionUriResolver" f3-core:key="http">
-        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ZoneContributionUriResolver"/>
+    <component name="ZoneContributionUriResolverExtension">
+        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ZoneContributionResolverExtension"/>
     </component>
 
 </composite>

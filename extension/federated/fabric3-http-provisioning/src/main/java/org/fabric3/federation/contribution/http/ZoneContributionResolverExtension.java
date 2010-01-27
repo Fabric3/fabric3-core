@@ -40,37 +40,30 @@ package org.fabric3.federation.contribution.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.artifact.ArtifactCache;
-import org.fabric3.spi.artifact.CacheException;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.contribution.ContributionUriResolver;
+import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.ZoneTopologyService;
 
 /**
- * Resolves contributions using the <code>http</code> scheme, copying them to a local archive store. Resolution is done by first querying a zone
- * leader for the contribution URL. If the current runtime is the zone leader, the controller is queried for the contribution URL.
+ * Resolves contributions in a domain. Resolution is done by first querying a zone leader for the contribution URL. If the current runtime is the zone
+ * leader, the controller is queried for the contribution URL.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ZoneContributionUriResolver implements ContributionUriResolver {
-    private ArtifactCache cache;
+public class ZoneContributionResolverExtension implements ContributionResolverExtension {
     private ZoneTopologyService topologyService;
     private SerializationService serializationService;
     private long defaultTimeout = 10000;
 
-    public ZoneContributionUriResolver(@Reference ArtifactCache cache,
-                                       @Reference ZoneTopologyService topologyService,
-                                       @Reference SerializationService serializationService) {
-        this.cache = cache;
+    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService, @Reference SerializationService serializationService) {
         this.topologyService = topologyService;
         this.serializationService = serializationService;
     }
@@ -80,16 +73,7 @@ public class ZoneContributionUriResolver implements ContributionUriResolver {
         this.defaultTimeout = defaultTimeout;
     }
 
-    public URI decode(URI uri) {
-        return uri;
-    }
-
-    public URL resolve(URI uri) throws ResolutionException {
-        URI contributionUri = URI.create(uri.getAuthority());
-        URL url = cache.get(contributionUri);
-        if (url != null) {
-            return url;
-        }
+    public InputStream resolve(URI contributionUri) throws ResolutionException {
         String zoneLeader = topologyService.getZoneLeader();
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
@@ -103,31 +87,14 @@ public class ZoneContributionUriResolver implements ContributionUriResolver {
                 val = topologyService.sendSynchronousControllerMessage(message, defaultTimeout);
             }
             ProvisionResponse response = serializationService.deserialize(ProvisionResponse.class, val);
-            // provision and cache the contribution
-            InputStream stream = response.getContributionUrl().openStream();
-            return cache.cache(contributionUri, stream);
+            return response.getContributionUrl().openStream();
         } catch (MessageException e) {
             throw new ResolutionException(e);
         } catch (IOException e) {
             throw new ResolutionException(e);
         } catch (ClassNotFoundException e) {
             throw new ResolutionException(e);
-        } catch (CacheException e) {
-            throw new ResolutionException(e);
         }
     }
-
-    public void release(URI uri) throws ResolutionException {
-        try {
-            cache.release(uri);
-        } catch (CacheException e) {
-            throw new ResolutionException("Error releasing artifact: " + uri, e);
-        }
-    }
-
-    public int getInUseCount(URI uri) {
-        return cache.getCount(uri);
-    }
-
 
 }

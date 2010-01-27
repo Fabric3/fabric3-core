@@ -58,10 +58,6 @@ public abstract class RegistrationException extends ComponentException {
         super(message);
     }
 
-    public RegistrationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public RegistrationException(String message, Throwable cause) {
         super(message, cause);
     }

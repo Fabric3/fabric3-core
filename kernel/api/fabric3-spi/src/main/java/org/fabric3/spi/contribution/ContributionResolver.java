@@ -35,21 +35,43 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution;
+package org.fabric3.spi.contribution;
 
 import java.net.URI;
+import java.net.URL;
 
-import org.fabric3.spi.contribution.ContributionUriEncoder;
 
 /**
- * An no-op encoder used when provisioning contributions to the same VM. Locally provisioned contribution URIs do not need to be encoded as they can
- * be directly resolved against the local contribution store.
+ * Implementations resolve contribution artifacts in a domain to a local cache
  *
  * @version $Rev$ $Date$
  */
-public class LocalContributionUriEncoder implements ContributionUriEncoder {
+public interface ContributionResolver {
 
-    public URI encode(URI uri) {
-        return uri;
-    }
+    /**
+     * Resolves the contribution artifact associated with the URI, returning a local URL by which it may be dereferenced. Resolving the artifact also
+     * increments the in-use count.
+     *
+     * @param contributionURI the contribution URI
+     * @return the local dereferenceable URL for the artifact
+     * @throws ResolutionException if an error occurs resolving the artifact
+     */
+    URL resolve(URI contributionURI) throws ResolutionException;
+
+    /**
+     * Releases a previously resolved contribution. If the in-use count reaches 0, the artifact can be evicted.
+     *
+     * @param uri the contribution  URI.
+     * @throws ResolutionException if an error occurs releasing the artifact
+     */
+    void release(URI uri) throws ResolutionException;
+
+    /**
+     * Returns the in-use count of a contribution.
+     *
+     * @param uri the artifact
+     * @return the in-use count
+     */
+    int getInUseCount(URI uri);
+
 }

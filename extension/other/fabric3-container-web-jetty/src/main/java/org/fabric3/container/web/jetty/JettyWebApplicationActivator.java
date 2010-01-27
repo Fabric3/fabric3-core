@@ -61,7 +61,7 @@ import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.contribution.ContributionUriResolver;
+import org.fabric3.spi.contribution.ContributionResolver;
 
 /**
  * Activates a web application in an embedded Jetty instance.
@@ -71,27 +71,19 @@ import org.fabric3.spi.contribution.ContributionUriResolver;
 public class JettyWebApplicationActivator implements WebApplicationActivator {
     private JettyService jettyService;
     private ClassLoaderRegistry classLoaderRegistry;
+    private ContributionResolver resolver;
     private WebApplicationActivatorMonitor monitor;
     private Map<URI, Holder> mappings;
-    private Map<String, ContributionUriResolver> resolvers;
 
     public JettyWebApplicationActivator(@Reference JettyService jettyService,
                                         @Reference ClassLoaderRegistry classLoaderRegistry,
+                                        @Reference ContributionResolver resolver,
                                         @Monitor WebApplicationActivatorMonitor monitor) {
         this.jettyService = jettyService;
+        this.resolver = resolver;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
         mappings = new ConcurrentHashMap<URI, Holder>();
-    }
-
-    /**
-     * Lazily injects the contribution URI resolvers that may be supplied by extensions.
-     *
-     * @param resolvers the resolvers keyed by URI scheme
-     */
-    @Reference
-    public void setContributionUriResolver(Map<String, ContributionUriResolver> resolvers) {
-        this.resolvers = resolvers;
     }
 
     public ClassLoader getWebComponentClassLoader(URI componentId) {
@@ -107,7 +99,6 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         if (mappings.containsKey(uri)) {
             throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
         }
-        ContributionUriResolver resolver = getResolver(uri);
         try {
             // resolve the url to a local artifact
             URL resolved = resolver.resolve(uri);
@@ -196,18 +187,6 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         public WebAppContext getContext() {
             return context;
         }
-    }
-
-    private ContributionUriResolver getResolver(URI uri) throws WebApplicationActivationException {
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            scheme = ContributionUriResolver.LOCAL_SCHEME;
-        }
-        ContributionUriResolver resolver = resolvers.get(scheme);
-        if (resolver == null) {
-            throw new WebApplicationActivationException("Contribution resolver for scheme not found: " + scheme);
-        }
-        return resolver;
     }
 
 }

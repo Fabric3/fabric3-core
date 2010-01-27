@@ -38,7 +38,6 @@
 package org.fabric3.fabric.generator.classloader;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,7 +54,6 @@ import org.fabric3.fabric.command.UnprovisionClassloaderCommand;
 import org.fabric3.host.Names;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -87,22 +85,10 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  */
 public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenerator {
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
-    private ContributionUriEncoder encoder;
     private DependencyService dependencyService;
 
     public ClassLoaderCommandGeneratorImpl(@Reference Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators) {
         this.generators = generators;
-    }
-
-    /**
-     * Setter for injecting the service for encoding contribution URIs so they may be derferenced in a domain. This is done lazily as the encoder is
-     * supplied by an extension which is intialized after this component which is needed during bootstrap.
-     *
-     * @param encoder the encoder to inject
-     */
-    @Reference(required = false)
-    public void setEncoder(ContributionUriEncoder encoder) {
-        this.encoder = encoder;
     }
 
     /**
@@ -178,17 +164,11 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
             String zone = entry.getKey();
             for (Contribution contribution : entry.getValue()) {
                 URI uri = contribution.getUri();
-                if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)){
+                if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)) {
                     continue;
                 }
                 PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri);
-                if (zone == null) {
-                    // If the contribution is provisioned to this runtime, its URI should not be encoded
-                    definition.setContributionUri(uri);
-                } else {
-                    URI encoded = encode(uri);
-                    definition.setContributionUri(encoded);
-                }
+                definition.setContributionUri(uri);
                 List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
                 for (ContributionWire<?, ?> wire : contributionWires) {
                     ClassLoaderWireGenerator generator = generators.get(wire.getClass());
@@ -248,26 +228,6 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 }
             }
         }
-    }
-
-    /**
-     * Encodes a contribution URI to one that is derferenceable from a runtime in the domain
-     *
-     * @param uri the contribution URI
-     * @return a URI that is derferenceable in the domain
-     * @throws GenerationException if the URI cannot be encoded
-     */
-    private URI encode(URI uri) throws GenerationException {
-        if (encoder != null) {
-            try {
-                return encoder.encode(uri);
-            } catch (URISyntaxException e) {
-                throw new GenerationException(e);
-            }
-        }
-        return uri;
-
-
     }
 
 }

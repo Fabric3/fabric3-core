@@ -19,11 +19,4 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ControllerProvisionCommandExecutor"/>
     </component>
     
-    <component name="ContributionUriEncoder">
-        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ContributionUriEncoderImpl"/>
-    </component>
-
-    <wire source="ClassLoaderGenerator/encoder" target="ContributionUriEncoder"/>
-    <wire source="ExtensionGenerator/encoder" target="ContributionUriEncoder"/>
-
 </composite>

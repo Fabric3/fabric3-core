@@ -37,54 +37,24 @@
 */
 package org.fabric3.spi.contribution;
 
+import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 
 
 /**
- * Implementations resolve contribution artifacts in a domain to a local cache
+ * Implementations resolve contribution artifacts in a domain.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7146 $ $Date: 2009-06-14 16:28:54 -0700 (Sun, 14 Jun 2009) $
  */
-public interface ContributionUriResolver {
+public interface ContributionResolverExtension {
 
     /**
-     * The scheme for local resolution.
-     */
-    String LOCAL_SCHEME = "local";
-
-    /**
-     * Decodes a URI.
+     * Resolves the contribution artifact associated with the URI, returning an InputStream.
      *
-     * @param uri the uri
-     * @return the decoded uri
-     */
-    public URI decode(URI uri);
-
-    /**
-     * Resolves the contribution artifact associated with the URI, returning a local URL by which it may be dereferenced. Resolving the artifact also
-     * increments the in-use count.
-     *
-     * @param contributionURI the contribution URI
-     * @return the local dereferenceable URL for the artifact
+     * @param contributionUri the contribution URI
+     * @return an input stream for the artifact
      * @throws ResolutionException if an error occurs resolving the artifact
      */
-    URL resolve(URI contributionURI) throws ResolutionException;
-
-    /**
-     * Releases a previously resolved contribution. If the in-use count reaches 0, the artifact will be evicted.
-     *
-     * @param uri the contribution  URI.
-     * @throws ResolutionException if an error occurs releasing the artifact
-     */
-    void release(URI uri) throws ResolutionException;
-
-    /**
-     * Returns the in-use count if the resolver does not support caching.
-     *
-     * @param uri the artifact
-     * @return the in-use count
-     */
-    int getInUseCount(URI uri);
+    InputStream resolve(URI contributionUri) throws ResolutionException;
 
 }

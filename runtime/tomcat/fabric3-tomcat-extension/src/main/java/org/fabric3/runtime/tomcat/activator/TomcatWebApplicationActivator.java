@@ -60,12 +60,12 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
+import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.contribution.ContributionUriResolver;
-import org.fabric3.runtime.tomcat.servlet.ServletHostException;
+import org.fabric3.spi.contribution.ContributionResolver;
 
 /**
  * Activates a web component in the host Tomcat runtime.
@@ -75,26 +75,19 @@ import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private Service service;
     private ClassLoaderRegistry classLoaderRegistry;
-    private Map<String, ContributionUriResolver> resolvers;
+    private ContributionResolver resolver;
     // default tomcat port
     private int defaultHttpPort = 8080;
     private Connector defaultHttpConnector;
     // mappings from component URI to Tomcat context path
     private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
 
-    public TomcatWebApplicationActivator(@Reference Service service, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public TomcatWebApplicationActivator(@Reference Service service,
+                                         @Reference ClassLoaderRegistry registry,
+                                         @Reference ContributionResolver resolver) {
         this.service = service;
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    /**
-     * Lazily injects the contribution URI resolvers that may be supplied by extensions.
-     *
-     * @param resolvers the resolvers keyed by URI scheme
-     */
-    @Reference
-    public void setContributionUriResolver(Map<String, ContributionUriResolver> resolvers) {
-        this.resolvers = resolvers;
+        this.classLoaderRegistry = registry;
+        this.resolver = resolver;
     }
 
     @Property
@@ -128,7 +121,6 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         if (mappings.containsKey(uri)) {
             throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
         }
-        ContributionUriResolver resolver = getResolver(uri);
         contextPath = "/" + contextPath;
         try {
             // resolve the url to a local artifact
@@ -175,18 +167,6 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
         ClassLoader cl = classLoaderRegistry.getClassLoader(parentClassLoaderId);
         return new MultiParentClassLoader(id, cl);
-    }
-
-    private ContributionUriResolver getResolver(URI uri) throws WebApplicationActivationException {
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            scheme = ContributionUriResolver.LOCAL_SCHEME;
-        }
-        ContributionUriResolver resolver = resolvers.get(scheme);
-        if (resolver == null) {
-            throw new WebApplicationActivationException("Contribution resolver for scheme not found: " + scheme);
-        }
-        return resolver;
     }
 
     public StandardContext createContext(String path, String docBase, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {

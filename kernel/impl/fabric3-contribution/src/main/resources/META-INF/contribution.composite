@@ -144,13 +144,8 @@
         <f3-impl:implementation.system class="org.fabric3.contribution.manifest.OSGiManifestHandler"/>
     </component>
 
-    <component name="LocalContributionUriEncoder">
-        <f3-impl:implementation.system
-                class="org.fabric3.contribution.LocalContributionUriEncoder"/>
-    </component>
-
     <component name="LocalContributionUriResolver" f3-core:key="local">
-        <f3-impl:implementation.system class="org.fabric3.contribution.LocalContributionUriResolver"/>
+        <f3-impl:implementation.system class="org.fabric3.contribution.DefaultContributionResolver"/>
     </component>
 
     <component name="ContentTypeResolver">

@@ -38,7 +38,6 @@
 package org.fabric3.fabric.generator.extension;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +61,6 @@ import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.generator.GenerationException;
@@ -82,22 +80,10 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 public class ExtensionGeneratorImpl implements ExtensionGenerator {
     private MetaDataStore store;
     private HostInfo info;
-    private ContributionUriEncoder encoder;
 
     public ExtensionGeneratorImpl(@Reference MetaDataStore store, @Reference HostInfo info) {
         this.store = store;
         this.info = info;
-    }
-
-    /**
-     * Setter for injecting the service for encoding contribution URIs so they may be derferenced in a domain. This is done lazily as the encoder is
-     * supplied by an extension which is intialized after this component which is needed during bootstrap.
-     *
-     * @param encoder the encoder to inject
-     */
-    @Reference(required = false)
-    public void setEncoder(ContributionUriEncoder encoder) {
-        this.encoder = encoder;
     }
 
     public Map<String, Command> generate(Map<String, List<Contribution>> contributions,
@@ -155,8 +141,8 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                 extensions.addAll(required);
             }
             for (Contribution extension : extensions) {
-                URI encoded = encode(extension.getUri());
-                command.addExtensionUri(encoded);
+                URI uri = extension.getUri();
+                command.addExtensionUri(uri);
             }
             if (!command.getExtensionUris().isEmpty()) {
                 commands.put(zone, command);
@@ -231,9 +217,8 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
         }
         for (Contribution extension : extensions) {
             URI uri = extension.getUri();
-            URI encoded = encode(uri);
-            if (!command.getExtensionUris().contains(encoded) && !Names.HOST_CONTRIBUTION.equals(uri) && !Names.BOOT_CONTRIBUTION.equals(uri)) {
-                command.addExtensionUri(encoded);
+            if (!command.getExtensionUris().contains(uri) && !Names.HOST_CONTRIBUTION.equals(uri) && !Names.BOOT_CONTRIBUTION.equals(uri)) {
+                command.addExtensionUri(uri);
             }
         }
     }
@@ -302,11 +287,10 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                     continue;
                 }
                 AbstractExtensionsCommand command = getExtensionsCommand(commands, zone, type);
-                URI encoded = encode(contributionUri);
-                if (!command.getExtensionUris().contains(encoded)
+                if (!command.getExtensionUris().contains(contributionUri)
                         && !Names.HOST_CONTRIBUTION.equals(contributionUri)
                         && !Names.BOOT_CONTRIBUTION.equals(contributionUri)) {
-                    command.addExtensionUri(encoded);
+                    command.addExtensionUri(contributionUri);
                 }
                 commands.put(zone, command);
                 addDependencies(contribution, command);
@@ -343,18 +327,17 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
             URI importedUri = wire.getExportContributionUri();
             Contribution imported = store.find(importedUri);
             addDependencies(imported, command);
-            URI encoded = encode(importedUri);
-            if (!command.getExtensionUris().contains(encoded)
+            if (!command.getExtensionUris().contains(importedUri)
                     && !Names.HOST_CONTRIBUTION.equals(importedUri)
                     && !Names.BOOT_CONTRIBUTION.equals(importedUri)) {
-                command.addExtensionUri(encoded);
+                command.addExtensionUri(importedUri);
             }
         }
         Set<Contribution> capabilities = store.resolveCapabilities(contribution);
         for (Contribution capability : capabilities) {
-            URI encoded = encode(capability.getUri());
-            if (!command.getExtensionUris().contains(encoded)) {
-                command.addExtensionUri(encoded);
+            URI uri = capability.getUri();
+            if (!command.getExtensionUris().contains(uri)) {
+                command.addExtensionUri(uri);
             }
         }
 
@@ -382,25 +365,5 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
         return command;
     }
 
-
-    /**
-     * Encodes a contribution URI to one that is derferenceable from a runtime in the domain.
-     *
-     * @param uri the contribution URI
-     * @return a URI that is derferenceable in the domain
-     * @throws GenerationException if the URI cannot be encoded
-     */
-    private URI encode(URI uri) throws GenerationException {
-        if (encoder != null) {
-            try {
-                return encoder.encode(uri);
-            } catch (URISyntaxException e) {
-                throw new GenerationException(e);
-            }
-        }
-        return uri;
-
-
-    }
 
 }

@@ -37,7 +37,6 @@
 */
 package org.fabric3.implementation.web.provision;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,19 +50,10 @@ import org.fabric3.spi.model.type.java.InjectionSite;
  */
 public class WebComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 2871569095506575868L;
-    private URI contributionUri;
     private String contextUrl;
     // map of resource id to injection site name/InjectionSite pair
     private Map<String, Map<String, InjectionSite>> injectionSiteMappings = new HashMap<String, Map<String, InjectionSite>>();
     private final Map<String, Document> propertyValues = new HashMap<String, Document>();
-
-    public URI getContributionUri() {
-        return contributionUri;
-    }
-
-    public void setContributionUri(URI contributionUri) {
-        this.contributionUri = contributionUri;
-    }
 
     public Map<String, Map<String, InjectionSite>> getInjectionSiteMappings() {
         return injectionSiteMappings;

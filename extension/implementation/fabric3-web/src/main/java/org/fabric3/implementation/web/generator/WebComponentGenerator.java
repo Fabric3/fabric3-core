@@ -38,7 +38,6 @@
 package org.fabric3.implementation.web.generator;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +62,6 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -88,11 +86,9 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class WebComponentGenerator implements ComponentGenerator<LogicalComponent<WebImplementation>> {
     private HostInfo info;
-    private ContributionUriEncoder encoder;
 
-    public WebComponentGenerator(@Reference HostInfo info, @Reference ContributionUriEncoder encoder) {
+    public WebComponentGenerator(@Reference HostInfo info) {
         this.info = info;
-        this.encoder = encoder;
     }
 
     public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws GenerationException {
@@ -106,17 +102,6 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         Map<String, Map<String, InjectionSite>> sites = generateInjectionMapping(componentType);
         physical.setInjectionMappings(sites);
         processPropertyValues(component, physical);
-        if (component.getZone() == null) {
-            physical.setContributionUri(definition.getContributionUri());
-        } else {
-            URI encoded;
-            try {
-                encoded = encoder.encode(definition.getContributionUri());
-            } catch (URISyntaxException e) {
-                throw new GenerationException(e);
-            }
-            physical.setContributionUri(encoded);
-        }
         return physical;
     }
 

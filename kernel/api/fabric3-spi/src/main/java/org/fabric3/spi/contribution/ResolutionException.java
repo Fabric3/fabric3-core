@@ -49,14 +49,6 @@ public class ResolutionException extends ContributionException {
         super(message);
     }
 
-    public ResolutionException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public ResolutionException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
     public ResolutionException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -59,15 +59,14 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
-import org.fabric3.spi.contribution.ContributionUriEncoder;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
@@ -88,7 +87,6 @@ import org.fabric3.xquery.scdl.XQueryServiceContract;
  */
 @EagerInit
 public class XQueryComponentGenerator implements ComponentGenerator<LogicalComponent<XQueryImplementation>> {
-    private ContributionUriEncoder encoder;
     private ContractMatcher matcher;
 
     public XQueryComponentGenerator(@Reference ContractMatcher matcher) {

@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 
 import org.fabric3.contribution.ClasspathProcessorRegistryImpl;
-import org.fabric3.contribution.LocalContributionUriResolver;
+import org.fabric3.contribution.DefaultContributionResolver;
 import org.fabric3.contribution.archive.JarClasspathProcessor;
 import org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl;
 import org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl;
@@ -78,7 +78,7 @@ import org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor;
 import org.fabric3.fabric.executor.ReferenceConnectionCommandExecutor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
-import org.fabric3.spi.generator.Generator;
+import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl;
@@ -157,14 +157,13 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.contribution.ContributionUriResolver;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
-import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -332,15 +331,11 @@ public class BootstrapAssemblyFactory {
                                                                ComponentManager componentManager,
                                                                HostInfo info) {
 
-        LocalContributionUriResolver resolver = new LocalContributionUriResolver(metaDataStore);
-        Map<String, ContributionUriResolver> resolvers = new HashMap<String, ContributionUriResolver>();
-        resolvers.put(ContributionUriResolver.LOCAL_SCHEME, resolver);
+        DefaultContributionResolver resolver = new DefaultContributionResolver(metaDataStore);
         JarClasspathProcessor classpathProcessor = new JarClasspathProcessor(cpRegistry, info);
         classpathProcessor.init();
         ClassLoaderWireBuilder wireBuilder = new ClassLoaderWireBuilderImpl(classLoaderRegistry);
-        ClassLoaderBuilderImpl builder = new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, cpRegistry, componentManager, info);
-        builder.setContributionUriResolver(resolvers);
-        return builder;
+        return new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, cpRegistry, componentManager,resolver, info);
     }
 
     private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {

@@ -37,48 +37,87 @@
 */
 package org.fabric3.contribution;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.spi.artifact.CacheException;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionUriResolver;
+import org.fabric3.spi.contribution.ContributionResolver;
+import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
 
 /**
- * Resolves contribution URIs locally (i.e. in the same runtime VM).
+ * Default implementation of the <code>ContributionResolver</code> which attempts to resolves a contribution URI against the metadata store, artifact
+ * cache, or by delegating to <code>ContributionResolverExtension</code>s respectively.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class LocalContributionUriResolver implements ContributionUriResolver {
+public class DefaultContributionResolver implements ContributionResolver {
     private MetaDataStore store;
+    private ArtifactCache cache;
+    private List<ContributionResolverExtension> extensions;
 
-    public LocalContributionUriResolver(@Reference MetaDataStore store) {
+    public DefaultContributionResolver(MetaDataStore store) {
         this.store = store;
     }
 
-    public URI decode(URI uri) {
-        return uri;
+    @Constructor
+    public DefaultContributionResolver(@Reference MetaDataStore store, @Reference ArtifactCache cache) {
+        this.store = store;
+        this.cache = cache;
+        extensions = Collections.emptyList();
+    }
+
+    @Reference(required = false)
+    public void setExtensions(List<ContributionResolverExtension> extensions) {
+        this.extensions = extensions;
     }
 
     public URL resolve(URI uri) throws ResolutionException {
         Contribution contribution = store.find(uri);
-        if (contribution == null) {
-            String id = uri.toString();
-            throw new ResolutionException("Contribution not found: " + id, id);
+        if (contribution != null) {
+            return contribution.getLocation();
         }
-        return contribution.getLocation();
+
+        URL url = cache.get(uri);
+        if (url != null) {
+            return url;
+        }
+
+        for (ContributionResolverExtension extension : extensions) {
+            // provision and cache the contribution
+            InputStream stream = extension.resolve(uri);
+            if (stream != null) {
+                try {
+                    return cache.cache(uri, stream);
+                } catch (CacheException e) {
+                    throw new ResolutionException("Error resolving contribution: " + uri, e);
+                }
+            }
+        }
+        throw new ResolutionException("Contribution not found: " + uri);
     }
 
     public void release(URI uri) throws ResolutionException {
-
+        try {
+            cache.release(uri);
+        } catch (CacheException e) {
+            throw new ResolutionException("Error releasing artifact: " + uri, e);
+        }
     }
 
     public int getInUseCount(URI uri) {
-        return 0;
+        return cache.getCount(uri);
     }
+
 }
