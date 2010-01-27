@@ -132,7 +132,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
     public void detach(MetroWsdlSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         try {
             URI servicePath = source.getEndpointDefinition().getServicePath();
-            cache.release(servicePath);
+            cache.remove(servicePath);
         } catch (CacheException e) {
             throw new WiringException(e);
         }

@@ -74,6 +74,6 @@ public interface ArtifactCache {
      * @return returns true if the artifact was evicted
      * @throws CacheException if an error occurs releasing the artifact
      */
-    boolean release(URI uri) throws CacheException;
+    boolean remove(URI uri) throws CacheException;
 
 }

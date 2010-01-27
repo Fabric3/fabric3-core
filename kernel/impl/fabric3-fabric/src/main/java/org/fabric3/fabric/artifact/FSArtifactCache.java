@@ -107,7 +107,7 @@ public class FSArtifactCache implements ArtifactCache {
         return entry.getEntryURL();
     }
 
-    public synchronized boolean release(URI uri) {
+    public synchronized boolean remove(URI uri) {
         Entry entry = entries.get(uri);
         if (entry == null) {
             return false;

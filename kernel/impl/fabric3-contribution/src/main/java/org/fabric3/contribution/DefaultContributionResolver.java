@@ -110,7 +110,7 @@ public class DefaultContributionResolver implements ContributionResolver {
 
     public void release(URI uri) throws ResolutionException {
         try {
-            cache.release(uri);
+            cache.remove(uri);
         } catch (CacheException e) {
             throw new ResolutionException("Error releasing artifact: " + uri, e);
         }

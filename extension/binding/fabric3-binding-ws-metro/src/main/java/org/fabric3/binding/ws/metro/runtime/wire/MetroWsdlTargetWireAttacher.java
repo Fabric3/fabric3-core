@@ -127,7 +127,7 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
 
     public void detach(PhysicalSourceDefinition source, MetroWsdlTargetDefinition target) throws WiringException {
         try {
-            cache.release(target.getUri());
+            cache.remove(target.getUri());
         } catch (CacheException e) {
             throw new WiringException(e);
         }
