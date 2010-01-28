@@ -20,6 +20,8 @@ Public License. See the accompanying license file for details.
 
     <component name="ZoneTopologyService">
         <f3-impl:implementation.system class="org.fabric3.federation.jgroups.JGroupsZoneTopologyService"/>
+        <property name="runtimeId" source="$systemConfig//federation/runtimeName"/>
+        <property name="zoneName" source="$systemConfig//federation/zoneName"/>
         <property name="transportMetadata" source="$systemConfig//federation/transport/*"/>
     </component>
 
