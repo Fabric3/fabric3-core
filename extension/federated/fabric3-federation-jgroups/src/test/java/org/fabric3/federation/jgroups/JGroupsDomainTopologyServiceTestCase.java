@@ -59,7 +59,7 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
 
         Thread.sleep(8000);
         // message should be received by both services in the different zones
-        domainTopologyService.broadcastMessage(serializedCommand);
+        domainTopologyService.broadcast(command);
 
         Thread.sleep(1000);
 
@@ -83,7 +83,7 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         JGroupsZoneTopologyService zoneTopologyService2 = createAndJoin("service2", "domain2");
 
         // service2 should not receive any messages since it is in a different zone
-        domainTopologyService.broadcastMessage("default.zone", serializedCommand);
+        domainTopologyService.broadcast("default.zone", command);
 
         Thread.sleep(1000);
 
@@ -106,8 +106,8 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         JGroupsZoneTopologyService zoneTopologyService2 = createAndJoin("service2");
 
         // send messages to both services
-        domainTopologyService.sendSynchronousMessage(zoneTopologyService.getRuntimeName(), serializedCommand, 2000);
-        domainTopologyService.sendSynchronousMessage(zoneTopologyService2.getRuntimeName(), serializedCommand, 2000);
+        domainTopologyService.sendSynchronous(zoneTopologyService.getRuntimeName(), command, 2000);
+        domainTopologyService.sendSynchronous(zoneTopologyService2.getRuntimeName(), command, 2000);
 
         Thread.sleep(1000);
 
@@ -130,7 +130,7 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         JGroupsZoneTopologyService zoneTopologyService2 = createAndJoin("service2");
 
         // should send messages to both services as they are in the same zone
-        domainTopologyService.sendSynchronousMessageToZone("default.zone", serializedCommand, 2000);
+        domainTopologyService.sendSynchronousToZone("default.zone", command, 2000);
 
         Thread.sleep(1000);
 

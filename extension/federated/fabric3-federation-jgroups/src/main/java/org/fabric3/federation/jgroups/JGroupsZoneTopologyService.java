@@ -72,6 +72,7 @@ import org.fabric3.federation.command.ZoneMetadataResponse;
 import org.fabric3.federation.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -174,31 +175,32 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return UUID.get(address);
     }
 
-    public void broadcastMessage(byte[] payload) throws MessageException {
+    public void broadcast(Command command) throws MessageException {
         // null address will send to everyone
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
         for (Address address : addresses) {
-            sendAsync(address, payload);
+            sendAsync(address, command);
         }
     }
 
-    public void sendAsynchronousMessage(String runtimeName, byte[] payload) throws MessageException {
+    public void sendAsynchronous(String runtimeName, Command command) throws MessageException {
         Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
-        sendAsync(address, payload);
+        sendAsync(address, command);
     }
 
-    public Response sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException {
+    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
         if (address == null) {
             throw new MessageException("Runtme not found: " + runtimeName);
         }
-        return send(address, payload, timeout);
+        return send(address, command, timeout);
     }
 
-    public List<Response> sendSynchronousMessage(byte[] payload, long timeout) throws MessageException {
+    public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
         List<Response> values = new ArrayList<Response>();
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
         Vector<Address> dest = new Vector<Address>(addresses);
+        byte[] payload = helper.serialize(command);
         Message message = new Message(null, domainChannel.getAddress(), payload);
         RspList responses = domainDispatcher.castMessage(dest, message, GroupRequest.GET_ALL, timeout);
         for (Map.Entry<Address, Rsp> entry : responses.entrySet()) {
@@ -210,20 +212,20 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return values;
     }
 
-    public Response sendSynchronousControllerMessage(byte[] payload, long timeout) throws MessageException {
+    public Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException {
         Address controller = helper.getController(domainChannel.getView());
         if (controller == null) {
             throw new ControllerNotFoundException("Controller could not be located");
         }
-        return send(controller, payload, timeout);
+        return send(controller, command, timeout);
     }
 
-    public void sendAsynchronousControllerMessage(byte[] payload) throws MessageException {
+    public void sendAsynchronousToController(Command command) throws MessageException {
         Address controller = helper.getController(domainChannel.getView());
         if (controller == null) {
             throw new ControllerNotFoundException("Controller could not be located");
         }
-        sendAsync(controller, payload);
+        sendAsync(controller, command);
     }
 
     Fabric3EventListener<JoinDomain> getJoinListener() {
@@ -244,9 +246,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return domainName + ":participant:" + zoneName + ":" + runtimeId;
     }
 
-    private Response send(Address address, byte[] payload, long timeout) throws MessageException {
+    private Response send(Address address,Command command, long timeout) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();
+            byte[] payload = helper.serialize(command);
             Message message = new Message(address, sourceAddress, payload);
             Object val = domainDispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
             assert val instanceof byte[] : " expected byte[] for response";
@@ -258,9 +261,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-    private void sendAsync(Address adddress, byte[] payload) throws MessageException {
+    private void sendAsync(Address adddress, Command command) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();
+            byte[] payload = helper.serialize(command);
             Message message = new Message(adddress, sourceAddress, payload);
             domainChannel.send(message);
         } catch (ChannelClosedException e) {
@@ -309,15 +313,14 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private void update(Address address) throws MessageException {
         String name = UUID.get(address);
         monitor.updating(name);
-        RuntimeUpdateCommand commmand = new RuntimeUpdateCommand(runtimeName, zoneName, null);
-        byte[] serialized = helper.serialize(commmand);
-        Response response = send(address, serialized, defaultTimeout);
+        RuntimeUpdateCommand command = new RuntimeUpdateCommand(runtimeName, zoneName, null);
+        Response response = send(address, command, defaultTimeout);
         assert response instanceof Command;
-        Command command = (Command) response;
+        Command responseCommand = (Command) response;
         // mark synchronized here to avoid multiple retries in case a deployment error is encountered
         state = UPDATED;
         try {
-            executorRegistry.execute(command);
+            executorRegistry.execute(responseCommand);
         } catch (ExecutionException e) {
             throw new MessageException(e);
         }

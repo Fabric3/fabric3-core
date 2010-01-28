@@ -46,7 +46,7 @@ public class UnprovisionClassloaderCommand implements Command {
 
     private final URI uri;
 
-    public UnprovisionClassloaderCommand(int order, URI uri) {
+    public UnprovisionClassloaderCommand(URI uri) {
         this.uri = uri;
         assert uri != null;
     }

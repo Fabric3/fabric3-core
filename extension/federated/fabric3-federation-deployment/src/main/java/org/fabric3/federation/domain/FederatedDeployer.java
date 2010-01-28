@@ -53,6 +53,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.command.DeploymentCommand;
+import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
@@ -64,6 +65,7 @@ import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.topology.RemoteSystemException;
 import org.fabric3.spi.topology.Response;
 
 /**
@@ -100,11 +102,21 @@ public class FederatedDeployer implements Deployer {
             try {
                 monitor.deploy(zone);
 
-                Command command = createCommand(zone, currentDeployment, fullDeployment);
+                DeploymentCommand command = createCommand(zone, currentDeployment, fullDeployment);
 
-                byte[] serialized = serializationService.serialize(command);
+                List<Response> responses = topologyService.sendSynchronousToZone(zone, command, timeout);
+                for (Response response : responses) {
+                    if (response instanceof RemoteSystemException) {
 
-                List<Response> serializedResponses = topologyService.sendSynchronousMessageToZone(zone, serialized, timeout);
+                    } else if (response instanceof DeploymentResponse) {
+                        DeploymentResponse deploymentResponse = (DeploymentResponse)response;
+                        if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
+                            
+                        }
+                    } else {
+                        throw new DeploymentException("Unknown response type: " + response);
+                    }
+                }
                 // TODO check responses
             } catch (IOException e) {
                 throw new DeploymentException(e);
@@ -114,7 +126,7 @@ public class FederatedDeployer implements Deployer {
         }
     }
 
-    private Command createCommand(String zone, Deployment currentDeployment, Deployment fullDeployment) throws IOException {
+    private DeploymentCommand createCommand(String zone, Deployment currentDeployment, Deployment fullDeployment) throws IOException {
         DeploymentUnit currentDeploymentUnit = currentDeployment.getDeploymentUnit(zone);
         SerializedDeploymentUnit currentSerializedUnit = createSerializedUnit(currentDeploymentUnit);
         DeploymentUnit fullDeploymentUnit = fullDeployment.getDeploymentUnit(zone);

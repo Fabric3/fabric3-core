@@ -45,4 +45,5 @@ import java.io.Serializable;
  * @version $Rev$ $Date$
  */
 public interface Response extends Serializable {
+
 }

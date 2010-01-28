@@ -39,6 +39,9 @@ package org.fabric3.spi.topology;
 
 import java.util.List;
 
+import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
+
 /**
  * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and
  * provides low-level communications between a participant and other runtimes (a participant or controller). Higher-level communications semantics
@@ -70,59 +73,59 @@ public interface ZoneTopologyService {
     String getZoneLeader();
 
     /**
-     * Sends a message asynchronously to all runtimes in the zone.
+     * Sends a command asynchronously to all runtimes in the zone.
      *
-     * @param message the serialized message
+     * @param command the command
      * @throws MessageException if an error occurs sending the message
      */
-    void broadcastMessage(byte[] message) throws MessageException;
+    void broadcast(Command command) throws MessageException;
 
     /**
-     * Sends a message asynchronously to a runtime.
+     * Sends a command asynchronously to a runtime.
      *
      * @param runtimeName the runtime
-     * @param message     the serialized message
+     * @param command     the command
      * @throws MessageException if an error occurs sending the message
      */
-    void sendAsynchronousMessage(String runtimeName, byte[] message) throws MessageException;
+    void sendAsynchronous(String runtimeName, Command command) throws MessageException;
 
     /**
-     * Sends a message synchronously to a runtime.
+     * Sends a command synchronously to a runtime.
      *
      * @param runtimeName the runtime
-     * @param message     the serialized message
+     * @param command     the command
      * @param timeout     the time to wait on a response
      * @return the response
      * @throws MessageException if an error occurs sending the message
      */
-    Response sendSynchronousMessage(String runtimeName, byte[] message, long timeout) throws MessageException;
+    Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException;
 
     /**
-     * Sends a message synchronously to all runtimes in the zone.
+     * Sends a command synchronously to all runtimes in the zone.
      *
-     * @param message the serialized message
+     * @param command the command
      * @param timeout the timout to wait for responses
      * @return the responses
      * @throws MessageException if an error occurs sending the message
      */
-    List<Response> sendSynchronousMessage(byte[] message, long timeout) throws MessageException;
+    List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException;
 
     /**
-     * Sends a message synchronously to the controller.
+     * Sends a command synchronously to the controller.
      *
-     * @param message the serialized message
+     * @param command the command
      * @param timeout the time to wait on a response
      * @return the response
      * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
      */
-    Response sendSynchronousControllerMessage(byte[] message, long timeout) throws MessageException;
+    Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException;
 
     /**
-     * Sends a message asynchronously to the controller.
+     * Sends a command asynchronously to the controller.
      *
-     * @param message the serialized message
+     * @param command the command
      * @throws MessageException if an error occurs sending the message
      */
-    void sendAsynchronousControllerMessage(byte[] message) throws MessageException;
+    void sendAsynchronousToController(Command command) throws MessageException;
 
 }

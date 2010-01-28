@@ -37,7 +37,6 @@
 */
 package org.fabric3.federation.jgroups;
 
-import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.concurrent.Executor;
 
@@ -47,7 +46,7 @@ import org.jgroups.ChannelException;
 import org.jgroups.util.DirectExecutor;
 
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -63,7 +62,7 @@ public class AbstractJGroupsTestCase extends TestCase {
     protected CommandExecutorRegistry executorRegistry;
     protected JGroupsHelper helper;
     protected Executor executor;
-    protected byte[] serializedCommand;
+    protected ResponseCommand command;
     protected TopologyServiceMonitor monitor;
 
 
@@ -116,11 +115,7 @@ public class AbstractJGroupsTestCase extends TestCase {
         helper = new JGroupsHelperImpl(classLoaderRegistry);
         executor = new DirectExecutor(); //use the JBoss executor to avoid shutdown errors
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        MultiClassLoaderObjectOutputStream stream = new MultiClassLoaderObjectOutputStream(bos);
-        stream.writeObject(new MockCommand());
-        stream.flush();
-        serializedCommand = bos.toByteArray();
+        command = new MockCommand();
     }
 
 

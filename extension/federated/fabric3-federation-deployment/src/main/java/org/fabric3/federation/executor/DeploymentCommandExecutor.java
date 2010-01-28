@@ -74,7 +74,6 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
 
     public DeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                      @Reference ScopeRegistry scopeRegistry,
-                                     @Reference ClassLoaderRegistry classLoaderRegistry,
                                      @Reference DeploymentCache cache,
                                      @Reference SerializationService serializationService,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {

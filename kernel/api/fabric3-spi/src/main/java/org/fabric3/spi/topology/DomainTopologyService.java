@@ -39,6 +39,9 @@ package org.fabric3.spi.topology;
 
 import java.util.List;
 
+import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
+
 /**
  * Responsible for group communications across a federated (distributed) domain. Federated communication takes place between the controller
  * responsible for a domain and participating runtimes, which are partitioned into zones. This service is present only on controller runtimes in a
@@ -73,42 +76,42 @@ public interface DomainTopologyService {
     String getTransportMetaData(String zone, String transport);
 
     /**
-     * Sends a message asynchronously to all runtimes in the domain.
+     * Sends a command asynchronously to all runtimes in the domain.
      *
-     * @param payload the message payload
+     * @param command the command
      * @throws MessageException if there is an error sending the message
      */
-    void broadcastMessage(byte[] payload) throws MessageException;
+    void broadcast(Command command) throws MessageException;
 
     /**
-     * Sends a message asynchronously to all runtimes in a zoone.
+     * Sends a command asynchronously to all runtimes in a zoone.
      *
      * @param zoneName the zone
-     * @param payload  the message payload
+     * @param command  the command
      * @throws MessageException if there is an error sending the message
      */
-    void broadcastMessage(String zoneName, byte[] payload) throws MessageException;
+    void broadcast(String zoneName, Command command) throws MessageException;
 
     /**
-     * Sends a message synchronously to all runtimes in a zone.
+     * Sends a command synchronously to all runtimes in a zone.
      *
      * @param zoneName the zone
-     * @param payload  the message payload
+     * @param command  the command
      * @param timeout  the time to wait on a response
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    List<Response> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException;
+    List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, long timeout) throws MessageException;
 
     /**
-     * Sends a message synchronously to a runtime.
+     * Sends a command synchronously to a runtime.
      *
      * @param runtimeName the runtime
-     * @param payload     the message payload
+     * @param command     the command
      * @param timeout     the time to wait on a response
      * @return the response messages
      * @throws MessageException if there is an error sending the message
      */
-    Response sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException;
+    Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException;
 
 }

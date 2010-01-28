@@ -37,11 +37,16 @@
 */
 package org.fabric3.federation.jgroups;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.topology.Response;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MockCommand implements Command {
+public class MockCommand implements ResponseCommand {
     private static final long serialVersionUID = 2950612886615973972L;
+
+    public Response getResponse() {
+        return null;
+    }
 }

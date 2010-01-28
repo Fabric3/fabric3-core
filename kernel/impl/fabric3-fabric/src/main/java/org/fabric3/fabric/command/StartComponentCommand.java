@@ -73,11 +73,8 @@ public class StartComponentCommand implements Command {
 
         StartComponentCommand that = (StartComponentCommand) o;
 
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
-            return false;
-        }
+        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
 
-        return true;
     }
 
     public int hashCode() {

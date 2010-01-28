@@ -57,7 +57,7 @@ public class JGroupsZoneTopologyServiceTestCase extends AbstractJGroupsTestCase 
 
         Thread.sleep(500);
 
-        service1.broadcastMessage(serializedCommand);
+        service1.broadcast(command);
         // verify that service2 becomes the zone manager
         Thread.sleep(1000);
 
@@ -76,7 +76,7 @@ public class JGroupsZoneTopologyServiceTestCase extends AbstractJGroupsTestCase 
         JGroupsZoneTopologyService service2 = createAndJoin("service2");
         JGroupsZoneTopologyService service3 = createAndJoin("service2");
 
-        service1.sendSynchronousMessage(serializedCommand, 3000);
+        service1.sendSynchronous(command, 3000);
 
         stop(service1, service2, service3);
 
@@ -92,7 +92,7 @@ public class JGroupsZoneTopologyServiceTestCase extends AbstractJGroupsTestCase 
         JGroupsZoneTopologyService service1 = createAndJoin("service1");
         JGroupsZoneTopologyService service2 = createAndJoin("service2");
 
-        service1.sendSynchronousMessage(service2.getRuntimeName(), serializedCommand, 3000);
+        service1.sendSynchronous(service2.getRuntimeName(), command, 3000);
 
         stop(service1, service2);
 
@@ -112,7 +112,7 @@ public class JGroupsZoneTopologyServiceTestCase extends AbstractJGroupsTestCase 
 
         Thread.sleep(500);
 
-        service1.sendSynchronousControllerMessage(serializedCommand, 3000);
+        service1.sendSynchronousToController(command, 3000);
         // verify that service2 becomes the zone manager
         Thread.sleep(5000);
 

@@ -142,7 +142,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 throw new GenerationException(e);
             }
             for (Contribution contribution : ordered) {
-                UnprovisionClassloaderCommand command = new UnprovisionClassloaderCommand(7, contribution.getUri());
+                UnprovisionClassloaderCommand command = new UnprovisionClassloaderCommand(contribution.getUri());
                 commands.add(command);
             }
         }

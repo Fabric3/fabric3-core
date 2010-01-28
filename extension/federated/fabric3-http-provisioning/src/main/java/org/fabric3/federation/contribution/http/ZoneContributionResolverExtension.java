@@ -45,7 +45,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.topology.MessageException;
@@ -61,12 +60,10 @@ import org.fabric3.spi.topology.ZoneTopologyService;
 @EagerInit
 public class ZoneContributionResolverExtension implements ContributionResolverExtension {
     private ZoneTopologyService topologyService;
-    private SerializationService serializationService;
     private long defaultTimeout = 10000;
 
-    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService, @Reference SerializationService serializationService) {
+    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService) {
         this.topologyService = topologyService;
-        this.serializationService = serializationService;
     }
 
     @Property(required = false)
@@ -78,14 +75,13 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
         String zoneLeader = topologyService.getZoneLeader();
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
-            byte[] message = serializationService.serialize(command);
             Response val;
             if (!topologyService.isZoneLeader() && zoneLeader != null) {
                 // query the zone leader
-                val = topologyService.sendSynchronousMessage(zoneLeader, message, defaultTimeout);
+                val = topologyService.sendSynchronous(zoneLeader, command, defaultTimeout);
             } else {
                 // query the controller
-                val = topologyService.sendSynchronousControllerMessage(message, defaultTimeout);
+                val = topologyService.sendSynchronousToController(command, defaultTimeout);
             }
             ProvisionResponse response = (ProvisionResponse) val;
             return response.getContributionUrl().openStream();

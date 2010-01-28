@@ -68,6 +68,8 @@ import org.fabric3.federation.command.ControllerAvailableCommand;
 import org.fabric3.federation.command.ZoneMetadataResponse;
 import org.fabric3.federation.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -156,8 +158,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return null;
     }
 
-    public void broadcastMessage(String zoneName, byte[] payload) throws MessageException {
+    public void broadcast(String zoneName, Command command) throws MessageException {
         try {
+            byte[] payload = helper.serialize(command);
             List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
             for (Address address : addresses) {
                 Message message = new Message(address, domainChannel.getAddress(), payload);
@@ -170,7 +173,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public void broadcastMessage(byte[] payload) throws MessageException {
+    public void broadcast(Command command) throws MessageException {
+        byte[] payload = helper.serialize(command);
         Message message = new Message(null, domainChannel.getAddress(), payload);
         try {
             domainChannel.send(message);
@@ -181,8 +185,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public List<Response> sendSynchronousMessageToZone(String zoneName, byte[] payload, long timeout) throws MessageException {
+    public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, long timeout) throws MessageException {
         try {
+            byte[] payload = helper.serialize(command);
             List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
             List<Response> responses = new ArrayList<Response>(addresses.size());
             for (Address address : addresses) {
@@ -201,8 +206,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public Response sendSynchronousMessage(String runtimeName, byte[] payload, long timeout) throws MessageException {
+    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         try {
+            byte[] payload = helper.serialize(command);
             Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
             Message message = new Message(address, domainChannel.getAddress(), payload);
             Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
@@ -305,9 +311,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             try {
                 // broadcast availability
                 ControllerAvailableCommand command = new ControllerAvailableCommand(runtimeName);
-                byte[] payload = helper.serialize(command);
                 monitor.broadcastAvailability();
-                broadcastMessage(payload);
+                broadcast(command);
             } catch (MessageException e) {
                 monitor.error("Error broadcasting availability", e);
             }
@@ -330,11 +335,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
                 public void run() {
                     try {
-                        byte[] payload = helper.serialize(new ZoneMetadataUpdateCommand());
+                        ZoneMetadataUpdateCommand command = new ZoneMetadataUpdateCommand();
                         for (Address address : newZoneLeaders) {
                             String name = UUID.get(address);
                             monitor.metadataUpdateRequest(name);
-                            Response value = sendSynchronousMessage(name, payload, defaultTimeout);
+                            Response value = sendSynchronous(name, command, defaultTimeout);
                             ZoneMetadataResponse response = (ZoneMetadataResponse) value;
                             transportMetadata.put(response.getZone(), response.getMetadata());
                         }
