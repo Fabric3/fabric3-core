@@ -50,7 +50,7 @@ import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.util.io.IOHelper;
 
 /**
- * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cacge. The
+ * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cache. The
  * servlet path corresponds to the contribution URI.
  *
  * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
