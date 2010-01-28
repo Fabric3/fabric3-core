@@ -37,7 +37,6 @@
 */
 package org.fabric3.federation.jgroups;
 
-import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -195,10 +194,12 @@ public abstract class AbstractTopologyService {
                 ResponseCommand command = (ResponseCommand) deserialized;
                 executorRegistry.execute(command);
                 Response response = command.getResponse();
+                response.setRuntimeName(getRuntimeName());
                 return helper.serialize(response);
             } catch (MessageException e) {
                 monitor.error("Error handling message from: "+ runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
+                ex.setRuntimeName(getRuntimeName());
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {
@@ -207,6 +208,7 @@ public abstract class AbstractTopologyService {
             } catch (ExecutionException e) {
                 monitor.error("Error handling message from: "+ runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
+                ex.setRuntimeName(getRuntimeName());
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {

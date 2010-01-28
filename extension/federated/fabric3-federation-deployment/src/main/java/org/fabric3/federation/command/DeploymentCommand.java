@@ -53,6 +53,7 @@ public class DeploymentCommand implements ResponseCommand, Response {
     private SerializedDeploymentUnit currentDeploymentUnit;
     private SerializedDeploymentUnit fullDeploymentUnit;
     private Response response;
+    private String runtimeName;
 
     public DeploymentCommand(SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
         this.currentDeploymentUnit = currentDeploymentUnit;
@@ -73,5 +74,13 @@ public class DeploymentCommand implements ResponseCommand, Response {
 
     public Response getResponse() {
         return response;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 }

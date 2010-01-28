@@ -49,6 +49,7 @@ import org.fabric3.spi.topology.Response;
 public class ProvisionResponse implements Response {
     private static final long serialVersionUID = 8758275756367101501L;
 
+    private String runtimeName;
     private URL contributionUrl;
 
 
@@ -59,6 +60,14 @@ public class ProvisionResponse implements Response {
      */
     public ProvisionResponse(URL contributionUrl) {
         this.contributionUrl = contributionUrl;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
     /**

@@ -50,7 +50,7 @@ public interface DeploymentCommandExecutorMonitor {
      *
      */
     @Info
-    void receivedDeployment();
+    void receivedUpdate();
 
     @Severe
     void error(Throwable e);

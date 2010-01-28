@@ -46,9 +46,18 @@ public class RemoteSystemException implements Response {
     private static final long serialVersionUID = 3104883810536039817L;
 
     private Throwable throwable;
+    private String runtimeName;
 
     public RemoteSystemException(Throwable throwable) {
         this.throwable = throwable;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
     public Throwable getThrowable() {

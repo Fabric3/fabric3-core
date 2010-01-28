@@ -79,6 +79,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.topology.DomainTopologyService;
 import org.fabric3.spi.topology.MessageException;
 import org.fabric3.spi.topology.MessageTimeoutException;
+import org.fabric3.spi.topology.RemoteSystemException;
 import org.fabric3.spi.topology.Response;
 import org.fabric3.spi.topology.RuntimeInstance;
 
@@ -186,24 +187,31 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, long timeout) throws MessageException {
-        try {
-            byte[] payload = helper.serialize(command);
-            List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
-            List<Response> responses = new ArrayList<Response>(addresses.size());
-            for (Address address : addresses) {
-                Message message = new Message(address, domainChannel.getAddress(), payload);
+        byte[] payload = helper.serialize(command);
+        List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
+        List<Response> responses = new ArrayList<Response>(addresses.size());
+        for (Address address : addresses) {
+            Message message = new Message(address, domainChannel.getAddress(), payload);
+            try {
                 Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
                 assert o instanceof byte[] : "Expected byte[] but was " + o;
                 Response response = (Response) helper.deserialize((byte[]) o);
                 responses.add(response);
-
+            } catch (TimeoutException e) {
+                RemoteSystemException response = new RemoteSystemException(e);
+                responses.add(response);
+                break;
+            } catch (SuspectedException e) {
+                RemoteSystemException response = new RemoteSystemException(e);
+                responses.add(response);
+                break;
+            } catch (MessageException e) {
+                RemoteSystemException response = new RemoteSystemException(e);
+                responses.add(response);
+                break;
             }
-            return responses;
-        } catch (TimeoutException e) {
-            throw new MessageTimeoutException("Timeout sending message to zone: " + zoneName, e);
-        } catch (SuspectedException e) {
-            throw new MessageException("Error sending message to zone: " + zoneName, e);
         }
+        return responses;
     }
 
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {

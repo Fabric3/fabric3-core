@@ -94,6 +94,7 @@ public class FederatedDeployer implements Deployer {
         this.timeout = timeout;
     }
 
+    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         Deployment currentDeployment = deploymentPackage.getCurrentDeployment();
         Deployment fullDeployment = deploymentPackage.getFullDeployment();
@@ -105,19 +106,25 @@ public class FederatedDeployer implements Deployer {
                 DeploymentCommand command = createCommand(zone, currentDeployment, fullDeployment);
 
                 List<Response> responses = topologyService.sendSynchronousToZone(zone, command, timeout);
+                boolean error = false;
                 for (Response response : responses) {
+                    String runtimeName = response.getRuntimeName();
                     if (response instanceof RemoteSystemException) {
-
+                        error = true;
+                        monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) response).getThrowable());
                     } else if (response instanceof DeploymentResponse) {
-                        DeploymentResponse deploymentResponse = (DeploymentResponse)response;
+                        DeploymentResponse deploymentResponse = (DeploymentResponse) response;
                         if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
-                            
+                            error = true;
+                            monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
                         }
                     } else {
                         throw new DeploymentException("Unknown response type: " + response);
                     }
                 }
-                // TODO check responses
+                if (error) {
+                    throw new DeploymentException("Deployment errors encountered and logged");
+                }
             } catch (IOException e) {
                 throw new DeploymentException(e);
             } catch (MessageException e) {

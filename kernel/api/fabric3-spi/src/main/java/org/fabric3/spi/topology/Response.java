@@ -46,4 +46,17 @@ import java.io.Serializable;
  */
 public interface Response extends Serializable {
 
+    /**
+     * Returns the name of the runtime that sent the response.
+     *
+     * @return the name of the runtime that sent the response.
+     */
+    String getRuntimeName();
+
+    /**
+     * Sets the name of the runtime that sent the response.
+     *
+     * @param name the name of the runtime that sent the response.
+     */
+    void setRuntimeName(String name);
 }

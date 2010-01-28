@@ -50,7 +50,6 @@ import org.fabric3.federation.command.DeploymentCommand;
 import org.fabric3.federation.command.DeploymentResponse;
 import org.fabric3.federation.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -91,7 +90,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
 
     @SuppressWarnings({"unchecked"})
     public void execute(DeploymentCommand command) throws ExecutionException {
-        monitor.receivedDeployment();
+        monitor.receivedUpdate();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         try {
             SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();

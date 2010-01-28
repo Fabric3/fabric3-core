@@ -50,6 +50,7 @@ public class DeploymentResponse implements Response {
     public static final int SUCCESS = 1;
     public static final int FAILURE = -1;
 
+    private String runtimeName;
     private int code;
     private Exception exception;
 
@@ -60,6 +61,14 @@ public class DeploymentResponse implements Response {
     public DeploymentResponse(Exception exception) {
         this.code = FAILURE;
         this.exception = exception;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
     public int getCode() {

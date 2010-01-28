@@ -44,6 +44,7 @@
 package org.fabric3.spi.domain;
 
 import org.fabric3.api.annotation.logging.Fine;
+import org.fabric3.api.annotation.logging.Severe;
 
 /**
  * Event monitor for the Deployer.
@@ -53,5 +54,12 @@ import org.fabric3.api.annotation.logging.Fine;
 public interface DeployerMonitor {
 
     @Fine
-    void deploy(String runtimeId);
+    void deploy(String runtimeName);
+
+    @Severe
+    void systemDeploymentError(String runtimeName, Throwable e);
+
+    @Severe
+    void deploymentError(String runtimeName, Throwable e);
+
 }

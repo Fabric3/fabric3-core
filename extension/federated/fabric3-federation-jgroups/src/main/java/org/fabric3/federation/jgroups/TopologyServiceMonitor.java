@@ -38,6 +38,7 @@
 package org.fabric3.federation.jgroups;
 
 import org.fabric3.api.annotation.logging.Fine;
+import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 
 /**
@@ -47,6 +48,9 @@ public interface TopologyServiceMonitor {
 
     @Severe
     void error(String message, Throwable t);
+
+    @Info
+    void joiningDomain(String runtimeName);
 
     @Fine
     void handleMessage(String runtimeName);
@@ -59,9 +63,6 @@ public interface TopologyServiceMonitor {
 
     @Fine
     void updated();
-
-    @Fine
-    void joiningDomain(String runtimeName);
 
     @Fine
     void updateDeferred();

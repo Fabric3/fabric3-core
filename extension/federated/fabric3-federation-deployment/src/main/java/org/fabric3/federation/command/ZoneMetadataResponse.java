@@ -49,6 +49,7 @@ public class ZoneMetadataResponse implements Response, Command {
     private static final long serialVersionUID = -4288029718584274415L;
 
     private String zone;
+    private String runtimeName;
     private Map<String, String> metadata;
 
     /**
@@ -60,6 +61,14 @@ public class ZoneMetadataResponse implements Response, Command {
     public ZoneMetadataResponse(String zone, Map<String, String> metadata) {
         this.zone = zone;
         this.metadata = metadata;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
     /**
