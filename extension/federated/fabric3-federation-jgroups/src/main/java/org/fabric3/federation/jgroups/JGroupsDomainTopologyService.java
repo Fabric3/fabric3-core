@@ -85,8 +85,6 @@ import org.fabric3.spi.topology.RuntimeInstance;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
- * <p/>
- * This implementation
  *
  * @version $Rev$ $Date$
  */
