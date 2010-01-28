@@ -69,7 +69,7 @@ import org.fabric3.spi.topology.RemoteSystemException;
 import org.fabric3.spi.topology.Response;
 
 /**
- * A Deployer that broadcasts a deployment to a zone.
+ * A Deployer that consistently deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain.
  *
  * @version $Rev$ $Date$
  */
