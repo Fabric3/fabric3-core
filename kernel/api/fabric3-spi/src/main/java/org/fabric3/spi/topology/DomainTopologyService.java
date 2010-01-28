@@ -84,7 +84,7 @@ public interface DomainTopologyService {
     void broadcast(Command command) throws MessageException;
 
     /**
-     * Sends a command asynchronously to all runtimes in a zoone.
+     * Sends a command asynchronously to all runtimes in a zone.
      *
      * @param zoneName the zone
      * @param command  the command
