@@ -64,6 +64,13 @@ public class ArtifactCacheResolverServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.length() < 2) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         String info = req.getPathInfo().substring(1);    // path info always begins with '/'
         try {
             URI uri = new URI(info);

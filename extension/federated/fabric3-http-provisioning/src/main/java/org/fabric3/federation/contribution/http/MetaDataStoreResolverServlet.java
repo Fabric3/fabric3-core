@@ -65,7 +65,14 @@ public class MetaDataStoreResolverServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String info = req.getPathInfo().substring(1);    // path info always begins with '/'
+
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.length() < 2) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        String info = pathInfo.substring(1);    // path info always begins with '/'
         try {
             URI uri = new URI(info);
             Contribution contribution = store.find(uri);
