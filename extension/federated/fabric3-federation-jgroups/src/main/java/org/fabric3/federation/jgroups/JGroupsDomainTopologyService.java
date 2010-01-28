@@ -60,7 +60,6 @@ import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.util.UUID;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
@@ -94,7 +93,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
-    private long defaultTimeout = 10000;
     private View previousView;
     private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
 
@@ -105,11 +103,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                                         @Reference JGroupsHelper helper,
                                         @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
-    }
-
-    @Property(required = false)
-    public void setDefaultTimeout(long defaultTimeout) {
-        this.defaultTimeout = defaultTimeout;
     }
 
     @Init

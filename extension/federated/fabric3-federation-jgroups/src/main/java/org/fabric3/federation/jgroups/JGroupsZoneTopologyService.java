@@ -94,7 +94,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private static final int UPDATED = 1;
 
     private String zoneName = "default.zone";
-    private long defaultTimeout = 10000;
     private Map<String, String> transportMetadata = new HashMap<String, String>();
     private Channel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
@@ -117,11 +116,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     @Property(required = false)
     public void setZoneName(String zoneName) {
         this.zoneName = zoneName;
-    }
-
-    @Property(required = false)
-    public void setDefaultTimeout(long defaultTimeout) {
-        this.defaultTimeout = defaultTimeout;
     }
 
     @Property(required = false)

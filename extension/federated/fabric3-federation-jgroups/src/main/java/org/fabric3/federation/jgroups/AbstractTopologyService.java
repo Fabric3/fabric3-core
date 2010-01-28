@@ -85,6 +85,7 @@ public abstract class AbstractTopologyService {
 
     protected boolean printlocalAddress;
     protected String logLevel = "error";
+    protected long defaultTimeout = 10000;
     // TODO add properties from http://community.jboss.org/wiki/SystemProps
 
 
@@ -107,7 +108,6 @@ public abstract class AbstractTopologyService {
         this.logLevel = logLevel;
     }
 
-    // TODO migration issue: prviously, set runtime name in system config
     @Property(required = false)
     public void setRuntimeId(String runtimeId) {
         this.runtimeId = runtimeId;
@@ -117,6 +117,12 @@ public abstract class AbstractTopologyService {
     public void setPrintlocalAddress(boolean printlocalAddress) {
         this.printlocalAddress = printlocalAddress;
     }
+
+    @Property(required = false)
+    public void setDefaultTimeout(long defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
+    }
+
 
     @Init
     public void init() throws ChannelException {
