@@ -45,6 +45,7 @@ package org.fabric3.federation.deployment.domain;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -55,6 +56,7 @@ import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.DeploymentResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
+import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
@@ -78,6 +80,7 @@ public class FederatedDeployer implements Deployer {
     private DeployerMonitor monitor;
     private DomainTopologyService topologyService;
     private SerializationService serializationService;
+    private List<FederatedDeployerListener> listeners;
     private long timeout = 3000;
 
     public FederatedDeployer(@Reference DomainTopologyService topologyService,
@@ -86,9 +89,14 @@ public class FederatedDeployer implements Deployer {
         this.topologyService = topologyService;
         this.serializationService = serializationService;
         this.monitor = monitor;
+        this.listeners = new ArrayList<FederatedDeployerListener>();
     }
 
-    // TODO FIXME add timeout property and check return for rollback
+    @Reference(required = false)
+    public void setListeners(List<FederatedDeployerListener> listeners) {
+        this.listeners = listeners;
+    }
+
     @Property(required = false)
     public void setTimeout(long timeout) {
         this.timeout = timeout;
@@ -102,8 +110,9 @@ public class FederatedDeployer implements Deployer {
         for (String zone : currentDeployment.getZones()) {
             try {
                 monitor.deploy(zone);
-
                 DeploymentCommand command = createCommand(zone, currentDeployment, fullDeployment);
+
+                notifyDeploy(command);
 
                 List<Response> responses = topologyService.sendSynchronousToZone(zone, command, timeout);
                 boolean error = false;
@@ -119,12 +128,15 @@ public class FederatedDeployer implements Deployer {
                             monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
                         }
                     } else {
+                        notifyRollback(command);
                         throw new DeploymentException("Unknown response type: " + response);
                     }
                 }
                 if (error) {
+                    notifyRollback(command);
                     throw new DeploymentException("Deployment errors encountered and logged");
                 }
+                notifyCompletion(command);
             } catch (IOException e) {
                 throw new DeploymentException(e);
             } catch (MessageException e) {
@@ -147,6 +159,24 @@ public class FederatedDeployer implements Deployer {
         List<Command> commands = deploymentUnit.getCommands();
         byte[] serializedCommands = serializationService.serialize((Serializable) commands);
         return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+    }
+
+    private void notifyDeploy(DeploymentCommand command) throws DeploymentException {
+        for (FederatedDeployerListener listener : listeners) {
+            listener.onDeploy(command);
+        }
+    }
+
+    private void notifyCompletion(DeploymentCommand command) {
+        for (FederatedDeployerListener listener : listeners) {
+            listener.onCompletion(command);
+        }
+    }
+
+    private void notifyRollback(DeploymentCommand command) {
+        for (FederatedDeployerListener listener : listeners) {
+            listener.onRollback(command);
+        }
     }
 
 }
