@@ -41,8 +41,8 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.jgroups.ChannelException;
 
-import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 
 /**
  * @version $Rev: 8584 $ $Date: 2010-01-16 20:18:48 +0100 (Sat, 16 Jan 2010) $

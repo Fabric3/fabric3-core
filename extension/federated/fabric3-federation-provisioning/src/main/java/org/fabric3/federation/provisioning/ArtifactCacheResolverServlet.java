@@ -35,47 +35,54 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.contribution.http;
+package org.fabric3.federation.provisioning;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.util.io.IOHelper;
 
 /**
- * The response to a {@link ProvisionCommand}.
+ * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cache. The
+ * servlet path corresponds to the contribution URI.
  *
  * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
-public class ProvisionResponse implements Response {
-    private static final long serialVersionUID = 8758275756367101501L;
+public class ArtifactCacheResolverServlet extends HttpServlet {
+    private static final long serialVersionUID = 7721634599080335126L;
+    private ArtifactCache cache;
 
-    private String runtimeName;
-    private URL contributionUrl;
-
-
-    /**
-     * Constructor.
-     *
-     * @param contributionUrl the provisioning URL of a contribution artifact
-     */
-    public ProvisionResponse(URL contributionUrl) {
-        this.contributionUrl = contributionUrl;
+    public ArtifactCacheResolverServlet(ArtifactCache cache) {
+        this.cache = cache;
     }
 
-    public String getRuntimeName() {
-        return runtimeName;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.length() < 2) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        String info = req.getPathInfo().substring(1);    // path info always begins with '/'
+        try {
+            URI uri = new URI(info);
+            URL url = cache.get(uri);
+            if (url == null) {
+                throw new ServletException("Contribution not found: " + info + ". Request URL was: " + info);
+            }
+            IOHelper.copy(url.openStream(), resp.getOutputStream());
+        } catch (URISyntaxException e) {
+            throw new ServletException("Invalid URI: " + info, e);
+        }
     }
 
-    public void setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName;
-    }
 
-    /**
-     * Returns the provisioning URL of a contribution artifact.
-     *
-     * @return the provisiong URL of a contribution artifact
-     */
-    public URL getContributionUrl() {
-        return contributionUrl;
-    }
 }

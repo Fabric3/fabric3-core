@@ -35,32 +35,45 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.deployment.command;
 
-import java.util.Map;
-
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.federation.Response;
 
 /**
- * @version $Rev: 8589 $ $Date: 2010-01-20 09:52:59 -0800 (Wed, 20 Jan 2010) $
+ * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
+ * deployment. The full deployment contains the complete list of commands required to update a participant runtime to the current zone state. The
+ * latter is cached by participants which can be used to bootstrap zone peers without the need to contact the controller.
+ *
+ * @version $Rev$ $Date$
  */
-public class ZoneMetadataResponse implements Response, Command {
-    private static final long serialVersionUID = -4288029718584274415L;
+public class DeploymentCommand implements ResponseCommand, Response {
+    private static final long serialVersionUID = 8673100303949676875L;
 
-    private String zone;
+    private SerializedDeploymentUnit currentDeploymentUnit;
+    private SerializedDeploymentUnit fullDeploymentUnit;
+    private Response response;
     private String runtimeName;
-    private Map<String, String> metadata;
 
-    /**
-     * Constructor.
-     *
-     * @param zone     the zone name
-     * @param metadata the metadata
-     */
-    public ZoneMetadataResponse(String zone, Map<String, String> metadata) {
-        this.zone = zone;
-        this.metadata = metadata;
+    public DeploymentCommand(SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
+        this.currentDeploymentUnit = currentDeploymentUnit;
+        this.fullDeploymentUnit = fullDeploymentUnit;
+    }
+
+    public SerializedDeploymentUnit getCurrentDeploymentUnit() {
+        return currentDeploymentUnit;
+    }
+
+    public SerializedDeploymentUnit getFullDeploymentUnit() {
+        return fullDeploymentUnit;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
+    }
+
+    public Response getResponse() {
+        return response;
     }
 
     public String getRuntimeName() {
@@ -69,23 +82,5 @@ public class ZoneMetadataResponse implements Response, Command {
 
     public void setRuntimeName(String runtimeName) {
         this.runtimeName = runtimeName;
-    }
-
-    /**
-     * Returns the zone name.
-     *
-     * @return the zone name
-     */
-    public String getZone() {
-        return zone;
-    }
-
-    /**
-     * The zone transport metadata keyed by transport type.
-     *
-     * @return the zone transport metadata
-     */
-    public Map<String, String> getMetadata() {
-        return metadata;
     }
 }

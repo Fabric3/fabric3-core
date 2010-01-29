@@ -35,47 +35,23 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.deployment.executor;
 
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.logging.Severe;
 
 /**
- * Sent by participant to receive deployment updates. The participant may send the update request to a controller or another zone member (typically
- * the zone leader).
- *
  * @version $Rev$ $Date$
  */
-public class RuntimeUpdateCommand implements ResponseCommand {
-    private static final long serialVersionUID = 1705187909349921487L;
-    private String runtimeName;
-    private String zoneName;
-    private byte[] checksum;
-    private Response response;
+public interface DeploymentCommandExecutorMonitor {
 
-    public RuntimeUpdateCommand(String runtimeName, String zoneName, byte[] checksum) {
-        this.runtimeName = runtimeName;
-        this.zoneName = zoneName;
-        this.checksum = checksum;
-    }
+    /**
+     * Callback when a deployment is received.
+     */
+    @Info
+    void receivedUpdate();
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
+    @Severe
+    void error(Throwable e);
 
-    public String getZoneName() {
-        return zoneName;
-    }
-
-    public byte[] getChecksum() {
-        return checksum;
-    }
-
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
-    }
 }

@@ -35,21 +35,36 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.deployment.command;
 
-import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.spi.command.Command;
 
 /**
+ * Announces the availability of a controller in the domain. Controllers announce availability after they have joined the domain and performed
+ * recovery. After a controller has become available, participants may query it for deployment updates.
+ *
  * @version $Rev$ $Date$
  */
-public interface RuntimeUpdateMonitor {
+public class ControllerAvailableCommand implements Command {
+    private static final long serialVersionUID = -4288029718584274415L;
+
+    private String name;
 
     /**
-     * Callback when an update request is received from a runtime.
+     * Constructor.
      *
-     * @param id the runtime id.
+     * @param name the controller's logical runtime name
      */
-    @Info
-    void updateRequest(String id);
+    public ControllerAvailableCommand(String name) {
+        this.name = name;
+    }
 
+    /**
+     * Returns the controller's logical runtime name.
+     *
+     * @return the controller's logical runtime name
+     */
+    public String getName() {
+        return name;
+    }
 }

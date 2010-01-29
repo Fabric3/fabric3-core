@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.deployment.executor;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,10 +45,10 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.cache.DeploymentCache;
-import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.DeploymentResponse;
-import org.fabric3.federation.command.SerializedDeploymentUnit;
+import org.fabric3.federation.deployment.cache.DeploymentCache;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.DeploymentResponse;
+import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;

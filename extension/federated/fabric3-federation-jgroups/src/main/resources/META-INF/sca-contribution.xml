@@ -15,8 +15,8 @@ Public License. See the accompanying license file for details.
               f3-core:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.5"/>
     <import.java package="org.fabric3.util.*" version="1.5"/>
-    <import.java package="org.fabric3.federation.command" version="1.5"/>
-    <import.java package="org.fabric3.federation.executor" version="1.5"/>
+    <import.java package="org.fabric3.federation.deployment.command" version="1.5"/>
+    <import.java package="org.fabric3.federation.deployment.executor" version="1.5"/>
     <import.java package="org.fabric3.federation.event" version="1.5"/>
 
     <deployable composite="federation:JGroupsFederationControllerExtension" modes="controller"/>

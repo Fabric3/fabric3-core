@@ -66,10 +66,10 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.ControllerAvailableCommand;
-import org.fabric3.federation.command.RuntimeUpdateCommand;
-import org.fabric3.federation.command.ZoneMetadataResponse;
-import org.fabric3.federation.command.ZoneMetadataUpdateCommand;
+import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
+import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.ResponseCommand;

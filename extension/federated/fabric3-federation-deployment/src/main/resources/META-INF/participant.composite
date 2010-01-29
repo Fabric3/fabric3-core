@@ -17,15 +17,15 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="ZoneDeploymentCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.executor.DeploymentCommandExecutor"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.DeploymentCommandExecutor"/>
     </component>
 
     <component name="DeploymentCache">
-        <f3-impl:implementation.system class="org.fabric3.federation.cache.DeploymentCacheImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.cache.DeploymentCacheImpl"/>
     </component>
 
     <component name="RuntimeUpdateCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.executor.RuntimeUpdateCommandExecutor"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RuntimeUpdateCommandExecutor"/>
     </component>
 
 </composite>

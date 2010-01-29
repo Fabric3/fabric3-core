@@ -16,11 +16,11 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="ZoneProvisionCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ZoneProvisionCommandExecutor"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneProvisionCommandExecutor"/>
     </component>
 
     <component name="ZoneContributionUriResolverExtension">
-        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ZoneContributionResolverExtension"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneContributionResolverExtension"/>
     </component>
 
 </composite>

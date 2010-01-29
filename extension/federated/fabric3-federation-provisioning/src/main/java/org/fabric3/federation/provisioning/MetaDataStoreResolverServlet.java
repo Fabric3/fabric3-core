@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.contribution.http;
+package org.fabric3.federation.provisioning;
 
 import java.io.IOException;
 import java.net.URI;
@@ -46,21 +46,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.util.io.IOHelper;
 
 /**
- * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cache. The
- * servlet path corresponds to the contribution URI.
+ * Used on a controller to return the contents of a contribution associated with the encoded servlet path from the metadata store. The servlet path
+ * corresponds to the contribution URI.
  *
- * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
+ * @version $Rev$ $Date$
  */
-public class ArtifactCacheResolverServlet extends HttpServlet {
-    private static final long serialVersionUID = 7721634599080335126L;
-    private ArtifactCache cache;
+public class MetaDataStoreResolverServlet extends HttpServlet {
+    private static final long serialVersionUID = -5822568715938454572L;
+    private MetaDataStore store;
 
-    public ArtifactCacheResolverServlet(ArtifactCache cache) {
-        this.cache = cache;
+    public MetaDataStoreResolverServlet(MetaDataStore store) {
+        this.store = store;
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -71,18 +72,18 @@ public class ArtifactCacheResolverServlet extends HttpServlet {
             return;
         }
 
-        String info = req.getPathInfo().substring(1);    // path info always begins with '/'
+        String info = pathInfo.substring(1);    // path info always begins with '/'
         try {
             URI uri = new URI(info);
-            URL url = cache.get(uri);
-            if (url == null) {
+            Contribution contribution = store.find(uri);
+            if (contribution == null) {
                 throw new ServletException("Contribution not found: " + info + ". Request URL was: " + info);
             }
+            URL url = contribution.getLocation();
             IOHelper.copy(url.openStream(), resp.getOutputStream());
         } catch (URISyntaxException e) {
             throw new ServletException("Invalid URI: " + info, e);
         }
     }
-
 
 }

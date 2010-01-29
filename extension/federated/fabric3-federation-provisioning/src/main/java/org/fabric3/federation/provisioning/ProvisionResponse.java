@@ -35,36 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.provisioning;
 
-import org.fabric3.spi.command.Command;
+import java.net.URL;
+
+import org.fabric3.spi.federation.Response;
 
 /**
- * Announces the availability of a controller in the domain. Controllers announce availability after they have joined the domain and performed
- * recovery. After a controller has become available, participants may query it for deployment updates.
+ * The response to a {@link ProvisionCommand}.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
-public class ControllerAvailableCommand implements Command {
-    private static final long serialVersionUID = -4288029718584274415L;
+public class ProvisionResponse implements Response {
+    private static final long serialVersionUID = 8758275756367101501L;
 
-    private String name;
+    private String runtimeName;
+    private URL contributionUrl;
+
 
     /**
      * Constructor.
      *
-     * @param name the controller's logical runtime name
+     * @param contributionUrl the provisioning URL of a contribution artifact
      */
-    public ControllerAvailableCommand(String name) {
-        this.name = name;
+    public ProvisionResponse(URL contributionUrl) {
+        this.contributionUrl = contributionUrl;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
     /**
-     * Returns the controller's logical runtime name.
+     * Returns the provisioning URL of a contribution artifact.
      *
-     * @return the controller's logical runtime name
+     * @return the provisiong URL of a contribution artifact
      */
-    public String getName() {
-        return name;
+    public URL getContributionUrl() {
+        return contributionUrl;
     }
 }

@@ -35,29 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.cache;
+package org.fabric3.federation.deployment.command;
 
-import org.fabric3.federation.command.DeploymentCommand;
+import org.fabric3.spi.federation.Response;
 
 /**
- * Caches the current deployment commands.
+ * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.
  *
  * @version $Rev$ $Date$
  */
-public interface DeploymentCache {
+public class DeploymentResponse implements Response {
+    private static final long serialVersionUID = 411382659017602521L;
 
-    /**
-     * Cache the deployment command.
-     *
-     * @param command the deployment command
-     */
-    void cache(DeploymentCommand command);
+    public static final int SUCCESS = 1;
+    public static final int FAILURE = -1;
 
-    /**
-     * Returns the deployment command.
-     *
-     * @return the deployment command.
-     */
-    DeploymentCommand get();
+    private String runtimeName;
+    private int code;
+    private Exception exception;
 
+    public DeploymentResponse() {
+        this.code = SUCCESS;
+    }
+
+    public DeploymentResponse(Exception exception) {
+        this.code = FAILURE;
+        this.exception = exception;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public Exception getDeploymentException() {
+        return exception;
+    }
 }

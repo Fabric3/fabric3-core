@@ -35,16 +35,16 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.deployment.executor;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.cache.DeploymentCache;
-import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.cache.DeploymentCache;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;

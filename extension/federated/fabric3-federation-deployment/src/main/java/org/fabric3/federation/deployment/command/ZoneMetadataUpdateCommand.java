@@ -35,24 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.executor;
+package org.fabric3.federation.deployment.command;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.federation.Response;
 
 /**
+ * Sent by a controller to a zone leader to obtain transport metadata. A request is sent to existing zone leaders when a controller joins the domain.
+ * This occurs when a controller is activated after a zone leader.
+ *
  * @version $Rev$ $Date$
  */
-public interface DeploymentCommandExecutorMonitor {
+public class ZoneMetadataUpdateCommand implements ResponseCommand {
+    private static final long serialVersionUID = -4288029718584274415L;
+    private ZoneMetadataResponse response;
 
-    /**
-     * Callback when a deployment is received.
-     *
-     */
-    @Info
-    void receivedUpdate();
+    public void setResponse(ZoneMetadataResponse response) {
+        this.response = response;
+    }
 
-    @Severe
-    void error(Throwable e);
-
+    public Response getResponse() {
+        return response;
+    }
 }

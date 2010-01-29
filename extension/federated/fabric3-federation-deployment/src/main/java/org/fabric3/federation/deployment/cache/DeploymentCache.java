@@ -35,34 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.contribution.http;
+package org.fabric3.federation.deployment.cache;
 
-import javax.servlet.http.HttpServlet;
-
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.host.ServletHost;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
- * Used on a controller to processes a request for the provisioning URL of a contribution artifact.
+ * Caches the current deployment commands.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ControllerProvisionCommandExecutor extends AbstractProvisionCommandExecutor {
-    private MetaDataStore store;
+public interface DeploymentCache {
 
-    public ControllerProvisionCommandExecutor(@Reference ServletHost host,
-                                              @Reference CommandExecutorRegistry registry,
-                                              @Reference MetaDataStore store) {
-        super(host, registry);
-        this.store = store;
-    }
+    /**
+     * Cache the deployment command.
+     *
+     * @param command the deployment command
+     */
+    void cache(DeploymentCommand command);
 
-    protected HttpServlet getResolverServlet() {
-        return new MetaDataStoreResolverServlet(store);
-    }
+    /**
+     * Returns the deployment command.
+     *
+     * @return the deployment command.
+     */
+    DeploymentCommand get();
+
 }

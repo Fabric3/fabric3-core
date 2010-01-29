@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.federation.domain;
+package org.fabric3.federation.deployment.domain;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -52,21 +52,21 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.command.DeploymentCommand;
-import org.fabric3.federation.command.DeploymentResponse;
-import org.fabric3.federation.command.SerializedDeploymentUnit;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.DeploymentResponse;
+import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.generator.Deployment;
-import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.generator.Deployment;
+import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
  * A Deployer that consistently deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain.

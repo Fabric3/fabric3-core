@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="ControllerProvisionCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.contribution.http.ControllerProvisionCommandExecutor"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ControllerProvisionCommandExecutor"/>
     </component>
     
 </composite>

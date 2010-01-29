@@ -35,52 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.deployment.command;
 
 import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.federation.Response;
 
 /**
- * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
- * deployment. The full deployment contains the complete list of commands required to update a participant runtime to the current zone state. The
- * latter is cached by participants which can be used to bootstrap zone peers without the need to contact the controller.
+ * Sent by participant to receive deployment updates. The participant may send the update request to a controller or another zone member (typically
+ * the zone leader).
  *
  * @version $Rev$ $Date$
  */
-public class DeploymentCommand implements ResponseCommand, Response {
-    private static final long serialVersionUID = 8673100303949676875L;
-
-    private SerializedDeploymentUnit currentDeploymentUnit;
-    private SerializedDeploymentUnit fullDeploymentUnit;
-    private Response response;
+public class RuntimeUpdateCommand implements ResponseCommand {
+    private static final long serialVersionUID = 1705187909349921487L;
     private String runtimeName;
+    private String zoneName;
+    private byte[] checksum;
+    private Response response;
 
-    public DeploymentCommand(SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
-        this.currentDeploymentUnit = currentDeploymentUnit;
-        this.fullDeploymentUnit = fullDeploymentUnit;
-    }
-
-    public SerializedDeploymentUnit getCurrentDeploymentUnit() {
-        return currentDeploymentUnit;
-    }
-
-    public SerializedDeploymentUnit getFullDeploymentUnit() {
-        return fullDeploymentUnit;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
-    }
-
-    public Response getResponse() {
-        return response;
+    public RuntimeUpdateCommand(String runtimeName, String zoneName, byte[] checksum) {
+        this.runtimeName = runtimeName;
+        this.zoneName = zoneName;
+        this.checksum = checksum;
     }
 
     public String getRuntimeName() {
         return runtimeName;
     }
 
-    public void setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName;
+    public String getZoneName() {
+        return zoneName;
+    }
+
+    public byte[] getChecksum() {
+        return checksum;
+    }
+
+    public Response getResponse() {
+        return response;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
     }
 }

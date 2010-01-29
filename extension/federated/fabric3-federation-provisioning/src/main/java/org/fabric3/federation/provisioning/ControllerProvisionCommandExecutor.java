@@ -35,47 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.command;
+package org.fabric3.federation.provisioning;
 
-import org.fabric3.spi.federation.Response;
+import javax.servlet.http.HttpServlet;
+
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.host.ServletHost;
 
 /**
- * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.
+ * Used on a controller to processes a request for the provisioning URL of a contribution artifact.
  *
  * @version $Rev$ $Date$
  */
-public class DeploymentResponse implements Response {
-    private static final long serialVersionUID = 411382659017602521L;
+@EagerInit
+public class ControllerProvisionCommandExecutor extends AbstractProvisionCommandExecutor {
+    private MetaDataStore store;
 
-    public static final int SUCCESS = 1;
-    public static final int FAILURE = -1;
-
-    private String runtimeName;
-    private int code;
-    private Exception exception;
-
-    public DeploymentResponse() {
-        this.code = SUCCESS;
+    public ControllerProvisionCommandExecutor(@Reference ServletHost host,
+                                              @Reference CommandExecutorRegistry registry,
+                                              @Reference MetaDataStore store) {
+        super(host, registry);
+        this.store = store;
     }
 
-    public DeploymentResponse(Exception exception) {
-        this.code = FAILURE;
-        this.exception = exception;
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
-    public void setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public Exception getDeploymentException() {
-        return exception;
+    protected HttpServlet getResolverServlet() {
+        return new MetaDataStoreResolverServlet(store);
     }
 }
