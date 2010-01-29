@@ -16,9 +16,9 @@ Public License. See the accompanying license file for details.
         <version>1.5-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-http-provisioning</artifactId>
-    <name>Fabric3 HTTP Provisioning</name>
-    <description>Fabric3 HTTP-based Artifact Provisioning</description>
+    <artifactId>fabric3-federation-provisioning</artifactId>
+    <name>Fabric3 Federated Provisioning</name>
+    <description>Fabric3 Federated Contribution Provisioning</description>
     <packaging>jar</packaging>
 
     <dependencies>
