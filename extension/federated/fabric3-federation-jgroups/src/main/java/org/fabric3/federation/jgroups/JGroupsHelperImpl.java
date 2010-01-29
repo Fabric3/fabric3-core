@@ -53,7 +53,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
-import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.federation.MessageException;
 
 /**
  * @version $Rev$ $Date$

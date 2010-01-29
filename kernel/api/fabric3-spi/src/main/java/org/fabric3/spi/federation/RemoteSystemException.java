@@ -35,28 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.topology;
-
-import java.io.Serializable;
+package org.fabric3.spi.federation;
 
 /**
- * A response to a synchronous message.
+ * A response to a synchronous message returned when an exception is raised processing the original request.
  *
  * @version $Rev$ $Date$
  */
-public interface Response extends Serializable {
+public class RemoteSystemException implements Response {
+    private static final long serialVersionUID = 3104883810536039817L;
 
-    /**
-     * Returns the name of the runtime that sent the response.
-     *
-     * @return the name of the runtime that sent the response.
-     */
-    String getRuntimeName();
+    private Throwable throwable;
+    private String runtimeName;
 
-    /**
-     * Sets the name of the runtime that sent the response.
-     *
-     * @param name the name of the runtime that sent the response.
-     */
-    void setRuntimeName(String name);
+    public RemoteSystemException(Throwable throwable) {
+        this.throwable = throwable;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
 }

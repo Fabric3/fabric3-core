@@ -51,7 +51,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.fabric3.spi.topology.DomainTopologyService;
+import org.fabric3.spi.federation.DomainTopologyService;
 
 /**
  * @version $Rev$ $Date$

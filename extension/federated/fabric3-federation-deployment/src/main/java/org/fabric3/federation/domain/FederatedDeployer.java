@@ -63,10 +63,10 @@ import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
-import org.fabric3.spi.topology.DomainTopologyService;
-import org.fabric3.spi.topology.MessageException;
-import org.fabric3.spi.topology.RemoteSystemException;
-import org.fabric3.spi.topology.Response;
+import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.RemoteSystemException;
+import org.fabric3.spi.federation.Response;
 
 /**
  * A Deployer that consistently deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain.

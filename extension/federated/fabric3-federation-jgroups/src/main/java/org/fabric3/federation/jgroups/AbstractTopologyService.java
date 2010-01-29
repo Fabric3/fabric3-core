@@ -62,9 +62,9 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.topology.MessageException;
-import org.fabric3.spi.topology.RemoteSystemException;
-import org.fabric3.spi.topology.Response;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.RemoteSystemException;
+import org.fabric3.spi.federation.Response;
 
 /**
  * Provides base functionality for JGroups-based topology services.

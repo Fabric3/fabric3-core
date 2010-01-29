@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.command;
 
-import org.fabric3.spi.topology.Response;
+import org.fabric3.spi.federation.Response;
 
 /**
  * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.

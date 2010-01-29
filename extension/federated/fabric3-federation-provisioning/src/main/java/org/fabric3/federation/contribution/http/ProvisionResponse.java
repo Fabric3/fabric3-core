@@ -39,7 +39,7 @@ package org.fabric3.federation.contribution.http;
 
 import java.net.URL;
 
-import org.fabric3.spi.topology.Response;
+import org.fabric3.spi.federation.Response;
 
 /**
  * The response to a {@link ProvisionCommand}.

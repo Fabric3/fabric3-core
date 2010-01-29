@@ -54,7 +54,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.topology.DomainTopologyService;
+import org.fabric3.spi.federation.DomainTopologyService;
 
 /**
  * Creates logical configuration for binding.sca using the TCP binding.

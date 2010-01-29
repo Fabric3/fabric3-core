@@ -35,25 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.topology;
-
-import org.fabric3.host.Fabric3Exception;
+package org.fabric3.spi.federation;
 
 /**
+ * Represents a runtime in the domain.
+ *
  * @version $Rev$ $Date$
  */
-public class MessageException extends Fabric3Exception {
-    private static final long serialVersionUID = 9222872325419816221L;
+public class RuntimeInstance {
+    private String name;
 
-    public MessageException(String message) {
-        super(message);
+    public RuntimeInstance(String name) {
+        this.name = name;
     }
 
-    public MessageException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MessageException(Throwable cause) {
-        super(cause);
+    public String getName() {
+        return name;
     }
 }

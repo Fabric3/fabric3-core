@@ -55,7 +55,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.spi.topology.DomainTopologyService;
+import org.fabric3.spi.federation.DomainTopologyService;
 
 /**
  * @version $Rev$ $Date$

@@ -38,7 +38,7 @@
 package org.fabric3.federation.command;
 
 import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.topology.Response;
+import org.fabric3.spi.federation.Response;
 
 /**
  * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous

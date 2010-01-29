@@ -47,9 +47,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
-import org.fabric3.spi.topology.MessageException;
-import org.fabric3.spi.topology.Response;
-import org.fabric3.spi.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
  * Resolves contributions in a domain. Resolution is done by first querying a zone leader for the contribution URL. If the current runtime is the zone

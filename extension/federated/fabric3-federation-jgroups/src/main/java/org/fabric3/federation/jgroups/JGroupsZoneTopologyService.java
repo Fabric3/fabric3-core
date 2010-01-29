@@ -80,10 +80,10 @@ import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.topology.ControllerNotFoundException;
-import org.fabric3.spi.topology.MessageException;
-import org.fabric3.spi.topology.Response;
-import org.fabric3.spi.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.ControllerNotFoundException;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
  * @version $Rev$ $Date$

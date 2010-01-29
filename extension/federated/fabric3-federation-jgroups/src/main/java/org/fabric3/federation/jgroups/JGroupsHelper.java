@@ -43,7 +43,7 @@ import java.util.List;
 import org.jgroups.Address;
 import org.jgroups.View;
 
-import org.fabric3.spi.topology.MessageException;
+import org.fabric3.spi.federation.MessageException;
 
 /**
  * Helper service for the JGroups messaging layer.

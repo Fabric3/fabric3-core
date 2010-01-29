@@ -35,21 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.topology;
+package org.fabric3.spi.federation;
 
 /**
- * Represents a runtime in the domain.
+ * Raised when an attempt is made to contact the controller but one cannot be found in the domain.
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeInstance {
-    private String name;
+public class ControllerNotFoundException extends MessageException {
+    private static final long serialVersionUID = 6661874470150036437L;
 
-    public RuntimeInstance(String name) {
-        this.name = name;
+    public ControllerNotFoundException(String message) {
+        super(message);
     }
 
-    public String getName() {
-        return name;
+    public ControllerNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ControllerNotFoundException(Throwable cause) {
+        super(cause);
     }
 }
