@@ -24,6 +24,7 @@ Public License. See the accompanying license file for details.
         <property name="zoneName" source="$systemConfig//federation/zoneName"/>
         <property name="logLevel" source="$systemConfig//federation/@logging"/>
         <property name="defaultTimeout" source="$systemConfig//federation/@timeout"/>
+        <property name="synchronize" source="$systemConfig//federation/@synchronize"/>
         <property name="transportMetadata" source="$systemConfig//federation/transport/*"/>
     </component>
 

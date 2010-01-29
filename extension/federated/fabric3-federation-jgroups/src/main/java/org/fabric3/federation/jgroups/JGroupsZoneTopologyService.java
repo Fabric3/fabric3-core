@@ -118,6 +118,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         this.zoneName = zoneName;
     }
 
+    /**
+     * Property to configure whether the runtime should attempt an update by querying a zone leader or the controller. In some topologies, the runtime
+     * may pull deployment information from a persistent store, which eliminates the need to update via a peer or the controller.
+     *
+     * @param synchronize true if the runtime should attempt an update (the default)
+     */
     @Property(required = false)
     public void setSynchronize(boolean synchronize) {
         this.synchronize = synchronize;
@@ -131,6 +137,9 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     @Init
     public void init() throws ChannelException {
         super.init();
+        if (!synchronize) {
+            state = UPDATED;
+        }
         ZoneMetadataUpdateCommandExecutor metadataExecutor = new ZoneMetadataUpdateCommandExecutor();
         executorRegistry.register(ZoneMetadataUpdateCommand.class, metadataExecutor);
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
@@ -240,7 +249,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return domainName + ":participant:" + zoneName + ":" + runtimeId;
     }
 
-    private Response send(Address address,Command command, long timeout) throws MessageException {
+    private Response send(Address address, Command command, long timeout) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();
             byte[] payload = helper.serialize(command);
