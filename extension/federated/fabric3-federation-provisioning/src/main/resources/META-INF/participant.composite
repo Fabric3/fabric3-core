@@ -17,10 +17,16 @@ Public License. See the accompanying license file for details.
 
     <component name="ZoneProvisionCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneProvisionCommandExecutor"/>
+        <property name="role" source="$systemConfig//federation/provision/@role"/>
+        <property name="secure" source="$systemConfig//federation/provision/@secure"/>
+        <property name="address" source="$systemConfig//federation/provision/@address"/>
     </component>
 
     <component name="ZoneContributionUriResolverExtension">
         <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneContributionResolverExtension"/>
+        <property name="secure" source="$systemConfig//federation/provision/@secure"/>
+        <property name="username" source="$systemConfig//federation/provision/@username"/>
+        <property name="password" source="$systemConfig//federation/provision/@password"/>
     </component>
 
 </composite>

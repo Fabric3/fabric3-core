@@ -71,12 +71,7 @@
 */
 package org.fabric3.binding.ws.metro.runtime.security;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -84,7 +79,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -115,17 +109,16 @@ import com.sun.xml.wss.saml.Assertion;
 import org.ietf.jgss.GSSCredential;
 import org.ietf.jgss.GSSName;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
@@ -137,65 +130,33 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
     private static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
     private AuthenticationService authenticationService;
-    private HostInfo info;
+    private KeyStoreManager keyStoreManager;
     private CertificateValidator certificateValidator;
     private KeyStore keyStore;
     private KeyStore trustStore;
 
-    private String keyStoreLocation;
-    private String keyStorePassword;
-    private String keyStoreType = "JKS";
-    private File keyStoreHandle;
-    private String trustStoreLocation;
-    private String trustStorePassword;
-    private String trustStoreType = "JKS";
-    private File trustStoreHandle;
+    private char[] keyStorePassword;
 
     private final SimpleDateFormat calendarFormatter1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private final SimpleDateFormat calendarFormatter2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'");
 
     public F3SecurityEnvironment(@Reference AuthenticationService authenticationService,
                                  @Reference CertificateValidator certificateValidator,
-                                 @Reference HostInfo info) {
+                                 @Reference KeyStoreManager keyStoreManager) {
         this.authenticationService = authenticationService;
         this.certificateValidator = certificateValidator;
-        this.info = info;
+        this.keyStoreManager = keyStoreManager;
     }
 
-    @Property
-    public void setKeyStoreLocation(String keyStoreLocation) {
-        this.keyStoreLocation = keyStoreLocation;
-    }
-
-    @Property
-    public void setKeyStorePassword(String keyStorePassword) {
-        this.keyStorePassword = keyStorePassword;
-    }
-
-    @Property
-    public void setKeyStoreType(String keyStoreType) {
-        this.keyStoreType = keyStoreType;
-    }
-
-    @Property
-    public void setTrustStoreLocation(String trustStoreLocation) {
-        this.trustStoreLocation = trustStoreLocation;
-    }
-
-    @Property
-    public void setTrustStorePassword(String trustStorePassword) {
-        this.trustStorePassword = trustStorePassword;
-    }
-
-    @Property
-    public void setTrustStoreType(String trustStoreType) {
-        this.trustStoreType = trustStoreType;
-    }
 
     @Init
     public void init() throws XWSSecurityException {
-        initKeyStore();
-        initTrustStore();
+        keyStore = keyStoreManager.getKeyStore();
+        String password = keyStoreManager.getKeyStorePassword();
+        if (password != null) {
+            keyStorePassword = password.toCharArray();
+        }
+        trustStore = keyStoreManager.getTrustStore();
     }
 
     public X509Certificate getDefaultCertificate(Map context) throws XWSSecurityRuntimeException {
@@ -231,7 +192,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
     public PrivateKey getPrivateKey(Map context, String alias) throws XWSSecurityRuntimeException {
         checkEnabled();
         try {
-            return (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+            return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
         } catch (KeyStoreException e) {
             throw new XWSSecurityRuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
@@ -301,7 +262,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                 }
                 Certificate cert = keyStore.getCertificate(alias);
                 if (cert != null && cert.equals(certificate)) {
-                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                 }
             }
         } catch (KeyStoreException e) {
@@ -331,7 +292,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                 String thisIssuerName = RFC2253Parser.normalize(x509Cert.getIssuerDN().getName());
                 BigInteger thisSerialNumber = x509Cert.getSerialNumber();
                 if (thisIssuerName.equals(issuerName) && thisSerialNumber.equals(serialNumber)) {
-                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                 }
             }
         } catch (Exception e) {
@@ -381,7 +342,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                     continue;
                 }
                 if (Arrays.equals(identifier, keyId)) {
-                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+                    return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                 }
             }
         } catch (NoSuchAlgorithmException e) {
@@ -414,7 +375,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                     if (keyStore.isKeyEntry(alias)) {
                         Certificate cert = keyStore.getCertificate(alias);
                         if (publicKey.equals(cert.getPublicKey())) {
-                            return (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+                            return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                         }
                     }
                 }
@@ -504,7 +465,8 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         validateTimestamp(context, timestamp.getCreated(), timestamp.getExpires(), maxClockSkew, freshnessLimit);
     }
 
-    
+
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void validateTimestamp(Map context, String created, String expires, long maxClockSkew, long freshnessLimit) {
         checkEnabled();
         if (expiresBeforeCreated(created, expires)) {
@@ -717,107 +679,6 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
             return (X509Certificate) store.getCertificate(alias);
         } catch (KeyStoreException e) {
             throw new XWSSecurityRuntimeException(e);
-        }
-    }
-
-    private void initKeyStore() throws XWSSecurityException {
-        InputStream stream = null;
-        try {
-            if (keyStoreLocation != null) {
-                keyStoreHandle = new File(keyStoreLocation).getCanonicalFile();
-            } else {
-                File dir = info.getBaseDir();
-                if (dir != null) {
-                    keyStoreHandle = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
-                    if (!keyStoreHandle.exists()) {
-                        return;
-                    }
-                } else {
-                    // skip keystore initialization as it is not setup
-                    return;
-                }
-            }
-
-            char[] keyStorePasswordChars = null;
-            if (keyStorePassword != null) {
-                keyStorePasswordChars = keyStorePassword.toCharArray();
-            }
-            keyStore = KeyStore.getInstance(keyStoreType);
-            stream = new FileInputStream(keyStoreHandle);
-            keyStore.load(stream, keyStorePasswordChars);
-        } catch (MalformedURLException e) {
-            throw new XWSSecurityException("Invalid keystore location", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityException(e);
-        } catch (IOException e) {
-            throw new XWSSecurityException(e);
-        } catch (CertificateException e) {
-            throw new XWSSecurityException(e);
-        } catch (KeyStoreException e) {
-            throw new XWSSecurityException(e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void initTrustStore() throws XWSSecurityException {
-        InputStream stream = null;
-        try {
-            File dir = info.getBaseDir();
-            if (trustStoreLocation != null) {
-                trustStoreHandle = new File(trustStoreLocation).getCanonicalFile();
-            } else if (dir != null) {
-                trustStoreHandle = new File(dir, "config" + File.separator + "fabric3-truststore.jks");
-                if (!trustStoreHandle.exists()) {
-                    defaultTrustStore();
-                    return;
-                }
-            } else {
-                defaultTrustStore();
-                return;
-            }
-            char[] trustStorePasswordChars = null;
-            if (trustStorePassword != null) {
-                trustStorePasswordChars = trustStorePassword.toCharArray();
-            }
-            trustStore = KeyStore.getInstance(trustStoreType);
-            stream = new FileInputStream(trustStoreHandle);
-            trustStore.load(stream, trustStorePasswordChars);
-            System.setProperty("javax.net.ssl.trustStore", keyStoreHandle.getCanonicalPath());
-        } catch (MalformedURLException e) {
-            throw new XWSSecurityException("Invalid truststore location", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityException(e);
-        } catch (IOException e) {
-            throw new XWSSecurityException(e);
-        } catch (CertificateException e) {
-            throw new XWSSecurityException(e);
-        } catch (KeyStoreException e) {
-            throw new XWSSecurityException(e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void defaultTrustStore() throws IOException {
-        if (keyStore != null) {
-            // default the truststore to the keystore if it is not explicitly configured
-            trustStore = keyStore;
-            trustStorePassword = keyStorePassword;
-            trustStoreType = keyStoreType;
-            System.setProperty("javax.net.ssl.trustStore", keyStoreHandle.getCanonicalPath());
         }
     }
 

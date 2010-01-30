@@ -124,6 +124,10 @@ public class TomcatServletHost implements ServletHost {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isHttpsEnabled() {
+        return defaultHttpsPort != -1;
+    }
+
     public void registerMapping(String mapping, Servlet servlet) {
         try {
             dispatchingServlet.registerMapping(mapping, servlet);

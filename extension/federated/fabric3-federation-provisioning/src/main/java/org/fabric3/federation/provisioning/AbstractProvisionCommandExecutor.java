@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServlet;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
@@ -64,20 +63,45 @@ import org.fabric3.spi.host.ServletHost;
 public abstract class AbstractProvisionCommandExecutor implements CommandExecutor<ProvisionCommand> {
     private ServletHost host;
     private CommandExecutorRegistry registry;
+    private boolean secure;
     private String address;
     private String mappingPath = "repository";
+    protected ProvisionMonitor monitor;
+    protected String role = "provision.client";
 
-    public AbstractProvisionCommandExecutor(@Reference ServletHost host, @Reference CommandExecutorRegistry registry) {
+
+    public AbstractProvisionCommandExecutor(ServletHost host, CommandExecutorRegistry registry, ProvisionMonitor monitor) {
         this.host = host;
         this.registry = registry;
+        this.monitor = monitor;
     }
 
-    @Property
+    /**
+     * Optional property to set if provisioning should only be done using HTTP and authentication.
+     *
+     * @param secure true if provisioning should only be done using HTTP and authentication
+     */
+    @Property(required = false)
+    public void setSecure(boolean secure) {
+        this.secure = secure;
+    }
+
+    /**
+     * Role required by subjects authenticating to provision a contribution.
+     *
+     * @param role role required by subjects authenticating to provision a contribution
+     */
+    @Property(required = false)
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Property(required = false)
     public void setMappingPath(String path) {
         mappingPath = path;
     }
 
-    @Property
+    @Property(required = false)
     public void setAddress(String address) {
         this.address = address;
     }
@@ -87,7 +111,13 @@ public abstract class AbstractProvisionCommandExecutor implements CommandExecuto
         if (address == null) {
             address = InetAddress.getLocalHost().getHostAddress();
         }
-        HttpServlet servlet = getResolverServlet();
+        HttpServlet servlet;
+        if (secure && !host.isHttpsEnabled()) {
+            monitor.httpsNotEnabled();
+            servlet = getResolverServlet(false);
+        } else {
+            servlet = getResolverServlet(secure);
+        }
         host.registerMapping("/" + mappingPath + "/*", servlet);
         registry.register(ProvisionCommand.class, this);
     }
@@ -96,7 +126,12 @@ public abstract class AbstractProvisionCommandExecutor implements CommandExecuto
         try {
             URI contributionUri = command.getContributionUri();
             String path = "/" + mappingPath;
-            URL contributionUrl = new URL("http://" + address + ":" + host.getHttpPort() + path + "/" + contributionUri);
+            URL contributionUrl;
+            if (secure) {
+                contributionUrl = new URL("https://" + address + ":" + host.getHttpsPort() + path + "/" + contributionUri);
+            } else {
+                contributionUrl = new URL("http://" + address + ":" + host.getHttpPort() + path + "/" + contributionUri);
+            }
             ProvisionResponse response = new ProvisionResponse(contributionUrl);
             command.setResponse(response);
         } catch (MalformedURLException e) {
@@ -107,8 +142,9 @@ public abstract class AbstractProvisionCommandExecutor implements CommandExecuto
     /**
      * Returns a servlet that is resposible for dereferencing a contribution artifact from a store.
      *
+     * @param secure true if the servlet should enforce secure provisioning
      * @return a servlet that is resposible for dereferencing a contribution artifact from a store
      */
-    protected abstract HttpServlet getResolverServlet();
+    protected abstract HttpServlet getResolverServlet(boolean secure);
 
 }

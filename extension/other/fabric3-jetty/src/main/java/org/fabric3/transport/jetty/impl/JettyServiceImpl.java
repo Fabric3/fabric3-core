@@ -43,7 +43,6 @@
  */
 package org.fabric3.transport.jetty.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -76,9 +75,9 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.work.DefaultPausableWork;
 import org.fabric3.host.work.WorkScheduler;
+import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.transport.jetty.JettyService;
 
 /**
@@ -106,13 +105,9 @@ public class JettyServiceImpl implements JettyService {
     private int minHttpsPort = 8484;
     private int maxHttpsPort = -1;
     private int selectedHttps = -1;
-    private String keystore;
-    private String certPassword;
-    private String keyPassword;
-    private String truststore;
-    private String trustPassword;
+    //    private String keystore;
     private boolean sendServerVersion;
-    private HostInfo info;
+    private KeyStoreManager keyStoreManager;
     private TransportMonitor monitor;
     private WorkScheduler scheduler;
     private boolean debug;
@@ -126,9 +121,8 @@ public class JettyServiceImpl implements JettyService {
     }
 
     @Constructor
-    public JettyServiceImpl(@Reference WorkScheduler scheduler, @Reference HostInfo info, @Monitor TransportMonitor monitor) {
+    public JettyServiceImpl(@Reference WorkScheduler scheduler, @Monitor TransportMonitor monitor) {
         this.scheduler = scheduler;
-        this.info = info;
         this.monitor = monitor;
         // Jetty uses a static logger, so jam in the monitor into a static reference
         Logger logger = Log.getLogger(null);
@@ -145,12 +139,17 @@ public class JettyServiceImpl implements JettyService {
         this.monitor = monitor;
     }
 
-    @Property
+    @Reference(required = false)
+    public void setKeyStoreManager(KeyStoreManager keyStoreManager) {
+        this.keyStoreManager = keyStoreManager;
+    }
+
+    @Property(required = false)
     public void setEnableHttps(boolean enableHttps) {
         this.enableHttps = enableHttps;
     }
 
-    @Property
+    @Property(required = false)
     public void setHttpPort(String httpPort) {
         String[] tokens = httpPort.split("-");
         if (tokens.length == 1) {
@@ -166,7 +165,7 @@ public class JettyServiceImpl implements JettyService {
         }
     }
 
-    @Property
+    @Property(required = false)
     public void setHttpsPort(String httpsPort) {
         String[] tokens = httpsPort.split("-");
         if (tokens.length == 1) {
@@ -182,37 +181,12 @@ public class JettyServiceImpl implements JettyService {
         }
     }
 
-    @Property
+    @Property(required = false)
     public void setSendServerVersion(boolean sendServerVersion) {
         this.sendServerVersion = sendServerVersion;
     }
 
-    @Property
-    public void setKeystore(String keystore) {
-        this.keystore = keystore;
-    }
-
-    @Property
-    public void setKeyPassword(String keyPassword) {
-        this.keyPassword = keyPassword;
-    }
-
-    @Property
-    public void setCertPassword(String certPassword) {
-        this.certPassword = certPassword;
-    }
-
-    @Property
-    public void setTruststore(String truststore) {
-        this.truststore = truststore;
-    }
-
-    @Property
-    public void setTrustPassword(String trustPassword) {
-        this.trustPassword = trustPassword;
-    }
-
-    @Property
+    @Property(required = false)
     public void setDebug(boolean val) {
         debug = val;
     }
@@ -259,6 +233,10 @@ public class JettyServiceImpl implements JettyService {
 
     public ServletContext getServletContext() {
         return servletHandler.getServletContext();
+    }
+
+    public boolean isHttpsEnabled() {
+        return selectedHttps != -1;
     }
 
     public synchronized void registerMapping(String path, Servlet servlet) {
@@ -329,9 +307,15 @@ public class JettyServiceImpl implements JettyService {
         selectHttpsPort();
 
         if (enableHttps) {
-            initializeKeystoreName();
-            initializeTruststoreName();
+            if (keyStoreManager == null){
+                throw new JettyInitializationException("Key store manager not found - a security extension must be installed");
+            }
             // setup HTTP and HTTPS
+            String keystore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
+            String keyPassword = keyStoreManager.getKeyStorePassword();
+            String truststore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
+            String trustPassword = keyStoreManager.getTrustStorePassword();
+            String certPassword = keyStoreManager.getCertPassword();
             Connector httpConnector = new SelectChannelConnector();
             httpConnector.setPort(selectedHttp);
             SslSocketConnector sslConnector = new SslSocketConnector();
@@ -348,48 +332,6 @@ public class JettyServiceImpl implements JettyService {
             selectConnector.setPort(selectedHttp);
             selectConnector.setSoLingerTime(-1);
             server.setConnectors(new Connector[]{selectConnector});
-        }
-    }
-
-    private void initializeKeystoreName() throws JettyInitializationException, IOException {
-        File keystoreFile;
-        if (keystore == null) {
-            File dir = info.getBaseDir();
-            if (dir != null) {
-                keystoreFile = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
-                keystore = keystoreFile.toURI().toURL().toString();
-            } else {
-                throw new JettyInitializationException("A keystore location must be configured in systemConfig.xml");
-            }
-        } else {
-            keystoreFile = new File(keystore);
-        }
-        if (!keystoreFile.exists()) {
-            throw new JettyInitializationException("Keystore not found:" + keystoreFile.getCanonicalPath());
-        }
-    }
-
-    private void initializeTruststoreName() throws JettyInitializationException, IOException {
-        File truststoreFile;
-        if (truststore == null) {
-            File dir = info.getBaseDir();
-            if (dir != null) {
-                truststoreFile = new File(dir, "config" + File.separator + "fabric3-keystore.jks");
-                truststore = truststoreFile.toURI().toURL().toString();
-                trustPassword = keyPassword;
-            } else if (keystore != null) {
-                // default to keystore values
-                truststore = keystore;
-                trustPassword = keyPassword;
-                return;
-            } else {
-                throw new JettyInitializationException("A truststore location must be configured in systemConfig.xml");
-            }
-        } else {
-            truststoreFile = new File(truststore);
-        }
-        if (!truststoreFile.exists()) {
-            throw new JettyInitializationException("Truststore not found:" + truststoreFile.getCanonicalPath());
         }
     }
 

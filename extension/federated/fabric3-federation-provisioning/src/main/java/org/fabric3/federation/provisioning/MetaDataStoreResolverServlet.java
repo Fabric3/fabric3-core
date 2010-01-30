@@ -42,12 +42,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.util.io.IOHelper;
 
 /**
@@ -56,12 +57,25 @@ import org.fabric3.util.io.IOHelper;
  *
  * @version $Rev$ $Date$
  */
-public class MetaDataStoreResolverServlet extends HttpServlet {
+public class MetaDataStoreResolverServlet extends AbstractResolverServlet {
     private static final long serialVersionUID = -5822568715938454572L;
     private MetaDataStore store;
+    private boolean secure;
 
-    public MetaDataStoreResolverServlet(MetaDataStore store) {
+    protected MetaDataStoreResolverServlet(MetaDataStore store,
+                                           AuthenticationService authenticationService,
+                                           AuthorizationService authorizationService,
+                                           String role,
+                                           ProvisionMonitor monitor) {
+        super(authenticationService, authorizationService, role, monitor);
         this.store = store;
+        this.secure = true;
+    }
+
+    public MetaDataStoreResolverServlet(MetaDataStore store, ProvisionMonitor monitor) {
+        super(null, null, null, monitor);
+        this.store = store;
+        this.secure = false;
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -69,6 +83,11 @@ public class MetaDataStoreResolverServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.length() < 2) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        if (secure && !checkAccess(req)) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

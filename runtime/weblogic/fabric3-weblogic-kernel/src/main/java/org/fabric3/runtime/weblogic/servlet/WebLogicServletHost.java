@@ -109,6 +109,10 @@ public class WebLogicServletHost implements ServletHost, ServletRequestDispatche
         throw new UnsupportedOperationException();
     }
 
+    public boolean isHttpsEnabled() {
+        return true;
+    }
+
     public void init(ServletConfig config) throws ServletException {
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);

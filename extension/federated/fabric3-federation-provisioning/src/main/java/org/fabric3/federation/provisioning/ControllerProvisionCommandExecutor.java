@@ -42,9 +42,12 @@ import javax.servlet.http.HttpServlet;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Monitor;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.host.ServletHost;
+import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.AuthorizationService;
 
 /**
  * Used on a controller to processes a request for the provisioning URL of a contribution artifact.
@@ -54,15 +57,26 @@ import org.fabric3.spi.host.ServletHost;
 @EagerInit
 public class ControllerProvisionCommandExecutor extends AbstractProvisionCommandExecutor {
     private MetaDataStore store;
+    private AuthenticationService authenticationService;
+    private AuthorizationService authorizationService;
 
-    public ControllerProvisionCommandExecutor(@Reference ServletHost host,
-                                              @Reference CommandExecutorRegistry registry,
-                                              @Reference MetaDataStore store) {
-        super(host, registry);
+    public ControllerProvisionCommandExecutor(@Reference CommandExecutorRegistry registry,
+                                              @Reference MetaDataStore store,
+                                              @Reference ServletHost host,
+                                              @Reference AuthenticationService authenticationService,
+                                              @Reference AuthorizationService authorizationService,
+                                              @Monitor ProvisionMonitor monitor) {
+        super(host, registry, monitor);
         this.store = store;
+        this.authenticationService = authenticationService;
+        this.authorizationService = authorizationService;
     }
 
-    protected HttpServlet getResolverServlet() {
-        return new MetaDataStoreResolverServlet(store);
+    protected HttpServlet getResolverServlet(boolean secure) {
+        if (secure) {
+            return new MetaDataStoreResolverServlet(store, authenticationService, authorizationService, role, monitor);
+        } else {
+            return new MetaDataStoreResolverServlet(store, monitor);
+        }
     }
 }

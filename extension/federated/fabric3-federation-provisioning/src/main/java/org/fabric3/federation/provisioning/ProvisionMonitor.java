@@ -37,46 +37,35 @@
 */
 package org.fabric3.federation.provisioning;
 
-import javax.servlet.http.HttpServlet;
+import java.net.URL;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.api.annotation.Monitor;
-import org.fabric3.spi.artifact.ArtifactCache;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.security.AuthenticationService;
-import org.fabric3.spi.security.AuthorizationService;
+import org.fabric3.api.annotation.logging.Fine;
+import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.logging.Warning;
+import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.spi.security.AuthenticationException;
+import org.fabric3.spi.security.AuthorizationException;
 
 /**
- * Used on a participant to processes a request for the provisioning URL of a contribution artifact
- *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ZoneProvisionCommandExecutor extends AbstractProvisionCommandExecutor {
-    private AuthenticationService authenticationService;
-    private AuthorizationService authorizationService;
-    private ArtifactCache cache;
+public interface ProvisionMonitor {
 
-    public ZoneProvisionCommandExecutor(@Reference ServletHost host,
-                                        @Reference AuthenticationService authenticationService,
-                                        @Reference AuthorizationService authorizationService,
-                                        @Reference CommandExecutorRegistry registry,
-                                        @Reference ArtifactCache cache,
-                                        @Monitor ProvisionMonitor monitor) {
-        super(host, registry, monitor);
-        this.authenticationService = authenticationService;
-        this.authorizationService = authorizationService;
-        this.cache = cache;
-    }
+    @Severe
+    void httpsNotEnabled();
 
-    protected HttpServlet getResolverServlet(boolean secure) {
-        if (secure) {
-            return new ArtifactCacheResolverServlet(cache, authenticationService, authorizationService, role, monitor);
-        } else {
-            return new ArtifactCacheResolverServlet(cache, monitor);
-        }
-    }
+    @Warning
+    void warnUsername();
+
+    @Warning
+    void warnPassword();
+
+    @Info
+    void badAuthentication(AuthenticationException e);
+
+    @Info
+    void badAuthorization(AuthorizationException e);
+
+    @Fine
+    void resolving(URL url);
 }

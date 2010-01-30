@@ -48,7 +48,7 @@ public class DuplicateComponentService extends XmlValidationFailure {
     private String componentName;
 
     public DuplicateComponentService(String referenceName, String componentName, XMLStreamReader reader) {
-        super("The service " + referenceName + "is configured more than once on the component ", reader);
+        super("The service " + referenceName + " is configured more than once on the component ", reader);
         this.componentName = componentName;
     }
 

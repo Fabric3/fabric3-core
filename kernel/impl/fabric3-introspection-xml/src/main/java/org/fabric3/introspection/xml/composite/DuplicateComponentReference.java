@@ -48,7 +48,7 @@ public class DuplicateComponentReference extends XmlValidationFailure {
     private String componentName;
 
     public DuplicateComponentReference(String referenceName, String componentName, XMLStreamReader reader) {
-        super("The reference " + referenceName + "is configured more than once on the component ", reader);
+        super("The reference " + referenceName + " is configured more than once on the component ", reader);
         this.componentName = componentName;
     }
 

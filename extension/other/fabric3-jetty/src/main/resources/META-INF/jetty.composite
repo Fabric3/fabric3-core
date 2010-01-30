@@ -21,11 +21,11 @@ Public License. See the accompanying license file for details.
         <property name="httpPort" source="$systemConfig//web.server/http/@port"/>
         <property name="enableHttps" source="$systemConfig//web.server/https/@enabled"/>
         <property name="httpsPort" source="$systemConfig//web.server/https/@port"/>
-        <property name="keystore" source="$systemConfig/security/keystore"/>
-        <property name="keyPassword" source="$systemConfig/security/keystore.password"/>
-        <property name="certPassword" source="$systemConfig/security/cert.password"/>
-        <property name="truststore" source="$systemConfig/security/truststore"/>
-        <property name="trustPassword" source="$systemConfig/security/truststore.password"/>
+        <!--<property name="keystore" source="$systemConfig/security/keystore"/>-->
+        <!--<property name="keyPassword" source="$systemConfig/security/keystore.password"/>-->
+        <!--<property name="certPassword" source="$systemConfig/security/cert.password"/>-->
+        <!--<property name="truststore" source="$systemConfig/security/truststore"/>-->
+        <!--<property name="trustPassword" source="$systemConfig/security/truststore.password"/>-->
     </component>
 
 </composite>

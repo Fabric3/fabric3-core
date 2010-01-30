@@ -80,6 +80,13 @@ public interface ServletHost {
     ServletContext getServletContext();
 
     /**
+     * True if HTTPS is enabled.
+     *
+     * @return true if HTTPS is enabled
+     */
+    boolean isHttpsEnabled();
+
+    /**
      * Register a mapping for an instance of a Servlet. This requests that the servlet container direct all requests to the designated mapping to the
      * supplied Servlet instance.
      *

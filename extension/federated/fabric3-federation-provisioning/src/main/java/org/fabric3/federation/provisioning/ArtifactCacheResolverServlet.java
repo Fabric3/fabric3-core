@@ -42,11 +42,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.util.io.IOHelper;
 
 /**
@@ -55,19 +56,37 @@ import org.fabric3.util.io.IOHelper;
  *
  * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
-public class ArtifactCacheResolverServlet extends HttpServlet {
+public class ArtifactCacheResolverServlet extends AbstractResolverServlet {
     private static final long serialVersionUID = 7721634599080335126L;
     private ArtifactCache cache;
+    private boolean secure;
 
-    public ArtifactCacheResolverServlet(ArtifactCache cache) {
+    protected ArtifactCacheResolverServlet(ArtifactCache cache,
+                                           AuthenticationService authenticationService,
+                                           AuthorizationService authorizationService,
+                                           String role,
+                                           ProvisionMonitor monitor) {
+        super(authenticationService, authorizationService, role, monitor);
         this.cache = cache;
+        this.secure = true;
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected ArtifactCacheResolverServlet(ArtifactCache cache, ProvisionMonitor monitor) {
+        super(null, null, null, monitor);
+        this.cache = cache;
+        this.secure = false;
+    }
 
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.length() < 2) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        if (secure && !checkAccess(req)) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

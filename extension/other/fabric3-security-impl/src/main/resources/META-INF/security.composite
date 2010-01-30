@@ -18,6 +18,20 @@ Public License. See the accompanying license file for details.
            name="SecurityImplementationExtension"
            autowire="true">
 
+    <component name="KeyStoreManager">
+        <f3-impl:implementation.system class="org.fabric3.security.impl.KeyStoreManagerImpl"/>
+        <property name="keyStoreLocationProperty" source="$systemConfig/security/keystore.property"/>
+        <property name="keyStorePasswordProperty" source="$systemConfig/security/keystore.password.property"/>
+        <property name="trustStoreLocationProperty" source="$systemConfig/security/truststore.property"/>
+        <property name="trustStorePasswordProperty" source="$systemConfig/security/truststore.password.property"/>
+
+        <property name="keyStoreLocation" source="$systemConfig/security/keystore"/>
+        <property name="keyStorePassword" source="$systemConfig/security/keystore.password"/>
+        <property name="trustStoreLocation" source="$systemConfig/security/truststore"/>
+        <property name="trustStorePassword" source="$systemConfig/security/truststore.password"/>
+        <property name="certPassword" source="$systemConfig/security/cert.password"/>
+    </component>
+
     <component name="AuthenticationService">
         <f3-impl:implementation.system class="org.fabric3.security.impl.AuthenticationServiceImpl"/>
     </component>

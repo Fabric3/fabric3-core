@@ -40,11 +40,14 @@ package org.fabric3.federation.provisioning;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Monitor;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.federation.MessageException;
@@ -60,15 +63,47 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 @EagerInit
 public class ZoneContributionResolverExtension implements ContributionResolverExtension {
     private ZoneTopologyService topologyService;
+    private ProvisionMonitor monitor;
+    private boolean secure;
+    private String username;
+    private String password;
     private long defaultTimeout = 10000;
 
-    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService) {
+    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService, @Monitor ProvisionMonitor monitor) {
         this.topologyService = topologyService;
+        this.monitor = monitor;
+    }
+
+    @Property(required = false)
+    public void setSecure(boolean secure) {
+        this.secure = secure;
+    }
+
+    @Property(required = false)
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Property(required = false)
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Property(required = false)
     public void setDefaultTimeout(long defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
+    }
+
+    @Init
+    public void init() {
+        if (secure) {
+            if (username == null) {
+                monitor.warnUsername();
+            }
+            if (password == null) {
+                monitor.warnPassword();
+            }
+        }
     }
 
     public InputStream resolve(URI contributionUri) throws ResolutionException {
@@ -84,7 +119,12 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
                 val = topologyService.sendSynchronousToController(command, defaultTimeout);
             }
             ProvisionResponse response = (ProvisionResponse) val;
-            return response.getContributionUrl().openStream();
+            URL url = response.getContributionUrl();
+            if (secure) {
+                url = new URL(url.toString() + "?username=" + username + "&password=" + password);
+            }
+            monitor.resolving(url);
+            return url.openStream();
         } catch (MessageException e) {
             throw new ResolutionException(e);
         } catch (IOException e) {
