@@ -80,6 +80,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     public Address getZoneLeader(String zoneName, View view) {
         for (Address address : view.getMembers()) {
             String name = UUID.get(address);
+            if (name == null) {
+                return null;
+            }
             int pos = name.indexOf(":participant:");
             if (pos < 0) {
                 continue;
