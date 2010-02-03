@@ -40,19 +40,24 @@ package org.fabric3.fabric.command;
 import java.net.URI;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
-public class UnprovisionClassloaderCommand implements Command {
+public class UnprovisionClassloaderCommand implements CompensatableCommand {
     private static final long serialVersionUID = -155817487398296922L;
 
-    private final URI uri;
+    private PhysicalClassLoaderDefinition definition;
 
-    public UnprovisionClassloaderCommand(URI uri) {
-        this.uri = uri;
-        assert uri != null;
+    public UnprovisionClassloaderCommand(PhysicalClassLoaderDefinition definition) {
+        this.definition = definition;
+    }
+
+    public Command getCompensatingCommand() {
+        return new ProvisionClassloaderCommand(definition);
     }
 
     public URI getUri() {
-        return uri;
+        return definition.getUri();
     }
 
     @Override
@@ -62,13 +67,13 @@ public class UnprovisionClassloaderCommand implements Command {
 
         UnprovisionClassloaderCommand that = (UnprovisionClassloaderCommand) o;
 
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
+        return !(getUri() != null ? !getUri().equals(that.getUri()) : that.getUri() != null);
 
     }
 
     @Override
     public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+        return getUri() != null ? getUri().hashCode() : 0;
     }
 }
 

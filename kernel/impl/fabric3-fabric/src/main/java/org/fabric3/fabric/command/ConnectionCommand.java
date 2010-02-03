@@ -39,15 +39,17 @@ package org.fabric3.fabric.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Contains commands for attaching and detaching wires.
  *
  * @version $Rev$ $Date$
  */
-public class ConnectionCommand implements Command {
+public class ConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2313380946362271104L;
     private List<AttachWireCommand> attachCommands;
     private List<DetachWireCommand> detachCommands;
@@ -55,6 +57,28 @@ public class ConnectionCommand implements Command {
     public ConnectionCommand() {
         attachCommands = new ArrayList<AttachWireCommand>();
         detachCommands = new ArrayList<DetachWireCommand>();
+    }
+
+    public Command getCompensatingCommand() {
+        ConnectionCommand compensating = new ConnectionCommand();
+        if (!attachCommands.isEmpty()){
+            ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size()-1);
+            while(iter.hasPrevious()){
+                AttachWireCommand command = iter.previous();
+                DetachWireCommand compensatingWireCommand = command.getCompensatingCommand();
+                compensating.add(compensatingWireCommand);
+            }
+        }
+        if (!detachCommands.isEmpty()){
+            ListIterator<DetachWireCommand> iter = detachCommands.listIterator(detachCommands.size()-1);
+            while(iter.hasPrevious()){
+                DetachWireCommand command = iter.previous();
+                AttachWireCommand compensatingWireCommand = command.getCompensatingCommand();
+                compensating.add(compensatingWireCommand);
+            }
+        }
+
+        return compensating;
     }
 
     public List<AttachWireCommand> getAttachCommands() {
@@ -72,4 +96,5 @@ public class ConnectionCommand implements Command {
     public void add(DetachWireCommand command) {
         detachCommands.add(command);
     }
+
 }

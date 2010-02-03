@@ -41,57 +41,42 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.cm;
+package org.fabric3.fabric.command;
 
-import java.net.URI;
-import java.util.List;
-
-import org.fabric3.spi.component.Component;
+import org.fabric3.spi.command.Command;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
+ * Removes a registered component.
  *
  * @version $Rev$ $Date$
  */
-public interface ComponentManager {
+public class UnBuildComponentCommand extends AbstractComponentCommand {
+    private static final long serialVersionUID = 1894510885498647133L;
 
-    /**
-     * Registers a component which will be managed by the runtime
-     *
-     * @param component the component
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void register(Component component) throws RegistrationException;
+    public UnBuildComponentCommand(PhysicalComponentDefinition definition) {
+        super(definition);
+    }
 
-    /**
-     * Deregisters a component
-     *
-     * @param uri the component URI to deregister
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void unregister(URI uri) throws RegistrationException;
+    public Command getCompensatingCommand() {
+        return new BuildComponentCommand(definition);
+    }
 
-    /**
-     * Returns the component with the given URI
-     *
-     * @param uri the component URI
-     * @return the component or null if not found
-     */
-    Component getComponent(URI uri);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-    /**
-     * Returns a list of all registered components.
-     *
-     * @return a list of all registered components
-     */
-    List<Component> getComponents();
+        UnBuildComponentCommand that = (UnBuildComponentCommand) o;
 
-    /**
-     * Returns a list of component URIs in the given hierarchy, e.g a domain or composite within a domain.
-     *
-     * @param uri a URI representing the hierarchy
-     * @return the list of component URIs
-     */
-    List<URI> getComponentsInHierarchy(URI uri);
+        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+    }
+
+    public int hashCode() {
+        return (definition != null ? definition.hashCode() : 0);
+    }
+
 }

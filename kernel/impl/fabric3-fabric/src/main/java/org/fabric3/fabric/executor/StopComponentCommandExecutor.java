@@ -45,7 +45,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.StopComponentCommand;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.cm.RegistrationException;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
@@ -55,28 +54,22 @@ import org.fabric3.spi.executor.ExecutionException;
 public class StopComponentCommandExecutor implements CommandExecutor<StopComponentCommand> {
 
     private final ComponentManager componentManager;
-    private final CommandExecutorRegistry commandExecutorRegistry;
+    private final CommandExecutorRegistry executorRegistry;
 
-    public StopComponentCommandExecutor(@Reference ComponentManager componentManager,
-                                        @Reference CommandExecutorRegistry commandExecutorRegistry) {
+    public StopComponentCommandExecutor(@Reference ComponentManager componentManager, @Reference CommandExecutorRegistry executorRegistry) {
         this.componentManager = componentManager;
-        this.commandExecutorRegistry = commandExecutorRegistry;
+        this.executorRegistry = executorRegistry;
     }
 
     @Init
     public void init() {
-        commandExecutorRegistry.register(StopComponentCommand.class, this);
+        executorRegistry.register(StopComponentCommand.class, this);
     }
 
     public void execute(StopComponentCommand command) throws ExecutionException {
         URI uri = command.getUri();
         Component component = componentManager.getComponent(uri);
         component.stop();
-        try {
-            componentManager.unregister(component);
-        } catch (RegistrationException re) {
-            throw new ExecutionException("Unexpected exception unregistering component: " + uri, re);
-        }
     }
 }
 

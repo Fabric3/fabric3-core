@@ -41,57 +41,29 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.cm;
+package org.fabric3.fabric.command;
 
-import java.net.URI;
-import java.util.List;
-
-import org.fabric3.spi.component.Component;
+import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
+ *
  *
  * @version $Rev$ $Date$
  */
-public interface ComponentManager {
+public abstract class AbstractComponentCommand implements CompensatableCommand {
+    protected PhysicalComponentDefinition definition;
 
-    /**
-     * Registers a component which will be managed by the runtime
-     *
-     * @param component the component
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void register(Component component) throws RegistrationException;
+    public AbstractComponentCommand(PhysicalComponentDefinition definition) {
+        this.definition = definition;
+    }
 
-    /**
-     * Deregisters a component
-     *
-     * @param uri the component URI to deregister
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void unregister(URI uri) throws RegistrationException;
+    public PhysicalComponentDefinition getDefinition() {
+        return definition;
+    }
 
-    /**
-     * Returns the component with the given URI
-     *
-     * @param uri the component URI
-     * @return the component or null if not found
-     */
-    Component getComponent(URI uri);
+    public String toString() {
+        return "ComponentBuild: " + definition.toString();
+    }
 
-    /**
-     * Returns a list of all registered components.
-     *
-     * @return a list of all registered components
-     */
-    List<Component> getComponents();
-
-    /**
-     * Returns a list of component URIs in the given hierarchy, e.g a domain or composite within a domain.
-     *
-     * @param uri a URI representing the hierarchy
-     * @return the list of component URIs
-     */
-    List<URI> getComponentsInHierarchy(URI uri);
 }

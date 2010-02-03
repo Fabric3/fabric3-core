@@ -64,48 +64,47 @@
         <property name="scaBindingOrder" source="$systemConfig//bindings/binding.sca/provider.order"/>
     </component>
 
+    <component name="StopComponentCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
+        <property name="order">1</property>
+    </component>
+
     <component name="ComponentBuildCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
-        <property name="order">1</property>
+        <property name="order">2</property>
     </component>
 
     <component name="WireCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireCommandGenerator"/>
-        <property name="order">2</property>
+        <property name="order">3</property>
     </component>
 
     <component name="BoundReferenceCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundReferenceCommandGenerator"/>
-        <property name="order">2</property>
+        <property name="order">3</property>
     </component>
 
     <component name="BoundServiceCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator"/>
-        <property name="order">2</property>
+        <property name="order">3</property>
     </component>
 
     <component name="ResourceCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ResourceCommandGenerator"/>
-        <property name="order">2</property>
+        <property name="order">3</property>
     </component>
 
     <component name="StartComponentCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StartComponentCommandGenerator"/>
-        <property name="order">3</property>
+        <property name="order">4</property>
     </component>
 
     <component name="StartCompositeContextCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StartContextCommandGeneratorImpl"/>
     </component>
 
-
     <component name="StopCompositeContextCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl"/>
-    </component>
-
-    <component name="StopComponentCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
-        <property name="order">3</property>
     </component>
 
      <component f3-core:key="{urn:fabric3.org:policy}allowsPassByReferencePolicy" name="ByReferenceInterceptorGenerator">

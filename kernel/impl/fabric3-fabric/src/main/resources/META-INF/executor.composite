@@ -34,8 +34,12 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachExtensionCommandExecutor"/>
     </component>
 
-    <component name="ComponentBuildCommandExecutor">
+    <component name="BuildComponentCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildComponentCommandExecutor"/>
+    </component>
+
+    <component name="UnBuildComponentCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildComponentCommandExecutor"/>
     </component>
 
     <component name="WireAttachCommandExecutor">

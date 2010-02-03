@@ -38,6 +38,7 @@
 package org.fabric3.fabric.command;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**
@@ -45,17 +46,21 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class ProvisionClassloaderCommand implements Command {
+public class ProvisionClassloaderCommand implements CompensatableCommand {
     private static final long serialVersionUID = -5993951083285578380L;
 
-    private PhysicalClassLoaderDefinition physicalClassLoaderDefinition;
+    private PhysicalClassLoaderDefinition definition;
 
     public ProvisionClassloaderCommand(PhysicalClassLoaderDefinition definition) {
-        this.physicalClassLoaderDefinition = definition;
+        this.definition = definition;
+    }
+
+    public Command getCompensatingCommand() {
+        return new UnprovisionClassloaderCommand(definition);
     }
 
     public PhysicalClassLoaderDefinition getClassLoaderDefinition() {
-        return physicalClassLoaderDefinition;
+        return definition;
     }
 
     public boolean equals(Object o) {
@@ -65,19 +70,11 @@ public class ProvisionClassloaderCommand implements Command {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         ProvisionClassloaderCommand that = (ProvisionClassloaderCommand) o;
-
-        if (physicalClassLoaderDefinition != null
-                ? !physicalClassLoaderDefinition.equals(that.physicalClassLoaderDefinition) : that.physicalClassLoaderDefinition != null) {
-
-            return false;
-        }
-
-        return true;
+        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
     }
 
     public int hashCode() {
-        return (physicalClassLoaderDefinition != null ? physicalClassLoaderDefinition.hashCode() : 0);
+        return (definition != null ? definition.hashCode() : 0);
     }
 }

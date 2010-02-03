@@ -44,12 +44,14 @@
 package org.fabric3.fabric.domain;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.domain.Deployer;
@@ -63,26 +65,33 @@ import org.fabric3.spi.executor.ExecutionException;
  * @version $Rev$ $Date$
  */
 public class LocalDeployer implements Deployer {
-
-    private CommandExecutorRegistry registry;
+    private CommandExecutorRegistry executorRegistry;
     private ScopeRegistry scopeRegistry;
 
-    public LocalDeployer(@Reference CommandExecutorRegistry registry, @Reference ScopeRegistry scopeRegistry) {
-        this.registry = registry;
+    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+        this.executorRegistry = executorRegistry;
         this.scopeRegistry = scopeRegistry;
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         // ignore extension commands since extensions will already be loaded locally
         List<Command> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(null).getCommands();
+        int marker = 0;
         for (Command command : commands) {
             try {
-                registry.execute(command);
+                executorRegistry.execute(command);
+                ++marker;
             } catch (ExecutionException e) {
+                try {
+                    rollback(commands, marker);
+                } catch (ExecutionException e1) {
+                    // TODO need to handle this
+                } catch (InstanceLifecycleException e1) {
+                    // TODO need to handle this
+                }
                 throw new DeploymentException(e);
             }
         }
-
         try {
             if (scopeRegistry != null) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
@@ -91,6 +100,20 @@ public class LocalDeployer implements Deployer {
             throw new DeploymentException(e);
         }
 
+    }
+
+    private void rollback(List<Command> commands, int marker) throws ExecutionException, InstanceLifecycleException {
+        ListIterator<Command> iter = commands.listIterator(marker);
+        while (iter.hasPrevious()) {
+            Command command = iter.previous();
+            if (command instanceof CompensatableCommand) {
+                Command compensating = ((CompensatableCommand) command).getCompensatingCommand();
+                executorRegistry.execute(compensating);
+            }
+        }
+        if (scopeRegistry != null) {
+            scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+        }
     }
 
 }

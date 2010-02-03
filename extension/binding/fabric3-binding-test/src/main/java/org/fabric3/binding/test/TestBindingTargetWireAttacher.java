@@ -78,7 +78,7 @@ public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBin
     }
 
     public void detach(PhysicalSourceDefinition source, TestBindingTargetDefinition target) throws WiringException {
-        throw new AssertionError();
+//        throw new AssertionError();
     }
 
     public ObjectFactory<?> createObjectFactory(TestBindingTargetDefinition target) throws WiringException {

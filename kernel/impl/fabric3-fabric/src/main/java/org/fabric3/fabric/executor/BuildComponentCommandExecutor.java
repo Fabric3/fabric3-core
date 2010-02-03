@@ -64,7 +64,7 @@ import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Eagerly initializes a component on a service node.
+ * Builds a component on a runtime.
  *
  * @version $Rev$ $Date$
  */

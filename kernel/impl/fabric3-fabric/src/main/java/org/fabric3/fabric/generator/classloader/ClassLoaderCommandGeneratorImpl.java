@@ -142,7 +142,8 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 throw new GenerationException(e);
             }
             for (Contribution contribution : ordered) {
-                UnprovisionClassloaderCommand command = new UnprovisionClassloaderCommand(contribution.getUri());
+                PhysicalClassLoaderDefinition definition = createClassLoaderDefinition(contribution);
+                UnprovisionClassloaderCommand command = new UnprovisionClassloaderCommand(definition);
                 commands.add(command);
             }
         }
@@ -163,21 +164,9 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         for (Map.Entry<String, List<Contribution>> entry : contributionsPerZone.entrySet()) {
             String zone = entry.getKey();
             for (Contribution contribution : entry.getValue()) {
-                URI uri = contribution.getUri();
-                if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)) {
+                PhysicalClassLoaderDefinition definition = createClassLoaderDefinition(contribution);
+                if (definition == null) {
                     continue;
-                }
-                PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri);
-                definition.setContributionUri(uri);
-                List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
-                for (ContributionWire<?, ?> wire : contributionWires) {
-                    ClassLoaderWireGenerator generator = generators.get(wire.getClass());
-                    if (generator == null) {
-                        // not all contribution wires resolve resources through classloaders, so skip if one is not found
-                        continue;
-                    }
-                    PhysicalClassLoaderWireDefinition wireDefinition = generator.generate(wire);
-                    definition.add(wireDefinition);
                 }
                 List<PhysicalClassLoaderDefinition> definitions = definitionsPerZone.get(zone);
                 if (definitions == null) {
@@ -189,6 +178,26 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
 
         }
         return definitionsPerZone;
+    }
+
+    private PhysicalClassLoaderDefinition createClassLoaderDefinition(Contribution contribution) {
+        URI uri = contribution.getUri();
+        if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)) {
+            return null;
+        }
+        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri);
+        definition.setContributionUri(uri);
+        List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
+        for (ContributionWire<?, ?> wire : contributionWires) {
+            ClassLoaderWireGenerator generator = generators.get(wire.getClass());
+            if (generator == null) {
+                // not all contribution wires resolve resources through classloaders, so skip if one is not found
+                continue;
+            }
+            PhysicalClassLoaderWireDefinition wireDefinition = generator.generate(wire);
+            definition.add(wireDefinition);
+        }
+        return definition;
     }
 
     /**

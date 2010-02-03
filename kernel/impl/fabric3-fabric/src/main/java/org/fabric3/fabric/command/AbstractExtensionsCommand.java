@@ -41,15 +41,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AbstractExtensionsCommand implements Command {
+public abstract class AbstractExtensionsCommand implements CompensatableCommand {
     private static final long serialVersionUID = -4757212674286772185L;
 
-    private List<URI> extensionUris = new ArrayList<URI>();
+    protected List<URI> extensionUris = new ArrayList<URI>();
 
     public List<URI> getExtensionUris() {
         return extensionUris;

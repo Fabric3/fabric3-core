@@ -72,7 +72,7 @@ public class ComponentManagerImplTestCase extends TestCase {
         EasyMock.reset(root);
         EasyMock.expect(root.getUri()).andReturn(ROOT1);
         EasyMock.replay(root);
-        manager.unregister(root);
+        manager.unregister(root.getUri());
         EasyMock.verify(root);
         assertEquals(null, manager.getComponent(ROOT1));
     }

@@ -41,57 +41,50 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.cm;
+package org.fabric3.fabric.executor;
 
 import java.net.URI;
-import java.util.List;
 
-import org.fabric3.spi.component.Component;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.fabric.command.UnBuildComponentCommand;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.cm.RegistrationException;
+import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
+ * Deregisters the component from the component manager.
  *
  * @version $Rev$ $Date$
  */
-public interface ComponentManager {
+@EagerInit
+public class UnBuildComponentCommandExecutor implements CommandExecutor<UnBuildComponentCommand> {
 
-    /**
-     * Registers a component which will be managed by the runtime
-     *
-     * @param component the component
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void register(Component component) throws RegistrationException;
+    private CommandExecutorRegistry executorRegistry;
+    private ComponentManager componentManager;
 
-    /**
-     * Deregisters a component
-     *
-     * @param uri the component URI to deregister
-     * @throws RegistrationException when an error ocurrs registering the component
-     */
-    void unregister(URI uri) throws RegistrationException;
+    public UnBuildComponentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ComponentManager componentManager) {
+        this.executorRegistry = executorRegistry;
+        this.componentManager = componentManager;
+    }
 
-    /**
-     * Returns the component with the given URI
-     *
-     * @param uri the component URI
-     * @return the component or null if not found
-     */
-    Component getComponent(URI uri);
+    @Init
+    public void init() {
+        executorRegistry.register(UnBuildComponentCommand.class, this);
+    }
 
-    /**
-     * Returns a list of all registered components.
-     *
-     * @return a list of all registered components
-     */
-    List<Component> getComponents();
+    public void execute(UnBuildComponentCommand command) throws ExecutionException {
+        URI uri = command.getDefinition().getComponentUri();
+        try {
+            componentManager.unregister(uri);
+        } catch (RegistrationException re) {
+            throw new ExecutionException("Unexpected exception unregistering component: " + uri, re);
+        }
 
-    /**
-     * Returns a list of component URIs in the given hierarchy, e.g a domain or composite within a domain.
-     *
-     * @param uri a URI representing the hierarchy
-     * @return the list of component URIs
-     */
-    List<URI> getComponentsInHierarchy(URI uri);
+    }
+
 }

@@ -40,8 +40,9 @@ package org.fabric3.fabric.command;
 import java.net.URI;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 
-public class StopComponentCommand implements Command {
+public class StopComponentCommand implements CompensatableCommand {
     private static final long serialVersionUID = 4385799180032870689L;
 
     private final URI uri;
@@ -53,6 +54,10 @@ public class StopComponentCommand implements Command {
 
     public URI getUri() {
         return uri;
+    }
+
+    public Command getCompensatingCommand() {
+        return new StartComponentCommand(uri);
     }
 
     @Override

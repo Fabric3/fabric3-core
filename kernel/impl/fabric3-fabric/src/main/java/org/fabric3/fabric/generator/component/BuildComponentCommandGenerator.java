@@ -50,16 +50,18 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.BuildComponentCommand;
-import org.fabric3.fabric.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.fabric.command.UnBuildComponentCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.command.Command;
 
 /**
  * Creates a command to build a component on a runtime.
@@ -80,24 +82,32 @@ public class BuildComponentCommandGenerator implements CommandGenerator {
         return order;
     }
 
-    @SuppressWarnings("unchecked")
-    public BuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        Implementation<?> implementation = component.getDefinition().getImplementation();
+    public Command generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
-            Class<? extends Implementation> type = implementation.getClass();
-            ComponentGenerator generator = generatorRegistry.getComponentGenerator(type);
-            if (generator == null) {
-                throw new GeneratorNotFoundException(type);
-            }
-            PhysicalComponentDefinition definition = generator.generate(component);
-            URI uri = component.getUri();
-            definition.setComponentUri(uri);
-            definition.setClassLoaderId(component.getDefinition().getContributionUri());
-            QName deployable = component.getDeployable();
-            definition.setDeployable(deployable);
+            PhysicalComponentDefinition definition = generateDefinition(component);
             return new BuildComponentCommand(definition);
+        } else if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
+            PhysicalComponentDefinition definition = generateDefinition(component);
+            return new UnBuildComponentCommand(definition);
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private PhysicalComponentDefinition generateDefinition(LogicalComponent<?> component) throws GenerationException {
+        Implementation<?> implementation = component.getDefinition().getImplementation();
+        Class<? extends Implementation> type = implementation.getClass();
+        ComponentGenerator generator = generatorRegistry.getComponentGenerator(type);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(type);
+        }
+        PhysicalComponentDefinition definition = generator.generate(component);
+        URI uri = component.getUri();
+        definition.setComponentUri(uri);
+        definition.setClassLoaderId(component.getDefinition().getContributionUri());
+        QName deployable = component.getDeployable();
+        definition.setDeployable(deployable);
+        return definition;
     }
 
 }

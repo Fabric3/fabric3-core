@@ -45,6 +45,7 @@ package org.fabric3.fabric.command;
 
 import java.net.URI;
 
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.Command;
 
 /**
@@ -52,7 +53,7 @@ import org.fabric3.spi.command.Command;
  *
  * @version $Rev$ $Date$
  */
-public class StartComponentCommand implements Command {
+public class StartComponentCommand implements CompensatableCommand {
     private static final long serialVersionUID = -6106317903755129824L;
 
     private final URI uri;
@@ -65,6 +66,10 @@ public class StartComponentCommand implements Command {
         return uri;
     }
 
+    public Command getCompensatingCommand() {
+        return new StopComponentCommand(uri);
+    }
+    
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) {
@@ -80,4 +85,5 @@ public class StartComponentCommand implements Command {
     public int hashCode() {
         return (uri != null ? uri.hashCode() : 0);
     }
+
 }
