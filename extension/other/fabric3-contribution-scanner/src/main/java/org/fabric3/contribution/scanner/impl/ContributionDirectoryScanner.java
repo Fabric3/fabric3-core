@@ -53,6 +53,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -349,7 +351,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 if (recover) {
                     domain.recover(addedUris);
                 } else {
-                    domain.include(addedUris, false);
+                    domain.include(addedUris);
                 }
                 for (URI uri : addedUris) {
                     String name = uri.toString();
@@ -412,7 +414,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     if (contributionService.exists(uri)) {
                         List<Deployable> deployables = contributionService.getDeployables(uri);
                         for (Deployable deployable : deployables) {
-                            domain.undeploy(deployable.getName());
+                            QName name = deployable.getName();
+                            domain.undeploy(name);
                         }
                         contributionService.uninstall(uri);
                         contributionService.remove(uri);

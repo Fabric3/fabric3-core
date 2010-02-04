@@ -5,4 +5,5 @@
     <federation>
         <runtimeName>Controller</runtimeName>
     </federation>
+    <deployment transactional="true"/>
 </config>

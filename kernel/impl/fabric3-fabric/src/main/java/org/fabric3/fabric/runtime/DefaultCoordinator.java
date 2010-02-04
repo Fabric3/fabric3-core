@@ -187,7 +187,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private void deploy(List<URI> contributionUris) throws InitializationException, PolicyActivationException {
         try {
             Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
-            domain.include(contributionUris, false);
+            domain.include(contributionUris);
         } catch (DeploymentException e) {
             state = RuntimeState.ERROR;
             throw new ExtensionInitializationException("Error deploying extensions", e);

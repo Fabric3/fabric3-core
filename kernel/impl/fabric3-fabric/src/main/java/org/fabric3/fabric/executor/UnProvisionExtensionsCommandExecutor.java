@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -103,7 +105,8 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
                     // undeploy in reverse order
                     Collections.reverse(reverse);
                     for (Deployable deployable : reverse) {
-                        domain.undeploy(deployable.getName());
+                        QName name = deployable.getName();
+                        domain.undeploy(name);
                     }
                     uninstall.add(uri);
                 } catch (DeploymentException e) {

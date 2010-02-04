@@ -41,6 +41,8 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
@@ -83,7 +85,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements Runti
                     it.remove();
                 }
             }
-            domain.include(uris, false);
+            domain.include(uris);
         } catch (DeploymentException e) {
             throw new DeploymentManagementException("Error deploying profile " + profileUri + ":" + e.getMessage());
         }
@@ -99,7 +101,8 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements Runti
             }
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 try {
-                    domain.undeploy(deployable.getName());
+                    QName name = deployable.getName();
+                    domain.undeploy(name);
                 } catch (DeploymentException e) {
                     reportError(contributionUri, e);
                 }

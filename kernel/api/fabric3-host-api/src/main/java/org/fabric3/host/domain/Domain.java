@@ -53,7 +53,7 @@ public interface Domain {
     /**
      * Include a deployable composite in the domain.
      *
-     * @param deployable the name of the deployable composite to include
+     * @param deployable    the name of the deployable composite to include
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(QName deployable) throws DeploymentException;
@@ -61,32 +61,21 @@ public interface Domain {
     /**
      * Include a deployable composite in the domain using the specified DeploymentPlan.
      *
-     * @param deployable the name of the deployable composite to include
-     * @param plan       the deploymant plan name
+     * @param deployable    the name of the deployable composite to include
+     * @param plan          the deploymant plan name
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(QName deployable, String plan) throws DeploymentException;
 
     /**
-     * Include a deployable composite in the domain.
+     * Include all deployables contained in the list of contributions in the domain. If deployment plans are present in the composites, they will be
+     * used. This operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual
+     * deployment plans.
      *
-     * @param deployable    the name of the deployable composite to include
-     * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
-     *                      after componnets have been deployed to a runtime or runtimes.
+     * @param uris          the contributions to deploy
      * @throws DeploymentException if an error is encountered during inclusion
      */
-    void include(QName deployable, boolean transactional) throws DeploymentException;
-
-    /**
-     * Include a deployable composite in the domain using the specified DeploymentPlan.
-     *
-     * @param deployable    the name of the deployable composite to include
-     * @param plan          the deploymant plan name
-     * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
-     *                      after componnets have been deployed to a runtime or runtimes.
-     * @throws DeploymentException if an error is encountered during inclusion
-     */
-    void include(QName deployable, String plan, boolean transactional) throws DeploymentException;
+    void include(List<URI> uris) throws DeploymentException;
 
     /**
      * Include a composite in the domain.
@@ -97,54 +86,29 @@ public interface Domain {
     void include(Composite composite) throws DeploymentException;
 
     /**
-     * Include all deployables contained in the list of contributions in the domain. If deployment plans are present in the composites, they will be
-     * used. This operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual
-     * deployment plans.
-     *
-     * @param uris          the contributions to deploy
-     * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
-     *                      after componnets have been deployed to a runtime or runtimes.
-     * @throws DeploymentException if an error is encountered during inclusion
-     */
-    void include(List<URI> uris, boolean transactional) throws DeploymentException;
-
-    /**
-     * Remove a deployable Composite from the domain.
-     *
-     * @param deployable the name of the deployable composite to remove
-     * @throws DeploymentException if an error is encountered during undeployment
-     */
-    void undeploy(QName deployable) throws DeploymentException;
-
-    /**
      * Remove a deployable Composite from the domain.
      *
      * @param deployable    the name of the deployable composite to remove
-     * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
-     *                      after componnets have been deployed to a runtime or runtimes.
      * @throws DeploymentException if an error is encountered during undeployment
      */
-    void undeploy(QName deployable, boolean transactional) throws DeploymentException;
+    void undeploy(QName deployable) throws DeploymentException;
 
     /**
      * Activates a set of definitions contained in the contribution.
      *
      * @param uri           the contribution URI
      * @param apply         if policy sets using external attachment should be applied and wires regenerated.
-     * @param transactional if true, the deployment operation will be done transactionally. That is, changes to the logical model will only be applied
-     *                      after componnets have been deployed to a runtime or runtimes.
      * @throws DeploymentException if an error is encountered durng activation
      */
-    void activateDefinitions(URI uri, boolean apply, boolean transactional) throws DeploymentException;
+    void activateDefinitions(URI uri, boolean apply) throws DeploymentException;
 
     /**
      * Deactivates a set of definitions contained in the contribution.
      *
      * @param uri           the contribution URI
-     * @param transactional if true, the deployment operation will be done transactionally.
      * @throws DeploymentException if an error is encountered durng activation
      */
-    void deactivateDefinitions(URI uri, boolean transactional) throws DeploymentException;
+    void deactivateDefinitions(URI uri) throws DeploymentException;
 
     /**
      * Initiates a recovery operation using the set of deployables and plans.

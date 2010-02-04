@@ -246,7 +246,7 @@ public class Fabric3Task extends Task {
             for (URI contribution : installed) {
                 log("Installed: " + contribution);
             }
-            domain.include(installed, false);
+            domain.include(installed);
         } catch (ContributionException e) {
             throw new BuildException(e);
         } catch (DeploymentException e) {

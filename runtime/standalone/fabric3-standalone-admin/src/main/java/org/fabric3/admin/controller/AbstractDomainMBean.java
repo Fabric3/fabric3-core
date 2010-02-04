@@ -60,9 +60,9 @@ import org.fabric3.management.domain.InvalidDeploymentException;
 import org.fabric3.management.domain.InvalidPathException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 
 /**
  * @version $Rev$ $Date$
@@ -94,7 +94,7 @@ public abstract class AbstractDomainMBean {
             throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
         try {
-            domain.activateDefinitions(uri, true, false);
+            domain.activateDefinitions(uri, true);
         } catch (DeploymentException e) {
             throw new ContributionNotInstalledManagementException(e.getMessage());
         }
@@ -131,14 +131,15 @@ public abstract class AbstractDomainMBean {
         }
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
             try {
-                domain.undeploy(deployable.getName());
+                QName name = deployable.getName();
+                domain.undeploy(name);
             } catch (DeploymentException e) {
                 reportError(uri, e);
             }
 
         }
         try {
-            domain.deactivateDefinitions(uri, false);
+            domain.deactivateDefinitions(uri);
         } catch (DeploymentException e) {
             throw new ContributionNotInstalledManagementException(e.getMessage());
         }

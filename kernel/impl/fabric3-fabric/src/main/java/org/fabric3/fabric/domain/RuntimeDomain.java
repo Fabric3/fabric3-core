@@ -115,4 +115,8 @@ public class RuntimeDomain extends AbstractDomain {
         // classloader isolation check needed for webapp runtime
         return info.supportsClassLoaderIsolation();
     }
+
+    protected boolean isTransactional() {
+        return false;
+    }
 }

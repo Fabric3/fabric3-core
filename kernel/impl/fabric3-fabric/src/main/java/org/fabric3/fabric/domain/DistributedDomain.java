@@ -39,6 +39,7 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.binding.BindingSelector;
@@ -49,8 +50,8 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.policy.PolicyAttacher;
@@ -62,6 +63,7 @@ import org.fabric3.spi.policy.PolicyRegistry;
  * @version $Rev$ $Date$
  */
 public class DistributedDomain extends AbstractDomain implements Domain {
+    private boolean transactional;
 
     public DistributedDomain(@Reference(name = "store") MetaDataStore metaDataStore,
                              @Reference(name = "logicalComponentManager") LogicalComponentManager logicalComponentManager,
@@ -126,8 +128,30 @@ public class DistributedDomain extends AbstractDomain implements Domain {
         this.policyRegistry = policyRegistry;
     }
 
+    /**
+     * Optionally used to override default non-transactional deployment behavior in the single-VM runtime.
+     *
+     * @param transactional used to override default non-transactional deployment behavior in the single-VM runtime
+     */
+    @Property(required = false)
+    public void setTransactional(boolean transactional) {
+        this.transactional = transactional;
+    }
+
     protected boolean isLocal() {
         // classloader isolation check needed for webapp runtime
         return info.supportsClassLoaderIsolation() && RuntimeMode.CONTROLLER != info.getRuntimeMode();
     }
+
+    protected boolean isTransactional() {
+        if (info.getRuntimeMode() == RuntimeMode.CONTROLLER) {
+            return false;
+//  disable until tested:          return true;
+        } else if (info.getRuntimeMode() == RuntimeMode.VM) {
+            return transactional;
+        }
+        return false;
+    }
+
+
 }

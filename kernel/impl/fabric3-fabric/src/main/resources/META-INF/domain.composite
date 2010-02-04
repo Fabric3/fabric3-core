@@ -20,6 +20,7 @@
     <component name="ApplicationDomain">
         <f3-impl:implementation.system class="org.fabric3.fabric.domain.DistributedDomain"/>
         <reference name="logicalComponentManager" target="LogicalComponentManager"/>
+        <property name="transactional" source="$systemConfig//deployment/@transactional"/>
     </component>
 
     <component name="ContributionHelper">
