@@ -181,4 +181,12 @@ public abstract class Bindable extends LogicalAttachPoint {
         createOperations(serviceContract);
     }
 
+    /**
+     * Used to replace operations during a copy.
+     *
+     * @param operations the new operations
+     */
+    void overrideOperations(List<LogicalOperation> operations) {
+        this.operations = operations;
+    }
 }

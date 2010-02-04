@@ -38,10 +38,18 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.model.type.component.ResourceDefinition;
+
 /**
- * Utilities for copying a logical model graph.
+ * Makes copies of a logical model graph.
  *
  * @version $Rev$ $Date$
  */
@@ -50,7 +58,7 @@ public class CopyUtil {
     }
 
     /**
-     * Copies the instance graph, making a complete replica, including preservation of parent-child relationships.
+     * Makes a replica of the composite, including preservation of parent-child relationships.
      *
      * @param composite the composite to copy
      * @return the copy
@@ -61,58 +69,103 @@ public class CopyUtil {
 
 
     /**
-     * Recursively performs the actual copy.
+     * Performs the copy using depth-first traversal.
      *
      * @param composite the composite to copy
      * @param parent    the parent of the copy
      * @return the copy
      */
     private static LogicalCompositeComponent copy(LogicalCompositeComponent composite, LogicalCompositeComponent parent) {
-        LogicalCompositeComponent copy =
-                new LogicalCompositeComponent(composite.getUri(), composite.getDefinition(), parent);
+        // Create maps to dereference pointers to components, reference and services. Since the copy is performed depth-first, the maps
+        // will always be populated before a component, reference, or service needs to be dereferenced. 
+        Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
+        Map<URI, LogicalReference> references = new HashMap<URI, LogicalReference>();
+        Map<URI, LogicalService> services = new HashMap<URI, LogicalService>();
+        URI uri = composite.getUri();
+        ComponentDefinition<CompositeImplementation> definition = composite.getDefinition();
+        LogicalCompositeComponent copy = new LogicalCompositeComponent(uri, definition, parent);
+        components.put(uri, copy);
         copy.setAutowire(composite.getAutowire());
         copy.setState(composite.getState());
         copy.setZone(composite.getZone());
+        copy.setDeployable(composite.getDeployable());
         copy.addIntents(composite.getIntents());
         copy.addPolicySets(composite.getPolicySets());
         for (LogicalProperty property : composite.getAllProperties().values()) {
             copy.setProperties(property);
         }
         for (LogicalComponent<?> component : composite.getComponents()) {
-            copy(component, copy);
+            copy(component, composite, copy, components, references, services);
         }
         for (LogicalReference reference : composite.getReferences()) {
-            copy(reference, copy);
+            copy(reference, copy, references);
         }
         for (LogicalResource<?> resource : composite.getResources()) {
             copy(resource, copy);
         }
         for (LogicalService service : composite.getServices()) {
-            copy(service, copy);
+            copy(service, copy, components, services);
         }
-        for (LogicalReference reference : copy.getReferences()) {
-            copyWires(composite, reference, copy);
+        for (LogicalReference reference : composite.getReferences()) {
+            LogicalReference referenceCopy = references.get(reference.getUri());
+            copyWires(reference, referenceCopy, composite, copy, services);
         }
         return copy;
     }
 
     @SuppressWarnings({"unchecked"})
-    private static void copy(LogicalComponent<?> component, LogicalCompositeComponent parent) {
+    private static void copy(LogicalComponent<?> component,
+                             LogicalCompositeComponent originalParent,
+                             LogicalCompositeComponent newParent,
+                             Map<URI, LogicalComponent<?>> components,
+                             Map<URI, LogicalReference> references,
+                             Map<URI, LogicalService> services) {
         LogicalComponent<?> copy;
         if (component instanceof LogicalCompositeComponent) {
-            copy = copy((LogicalCompositeComponent) component, parent);
+            copy = copy((LogicalCompositeComponent) component, newParent);
         } else {
-            copy = new LogicalComponent(component.getUri(), component.getDefinition(), parent);
+            URI uri = component.getUri();
+            copy = new LogicalComponent(uri, component.getDefinition(), newParent);
+            copy.setAutowire(component.getAutowire());
+            copy.setState(component.getState());
             copy.setZone(component.getZone());
+            copy.setDeployable(component.getDeployable());
             copy.addIntents(component.getIntents());
             copy.addPolicySets(component.getPolicySets());
-            copy.setState(component.getState());
+            components.put(uri, copy);
+
+            for (LogicalProperty property : component.getAllProperties().values()) {
+                copy.setProperties(property);
+            }
+            for (LogicalReference reference : component.getReferences()) {
+                copy(reference, copy, references);
+            }
+            for (LogicalResource<?> resource : component.getResources()) {
+                copy(resource, copy);
+            }
+            for (LogicalService service : component.getServices()) {
+                copy(service, copy, components, services);
+            }
+            for (LogicalReference reference : copy.getReferences()) {
+                LogicalReference referenceCopy = references.get(reference.getUri());
+                copyWires(reference, referenceCopy, originalParent, newParent, services);
+            }
+
         }
-        parent.addComponent(copy);
+        newParent.addComponent(copy);
     }
 
-    private static void copy(LogicalReference reference, LogicalCompositeComponent parent) {
-        LogicalReference copy = new LogicalReference(reference.getUri(), reference.getDefinition(), parent);
+    private static void copy(LogicalReference reference, LogicalComponent parent, Map<URI, LogicalReference> references) {
+        URI referenceUri = reference.getUri();
+        LogicalReference copy = new LogicalReference(referenceUri, reference.getDefinition(), parent);
+        references.put(referenceUri, copy);
+        for (URI uri : reference.getPromotedUris()) {
+            copy.addPromotedUri(uri);
+        }
+        copy.setAutowire(reference.getAutowire());
+        copy.setLeafReference(references.get(reference.getLeafReference().getUri()));
+        copy.setResolved(reference.isResolved());
+        copy.setServiceContract(reference.getServiceContract());
         for (URI uri : reference.getPromotedUris()) {
             copy.addPromotedUri(uri);
         }
@@ -123,19 +176,29 @@ public class CopyUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static void copy(LogicalResource<?> resource, LogicalCompositeComponent parent) {
-        LogicalResource copy = new LogicalResource(resource.getUri(), resource.getResourceDefinition(), parent);
+    private static void copy(LogicalResource<?> resource, LogicalComponent parent) {
+        URI uri = resource.getUri();
+        ResourceDefinition definition = resource.getResourceDefinition();
+        LogicalResource copy = new LogicalResource(uri, definition, parent);
         copy.setTarget(resource.getTarget());
         parent.addResource(copy);
     }
 
 
-    private static void copy(LogicalService service, LogicalCompositeComponent parent) {
-        LogicalService copy = new LogicalService(service.getUri(), service.getDefinition(), parent);
+    private static void copy(LogicalService service,
+                             LogicalComponent parent,
+                             Map<URI, LogicalComponent<?>> components,
+                             Map<URI, LogicalService> services) {
+        URI uri = service.getUri();
+        LogicalService copy = new LogicalService(uri, service.getDefinition(), parent);
+        services.put(uri, copy);
+        copy.setLeafComponent(components.get(service.getLeafComponent().getUri()));
+        copy.setLeafService(services.get(service.getLeafService().getUri()));
+        copy.setServiceContract(service.getServiceContract());
         copy.setPromotedUri(service.getPromotedUri());
-        copy(service, copy);
         copy.addIntents(service.getIntents());
         copy.addPolicySets(service.getPolicySets());
+        copy(service, copy);
         parent.addService(copy);
     }
 
@@ -156,18 +219,54 @@ public class CopyUtil {
             copy.addIntents(binding.getIntents());
             copy.addPolicySets(binding.getPolicySets());
         }
+        List<LogicalOperation> operations = new ArrayList<LogicalOperation>();
+        for (LogicalOperation operation : from.getOperations()) {
+            LogicalOperation copy = new LogicalOperation(operation.getDefinition(), to);
+            copy.addIntents(operation.getIntents());
+            copy.addPolicySets(operation.getPolicySets());
+            operations.add(copy);
+        }
+        to.overrideOperations(operations);
     }
 
-    private static void copyWires(LogicalCompositeComponent composite, LogicalReference reference, LogicalCompositeComponent parent) {
-        for (LogicalWire wire : composite.getWires(reference)) {
+    private static void copyWires(LogicalReference fromReference,
+                                  LogicalReference toReference,
+                                  LogicalCompositeComponent from,
+                                  LogicalCompositeComponent to,
+                                  Map<URI, LogicalService> services) {
+        for (LogicalWire wire : from.getWires(fromReference)) {
             QName deployable = wire.getTargetDeployable();
             boolean replaceable = wire.isReplaceable();
-            LogicalService target = wire.getTarget();
-            LogicalWire wireCopy = new LogicalWire(parent, reference, target, deployable, replaceable);
-            wireCopy.setSourceBinding(wire.getSourceBinding());
-            wireCopy.setTargetBinding(wire.getTargetBinding());
+            LogicalService fromTarget = wire.getTarget();
+            LogicalService toTarget = services.get(fromTarget.getUri());
+            LogicalWire wireCopy = new LogicalWire(to, toReference, toTarget, deployable, replaceable);
+            wireCopy.setState(wire.getState());
             wireCopy.setReplaces(wire.isReplaces());
-            parent.addWire(reference, wireCopy);
+
+            LogicalBinding fromSourceBinding = wire.getSourceBinding();
+            LogicalBinding toSourceBinding = null;
+            if (fromSourceBinding != null) {
+                for (LogicalBinding<?> binding : toReference.getBindings()) {
+                    if (fromSourceBinding.getDefinition().getName().equals(binding.getDefinition().getName())) {
+                        toSourceBinding = binding;
+                        break;
+                    }
+                }
+            }
+            wireCopy.setSourceBinding(toSourceBinding);
+
+            LogicalBinding fromTargetBinding = wire.getTargetBinding();
+            LogicalBinding toTargetBinding = null;
+            if (fromTargetBinding != null) {
+                for (LogicalBinding<?> binding : toTarget.getBindings()) {
+                    if (fromTargetBinding.getDefinition().getName().equals(binding.getDefinition().getName())) {
+                        toTargetBinding = binding;
+                        break;
+                    }
+                }
+            }
+            wireCopy.setTargetBinding(toTargetBinding);
+            to.addWire(toReference, wireCopy);
         }
     }
 
