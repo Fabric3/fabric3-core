@@ -2,5 +2,4 @@
     <web.server>
         <http port="8181"/>
     </web.server>
-    <deployment transactional="true"/>
 </config>
