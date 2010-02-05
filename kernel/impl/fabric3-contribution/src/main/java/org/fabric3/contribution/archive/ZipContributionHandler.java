@@ -53,11 +53,10 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.spi.contribution.ContentTypeResolutionException;
+import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.contribution.ContentTypeResolver;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.archive.Action;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
@@ -74,13 +73,8 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
     private List<JarManifestHandler> manifestHandlers = Collections.emptyList();
     private final Loader loader;
     private final ContentTypeResolver contentTypeResolver;
-    private ProcessorRegistry registry;
 
-    public ZipContributionHandler(@Reference ProcessorRegistry processorRegistry,
-                                  @Reference Loader loader,
-                                  @Reference ContentTypeResolver contentTypeResolver) {
-
-        this.registry = processorRegistry;
+    public ZipContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
         this.contentTypeResolver = contentTypeResolver;
     }
