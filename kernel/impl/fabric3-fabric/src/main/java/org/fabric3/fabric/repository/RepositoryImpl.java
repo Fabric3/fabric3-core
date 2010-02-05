@@ -98,7 +98,7 @@ public class RepositoryImpl implements Repository {
             }
             File location = mapToFile(repositoryDir, uri);
             FileHelper.write(stream, location);
-            URL locationUrl = location.toURL();
+            URL locationUrl = location.toURI().toURL();
             archiveUriToUrl.put(uri, locationUrl);
             return locationUrl;
         } catch (IOException e) {
