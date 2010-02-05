@@ -51,7 +51,6 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({"SerializableHasSerializationMethods"})
 public class Contribution implements Serializable {
     private static final long serialVersionUID = 2511879480122631196L;
 
@@ -73,27 +72,6 @@ public class Contribution implements Serializable {
     public Contribution(URI uri) {
         this.uri = uri;
         profiles = new ArrayList<URI>();
-    }
-
-    /**
-     * Instantiates a new Contribution instance.
-     *
-     * @param uri         the contribution URI
-     * @param profiles    the profiles this contribution is a member of
-     * @param location    a dereferenceble URL for the contribution archive
-     * @param checksum    the checksum for the contribution artifact
-     * @param timestamp   the time stamp of the contribution artifact
-     * @param contentType the MIME type of the contribution
-     * @param persistent  true if the contribution is persistent
-     */
-    public Contribution(URI uri, List<URI> profiles, URL location, byte[] checksum, long timestamp, String contentType, boolean persistent) {
-        this.uri = uri;
-        this.profiles = profiles;
-        this.location = location;
-        this.checksum = checksum;
-        this.timestamp = timestamp;
-        this.contentType = contentType;
-        this.persistent = persistent;
     }
 
     /**
