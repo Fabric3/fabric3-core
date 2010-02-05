@@ -133,8 +133,6 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     }
 
     public void destroy(URI uri) throws ClassLoaderBuilderException {
-        ClassLoader loader = classLoaderRegistry.getClassLoader(uri);
-        assert loader != null;
         List<Component> components = componentManager.getComponents();
         // remove the classloader if there are no components that reference it
         for (Component component : components) {
