@@ -76,7 +76,6 @@ public class RepositoryImpl implements Repository {
     public RepositoryImpl(@Reference HostInfo hostInfo) throws IOException {
         archiveUriToUrl = new ConcurrentHashMap<URI, URL>();
         File baseDir = hostInfo.getBaseDir();
-        // three locations for artifacts: user; extensions; and a temporary cache
         repositoryDir = new File(baseDir, "repository");
     }
 

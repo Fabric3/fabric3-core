@@ -77,7 +77,7 @@ public class FSArtifactCache implements ArtifactCache {
 
     public synchronized URL cache(URI uri, InputStream stream) throws CacheException {
         if (entries.containsKey(uri)) {
-            throw new CacheRuntimeException("Entry for URI already exists: " + uri);
+            throw new CacheException("Entry for URI already exists: " + uri);
         }
         try {
             String suffix = getSuffix(uri);

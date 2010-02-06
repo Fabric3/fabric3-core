@@ -50,4 +50,8 @@ public class CacheException extends Fabric3Exception {
     public CacheException(Throwable cause) {
         super(cause);
     }
+
+    public CacheException(String message) {
+        super(message);
+    }
 }
