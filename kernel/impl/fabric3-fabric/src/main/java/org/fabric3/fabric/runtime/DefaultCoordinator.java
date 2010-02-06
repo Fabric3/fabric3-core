@@ -66,7 +66,7 @@ import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.policy.PolicyActivationException;
 
 /**
- * Default implementation of a RuntimeLifecycleCoordinator.
+ * Default implementation of a RuntimeCoordinator.
  *
  * @version $Rev$ $Date$
  */
