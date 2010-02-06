@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -83,7 +82,6 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
 
     static {
         ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("scdlLocation", "scdlLocation");
         ATTRIBUTES.put("scdlResource", "scdlResource");
         ATTRIBUTES.put("requires", "requires");
     }
@@ -104,7 +102,6 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         validateAttributes(reader, introspectionContext);
         // read name now b/c the reader skips ahead
         String nameAttr = reader.getAttributeValue(null, "name");
-        String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
         String scdlResource = reader.getAttributeValue(null, "scdlResource");
         LoaderUtil.skipToEndElement(reader);
 
@@ -112,39 +109,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         CompositeImplementation impl = new CompositeImplementation();
         URI contributionUri = introspectionContext.getContributionUri();
         URL url;
-        if (scdlLocation != null) {
-            try {
-                url = new URL(introspectionContext.getSourceBase(), scdlLocation);
-            } catch (MalformedURLException e) {
-                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlLocation, reader);
-                introspectionContext.addError(failure);
-                return impl;
-            }
-            IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
-            Composite composite;
-            try {
-                composite = registry.load(url, Composite.class, childContext);
-                if (childContext.hasErrors()) {
-                    introspectionContext.addErrors(childContext.getErrors());
-                }
-                if (childContext.hasWarnings()) {
-                    introspectionContext.addWarnings(childContext.getWarnings());
-                }
-                if (composite == null) {
-                    // error loading composite, return
-                    return null;
-                }
-
-            } catch (LoaderException e) {
-                ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
-                introspectionContext.addError(failure);
-                return null;
-            }
-            impl.setName(composite.getName());
-            impl.setComponentType(composite);
-
-            return impl;
-        } else if (scdlResource != null) {
+        if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
                 MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, reader);

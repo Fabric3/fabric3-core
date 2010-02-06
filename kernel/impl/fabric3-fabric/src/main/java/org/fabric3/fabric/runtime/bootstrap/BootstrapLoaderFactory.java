@@ -63,7 +63,7 @@ import org.fabric3.spi.xml.XMLFactory;
  * <ul>
  * <li>The only implementation type allowed is system</li>
  * <li>The only service contract type is a Java interface found through introspection</li>
- * <li>Resolution of SCDL artifacts by QName is not supported; scdlLocation or scdlResource must be used</li>
+ * <li>Resolution of SCDL artifacts by QName is not supported; scdlResource must be used</li>
  * </ul>
  * </pre>
  *

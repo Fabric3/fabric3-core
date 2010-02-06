@@ -79,7 +79,6 @@ public class IncludeLoaderTestCase extends TestCase {
     private XMLStreamReader reader;
     private NamespaceContext namespaceContext;
     private IntrospectionContext context;
-    private URL base;
     private URL includeURL;
     private ClassLoader cl;
     private String namespace;
@@ -91,7 +90,6 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(reader.getAttributeCount()).andReturn(0);
         expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
         expect(reader.getNamespaceContext()).andReturn(namespaceContext);
-        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
         expect(reader.getAttributeValue(null, "scdlResource")).andReturn(null);
         expect(reader.next()).andReturn(END_ELEMENT);
 
@@ -113,58 +111,6 @@ public class IncludeLoaderTestCase extends TestCase {
         verify(registry, reader, namespaceContext, context, store);
     }
 
-    public void testWithAbsoluteScdlLocation() throws LoaderException, XMLStreamException {
-        expect(reader.getAttributeCount()).andReturn(0);
-        expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
-        expect(reader.getNamespaceContext()).andReturn(namespaceContext);
-        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn("file:/include.scdl");
-        expect(reader.getAttributeValue(null, "scdlResource")).andReturn(null);
-        expect(reader.next()).andReturn(END_ELEMENT);
-
-        expect(context.getSourceBase()).andReturn(base);
-        expect(context.getTargetNamespace()).andReturn(namespace);
-        expect(context.getClassLoader()).andReturn(cl);
-        expect(context.getContributionUri()).andReturn(null);
-
-        expect(registry.load(
-                eq(includeURL),
-                eq(Composite.class),
-                isA(IntrospectionContext.class)))
-                .andReturn(composite);
-        replay(registry, reader, namespaceContext, context, store);
-
-        Include include = loader.load(reader, context);
-        assertEquals(name, include.getName());
-        assertEquals(includeURL, include.getScdlLocation());
-        verify(registry, reader, namespaceContext, context);
-    }
-
-    public void testWithRelativeScdlLocation() throws LoaderException, XMLStreamException {
-        expect(reader.getAttributeCount()).andReturn(0);
-        expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
-        expect(reader.getNamespaceContext()).andReturn(namespaceContext);
-        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn("include.scdl");
-        expect(reader.getAttributeValue(null, "scdlResource")).andReturn(null);
-        expect(reader.next()).andReturn(END_ELEMENT);
-
-        expect(context.getSourceBase()).andReturn(base);
-        expect(context.getTargetNamespace()).andReturn(namespace);
-        expect(context.getClassLoader()).andReturn(cl);
-        expect(context.getContributionUri()).andReturn(null);
-
-        expect(registry.load(
-                eq(includeURL),
-                eq(Composite.class),
-                isA(IntrospectionContext.class)))
-                .andReturn(composite);
-        replay(registry, reader, namespaceContext, context, store);
-
-        Include include = loader.load(reader, context);
-        assertEquals(name, include.getName());
-        assertEquals(includeURL, include.getScdlLocation());
-        verify(registry, reader, namespaceContext, context);
-    }
-
     public void testWithScdlResource() throws LoaderException, XMLStreamException {
         String resource = "org/fabric3/introspection/xml/composite/test-include.composite";
         includeURL = cl.getResource(resource);
@@ -173,7 +119,6 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(reader.getAttributeCount()).andReturn(0);
         expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
         expect(reader.getNamespaceContext()).andReturn(namespaceContext);
-        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
         expect(reader.getAttributeValue(null, "scdlResource")).andReturn(resource);
         expect(reader.next()).andReturn(END_ELEMENT);
 
@@ -202,7 +147,6 @@ public class IncludeLoaderTestCase extends TestCase {
         namespace = "urn:example.com:xmlns";
         context = createMock(IntrospectionContext.class);
         cl = getClass().getClassLoader();
-        base = new URL("file:/test.scdl");
         includeURL = new URL("file:/include.scdl");
         store = createMock(MetaDataStore.class);
         loader = new IncludeLoader(registry, store);

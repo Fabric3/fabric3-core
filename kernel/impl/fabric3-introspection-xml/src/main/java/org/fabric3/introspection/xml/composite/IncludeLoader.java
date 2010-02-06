@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -84,7 +83,6 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
 
     static {
         ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("scdlLocation", "scdlLocation");
         ATTRIBUTES.put("scdlResource", "scdlResource");
         ATTRIBUTES.put("requires", "requires");
     }
@@ -126,23 +124,13 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
             return null;
         }
         QName name = LoaderUtil.getQName(nameAttr, context.getTargetNamespace(), reader.getNamespaceContext());
-        String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
         String scdlResource = reader.getAttributeValue(null, "scdlResource");
         LoaderUtil.skipToEndElement(reader);
 
         ClassLoader cl = context.getClassLoader();
         URI contributionUri = context.getContributionUri();
         URL url;
-        if (scdlLocation != null) {
-            try {
-                url = new URL(context.getSourceBase(), scdlLocation);
-                return loadFromSideFile(name, cl, contributionUri, url, reader, context);
-            } catch (MalformedURLException e) {
-                MissingComposite failure = new MissingComposite("Error parsing composite url: " + scdlResource, reader);
-                context.addError(failure);
-                return null;
-            }
-        } else if (scdlResource != null) {
+        if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
                 MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, reader);
