@@ -67,13 +67,13 @@ public class MavenRepository implements Repository {
     }
 
     @Init
-    public void init() {
+    public void init() throws Fabric3DependencyException {
         helper = new MavenHelper(remoteRepositories, true);
         helper.start();
     }
 
     @Destroy
-    public void destroy() {
+    public void destroy() throws Fabric3DependencyException {
         helper.stop();
     }
 

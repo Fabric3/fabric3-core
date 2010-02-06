@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.apache.maven.artifact.Artifact.SCOPE_RUNTIME;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -85,46 +86,13 @@ import org.codehaus.plexus.embed.Embedder;
  * @version $Rev$ $Date$
  */
 public class MavenHelper {
-
-    /**
-     * Remote repository URLs
-     */
     private final String[] remoteRepositoryUrls;
-
-    /**
-     * Maven metadata source
-     */
     private ArtifactMetadataSource metadataSource;
-
-    /**
-     * Artifact factory
-     */
     private ArtifactFactory artifactFactory;
-
-    /**
-     * Local artifact repository
-     */
     private ArtifactRepository localRepository;
-
-    /**
-     * Remote artifact repositories
-     */
     private List<ArtifactRepository> remoteRepositories = new LinkedList<ArtifactRepository>();
-
-    /**
-     * TODO Make use of mirrors in Artifact resolution (when remote repositories are unavailable Remote artifact mirrors
-     */
     private List<ArtifactRepository> remoteMirrors = new LinkedList<ArtifactRepository>();
-
-
-    /**
-     * Artifact resolver
-     */
     private ArtifactResolver artifactResolver;
-
-    /**
-     * Online
-     */
     private boolean online;
 
     /**
@@ -217,17 +185,15 @@ public class MavenHelper {
      */
     public boolean resolveTransitively(Artifact rootArtifact) throws Fabric3DependencyException {
 
-        org.apache.maven.artifact.Artifact mavenRootArtifact;
-        mavenRootArtifact = artifactFactory.createArtifact(rootArtifact.getGroup(),
-                                                           rootArtifact.getName(),
-                                                           rootArtifact.getVersion(),
-                                                           SCOPE_RUNTIME,
-                                                           rootArtifact.getType());
+        org.apache.maven.artifact.Artifact artifact = artifactFactory.createArtifact(rootArtifact.getGroup(),
+                                                                                     rootArtifact.getName(),
+                                                                                     rootArtifact.getVersion(),
+                                                                                     SCOPE_RUNTIME,
+                                                                                     rootArtifact.getType());
         try {
-
-            if (resolve(mavenRootArtifact)) {
-                rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-                return resolveDependencies(rootArtifact, mavenRootArtifact);
+            if (resolve(artifact)) {
+                rootArtifact.setUrl(artifact.getFile().toURL());
+                return resolveDependencies(rootArtifact, artifact);
             } else {
                 return false;
             }
@@ -237,13 +203,16 @@ public class MavenHelper {
 
     }
 
-    /*
+    /**
      * Resolves the artifact.
+     *
+     * @param artifact the root artifact
+     * @return returns true if the artifact was resolved successfully
      */
-    private boolean resolve(org.apache.maven.artifact.Artifact mavenRootArtifact) {
+    private boolean resolve(org.apache.maven.artifact.Artifact artifact) {
 
         try {
-            artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
+            artifactResolver.resolve(artifact, remoteRepositories, localRepository);
             return true;
         } catch (ArtifactResolutionException ex) {
             return false;
@@ -253,10 +222,12 @@ public class MavenHelper {
 
     }
 
-    /*
-    * Sets up local and remote repositories.
-    */
-    private void setUpRepositories(Embedder embedder) {
+    /**
+     * Sets up local and remote repositories.
+     *
+     * @param embedder the embedder
+     */
+    private void setUpRepositories(Embedder embedder) throws Fabric3DependencyException {
 
         try {
 
@@ -266,23 +237,18 @@ public class MavenHelper {
             ArtifactRepositoryLayout layout =
                     (ArtifactRepositoryLayout) embedder.lookup(ArtifactRepositoryLayout.ROLE, "default");
 
-            String updatePolicy =
-                    online ? ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS : ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER;
+            String updatePolicy = online ? ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS : ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER;
             ArtifactRepositoryPolicy snapshotsPolicy =
                     new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
-            ArtifactRepositoryPolicy releasesPolicy =
-                    new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
             MavenSettingsBuilder settingsBuilder = (MavenSettingsBuilder) embedder.lookup(MavenSettingsBuilder.ROLE);
 
             Settings settings = settingsBuilder.buildSettings();
             String localRepo = settings.getLocalRepository();
 
-            localRepository = artifactRepositoryFactory.createArtifactRepository("local",
-                                                                                 new File(localRepo).toURI().toURL().toString(),
-                                                                                 layout,
-                                                                                 snapshotsPolicy,
-                                                                                 releasesPolicy);
+            String fileUrl = new File(localRepo).toURI().toURL().toString();
+            localRepository = artifactRepositoryFactory.createArtifactRepository("local", fileUrl, layout, snapshotsPolicy, releasesPolicy);
 
             if (online) {
                 setupRemoteRepositories(settings, artifactRepositoryFactory, layout, snapshotsPolicy, releasesPolicy);
@@ -299,32 +265,24 @@ public class MavenHelper {
      * Read remote repository URLs from settings and create artifact repositories
      *
      * @param settings
-     * @param artifactRepositoryFactory
+     * @param factory
      * @param layout
      * @param snapshotsPolicy
      * @param releasesPolicy
      */
-    private void setupRemoteRepositories(
-            Settings settings,
-            ArtifactRepositoryFactory artifactRepositoryFactory,
-            ArtifactRepositoryLayout layout,
-            ArtifactRepositoryPolicy snapshotsPolicy,
-            ArtifactRepositoryPolicy releasesPolicy) {
+    private void setupRemoteRepositories(Settings settings,
+                                         ArtifactRepositoryFactory factory,
+                                         ArtifactRepositoryLayout layout,
+                                         ArtifactRepositoryPolicy snapshotsPolicy,
+                                         ArtifactRepositoryPolicy releasesPolicy) {
 
         // Read repository urls from settings file
         List<String> repositoryUrls = resolveActiveProfileRepositories(settings);
         repositoryUrls.addAll(Arrays.asList(remoteRepositoryUrls));
 
-        for (String remoteRepositoryUrl : repositoryUrls) {
-            remoteRepositories.add(
-                    createArtifactRepository(
-                            remoteRepositoryUrl,
-                            artifactRepositoryFactory,
-                            layout,
-                            snapshotsPolicy,
-                            releasesPolicy
-                    )
-            );
+        for (String url : repositoryUrls) {
+            ArtifactRepository repository = createArtifactRepository(url, factory, layout, snapshotsPolicy, releasesPolicy);
+            remoteRepositories.add(repository);
         }
     }
 
@@ -332,57 +290,34 @@ public class MavenHelper {
      * Read mirror URLs from settings and create artifact repositories
      *
      * @param settings
-     * @param artifactRepositoryFactory
+     * @param factory
      * @param layout
      * @param snapshotsPolicy
      * @param releasesPolicy
      */
-    private void setupMirrors(
-            Settings settings,
-            ArtifactRepositoryFactory artifactRepositoryFactory,
-            ArtifactRepositoryLayout layout,
-            ArtifactRepositoryPolicy snapshotsPolicy,
-            ArtifactRepositoryPolicy releasesPolicy) {
+    private void setupMirrors(Settings settings,
+                              ArtifactRepositoryFactory factory,
+                              ArtifactRepositoryLayout layout,
+                              ArtifactRepositoryPolicy snapshotsPolicy,
+                              ArtifactRepositoryPolicy releasesPolicy) {
 
         List<String> mirrorUrls = resolveMirrorUrls(settings);
-
         for (String mirrorUrl : mirrorUrls) {
-            remoteMirrors.add(
-                    createArtifactRepository(
-                            mirrorUrl,
-                            artifactRepositoryFactory,
-                            layout,
-                            snapshotsPolicy,
-                            releasesPolicy
-                    )
-            );
+            ArtifactRepository repository = createArtifactRepository(mirrorUrl, factory, layout, snapshotsPolicy, releasesPolicy);
+            remoteMirrors.add(repository);
         }
 
     }
 
 
-    /**
-     * Creates an ArtifactFactory
-     *
-     * @param repositoryUrl
-     * @return
-     */
-    private static ArtifactRepository createArtifactRepository(
-            String repositoryUrl,
-            ArtifactRepositoryFactory artifactRepositoryFactory,
-            ArtifactRepositoryLayout layout,
-            ArtifactRepositoryPolicy snapshotsPolicy,
-            ArtifactRepositoryPolicy releasesPolicy) {
+    private static ArtifactRepository createArtifactRepository(String repositoryUrl,
+                                                               ArtifactRepositoryFactory artifactRepositoryFactory,
+                                                               ArtifactRepositoryLayout layout,
+                                                               ArtifactRepositoryPolicy snapshotsPolicy,
+                                                               ArtifactRepositoryPolicy releasesPolicy) {
 
-        String repositoryId = convertUrlToRepositoryId(repositoryUrl);
-
-        return
-                artifactRepositoryFactory.createArtifactRepository(
-                        repositoryId,
-                        repositoryUrl,
-                        layout,
-                        snapshotsPolicy,
-                        releasesPolicy);
+        String id = convertUrlToRepositoryId(repositoryUrl);
+        return artifactRepositoryFactory.createArtifactRepository(id, repositoryUrl, layout, snapshotsPolicy, releasesPolicy);
     }
 
     /**
@@ -409,17 +344,11 @@ public class MavenHelper {
     // Suppress Warnings for conversion from raw types 
     @SuppressWarnings("unchecked")
     private List<String> resolveActiveProfileRepositories(Settings settings) {
-
         List<String> repositories = new ArrayList<String>();
-
         Map<String, Profile> profilesMap = (Map<String, Profile>) settings.getProfilesAsMap();
-
         for (Object nextProfileId : settings.getActiveProfiles()) {
-
             Profile nextProfile = profilesMap.get((String) nextProfileId);
-
             if (nextProfile.getRepositories() != null) {
-
                 for (Object repository : nextProfile.getRepositories()) {
                     String url = ((Repository) repository).getUrl();
                     repositories.add(url);
@@ -439,34 +368,33 @@ public class MavenHelper {
     // Suppress Warnings for conversion from raw types 
     @SuppressWarnings("unchecked")
     private List<String> resolveMirrorUrls(Settings settings) {
-
         List<String> mirrorUrls = new ArrayList<String>();
-
         List<Mirror> mirrors = (List<Mirror>) settings.getMirrors();
-
         for (Mirror mirror : mirrors) {
             mirrorUrls.add(mirror.getUrl());
         }
-
         return mirrorUrls;
     }
 
-    /*
-    * Resolves transitive dependencies.
-    */
-    private boolean resolveDependencies(Artifact rootArtifact, org.apache.maven.artifact.Artifact mavenRootArtifact) {
+    /**
+     * Resolves transitive dependencies.
+     *
+     * @param rootArtifact      the root artifact to resolve
+     * @param mavenRootArtifact the root maven artifact
+     * @return true if the dependencies were successfully resolved
+     * @throws Fabric3DependencyException if an error is encoutered attempting to resolve a dependency
+     */
+    private boolean resolveDependencies(Artifact rootArtifact, org.apache.maven.artifact.Artifact mavenRootArtifact)
+            throws Fabric3DependencyException {
 
         try {
 
-            ResolutionGroup resolutionGroup = null;
-            ArtifactResolutionResult result = null;
+            ResolutionGroup resolutionGroup;
+            ArtifactResolutionResult result;
 
             resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-            result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(),
-                                                          mavenRootArtifact,
-                                                          remoteRepositories,
-                                                          localRepository,
-                                                          metadataSource);
+            Set artifacts = resolutionGroup.getArtifacts();
+            result = artifactResolver.resolveTransitively(artifacts, mavenRootArtifact, remoteRepositories, localRepository, metadataSource);
 
             // Add the artifacts to the deployment unit
             for (Object obj : result.getArtifacts()) {
@@ -481,10 +409,10 @@ public class MavenHelper {
                 rootArtifact.addDependency(artifact);
             }
 
-        } catch (ArtifactMetadataRetrievalException ex) {
-            return false;
         } catch (MalformedURLException ex) {
             throw new Fabric3DependencyException(ex);
+        } catch (ArtifactMetadataRetrievalException ex) {
+            return false;
         } catch (ArtifactResolutionException ex) {
             return false;
         } catch (ArtifactNotFoundException ex) {

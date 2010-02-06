@@ -37,14 +37,14 @@
 */
 package org.fabric3.runtime.maven.archive;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
  * Exception thrown in case of an artifact error.
  *
  * @version $Rev$ $Date$
  */
-public class Fabric3DependencyException extends Fabric3RuntimeException {
+public class Fabric3DependencyException extends Fabric3Exception {
     private static final long serialVersionUID = -3993762841835195146L;
 
     /**
