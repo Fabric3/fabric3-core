@@ -31,10 +31,6 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.maven.contribution.ModuleClasspathProcessor"/>
     </component>
 
-    <component name="CompositeQNameService">
-        <f3-impl:implementation.system class="org.fabric3.runtime.maven.contribution.CompositeQNameServiceImpl"/>
-    </component>
-
     <component name="TestSuiteFactory">
         <f3-impl:implementation.system class="org.fabric3.runtime.maven.test.TestSuiteFactoryImpl"/>
     </component>

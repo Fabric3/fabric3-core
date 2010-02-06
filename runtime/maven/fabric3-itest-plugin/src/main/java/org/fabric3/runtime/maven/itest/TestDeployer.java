@@ -45,11 +45,8 @@ import javax.xml.namespace.QName;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
-import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.runtime.ContextStartException;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
@@ -59,16 +56,9 @@ import org.fabric3.runtime.maven.MavenRuntime;
  */
 public class TestDeployer {
     private Log log;
-    private File testScdl;
     private String compositeNamespace;
     private String compositeName;
     private File buildDirectory;
-
-    public TestDeployer(File testScdl, File buildDirectory, Log log) {
-        this.log = log;
-        this.testScdl = testScdl;
-        this.buildDirectory = buildDirectory;
-    }
 
     public TestDeployer(String compositeNamespace, String compositeName, File buildDirectory, Log log) {
         this.log = log;
@@ -78,44 +68,6 @@ public class TestDeployer {
     }
 
     public void deploy(MavenRuntime runtime) throws MojoExecutionException {
-        try {
-            if (compositeName == null) {
-                URL testScdlURL = testScdl.toURI().toURL();
-                deployTestComposite(runtime, testScdlURL);
-            } else {
-                deployTestComposite(runtime);
-            }
-        } catch (MalformedURLException e) {
-            throw new AssertionError(e);
-        } catch (MojoExecutionException e) {
-            throw e;
-        } catch (Exception e) {
-            // trap any other exception
-            throw new MojoExecutionException("Error deploying test composite: " + testScdl, e);
-        }
-    }
-
-    private void deployTestComposite(MavenRuntime runtime, URL testScdlURL)
-            throws DeploymentException, ContributionException, ContextStartException, MojoExecutionException {
-        try {
-            log.info("Deploying test composite from " + testScdl);
-            URL buildDirUrl = getBuildDirectoryUrl();
-            QName deployable = runtime.deploy(buildDirUrl, testScdlURL);
-            runtime.startContext(deployable);
-        } catch (ValidationException e) {
-            // print out the validaiton errors
-            reportContributionErrors(e);
-            String msg = "Contribution errors were found";
-            throw new MojoExecutionException(msg);
-        } catch (AssemblyException e) {
-            reportDeploymentErrors(e);
-            String msg = "Deployment errors were found";
-            throw new MojoExecutionException(msg);
-        }
-    }
-
-    private void deployTestComposite(MavenRuntime runtime)
-            throws ContributionException, DeploymentException, ContextStartException, MojoExecutionException {
         try {
             QName qName = new QName(compositeNamespace, compositeName);
             log.info("Deploying test composite " + qName);
@@ -131,6 +83,9 @@ public class TestDeployer {
             reportDeploymentErrors(e);
             String msg = "Deployment errors were found";
             throw new MojoExecutionException(msg);
+        } catch (Exception e) {
+            // trap any other exception
+            throw new MojoExecutionException("Error deploying test composite", e);
         }
     }
 

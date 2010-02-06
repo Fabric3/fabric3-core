@@ -57,8 +57,6 @@ import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.ContextStartException;
-import org.fabric3.runtime.maven.CompositeQNameService;
-import org.fabric3.runtime.maven.InvalidResourceException;
 import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
@@ -87,26 +85,6 @@ public class MavenRuntimeImpl extends AbstractRuntime<MavenHostInfo> implements 
         contributionService.contribute(source);
         // activate the deployable composite in the domain
         domain.include(qName);
-    }
-
-    public QName deploy(URL base, URL scdlLocation) throws ContributionException, DeploymentException {
-        try {
-            ModuleContributionSource source = new ModuleContributionSource(CONTRIBUTION_URI, base);
-
-            ContributionService contributionService = getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
-            Domain domain = getComponent(Domain.class, APPLICATION_DOMAIN_URI);
-            contributionService.contribute(source);
-            CompositeQNameService qNameService = getComponent(CompositeQNameService.class, CompositeQNameService.SERVICE_URI);
-            QName deployable = qNameService.getQName(CONTRIBUTION_URI, scdlLocation);
-            if (deployable == null) {
-                throw new DeploymentException("Test composite not found:" + scdlLocation);
-            }
-            domain.include(deployable);
-            return deployable;
-        } catch (InvalidResourceException e) {
-            throw new DeploymentException("Error activating test contribution", e);
-        }
-
     }
 
     public void startContext(QName deployable) throws ContextStartException {

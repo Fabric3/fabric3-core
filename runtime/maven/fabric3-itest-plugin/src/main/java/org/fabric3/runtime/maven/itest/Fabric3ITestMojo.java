@@ -110,22 +110,14 @@ public class Fabric3ITestMojo extends AbstractMojo {
      *
      * @parameter
      */
-    public String compositeNamespace;
+    public String compositeNamespace = "org.codehaus.fabric3";
 
     /**
      * The local name of the composite to activate, which may be null if testScdl is defined.
      *
      * @parameter
      */
-    public String compositeName;
-
-    /**
-     * The location if the SCDL that defines the test harness composite. The source for this would normally be placed in the test/resources directory
-     * and be copied by the resource plugin; this allows property substitution if required.
-     *
-     * @parameter expression="${project.build.testOutputDirectory}/itest.composite"
-     */
-    public File testScdl;
+    public String compositeName = "TestComposite";
 
     /**
      * test composite .
@@ -283,10 +275,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if (!testScdl.exists()) {
-            getLog().info("No itest composite found, skipping integration tests");
-            return;
-        }
         if (skip) {
             getLog().info("Skipping integration tests by user request.");
             return;
@@ -303,12 +291,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
         MavenRuntime runtime = booter.boot();
         try {
-            TestDeployer deployer;
-            if (compositeName == null) {
-                deployer = new TestDeployer(testScdl, buildDirectory, getLog());
-            } else {
-                deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
-            }
+            TestDeployer deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
             deployer.deploy(runtime);
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
             runner.executeTests(runtime);

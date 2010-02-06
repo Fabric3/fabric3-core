@@ -74,21 +74,6 @@ public interface MavenRuntime extends Fabric3Runtime<MavenHostInfo> {
     void deploy(URL base, QName composite) throws ContributionException, DeploymentException;
 
     /**
-     * Deploys a composite pointed to by the SCDL location.
-     * <p/>
-     * Note this method preserves backward compatibility through specifying the composite by location. When possible, use {@link #deploy(java.net.URL,
-     * javax.xml.namespace.QName)} instead.
-     *
-     * @param base         the module output directory location
-     * @param scdlLocation the composite file location
-     * @return the  QName of the composite that was deployed
-     * @throws DeploymentException   if there is an error activating the test composite
-     * @throws ContributionException if a contribution is thrown. The cause may a ValidationException resulting from  errors in the contribution. In
-     *                               this case the errors should be reported back to the user.
-     */
-    QName deploy(URL base, URL scdlLocation) throws ContributionException, DeploymentException;
-
-    /**
      * Starts a component context.
      *
      * @param compositeId the context id
