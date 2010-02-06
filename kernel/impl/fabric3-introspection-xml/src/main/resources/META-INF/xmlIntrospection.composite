@@ -15,8 +15,8 @@ Public License. See the accompanying license file for details.
            targetNamespace="urn:maven:org.codehaus.fabric3:boot"
            name="XMLIntrospectionComposite">
 
-    <include name="CommonLoaderComposite" scdlLocation="loaderCommon.composite"/>
-    <include name="CompositeLoaderComposite" scdlLocation="compositeLoader.composite"/>
-    <include name="DefinitionsLoaderComposite" scdlLocation="definitionsLoader.composite"/>
-    <include name="PlanLoaderComposite" scdlLocation="planLoader.composite"/>
+    <include name="CommonLoaderComposite" scdlResource="META-INF/loaderCommon.composite"/>
+    <include name="CompositeLoaderComposite" scdlResource="META-INF/compositeLoader.composite"/>
+    <include name="DefinitionsLoaderComposite" scdlResource="META-INF/definitionsLoader.composite"/>
+    <include name="PlanLoaderComposite" scdlResource="META-INF/planLoader.composite"/>
 </composite>

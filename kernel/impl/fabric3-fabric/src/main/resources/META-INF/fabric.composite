@@ -18,24 +18,24 @@
            name="FabricComposite"
            autowire="true">
 
-    <include name="DomainComposite" scdlLocation="domain.composite"/>
+    <include name="DomainComposite" scdlResource="META-INF/domain.composite"/>
 
-    <include name="ComponentComposite" scdlLocation="component.composite"/>
+    <include name="ComponentComposite" scdlResource="META-INF/component.composite"/>
 
-    <include name="InstantiatorComposite" scdlLocation="instantiator.composite"/>
+    <include name="InstantiatorComposite" scdlResource="META-INF/instantiator.composite"/>
 
-    <include name="GeneratorComposite" scdlLocation="generator.composite"/>
+    <include name="GeneratorComposite" scdlResource="META-INF/generator.composite"/>
 
-    <include name="ExecutorComposite" scdlLocation="executor.composite"/>
+    <include name="ExecutorComposite" scdlResource="META-INF/executor.composite"/>
 
-    <include name="BuilderComposite" scdlLocation="builder.composite"/>
+    <include name="BuilderComposite" scdlResource="META-INF/builder.composite"/>
 
-    <include name="HostServicesComposite" scdlLocation="services.composite"/>
+    <include name="HostServicesComposite" scdlResource="META-INF/services.composite"/>
 
-    <include name="MonitorComposite" scdlLocation="monitor.composite"/>
+    <include name="MonitorComposite" scdlResource="META-INF/monitor.composite"/>
 
-    <include name="BindingComposite" scdlLocation="binding.composite"/>
+    <include name="BindingComposite" scdlResource="META-INF/binding.composite"/>
 
-    <include name="ContractComposite" scdlLocation="contract.composite"/>
+    <include name="ContractComposite" scdlResource="META-INF/contract.composite"/>
 
 </composite>
