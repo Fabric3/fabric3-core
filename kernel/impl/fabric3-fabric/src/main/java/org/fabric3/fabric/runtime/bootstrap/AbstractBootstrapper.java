@@ -63,6 +63,7 @@ import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
@@ -263,6 +264,9 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         registerComponent("ScopeRegistry", ScopeRegistry.class, scopeRegistry, true);
 
         registerComponent("MetaDataStore", MetaDataStore.class, metaDataStore, true);
+
+        Repository repository = runtime.getRepository();
+        registerComponent("Repository", Repository.class, repository, true);
 
         // register other components provided by the host environment
         for (ComponentRegistration registration : registrations) {

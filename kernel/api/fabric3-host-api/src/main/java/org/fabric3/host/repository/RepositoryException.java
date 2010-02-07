@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.repository;
+package org.fabric3.host.repository;
 
 import org.fabric3.host.Fabric3Exception;
 
@@ -49,7 +49,7 @@ public class RepositoryException extends Fabric3Exception {
         super(message, cause);
     }
 
-    public RepositoryException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
+    public RepositoryException(Throwable cause) {
+        super(cause);
     }
 }

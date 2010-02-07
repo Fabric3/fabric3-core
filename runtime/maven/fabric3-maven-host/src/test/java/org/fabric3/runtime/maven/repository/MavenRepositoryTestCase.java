@@ -1,4 +1,4 @@
-package org.fabric3.runtime.maven.archive;
+package org.fabric3.runtime.maven.repository;
 
 import java.net.URI;
 

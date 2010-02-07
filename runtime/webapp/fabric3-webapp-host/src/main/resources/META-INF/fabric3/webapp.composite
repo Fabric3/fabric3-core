@@ -29,8 +29,6 @@
 
     <include name="XMLIntrospectionComposite" scdlResource="META-INF/xmlIntrospection.composite"/>
 
-    <include name="RepositoryComposite" scdlResource="META-INF/repository.composite"/>
-
     <include name="PolicyComposite" scdlResource="META-INF/policy.composite"/>
 
     <include name="PojoComposite" scdlResource="META-INF/pojoImplementation.composite"/>

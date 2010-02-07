@@ -35,44 +35,64 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.maven.archive;
+package org.fabric3.host.repository;
 
-import org.fabric3.host.Fabric3Exception;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
 
 /**
- * Exception thrown in case of an artifact error.
- *
- * @version $Rev$ $Date$
+ * Implementations store and retrieve artifacts such as contributions from persistent storage.
  */
-public class Fabric3DependencyException extends Fabric3Exception {
-    private static final long serialVersionUID = -3993762841835195146L;
+public interface Repository {
 
     /**
-     * Initializes the cause.
+     * Persists a user artifact to the repository.
      *
-     * @param cause Cause of the exception.
+     * @param uri    The artifact URI
+     * @param stream the artifact contents
+     * @return a URL for the persisted artifact
+     * @throws RepositoryException if an error occurs storing the artifact
      */
-    public Fabric3DependencyException(Throwable cause) {
-        super(cause);
-    }
+    URL store(URI uri, InputStream stream) throws RepositoryException;
 
     /**
-     * Initializes the message.
+     * Returns true if the artifact exists.
      *
-     * @param message Message of the exception.
+     * @param uri the artifact URI
+     * @return true if the archive exists
      */
-    public Fabric3DependencyException(String message) {
-        super(message);
-    }
-
+    boolean exists(URI uri);
 
     /**
-     * Initializes the message.
+     * Look up the artifact URL by URI.
      *
-     * @param message    Message of the exception.
-     * @param identifier an identifier for the exeption.
+     * @param uri The artifact URI
+     * @return A URL pointing to the artifact or null if the artifact cannot be found
+     * @throws RepositoryException if an exception occurs storing the artifact
      */
-    public Fabric3DependencyException(String message, String identifier) {
-        super(message, identifier);
-    }
+    URL find(URI uri) throws RepositoryException;
+
+    /**
+     * Removes an artifact from the repository.
+     *
+     * @param uri The URI of the artifact to be removed
+     * @throws RepositoryException if an exception occurs removing the artifact
+     */
+    void remove(URI uri) throws RepositoryException;
+
+    /**
+     * Returns a list of URIs for all the artifacts in the repository.
+     *
+     * @return A list of artifact URIs
+     */
+    List<URI> list();
+
+    /**
+     * Callback to signal for the repository it can close open resources.
+     *
+     * @throws RepositoryException if an error shutting down occurs.
+     */
+    void shutdown() throws RepositoryException;
 }

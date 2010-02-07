@@ -35,20 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.maven.archive;
+package org.fabric3.runtime.maven.repository;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.fabric3.spi.repository.Repository;
-import org.fabric3.spi.repository.RepositoryException;
+import org.fabric3.host.repository.Repository;
+import org.fabric3.host.repository.RepositoryException;
 
 /**
  * A Repository implementation that delegates to a set of local and remote Maven repositories.
@@ -67,14 +66,12 @@ public class MavenRepository implements Repository {
     }
 
     @Init
-    public void init() throws Fabric3DependencyException {
+    public void init() throws RepositoryException {
         helper = new MavenHelper(remoteRepositories, true);
         helper.start();
     }
 
-    @Destroy
-    public void destroy() throws Fabric3DependencyException {
-        helper.stop();
+    public void shutdown() throws RepositoryException {
     }
 
     public URL store(URI uri, InputStream stream) throws RepositoryException {
@@ -98,9 +95,9 @@ public class MavenRepository implements Repository {
             if (!helper.resolveTransitively(artifact)) {
                 return null;
             }
-        } catch (Fabric3DependencyException e) {
+        } catch (RepositoryException e) {
             String id = uri.toString();
-            throw new RepositoryException("Error finding archive: " + id, id, e);
+            throw new RepositoryException("Error finding archive: " + id, e);
         }
         return artifact.getUrl();
     }

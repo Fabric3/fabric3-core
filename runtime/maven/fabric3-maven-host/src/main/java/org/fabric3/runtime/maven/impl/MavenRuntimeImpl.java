@@ -56,11 +56,15 @@ import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.repository.Repository;
+import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.ContextStartException;
+import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
+import org.fabric3.runtime.maven.repository.MavenRepository;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
@@ -102,5 +106,16 @@ public class MavenRuntimeImpl extends AbstractRuntime<MavenHostInfo> implements 
     public SurefireTestSuite createTestSuite() {
         TestSuiteFactory factory = getComponent(TestSuiteFactory.class, TestSuiteFactory.FACTORY_URI);
         return factory.createTestSuite();
+    }
+
+    @Override
+    protected Repository createRepository() throws InitializationException {
+        try {
+            MavenRepository repository = new MavenRepository();
+            repository.init();
+            return repository;
+        } catch (RepositoryException e) {
+           throw new InitializationException(e);
+        }
     }
 }

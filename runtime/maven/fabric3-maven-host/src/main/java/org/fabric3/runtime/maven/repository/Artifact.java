@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.runtime.maven.archive;
+package org.fabric3.runtime.maven.repository;
 
 import java.net.URL;
 import java.util.HashSet;

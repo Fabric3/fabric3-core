@@ -75,6 +75,8 @@ import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UpdateException;
 import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.repository.RepositoryException;
+import org.fabric3.host.repository.Repository;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -93,8 +95,6 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.validation.InvalidContributionException;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
-import org.fabric3.spi.repository.Repository;
-import org.fabric3.spi.repository.RepositoryException;
 
 /**
  * Default ContributionService implementation

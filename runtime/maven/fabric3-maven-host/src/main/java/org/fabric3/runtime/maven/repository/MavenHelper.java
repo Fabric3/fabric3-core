@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.runtime.maven.archive;
+package org.fabric3.runtime.maven.repository;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -80,6 +80,8 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.embed.Embedder;
 
+import org.fabric3.host.repository.RepositoryException;
+
 /**
  * Utility class for embedding Maven.
  *
@@ -109,9 +111,9 @@ public class MavenHelper {
     /**
      * Starts the embedder.
      *
-     * @throws Fabric3DependencyException If unable to start the embedder.
+     * @throws RepositoryException If unable to start the embedder.
      */
-    public void start() throws Fabric3DependencyException {
+    public void start() throws RepositoryException {
 
         try {
 
@@ -147,33 +149,25 @@ public class MavenHelper {
             embedder.stop();
 
         } catch (DuplicateRealmException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (PlexusContainerException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (ComponentLookupException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (NoSuchFieldException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (IllegalAccessException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (ClassNotFoundException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (NoSuchMethodException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (InstantiationException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (InvocationTargetException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         }
 
-    }
-
-    /**
-     * Stops the embedder.
-     *
-     * @throws Fabric3DependencyException If unable to stop the embedder.
-     */
-    public void stop() throws Fabric3DependencyException {
     }
 
     /**
@@ -181,9 +175,9 @@ public class MavenHelper {
      *
      * @param rootArtifact Artifact whose dependencies need to be resolved.
      * @return true if the artifact was succesfully resolved
-     * @throws Fabric3DependencyException If unable to resolve the dependencies.
+     * @throws RepositoryException If unable to resolve the dependencies.
      */
-    public boolean resolveTransitively(Artifact rootArtifact) throws Fabric3DependencyException {
+    public boolean resolveTransitively(Artifact rootArtifact) throws RepositoryException {
 
         org.apache.maven.artifact.Artifact artifact = artifactFactory.createArtifact(rootArtifact.getGroup(),
                                                                                      rootArtifact.getName(),
@@ -198,7 +192,7 @@ public class MavenHelper {
                 return false;
             }
         } catch (MalformedURLException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         }
 
     }
@@ -226,8 +220,9 @@ public class MavenHelper {
      * Sets up local and remote repositories.
      *
      * @param embedder the embedder
+     * @throws RepositoryException if an error occurs
      */
-    private void setUpRepositories(Embedder embedder) throws Fabric3DependencyException {
+    private void setUpRepositories(Embedder embedder) throws RepositoryException {
 
         try {
 
@@ -256,7 +251,7 @@ public class MavenHelper {
             }
 
         } catch (Exception ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         }
 
     }
@@ -382,10 +377,10 @@ public class MavenHelper {
      * @param rootArtifact      the root artifact to resolve
      * @param mavenRootArtifact the root maven artifact
      * @return true if the dependencies were successfully resolved
-     * @throws Fabric3DependencyException if an error is encoutered attempting to resolve a dependency
+     * @throws RepositoryException if an error is encoutered attempting to resolve a dependency
      */
     private boolean resolveDependencies(Artifact rootArtifact, org.apache.maven.artifact.Artifact mavenRootArtifact)
-            throws Fabric3DependencyException {
+            throws RepositoryException {
 
         try {
 
@@ -410,7 +405,7 @@ public class MavenHelper {
             }
 
         } catch (MalformedURLException ex) {
-            throw new Fabric3DependencyException(ex);
+            throw new RepositoryException(ex);
         } catch (ArtifactMetadataRetrievalException ex) {
             return false;
         } catch (ArtifactResolutionException ex) {

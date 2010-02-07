@@ -43,6 +43,7 @@
  */
 package org.fabric3.fabric.runtime;
 
+import java.io.IOException;
 import java.net.URI;
 import javax.management.MBeanServer;
 
@@ -54,11 +55,15 @@ import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.component.scope.ScopeRegistryImpl;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
+import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
@@ -87,12 +92,9 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
+    private Repository repository;
 
     private ClassLoader hostClassLoader;
-
-    protected AbstractRuntime(Class<HI> runtimeInfoType) {
-        this.hostInfoType = runtimeInfoType;
-    }
 
     public void setConfiguration(RuntimeConfiguration<HI> configuration) {
         hostClassLoader = configuration.getHostClassLoader();
@@ -131,12 +133,36 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         scopeContainer.start();
         scopeRegistry = new ScopeRegistryImpl();
         scopeRegistry.register(scopeContainer);
+        repository = createRepository();
     }
 
-    public void destroy() {
+    /**
+     * Creates a default repository which may be overriden by Runtime subclasses.
+     *
+     * @return an initialized repository
+     * @throws InitializationException if an error is encountered initializing a repository
+     */
+    protected Repository createRepository() throws InitializationException {
+        try {
+            RepositoryImpl repository = new RepositoryImpl(getHostInfo());
+            repository.init();
+            return repository;
+        } catch (IOException e) {
+            throw new InitializationException(e);
+        } catch (RepositoryException e) {
+            throw new InitializationException(e);
+        }
+    }
+
+    public void destroy() throws ShutdownException {
         // destroy system components
         WorkContext workContext = new WorkContext();
         scopeContainer.stopAllContexts(workContext);
+        try {
+            repository.shutdown();
+        } catch (RepositoryException e) {
+            throw new ShutdownException(e);
+        }
     }
 
     public <I> I getComponent(Class<I> service, URI uri) {
@@ -184,5 +210,14 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
     public ScopeRegistry getScopeRegistry() {
         return scopeRegistry;
     }
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    protected AbstractRuntime(Class<HI> runtimeInfoType) {
+        this.hostInfoType = runtimeInfoType;
+    }
+
 
 }

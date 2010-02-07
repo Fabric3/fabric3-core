@@ -41,6 +41,7 @@ import java.net.URI;
 import javax.management.MBeanServer;
 
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
 
 /**
  * Represents a runtime in a domain.
@@ -90,6 +91,13 @@ public interface Fabric3Runtime<HI extends HostInfo> {
      * @return the MBeanServer
      */
     MBeanServer getMBeanServer();
+
+    /**
+     * Returns the runtime repository.
+     *
+     * @return the runtime repository.
+     */
+    Repository getRepository();
 
     /**
      * Returns the system component providing the designated service.

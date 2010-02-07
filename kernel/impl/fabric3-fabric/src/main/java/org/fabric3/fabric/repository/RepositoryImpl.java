@@ -48,13 +48,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-
+import org.fabric3.host.repository.Repository;
+import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.repository.Repository;
-import org.fabric3.spi.repository.RepositoryException;
 import org.fabric3.util.io.FileHelper;
 
 /**
@@ -62,7 +58,6 @@ import org.fabric3.util.io.FileHelper;
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class RepositoryImpl implements Repository {
     private Map<URI, URL> archiveUriToUrl;
     private File repositoryDir;
@@ -73,21 +68,28 @@ public class RepositoryImpl implements Repository {
      * @param hostInfo the host info for the runtime
      * @throws IOException if an error occurs initializing the repository
      */
-    public RepositoryImpl(@Reference HostInfo hostInfo) throws IOException {
+    public RepositoryImpl(HostInfo hostInfo) throws IOException {
         archiveUriToUrl = new ConcurrentHashMap<URI, URL>();
         File baseDir = hostInfo.getBaseDir();
         repositoryDir = new File(baseDir, "repository");
     }
 
-    @Init
-    public void init() throws MalformedURLException {
+    public void init() throws RepositoryException {
         if (!repositoryDir.exists() || !repositoryDir.isDirectory()) {
             return;
         }
         // load artifacts
-        for (File file : repositoryDir.listFiles()) {
-            archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
+        try {
+            for (File file : repositoryDir.listFiles()) {
+                archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
+            }
+        } catch (MalformedURLException e) {
+            throw new RepositoryException(e);
         }
+    }
+
+    public void shutdown() throws RepositoryException {
+
     }
 
     public URL store(URI uri, InputStream stream) throws RepositoryException {
@@ -102,7 +104,7 @@ public class RepositoryImpl implements Repository {
             return locationUrl;
         } catch (IOException e) {
             String id = uri.toString();
-            throw new RepositoryException("Error storing: " + id, id, e);
+            throw new RepositoryException("Error storing: " + id, e);
         }
     }
 
@@ -121,7 +123,7 @@ public class RepositoryImpl implements Repository {
             location.delete();
         } catch (IOException e) {
             String id = uri.toString();
-            throw new RepositoryException("Error removing: " + id, id, e);
+            throw new RepositoryException("Error removing: " + id, e);
         }
     }
 
