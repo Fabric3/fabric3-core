@@ -70,6 +70,7 @@ import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 
 /**
  * Bootstraps Fabric3 in a host Tomcat runtime.
@@ -122,7 +123,8 @@ public class Fabric3Listener implements LifecycleListener {
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader,mBeanServer, monitorFactory);
+            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
+            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
 
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 

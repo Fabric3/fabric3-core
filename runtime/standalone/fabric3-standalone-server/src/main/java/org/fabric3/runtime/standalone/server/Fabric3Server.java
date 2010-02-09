@@ -65,6 +65,7 @@ import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 /**
@@ -190,7 +191,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             }
             MBeanServer mbServer = agent.getMBeanServer();
 
-            runtime = BootstrapHelper.createRuntime(hostInfo, hostLoader, bootLoader, mbServer, monitorFactory);
+            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mbServer);
+            runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 
             // start the runtime

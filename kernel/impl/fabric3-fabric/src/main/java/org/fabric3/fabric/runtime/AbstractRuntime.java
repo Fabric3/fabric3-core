@@ -101,6 +101,7 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         hostInfo = configuration.getHostInfo();
         monitorFactory = configuration.getMonitorFactory();
         mbServer = configuration.getMBeanServer();
+        repository = configuration.getRepository();
     }
 
     public ClassLoader getHostClassLoader() {
@@ -133,7 +134,10 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         scopeContainer.start();
         scopeRegistry = new ScopeRegistryImpl();
         scopeRegistry.register(scopeContainer);
-        repository = createRepository();
+        if (repository == null) {
+            // if the runtime has not been configured with a repository, create one
+            repository = createRepository();
+        }
     }
 
     /**
@@ -144,7 +148,7 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
      */
     protected Repository createRepository() throws InitializationException {
         try {
-            RepositoryImpl repository = new RepositoryImpl(getHostInfo());
+            RepositoryImpl repository = new RepositoryImpl(hostInfo);
             repository.init();
             return repository;
         } catch (IOException e) {

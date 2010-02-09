@@ -40,6 +40,7 @@ package org.fabric3.host.runtime;
 import javax.management.MBeanServer;
 
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
 
 /**
  * Host dependencies required to boot a runtime instance.
@@ -51,12 +52,42 @@ public class RuntimeConfiguration<HI extends HostInfo> {
     private HI hostInfo;
     private MonitorFactory monitorFactory;
     private MBeanServer mBeanServer;
+    private Repository repository;
 
+    /**
+     * Constructor taking the minimal host dependencies to boot a runtime.
+     *
+     * @param hostClassLoader the host classloader.
+     * @param hostInfo        the host info instance
+     * @param monitorFactory  the monitor factory
+     * @param mBeanServer     the JMX MBean server
+     */
     public RuntimeConfiguration(ClassLoader hostClassLoader, HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
         this.hostClassLoader = hostClassLoader;
         this.hostInfo = hostInfo;
         this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
+    }
+
+    /**
+     * Constructor taking all configurable dependencies to boot a runtime.
+     *
+     * @param hostClassLoader the host classloader.
+     * @param hostInfo        the host info instance
+     * @param monitorFactory  the monitor factory
+     * @param mBeanServer     the JMX MBean server
+     * @param repository      the artifact repository
+     */
+    public RuntimeConfiguration(ClassLoader hostClassLoader,
+                                HI hostInfo,
+                                MonitorFactory monitorFactory,
+                                MBeanServer mBeanServer,
+                                Repository repository) {
+        this.hostClassLoader = hostClassLoader;
+        this.hostInfo = hostInfo;
+        this.monitorFactory = monitorFactory;
+        this.mBeanServer = mBeanServer;
+        this.repository = repository;
     }
 
     /**
@@ -95,4 +126,12 @@ public class RuntimeConfiguration<HI extends HostInfo> {
         return mBeanServer;
     }
 
+    /**
+     * Returns the runtime repository
+     *
+     * @return the runtime repository
+     */
+    public Repository getRepository() {
+        return repository;
+    }
 }

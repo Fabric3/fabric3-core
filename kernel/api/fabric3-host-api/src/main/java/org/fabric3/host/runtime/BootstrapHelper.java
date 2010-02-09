@@ -57,7 +57,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.jar.JarFile;
-import javax.management.MBeanServer;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
@@ -240,19 +239,20 @@ public final class BootstrapHelper {
         }
     }
 
+    public static Fabric3Runtime<HostInfo> createDefaultRuntime(RuntimeConfiguration<HostInfo> config, ClassLoader bootClassLoader)
+            throws InitializationException {
+        return createRuntime(RUNTIME_CLASS, config, bootClassLoader);
+    }
+
     @SuppressWarnings({"unchecked"})
-    public static Fabric3Runtime<HostInfo> createRuntime(HostInfo hostInfo,
-                                                         ClassLoader hostClassLoader,
-                                                         ClassLoader bootClassLoader,
-                                                         MBeanServer mBeanServer,
-                                                         MonitorFactory monitorFactory) throws InitializationException {
+    public static Fabric3Runtime<HostInfo> createRuntime(String runtimeClass, RuntimeConfiguration<HostInfo> config, ClassLoader bootClassLoader)
+            throws InitializationException {
         try {
-            Class<?> implClass = Class.forName(RUNTIME_CLASS, true, bootClassLoader);
+            Class<?> implClass = Class.forName(runtimeClass, true, bootClassLoader);
             Constructor<?> ctor = implClass.getConstructor();
-            
+
             Fabric3Runtime<HostInfo> runtime = (Fabric3Runtime<HostInfo>) ctor.newInstance();
-            RuntimeConfiguration<HostInfo> configuration = new RuntimeConfiguration<HostInfo>(hostClassLoader, hostInfo, monitorFactory, mBeanServer);
-            runtime.setConfiguration(configuration);
+            runtime.setConfiguration(config);
             return runtime;
         } catch (IllegalAccessException e) {
             throw new InitializationException(e);
@@ -267,7 +267,7 @@ public final class BootstrapHelper {
         }
     }
 
-    public static Bootstrapper createBootstrapper(HostInfo hostInfo, ClassLoader bootClassLoader) throws InitializationException {
+    public static ScdlBootstrapper createBootstrapper(HostInfo hostInfo, ClassLoader bootClassLoader) throws InitializationException {
         try {
             Class<?> implClass = Class.forName(BOOTSTRAPPER_CLASS, true, bootClassLoader);
             ScdlBootstrapper bootstrapper = (ScdlBootstrapper) implClass.newInstance();

@@ -58,7 +58,6 @@ import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
@@ -74,7 +73,6 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.validation.InvalidCompositeException;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Bootstrapper that initializes a runtime by reading a system SCDL file.
@@ -90,11 +88,6 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
     private InputSource systemConfigSource;
 
     public ScdlBootstrapperImpl() {
-        this(new XMLFactoryImpl());
-    }
-
-    private ScdlBootstrapperImpl(XMLFactory xmlFactory) {
-        super(xmlFactory);
         this.documentLoader = new DocumentLoaderImpl();
     }
 

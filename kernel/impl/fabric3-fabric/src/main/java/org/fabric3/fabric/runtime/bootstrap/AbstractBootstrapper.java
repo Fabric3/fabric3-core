@@ -56,6 +56,7 @@ import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl
 import org.fabric3.fabric.runtime.FabricNames;
 import org.fabric3.fabric.runtime.RuntimeServices;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
+import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
@@ -128,8 +129,8 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
 
-    protected AbstractBootstrapper(XMLFactory xmlFactory) {
-        this.xmlFactory = xmlFactory;
+    protected AbstractBootstrapper() {
+        this.xmlFactory = new XMLFactoryImpl();
         // create components needed for to bootstrap the runtime
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
