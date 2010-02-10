@@ -171,6 +171,10 @@ public abstract class AbstractDomain implements Domain {
                     for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                         if (element.getValue() instanceof DeploymentPlan) {
                             deploymentPlan = (DeploymentPlan) element.getValue();
+                            plan = deploymentPlan.getName();
+                            break;
+                        }
+                        if (deploymentPlan != null) {
                             break;
                         }
                     }

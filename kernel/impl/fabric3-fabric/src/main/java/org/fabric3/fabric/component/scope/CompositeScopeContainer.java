@@ -134,7 +134,9 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
     public void startContext(WorkContext workContext) throws GroupInitializationException {
         QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
         synchronized (destroyQueues) {
-            destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
+            if (!destroyQueues.containsKey(contextId)) {
+                destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
+            }
         }
         eagerInitialize(workContext, contextId);
     }
@@ -232,9 +234,13 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
                 QName deployable = component.getDeployable();
                 synchronized (destroyQueues) {
                     queue = destroyQueues.get(deployable);
-                }
-                if (queue == null) {
-                    throw new IllegalStateException("Context not started: " + deployable);
+                    if (queue == null) {
+                        // The context has not been initialized. This can happen if two deployable composites are deployed simultaneously and a
+                        // component in the first composite to be deployed references a component in the second composite. In this case,
+                        // create the destroy queue prior to the context being started.
+                        queue = new ArrayList<InstanceWrapper<?>>();
+                        destroyQueues.put(deployable, queue);
+                    }
                 }
                 queue.add(wrapper);
             }

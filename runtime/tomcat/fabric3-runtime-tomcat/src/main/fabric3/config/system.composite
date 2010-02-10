@@ -40,19 +40,6 @@
 
     <include name="TransformComposite" scdlResource="META-INF/transform.composite"/>
 
-    <component name="ProfileTracker">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ProfileTracker"/>
-    </component>
-
-    <component name="FSDomainTracker">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.FSDomainTracker"/>
-    </component>
-
-    <component name="FSDomainReplayer">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.FSDomainReplayer"/>
-        <reference name="domain" target="ApplicationDomain"/>
-    </component>
-
     <component name="FSArtifactCache">
         <f3-impl:implementation.system class="org.fabric3.fabric.artifact.FSArtifactCache"/>
     </component>

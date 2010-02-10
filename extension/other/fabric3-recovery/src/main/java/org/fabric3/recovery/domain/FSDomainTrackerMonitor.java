@@ -35,15 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution;
+package org.fabric3.recovery.domain;
 
 import org.fabric3.api.annotation.logging.Severe;
 
-/**
- * @version $Rev$ $Date$
- */
-public interface ProfileTrackerMonitor {
+public interface FSDomainTrackerMonitor {
 
     @Severe
-    void error(Exception e);
+    void error(Throwable e);
 }

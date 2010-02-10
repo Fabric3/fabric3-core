@@ -86,6 +86,7 @@
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>
                 <include>org.codehaus.fabric3:fabric3-resource</include>
                 <include>org.codehaus.fabric3:fabric3-security-impl</include>
+                <include>org.codehaus.fabric3:fabric3-recovery</include>
                 <include>org.codehaus.fabric3:fabric3-federation-allocation</include>
                 <include>javax.transaction:com.springsource.javax.transaction</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>

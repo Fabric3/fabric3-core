@@ -35,21 +35,15 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution;
+package org.fabric3.recovery.contribution;
 
-import org.fabric3.host.contribution.ContributionException;
+import org.fabric3.api.annotation.logging.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InvalidRepositoryIndexException extends ContributionException {
-    private static final long serialVersionUID = -8360413917086565004L;
+public interface ProfileTrackerMonitor {
 
-    public InvalidRepositoryIndexException(String message) {
-        super(message);
-    }
-
-    public InvalidRepositoryIndexException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    @Severe
+    void error(Exception e);
 }

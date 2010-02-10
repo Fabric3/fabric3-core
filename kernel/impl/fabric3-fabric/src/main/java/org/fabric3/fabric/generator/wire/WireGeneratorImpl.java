@@ -44,8 +44,8 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -63,7 +63,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -265,10 +264,10 @@ public class WireGeneratorImpl implements WireGenerator {
     private boolean isLocal(LogicalWire wire) {
         // at this point an SCA binding can only exist for local wires since SCA bindings for remote wires will have been replaced
         // with concrete bindings
-        return (wire.getSourceBinding() == null ||wire.getSourceBinding().getDefinition() instanceof SCABinding)
-                && (wire.getTargetBinding() == null ||wire.getTargetBinding().getDefinition() instanceof SCABinding);
+        return (wire.getSourceBinding() == null || wire.getSourceBinding().getDefinition() instanceof SCABinding)
+                && (wire.getTargetBinding() == null || wire.getTargetBinding().getDefinition() instanceof SCABinding);
     }
-    
+
     /**
      * Generates a physical wire definition for a wire that is not bound to a remote transport - i.e. it is between two components hosted in the same
      * runtime.
@@ -322,12 +321,8 @@ public class WireGeneratorImpl implements WireGenerator {
             operations = operationGenerator.generateOperations(sourceOperations, targetOperations, false, policyResult);
         }
 
-        QName sourceDeployable = null;
-        QName targetDeployable = null;
-        if (LogicalState.NEW == target.getState()) {
-            sourceDeployable = source.getDeployable();
-            targetDeployable = target.getDeployable();
-        }
+        QName sourceDeployable = source.getDeployable();
+        QName targetDeployable = target.getDeployable();
 
         PhysicalWireDefinition pwd =
                 new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
@@ -394,16 +389,12 @@ public class WireGeneratorImpl implements WireGenerator {
             physicalOperations = operationGenerator.generateOperations(sourceOperations, targetOperations, true, policyResult);
         }
 
-        QName sourceDeployable = null;
-        QName targetDeployable = null;
-        if (LogicalState.NEW == target.getState()) {
-            sourceDeployable = source.getDeployable();
-            targetDeployable = target.getDeployable();
-        }
+        QName sourceDeployable = source.getDeployable();
+        QName targetDeployable = target.getDeployable();
 
         return new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, physicalOperations);
     }
-    
+
     private PhysicalWireDefinition generateLocalWireCallback(LogicalWire wire) throws GenerationException {
         LogicalReference reference = wire.getSource();
         LogicalService service = wire.getTarget();

@@ -60,5 +60,6 @@
 		<module>fabric3-databinding-jaxb</module>
 		<module>fabric3-databinding-json</module>
 		<module>fabric3-databinding-hessian</module>
+		<module>fabric3-recovery</module>
 	</modules>
 </project>
