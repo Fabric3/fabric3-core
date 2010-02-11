@@ -82,7 +82,6 @@ public class MavenRuntimeBooter {
     private static final String DOMAIN = "fabric3://domain";
 
     // configuration elements
-    private URL systemScdl;
     private Properties properties;
     private File outputDirectory;
     private String systemConfigDir;
@@ -99,7 +98,6 @@ public class MavenRuntimeBooter {
     private ExtensionHelper extensionHelper;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
-        systemScdl = configuration.getSystemScdl();
         properties = configuration.getProperties();
         outputDirectory = configuration.getOutputDirectory();
         systemConfigDir = configuration.getSystemConfigDir();
@@ -180,9 +178,7 @@ public class MavenRuntimeBooter {
 
     private ScdlBootstrapper createBootstrapper(ClassLoader bootClassLoader) throws MojoExecutionException {
         ScdlBootstrapper bootstrapper = instantiate(ScdlBootstrapper.class, BOOTSTRAPPER_IMPL, bootClassLoader);
-        if (systemScdl == null) {
-            systemScdl = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
-        }
+        URL systemScdl = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
         bootstrapper.setScdlLocation(systemScdl);
         if (systemConfig != null) {
             Reader reader = new StringReader(systemConfig);
@@ -240,7 +236,7 @@ public class MavenRuntimeBooter {
         }
 
         try {
-            return systemConfig.exists() ? systemConfig.toURL() : null;
+            return systemConfig.exists() ? systemConfig.toURI().toURL() : null;
         } catch (MalformedURLException e) {
             throw new MojoExecutionException("Invalid system configuration: " + systemConfig, e);
         }

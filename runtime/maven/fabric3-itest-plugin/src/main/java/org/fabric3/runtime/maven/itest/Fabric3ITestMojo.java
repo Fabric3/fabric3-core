@@ -156,14 +156,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
     public File testClassesDirectory;
 
     /**
-     * The location of the SCDL that configures the Fabric3 runtime. This allows the default runtime configuration supplied in this plugin to be
-     * overridden.
-     *
-     * @parameter
-     */
-    public URL systemScdl;
-
-    /**
      * The version of the runtime to use.
      *
      * @parameter expression="RELEASE"
@@ -183,20 +175,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @parameter
      */
     public Dependency[] profiles = new Dependency[0];
-
-    /**
-     * Set of runtime extension artifacts that should be deployed to the runtime expressed as feature sets.
-     *
-     * @parameter
-     */
-    public Dependency[] features;
-
-    /**
-     * Whether to exclude default features.
-     *
-     * @parameter
-     */
-    public boolean excludeDefaultFeatures;
 
     /**
      * Libraries available to application and runtime.
@@ -358,7 +336,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
         configuration.setProperties(properties);
         configuration.setSystemConfig(systemConfig);
         configuration.setSystemConfigDir(systemConfigDir);
-        configuration.setSystemScdl(systemScdl);
         return configuration;
     }
 

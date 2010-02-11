@@ -10,7 +10,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 
 public class MavenBootConfiguration {
-    private URL systemScdl;
     private Properties properties;
     private File outputDirectory;
     private String systemConfigDir;
@@ -22,14 +21,6 @@ public class MavenBootConfiguration {
     private Log log;
     private ExtensionHelper extensionHelper;
     private List<URL> policyUrls;
-
-    public URL getSystemScdl() {
-        return systemScdl;
-    }
-
-    public void setSystemScdl(URL systemScdl) {
-        this.systemScdl = systemScdl;
-    }
 
     public Properties getProperties() {
         return properties;
