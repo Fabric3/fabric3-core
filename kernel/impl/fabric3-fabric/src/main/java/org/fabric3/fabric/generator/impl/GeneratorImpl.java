@@ -62,7 +62,7 @@ import org.fabric3.fabric.generator.collator.ContributionCollator;
 import org.fabric3.fabric.generator.context.StartContextCommandGenerator;
 import org.fabric3.fabric.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.generator.extension.ExtensionGenerator;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
@@ -129,14 +129,14 @@ public class GeneratorImpl implements Generator {
         }
 
         // generate stop context information
-        Map<String, List<Command>> stopCommands = stopContextCommandGenerator.generate(sorted);
-        for (Map.Entry<String, List<Command>> entry : stopCommands.entrySet()) {
+        Map<String, List<CompensatableCommand>> stopCommands = stopContextCommandGenerator.generate(sorted);
+        for (Map.Entry<String, List<CompensatableCommand>> entry : stopCommands.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
         for (CommandGenerator generator : commandGenerators) {
             for (LogicalComponent<?> component : sorted) {
-                Command command = generator.generate(component, incremental);
+                CompensatableCommand command = generator.generate(component, incremental);
                 if (command != null) {
                     String zone = component.getZone();
                     if (deployment.getDeploymentUnit(zone).getCommands().contains(command)) {
@@ -148,9 +148,8 @@ public class GeneratorImpl implements Generator {
         }
 
         // start contexts
-        Map<String, List<Command>> deploymentCommands = deployment.getCommands();
-        Map<String, List<Command>> startCommands = startContextCommandGenerator.generate(sorted, deploymentCommands, incremental);
-        for (Map.Entry<String, List<Command>> entry : startCommands.entrySet()) {
+        Map<String, List<CompensatableCommand>> startCommands = startContextCommandGenerator.generate(sorted, incremental);
+        for (Map.Entry<String, List<CompensatableCommand>> entry : startCommands.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
@@ -179,8 +178,8 @@ public class GeneratorImpl implements Generator {
             deployingContributions = collator.collateContributions(components, GenerationType.FULL);
         }
 
-        Map<String, List<Command>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
-        for (Map.Entry<String, List<Command>> entry : commandsPerZone.entrySet()) {
+        Map<String, List<CompensatableCommand>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
+        for (Map.Entry<String, List<CompensatableCommand>> entry : commandsPerZone.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
         return deployingContributions;
@@ -200,8 +199,8 @@ public class GeneratorImpl implements Generator {
                                              Map<String, List<Contribution>> contributions,
                                              boolean incremental) throws GenerationException {
         Map<String, List<Contribution>> undeployingContributions = collator.collateContributions(components, GenerationType.UNDEPLOY);
-        Map<String, List<Command>> releaseCommandsPerZone = classLoaderCommandGenerator.release(undeployingContributions);
-        for (Map.Entry<String, List<Command>> entry : releaseCommandsPerZone.entrySet()) {
+        Map<String, List<CompensatableCommand>> releaseCommandsPerZone = classLoaderCommandGenerator.release(undeployingContributions);
+        for (Map.Entry<String, List<CompensatableCommand>> entry : releaseCommandsPerZone.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
@@ -229,10 +228,10 @@ public class GeneratorImpl implements Generator {
                                            List<LogicalComponent<?>> components,
                                            GenerationType type) throws GenerationException {
         if (extensionGenerator != null) {
-            Map<String, List<Command>> deploymentCommands = deployment.getCommands();
-            Map<String, Command> extensionsPerZone = extensionGenerator.generate(deployingContributions, components, deploymentCommands, type);
-            if (extensionsPerZone != null) {
-                for (Map.Entry<String, Command> entry : extensionsPerZone.entrySet()) {
+            Map<String, List<CompensatableCommand>> deploymentCmds = deployment.getCommands();
+            Map<String, CompensatableCommand> zoneExtensions = extensionGenerator.generate(deployingContributions, components, deploymentCmds, type);
+            if (zoneExtensions != null) {
+                for (Map.Entry<String, CompensatableCommand> entry : zoneExtensions.entrySet()) {
                     if (type == GenerationType.UNDEPLOY) {
                         deployment.addCommand(entry.getKey(), entry.getValue());
                     } else {

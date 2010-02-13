@@ -97,11 +97,15 @@ public interface DomainTopologyService {
      *
      * @param zoneName the zone
      * @param command  the command
+     * @param failFast determines if fail-fast behavior should be observed; i.e. if an error is received, the remaining synchronous calls will not be
+     *                 made. Otherwise, all synchronous calls will be attempted.
      * @param timeout  the time to wait on a response
-     * @return the response messages
+     * @return the response messages. If an error was encountered and fail-fast is enabled, the responses will include all successful ones made up to
+     *         the point the error was received. The error response will be the last in the list. If fail-fast is not enabled, responses from all
+     *         runtimes in the zone will be received, possibly included multiple error responses.
      * @throws MessageException if there is an error sending the message
      */
-    List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, long timeout) throws MessageException;
+    List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException;
 
     /**
      * Sends a command synchronously to a runtime.

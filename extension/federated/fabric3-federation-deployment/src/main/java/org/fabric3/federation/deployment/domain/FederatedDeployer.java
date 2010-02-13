@@ -46,7 +46,10 @@ package org.fabric3.federation.deployment.domain;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
@@ -59,7 +62,7 @@ import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
@@ -107,6 +110,8 @@ public class FederatedDeployer implements Deployer {
         Deployment currentDeployment = deploymentPackage.getCurrentDeployment();
         Deployment fullDeployment = deploymentPackage.getFullDeployment();
 
+        // tracks deployment responses by zone
+        Map<String, List<Response>> zoneResponses = new HashMap<String, List<Response>>();
         for (String zone : currentDeployment.getZones()) {
             try {
                 monitor.deploy(zone);
@@ -114,27 +119,32 @@ public class FederatedDeployer implements Deployer {
 
                 notifyDeploy(command);
 
-                List<Response> responses = topologyService.sendSynchronousToZone(zone, command, timeout);
-                boolean error = false;
-                for (Response response : responses) {
-                    String runtimeName = response.getRuntimeName();
-                    if (response instanceof RemoteSystemException) {
-                        error = true;
-                        monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) response).getThrowable());
-                    } else if (response instanceof DeploymentResponse) {
-                        DeploymentResponse deploymentResponse = (DeploymentResponse) response;
-                        if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
-                            error = true;
-                            monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
-                        }
-                    } else {
-                        notifyRollback(command);
-                        throw new DeploymentException("Unknown response type: " + response);
-                    }
+                // send deployments in a fail-fast manner
+                List<Response> responses = topologyService.sendSynchronousToZone(zone, command, true, timeout);
+                if (responses.isEmpty()) {
+                    throw new DeploymentException("Deployment responses not received");
                 }
-                if (error) {
+                zoneResponses.put(zone, responses);
+                Response last = responses.get(responses.size() - 1);
+
+                String runtimeName = last.getRuntimeName();
+                if (last instanceof RemoteSystemException) {
+                    monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) last).getThrowable());
+                    rollback(zone, currentDeployment, zoneResponses);
                     notifyRollback(command);
                     throw new DeploymentException("Deployment errors encountered and logged");
+                } else if (last instanceof DeploymentResponse) {
+                    DeploymentResponse deploymentResponse = (DeploymentResponse) last;
+                    if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
+                        monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
+                        rollback(zone, currentDeployment, zoneResponses);
+                        notifyRollback(command);
+                        throw new DeploymentException("Deployment errors encountered and logged");
+                    }
+                } else {
+                    rollback(zone, currentDeployment, zoneResponses);
+                    notifyRollback(command);
+                    throw new DeploymentException("Unknown response type: " + last);
                 }
                 notifyCompletion(command);
             } catch (IOException e) {
@@ -153,10 +163,65 @@ public class FederatedDeployer implements Deployer {
         return new DeploymentCommand(currentSerializedUnit, fullSerializedUnit);
     }
 
+    private void rollback(String failedZone, Deployment deployment, Map<String, List<Response>> zoneResponses) {
+        for (Map.Entry<String, List<Response>> entry : zoneResponses.entrySet()) {
+            List<Response> responses = entry.getValue();
+            String zone = entry.getKey();
+            for (Response response : responses) {
+                String runtimeName = response.getRuntimeName();
+                try {
+                    DeploymentCommand rollback = createRollbackCommand(zone, deployment);
+                    if (failedZone.equals(zone) && response == responses.get(responses.size() - 1)) {
+                        // the last runtime in the failed zone will have rolled-back the deployment
+                        break;
+                    }
+                    // send the rollback command
+                    Response rollbackResponse = topologyService.sendSynchronous(runtimeName, rollback, timeout);
+                    if (rollbackResponse instanceof RemoteSystemException) {
+                        monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) rollbackResponse).getThrowable());
+                    } else if (rollbackResponse instanceof DeploymentResponse) {
+                        DeploymentResponse deploymentResponse = (DeploymentResponse) rollbackResponse;
+                        if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
+                            monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
+                        }
+                    }
+                } catch (MessageException e) {
+                    monitor.rollbackError(runtimeName, e);
+                } catch (IOException e) {
+                    monitor.rollbackError(runtimeName, e);
+                }
+            }
+        }
+
+    }
+
+    private DeploymentCommand createRollbackCommand(String zone, Deployment deployment) throws IOException {
+        DeploymentUnit unit = deployment.getDeploymentUnit(zone);
+        DeploymentUnit compensatingUnit = new DeploymentUnit();
+        if (!unit.getExtensionCommands().isEmpty()) {
+            ListIterator<CompensatableCommand> iter = unit.getExtensionCommands().listIterator(unit.getExtensionCommands().size() - 1);
+            while (iter.hasPrevious()) {
+                CompensatableCommand command = iter.previous();
+                CompensatableCommand compensating = command.getCompensatingCommand();
+                compensatingUnit.addExtensionCommand(compensating);
+            }
+        }
+        if (!unit.getCommands().isEmpty()) {
+            ListIterator<CompensatableCommand> iter = unit.getCommands().listIterator(unit.getCommands().size() - 1);
+            while (iter.hasPrevious()) {
+                CompensatableCommand command = iter.previous();
+                CompensatableCommand compensating = command.getCompensatingCommand();
+                compensatingUnit.addCommand(compensating);
+            }
+        }
+        SerializedDeploymentUnit serializedUnit = createSerializedUnit(compensatingUnit);
+        return new DeploymentCommand(serializedUnit, serializedUnit);
+    }
+
     private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
-        List<Command> extensionCommands = deploymentUnit.getExtensionCommands();
+        List<CompensatableCommand> extensionCommands = deploymentUnit.getExtensionCommands();
         byte[] serializedExtensionCommands = serializationService.serialize((Serializable) extensionCommands);
-        List<Command> commands = deploymentUnit.getCommands();
+        List<CompensatableCommand> commands = deploymentUnit.getCommands();
         byte[] serializedCommands = serializationService.serialize((Serializable) commands);
         return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
     }

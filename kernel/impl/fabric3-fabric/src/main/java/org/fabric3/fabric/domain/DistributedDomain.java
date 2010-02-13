@@ -145,8 +145,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
 
     protected boolean isTransactional() {
         if (info.getRuntimeMode() == RuntimeMode.CONTROLLER) {
-            return false;
-//  disable until tested:          return true;
+            return true;
         } else if (info.getRuntimeMode() == RuntimeMode.VM) {
             return transactional;
         }

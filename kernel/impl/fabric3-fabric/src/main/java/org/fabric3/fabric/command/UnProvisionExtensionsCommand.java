@@ -37,8 +37,6 @@
 */
 package org.fabric3.fabric.command;
 
-import org.fabric3.spi.command.Command;
-
 /**
  * Command to unprovision a set of extensions.
  *
@@ -47,7 +45,7 @@ import org.fabric3.spi.command.Command;
 public class UnProvisionExtensionsCommand extends AbstractExtensionsCommand {
     private static final long serialVersionUID = -1996037945082492244L;
 
-    public Command getCompensatingCommand() {
+    public ProvisionExtensionsCommand getCompensatingCommand() {
         ProvisionExtensionsCommand compensating = new ProvisionExtensionsCommand();
         compensating.extensionUris = this.extensionUris;
         return compensating;

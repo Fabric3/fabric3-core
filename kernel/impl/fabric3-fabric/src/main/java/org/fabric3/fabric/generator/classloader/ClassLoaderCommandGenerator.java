@@ -40,7 +40,7 @@ package org.fabric3.fabric.generator.classloader;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.generator.GenerationException;
 
@@ -58,7 +58,7 @@ public interface ClassLoaderCommandGenerator {
      * @return the classloader provisioning commands grouped by zone where they are to be provisioned
      * @throws GenerationException if an error occurs during generation
      */
-    Map<String, List<Command>> generate(Map<String, List<Contribution>> contributions) throws GenerationException;
+    Map<String, List<CompensatableCommand>> generate(Map<String, List<Contribution>> contributions) throws GenerationException;
 
     /**
      * Generates classloader release commands for a set of contributions being undeployed.
@@ -67,6 +67,6 @@ public interface ClassLoaderCommandGenerator {
      * @return the classloader provisioning commands grouped by zone where they are being undeployed
      * @throws GenerationException if an error occurs during generation
      */
-    Map<String, List<Command>> release(Map<String, List<Contribution>> contributions) throws GenerationException;
+    Map<String, List<CompensatableCommand>> release(Map<String, List<Contribution>> contributions) throws GenerationException;
 
 }

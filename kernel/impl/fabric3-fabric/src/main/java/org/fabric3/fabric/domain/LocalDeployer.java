@@ -48,6 +48,7 @@ import java.util.ListIterator;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Monitor;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
@@ -55,6 +56,7 @@ import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -67,28 +69,26 @@ import org.fabric3.spi.executor.ExecutionException;
 public class LocalDeployer implements Deployer {
     private CommandExecutorRegistry executorRegistry;
     private ScopeRegistry scopeRegistry;
+    private DeployerMonitor monitor;
 
-    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+    public LocalDeployer(@Reference CommandExecutorRegistry executorRegistry,
+                         @Reference ScopeRegistry scopeRegistry,
+                         @Monitor DeployerMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.scopeRegistry = scopeRegistry;
+        this.monitor = monitor;
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         // ignore extension commands since extensions will already be loaded locally
-        List<Command> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(null).getCommands();
+        List<CompensatableCommand> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(null).getCommands();
         int marker = 0;
         for (Command command : commands) {
             try {
                 executorRegistry.execute(command);
                 ++marker;
             } catch (ExecutionException e) {
-                try {
-                    rollback(commands, marker);
-                } catch (ExecutionException e1) {
-                    // TODO need to handle this
-                } catch (InstanceLifecycleException e1) {
-                    // TODO need to handle this
-                }
+                rollback(commands, marker);
                 throw new DeploymentException(e);
             }
         }
@@ -102,17 +102,27 @@ public class LocalDeployer implements Deployer {
 
     }
 
-    private void rollback(List<Command> commands, int marker) throws ExecutionException, InstanceLifecycleException {
-        ListIterator<Command> iter = commands.listIterator(marker);
-        while (iter.hasPrevious()) {
-            Command command = iter.previous();
-            if (command instanceof CompensatableCommand) {
-                Command compensating = ((CompensatableCommand) command).getCompensatingCommand();
+    /**
+     * Rolls back the runtime state after a failed deployment by executing a collection of compensating commands.
+     *
+     * @param commands the deployment commands that failed
+     * @param marker   the deployment command index where the failure occured
+     */
+    private void rollback(List<CompensatableCommand> commands, int marker) {
+        try {
+            ListIterator<CompensatableCommand> iter = commands.listIterator(marker);
+            while (iter.hasPrevious()) {
+                CompensatableCommand command = iter.previous();
+                Command compensating = command.getCompensatingCommand();
                 executorRegistry.execute(compensating);
             }
-        }
-        if (scopeRegistry != null) {
-            scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            if (scopeRegistry != null) {
+                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            }
+        } catch (ExecutionException ex) {
+            monitor.rollbackError("", ex);
+        } catch (InstanceLifecycleException ex) {
+            monitor.rollbackError("", ex);
         }
     }
 

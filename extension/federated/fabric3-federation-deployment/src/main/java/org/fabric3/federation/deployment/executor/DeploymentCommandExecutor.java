@@ -39,6 +39,7 @@ package org.fabric3.federation.deployment.executor;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -52,6 +53,7 @@ import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
@@ -88,53 +90,99 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         executorRegistry.register(DeploymentCommand.class, this);
     }
 
-    @SuppressWarnings({"unchecked"})
     public void execute(DeploymentCommand command) throws ExecutionException {
         monitor.receivedUpdate();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
+        SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
+
+        byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
+        boolean result = execute(serializedExtensionCommands, command);
+        if (!result) {
+            // failed and rolled back
+            return;
+        }
+        byte[] serializedCommands = currentDeploymentUnit.getCommands();
+        result = execute(serializedCommands, command);
+        if (!result) {
+            // failed and rolled back
+            return;
+        }
+        cacheDeployment(command);
+        DeploymentResponse response = new DeploymentResponse();
+        command.setResponse(response);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private boolean execute(byte[] serializedCommands, DeploymentCommand command) {
+        int marker = 0;
+        List<CompensatableCommand> commands = null;
         try {
-            SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
-            byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
-            List<Command> extensionCommands = serializationService.deserialize(List.class, serializedExtensionCommands);
-            for (Command cmd : extensionCommands) {
-                executorRegistry.execute(cmd);
-            }
-            if (!extensionCommands.isEmpty()) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-            byte[] serializedCommands = currentDeploymentUnit.getCommands();
-            List<Command> commands = serializationService.deserialize(List.class, serializedCommands);
+            commands = serializationService.deserialize(List.class, serializedCommands);
             for (Command cmd : commands) {
                 executorRegistry.execute(cmd);
+                marker++;
             }
             if (!commands.isEmpty()) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-
-            cacheDeployment(command);
-
-            DeploymentResponse response = new DeploymentResponse();
+            return true;
+        } catch (IOException e) {
+            // no rollback because the commands were never deserialized
+            monitor.error(e);
+            DeploymentResponse response = new DeploymentResponse(e);
             command.setResponse(response);
+            return false;
+        } catch (ClassNotFoundException e) {
+            // no rollback because the commands were never deserialized
+            monitor.error(e);
+            rollback(commands, marker);
+            DeploymentResponse response = new DeploymentResponse(e);
+            command.setResponse(response);
+            return false;
         } catch (InstanceLifecycleException e) {
             monitor.error(e);
+            rollback(commands, marker);
             DeploymentResponse response = new DeploymentResponse(e);
             command.setResponse(response);
-        } catch (IOException e) {
+            return false;
+        } catch (ExecutionException e) {
             monitor.error(e);
+            rollback(commands, marker);
             DeploymentResponse response = new DeploymentResponse(e);
             command.setResponse(response);
-        } catch (ClassNotFoundException e) {
-            monitor.error(e);
-            DeploymentResponse response = new DeploymentResponse(e);
-            command.setResponse(response);
+            return false;
         }
+
     }
 
-    private void cacheDeployment(DeploymentCommand command) throws IOException {
+    private void cacheDeployment(DeploymentCommand command) {
         SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
         DeploymentCommand deploymentCommand = new DeploymentCommand(fullDeploymentUnit, fullDeploymentUnit);
         cache.cache(deploymentCommand);
     }
 
+    /**
+     * Rolls back the runtime state after a failed deployment by executing a collection of compensating commands.
+     *
+     * @param commands the deployment commands that failed
+     * @param marker   the deployment command index where the failure occured
+     */
+    private void rollback(List<CompensatableCommand> commands, int marker) {
+        try {
+            ListIterator<CompensatableCommand> iter = commands.listIterator(marker);
+            while (iter.hasPrevious()) {
+                CompensatableCommand command = iter.previous();
+                Command compensating = command.getCompensatingCommand();
+                executorRegistry.execute(compensating);
+            }
+            if (scopeRegistry != null) {
+                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            }
+        } catch (ExecutionException e) {
+            monitor.error(e);
+        } catch (InstanceLifecycleException e) {
+            monitor.error(e);
+        }
+    }
 
 }

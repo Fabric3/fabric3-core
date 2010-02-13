@@ -59,6 +59,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -101,8 +102,8 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         EasyMock.expect(store.resolveCapability("bindingCapability")).andReturn(bindingExtensions);
 
         EasyMock.replay(store);
-        Map<String, List<Command>> deploymentCommands = new HashMap<String, List<Command>>();
-        Map<String, Command> ret = generator.generate(map, components, deploymentCommands, GenerationType.INCREMENTAL);
+        Map<String, List<CompensatableCommand>> deploymentCommands = new HashMap<String, List<CompensatableCommand>>();
+        Map<String, CompensatableCommand> ret = generator.generate(map, components, deploymentCommands, GenerationType.INCREMENTAL);
         Command commands = ret.get("zone1");
         ProvisionExtensionsCommand command = (ProvisionExtensionsCommand) commands;
         assertTrue(command.getExtensionUris().contains(extensionUri));

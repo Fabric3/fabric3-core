@@ -46,7 +46,6 @@ package org.fabric3.fabric.command;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.command.Command;
 
 /**
  * Starts a composite context on a runtime.
@@ -66,7 +65,7 @@ public class StartContextCommand implements CompensatableCommand {
         return deployable;
     }
 
-    public Command getCompensatingCommand() {
+    public StopContextCommand getCompensatingCommand() {
         return new StopContextCommand(deployable);
     }
     

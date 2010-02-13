@@ -51,7 +51,7 @@ import java.util.Map;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.fabric.command.StartContextCommand;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -64,15 +64,13 @@ import org.fabric3.spi.model.instance.LogicalState;
 @EagerInit
 public class StartContextCommandGeneratorImpl implements StartContextCommandGenerator {
 
-    public Map<String, List<Command>> generate(List<LogicalComponent<?>> components,
-                                               Map<String, List<Command>> deploymentCommands,
-                                               boolean incremental) throws GenerationException {
-        Map<String, List<Command>> commands = new HashMap<String, List<Command>>();
+    public Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components, boolean incremental) throws GenerationException {
+        Map<String, List<CompensatableCommand>> commands = new HashMap<String, List<CompensatableCommand>>();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW || !incremental) {
                 StartContextCommand command = new StartContextCommand(component.getDeployable());
                 String zone = component.getZone();
-                List<Command> list = getCommands(zone, commands);
+                List<CompensatableCommand> list = getCommands(zone, commands);
                 if (!list.contains(command)) {
                     list.add(command);
                 }
@@ -88,10 +86,10 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
      * @param startCommands the list of commands maped by zone
      * @return the list of commands for a zone
      */
-    private List<Command> getCommands(String zone, Map<String, List<Command>> startCommands) {
-        List<Command> list = startCommands.get(zone);
+    private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> startCommands) {
+        List<CompensatableCommand> list = startCommands.get(zone);
         if (list == null) {
-            list = new ArrayList<Command>();
+            list = new ArrayList<CompensatableCommand>();
             startCommands.put(zone, list);
         }
         return list;

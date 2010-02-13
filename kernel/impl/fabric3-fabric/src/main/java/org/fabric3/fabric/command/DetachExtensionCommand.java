@@ -40,12 +40,12 @@ package org.fabric3.fabric.command;
 import java.net.URI;
 
 /**
- * A command to attach a contribution classloader as an extension to a contribution classloader that provides an extension point.
+ * A command to detach a contribution classloader as an extension to a contribution classloader that provides an extension point.
  *
  * @version $Rev$ $Date$
  */
-public class AttachExtensionCommand extends AbstractExtensionCommand {
-    private static final long serialVersionUID = -5002990071569611217L;
+public class DetachExtensionCommand extends AbstractExtensionCommand {
+    private static final long serialVersionUID = -1511698307424681994L;
 
     /**
      * Constructor.
@@ -53,11 +53,11 @@ public class AttachExtensionCommand extends AbstractExtensionCommand {
      * @param contribution the contribution URI providing the extension point
      * @param provider     the extension point provider URI
      */
-    public AttachExtensionCommand(URI contribution, URI provider) {
+    public DetachExtensionCommand(URI contribution, URI provider) {
         super(contribution, provider);
     }
 
-    public DetachExtensionCommand getCompensatingCommand() {
-        return new DetachExtensionCommand(getContribution(), getProvider());
+    public AttachExtensionCommand getCompensatingCommand() {
+        return new AttachExtensionCommand(getContribution(), getProvider());
     }
 }

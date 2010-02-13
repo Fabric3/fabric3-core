@@ -70,7 +70,6 @@ public class InterpreterImpl implements Interpreter {
             + "   list (ls) \n"
             + "   profile (pf) \n"
             + "   provision (pr) \n"
-            + "   remove (rm) \n"
             + "   status (st) \n"
             + "   undeploy (ude) \n"
             + "   uninstall (uin) \n"

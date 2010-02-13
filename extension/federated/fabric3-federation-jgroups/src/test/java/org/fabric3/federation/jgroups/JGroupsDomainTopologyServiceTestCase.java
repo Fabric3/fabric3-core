@@ -130,7 +130,7 @@ public class JGroupsDomainTopologyServiceTestCase extends AbstractJGroupsTestCas
         JGroupsZoneTopologyService zoneTopologyService2 = createAndJoin("service2");
 
         // should send messages to both services as they are in the same zone
-        domainTopologyService.sendSynchronousToZone("default.zone", command, 2000);
+        domainTopologyService.sendSynchronousToZone("default.zone", command, true, 2000);
 
         Thread.sleep(1000);
 

@@ -55,6 +55,6 @@ public interface CompensatableCommand extends Command {
      *
      * @return the compensating command
      */
-    Command getCompensatingCommand();
+    CompensatableCommand getCompensatingCommand();
 
 }

@@ -37,15 +37,13 @@
 */
 package org.fabric3.fabric.command;
 
-import org.fabric3.spi.command.Command;
-
 /**
  * @version $Rev$ $Date$
  */
 public class ProvisionExtensionsCommand extends AbstractExtensionsCommand {
     private static final long serialVersionUID = 2153692848849354496L;
 
-    public Command getCompensatingCommand() {
+    public UnProvisionExtensionsCommand getCompensatingCommand() {
         UnProvisionExtensionsCommand compensating = new UnProvisionExtensionsCommand();
         compensating.extensionUris = this.extensionUris;
         return compensating;

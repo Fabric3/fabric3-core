@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.fabric.generator.GenerationType;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -63,8 +63,8 @@ public interface ExtensionGenerator {
      * @return the extension deployment commands keyed by zone
      * @throws GenerationException if an error occurs generating the commands
      */
-    Map<String, Command> generate(Map<String, List<Contribution>> contributions,
-                                  List<LogicalComponent<?>> components,
-                                  Map<String, List<Command>> deploymentCommands,
-                                  GenerationType type) throws GenerationException;
+    Map<String, CompensatableCommand> generate(Map<String, List<Contribution>> contributions,
+                                               List<LogicalComponent<?>> components,
+                                               Map<String, List<CompensatableCommand>> deploymentCommands,
+                                               GenerationType type) throws GenerationException;
 }

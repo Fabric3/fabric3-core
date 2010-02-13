@@ -34,6 +34,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachExtensionCommandExecutor"/>
     </component>
 
+    <component name="DetachExtensionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DetachExtensionCommandExecutor"/>
+    </component>
+
     <component name="BuildComponentCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildComponentCommandExecutor"/>
     </component>

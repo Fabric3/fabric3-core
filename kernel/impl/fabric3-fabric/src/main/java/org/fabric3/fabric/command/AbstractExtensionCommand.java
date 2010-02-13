@@ -39,13 +39,17 @@ package org.fabric3.fabric.command;
 
 import java.net.URI;
 
+import org.fabric3.spi.command.CompensatableCommand;
+
 /**
- * A command to attach a contribution classloader as an extension to a contribution classloader that provides an extension point.
+ * Base class for extension commands.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7148 $ $Date: 2009-06-14 17:18:27 -0700 (Sun, 14 Jun 2009) $
  */
-public class AttachExtensionCommand extends AbstractExtensionCommand {
-    private static final long serialVersionUID = -5002990071569611217L;
+public abstract class AbstractExtensionCommand implements CompensatableCommand {
+    private static final long serialVersionUID = 8299761365600303716L;
+    private URI contribution;
+    private URI provider;
 
     /**
      * Constructor.
@@ -53,11 +57,17 @@ public class AttachExtensionCommand extends AbstractExtensionCommand {
      * @param contribution the contribution URI providing the extension point
      * @param provider     the extension point provider URI
      */
-    public AttachExtensionCommand(URI contribution, URI provider) {
-        super(contribution, provider);
+    public AbstractExtensionCommand(URI contribution, URI provider) {
+        this.contribution = contribution;
+        this.provider = provider;
     }
 
-    public DetachExtensionCommand getCompensatingCommand() {
-        return new DetachExtensionCommand(getContribution(), getProvider());
+    public URI getContribution() {
+        return contribution;
     }
+
+    public URI getProvider() {
+        return provider;
+    }
+
 }

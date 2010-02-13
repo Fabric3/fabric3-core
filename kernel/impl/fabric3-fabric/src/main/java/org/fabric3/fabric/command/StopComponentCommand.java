@@ -39,7 +39,6 @@ package org.fabric3.fabric.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 
 public class StopComponentCommand implements CompensatableCommand {
@@ -56,7 +55,7 @@ public class StopComponentCommand implements CompensatableCommand {
         return uri;
     }
 
-    public Command getCompensatingCommand() {
+    public StartComponentCommand getCompensatingCommand() {
         return new StartComponentCommand(uri);
     }
 

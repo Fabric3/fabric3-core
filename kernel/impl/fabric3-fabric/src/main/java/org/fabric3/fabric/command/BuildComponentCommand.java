@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.command;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
@@ -58,7 +58,7 @@ public class BuildComponentCommand extends AbstractComponentCommand {
         super(definition);
     }
 
-    public Command getCompensatingCommand() {
+    public CompensatableCommand getCompensatingCommand() {
         return new UnBuildComponentCommand(definition);
     }
 

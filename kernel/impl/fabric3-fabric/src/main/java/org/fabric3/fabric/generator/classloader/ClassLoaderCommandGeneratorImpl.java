@@ -52,7 +52,7 @@ import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;
 import org.fabric3.host.Names;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
@@ -101,20 +101,20 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         this.dependencyService = dependencyService;
     }
 
-    public Map<String, List<Command>> generate(Map<String, List<Contribution>> contributions) throws GenerationException {
+    public Map<String, List<CompensatableCommand>> generate(Map<String, List<Contribution>> contributions) throws GenerationException {
         // commands mapped to zone
 
         // Create the classloader definitions for contributions required to run the components being deployed.
         // These are created first since they must be instantitated on a runtime prior to component classloaders
         Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = createContributionDefinitions(contributions);
-        Map<String, List<Command>> commands = createProvisionCommands(definitionsPerZone);
+        Map<String, List<CompensatableCommand>> commands = createProvisionCommands(definitionsPerZone);
         createExtensionCommands(commands, contributions);
         return commands;
     }
 
-    public Map<String, List<Command>> release(Map<String, List<Contribution>> contributions) throws GenerationException {
+    public Map<String, List<CompensatableCommand>> release(Map<String, List<Contribution>> contributions) throws GenerationException {
         // commands mapped to the zone
-        Map<String, List<Command>> commandsPerZone = new HashMap<String, List<Command>>();
+        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<String, List<CompensatableCommand>>();
 
         // generate commands to unprovision contribution classloaders
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
@@ -125,9 +125,9 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 // Consequently, the contribution classloader cannot be removed until the contribution is uninstalled.
                 continue;
             }
-            List<Command> commands = commandsPerZone.get(entry.getKey());
+            List<CompensatableCommand> commands = commandsPerZone.get(entry.getKey());
             if (commands == null) {
-                commands = new ArrayList<Command>();
+                commands = new ArrayList<CompensatableCommand>();
                 commandsPerZone.put(entry.getKey(), commands);
             }
             List<Contribution> ordered;
@@ -206,11 +206,11 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      * @param definitionsPerZone the classloader definitions keyed by zone
      * @return the set of commands keyed by zone
      */
-    private Map<String, List<Command>> createProvisionCommands(Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone) {
-        Map<String, List<Command>> commandsPerZone = new HashMap<String, List<Command>>();
+    private Map<String, List<CompensatableCommand>> createProvisionCommands(Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone) {
+        Map<String, List<CompensatableCommand>> commandsPerZone = new HashMap<String, List<CompensatableCommand>>();
         for (Map.Entry<String, List<PhysicalClassLoaderDefinition>> entry : definitionsPerZone.entrySet()) {
             List<PhysicalClassLoaderDefinition> definitions = entry.getValue();
-            List<Command> commands = new ArrayList<Command>();
+            List<CompensatableCommand> commands = new ArrayList<CompensatableCommand>();
             commandsPerZone.put(entry.getKey(), commands);
             for (PhysicalClassLoaderDefinition definition : definitions) {
                 commands.add(new ProvisionClassloaderCommand(definition));
@@ -226,7 +226,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      * @param commands the commands being provisioned
      * @param collated the set of contributions being provisioned collated by zone
      */
-    private void createExtensionCommands(Map<String, List<Command>> commands, Map<String, List<Contribution>> collated) {
+    private void createExtensionCommands(Map<String, List<CompensatableCommand>> commands, Map<String, List<Contribution>> collated) {
         for (Map.Entry<String, List<Contribution>> entry : collated.entrySet()) {
             String zone = entry.getKey();
             for (Contribution contribution : entry.getValue()) {

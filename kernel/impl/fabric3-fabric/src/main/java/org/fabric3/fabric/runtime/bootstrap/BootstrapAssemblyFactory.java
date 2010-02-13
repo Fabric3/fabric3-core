@@ -160,6 +160,7 @@ import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
@@ -206,8 +207,8 @@ public class BootstrapAssemblyFactory {
                                               mbServer,
                                               metaDataStore,
                                               info);
-
-        LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry);
+        DeployerMonitor monitor = monitorFactory.getMonitor(DeployerMonitor.class);
+        LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry, monitor);
 
         PolicyAttacher policyAttacher = new NullPolicyAttacher();
         PolicyResolver policyResolver = new NullPolicyResolver();
@@ -335,7 +336,7 @@ public class BootstrapAssemblyFactory {
         JarClasspathProcessor classpathProcessor = new JarClasspathProcessor(cpRegistry, info);
         classpathProcessor.init();
         ClassLoaderWireBuilder wireBuilder = new ClassLoaderWireBuilderImpl(classLoaderRegistry);
-        return new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, cpRegistry, componentManager,resolver, info);
+        return new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, cpRegistry, componentManager, resolver, info);
     }
 
     private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {

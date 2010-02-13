@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Used to deploy composites to a zone. Extension-related commands are segregated so they may be deserialized and executed prior to other commands as
@@ -52,30 +52,30 @@ import org.fabric3.spi.command.Command;
 public class DeploymentUnit implements Serializable {
     private static final long serialVersionUID = -5868891769973094096L;
 
-    private List<Command> extensionCommands = new ArrayList<Command>();
-    private List<Command> commands = new ArrayList<Command>();
+    private List<CompensatableCommand> extensionCommands = new ArrayList<CompensatableCommand>();
+    private List<CompensatableCommand> commands = new ArrayList<CompensatableCommand>();
 
-    public void addExtensionCommand(Command command) {
+    public void addExtensionCommand(CompensatableCommand command) {
         extensionCommands.add(command);
     }
 
-    public void addExtensionCommands(List<Command> command) {
+    public void addExtensionCommands(List<CompensatableCommand> command) {
         extensionCommands.addAll(command);
     }
 
-    public List<Command> getExtensionCommands() {
+    public List<CompensatableCommand> getExtensionCommands() {
         return extensionCommands;
     }
 
-    public void addCommand(Command command) {
+    public void addCommand(CompensatableCommand command) {
         commands.add(command);
     }
 
-    public void addCommands(List<Command> command) {
+    public void addCommands(List<CompensatableCommand> command) {
         commands.addAll(command);
     }
 
-    public List<Command> getCommands() {
+    public List<CompensatableCommand> getCommands() {
         return commands;
     }
 }

@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 
 /**
@@ -59,7 +58,7 @@ public class ConnectionCommand implements CompensatableCommand {
         detachCommands = new ArrayList<DetachWireCommand>();
     }
 
-    public Command getCompensatingCommand() {
+    public ConnectionCommand getCompensatingCommand() {
         ConnectionCommand compensating = new ConnectionCommand();
         if (!attachCommands.isEmpty()){
             ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size()-1);

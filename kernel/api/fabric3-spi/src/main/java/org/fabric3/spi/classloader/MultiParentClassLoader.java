@@ -176,6 +176,15 @@ public class MultiParentClassLoader extends URLClassLoader {
     }
 
     /**
+     * Removes a classloader as an extension of this classloader.
+     *
+     * @param classloader the extension classloader.
+     */
+    public void removeExtensionClassLoader(MultiParentClassLoader classloader) {
+        extensions.remove(classloader);
+    }
+
+    /**
      * Resolves a resource only in this classloader. Note this method does not delegate to parent classloaders.
      *
      * @param name the resource name

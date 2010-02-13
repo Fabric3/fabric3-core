@@ -43,9 +43,9 @@
  */
 package org.fabric3.fabric.generator;
 
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Generates a Command that must be applied to a zone based on changes to a logical component.
@@ -70,6 +70,6 @@ public interface CommandGenerator {
      * @return the generated command or null if no changes were detected
      * @throws GenerationException if an error occurs during generation
      */
-    Command generate(LogicalComponent<?> logicalComponent, boolean incremental) throws GenerationException;
+    CompensatableCommand generate(LogicalComponent<?> logicalComponent, boolean incremental) throws GenerationException;
 
 }

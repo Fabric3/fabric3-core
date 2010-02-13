@@ -55,13 +55,13 @@ import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.command.Command;
 
 /**
  * Creates a command to build a component on a runtime.
@@ -82,7 +82,7 @@ public class BuildComponentCommandGenerator implements CommandGenerator {
         return order;
     }
 
-    public Command generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public CompensatableCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
             PhysicalComponentDefinition definition = generateDefinition(component);
             return new BuildComponentCommand(definition);

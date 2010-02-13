@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.fabric.command.StopContextCommand;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -54,11 +54,11 @@ import org.fabric3.spi.model.instance.LogicalState;
  */
 public class StopContextCommandGeneratorImpl implements StopContextCommandGenerator {
 
-    public Map<String, List<Command>> generate(List<LogicalComponent<?>> components) throws GenerationException {
-        Map<String, List<Command>> commands = new HashMap<String, List<Command>>();
+    public Map<String, List<CompensatableCommand>> generate(List<LogicalComponent<?>> components) throws GenerationException {
+        Map<String, List<CompensatableCommand>> commands = new HashMap<String, List<CompensatableCommand>>();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.MARKED) {
-                List<Command> list = getCommands(component.getZone(), commands);
+                List<CompensatableCommand> list = getCommands(component.getZone(), commands);
                 StopContextCommand command = new StopContextCommand(component.getDeployable());
                 if (!list.contains(command)) {
                     list.add(command);
@@ -68,10 +68,10 @@ public class StopContextCommandGeneratorImpl implements StopContextCommandGenera
         return commands;
     }
 
-    private List<Command> getCommands(String zone, Map<String, List<Command>> commands) {
-        List<Command> list = commands.get(zone);
+    private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> commands) {
+        List<CompensatableCommand> list = commands.get(zone);
         if (list == null) {
-            list = new ArrayList<Command>();
+            list = new ArrayList<CompensatableCommand>();
             commands.put(zone, list);
         }
         return list;

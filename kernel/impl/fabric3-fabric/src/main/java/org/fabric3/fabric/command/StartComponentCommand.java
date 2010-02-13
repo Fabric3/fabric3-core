@@ -46,7 +46,6 @@ package org.fabric3.fabric.command;
 import java.net.URI;
 
 import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.command.Command;
 
 /**
  * A command to start a component on a runtime.
@@ -66,7 +65,7 @@ public class StartComponentCommand implements CompensatableCommand {
         return uri;
     }
 
-    public Command getCompensatingCommand() {
+    public StopComponentCommand getCompensatingCommand() {
         return new StopComponentCommand(uri);
     }
     

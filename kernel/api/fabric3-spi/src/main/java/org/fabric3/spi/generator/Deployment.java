@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A
@@ -70,22 +71,22 @@ public class Deployment {
         return id;
     }
 
-    public void addExtensionCommand(String zone, Command command) {
+    public void addExtensionCommand(String zone, CompensatableCommand command) {
         DeploymentUnit unit = getDeploymentUnit(zone);
         unit.addExtensionCommand(command);
     }
 
-    public void addExtensionCommands(String zone, List<Command> commands) {
+    public void addExtensionCommands(String zone, List<CompensatableCommand> commands) {
         DeploymentUnit unit = getDeploymentUnit(zone);
         unit.addExtensionCommands(commands);
     }
 
-    public void addCommand(String zone, Command command) {
+    public void addCommand(String zone, CompensatableCommand command) {
         DeploymentUnit unit = getDeploymentUnit(zone);
         unit.addCommand(command);
     }
 
-    public void addCommands(String zone, List<Command> commands) {
+    public void addCommands(String zone, List<CompensatableCommand> commands) {
         DeploymentUnit unit = getDeploymentUnit(zone);
         unit.addCommands(commands);
     }
@@ -103,8 +104,8 @@ public class Deployment {
         return unit;
     }
 
-    public Map<String, List<Command>> getCommands() {
-        Map<String, List<Command>> ret = new HashMap<String, List<Command>>();
+    public Map<String, List<CompensatableCommand>> getCommands() {
+        Map<String, List<CompensatableCommand>> ret = new HashMap<String, List<CompensatableCommand>>();
         for (Map.Entry<String, DeploymentUnit> entry : units.entrySet()) {
             ret.put(entry.getKey(), entry.getValue().getCommands());
         }

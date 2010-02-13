@@ -53,7 +53,7 @@ import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
-import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -102,9 +102,9 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
             // The full and current deployment will therefore be the same.
             DeploymentUnit unit = regenerate(zone);
 
-            List<Command> extensionCommands = unit.getExtensionCommands();
+            List<CompensatableCommand> extensionCommands = unit.getExtensionCommands();
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
-            List<Command> commands = unit.getCommands();
+            List<CompensatableCommand> commands = unit.getCommands();
             byte[] serializedCommands = serialize((Serializable) commands);
             SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
             DeploymentCommand deploymentCommand = new DeploymentCommand(serializedUnit, serializedUnit);

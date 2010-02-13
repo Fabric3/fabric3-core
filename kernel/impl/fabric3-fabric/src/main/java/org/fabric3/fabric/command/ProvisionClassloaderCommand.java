@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.command;
 
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
@@ -55,7 +54,7 @@ public class ProvisionClassloaderCommand implements CompensatableCommand {
         this.definition = definition;
     }
 
-    public Command getCompensatingCommand() {
+    public UnprovisionClassloaderCommand getCompensatingCommand() {
         return new UnprovisionClassloaderCommand(definition);
     }
 

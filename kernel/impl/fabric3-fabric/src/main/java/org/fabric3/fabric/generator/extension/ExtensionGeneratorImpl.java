@@ -60,6 +60,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -86,16 +87,16 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
         this.info = info;
     }
 
-    public Map<String, Command> generate(Map<String, List<Contribution>> contributions,
-                                         List<LogicalComponent<?>> components,
-                                         Map<String, List<Command>> deploymentCommands,
-                                         GenerationType type) throws GenerationException {
+    public Map<String, CompensatableCommand> generate(Map<String, List<Contribution>> contributions,
+                                                      List<LogicalComponent<?>> components,
+                                                      Map<String, List<CompensatableCommand>> deploymentCommands,
+                                                      GenerationType type) throws GenerationException {
         if (RuntimeMode.CONTROLLER != info.getRuntimeMode()) {
             // short circuit this unless running in distributed mode
             return null;
         }
 
-        Map<String, Command> commands = new HashMap<String, Command>();
+        Map<String, CompensatableCommand> commands = new HashMap<String, CompensatableCommand>();
 
         // evaluate contributions being provisioned for required capabilities
         evaluateContributions(contributions, commands, type);
@@ -119,7 +120,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @throws GenerationException if an exception occurs
      */
     private void evaluateContributions(Map<String, List<Contribution>> contributions,
-                                       Map<String, Command> commands,
+                                       Map<String, CompensatableCommand> commands,
                                        GenerationType type) throws GenerationException {
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             String zone = entry.getKey();
@@ -159,7 +160,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @throws GenerationException if an exception occurs
      */
     private void evaluateComponents(List<LogicalComponent<?>> components,
-                                    Map<String, Command> commands,
+                                    Map<String, CompensatableCommand> commands,
                                     GenerationType type) throws GenerationException {
         for (LogicalComponent<?> component : components) {
             String zone = component.getZone();
@@ -243,11 +244,11 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param commands           the list of commands to update with un/provison extension commands
      * @throws GenerationException if an exception occurs
      */
-    private void evaluatePolicies(Map<String, Command> commands,
+    private void evaluatePolicies(Map<String, CompensatableCommand> commands,
                                   Map<String, List<Contribution>> contributions,
-                                  Map<String, List<Command>> deploymentCommands,
+                                  Map<String, List<CompensatableCommand>> deploymentCommands,
                                   GenerationType type) throws GenerationException {
-        for (Map.Entry<String, List<Command>> entry : deploymentCommands.entrySet()) {
+        for (Map.Entry<String, List<CompensatableCommand>> entry : deploymentCommands.entrySet()) {
             String zone = entry.getKey();
             if (zone == null) {
                 // skip local runtime
@@ -275,7 +276,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
     }
 
     private void evaluateWireCommand(WireCommand wireCommand,
-                                     Map<String, Command> commands,
+                                     Map<String, CompensatableCommand> commands,
                                      Map<String, List<Contribution>> contributions,
                                      String zone, GenerationType type) throws GenerationException {
         for (PhysicalOperationDefinition operation : wireCommand.getPhysicalWireDefinition().getOperations()) {
@@ -351,7 +352,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param type     the generation type
      * @return the command
      */
-    private AbstractExtensionsCommand getExtensionsCommand(Map<String, Command> commands, String zone, GenerationType type) {
+    private AbstractExtensionsCommand getExtensionsCommand(Map<String, CompensatableCommand> commands, String zone, GenerationType type) {
         AbstractExtensionsCommand command;
         command = (AbstractExtensionsCommand) commands.get(zone);    // safe cast
         if (command == null) {

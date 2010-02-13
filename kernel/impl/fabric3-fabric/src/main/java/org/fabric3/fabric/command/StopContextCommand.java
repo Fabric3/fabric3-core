@@ -39,7 +39,6 @@ package org.fabric3.fabric.command;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 
 public class StopContextCommand implements CompensatableCommand {
@@ -56,7 +55,7 @@ public class StopContextCommand implements CompensatableCommand {
         return deployable;
     }
 
-    public Command getCompensatingCommand() {
+    public StartContextCommand getCompensatingCommand() {
         return new StartContextCommand(deployable);
     }
 

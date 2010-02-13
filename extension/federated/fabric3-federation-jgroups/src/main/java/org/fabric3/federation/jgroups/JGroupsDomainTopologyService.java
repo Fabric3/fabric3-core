@@ -177,7 +177,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
     }
 
-    public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, long timeout) throws MessageException {
+    public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException {
         byte[] payload = helper.serialize(command);
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
         List<Response> responses = new ArrayList<Response>(addresses.size());
@@ -188,6 +188,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 assert o instanceof byte[] : "Expected byte[] but was " + o;
                 Response response = (Response) helper.deserialize((byte[]) o);
                 responses.add(response);
+                if (failFast) {
+                    break;
+                }
             } catch (TimeoutException e) {
                 RemoteSystemException response = new RemoteSystemException(e);
                 responses.add(response);

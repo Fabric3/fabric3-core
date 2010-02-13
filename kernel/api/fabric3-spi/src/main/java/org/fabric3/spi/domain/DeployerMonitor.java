@@ -62,4 +62,7 @@ public interface DeployerMonitor {
     @Severe
     void deploymentError(String runtimeName, Throwable e);
 
+    @Severe
+    void rollbackError(String message, Throwable e);
+
 }
