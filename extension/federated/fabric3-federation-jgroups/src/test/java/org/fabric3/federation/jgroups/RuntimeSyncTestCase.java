@@ -43,6 +43,7 @@ import org.jgroups.ChannelException;
 
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 
 /**
  * @version $Rev: 8584 $ $Date: 2010-01-16 20:18:48 +0100 (Sat, 16 Jan 2010) $
@@ -54,9 +55,10 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 RuntimeUpdateCommand command = (RuntimeUpdateCommand) EasyMock.getCurrentArguments()[0];
-                DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
-                command.setResponse(deploymentCommand);
-                return null;
+                DeploymentCommand deploymentCommand = new DeploymentCommand("zone", null, null);
+                RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
+                command.setResponse(response);
+                return command;
             }
         });
         executorRegistry.execute(EasyMock.isA(DeploymentCommand.class));
@@ -81,9 +83,10 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 RuntimeUpdateCommand command = (RuntimeUpdateCommand) EasyMock.getCurrentArguments()[0];
-                DeploymentCommand deploymentCommand = new DeploymentCommand(null, null);
-                command.setResponse(deploymentCommand);
-                return null;
+                DeploymentCommand deploymentCommand = new DeploymentCommand("zone", null, null);
+                RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
+                command.setResponse(response);
+                return command;
             }
         });
         executorRegistry.execute(EasyMock.isA(DeploymentCommand.class));

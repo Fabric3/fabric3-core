@@ -56,8 +56,9 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
+import org.fabric3.federation.deployment.command.CommitCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
-import org.fabric3.federation.deployment.command.DeploymentResponse;
+import org.fabric3.federation.deployment.command.RollbackCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
@@ -67,14 +68,14 @@ import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.ErrorResponse;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.Response;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
- * A Deployer that consistently deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain.
+ * A Deployer that deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain using commit/rollback semantics.
  *
  * @version $Rev$ $Date$
  */
@@ -112,46 +113,53 @@ public class FederatedDeployer implements Deployer {
 
         // tracks deployment responses by zone
         Map<String, List<Response>> zoneResponses = new HashMap<String, List<Response>>();
+        List<DeploymentCommand> completed = new ArrayList<DeploymentCommand>();
         for (String zone : currentDeployment.getZones()) {
+            monitor.deploy(zone);
+            DeploymentCommand command;
             try {
-                monitor.deploy(zone);
-                DeploymentCommand command = createCommand(zone, currentDeployment, fullDeployment);
-
-                notifyDeploy(command);
-
-                // send deployments in a fail-fast manner
-                List<Response> responses = topologyService.sendSynchronousToZone(zone, command, true, timeout);
-                if (responses.isEmpty()) {
-                    throw new DeploymentException("Deployment responses not received");
-                }
-                zoneResponses.put(zone, responses);
-                Response last = responses.get(responses.size() - 1);
-
-                String runtimeName = last.getRuntimeName();
-                if (last instanceof RemoteSystemException) {
-                    monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) last).getThrowable());
-                    rollback(zone, currentDeployment, zoneResponses);
-                    notifyRollback(command);
-                    throw new DeploymentException("Deployment errors encountered and logged");
-                } else if (last instanceof DeploymentResponse) {
-                    DeploymentResponse deploymentResponse = (DeploymentResponse) last;
-                    if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
-                        monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
-                        rollback(zone, currentDeployment, zoneResponses);
-                        notifyRollback(command);
-                        throw new DeploymentException("Deployment errors encountered and logged");
-                    }
-                } else {
-                    rollback(zone, currentDeployment, zoneResponses);
-                    notifyRollback(command);
-                    throw new DeploymentException("Unknown response type: " + last);
-                }
-                notifyCompletion(command);
+                command = createCommand(zone, currentDeployment, fullDeployment);
             } catch (IOException e) {
-                throw new DeploymentException(e);
-            } catch (MessageException e) {
+                // rollback previous zones
+                rollback(zone, currentDeployment, completed, zoneResponses);
                 throw new DeploymentException(e);
             }
+            notifyDeploy(command);
+            List<Response> responses;
+            try {
+                // send deployments in a fail-fast manner
+                responses = topologyService.sendSynchronousToZone(zone, command, true, timeout);
+            } catch (MessageException e) {
+                rollback(zone, currentDeployment, completed, zoneResponses);
+                throw new DeploymentException(e);
+            }
+
+            if (responses.isEmpty()) {
+                throw new DeploymentException("Deployment responses not received");
+            }
+            completed.add(command);
+            zoneResponses.put(zone, responses);
+            Response last = responses.get(responses.size() - 1);
+
+            String runtimeName = last.getRuntimeName();
+            if (last instanceof ErrorResponse) {
+                ErrorResponse response = (ErrorResponse) last;
+                monitor.deploymentError(runtimeName, response.getException());
+                rollback(zone, currentDeployment, completed, zoneResponses);
+                throw new DeploymentException("Deployment errors encountered and logged");
+            }
+        }
+        for (DeploymentCommand command : completed) {
+            // send the commit
+            try {
+                String zone = command.getZone();
+                CommitCommand commitCommand = new CommitCommand();
+                topologyService.sendSynchronousToZone(zone, commitCommand, false, timeout);
+            } catch (MessageException e) {
+                // TODO handle heuristic rollback - runtimes should rollback after a wait period
+                throw new DeploymentException(e);
+            }
+            notifyCompletion(command);
         }
     }
 
@@ -160,10 +168,19 @@ public class FederatedDeployer implements Deployer {
         SerializedDeploymentUnit currentSerializedUnit = createSerializedUnit(currentDeploymentUnit);
         DeploymentUnit fullDeploymentUnit = fullDeployment.getDeploymentUnit(zone);
         SerializedDeploymentUnit fullSerializedUnit = createSerializedUnit(fullDeploymentUnit);
-        return new DeploymentCommand(currentSerializedUnit, fullSerializedUnit);
+        return new DeploymentCommand(zone, currentSerializedUnit, fullSerializedUnit);
     }
 
-    private void rollback(String failedZone, Deployment deployment, Map<String, List<Response>> zoneResponses) {
+    private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
+        List<CompensatableCommand> extensionCommands = deploymentUnit.getExtensionCommands();
+        byte[] serializedExtensionCommands = serializationService.serialize((Serializable) extensionCommands);
+        List<CompensatableCommand> commands = deploymentUnit.getCommands();
+        byte[] serializedCommands = serializationService.serialize((Serializable) commands);
+        return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+    }
+
+    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+    private void rollback(String failedZone, Deployment deployment, List<DeploymentCommand> completed, Map<String, List<Response>> zoneResponses) {
         for (Map.Entry<String, List<Response>> entry : zoneResponses.entrySet()) {
             List<Response> responses = entry.getValue();
             String zone = entry.getKey();
@@ -172,19 +189,19 @@ public class FederatedDeployer implements Deployer {
                 try {
                     DeploymentCommand rollback = createRollbackCommand(zone, deployment);
                     if (failedZone.equals(zone) && response == responses.get(responses.size() - 1)) {
-                        // the last runtime in the failed zone will have rolled-back the deployment
-                        break;
+                        // The last runtime in the failed zone will have rolled-back the deployment. Return as the remaining zones never received a
+                        // deployment due to fail-fast behavior
+                        return;
                     }
-                    // send the rollback command
+                    // send the rollback deployment command
                     Response rollbackResponse = topologyService.sendSynchronous(runtimeName, rollback, timeout);
-                    if (rollbackResponse instanceof RemoteSystemException) {
-                        monitor.systemDeploymentError(runtimeName, ((RemoteSystemException) rollbackResponse).getThrowable());
-                    } else if (rollbackResponse instanceof DeploymentResponse) {
-                        DeploymentResponse deploymentResponse = (DeploymentResponse) rollbackResponse;
-                        if (DeploymentResponse.FAILURE == deploymentResponse.getCode()) {
-                            monitor.deploymentError(runtimeName, deploymentResponse.getDeploymentException());
-                        }
+                    if (rollbackResponse instanceof ErrorResponse) {
+                        ErrorResponse errorResponse = (ErrorResponse) rollbackResponse;
+                        monitor.deploymentError(runtimeName, errorResponse.getException());
                     }
+                    // send the rollback notification
+                    RollbackCommand rollbackCommand = new RollbackCommand();
+                    topologyService.sendSynchronous(runtimeName, rollbackCommand, timeout);
                 } catch (MessageException e) {
                     monitor.rollbackError(runtimeName, e);
                 } catch (IOException e) {
@@ -192,6 +209,7 @@ public class FederatedDeployer implements Deployer {
                 }
             }
         }
+        notifyRollback(completed);
 
     }
 
@@ -215,15 +233,15 @@ public class FederatedDeployer implements Deployer {
             }
         }
         SerializedDeploymentUnit serializedUnit = createSerializedUnit(compensatingUnit);
-        return new DeploymentCommand(serializedUnit, serializedUnit);
+        return new DeploymentCommand(zone, serializedUnit, serializedUnit);
     }
 
-    private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
-        List<CompensatableCommand> extensionCommands = deploymentUnit.getExtensionCommands();
-        byte[] serializedExtensionCommands = serializationService.serialize((Serializable) extensionCommands);
-        List<CompensatableCommand> commands = deploymentUnit.getCommands();
-        byte[] serializedCommands = serializationService.serialize((Serializable) commands);
-        return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+    private void notifyRollback(List<DeploymentCommand> completed) {
+        for (DeploymentCommand command : completed) {
+            for (FederatedDeployerListener listener : listeners) {
+                listener.onRollback(command);
+            }
+        }
     }
 
     private void notifyDeploy(DeploymentCommand command) throws DeploymentException {
@@ -238,10 +256,5 @@ public class FederatedDeployer implements Deployer {
         }
     }
 
-    private void notifyRollback(DeploymentCommand command) {
-        for (FederatedDeployerListener listener : listeners) {
-            listener.onRollback(command);
-        }
-    }
 
 }

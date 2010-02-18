@@ -42,14 +42,14 @@ package org.fabric3.spi.federation;
  *
  * @version $Rev$ $Date$
  */
-public class RemoteSystemException implements Response {
+public class RemoteSystemException implements ErrorResponse {
     private static final long serialVersionUID = 3104883810536039817L;
 
-    private Throwable throwable;
+    private Exception exception;
     private String runtimeName;
 
-    public RemoteSystemException(Throwable throwable) {
-        this.throwable = throwable;
+    public RemoteSystemException(Exception exception) {
+        this.exception = exception;
     }
 
     public String getRuntimeName() {
@@ -60,7 +60,7 @@ public class RemoteSystemException implements Response {
         this.runtimeName = runtimeName;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public Exception getException() {
+        return exception;
     }
 }

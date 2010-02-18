@@ -35,39 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.cache;
-
-import org.fabric3.federation.deployment.command.DeploymentCommand;
+package org.fabric3.spi.federation;
 
 /**
- * Caches the current deployment commands.
+ * An response to a synchronous message indicating an error processing the message.
  *
  * @version $Rev$ $Date$
  */
-public interface DeploymentCache {
+public interface ErrorResponse extends Response {
 
     /**
-     * Cache the deployment command. Note the cached command will not be visible from get operations until it is commited.
+     * Returns the exception raised processing the synchronous message.
      *
-     * @param command the deployment command
+     * @return the exception raised.
      */
-    void cache(DeploymentCommand command);
-
-    /**
-     * Commits the current cache command so it is visible from get operations.
-     */
-    public void commit();
-
-    /**
-     * Reverts to the previous cache command.
-     */
-    public void rollback();
-
-    /**
-     * Returns the deployment command or null if one is not cached.
-     *
-     * @return the deployment command or null.
-     */
-    DeploymentCommand get();
+    public Exception getException();
 
 }

@@ -35,44 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.executor;
+package org.fabric3.federation.deployment.executor;
 
-import java.net.URI;
+import org.fabric3.api.annotation.logging.Info;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+/**
+ * @version $Rev$ $Date$
+ */
+public interface CommitRollbackMonitor {
 
-import org.fabric3.fabric.command.StopComponentCommand;
-import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.Component;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+    @Info
+    void commit();
 
-@EagerInit
-public class StopComponentCommandExecutor implements CommandExecutor<StopComponentCommand> {
+    @Info
+    void rollback();
 
-    private final ComponentManager componentManager;
-    private final CommandExecutorRegistry executorRegistry;
-
-    public StopComponentCommandExecutor(@Reference ComponentManager componentManager, @Reference CommandExecutorRegistry executorRegistry) {
-        this.componentManager = componentManager;
-        this.executorRegistry = executorRegistry;
-    }
-
-    @Init
-    public void init() {
-        executorRegistry.register(StopComponentCommand.class, this);
-    }
-
-    public void execute(StopComponentCommand command) throws ExecutionException {
-        URI uri = command.getUri();
-        Component component = componentManager.getComponent(uri);
-        if (component == null) {
-            throw new ExecutionException("Component not found:" + uri);
-        }
-        component.stop();
-    }
 }
-

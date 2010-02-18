@@ -43,13 +43,24 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
  * @version $Rev$ $Date$
  */
 public class DeploymentCacheImpl implements DeploymentCache {
+    private DeploymentCommand prepare;
     private DeploymentCommand command;
 
-    public void cache(DeploymentCommand command) {
+    public synchronized void cache(DeploymentCommand command) {
         this.command = command;
     }
 
-    public DeploymentCommand get() {
+    public synchronized void commit() {
+        command = prepare;
+        prepare = null;
+    }
+
+    public synchronized void rollback() {
+        prepare = null;
+    }
+
+    public synchronized DeploymentCommand get() {
         return command;
     }
+
 }

@@ -57,9 +57,6 @@ public interface DeployerMonitor {
     void deploy(String runtimeName);
 
     @Severe
-    void systemDeploymentError(String runtimeName, Throwable e);
-
-    @Severe
     void deploymentError(String runtimeName, Throwable e);
 
     @Severe

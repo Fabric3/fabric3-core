@@ -51,12 +51,11 @@ import org.fabric3.api.annotation.Monitor;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.Response;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * Resolves contributions in a domain. Resolution is done by first querying a zone leader for the contribution URL. If the current runtime is the zone
- * leader, the controller is queried for the contribution URL.
+ * Resolves contributions in a domain. Resolution is done by first querying a the controller for the contribution URL. If the controller is
+ * unavailable, the zone leader is queried.
  *
  * @version $Rev$ $Date$
  */
@@ -110,15 +109,16 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
         String zoneLeader = topologyService.getZoneLeader();
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
-            Response val;
-            if (!topologyService.isZoneLeader() && zoneLeader != null) {
-                // query the zone leader
-                val = topologyService.sendSynchronous(zoneLeader, command, defaultTimeout);
-            } else {
+            ProvisionResponse response;
+            if (topologyService.isControllerAvailable()) {
                 // query the controller
-                val = topologyService.sendSynchronousToController(command, defaultTimeout);
+                response = (ProvisionResponse) topologyService.sendSynchronousToController(command, defaultTimeout);
+            } else if (!topologyService.isZoneLeader() && zoneLeader != null) {
+                // query the zone leader
+                response = (ProvisionResponse) topologyService.sendSynchronous(zoneLeader, command, defaultTimeout);
+            } else {
+                throw new ResolutionException("Unable to contact controller or peer to resolve contribution: " + contributionUri);
             }
-            ProvisionResponse response = (ProvisionResponse) val;
             URL url = response.getContributionUrl();
             if (secure) {
                 url = new URL(url.toString() + "?username=" + username + "&password=" + password);

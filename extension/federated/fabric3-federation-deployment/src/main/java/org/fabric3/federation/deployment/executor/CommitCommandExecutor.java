@@ -43,27 +43,26 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.deployment.cache.DeploymentCache;
-import org.fabric3.federation.deployment.command.DeploymentCommand;
-import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
-import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
+import org.fabric3.federation.deployment.command.CommitCommand;
+import org.fabric3.federation.deployment.command.CommitCommandResponse;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
+ * Processes a {@link CommitCommand} by instructing the deployment cache to commit.
  *
  * @version $Rev: 7826 $ $Date: 2009-11-14 13:32:05 +0100 (Sat, 14 Nov 2009) $
  */
 @EagerInit
-public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {
+public class CommitCommandExecutor implements CommandExecutor<CommitCommand> {
     private DeploymentCache cache;
     private CommandExecutorRegistry executorRegistry;
-    private RuntimeUpdateMonitor monitor;
+    private CommitRollbackMonitor monitor;
 
-    public RuntimeUpdateCommandExecutor(@Reference DeploymentCache cache,
-                                        @Reference CommandExecutorRegistry executorRegistry,
-                                        @Monitor RuntimeUpdateMonitor monitor) {
+    public CommitCommandExecutor(@Reference DeploymentCache cache,
+                                 @Reference CommandExecutorRegistry executorRegistry,
+                                 @Monitor CommitRollbackMonitor monitor) {
         this.cache = cache;
         this.executorRegistry = executorRegistry;
         this.monitor = monitor;
@@ -71,21 +70,13 @@ public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpda
 
     @Init
     public void init() {
-        executorRegistry.register(RuntimeUpdateCommand.class, this);
+        executorRegistry.register(CommitCommand.class, this);
     }
 
-    public void execute(RuntimeUpdateCommand command) throws ExecutionException {
-        String runtime = command.getRuntimeName();
-        monitor.updateRequest(runtime);
-        // pull from cache
-        DeploymentCommand deploymentCommand = cache.get();
-        RuntimeUpdateResponse response;
-        // if the deployment command is null, this runtime has not been updated
-        if (deploymentCommand != null) {
-            response = new RuntimeUpdateResponse(deploymentCommand);
-        } else {
-            response = new RuntimeUpdateResponse();
-        }
+    public void execute(CommitCommand command) throws ExecutionException {
+        cache.commit();
+        monitor.commit();
+        CommitCommandResponse response = new CommitCommandResponse();
         command.setResponse(response);
     }
 }

@@ -67,7 +67,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
@@ -288,10 +290,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         View view = domainChannel.getView();
         Address address = helper.getZoneLeader(zoneName, view);
         if (address != null && !domainChannel.getAddress().equals(address)) {
-            // check if current runtime is the zone - if not, attempt to retrieve cached deployment from it
+            // check if current runtime is the zone leader - if not, attempt to retrieve cached deployment from it
             try {
-                update(address);
-                return;
+                if (update(address)) {
+                    return;
+                }
             } catch (MessageException e) {
                 monitor.error("Error retrieving deployment from zone leader: " + zoneName, e);
             }
@@ -304,29 +307,36 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             return;
         }
         update(address);
-        monitor.updated();
     }
 
     /**
      * Performs the actual runtime update by querying the given runtime address.
      *
      * @param address the runtime address
+     * @return true if the runtime was updated
      * @throws MessageException if an error is encountered during update
      */
-    private void update(Address address) throws MessageException {
+    private boolean update(Address address) throws MessageException {
         String name = UUID.get(address);
         monitor.updating(name);
         RuntimeUpdateCommand command = new RuntimeUpdateCommand(runtimeName, zoneName, null);
         Response response = send(address, command, defaultTimeout);
-        assert response instanceof Command;
-        Command responseCommand = (Command) response;
+        assert response instanceof RuntimeUpdateResponse;
+        RuntimeUpdateResponse updateResponse = (RuntimeUpdateResponse) response;
+        if (!updateResponse.isUpdated()) {
+            // not updated, wait until a controller becomes available
+            return false;
+        }
         // mark synchronized here to avoid multiple retries in case a deployment error is encountered
         state = UPDATED;
         try {
-            executorRegistry.execute(responseCommand);
+            DeploymentCommand deploymentCommand = updateResponse.getDeploymentCommand();
+            executorRegistry.execute(deploymentCommand);
         } catch (ExecutionException e) {
             throw new MessageException(e);
         }
+        monitor.updated();
+        return true;
     }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
@@ -380,8 +390,9 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             try {
                 // A controller is now available and this runtime has not been synchronized. This can happen when the first member in a zone becomes
                 // available before a controller.
-                update();
-                state = UPDATED;
+                View view = domainChannel.getView();
+                Address controller = helper.getController(view);
+                update(controller);
             } catch (MessageException e) {
                 monitor.error("Error updating the runtime", e);
             }

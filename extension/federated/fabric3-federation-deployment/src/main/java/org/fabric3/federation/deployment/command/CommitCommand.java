@@ -35,39 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.cache;
+package org.fabric3.federation.deployment.command;
 
-import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.federation.Response;
 
 /**
- * Caches the current deployment commands.
+ * Sent by a controller to instruct a runtime to commit changes made by a deployment.
  *
  * @version $Rev$ $Date$
  */
-public interface DeploymentCache {
+public class CommitCommand implements ResponseCommand {
+    private static final long serialVersionUID = -7071792624678064377L;
+    private Response response;
 
-    /**
-     * Cache the deployment command. Note the cached command will not be visible from get operations until it is commited.
-     *
-     * @param command the deployment command
-     */
-    void cache(DeploymentCommand command);
+    public Response getResponse() {
+        return response;
+    }
 
-    /**
-     * Commits the current cache command so it is visible from get operations.
-     */
-    public void commit();
-
-    /**
-     * Reverts to the previous cache command.
-     */
-    public void rollback();
-
-    /**
-     * Returns the deployment command or null if one is not cached.
-     *
-     * @return the deployment command or null.
-     */
-    DeploymentCommand get();
-
+    public void setResponse(Response response) {
+        this.response = response;
+    }
 }

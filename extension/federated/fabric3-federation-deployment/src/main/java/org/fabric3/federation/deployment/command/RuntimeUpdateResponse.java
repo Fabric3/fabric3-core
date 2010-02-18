@@ -37,56 +37,43 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.federation.Response;
 
 /**
- * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
- * deployment. The full deployment contains the complete list of commands required to update a participant runtime to the current zone state. The
- * latter is cached by participants which can be used to bootstrap zone peers without the need to contact the controller.
+ * A response to a {@link RuntimeUpdateCommand}. The response may contain a {@link DeploymentCommand} to be executed by the originating runtime or may
+ * indicate the target runtime is not updated with a current deployment (in which case the deployment command will be null). A controller will always
+ * return a deployment command, while a peer runtime may return a not updated status.
  *
  * @version $Rev$ $Date$
  */
-public class DeploymentCommand implements ResponseCommand, Response {
-    private static final long serialVersionUID = 8673100303949676875L;
-
-    private String zone;
-    private SerializedDeploymentUnit currentDeploymentUnit;
-    private SerializedDeploymentUnit fullDeploymentUnit;
-    private Response response;
+public class RuntimeUpdateResponse implements Response {
+    private static final long serialVersionUID = -4131501898263082374L;
     private String runtimeName;
+    private DeploymentCommand deploymentCommand;
+    private boolean updated;
 
-    public DeploymentCommand(String zone, SerializedDeploymentUnit currentDeploymentUnit, SerializedDeploymentUnit fullDeploymentUnit) {
-        this.zone = zone;
-        this.currentDeploymentUnit = currentDeploymentUnit;
-        this.fullDeploymentUnit = fullDeploymentUnit;
+    public RuntimeUpdateResponse() {
     }
 
-    public String getZone() {
-        return zone;
-    }
-
-    public SerializedDeploymentUnit getCurrentDeploymentUnit() {
-        return currentDeploymentUnit;
-    }
-
-    public SerializedDeploymentUnit getFullDeploymentUnit() {
-        return fullDeploymentUnit;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
-    }
-
-    public Response getResponse() {
-        return response;
+    public RuntimeUpdateResponse(DeploymentCommand deploymentCommand) {
+        this.deploymentCommand = deploymentCommand;
+        updated = true;
     }
 
     public String getRuntimeName() {
         return runtimeName;
     }
 
-    public void setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName;
+    public void setRuntimeName(String name) {
+        runtimeName = name;
     }
+
+    public boolean isUpdated() {
+        return updated;
+    }
+
+    public DeploymentCommand getDeploymentCommand() {
+        return deploymentCommand;
+    }
+
 }

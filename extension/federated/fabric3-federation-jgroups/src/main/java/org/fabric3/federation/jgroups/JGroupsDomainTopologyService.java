@@ -76,6 +76,7 @@ import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.ErrorResponse;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageTimeoutException;
 import org.fabric3.spi.federation.RemoteSystemException;
@@ -188,7 +189,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 assert o instanceof byte[] : "Expected byte[] but was " + o;
                 Response response = (Response) helper.deserialize((byte[]) o);
                 responses.add(response);
-                if (failFast) {
+                if (failFast && response instanceof ErrorResponse) {
+                    // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
                     break;
                 }
             } catch (TimeoutException e) {

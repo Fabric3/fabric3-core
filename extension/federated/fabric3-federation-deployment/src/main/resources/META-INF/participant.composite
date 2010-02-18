@@ -20,12 +20,21 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.DeploymentCommandExecutor"/>
     </component>
 
+    <component name="RuntimeUpdateCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RuntimeUpdateCommandExecutor"/>
+    </component>
+
+    <component name="CommitCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.CommitCommandExecutor"/>
+    </component>
+
+    <component name="RollbackCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RollbackCommandExecutor"/>
+    </component>
+
     <component name="DeploymentCache">
         <f3-impl:implementation.system class="org.fabric3.federation.deployment.cache.DeploymentCacheImpl"/>
     </component>
 
-    <component name="RuntimeUpdateCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RuntimeUpdateCommandExecutor"/>
-    </component>
 
 </composite>

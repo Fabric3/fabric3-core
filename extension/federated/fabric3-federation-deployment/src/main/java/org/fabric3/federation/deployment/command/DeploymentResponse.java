@@ -40,28 +40,14 @@ package org.fabric3.federation.deployment.command;
 import org.fabric3.spi.federation.Response;
 
 /**
- * A response returned to the controller by a runtime after a {@link DeploymentCommand} has been processed indicating success or failure.
+ * A response returned to the controller when a runtime has successfully processed a {@link DeploymentCommand}.
  *
  * @version $Rev$ $Date$
  */
 public class DeploymentResponse implements Response {
     private static final long serialVersionUID = 411382659017602521L;
 
-    public static final int SUCCESS = 1;
-    public static final int FAILURE = -1;
-
     private String runtimeName;
-    private int code;
-    private Exception exception;
-
-    public DeploymentResponse() {
-        this.code = SUCCESS;
-    }
-
-    public DeploymentResponse(Exception exception) {
-        this.code = FAILURE;
-        this.exception = exception;
-    }
 
     public String getRuntimeName() {
         return runtimeName;
@@ -71,11 +57,4 @@ public class DeploymentResponse implements Response {
         this.runtimeName = runtimeName;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public Exception getDeploymentException() {
-        return exception;
-    }
 }

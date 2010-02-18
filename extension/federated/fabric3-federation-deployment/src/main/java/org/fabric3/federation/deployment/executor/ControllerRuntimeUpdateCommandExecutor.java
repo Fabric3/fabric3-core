@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
+import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
@@ -107,8 +108,9 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
             List<CompensatableCommand> commands = unit.getCommands();
             byte[] serializedCommands = serialize((Serializable) commands);
             SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
-            DeploymentCommand deploymentCommand = new DeploymentCommand(serializedUnit, serializedUnit);
-            command.setResponse(deploymentCommand);
+            DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
+            RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
+            command.setResponse(response);
         } catch (DeploymentException e) {
             throw new ExecutionException(e);
         }

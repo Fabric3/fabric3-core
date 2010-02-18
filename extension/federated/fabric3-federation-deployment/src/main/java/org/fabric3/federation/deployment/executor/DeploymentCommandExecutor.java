@@ -48,6 +48,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.federation.deployment.cache.DeploymentCache;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.DeploymentErrorResponse;
 import org.fabric3.federation.deployment.command.DeploymentResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.model.type.component.Scope;
@@ -61,7 +62,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes a {@link DeploymentCommand} on a participant.
+ * Processes a {@link DeploymentCommand} on a participant. If there is an error processing the command, a rollback will be performed.
  *
  * @version $Rev$ $Date$
  */
@@ -129,26 +130,26 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         } catch (IOException e) {
             // no rollback because the commands were never deserialized
             monitor.error(e);
-            DeploymentResponse response = new DeploymentResponse(e);
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
             command.setResponse(response);
             return false;
         } catch (ClassNotFoundException e) {
             // no rollback because the commands were never deserialized
             monitor.error(e);
             rollback(commands, marker);
-            DeploymentResponse response = new DeploymentResponse(e);
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
             command.setResponse(response);
             return false;
         } catch (InstanceLifecycleException e) {
             monitor.error(e);
             rollback(commands, marker);
-            DeploymentResponse response = new DeploymentResponse(e);
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
             command.setResponse(response);
             return false;
         } catch (ExecutionException e) {
             monitor.error(e);
             rollback(commands, marker);
-            DeploymentResponse response = new DeploymentResponse(e);
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
             command.setResponse(response);
             return false;
         }
@@ -156,13 +157,14 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     }
 
     private void cacheDeployment(DeploymentCommand command) {
+        String zone = command.getZone();
         SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
-        DeploymentCommand deploymentCommand = new DeploymentCommand(fullDeploymentUnit, fullDeploymentUnit);
+        DeploymentCommand deploymentCommand = new DeploymentCommand(zone, fullDeploymentUnit, fullDeploymentUnit);
         cache.cache(deploymentCommand);
     }
 
     /**
-     * Rolls back the runtime state after a failed deployment by executing a collection of compensating commands.
+     * Reverts the runtime state after a failed deployment by executing a collection of compensating commands.
      *
      * @param commands the deployment commands that failed
      * @param marker   the deployment command index where the failure occured
