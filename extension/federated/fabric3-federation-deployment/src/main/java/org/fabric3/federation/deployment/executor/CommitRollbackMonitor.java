@@ -44,9 +44,15 @@ import org.fabric3.api.annotation.logging.Info;
  */
 public interface CommitRollbackMonitor {
 
+    /**
+     * Callback when a deployment is committed.
+     */
     @Info
     void commit();
 
+    /**
+     * Callback when a deployment is reverted.
+     */
     @Info
     void rollback();
 

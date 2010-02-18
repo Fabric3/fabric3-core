@@ -92,7 +92,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     }
 
     public void execute(DeploymentCommand command) throws ExecutionException {
-        monitor.receivedUpdate();
+        monitor.received();
         // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
         SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
 

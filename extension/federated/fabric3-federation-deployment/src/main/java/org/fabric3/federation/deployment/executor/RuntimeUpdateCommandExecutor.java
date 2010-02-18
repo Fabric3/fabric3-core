@@ -81,10 +81,12 @@ public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpda
         DeploymentCommand deploymentCommand = cache.get();
         RuntimeUpdateResponse response;
         // if the deployment command is null, this runtime has not been updated
-        if (deploymentCommand != null) {
-            response = new RuntimeUpdateResponse(deploymentCommand);
-        } else {
+        if (deploymentCommand == null) {
+            monitor.notUpdated(runtime);
             response = new RuntimeUpdateResponse();
+        } else {
+            monitor.sendingUpdate(runtime);
+            response = new RuntimeUpdateResponse(deploymentCommand);
         }
         command.setResponse(response);
     }

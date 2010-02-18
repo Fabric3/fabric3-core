@@ -75,7 +75,7 @@ public class RollbackCommandExecutor implements CommandExecutor<RollbackCommand>
 
     public void execute(RollbackCommand command) throws ExecutionException {
         cache.rollback();
-        monitor.commit();
+        monitor.rollback();
         RollbackCommandResponse response = new RollbackCommandResponse();
         command.setResponse(response);
     }

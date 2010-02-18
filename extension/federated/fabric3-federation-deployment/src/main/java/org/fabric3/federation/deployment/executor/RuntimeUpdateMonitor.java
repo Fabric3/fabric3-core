@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.executor;
 
-import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.logging.Fine;
 
 /**
  * @version $Rev$ $Date$
@@ -49,7 +49,13 @@ public interface RuntimeUpdateMonitor {
      *
      * @param id the runtime id.
      */
-    @Info
+    @Fine
     void updateRequest(String id);
+
+    @Fine
+    void sendingUpdate(String id);
+
+    @Fine
+    void notUpdated(String id);
 
 }

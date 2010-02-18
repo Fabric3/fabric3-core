@@ -54,10 +54,16 @@ import org.fabric3.api.annotation.logging.Severe;
 public interface DeployerMonitor {
 
     @Fine
-    void deploy(String runtimeName);
+    void deploy(String zone);
+
+    @Fine
+    void commit(String zone);
+
+    @Fine
+    void rollback(String zone);
 
     @Severe
-    void deploymentError(String runtimeName, Throwable e);
+    void deploymentError(String runtime, Throwable e);
 
     @Severe
     void rollbackError(String message, Throwable e);

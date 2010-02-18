@@ -153,6 +153,7 @@ public class FederatedDeployer implements Deployer {
             // send the commit
             try {
                 String zone = command.getZone();
+                monitor.commit(zone);
                 CommitCommand commitCommand = new CommitCommand();
                 topologyService.sendSynchronousToZone(zone, commitCommand, false, timeout);
             } catch (MessageException e) {
@@ -184,13 +185,14 @@ public class FederatedDeployer implements Deployer {
         for (Map.Entry<String, List<Response>> entry : zoneResponses.entrySet()) {
             List<Response> responses = entry.getValue();
             String zone = entry.getKey();
+            monitor.rollback(zone);
             for (Response response : responses) {
                 String runtimeName = response.getRuntimeName();
                 try {
                     DeploymentCommand rollback = createRollbackCommand(zone, deployment);
                     if (failedZone.equals(zone) && response == responses.get(responses.size() - 1)) {
-                        // The last runtime in the failed zone will have rolled-back the deployment. Return as the remaining zones never received a
-                        // deployment due to fail-fast behavior
+                        // The last runtime in the failed zone is where the error occurred and it will have rolled back the deployment.
+                        // Return as the remaining zones never received a deployment due to this fail-fast behavior.
                         return;
                     }
                     // send the rollback deployment command

@@ -49,8 +49,13 @@ public interface DeploymentCommandExecutorMonitor {
      * Callback when a deployment is received.
      */
     @Info
-    void receivedUpdate();
+    void received();
 
+    /**
+     * Callback when an error is thrown processing a deployment.
+     *
+     * @param e the error
+     */
     @Severe
     void error(Throwable e);
 

@@ -111,6 +111,7 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
             DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
             RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
             command.setResponse(response);
+            monitor.sendingUpdate(runtimeName);
         } catch (DeploymentException e) {
             throw new ExecutionException(e);
         }
