@@ -60,6 +60,7 @@ import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
@@ -99,11 +100,14 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
-        recover();
-        joinDomain();
+
+        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+        eventService.publish(new ExtensionsInitialized());
+
+        recover(eventService);
+        joinDomain(eventService);
 
         // starts the runtime by publishing a start event
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new RuntimeStart());
         state = RuntimeState.STARTED;
     }
@@ -148,9 +152,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     /**
      * Performs local runtime recovery operations, such as controller recovery and transaction recovery.
      *
+     * @param eventService the event service
      * @throws InitializationException if an error performing recovery is encountered
      */
-    private void recover() throws InitializationException {
+    private void recover(EventService eventService) throws InitializationException {
         Domain domain = runtime.getComponent(Domain.class, APPLICATION_DOMAIN_URI);
         if (domain == null) {
             state = RuntimeState.ERROR;
@@ -159,15 +164,15 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         }
         // install user contibutions - they will be deployed when the domain recovers
         installContributions(userContributions);
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new RuntimeRecover());
     }
 
     /**
      * Synchronizes the runtime with the domain
+     *
+     * @param eventService the event service
      */
-    private void joinDomain() {
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+    private void joinDomain(EventService eventService) {
         eventService.publish(new JoinDomain());
         eventService.publish(new DomainRecover());
     }

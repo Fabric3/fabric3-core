@@ -89,8 +89,8 @@ public class FSDomainTracker implements DomainListener {
     public void onInclude(QName included, String plan) {
         // not the most efficient but it avoids poluting the DomainListener interface with a boolean for the persistent nature of a contribution
         Contribution contribution = store.resolveContainingContribution(new QNameSymbol(included));
-        if (!contribution.isPersistent()) {
-            // the contribution is not persistent, avoid recording it
+        if (contribution.getManifest().isExtension()) {
+            // the contribution is an extension, avoid recording it
             return;
         }
         if (plan == null) {

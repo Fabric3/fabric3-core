@@ -52,7 +52,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
@@ -63,7 +62,8 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.host.RuntimeMode;
+import org.fabric3.contribution.scanner.spi.FileSystemResource;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
@@ -74,11 +74,9 @@ import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.contribution.scanner.spi.FileSystemResource;
-import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 import org.fabric3.spi.VoidService;
-import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.Fabric3Event;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
@@ -94,9 +92,6 @@ import org.fabric3.spi.event.RuntimeStart;
  * determined by comparing the current directory state with that of the previous pass. Detected changes and additions are cached for the following
  * interval. Detected changes and additions from the previous interval are then checked using a checksum to see if they have changed again. If so,
  * they remain cached. If they have not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
- * <p/>
- * The scanner also participates in recovery on a controller in a distributed domain and in a single-VM runtime. The scanner listens for a
- * DomainRecover event and initiates a recovery operation against the Domain service for all contributions present in the deployment directory.
  */
 @Service(VoidService.class)
 @EagerInit
@@ -145,7 +140,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     @SuppressWarnings({"unchecked"})
     @Init
     public void init() {
-        eventService.subscribe(DomainRecover.class, this);
+        eventService.subscribe(ExtensionsInitialized.class, this);
         // register to be notified when the runtime starts so the scanner thread can be initialized
         eventService.subscribe(RuntimeStart.class, this);
     }
@@ -156,7 +151,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     }
 
     public void onEvent(Fabric3Event event) {
-        if (event instanceof DomainRecover && hostInfo.getRuntimeMode() == RuntimeMode.CONTROLLER) {
+        if (event instanceof ExtensionsInitialized) {
             // process existing files in recovery mode
             File[] files = path.listFiles();
             recover(files);
@@ -344,13 +339,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
         if (!sources.isEmpty()) {
             try {
-                // install contributions, which will be ordered transitively by import dependencies
+                // Install contributions, which will be ordered transitively by import dependencies
                 List<URI> addedUris = contributionService.contribute(sources);
-                // activate the contributions by including deployables in a synthesized composite. This will ensure components are started according
-                // to dependencies even if a dependent component is defined in a different contribution.
-                if (recover) {
-                    domain.recover(addedUris);
-                } else {
+                // Include the contributions if this is not a recovery operation (recovery will handle inclusion separately)
+                if (!recover) {
                     domain.include(addedUris);
                 }
                 for (URI uri : addedUris) {
