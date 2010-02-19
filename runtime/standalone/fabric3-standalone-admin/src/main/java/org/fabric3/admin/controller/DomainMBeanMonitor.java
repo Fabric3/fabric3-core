@@ -37,12 +37,21 @@
 */
 package org.fabric3.admin.controller;
 
+import javax.xml.namespace.QName;
+
+import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface DomainMBeanMonitor {
+
+    @Info
+    void deploy(QName deployable);
+
+    @Info
+    void undeploy(QName deployable);
 
     @Severe
     void error(String message, Exception e);

@@ -110,6 +110,7 @@ public class LocalDeployer implements Deployer {
      */
     private void rollback(List<CompensatableCommand> commands, int marker) {
         try {
+            monitor.rollback("local");
             ListIterator<CompensatableCommand> iter = commands.listIterator(marker);
             while (iter.hasPrevious()) {
                 CompensatableCommand command = iter.previous();
@@ -120,9 +121,9 @@ public class LocalDeployer implements Deployer {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
         } catch (ExecutionException ex) {
-            monitor.rollbackError("", ex);
+            monitor.rollbackError("local", ex);
         } catch (InstanceLifecycleException ex) {
-            monitor.rollbackError("", ex);
+            monitor.rollbackError("local", ex);
         }
     }
 

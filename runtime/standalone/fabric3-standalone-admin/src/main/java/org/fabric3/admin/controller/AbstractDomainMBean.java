@@ -99,11 +99,13 @@ public abstract class AbstractDomainMBean {
             throw new ContributionNotInstalledManagementException(e.getMessage());
         }
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
+            QName name = deployable.getName();
+            monitor.deploy(name);
             try {
                 if (plan == null) {
-                    domain.include(deployable.getName());
+                    domain.include(name);
                 } else {
-                    domain.include(deployable.getName(), plan);
+                    domain.include(name, plan);
                 }
             } catch (ContributionNotInstalledException e) {
                 throw new ContributionNotInstalledManagementException(e.getMessage());
@@ -132,6 +134,7 @@ public abstract class AbstractDomainMBean {
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
             try {
                 QName name = deployable.getName();
+                monitor.undeploy(name);
                 domain.undeploy(name);
             } catch (DeploymentException e) {
                 reportError(uri, e);
