@@ -58,6 +58,7 @@ import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
@@ -67,6 +68,10 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
@@ -103,13 +108,13 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
         this.systemConfigSource = source;
     }
 
-    protected Composite loadSystemComposite(URI contributionUri,
+    protected Composite loadSystemComposite(Contribution contribution,
                                             ClassLoader bootClassLoader,
                                             ImplementationProcessor<SystemImplementation> processor) throws InitializationException {
         try {
-            Loader loader = BootstrapLoaderFactory.createLoader(processor, getXmlFactory());
-
             // load the system composite
+            Loader loader = BootstrapLoaderFactory.createLoader(processor, getXmlFactory());
+            URI contributionUri = contribution.getUri();
             IntrospectionContext introspectionContext = new DefaultIntrospectionContext(contributionUri, bootClassLoader, scdlLocation);
             Composite composite = loader.load(scdlLocation, Composite.class, introspectionContext);
             if (introspectionContext.hasErrors()) {
@@ -118,7 +123,9 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
                 List<ValidationFailure> warnings = introspectionContext.getWarnings();
                 throw new InvalidCompositeException(name, errors, warnings);
             }
+
             addContributionUri(contributionUri, composite);
+            addResource(contribution, composite);
             return composite;
         } catch (ContributionException e) {
             throw new InitializationException(e);
@@ -183,6 +190,7 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
      * @param composite       the composite
      */
     private void addContributionUri(URI contributionUri, Composite composite) {
+        composite.setContributionUri(contributionUri);
         for (ComponentDefinition<?> definition : composite.getComponents().values()) {
             Implementation<?> implementation = definition.getImplementation();
             if (CompositeImplementation.class.isInstance(implementation)) {
@@ -194,5 +202,21 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
             }
         }
     }
+
+    /**
+     * Adds the composite as a resource to the contribution.
+     *
+     * @param contribution the contribution
+     * @param composite    the composite
+     */
+    private void addResource(Contribution contribution, Composite composite) {
+        Resource resource = new Resource(scdlLocation, Constants.COMPOSITE_CONTENT_TYPE);
+        QName compositeName = composite.getName();
+        QNameSymbol symbol = new QNameSymbol(compositeName);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+        resource.addResourceElement(element);
+        contribution.addResource(resource);
+    }
+
 
 }

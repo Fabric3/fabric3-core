@@ -74,6 +74,14 @@ public interface ContributionHelper {
     List<DeploymentPlan> getDeploymentPlans(Set<Contribution> contributions);
 
     /**
+     * Returns a list of deployment plans contained in the given contribution.
+     *
+     * @param contribution the contribution
+     * @return the deployment plans
+     */
+    List<DeploymentPlan> getDeploymentPlans(Contribution contribution);
+
+    /**
      * Resolves a deployable by name.
      *
      * @param deployable the deployable name

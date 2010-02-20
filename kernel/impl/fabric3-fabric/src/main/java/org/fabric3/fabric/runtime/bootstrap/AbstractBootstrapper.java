@@ -128,6 +128,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
+    private Contribution bootContribution;
 
     protected AbstractBootstrapper() {
         this.xmlFactory = new XMLFactoryImpl();
@@ -193,7 +194,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         try {
 
             // load the system composite
-            Composite composite = loadSystemComposite(BOOT_CONTRIBUTION, bootClassLoader, systemImplementationProcessor);
+            Composite composite = loadSystemComposite(bootContribution, bootClassLoader, systemImplementationProcessor);
 
             // load system configuration
             Document systemConfig = loadSystemConfig();
@@ -217,13 +218,13 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
     /**
      * Loads the composite that supplies core system components to the runtime.
      *
-     * @param contributionUri the synthetic contrbution URI the core components are part of
+     * @param contribution    the boot contribution the core components are part of
      * @param bootClassLoader the classloader core components are loaded in
      * @param processor       the ImplementationProcessor for introspecting component implementations.
      * @return the loaded composite
      * @throws InitializationException if an error occurs loading the composite
      */
-    protected abstract Composite loadSystemComposite(URI contributionUri,
+    protected abstract Composite loadSystemComposite(Contribution contribution,
                                                      ClassLoader bootClassLoader,
                                                      ImplementationProcessor<SystemImplementation> processor) throws InitializationException;
 
@@ -320,7 +321,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
             synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostClassLoader);
             // add default boot exports
             exportedPackages.putAll(BootExports.getExports());
-            synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, bootClassLoader);
+            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, bootClassLoader);
         } catch (ContributionException e) {
             throw new InitializationException(e);
         }
@@ -332,9 +333,10 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
      * @param contributionUri  the contribution URI
      * @param exportedPackages the packages exported by the contribution
      * @param loader           the classloader
+     * @return the synthesized contribution
      * @throws ContributionException if there is an error synthesizing the contribution
      */
-    private void synthesizeContribution(URI contributionUri, Map<String, String> exportedPackages, ClassLoader loader)
+    private Contribution synthesizeContribution(URI contributionUri, Map<String, String> exportedPackages, ClassLoader loader)
             throws ContributionException {
         Contribution contribution = new Contribution(contributionUri);
         contribution.setState(ContributionState.INSTALLED);
@@ -349,6 +351,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         }
         metaDataStore.store(contribution);
         classLoaderRegistry.register(contributionUri, loader);
+        return contribution;
     }
 
 

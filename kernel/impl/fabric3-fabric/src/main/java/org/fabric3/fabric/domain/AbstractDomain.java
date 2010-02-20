@@ -154,30 +154,17 @@ public abstract class AbstractDomain implements Domain {
     }
 
     public synchronized void include(QName deployable, String plan) throws DeploymentException {
-        Composite composite = contributionHelper.resolveComposite(deployable);
-        // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
-        // This wrapper is thrown away during the inclusion.
-        Composite wrapper = new Composite(deployable);
-        Include include = new Include();
-        include.setName(deployable);
-        include.setIncluded(composite);
-        wrapper.add(include);
+        Composite wrapper = createWrapper(deployable);
         DeploymentPlan deploymentPlan = null;
         if (plan == null) {
             if (RuntimeMode.CONTROLLER == info.getRuntimeMode()) {
-                // default to first found deployment plan in a contribution if none specifed for a distributed deployment
+                // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
                 Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(deployable));
-                for (Resource resource : contribution.getResources()) {
-                    for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                        if (element.getValue() instanceof DeploymentPlan) {
-                            deploymentPlan = (DeploymentPlan) element.getValue();
-                            plan = deploymentPlan.getName();
-                            break;
-                        }
-                        if (deploymentPlan != null) {
-                            break;
-                        }
-                    }
+                List<DeploymentPlan> plans = contributionHelper.getDeploymentPlans(contribution);
+                if (!plans.isEmpty()) {
+                    deploymentPlan = plans.get(0);
+                    plan = deploymentPlan.getName();
+
                 }
             }
         } else {
@@ -231,8 +218,7 @@ public abstract class AbstractDomain implements Domain {
 
     public synchronized void activateDefinitions(URI uri, boolean apply) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
-        if (contribution == null || ContributionState.INSTALLED != contribution.getState()) {
-            // a composite may not be associated with a contribution, e.g. a bootstrap composite
+        if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
         Set<AbstractPolicyDefinition> definitions = activateDefinitions(contribution);
@@ -255,8 +241,7 @@ public abstract class AbstractDomain implements Domain {
 
     public synchronized void deactivateDefinitions(URI uri) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
-        if (contribution == null || ContributionState.INSTALLED != contribution.getState()) {
-            // a composite may not be associated with a contribution, e.g. a bootstrap composite
+        if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
         List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -317,6 +302,25 @@ public abstract class AbstractDomain implements Domain {
      * @return true if the domain is enabled for transactional deployment
      */
     protected abstract boolean isTransactional();
+
+    /**
+     * Creates a wrapper used to include a composite at the domain level. The wrapper is thrown away during the inclusion.
+     *
+     * @param deployable the deployable being included
+     * @return the composite wrapper
+     * @throws DeploymentException if there is an error creating the composite wrapper
+     */
+    private Composite createWrapper(QName deployable) throws DeploymentException {
+        Composite composite = contributionHelper.resolveComposite(deployable);
+        // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
+        // This wrapper is thrown away during the inclusion.
+        Composite wrapper = new Composite(deployable);
+        Include include = new Include();
+        include.setName(deployable);
+        include.setIncluded(composite);
+        wrapper.add(include);
+        return wrapper;
+    }
 
     /**
      * Instantiates and optionally deploys all deployables from a set of contributions. Deployment is performed if recovery mode is false or the
@@ -453,8 +457,8 @@ public abstract class AbstractDomain implements Domain {
     /**
      * Includes a composite in the domain composite.
      *
-     * @param composite     the composite to include
-     * @param plan          the deployment plan to use or null
+     * @param composite the composite to include
+     * @param plan      the deployment plan to use or null
      * @throws DeploymentException if a deployment error occurs
      */
     private void include(Composite composite, DeploymentPlan plan) throws DeploymentException {
@@ -469,20 +473,18 @@ public abstract class AbstractDomain implements Domain {
 
         QName name = composite.getName();
         Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(name));
-        if (contribution != null && ContributionState.INSTALLED != contribution.getState()) {
+        if (ContributionState.INSTALLED != contribution.getState()) {
             // a composite may not be associated with a contribution, e.g. a bootstrap composite
             throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
         }
 
         try {
-            if (contribution != null) {
-                // check if the deployable has already been deployed by querying the lock owners
-                if (contribution.getLockOwners().contains(name)) {
-                    throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
-                }
-                // lock the contribution
-                contribution.acquireLock(name);
+            // check if the deployable has already been deployed by querying the lock owners
+            if (contribution.getLockOwners().contains(name)) {
+                throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
             }
+            // lock the contribution
+            contribution.acquireLock(name);
             if (isTransactional()) {
                 domain = CopyUtil.copy(domain);
             }
@@ -496,13 +498,13 @@ public abstract class AbstractDomain implements Domain {
             logicalComponentManager.replaceRootComponent(domain);
         } catch (DeploymentException e) {
             // release the contribution lock if there was an error
-            if (contribution != null && contribution.getLockOwners().contains(name)) {
+            if (contribution.getLockOwners().contains(name)) {
                 contribution.releaseLock(name);
             }
             throw e;
         } catch (PolicyResolutionException e) {
             // release the contribution lock if there was an error
-            if (contribution != null && contribution.getLockOwners().contains(name)) {
+            if (contribution.getLockOwners().contains(name)) {
                 contribution.releaseLock(name);
             }
             throw new DeploymentException(e);

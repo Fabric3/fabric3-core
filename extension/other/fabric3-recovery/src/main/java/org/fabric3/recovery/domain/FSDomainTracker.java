@@ -55,9 +55,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.xml.XMLFactory;
 
@@ -71,15 +68,10 @@ public class FSDomainTracker implements DomainListener {
     private static final String NO_PLAN = "";
     private File domainLog;
     private XMLOutputFactory outputFactory;
-    private MetaDataStore store;
     private FSDomainTrackerMonitor monitor;
     private Map<QName, String> deployables;
 
-    public FSDomainTracker(@Reference XMLFactory factory,
-                           @Reference MetaDataStore store,
-                           @Reference HostInfo info,
-                           @Monitor FSDomainTrackerMonitor monitor) {
-        this.store = store;
+    public FSDomainTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor FSDomainTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
         this.deployables = new HashMap<QName, String>();
@@ -87,12 +79,6 @@ public class FSDomainTracker implements DomainListener {
     }
 
     public void onInclude(QName included, String plan) {
-        // not the most efficient but it avoids poluting the DomainListener interface with a boolean for the persistent nature of a contribution
-        Contribution contribution = store.resolveContainingContribution(new QNameSymbol(included));
-        if (contribution.getManifest().isExtension()) {
-            // the contribution is an extension, avoid recording it
-            return;
-        }
         if (plan == null) {
             plan = NO_PLAN;
         }

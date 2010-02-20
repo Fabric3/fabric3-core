@@ -104,18 +104,14 @@ public class ContributionHelperImpl implements ContributionHelper {
     public List<DeploymentPlan> getDeploymentPlans(Set<Contribution> contributions) {
         List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
         for (Contribution contribution : contributions) {
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> entry : resource.getResourceElements()) {
-                    if (!(entry.getValue() instanceof DeploymentPlan)) {
-                        continue;
-                    }
-                    @SuppressWarnings({"unchecked"})
-                    ResourceElement<QNameSymbol, DeploymentPlan> element = (ResourceElement<QNameSymbol, DeploymentPlan>) entry;
-                    DeploymentPlan plan = element.getValue();
-                    plans.add(plan);
-                }
-            }
+            getDeploymentPlans(contribution, plans);
         }
+        return plans;
+    }
+
+    public List<DeploymentPlan> getDeploymentPlans(Contribution contribution) {
+        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
+        getDeploymentPlans(contribution, plans);
         return plans;
     }
 
@@ -196,5 +192,18 @@ public class ContributionHelperImpl implements ContributionHelper {
         }
     }
 
+    private void getDeploymentPlans(Contribution contribution, List<DeploymentPlan> plans) {
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> entry : resource.getResourceElements()) {
+                if (!(entry.getValue() instanceof DeploymentPlan)) {
+                    continue;
+                }
+                @SuppressWarnings({"unchecked"})
+                ResourceElement<QNameSymbol, DeploymentPlan> element = (ResourceElement<QNameSymbol, DeploymentPlan>) entry;
+                DeploymentPlan plan = element.getValue();
+                plans.add(plan);
+            }
+        }
+    }
 
 }
