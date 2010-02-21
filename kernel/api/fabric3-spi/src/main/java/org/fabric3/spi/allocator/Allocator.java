@@ -37,8 +37,6 @@
 */
 package org.fabric3.spi.allocator;
 
-import java.util.List;
-
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.plan.DeploymentPlan;
 
@@ -53,8 +51,8 @@ public interface Allocator {
      * Performs the allocation. Composites are recursed and their children are allocated.
      *
      * @param component the component to allocate
-     * @param plans     the deployment plans to use for mapping components to domain zones
+     * @param plan      the deployment plan to use for mapping components to domain zones
      * @throws AllocationException if an error during allocation occurs
      */
-    void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans) throws AllocationException;
+    void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException;
 }

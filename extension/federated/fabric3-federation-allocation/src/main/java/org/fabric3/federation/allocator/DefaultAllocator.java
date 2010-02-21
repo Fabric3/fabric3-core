@@ -37,7 +37,6 @@
 */
 package org.fabric3.federation.allocator;
 
-import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -56,15 +55,15 @@ import org.fabric3.spi.plan.DeploymentPlan;
 @EagerInit
 public class DefaultAllocator implements Allocator {
 
-    public void allocate(LogicalComponent<?> component, List<DeploymentPlan> plans) throws AllocationException {
+    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
         if (component.getZone() == null) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
-                    allocate(child, plans);
+                    allocate(child, plan);
                 }
             }
-            selectZone(component, plans);
+            selectZone(component, plan);
         }
     }
 
@@ -72,22 +71,16 @@ public class DefaultAllocator implements Allocator {
      * Maps a component to a zone based on a collection of deployment plans.
      *
      * @param component the component to map
-     * @param plans     the deployment plans to use for mapping
+     * @param plan      the deployment plans to use for mapping
      * @throws AllocationException if an error occurs mapping
      */
-    private void selectZone(LogicalComponent<?> component, List<DeploymentPlan> plans) throws AllocationException {
+    private void selectZone(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
         QName deployable = component.getDeployable();
         if (deployable == null) {
             // programming error
             throw new AssertionError("Deployable not found for " + component.getUri());
         }
-        String zoneName = null;
-        for (DeploymentPlan plan : plans) {
-            zoneName = plan.getDeployableMappings().get(deployable);
-            if (zoneName != null) {
-                break;
-            }
-        }
+        String zoneName = plan.getDeployableMappings().get(deployable);
         if (zoneName == null) {
             throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
         }

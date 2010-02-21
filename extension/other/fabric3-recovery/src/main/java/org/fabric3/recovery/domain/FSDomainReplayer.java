@@ -42,9 +42,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -58,7 +57,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.host.Namespaces;
-import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
@@ -82,7 +80,6 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
     private XMLInputFactory inputFactory;
     private File domainLog;
     private Domain domain;
-    private boolean federated;
 
     public FSDomainReplayer(@Reference(name = "domain") Domain domain,
                             @Reference XMLFactory xmlFactory,
@@ -93,7 +90,6 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         this.eventService = eventService;
         this.monitor = monitor;
         this.inputFactory = xmlFactory.newInputFactoryInstance();
-        this.federated = hostInfo.getRuntimeMode() == RuntimeMode.CONTROLLER;
         domainLog = new File(hostInfo.getDataDir(), "domain.xml");
     }
 
@@ -108,25 +104,8 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         }
 
         try {
-            List<Entry> entries = parse();
-            // replay the deployments
-            List<QName> deployables = new ArrayList<QName>();
-            List<String> plans;
-            if (federated) {
-                // the runtime is running in federated mode, use deployment plans
-                plans = new ArrayList<String>();
-                for (Entry entry : entries) {
-                    deployables.add(entry.getDeployable());
-                    plans.add(entry.getPlanName());
-                }
-            } else {
-                // the runtime is running in single-VM mode, skip deployment plans
-                plans = Collections.emptyList();
-                for (Entry entry : entries) {
-                    deployables.add(entry.getDeployable());
-                }
-            }
-            domain.recover(deployables, plans);
+            Map<QName, String> deployables = parse();
+            domain.recover(deployables);
         } catch (FileNotFoundException e) {
             monitor.error(e);
         } catch (XMLStreamException e) {
@@ -143,11 +122,11 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
      * @throws FileNotFoundException if the journal file does not exist
      * @throws XMLStreamException    if there is an error reading the journal
      */
-    private List<Entry> parse() throws FileNotFoundException, XMLStreamException {
+    private Map<QName, String> parse() throws FileNotFoundException, XMLStreamException {
         FileInputStream fis = new FileInputStream(domainLog);
         BufferedInputStream stream = new BufferedInputStream(fis);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(stream);
-        List<Entry> deployables = new ArrayList<Entry>();
+        Map<QName, String> deployables = new LinkedHashMap<QName, String>();
         try {
             while (true) {
                 switch (reader.next()) {
@@ -171,8 +150,7 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
                         }
                         String plan = reader.getAttributeValue(null, "plan");
                         QName qName = new QName(namespace, name);
-                        Entry entry = new Entry(qName, plan);
-                        deployables.add(entry);
+                        deployables.put(qName, plan);
                     }
                     break;
                 case XMLStreamConstants.END_DOCUMENT:
@@ -190,21 +168,4 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
 
     }
 
-    private class Entry {
-        private QName deployable;
-        private String planName;
-
-        private Entry(QName deployable, String planName) {
-            this.deployable = deployable;
-            this.planName = planName;
-        }
-
-        public QName getDeployable() {
-            return deployable;
-        }
-
-        public String getPlanName() {
-            return planName;
-        }
-    }
 }

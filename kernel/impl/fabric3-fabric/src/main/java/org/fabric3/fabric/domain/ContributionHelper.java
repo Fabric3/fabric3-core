@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Composite;
@@ -57,29 +56,12 @@ import org.fabric3.spi.plan.DeploymentPlan;
 public interface ContributionHelper {
 
     /**
-     * Returns the list of deployable composites contained in the list of contributions that are configured to run in the specified runtime mode.
+     * Returns the list of deployable composites contained in the list of contributions that are configured to run in the current runtime mode.
      *
      * @param contributions the contributions containing the deployables
-     * @param runtimeMode   the runtime mode
      * @return the list of deployables
      */
-    List<Composite> getDeployables(Set<Contribution> contributions, RuntimeMode runtimeMode);
-
-    /**
-     * Returns a list of deployment plans contained in the list of contributions.
-     *
-     * @param contributions the contributions plans
-     * @return the deployment plans
-     */
-    List<DeploymentPlan> getDeploymentPlans(Set<Contribution> contributions);
-
-    /**
-     * Returns a list of deployment plans contained in the given contribution.
-     *
-     * @param contribution the contribution
-     * @return the deployment plans
-     */
-    List<DeploymentPlan> getDeploymentPlans(Contribution contribution);
+    List<Composite> getDeployables(Set<Contribution> contributions);
 
     /**
      * Resolves a deployable by name.
@@ -89,6 +71,26 @@ public interface ContributionHelper {
      * @throws DeploymentException if the deployable cannot be resolved
      */
     Composite resolveComposite(QName deployable) throws DeploymentException;
+
+    /**
+     * Resolves the default plan for a deployable.
+     *
+     * @param deployable the deployable composite
+     * @return the default plan
+     * @throws DeploymentPlanNotFoundException
+     *          if a default plan is not found
+     */
+    DeploymentPlan resolveDefaultPlan(QName deployable) throws DeploymentPlanNotFoundException;
+
+    /**
+     * Resolves the default plan for a contribution.
+     *
+     * @param contribution the contribution
+     * @return the default plan
+     * @throws DeploymentPlanNotFoundException
+     *          if a default plan is not found
+     */
+    DeploymentPlan resolveDefaultPlan(Contribution contribution) throws DeploymentPlanNotFoundException;
 
     /**
      * Resolves a deployment plan by name.

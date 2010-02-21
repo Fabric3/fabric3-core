@@ -221,7 +221,7 @@ public class BootstrapAssemblyFactory {
 
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
-        ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore);
+        ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
 
         return new RuntimeDomain(metaDataStore,
                                  generator,

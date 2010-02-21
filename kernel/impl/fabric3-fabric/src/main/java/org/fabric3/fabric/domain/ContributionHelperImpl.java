@@ -52,6 +52,7 @@ import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.DeployableNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -68,12 +69,14 @@ import org.fabric3.spi.plan.DeploymentPlan;
 public class ContributionHelperImpl implements ContributionHelper {
     private static final String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";
     private MetaDataStore metadataStore;
+    private HostInfo hostInfo;
 
-    public ContributionHelperImpl(@Reference MetaDataStore metadataStore) {
+    public ContributionHelperImpl(@Reference MetaDataStore metadataStore, @Reference HostInfo hostInfo) {
         this.metadataStore = metadataStore;
+        this.hostInfo = hostInfo;
     }
 
-    public List<Composite> getDeployables(Set<Contribution> contributions, RuntimeMode runtimeMode) {
+    public List<Composite> getDeployables(Set<Contribution> contributions) {
         List<Composite> deployables = new ArrayList<Composite>();
         for (Contribution contribution : contributions) {
             for (Resource resource : contribution.getResources()) {
@@ -89,7 +92,7 @@ public class ContributionHelperImpl implements ContributionHelper {
                         if (deployable.getName().equals(name)) {
                             List<RuntimeMode> deployableModes = deployable.getRuntimeModes();
                             // only add deployables that are set to boot in the current runtime mode
-                            if (deployableModes.contains(runtimeMode)) {
+                            if (deployableModes.contains(hostInfo.getRuntimeMode())) {
                                 deployables.add(composite);
                             }
                             break;
@@ -99,20 +102,6 @@ public class ContributionHelperImpl implements ContributionHelper {
             }
         }
         return deployables;
-    }
-
-    public List<DeploymentPlan> getDeploymentPlans(Set<Contribution> contributions) {
-        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
-        for (Contribution contribution : contributions) {
-            getDeploymentPlans(contribution, plans);
-        }
-        return plans;
-    }
-
-    public List<DeploymentPlan> getDeploymentPlans(Contribution contribution) {
-        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
-        getDeploymentPlans(contribution, plans);
-        return plans;
     }
 
     public Composite resolveComposite(QName deployable) throws DeploymentException {
@@ -136,6 +125,23 @@ public class ContributionHelperImpl implements ContributionHelper {
         return (Composite) object;
     }
 
+    public DeploymentPlan resolveDefaultPlan(QName deployable) throws DeploymentPlanNotFoundException {
+        // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
+        Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(deployable));
+        return resolveDefaultPlan(contribution);
+    }
+
+    public DeploymentPlan resolveDefaultPlan(Contribution contribution) throws DeploymentPlanNotFoundException {
+        DeploymentPlan plan;
+        List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
+        getDeploymentPlans(contribution, plans);
+        if (!plans.isEmpty()) {
+            plan = plans.get(0);
+        } else {
+            throw new DeploymentPlanNotFoundException("No deployment plan in contribution: " + contribution.getUri());
+        }
+        return plan;
+    }
 
     public DeploymentPlan resolvePlan(String plan) throws DeploymentException {
         ResourceElement<QNameSymbol, ?> element;

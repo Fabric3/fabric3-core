@@ -39,6 +39,7 @@ package org.fabric3.host.domain;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.Composite;
@@ -53,7 +54,7 @@ public interface Domain {
     /**
      * Include a deployable composite in the domain.
      *
-     * @param deployable    the name of the deployable composite to include
+     * @param deployable the name of the deployable composite to include
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(QName deployable) throws DeploymentException;
@@ -61,8 +62,8 @@ public interface Domain {
     /**
      * Include a deployable composite in the domain using the specified DeploymentPlan.
      *
-     * @param deployable    the name of the deployable composite to include
-     * @param plan          the deploymant plan name
+     * @param deployable the name of the deployable composite to include
+     * @param plan       the deploymant plan name
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(QName deployable, String plan) throws DeploymentException;
@@ -72,7 +73,7 @@ public interface Domain {
      * used. This operation is intended for composites that are synthesized from multiple deployable composites that are associated with individual
      * deployment plans.
      *
-     * @param uris          the contributions to deploy
+     * @param uris the contributions to deploy
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(List<URI> uris) throws DeploymentException;
@@ -88,7 +89,7 @@ public interface Domain {
     /**
      * Remove a deployable Composite from the domain.
      *
-     * @param deployable    the name of the deployable composite to remove
+     * @param deployable the name of the deployable composite to remove
      * @throws DeploymentException if an error is encountered during undeployment
      */
     void undeploy(QName deployable) throws DeploymentException;
@@ -96,8 +97,8 @@ public interface Domain {
     /**
      * Activates a set of definitions contained in the contribution.
      *
-     * @param uri           the contribution URI
-     * @param apply         if policy sets using external attachment should be applied and wires regenerated.
+     * @param uri   the contribution URI
+     * @param apply if policy sets using external attachment should be applied and wires regenerated.
      * @throws DeploymentException if an error is encountered durng activation
      */
     void activateDefinitions(URI uri, boolean apply) throws DeploymentException;
@@ -105,27 +106,17 @@ public interface Domain {
     /**
      * Deactivates a set of definitions contained in the contribution.
      *
-     * @param uri           the contribution URI
+     * @param uri the contribution URI
      * @throws DeploymentException if an error is encountered durng activation
      */
     void deactivateDefinitions(URI uri) throws DeploymentException;
 
     /**
-     * Initiates a recovery operation using the set of deployables and plans.
+     * Initiates a recovery operation using a Map of deployables to plans.
      *
-     * @param deployables the deployable composites to recover
-     * @param plans       the deployment plans associated with the deployable composites. For single-VM operation, the plans can be an empty list
+     * @param deployables a Map containing deployable keys and plan name values
      * @throws DeploymentException if an error is encountered during recovery
      */
-    void recover(List<QName> deployables, List<String> plans) throws DeploymentException;
-
-    /**
-     * Initiates a recovery operation for a set of contributions. All deployables in the contributions will be deployed. When performed against a
-     * distributed domain, default deployment plans will be used.
-     *
-     * @param uris the contribution URIs
-     * @throws DeploymentException if an error is encountered during recovery
-     */
-    void recover(List<URI> uris) throws DeploymentException;
+    void recover(Map<QName, String> deployables) throws DeploymentException;
 
 }
