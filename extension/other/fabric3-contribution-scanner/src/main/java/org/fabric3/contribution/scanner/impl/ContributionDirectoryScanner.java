@@ -110,7 +110,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
 
     private long delay = 2000;
     private ScheduledExecutorService executor;
-    private HostInfo hostInfo;
 
     public ContributionDirectoryScanner(@Reference FileSystemResourceFactoryRegistry registry,
                                         @Reference ContributionService contributionService,
@@ -122,7 +121,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         this.contributionService = contributionService;
         this.domain = domain;
         this.eventService = eventService;
-        this.hostInfo = hostInfo;
         path = new File(hostInfo.getBaseDir(), "deploy");
         this.monitor = monitor;
     }
