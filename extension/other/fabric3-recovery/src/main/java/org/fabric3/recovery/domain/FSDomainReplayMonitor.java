@@ -37,6 +37,8 @@
 */
 package org.fabric3.recovery.domain;
 
+import javax.xml.namespace.QName;
+
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 
@@ -46,7 +48,7 @@ import org.fabric3.api.annotation.logging.Severe;
 public interface FSDomainReplayMonitor {
 
     @Info
-    void status(String message);
+    void deploy(QName deployable);
 
     @Severe
     void error(Throwable e);

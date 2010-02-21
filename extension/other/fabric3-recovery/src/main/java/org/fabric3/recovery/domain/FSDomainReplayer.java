@@ -105,6 +105,9 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
 
         try {
             Map<QName, String> deployables = parse();
+            for (QName name : deployables.keySet()) {
+                monitor.deploy(name);
+            }
             domain.recover(deployables);
         } catch (FileNotFoundException e) {
             monitor.error(e);
