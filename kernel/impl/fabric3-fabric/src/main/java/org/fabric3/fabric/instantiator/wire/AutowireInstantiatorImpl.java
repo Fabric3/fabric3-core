@@ -228,8 +228,19 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             LogicalReference leafReference = logicalReference.getLeafReference();
             LogicalComponent<?> parent = leafReference.getParent();
             LogicalCompositeComponent parentComposite = parent.getParent();
-            LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable, true);
-            parentComposite.addWire(leafReference, wire);
+            // check to see if the wire already exists, in which case do not create a duplicate
+            List<LogicalWire> existingWires = parentComposite.getWires(leafReference);
+            boolean skip = false;
+            for (LogicalWire existingWire : existingWires) {
+                if (target.equals(existingWire.getTarget())) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (!skip) {
+                LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable, true);
+                parentComposite.addWire(leafReference, wire);
+            }
         }
         return true;
     }

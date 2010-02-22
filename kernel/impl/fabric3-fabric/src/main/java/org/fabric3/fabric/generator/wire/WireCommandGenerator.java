@@ -112,7 +112,8 @@ public class WireCommandGenerator implements CommandGenerator {
                 DetachWireCommand detachCommand = new DetachWireCommand();
                 detachCommand.setPhysicalWireDefinition(pwd);
                 command.add(detachCommand);
-            } else if (reinjection || !incremental || wire.getState() == LogicalState.NEW || targetComponent.getState() == LogicalState.NEW) {
+            } else if ((reinjection && targetComponent.getState() == LogicalState.NEW) || !incremental || wire.getState() == LogicalState.NEW
+                    || targetComponent.getState() == LogicalState.NEW) {
                 PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
                 AttachWireCommand attachCommand = new AttachWireCommand();
                 attachCommand.setPhysicalWireDefinition(pwd);
