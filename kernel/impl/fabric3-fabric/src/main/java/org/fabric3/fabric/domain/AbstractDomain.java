@@ -179,8 +179,9 @@ public abstract class AbstractDomain implements Domain {
 
     public synchronized void include(Composite composite) throws DeploymentException {
         instantiateAndDeploy(composite, SYNTHETIC_PLAN);
+        QName name = composite.getName();
         for (DomainListener listener : listeners) {
-            listener.onInclude(composite.getName(), null);
+            listener.onInclude(name, null);
         }
     }
 
@@ -199,10 +200,11 @@ public abstract class AbstractDomain implements Domain {
 
             // notify listeners
             for (Composite deployable : deployables) {
+                QName name = deployable.getName();
                 for (DomainListener listener : listeners) {
                     URI uri = deployable.getContributionUri();
                     DeploymentPlan plan = plans.get(uri);
-                    listener.onInclude(deployable.getName(), plan.getName());
+                    listener.onInclude(name, plan.getName());
                 }
             }
         } else {

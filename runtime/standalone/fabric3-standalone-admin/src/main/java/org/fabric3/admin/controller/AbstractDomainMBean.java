@@ -100,7 +100,6 @@ public abstract class AbstractDomainMBean {
         }
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
             QName name = deployable.getName();
-            monitor.deploy(name);
             try {
                 if (plan == null) {
                     domain.include(name);
@@ -134,7 +133,6 @@ public abstract class AbstractDomainMBean {
         for (Deployable deployable : contribution.getManifest().getDeployables()) {
             try {
                 QName name = deployable.getName();
-                monitor.undeploy(name);
                 domain.undeploy(name);
             } catch (DeploymentException e) {
                 reportError(uri, e);

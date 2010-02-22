@@ -70,7 +70,6 @@ public class TestDeployer {
     public void deploy(MavenRuntime runtime) throws MojoExecutionException {
         try {
             QName qName = new QName(compositeNamespace, compositeName);
-            log.info("Deploying test composite " + qName);
             URL buildDirUrl = getBuildDirectoryUrl();
             runtime.deploy(buildDirUrl, qName);
             runtime.startContext(qName);

@@ -37,18 +37,12 @@
 */
 package org.fabric3.recovery.domain;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface FSDomainReplayMonitor {
-
-    @Info
-    void deploy(QName deployable);
 
     @Severe
     void error(Throwable e);
