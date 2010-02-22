@@ -94,7 +94,7 @@ public abstract class AbstractDomainMBean {
             throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
         try {
-            domain.activateDefinitions(uri, true);
+            domain.activateDefinitions(uri);
         } catch (DeploymentException e) {
             throw new ContributionNotInstalledManagementException(e.getMessage());
         }

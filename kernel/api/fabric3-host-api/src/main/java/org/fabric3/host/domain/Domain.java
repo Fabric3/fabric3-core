@@ -97,11 +97,10 @@ public interface Domain {
     /**
      * Activates a set of definitions contained in the contribution.
      *
-     * @param uri   the contribution URI
-     * @param apply if policy sets using external attachment should be applied and wires regenerated.
+     * @param uri the contribution URI
      * @throws DeploymentException if an error is encountered durng activation
      */
-    void activateDefinitions(URI uri, boolean apply) throws DeploymentException;
+    void activateDefinitions(URI uri) throws DeploymentException;
 
     /**
      * Deactivates a set of definitions contained in the contribution.

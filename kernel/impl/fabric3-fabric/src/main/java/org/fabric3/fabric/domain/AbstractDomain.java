@@ -245,26 +245,23 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void activateDefinitions(URI uri, boolean apply) throws DeploymentException {
+    public synchronized void activateDefinitions(URI uri) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
         Set<AbstractPolicyDefinition> definitions = activateDefinitions(contribution);
-
-        if (apply) {
-            List<PolicySet> policySets = new ArrayList<PolicySet>();
-            for (AbstractPolicyDefinition definition : definitions) {
-                if (definition instanceof PolicySet) {
-                    PolicySet policySet = (PolicySet) definition;
-                    if (policySet.getAttachTo() != null) {
-                        policySets.add(policySet);
-                    }
+        List<PolicySet> policySets = new ArrayList<PolicySet>();
+        for (AbstractPolicyDefinition definition : definitions) {
+            if (definition instanceof PolicySet) {
+                PolicySet policySet = (PolicySet) definition;
+                if (policySet.getAttachTo() != null) {
+                    policySets.add(policySet);
                 }
             }
-            if (!policySets.isEmpty()) {
-                deployPolicySets(policySets);
-            }
+        }
+        if (!policySets.isEmpty()) {
+            deployPolicySets(policySets);
         }
     }
 
