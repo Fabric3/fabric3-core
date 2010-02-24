@@ -57,6 +57,7 @@ import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
 
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -119,6 +120,9 @@ public class Fabric3Listener implements LifecycleListener {
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, props, bootLoader);
+
+            // clear out the tmp directory
+            FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
