@@ -50,7 +50,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.util.io.FileHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * Creates the classpath for a contribution synthesized from a directory. All contained jars will be added to the classpath.

@@ -63,7 +63,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.util.io.FileHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$

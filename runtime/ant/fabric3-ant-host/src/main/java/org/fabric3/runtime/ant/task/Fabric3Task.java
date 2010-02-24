@@ -58,6 +58,7 @@ import org.apache.tools.ant.types.FileSet;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
@@ -168,6 +169,9 @@ public class Fabric3Task extends Task {
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
             MonitorFactory monitorFactory = new AntMonitorFactory(this);
 
+            // clear out the tmp directory
+            FileHelper.cleanDirectory(hostInfo.getTempDir());
+            
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
             runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);

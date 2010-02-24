@@ -49,7 +49,7 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthorizationService;
-import org.fabric3.util.io.IOHelper;
+import org.fabric3.host.util.IOHelper;
 
 /**
  * Used on a controller to return the contents of a contribution associated with the encoded servlet path from the metadata store. The servlet path

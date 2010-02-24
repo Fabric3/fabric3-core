@@ -50,9 +50,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
-import org.fabric3.util.io.FileHelper;
 
 /**
  * @version $Rev$ $Date$

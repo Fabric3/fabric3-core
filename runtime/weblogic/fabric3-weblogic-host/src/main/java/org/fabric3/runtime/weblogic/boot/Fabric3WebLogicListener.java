@@ -52,6 +52,7 @@ import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -150,6 +151,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
+
+            // clear out the tmp directory
+            FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             MonitorFactory monitorFactory = new WebLogicMonitorFactory();
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);

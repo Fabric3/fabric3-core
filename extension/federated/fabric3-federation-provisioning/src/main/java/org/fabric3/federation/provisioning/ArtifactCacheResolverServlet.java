@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthorizationService;
-import org.fabric3.util.io.IOHelper;
+import org.fabric3.host.util.IOHelper;
 
 /**
  * Used on a participant runtime to return the contents of a contribution associated with the encoded servlet path from the local artifact cache. The

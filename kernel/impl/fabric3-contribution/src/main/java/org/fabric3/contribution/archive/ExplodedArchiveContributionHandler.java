@@ -47,6 +47,7 @@ import java.net.URL;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -59,7 +60,6 @@ import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
-import org.fabric3.util.io.FileHelper;
 
 /**
  * Handles exploded archives on a filesystem.

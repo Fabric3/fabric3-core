@@ -45,10 +45,10 @@ import java.util.List;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.util.io.FileHelper;
 
 /**
  * Synthesizes a special contribution from a directory that is configured to extend an extension point derived from the name of the directory. For

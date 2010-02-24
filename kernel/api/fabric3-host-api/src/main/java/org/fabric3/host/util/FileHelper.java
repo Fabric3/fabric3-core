@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.util.io;
+package org.fabric3.host.util;
 
 import java.io.File;
 import java.io.FileFilter;

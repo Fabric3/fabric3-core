@@ -59,7 +59,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.util.io.IOHelper;
+import org.fabric3.host.util.IOHelper;
 
 /**
  * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome

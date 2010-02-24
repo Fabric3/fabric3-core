@@ -66,8 +66,8 @@ import org.apache.maven.project.MavenProject;
 
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.runtime.MaskingClassLoader;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
-import org.fabric3.util.io.FileHelper;
 
 /**
  * Run integration tests on a SCA composite using an embedded Fabric3 runtime.

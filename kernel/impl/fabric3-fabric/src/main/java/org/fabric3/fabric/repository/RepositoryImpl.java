@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.util.io.FileHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * The default implementation of a Repository that persists artifacts to the file system.

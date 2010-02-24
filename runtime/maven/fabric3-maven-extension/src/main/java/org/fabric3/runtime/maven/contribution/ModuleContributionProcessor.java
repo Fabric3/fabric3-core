@@ -63,7 +63,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
-import org.fabric3.util.io.FileHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * Processes a Maven module directory.

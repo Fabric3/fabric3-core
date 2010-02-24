@@ -62,10 +62,11 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 /**
@@ -171,6 +172,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
             if (logConfigFile.exists()) {
                 monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
             }
+
+            // clear out the tmp directory
+            FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             // boot the JMX agent
             String jmxString = props.getProperty(JMX_PORT, "1199");

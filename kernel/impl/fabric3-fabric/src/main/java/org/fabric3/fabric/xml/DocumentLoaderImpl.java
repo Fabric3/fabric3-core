@@ -53,7 +53,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.fabric3.util.io.IOHelper;
+import org.fabric3.host.util.IOHelper;
 
 /**
  * Default implementation that creates a new DocumentBuilder for every invocation.

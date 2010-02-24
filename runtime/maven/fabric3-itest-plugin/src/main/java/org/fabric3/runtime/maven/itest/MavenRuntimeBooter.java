@@ -68,7 +68,7 @@ import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
-import org.fabric3.util.io.FileHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$
