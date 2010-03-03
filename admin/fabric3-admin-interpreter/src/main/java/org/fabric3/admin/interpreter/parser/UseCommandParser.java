@@ -40,6 +40,7 @@ package org.fabric3.admin.interpreter.parser;
 import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
+import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.Settings;
 import org.fabric3.admin.interpreter.command.UseCommand;
@@ -67,11 +68,14 @@ public class UseCommandParser implements CommandParser {
         }
         UseCommand command = new UseCommand(controller);
         String domain = tokens[0];
-        String address = settings.getDomainAddress(domain);
-        if (address == null) {
+        DomainConfiguration configuration = settings.getDomainConfiguration(domain);
+        if (configuration == null) {
             throw new UnknownDomainException("The domain has not been configured: " + domain);
         }
-        command.setDomainAddress(address);
+        command.setDomainAddress(configuration.getAddress());
+        command.setUsername(configuration.getUsername());
+        command.setPassword(configuration.getPassword());
+        command.setProtocolPackages(configuration.getProtocolPackages());
         return command;
     }
 

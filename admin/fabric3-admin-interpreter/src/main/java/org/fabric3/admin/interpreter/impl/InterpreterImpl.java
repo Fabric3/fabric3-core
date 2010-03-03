@@ -43,14 +43,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.fabric3.admin.api.DomainController;
-import org.fabric3.admin.interpreter.parser.ParserFactory;
-import org.fabric3.admin.interpreter.Interpreter;
-import org.fabric3.admin.interpreter.Settings;
-import org.fabric3.admin.interpreter.CommandParser;
-import org.fabric3.admin.interpreter.TransientSettings;
-import org.fabric3.admin.interpreter.InterpreterException;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
+import org.fabric3.admin.interpreter.CommandParser;
+import org.fabric3.admin.interpreter.DomainConfiguration;
+import org.fabric3.admin.interpreter.Interpreter;
+import org.fabric3.admin.interpreter.InterpreterException;
+import org.fabric3.admin.interpreter.Settings;
+import org.fabric3.admin.interpreter.TransientSettings;
+import org.fabric3.admin.interpreter.parser.ParserFactory;
 
 /**
  * Default interpreter implementation. This implementation constructs a parse tree from an instruction as defined by the domain adminsitration
@@ -87,7 +88,7 @@ public class InterpreterImpl implements Interpreter {
         this.controller = controller;
         this.settings = settings;
         parsers = ParserFactory.createParsers(controller, settings);
-        setDefaultAddress();
+        setDefaultConfiguration();
     }
 
     public void processInteractive(InputStream in, PrintStream out) {
@@ -149,10 +150,13 @@ public class InterpreterImpl implements Interpreter {
     /**
      * Sets the default domain address if it is configured.
      */
-    private void setDefaultAddress() {
-        String defaultAddress = settings.getDomainAddress("default");
-        if (defaultAddress != null) {
-            controller.setDomainAddress(defaultAddress);
+    private void setDefaultConfiguration() {
+        DomainConfiguration configuration = settings.getDomainConfiguration("default");
+        if (configuration != null) {
+            controller.setDomainAddress(configuration.getAddress());
+            controller.setUsername(configuration.getUsername());
+            controller.setPassword(configuration.getPassword());
+            controller.setProtocolPackages(configuration.getProtocolPackages());
         }
     }
 

@@ -38,7 +38,7 @@
 package org.fabric3.admin.interpreter;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Encapsulates persistent settings for the admin interpreter.
@@ -48,27 +48,26 @@ import java.util.Map;
 public interface Settings {
 
     /**
-     * Adds a domain and its admin address to the collection of configured domains.
+     * Adds a domain configuration to the collection of configured domains.
      *
-     * @param name    the domain name
-     * @param address the domain admin address
+     * @param configuration the domain configuration
      */
-    void addDomain(String name, String address);
+    void addConfiguration(DomainConfiguration configuration);
 
     /**
-     * Returns the domain admin address.
+     * Returns the domain configuration.
      *
      * @param name the domain name
      * @return the domain admin address
      */
-    String getDomainAddress(String name);
+    DomainConfiguration getDomainConfiguration(String name);
 
     /**
-     * Returns a map of all configured domains and their admin addresses.
+     * Returns a list of all configured domains.
      *
      * @return the map of domains
      */
-    Map<String, String> getDomainAddresses();
+    List<DomainConfiguration> getDomainConfigurations();
 
     /**
      * Loads settings from persistent storage.

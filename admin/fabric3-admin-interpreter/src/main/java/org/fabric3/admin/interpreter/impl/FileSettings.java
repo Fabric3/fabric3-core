@@ -35,18 +35,22 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.cli;
+package org.fabric3.admin.interpreter.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.Settings;
 
 /**
@@ -56,50 +60,70 @@ import org.fabric3.admin.interpreter.Settings;
  */
 public class FileSettings implements Settings {
     private File file;
-    private Properties domains = new Properties();
+    private Map<String, DomainConfiguration> domains = new HashMap<String, DomainConfiguration>();
 
     public FileSettings(File file) {
         this.file = file;
     }
 
-    public void addDomain(String name, String address) {
-        domains.put(name, address);
+    public void addConfiguration(DomainConfiguration configuration) {
+        domains.put(configuration.getName(), configuration);
     }
 
-    public String getDomainAddress(String name) {
-        return (String) domains.get(name);
+    public DomainConfiguration getDomainConfiguration(String name) {
+        return domains.get(name);
     }
 
-    public Map<String, String> getDomainAddresses() {
-        Map<String, String> addresses = new HashMap<String, String>(domains.size());
-        for (Map.Entry<Object, Object> entry : domains.entrySet()) {
-            addresses.put((String) entry.getKey(), (String) entry.getValue());
-        }
-        return addresses;
+    public List<DomainConfiguration> getDomainConfigurations() {
+        return new ArrayList<DomainConfiguration>(domains.values());
     }
 
     public void save() throws IOException {
-        OutputStream stream = null;
-        try {
-            stream = new FileOutputStream(file);
-            domains.store(stream, "F3 domain configuration");
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
+        throw new UnsupportedOperationException();
     }
 
     public void load() throws IOException {
+
         if (!file.exists()) {
             return;
         }
         InputStream stream = null;
+        XMLStreamReader reader = null;
         try {
             domains.clear();
             stream = new FileInputStream(file);
-            domains.load(stream);
+            try {
+                reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+                while (true) {
+                    int val = reader.next();
+                    switch (val) {
+                    case (XMLStreamConstants.START_ELEMENT):
+                        if ("domain".equals(reader.getLocalName())) {
+                            String name = reader.getAttributeValue(null, "name");
+                            String url = reader.getAttributeValue(null, "url");
+                            String username = reader.getAttributeValue(null, "username");
+                            String password = reader.getAttributeValue(null, "password");
+                            String protocolPackages = reader.getAttributeValue(null, "protocolPackages");
+                            DomainConfiguration configuration = new DomainConfiguration(name, url, username, password, protocolPackages);
+                            addConfiguration(configuration);
+                            break;
+                        }
+                        break;
+                    case (XMLStreamConstants.END_DOCUMENT):
+                        return;
+                    }
+                }
+            } catch (XMLStreamException e) {
+                throw new IOException(e);
+            }
         } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (XMLStreamException e) {
+                    e.printStackTrace();
+                }
+            }
             if (stream != null) {
                 stream.close();
             }

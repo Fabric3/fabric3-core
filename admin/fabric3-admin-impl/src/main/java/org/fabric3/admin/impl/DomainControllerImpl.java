@@ -43,6 +43,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import javax.management.JMException;
@@ -51,7 +52,11 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
+import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER;
+import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES;
 import javax.management.remote.JMXServiceURL;
+import static javax.naming.Context.SECURITY_CREDENTIALS;
+import static javax.naming.Context.SECURITY_PRINCIPAL;
 
 import org.fabric3.admin.api.CommunicationException;
 import org.fabric3.admin.api.DomainController;
@@ -74,13 +79,15 @@ import org.fabric3.management.domain.InvalidDeploymentException;
  */
 public class DomainControllerImpl implements DomainController {
     private static final String CONTRIBUTION_SERVICE_MBEAN = "fabric3:SubDomain=runtime, type=component, name=ContibutionServiceMBean";
-    private static final String DOMAIN_MBEAN =  "fabric3:SubDomain=runtime, type=component, name=DistributedDomainMBean";
+    private static final String DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=DistributedDomainMBean";
 
     private static final String RUNTIME_DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeDomainMBean";
 
     private String username;
     private String password;
     private String domainAddress = "service:jmx:rmi:///jndi/rmi://localhost:1199/server";
+    private String protocolPackages;
+
     private JMXConnector jmxc;
 
     public void setDomainAddress(String address) {
@@ -93,6 +100,10 @@ public class DomainControllerImpl implements DomainController {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setProtocolPackages(String protocolPackages) {
+        this.protocolPackages = protocolPackages;
     }
 
     public void store(URL contribution, URI uri) throws CommunicationException, ContributionManagementException {
@@ -365,6 +376,7 @@ public class DomainControllerImpl implements DomainController {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<ComponentInfo> getDeployedComponents(String path) throws CommunicationException {
         try {
             if (!isConnected()) {
@@ -389,7 +401,20 @@ public class DomainControllerImpl implements DomainController {
             throw new IllegalStateException("Already connected");
         }
         JMXServiceURL url = new JMXServiceURL(domainAddress);
-        jmxc = JMXConnectorFactory.connect(url, null);
+        Hashtable<String, Object> env = new Hashtable<String, Object>();
+        if (protocolPackages != null) {
+            env.put(PROTOCOL_PROVIDER_PACKAGES, protocolPackages);
+        }
+        if (username != null) {
+            env.put(SECURITY_PRINCIPAL, username);
+        }
+        if (password != null) {
+            env.put(SECURITY_CREDENTIALS, password);
+        }
+        env.put(PROTOCOL_PROVIDER_CLASS_LOADER, getClass().getClassLoader());
+
+        jmxc = JMXConnectorFactory.newJMXConnector(url, env);
+        jmxc.connect();
     }
 
     public void disconnect() throws IOException {
@@ -403,7 +428,6 @@ public class DomainControllerImpl implements DomainController {
         }
 
     }
-
 
     private int upload(URL contribution, URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

@@ -57,10 +57,12 @@ public class UseTestCase extends TestCase {
     public void testUse() throws Exception {
         DomainController controller = EasyMock.createMock(DomainController.class);
         controller.setDomainAddress(DOMAIN_ADDRESS);
+        controller.setProtocolPackages(null);
         EasyMock.replay(controller);
 
         Settings settings = new TransientSettings();
-        settings.addDomain("MyDomain", DOMAIN_ADDRESS);
+        DomainConfiguration configuration = new DomainConfiguration("MyDomain", DOMAIN_ADDRESS, null, null, null);
+        settings.addConfiguration(configuration);
         Interpreter interpreter = new InterpreterImpl(controller, settings);
 
         InputStream in = new ByteArrayInputStream("use MyDomain \n quit".getBytes());

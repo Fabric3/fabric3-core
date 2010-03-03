@@ -38,7 +38,9 @@
 package org.fabric3.admin.interpreter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,18 +49,18 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class TransientSettings implements Settings {
-    private Map<String, String> domains = new HashMap<String, String>();
+    private Map<String, DomainConfiguration> domains = new HashMap<String, DomainConfiguration>();
 
-    public void addDomain(String name, String address) {
-        domains.put(name, address);
+    public void addConfiguration(DomainConfiguration configuration) {
+        domains.put(configuration.getName(), configuration);
     }
 
-    public String getDomainAddress(String name) {
+    public DomainConfiguration getDomainConfiguration(String name) {
         return domains.get(name);
     }
 
-    public Map<String, String> getDomainAddresses() {
-        return domains;
+    public List<DomainConfiguration> getDomainConfigurations() {
+        return new ArrayList<DomainConfiguration>(domains.values());
     }
 
     public void load() throws IOException {

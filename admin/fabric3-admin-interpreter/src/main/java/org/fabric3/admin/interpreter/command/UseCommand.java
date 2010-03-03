@@ -47,11 +47,12 @@ import org.fabric3.admin.interpreter.CommandException;
  * @version $Rev$ $Date$
  */
 public class UseCommand implements Command {
-    String username;
-    String password;
 
     private DomainController controller;
     private String domainAddress;
+    private String protocolPackages;
+    private String username;
+    private String password;
 
     public UseCommand(DomainController controller) {
         this.controller = controller;
@@ -69,8 +70,20 @@ public class UseCommand implements Command {
         this.domainAddress = domainAddress;
     }
 
+    public void setProtocolPackages(String protocolPackages) {
+        this.protocolPackages = protocolPackages;
+    }
+
     public boolean execute(PrintStream out) throws CommandException {
         controller.setDomainAddress(domainAddress);
+        controller.setProtocolPackages(protocolPackages);
+        if (username != null) {
+            controller.setUsername(username);
+        }
+        if (password != null) {
+            controller.setPassword(password);
+        }
+
         return true;
     }
 

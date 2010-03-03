@@ -27,16 +27,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-admin-api" />
-    <orderEntry type="module-library">
-      <library name="org.antlr:antlr-runtime:3.0.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module-library">
       <library name="org.easymock:easymock:2.2">
         <CLASSES>
@@ -50,9 +40,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-admin-interpreter" />
-    <orderEntry type="module" module-name="fabric3-admin-api" />
-    <orderEntry type="module" module-name="fabric3-admin-impl" />
   </component>
 </module>
 

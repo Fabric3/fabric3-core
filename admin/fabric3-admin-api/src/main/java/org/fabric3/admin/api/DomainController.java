@@ -81,6 +81,13 @@ public interface DomainController {
     void setPassword(String password);
 
     /**
+     * Sets the JMX protocol packages to use to connect to the domain.
+     *
+     * @param packages the JMX protocol packages
+     */
+    void setProtocolPackages(String packages);
+
+    /**
      * Returns true if a connection to the domain controller is open.
      *
      * @return true if a connection to the domain controller is open
