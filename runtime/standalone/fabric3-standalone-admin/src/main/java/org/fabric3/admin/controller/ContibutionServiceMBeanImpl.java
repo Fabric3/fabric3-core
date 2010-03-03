@@ -60,7 +60,6 @@ import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.contribution.ValidationFailure;
-import org.fabric3.transport.jetty.JettyService;
 import org.fabric3.management.contribution.ArtifactErrorInfo;
 import org.fabric3.management.contribution.ContributionInUseManagementException;
 import org.fabric3.management.contribution.ContributionInfo;
@@ -73,6 +72,7 @@ import org.fabric3.management.contribution.ErrorInfo;
 import org.fabric3.management.contribution.InvalidContributionException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.host.ServletHost;
 
 /**
  * @version $Rev$ $Date$
@@ -82,7 +82,7 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
     private static final String REPOSITORY = "/admin/repository";
     private static final String PROFILE = "/admin/profile";
 
-    private JettyService jettyService;
+    private ServletHost servletHost;
     private ContributionService contributionService;
     private MetaDataStore metaDataStore;
     private ContributionServiceMBeanMonitor monitor;
@@ -90,11 +90,11 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
     private String contributionAddress;
     private String profileAddress;
 
-    public ContibutionServiceMBeanImpl(@Reference JettyService jettyService,
+    public ContibutionServiceMBeanImpl(@Reference ServletHost servletHost,
                                        @Reference ContributionService contributionService,
                                        @Reference MetaDataStore metaDataStore,
                                        @Monitor ContributionServiceMBeanMonitor monitor) {
-        this.jettyService = jettyService;
+        this.servletHost = servletHost;
         this.contributionService = contributionService;
         this.metaDataStore = metaDataStore;
         this.monitor = monitor;
@@ -141,8 +141,8 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
         // map a servlet for uploading contributions
         ContributionServlet contributionServlet = new ContributionServlet(contributionService);
         ProfileServlet profileServlet = new ProfileServlet(contributionService);
-        jettyService.registerMapping(REPOSITORY + "/*", contributionServlet);
-        jettyService.registerMapping(PROFILE + "/*", profileServlet);
+        servletHost.registerMapping(REPOSITORY + "/*", contributionServlet);
+        servletHost.registerMapping(PROFILE + "/*", profileServlet);
     }
 
     public String getContributionServiceAddress() {
@@ -288,8 +288,8 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
         } else {
             baseAddress = InetAddress.getByName(hostName).getHostAddress();
         }
-        contributionAddress = "http://" + baseAddress + ":" + jettyService.getHttpPort() + REPOSITORY;
-        profileAddress = "http://" + baseAddress + ":" + jettyService.getHttpPort() + PROFILE;
+        contributionAddress = "http://" + baseAddress + ":" + servletHost.getHttpPort() + REPOSITORY;
+        profileAddress = "http://" + baseAddress + ":" + servletHost.getHttpPort() + PROFILE;
     }
 
     private String getErrorMessage(ContributionException e) {
