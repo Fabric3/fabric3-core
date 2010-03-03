@@ -125,7 +125,7 @@ public class Main {
     }
 
     /**
-     * Returns the location of the settings.properties file by introspecting the location of the current class. It is assumed the settings file is
+     * Returns the location of the settings.xml file by introspecting the location of the current class. It is assumed the settings file is
      * contained in a sibling directory named "config".
      *
      * @return the location of the settings file
@@ -159,7 +159,7 @@ public class Main {
 
         File jarFile = new File(URI.create(jarLocation));
         File configDir = new File(jarFile.getParentFile().getParentFile(), "config");
-        return new File(configDir, "settings.properties");
+        return new File(configDir, "settings.xml");
     }
 
     /**
