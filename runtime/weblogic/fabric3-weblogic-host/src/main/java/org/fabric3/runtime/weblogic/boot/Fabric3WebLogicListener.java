@@ -52,7 +52,6 @@ import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -62,10 +61,11 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RepositoryScanner;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
 
 /**
@@ -75,6 +75,8 @@ import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
  */
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
+    private static final String FABRIC3_MODE = "fabric3.mode";
+
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private ServletContext context;
     private RuntimeCoordinator coordinator;
@@ -212,6 +214,15 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
     private static RuntimeMode getRuntimeMode() {
         // TODO implement by introspecting MBeans
+        String mode = System.getProperty(FABRIC3_MODE);
+        if ("controller".equals(mode)) {
+            return RuntimeMode.CONTROLLER;
+        } else if ("participant".equals(mode)) {
+            return RuntimeMode.PARTICIPANT;
+        } else if (!"vm".equals(mode)) {
+            throw new IllegalArgumentException("Invalid runtime mode: " + mode
+                    + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+        }
         return RuntimeMode.VM;
     }
 

@@ -33,6 +33,8 @@
 		<module>fabric3-weblogic-mock</module>
 		<module>fabric3-weblogic-api</module>
 		<module>fabric3-weblogic-kernel</module>
+		<module>fabric3-weblogic-cluster</module>
+		<module>fabric3-weblogic-federation</module>
 		<module>fabric3-weblogic-host</module>
 		<module>fabric3-runtime-weblogic</module>
 	</modules>

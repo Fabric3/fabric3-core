@@ -31,6 +31,18 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.fabric3.weblogic</groupId>
+            <artifactId>fabric3-weblogic-federation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3.weblogic</groupId>
+            <artifactId>fabric3-weblogic-cluster</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
@@ -187,10 +199,10 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-federation-allocation</artifactId>
+            <artifactId>fabric3-federation-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-sca-intents</artifactId>
