@@ -54,7 +54,6 @@
                 <include>org.codehaus.fabric3:fabric3-contribution</include>
                 <include>org.codehaus.fabric3:fabric3-fabric</include>
                 <include>org.codehaus.fabric3:fabric3-system</include>
-                <include>org.codehaus.fabric3:fabric3-thread-pool</include>
                 <include>jaxen:jaxen</include>
                 <include>org.codehaus.woodstox:wstx-asl</include>
             </includes>
@@ -79,6 +78,7 @@
                 <include>org.codehaus.fabric3.standalone:fabric3-standalone-admin</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-federation</include>
+                <include>org.codehaus.fabric3:fabric3-tx</include>
             </includes>
             <outputDirectory>fabric3/repository</outputDirectory>
         </dependencySet>

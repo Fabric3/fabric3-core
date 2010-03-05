@@ -15,10 +15,8 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3-impl="urn:fabric3.org:implementation"
            xmlns:introspection="urn:maven:org.codehaus.fabric3:fabric3-introspection"
-           name="StandaloneSystemComposite"
+           name="WebLogicSystemComposite"
            autowire="true">
-
-    <include name="ThreadPoolComposite" scdlResource="META-INF/threadPool.composite"/>
 
     <include name="ContributionComposite" scdlResource="META-INF/contribution.composite"/>
 
