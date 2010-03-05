@@ -60,6 +60,7 @@ import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
  * A Deployer that sends DeploymentUnits to the local runtime instance.
@@ -81,7 +82,7 @@ public class LocalDeployer implements Deployer {
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         // ignore extension commands since extensions will already be loaded locally
-        List<CompensatableCommand> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(null).getCommands();
+        List<CompensatableCommand> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(LOCAL_ZONE).getCommands();
         int marker = 0;
         for (Command command : commands) {
             try {

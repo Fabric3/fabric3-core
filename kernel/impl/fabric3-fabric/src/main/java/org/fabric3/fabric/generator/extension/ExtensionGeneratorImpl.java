@@ -164,7 +164,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                                     GenerationType type) throws GenerationException {
         for (LogicalComponent<?> component : components) {
             String zone = component.getZone();
-            if (zone == null) {
+            if (LogicalComponent.LOCAL_ZONE.equals(zone)) {
                 // skip local runtime
                 continue;
             }

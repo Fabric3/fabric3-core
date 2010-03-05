@@ -19,9 +19,9 @@ Copyright (C) 2009 Metaform Systems
            name="WebLogicFederationControllerExtension"
            autowire="true">
 
-    <!--<component name="TestChannel">-->
-        <!--<f3-impl:implementation.system class="org.fabric3.runtime.weblogic.federation.TestChannel"/>-->
-    <!--</component>-->
+    <component name="WebLogicAllocator">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicAllocator"/>
+    </component>
 
     <component name="WebLogicDomainTopologyService">
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicDomainTopologyService"/>

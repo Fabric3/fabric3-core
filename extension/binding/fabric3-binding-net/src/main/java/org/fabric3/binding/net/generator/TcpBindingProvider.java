@@ -103,10 +103,6 @@ public class TcpBindingProvider implements BindingProvider {
         LogicalService target = wire.getTarget().getLeafService();
         LogicalComponent<?> targetComponent = target.getParent();
         String targetZone = targetComponent.getZone();
-        if (targetZone == null) {
-            // programming error
-            throw new AssertionError("Target component not allocated: " + targetComponent.getUri());
-        }
 
         // get the base URL for the target cluster
         String targetBaseUrl = topologyService.getTransportMetaData(targetZone, "binding.net.tcp");
@@ -165,11 +161,6 @@ public class TcpBindingProvider implements BindingProvider {
     private void configureCallback(LogicalReference source, LogicalService target) throws BindingSelectionException {
         LogicalComponent<?> sourceComponent = source.getParent();
         String sourceZone = sourceComponent.getZone();
-        if (sourceZone == null) {
-            // programming error
-            LogicalComponent<?> targetComponent = target.getParent();
-            throw new AssertionError("Source component not allocated: " + targetComponent.getUri());
-        }
 
         // get the base URL for the source cluster
         String sourceBaseUrl = topologyService.getTransportMetaData(sourceZone, "binding.net.tcp");

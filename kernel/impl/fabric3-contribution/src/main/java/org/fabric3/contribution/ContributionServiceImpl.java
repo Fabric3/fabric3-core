@@ -118,7 +118,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    @Reference ContributionLoader contributionLoader,
                                    @Reference ContentTypeResolver contentTypeResolver,
                                    @Reference DependencyService dependencyService,
-                                   @Monitor ContributionServiceMonitor monitor) throws IOException, ClassNotFoundException {
+                                   @Monitor ContributionServiceMonitor monitor) {
         this.processorRegistry = processorRegistry;
         this.metaDataStore = metaDataStore;
         this.contributionLoader = contributionLoader;

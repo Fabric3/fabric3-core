@@ -61,13 +61,15 @@ import org.fabric3.model.type.component.Implementation;
 public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -3520150701040845117L;
 
+    public static final String LOCAL_ZONE = "LocalZone";
+
     private URI uri;
     private ComponentDefinition<I> definition;
     private Map<String, LogicalProperty> properties = new HashMap<String, LogicalProperty>();
     private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
     private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
-    private String zone;
+    private String zone = LOCAL_ZONE;
     private QName deployable;
     private Autowire autowire;
     private LogicalState state = LogicalState.NEW;

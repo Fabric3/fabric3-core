@@ -53,6 +53,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an
@@ -97,10 +98,10 @@ public class BindingSelectorImpl implements BindingSelector {
                 LogicalService targetService = wire.getTarget();
                 if (targetService != null) {
                     LogicalComponent<?> targetComponent = targetService.getParent();
-                    if ((component.getZone() == null && targetComponent.getZone() == null)) {
+                    if ((LOCAL_ZONE.equals(component.getZone()) && LOCAL_ZONE.equals(targetComponent.getZone()))) {
                         // components are local, no need for a binding
                         continue;
-                    } else if (component.getZone() != null && component.getZone().equals(targetComponent.getZone())) {
+                    } else if (!LOCAL_ZONE.equals(component.getZone()) && component.getZone().equals(targetComponent.getZone())) {
                         // components are local, no need for a binding
                         continue;
                     }

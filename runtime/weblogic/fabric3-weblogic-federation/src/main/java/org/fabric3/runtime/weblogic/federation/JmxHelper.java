@@ -54,5 +54,5 @@ public interface JmxHelper {
      * @return the value
      * @throws JMException if an error occurs looking up the value
      */
-    <T> T getJmxAttribute(Class<T> clazz, String name) throws JMException;
+    <T> T getRuntimeJmxAttribute(Class<T> clazz, String name) throws JMException;
 }

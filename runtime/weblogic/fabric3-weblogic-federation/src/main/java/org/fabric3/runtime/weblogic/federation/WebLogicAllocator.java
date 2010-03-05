@@ -35,56 +35,40 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.allocator;
+package org.fabric3.runtime.weblogic.federation;
 
-import javax.xml.namespace.QName;
+import javax.management.JMException;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * Allocator that selectes zones for a collection of components using deployment plan mappings.
+ * Allocator that sets the zone to the current domain name.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class DefaultAllocator implements Allocator {
+public class WebLogicAllocator implements Allocator {
+    private JmxHelper jmxHelper;
+    private String domainName;
 
-    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
-        if (LogicalComponent.LOCAL_ZONE.equals(component.getZone())) {
-            if (component instanceof LogicalCompositeComponent) {
-                LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-                for (LogicalComponent<?> child : composite.getComponents()) {
-                    allocate(child, plan);
-                }
-            }
-            selectZone(component, plan);
-        }
+    public WebLogicAllocator(@Reference JmxHelper jmxHelper) {
+        this.jmxHelper = jmxHelper;
     }
 
-    /**
-     * Maps a component to a zone based on a collection of deployment plans.
-     *
-     * @param component the component to map
-     * @param plan      the deployment plans to use for mapping
-     * @throws AllocationException if an error occurs mapping
-     */
-    private void selectZone(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
-        QName deployable = component.getDeployable();
-        if (deployable == null) {
-            // programming error
-            throw new AssertionError("Deployable not found for " + component.getUri());
-        }
-        String zoneName = plan.getDeployableMappings().get(deployable);
-        if (zoneName == null) {
-            throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
-        }
-        component.setZone(zoneName);
+    @Init
+    public void init() throws JMException {
+        domainName = jmxHelper.getRuntimeJmxAttribute(String.class, "DomainConfiguration/Name");
+    }
+
+    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
+        component.setZone(domainName);
     }
 
 }

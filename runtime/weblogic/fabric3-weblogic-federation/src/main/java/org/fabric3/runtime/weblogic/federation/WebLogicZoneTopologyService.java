@@ -130,7 +130,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
 
     @Init
     public void init() throws JMException {
-        runtimeName = jmxHelper.getJmxAttribute(String.class, "ServerRuntime/Name");
+        runtimeName = jmxHelper.getRuntimeJmxAttribute(String.class, "ServerRuntime/Name");
         eventService.subscribe(JoinDomain.class, new JoinDomainListener());
         runtimeChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
     }

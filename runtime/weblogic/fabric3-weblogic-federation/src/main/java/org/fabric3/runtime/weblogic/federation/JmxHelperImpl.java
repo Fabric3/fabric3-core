@@ -57,7 +57,7 @@ public final class JmxHelperImpl implements JmxHelper {
         this.mbServer = mbServer;
     }
 
-    public <T> T getJmxAttribute(Class<T> clazz, String name) throws JMException {
+    public <T> T getRuntimeJmxAttribute(Class<T> clazz, String name) throws JMException {
         Object current = new ObjectName(RUNTIME_MBEAN);
         for (StringTokenizer st = new StringTokenizer(name, "/"); st.hasMoreTokens();) {
             String token = st.nextToken();
@@ -65,5 +65,4 @@ public final class JmxHelperImpl implements JmxHelper {
         }
         return clazz.cast(current);
     }
-
 }
