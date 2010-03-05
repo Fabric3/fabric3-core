@@ -98,6 +98,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private String runtimeName;
     private String adminServerUrl = "t3://localhost:7001";
     private boolean synchronize = true;
+    private String zoneName;
 
     public WebLogicZoneTopologyService(@Reference EventService eventService,
                                        @Reference SerializationService serializationService,
@@ -131,6 +132,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     @Init
     public void init() throws JMException {
         runtimeName = jmxHelper.getRuntimeJmxAttribute(String.class, "ServerRuntime/Name");
+        zoneName = jmxHelper.getRuntimeJmxAttribute(String.class, "DomainConfiguration/Name");
         eventService.subscribe(JoinDomain.class, new JoinDomainListener());
         runtimeChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
     }
@@ -237,7 +239,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             return true;
         }
         monitor.updating();
-        RuntimeUpdateCommand command = new RuntimeUpdateCommand(runtimeName, "defaultZone", null);
+        RuntimeUpdateCommand command = new RuntimeUpdateCommand(runtimeName, zoneName, null);
         Response response;
         try {
             byte[] payload = serializationService.serialize(command);
