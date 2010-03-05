@@ -49,9 +49,9 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -69,7 +69,8 @@ import org.fabric3.spi.host.ServletHost;
  */
 @Service(interfaces = {ServletHost.class, ServletRequestDispatcher.class})
 @EagerInit
-public class WebLogicServletHost implements ServletHost, ServletRequestDispatcher {
+public class WebLogicServletHost extends HttpServlet implements ServletHost, ServletRequestDispatcher {
+    private static final long serialVersionUID = -3784698338450289318L;
     private MBeanServer mBeanServer;
     private Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
     private int httpPort;
@@ -80,7 +81,7 @@ public class WebLogicServletHost implements ServletHost, ServletRequestDispatche
     }
 
     @Init
-    public void init() throws JMException, ServletHostInitException, MalformedURLException {
+    public void start() throws JMException, ServletHostInitException, MalformedURLException {
         // determine the default HTTP and HTTPS URLs 
         ObjectName serverRuntimeMBean = (ObjectName) mBeanServer.getAttribute(Constants.WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
         String httpUrl = (String) mBeanServer.invoke(serverRuntimeMBean, "getURL", new Object[]{"http"}, new String[]{String.class.getName()});
@@ -119,9 +120,11 @@ public class WebLogicServletHost implements ServletHost, ServletRequestDispatche
         }
     }
 
-    public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {
-        assert req instanceof HttpServletRequest;
-        String path = ((HttpServletRequest) req).getPathInfo();
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getPathInfo();
+        if (path == null) {
+            throw new IllegalStateException("No servlet registered for empty path");
+        }
         Servlet servlet = servlets.get(path);
         if (servlet == null) {
             int i;
