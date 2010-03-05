@@ -92,7 +92,7 @@ public class ContributionServlet extends HttpServlet {
             URI uri = new URI(substr);  // remove the leading "/"
             ContributionSource source = new RemoteContributionSource(uri, req.getInputStream());
             contributionService.store(source);
-            resp.setStatus(201);
+            resp.setStatus(200);
         } catch (URISyntaxException e) {
             monitor.error("Invalid contribution URI:", e);
             resp.setStatus(400);
