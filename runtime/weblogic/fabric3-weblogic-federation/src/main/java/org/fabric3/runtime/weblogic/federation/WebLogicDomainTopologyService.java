@@ -40,7 +40,6 @@ package org.fabric3.runtime.weblogic.federation;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -262,8 +261,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         public void onEvent(JoinDomain event) {
             try {
                 RuntimeChannel controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
-                Hashtable<String, String> env = new Hashtable<String, String>();
-                rootContext = new InitialContext(env);
+                rootContext = new InitialContext();
                 Context controllerContext = JndiHelper.getContext(Constants.CONTROLLER_CONTEXT, rootContext);
                 try {
                     controllerContext.bind(CONTROLLER_CHANNEL, controllerChannel);
