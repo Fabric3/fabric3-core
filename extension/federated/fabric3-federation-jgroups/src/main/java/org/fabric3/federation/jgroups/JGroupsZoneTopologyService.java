@@ -147,8 +147,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
         executorRegistry.register(ControllerAvailableCommand.class, executor);
         domainChannel = new JChannel();
-        String runtimeName = domainName + ":participant:" + zoneName + ":" + runtimeId;
-        domainChannel.setName(runtimeName);
+        domainChannel.setName(getRuntimeName());
         initializeChannel(domainChannel);
 
         Fabric3MessageListener messageListener = new Fabric3MessageListener();
