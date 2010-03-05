@@ -67,6 +67,7 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
+import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
@@ -168,7 +169,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
             coordinator.setConfiguration(configuration);
             coordinator.start();
-
+            context.setAttribute(RUNTIME_ATTRIBUTE, configuration.getRuntime());
             monitor.started(runtimeMode.toString());
         } catch (RuntimeException e) {
             context.log("Error initializing Fabric3", e);
