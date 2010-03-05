@@ -17,7 +17,7 @@
 
     <servlet-mapping>
         <servlet-name>WebLogicDispatchingServlet</servlet-name>
-        <url-pattern>/services</url-pattern>
+        <url-pattern>*</url-pattern>
     </servlet-mapping>
 
 
