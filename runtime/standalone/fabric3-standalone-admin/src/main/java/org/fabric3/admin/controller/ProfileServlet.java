@@ -64,9 +64,11 @@ public class ProfileServlet extends HttpServlet {
     private static final long serialVersionUID = -8286023912719635905L;
 
     private ContributionService contributionService;
+    private ContributionServiceMBeanMonitor monitor;
 
-    public ProfileServlet(ContributionService contributionService) {
+    public ProfileServlet(ContributionService contributionService, ContributionServiceMBeanMonitor monitor) {
         this.contributionService = contributionService;
+        this.monitor = monitor;
     }
 
 
@@ -81,12 +83,18 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path.length() < 2) {
+        if (path == null) {
+            resp.setStatus(400);
+            resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>No path info</description>");
+            return;
+        }
+        int pos = path.lastIndexOf("/");
+        if (pos < 0) {
             resp.setStatus(400);
             resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Invalid path: " + path + " </description>");
             return;
         }
-        String substr = path.substring(1);
+        String substr = path.substring(pos + 1);
         try {
             if (!substr.endsWith(".jar") && !substr.endsWith(".zip")) {
                 resp.setStatus(422);
@@ -101,15 +109,17 @@ public class ProfileServlet extends HttpServlet {
             store(uri, req.getInputStream());
             resp.setStatus(201);
         } catch (URISyntaxException e) {
+            monitor.error("Invalid contribution URI:", e);
             resp.setStatus(400);
             resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Invalid URI: " + substr + "</description>");
-            throw new ServletException("Invalid contribution name", e);
         } catch (DuplicateProfileException e) {
             resp.setStatus(420);
         } catch (IOException e) {
+            monitor.error("Error storing contribution:", e);
             resp.setStatus(422);
             resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Error storing profile</description>");
         } catch (StoreException e) {
+            monitor.error("Error storing contribution:", e);
             resp.setStatus(422);
             resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Error storing profile</description>");
         }

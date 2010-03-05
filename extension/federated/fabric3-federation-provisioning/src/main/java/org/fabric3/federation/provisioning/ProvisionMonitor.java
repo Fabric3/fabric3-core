@@ -54,6 +54,15 @@ public interface ProvisionMonitor {
     @Severe
     void httpsNotEnabled();
 
+    @Severe
+    void errorMessage(String message);
+
+    @Severe
+    void error(String message, Throwable e);
+
+    @Severe
+    void error(String s);
+
     @Warning
     void warnUsername();
 
@@ -68,4 +77,5 @@ public interface ProvisionMonitor {
 
     @Fine
     void resolving(URL url);
+
 }

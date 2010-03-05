@@ -53,10 +53,10 @@ import org.fabric3.spi.security.AuthorizationException;
  */
 public abstract class AbstractResolverServlet extends HttpServlet {
     private static final long serialVersionUID = 6804699201507293087L;
-    private AuthenticationService authenticationService;
-    private AuthorizationService authorizationService;
-    private String role;
-    private ProvisionMonitor monitor;
+    protected AuthenticationService authenticationService;
+    protected AuthorizationService authorizationService;
+    protected String role;
+    protected ProvisionMonitor monitor;
 
 
     protected AbstractResolverServlet(AuthenticationService authenticationService,

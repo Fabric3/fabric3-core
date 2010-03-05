@@ -112,35 +112,10 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
 
     @Init
     public void init() throws Exception {
-//        ServletHandler handler = new ServletHandler();
-//        ServletHolder holder = new ServletHolder(new ContributionServlet());
-//        handler.addServlet(holder);
-//        Constraint constraint = new Constraint();
-//        constraint.setName(Constraint.__BASIC_AUTH);
-//
-//        constraint.setRoles(new String[]{"admin"});
-//        constraint.setAuthenticate(true);
-//
-//        ConstraintMapping cm = new ConstraintMapping();
-//        cm.setConstraint(constraint);
-//        cm.setPathSpec("/*");
-//
-//        SecurityHandler sh = new SecurityHandler();
-//        sh.setUserRealm(new HashUserRealm("MyRealm"));
-//        sh.setConstraintMappings(new ConstraintMapping[]{cm});
-//
-//
-//        HandlerCollection handlers = new HandlerCollection();
-//        handlers.setHandlers(new Handler[]{sh, handler});
-//
-//        jettyService.registerHandler(handlers);
-//        handlers.start();
-
         initAddress();
-
         // map a servlet for uploading contributions
-        ContributionServlet contributionServlet = new ContributionServlet(contributionService);
-        ProfileServlet profileServlet = new ProfileServlet(contributionService);
+        ContributionServlet contributionServlet = new ContributionServlet(contributionService, monitor);
+        ProfileServlet profileServlet = new ProfileServlet(contributionService, monitor);
         servletHost.registerMapping(REPOSITORY + "/*", contributionServlet);
         servletHost.registerMapping(PROFILE + "/*", profileServlet);
     }

@@ -74,7 +74,9 @@
                 <include>org.codehaus.fabric3:fabric3-security-impl</include>
                 <include>org.codehaus.fabric3:fabric3-recovery</include>
                 <include>org.codehaus.fabric3:fabric3-federation-deployment</include>
+                <include>org.codehaus.fabric3:fabric3-federation-provisioning</include>
                 <include>javax.transaction:com.springsource.javax.transaction</include>
+                <include>org.codehaus.fabric3.standalone:fabric3-standalone-admin</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-federation</include>
             </includes>

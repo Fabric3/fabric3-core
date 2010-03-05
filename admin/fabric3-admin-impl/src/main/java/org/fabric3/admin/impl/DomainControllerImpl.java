@@ -121,10 +121,12 @@ public class DomainControllerImpl implements DomainController {
 
             URL url = new URL(address + "/" + uri);
             int code = upload(contribution, url);
-            if (400 == code) {
-                throw new ContributionManagementException("Error storing contribution");
+            if (200 == code) {
+                return;
             } else if (420 == code) {
                 throw new DuplicateContributionManagementException("A contribution already exists for " + uri);
+            } else {
+                throw new ContributionManagementException("Error storing contribution: " + code);
             }
 
         } catch (MBeanException e) {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
    <domains>
-     <!-- example domain configuration:
-       <domain name="wls"
-	  url=""
-	  protocolPackages=""
-	  username=""
-	  password=""/> -->
+      <domain name="wls"
+	          url="service:jmx:iiop://127.0.0.1:7001/jndi/weblogic.management.mbeanservers.runtime"
+              protocolPackages="weblogic.management.remote"
+	          username="jmarino"
+	          password="jmarino1024"/>
+
    </domains>
 </settings>

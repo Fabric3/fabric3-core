@@ -166,7 +166,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     }
 
     public void broadcast(String zoneName, Command command) throws MessageException {
-        List<RuntimeChannel> channels = getChannelsInZone(zoneName);
+        List<RuntimeChannel> channels = getChannels();
         try {
             byte[] payload = serializationService.serialize(command);
             for (RuntimeChannel channel : channels) {
@@ -180,7 +180,10 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     }
 
     public List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException {
-        List<RuntimeChannel> channels = getChannelsInZone(zoneName);
+        List<RuntimeChannel> channels = getChannels();
+        if (channels.isEmpty()) {
+            throw new MessageException("No managed servers found to deploy to");
+        }
         List<Response> responses = new ArrayList<Response>();
         byte[] payload;
         try {
@@ -239,27 +242,17 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         }
     }
 
-    public List<RuntimeChannel> getChannelsInZone(String zoneName) throws MessageException {
+    private List<RuntimeChannel> getChannels() throws MessageException {
         try {
             List<RuntimeChannel> channels = new ArrayList<RuntimeChannel>();
-            NamingEnumeration<Binding> list = participantContext.listBindings(PARTICIPANT_CONTEXT);
+            NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
             while (list.hasMore()) {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                String runtimeName = channel.getRuntimeName();
-
-                int pos = runtimeName.indexOf(":participant");
-                if (pos < 0) {
-                    continue;
-                }
-                if (runtimeName.substring(pos + 12).startsWith(":" + zoneName + ":")) {
-                    channels.add(channel);
-                }
+                channels.add(channel);
             }
             return channels;
         } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
             throw new MessageException(e);
         }
     }

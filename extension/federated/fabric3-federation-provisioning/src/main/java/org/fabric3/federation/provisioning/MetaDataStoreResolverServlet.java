@@ -79,29 +79,38 @@ public class MetaDataStoreResolverServlet extends AbstractResolverServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.length() < 2) {
+        String path = req.getPathInfo();
+        if (path == null) {
+            monitor.errorMessage("Path info was null");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        int pos = path.lastIndexOf("/");
+        if (pos < 0) {
+            monitor.errorMessage("Invalid path info");
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-
         if (secure && !checkAccess(req)) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String info = pathInfo.substring(1);    // path info always begins with '/'
+        String info = path.substring(pos + 1);
+
         try {
             URI uri = new URI(info);
             Contribution contribution = store.find(uri);
             if (contribution == null) {
-                throw new ServletException("Contribution not found: " + info + ". Request URL was: " + info);
+                monitor.errorMessage("Contribution not found: " + info + ". Request URL was: " + info);
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
             }
             URL url = contribution.getLocation();
             IOHelper.copy(url.openStream(), resp.getOutputStream());
         } catch (URISyntaxException e) {
-            throw new ServletException("Invalid URI: " + info, e);
+            monitor.error("Invalid URI", e);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
