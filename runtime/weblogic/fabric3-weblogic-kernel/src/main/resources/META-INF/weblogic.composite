@@ -27,4 +27,8 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.servlet.WebLogicServletHost"/>
     </component>
 
+    <component name="WebLogicTransactionManager">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.tx.WebLogicTransactionManager"/>
+    </component>
+
 </composite>
