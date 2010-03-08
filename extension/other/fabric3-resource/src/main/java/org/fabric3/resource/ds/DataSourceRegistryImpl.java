@@ -37,8 +37,8 @@
 */
 package org.fabric3.resource.ds;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
 import org.fabric3.spi.resource.DataSourceRegistry;
@@ -49,8 +49,7 @@ import org.fabric3.spi.resource.DataSourceRegistry;
  * @version $Rev$ $Date$
  */
 public class DataSourceRegistryImpl implements DataSourceRegistry {
-
-    private Map<String, DataSource> dataSources = new HashMap<String, DataSource>();
+    private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
 
     public DataSource getDataSource(String name) {
         return dataSources.get(name);
