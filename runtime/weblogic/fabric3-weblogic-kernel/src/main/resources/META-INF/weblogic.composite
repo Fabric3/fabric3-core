@@ -31,4 +31,8 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.tx.WebLogicTransactionManager"/>
     </component>
 
+    <component name="DataSourceResolver">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.ds.DataSourceResolver"/>
+    </component>
+
 </composite>
