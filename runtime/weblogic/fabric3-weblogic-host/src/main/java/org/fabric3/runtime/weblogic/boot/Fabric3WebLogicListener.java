@@ -66,8 +66,8 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
+import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
@@ -79,6 +79,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_MODE = "fabric3.mode";
 
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
+    private static final String HIDE_RESOURCES = "fabric3.hidden.resources";
     private ServletContext context;
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
@@ -127,7 +128,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
      * @param installDirectory the directory containing the Fabric3 runtime image
      */
     public void start(RuntimeMode runtimeMode, MBeanServer mBeanServer, File installDirectory) {
-
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             //  calculate config directories based on the mode the runtime is booted in
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
@@ -142,12 +143,18 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
+            // set the context classloader to the host classloader
             ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
             String hiddenPackageString = (String) props.get(HIDE_PACKAGES);
+            String hiddenResourceString = (String) props.get(HIDE_RESOURCES);
             if (hiddenPackageString != null && hiddenPackageString.length() > 0) {
                 // mask hidden JDK and system classpath packages
                 String[] hiddenPackages = hiddenPackageString.split(",");
-                systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages);
+                String[] hiddenResources = null;
+                if (hiddenResourceString != null && hiddenResourceString.length() > 0) {
+                    hiddenResources = hiddenResourceString.split(",");
+                }
+                systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages, hiddenResources);
             }
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
@@ -164,6 +171,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 
+            Thread.currentThread().setContextClassLoader(hostLoader);
+
             // boot the runtime
             coordinator = BootstrapHelper.createCoordinator(bootLoader);
             BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
@@ -175,6 +184,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             context.log("Error initializing Fabric3", e);
         } catch (Exception e) {
             context.log("Error initializing Fabric3", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
