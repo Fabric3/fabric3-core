@@ -60,7 +60,7 @@ public class ProvisionedExtensionTrackerImpl implements ProvisionedExtensionTrac
     public synchronized int decrement(URI uri) {
         Integer count = cache.get(uri);
         if (count == null) {
-            throw new IllegalStateException("Attempt to decrement count below 0");
+            return -1;
         } else if (count == 1) {
             cache.remove(uri);
             return 0;

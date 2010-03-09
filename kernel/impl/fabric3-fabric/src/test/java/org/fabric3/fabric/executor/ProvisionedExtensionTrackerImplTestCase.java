@@ -53,12 +53,7 @@ public class ProvisionedExtensionTrackerImplTestCase extends TestCase {
         tracker.increment(uri);
         assertEquals(1, tracker.decrement(uri));
         assertEquals(0, tracker.decrement(uri));
-        try {
-            tracker.decrement(uri);
-            fail();
-        } catch (IllegalStateException e) {
-            // expected
-        }
+        assertEquals(-1, tracker.decrement(uri));
     }
 
 }

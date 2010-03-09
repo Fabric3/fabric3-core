@@ -124,7 +124,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                                        GenerationType type) throws GenerationException {
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             String zone = entry.getKey();
-            if (zone == null) {
+            if (LogicalComponent.LOCAL_ZONE.equals(zone)) {
                 // skip local runtime
                 continue;
             }

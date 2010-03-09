@@ -57,7 +57,8 @@ public interface ProvisionedExtensionTracker {
      * Decrements and returns the updated in-use count for a provisioned extension.
      *
      * @param uri the extension uri.
-     * @return returns the updated in-use count
+     * @return returns the updated in-use count of -1 if the extension is not cached (e.g.if it is installed as part of the runtime image as opposed
+     *         to provisioned).
      */
     int decrement(URI uri);
 }
