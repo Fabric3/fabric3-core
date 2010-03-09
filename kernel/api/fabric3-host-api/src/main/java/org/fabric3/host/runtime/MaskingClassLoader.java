@@ -37,33 +37,112 @@
 */
 package org.fabric3.host.runtime;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Prevents packages from being loaded by child classloaders. Used to allow a Fabric3 runtime to load alternative versions or implementations of
- * classes visible on the system classlpath, including JDK libraries such as JAXB.
+ * Prevents packages and resources from being loaded by child classloaders. Used to allow a Fabric3 runtime to load alternative versions or
+ * implementations of classes visible on the system classlpath, including JDK libraries such as JAXB.
  *
  * @version $Rev$ $Date$
  */
 public class MaskingClassLoader extends ClassLoader {
-    private final String[] masks;
+    private String[] packageMasks;
+    private String[] resourceMasks;
 
-    public MaskingClassLoader(ClassLoader parent, String... masks) {
+    /**
+     * Constructor that masks one or more Java packages.
+     *
+     * @param parent       the parent classloader
+     * @param packageMasks the packages to mask
+     */
+    public MaskingClassLoader(ClassLoader parent, String... packageMasks) {
         super(parent);
-        this.masks = masks;
+        this.packageMasks = packageMasks;
     }
 
-    public MaskingClassLoader(ClassLoader parent, List<String> masks) {
-        this(parent, masks.toArray(new String[masks.size()]));
+    /**
+     * Constructor that masks one or more Java packages and resources.
+     *
+     * @param parent        the parent classloader
+     * @param packageMasks  the packages to mask
+     * @param resourceMasks the resource pattern to mask. For performance purposes, only a String.contains() will be performed for each mask value.
+     */
+    public MaskingClassLoader(ClassLoader parent, String[] packageMasks, String[] resourceMasks) {
+        this(parent, packageMasks);
+        this.resourceMasks = resourceMasks;
     }
 
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        for (String mask : masks) {
+        for (String mask : packageMasks) {
             if (name.startsWith(mask))
                 throw new ClassNotFoundException(name);
         }
         return super.loadClass(name, resolve);
     }
 
+    @Override
+    public URL getResource(String name) {
+        URL url = super.getResource(name);
+        return filterResource(url);
+    }
+
+    public Enumeration<URL> getResources(String name) throws IOException {
+        Enumeration<URL> enumeration = super.getResources(name);
+        return filterResources(enumeration);
+    }
+
+    @Override
+    protected URL findResource(String name) {
+        URL url = super.findResource(name);
+        return filterResource(url);
+    }
+
+    @Override
+    protected Enumeration<URL> findResources(String name) throws IOException {
+        Enumeration<URL> enumeration = super.findResources(name);
+        return filterResources(enumeration);
+    }
+
+    private URL filterResource(URL url) {
+        if (url == null) {
+            return null;
+        }
+        if (resourceMasks != null) {
+            String str = url.toString();
+            for (String mask : resourceMasks) {
+                if (str.contains(mask)) {
+                    return null;
+                }
+            }
+        }
+        return url;
+    }
+
+    private Enumeration<URL> filterResources(Enumeration<URL> enumeration) {
+        if (resourceMasks == null || enumeration == null) {
+            return enumeration;
+        }
+        List<URL> resources = Collections.list(enumeration);
+        List<URL> maskedResources = new ArrayList<URL>(resources.size());
+        for (URL resource : resources) {
+            String str = resource.toString();
+            boolean toInclude = true;
+            for (String mask : packageMasks) {
+                if (str.contains(mask)) {
+                    toInclude = false;
+                    break;
+                }
+            }
+            if (toInclude) {
+                maskedResources.add(resource);
+            }
+        }
+        return Collections.enumeration(maskedResources);
+    }
 }
