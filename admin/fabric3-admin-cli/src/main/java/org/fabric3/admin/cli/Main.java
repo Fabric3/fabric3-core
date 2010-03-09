@@ -41,7 +41,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -119,7 +118,7 @@ public class Main {
             for (String arg : args) {
                 builder.append(" ").append(arg);
             }
-            Method method = interpreterClass.getMethod("process", String.class, OutputStream.class);
+            Method method = interpreterClass.getMethod("process", String.class, PrintStream.class);
             method.invoke(interpreter, builder.toString(), System.out);
         }
     }
