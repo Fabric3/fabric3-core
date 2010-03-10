@@ -46,6 +46,7 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -198,12 +199,20 @@ public class MetroServlet extends WSServlet {
      * @param path the endpoint path
      */
     public void unregisterService(String path) {
+        if (delegate == null) {
+            // case where the endpoint is undeployed before it has been activated
+            for (Iterator<EndpointConfiguration> it = configurations.iterator(); it.hasNext();) {
+                EndpointConfiguration configuration = it.next();
+                if (configuration.getServicePath().equals(path)){
+                    it.remove();
+                    return;
+                }
+            }
+        }
         ServletAdapter adapter = delegate.unregisterServletAdapter(path);
         if (adapter != null) {
             container.removeEndpoint(adapter);
         }
-        String mexPath = path + MEX_SUFFIX;
-        servletAdapterFactory.createAdapter(mexPath, mexPath, mexEndpoint);
     }
 
     /**

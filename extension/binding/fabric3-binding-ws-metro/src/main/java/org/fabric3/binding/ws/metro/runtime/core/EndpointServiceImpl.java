@@ -99,6 +99,8 @@ public class EndpointServiceImpl implements EndpointService {
     }
 
     public void unregisterService(String path) {
+        servletHost.unregisterMapping(path);
+        servletHost.unregisterMapping(path + "/mex");
         metroServlet.unregisterService(path);
         QName portName = pathToPorts.remove(path);
         registeredPorts.remove(portName);

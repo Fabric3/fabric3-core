@@ -65,6 +65,9 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
             ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
             URI servicePath = endpointDefinition.getServicePath();
             String path = servicePath.toString();
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
             endpointService.unregisterService(path);
         } catch (EndpointException e) {
             throw new WiringException(e);
