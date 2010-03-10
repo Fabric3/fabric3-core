@@ -43,39 +43,45 @@
  */
 package org.fabric3.fabric.generator.component;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import java.net.URI;
+import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.command.BuildComponentCommand;
+import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Creates a command to build a component on a runtime.
+ * Base functionality for (un)build component generators.
  *
  * @version $Rev$ $Date$
  */
-public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
-    private int order;
+public abstract class AbstractBuildComponentCommandGenerator implements CommandGenerator {
+    private GeneratorRegistry generatorRegistry;
 
-    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
-        super(generatorRegistry);
-        this.order = order;
+    public AbstractBuildComponentCommandGenerator(GeneratorRegistry generatorRegistry) {
+        this.generatorRegistry = generatorRegistry;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
-    public BuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
-            PhysicalComponentDefinition definition = generateDefinition(component);
-            return new BuildComponentCommand(definition);
+    @SuppressWarnings("unchecked")
+    protected PhysicalComponentDefinition generateDefinition(LogicalComponent<?> component) throws GenerationException {
+        Implementation<?> implementation = component.getDefinition().getImplementation();
+        Class<? extends Implementation> type = implementation.getClass();
+        ComponentGenerator generator = generatorRegistry.getComponentGenerator(type);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(type);
         }
-        return null;
+        PhysicalComponentDefinition definition = generator.generate(component);
+        URI uri = component.getUri();
+        definition.setComponentUri(uri);
+        definition.setClassLoaderId(component.getDefinition().getContributionUri());
+        QName deployable = component.getDeployable();
+        definition.setDeployable(deployable);
+        return definition;
     }
+
 }

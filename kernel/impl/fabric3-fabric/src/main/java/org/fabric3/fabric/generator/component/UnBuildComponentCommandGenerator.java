@@ -46,7 +46,7 @@ package org.fabric3.fabric.generator.component;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.command.BuildComponentCommand;
+import org.fabric3.fabric.command.UnBuildComponentCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -55,14 +55,14 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Creates a command to build a component on a runtime.
+ * Creates a command to remove a component on a runtime.
  *
  * @version $Rev$ $Date$
  */
-public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
+public class UnBuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
     private int order;
 
-    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+    public UnBuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
         super(generatorRegistry);
         this.order = order;
     }
@@ -71,10 +71,10 @@ public class BuildComponentCommandGenerator extends AbstractBuildComponentComman
         return order;
     }
 
-    public BuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
+    public UnBuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
             PhysicalComponentDefinition definition = generateDefinition(component);
-            return new BuildComponentCommand(definition);
+            return new UnBuildComponentCommand(definition);
         }
         return null;
     }

@@ -99,6 +99,11 @@
         <property name="order">4</property>
     </component>
 
+    <component name="UnBuildComponentCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.UnBuildComponentCommandGenerator"/>
+        <property name="order">5</property>
+    </component>
+
     <component name="StartCompositeContextCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StartContextCommandGeneratorImpl"/>
     </component>
