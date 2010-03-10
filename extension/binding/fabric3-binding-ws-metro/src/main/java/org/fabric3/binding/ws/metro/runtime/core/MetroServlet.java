@@ -208,6 +208,7 @@ public class MetroServlet extends WSServlet {
                     return;
                 }
             }
+            return;
         }
         ServletAdapter adapter = delegate.unregisterServletAdapter(path);
         if (adapter != null) {
