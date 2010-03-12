@@ -133,12 +133,15 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
 
     public void startContext(WorkContext workContext) throws GroupInitializationException {
         QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
+        eagerInitialize(workContext, contextId);
+        // Destroy queues must be updated *after* components have been eagerly initialized since the latter may have dependencies from other
+        // contexts. These other contexts need to be put into the destroy queue ahead of the current initializing context so the dependencies
+        // are destroyed after the eagerly initialized components (the destroy queues are iterated in reverse order). 
         synchronized (destroyQueues) {
             if (!destroyQueues.containsKey(contextId)) {
                 destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
             }
         }
-        eagerInitialize(workContext, contextId);
     }
 
     public void startContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
