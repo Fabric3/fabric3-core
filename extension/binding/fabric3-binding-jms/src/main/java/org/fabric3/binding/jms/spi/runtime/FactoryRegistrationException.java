@@ -34,21 +34,24 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.provision;
+*/
+package org.fabric3.binding.jms.spi.runtime;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Defines message payload types.
+ * Denotes an error registering a connection factory.
  *
  * @version $Rev$ $Date$
  */
-public enum PayloadType {
-    TEXT, OBJECT, STREAM, SHORT, INTEGER, DOUBLE, FLOAT, LONG, CHARACTER, BOOLEAN, BYTE, XML
+public class FactoryRegistrationException extends Fabric3Exception{
+    private static final long serialVersionUID = -9001751422278517341L;
 
+    public FactoryRegistrationException(String message) {
+        super(message);
+    }
+
+    public FactoryRegistrationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

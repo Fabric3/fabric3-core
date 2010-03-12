@@ -41,33 +41,15 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.loader;
+package org.fabric3.binding.jms.spi.common;
 
-import junit.framework.TestCase;
+/**
+ * Defines transaction types.
+ *
+ * @version $Rev$ $Date$
+ */
+public enum TransactionType {
 
-import org.fabric3.binding.jms.spi.common.CreateOption;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
-
-public class JmsLoaderHelperTestCase extends TestCase {
-
-    public void testGetJmsMetadataFromURI() throws Exception {
-        JmsURIMetadata meta = JmsURIMetadata
-                .parseURI("jms:dest?connectionFactoryName=factory&deliveryMode=PERSISTENT");
-        JmsBindingMetadata bindingMetadata = JmsLoaderHelper
-                .getJmsMetadataFromURI(meta);
-        assertEquals("dest", bindingMetadata.getDestination().getName());
-        assertEquals("factory", bindingMetadata.getConnectionFactory()
-                .getName());
-        assertEquals(CreateOption.NEVER, bindingMetadata.getDestination()
-                .getCreate());
-
-        meta = JmsURIMetadata.parseURI("jms:dest?deliveryMode=PERSISTENT");
-        bindingMetadata = JmsLoaderHelper.getJmsMetadataFromURI(meta);
-        assertEquals("connectionFactory", bindingMetadata
-                .getConnectionFactory().getName());
-        assertEquals("clientQueue", bindingMetadata
-                .getResponseDestination().getName());
-    }
+    GLOBAL, NONE, SESSION
 
 }

@@ -41,14 +41,14 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.provision;
 
 /**
- * The destination type.
+ * Defines message payload types.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public enum DestinationType {
+public enum PayloadType {
+    TEXT, OBJECT, STREAM, SHORT, INTEGER, DOUBLE, FLOAT, LONG, CHARACTER, BOOLEAN, BYTE, XML
 
-    QUEUE, TOPIC
 }

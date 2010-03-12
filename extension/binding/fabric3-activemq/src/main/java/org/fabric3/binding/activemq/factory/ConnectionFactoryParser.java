@@ -55,8 +55,8 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.activemq.ActiveMQConstants;
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.factory.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
  * Parses ConnectionFactoryConfiguration entries in the runtime system configuration, instantiates connection factories for them, and registers the

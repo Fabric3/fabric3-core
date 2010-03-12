@@ -61,7 +61,7 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.binding.jms.common.TransactionType;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.runtime.JmsConstants;
 import static org.fabric3.binding.jms.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.JmsConstants.CACHE_NONE;
@@ -74,7 +74,7 @@ import org.fabric3.host.work.WorkScheduler;
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
  * on different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
  * <p/>
- * Note this implmentation supports dispatching messages as port of a JTA transaction or non-transactionally.
+ * Note this implmentation supports dispatching messages as part of a JTA transaction or non-transactionally.
  *
  * @version $Rev$ $Date$
  */

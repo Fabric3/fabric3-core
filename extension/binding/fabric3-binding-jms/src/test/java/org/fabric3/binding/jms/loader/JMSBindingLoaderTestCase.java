@@ -58,9 +58,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 
-import org.fabric3.binding.jms.common.HeadersDefinition;
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.OperationPropertiesDefinition;
+import org.fabric3.binding.jms.spi.common.HeadersDefinition;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.model.type.PolicyAware;
 import org.fabric3.model.type.component.Target;

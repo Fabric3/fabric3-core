@@ -41,12 +41,12 @@ import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by
- * ConnectionFactoryDefinition or DestinationDefinition.
+ * {@link ConnectionFactoryDefinition} or {@link DestinationDefinition}.
  *
  * @version $Rev$ $Date$
  */
@@ -60,7 +60,7 @@ public interface AdministeredObjectResolver {
      * @return the connection factory.
      * @throws JmsLookupException if there is an error during resolution
      */
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException;
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException;
 
     /**
      * Resolves a destination.

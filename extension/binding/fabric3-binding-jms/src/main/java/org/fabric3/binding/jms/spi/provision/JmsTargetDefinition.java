@@ -41,23 +41,23 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.provision;
+package org.fabric3.binding.jms.spi.provision;
 
 import java.net.URI;
 import java.util.Map;
 
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.TransactionType;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generated metadata used for attaching a service endpoint to a JMS destination.
  *
  * @version $Revision$ $Date$
  */
-public class JmsSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = -4274093421849649471L;
+public class JmsTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = -151189038434425132L;
     private JmsBindingMetadata metadata;
     private TransactionType transactionType;
     private Map<String, PayloadType> payloadTypes;
@@ -66,11 +66,11 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * Constructor.
      *
      * @param uri             the service URI
-     * @param metadata        metadata used to create a JMS message consumer.
+     * @param metadata        metadata used to create a JMS message producer.
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
      */
-    public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata, Map<String, PayloadType> payloadTypes, TransactionType transactionType) {
+    public JmsTargetDefinition(URI uri, JmsBindingMetadata metadata, Map<String, PayloadType> payloadTypes, TransactionType transactionType) {
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
@@ -81,23 +81,22 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * Constructor that defines an alternative set of supported data types.
      *
      * @param uri             the service URI
-     * @param metadata        metadataused to create a JMS message consumer.
+     * @param metadata        metadata used to create a JMS message producer.
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
-    public JmsSourceDefinition(URI uri,
+    public JmsTargetDefinition(URI uri,
                                JmsBindingMetadata metadata,
                                Map<String, PayloadType> payloadTypes,
                                TransactionType transactionType,
                                DataType<?>... types) {
         super(types);
-        setUri(uri);
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
+        setUri(uri);
     }
-
 
     public JmsBindingMetadata getMetadata() {
         return metadata;

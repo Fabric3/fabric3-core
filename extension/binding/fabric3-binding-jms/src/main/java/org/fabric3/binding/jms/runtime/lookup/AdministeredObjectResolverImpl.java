@@ -45,9 +45,9 @@ import javax.jms.Destination;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.common.CreateOption;
-import org.fabric3.binding.jms.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CreateOption;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 
 /**
  * Default implementation of AdministeredObjectResolver.

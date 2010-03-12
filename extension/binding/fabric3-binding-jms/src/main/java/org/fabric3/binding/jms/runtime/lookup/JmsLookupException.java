@@ -37,14 +37,14 @@
 */
 package org.fabric3.binding.jms.runtime.lookup;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.builder.WiringException;
 
 /**
  * Denotes an error looking up a connection factory or destination.
  *
  * @version $Rev$ $Date$
  */
-public class JmsLookupException extends Fabric3Exception {
+public class JmsLookupException extends WiringException {
     private static final long serialVersionUID = -2022498980450562546L;
 
     public JmsLookupException(String message) {

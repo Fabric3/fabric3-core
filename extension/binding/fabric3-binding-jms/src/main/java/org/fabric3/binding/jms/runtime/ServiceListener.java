@@ -59,9 +59,9 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-import org.fabric3.binding.jms.common.CorrelationScheme;
-import org.fabric3.binding.jms.common.TransactionType;
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.runtime.helper.MessageHelper;
 import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.CallFrame;

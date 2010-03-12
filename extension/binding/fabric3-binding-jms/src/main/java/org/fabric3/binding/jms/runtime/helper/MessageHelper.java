@@ -50,7 +50,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
  * Utility class for message processing.

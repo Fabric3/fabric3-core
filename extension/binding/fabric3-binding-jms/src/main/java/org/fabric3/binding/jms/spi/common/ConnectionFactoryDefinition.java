@@ -41,10 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
 
 /**
- * Represents a connection factory configuration.
+ * A connection factory configuration.
  *
  * @version $Revision$ $Date$
  */

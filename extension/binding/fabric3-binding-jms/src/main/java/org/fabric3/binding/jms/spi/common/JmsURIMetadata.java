@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -85,8 +85,7 @@ public class JmsURIMetadata {
      */
     public static JmsURIMetadata parseURI(String uri) throws URISyntaxException {
         //TODO implement better validation
-        boolean matches = Pattern.matches(
-                "jms:(.*?)[\\?(.*?)=(.*?)((&(.*?)=(.*?))*)]?", uri);
+        boolean matches = Pattern.matches("jms:(.*?)[\\?(.*?)=(.*?)((&(.*?)=(.*?))*)]?", uri);
         if (!matches) {
             throw new URISyntaxException(uri, "Not a valid URI format for binding.jms");
         }

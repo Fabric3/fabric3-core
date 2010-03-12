@@ -41,33 +41,18 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
 
-import org.fabric3.model.type.ModelObject;
+import junit.framework.TestCase;
 
-/**
- * Encapsulates a response configuration.
- *
- * @version $Revision$ $Date$
- */
-public class ResponseDefinition extends ModelObject {
-    private static final long serialVersionUID = -3413442748842988653L;
-    private DestinationDefinition destination;
-    private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
+public class JmsURIMetadataTestCase extends TestCase {
 
-    public ConnectionFactoryDefinition getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    public void setConnectionFactory(ConnectionFactoryDefinition connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
-
-    public DestinationDefinition getDestination() {
-        return destination;
-    }
-
-    public void setDestination(DestinationDefinition destination) {
-        this.destination = destination;
+    public void testParse() throws Exception {
+        JmsURIMetadata meta = JmsURIMetadata.parseURI("jms:dest?connectionFactoryName=factory&deliveryMode=PERSISTENT");
+        assertEquals("dest", meta.getDestination());
+        assertEquals("factory", meta.getProperties().get("connectionFactoryName"));
+        assertEquals("PERSISTENT", meta.getProperties().get("deliveryMode"));
+        JmsURIMetadata.parseURI("jms:dest");
+        assertEquals("dest", meta.getDestination());
     }
 }

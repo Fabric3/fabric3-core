@@ -48,18 +48,19 @@ import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.factory.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryRegistry, then JNDI and then, if not found, creating it.
+ * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, then JNDI and then, if not found, creating it.
  */
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryStrategy always;
@@ -88,8 +89,9 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
             return always.getConnectionFactory(definition, env);
         } catch (FactoryRegistrationException e) {
             throw new JmsLookupException("Unable to lookup: " + name, e);
+        } catch (NamingException e) {
+            throw new JmsLookupException("Unable to lookup: " + name, e);
         }
-
     }
 
 }

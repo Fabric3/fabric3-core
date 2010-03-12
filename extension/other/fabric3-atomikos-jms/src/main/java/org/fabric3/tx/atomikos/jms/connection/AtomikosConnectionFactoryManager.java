@@ -47,8 +47,8 @@ import com.atomikos.jms.AtomikosConnectionFactoryBean;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.factory.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
  * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA

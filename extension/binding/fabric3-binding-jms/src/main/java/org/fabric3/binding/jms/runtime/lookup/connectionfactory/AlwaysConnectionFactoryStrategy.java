@@ -55,11 +55,11 @@ import javax.jms.ConnectionFactory;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.factory.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
  * Implementation that always attempts to create a connection factory.

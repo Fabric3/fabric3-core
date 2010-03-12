@@ -49,7 +49,7 @@ import junit.framework.TestCase;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 
 /**
  * @version $Rev$ $Date$

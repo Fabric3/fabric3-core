@@ -34,24 +34,14 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.common;
+*/
+package org.fabric3.binding.jms.spi.common;
 
 /**
- * Defines message correlation schemes.
+ * Defines service caching levels.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public enum CorrelationScheme {
-
-    NONE,
-    MESSAGE_ID,
-    CORRELATION_ID
-
+public enum CacheLevel {
+    NONE, CONNECTION, SESSION
 }

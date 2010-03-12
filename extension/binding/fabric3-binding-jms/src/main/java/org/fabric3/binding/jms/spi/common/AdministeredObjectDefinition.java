@@ -33,15 +33,15 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
 
 
 /**
- * Represents a destination or connection factory configuration.
+ * Defines common attributes for a destination or connection factory configuration.
  *
  * @version $Revision$ $Date$
  */
-public class AdministeredObjectDefinition extends PropertyAwareObject {
+public abstract class AdministeredObjectDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 3952595885616542808L;
     private String name;
     private CreateOption create = CreateOption.IF_NOT_EXIST;

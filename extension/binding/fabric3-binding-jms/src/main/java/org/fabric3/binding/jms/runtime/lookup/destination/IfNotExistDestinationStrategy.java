@@ -48,8 +48,9 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
-import org.fabric3.binding.jms.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.runtime.lookup.DestinationStrategy;
 import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
@@ -72,6 +73,8 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
             return (Destination) JndiHelper.lookup(definition.getName(), env);
         } catch (NameNotFoundException ex) {
             return always.getDestination(definition, cf, env);
+        } catch (NamingException e) {
+            throw new JmsLookupException("Unable to lookup: " + definition.getName(), e);
         }
 
     }

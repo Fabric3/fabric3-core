@@ -51,12 +51,12 @@ import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.common.DestinationDefinition;
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.TransactionType;
-import org.fabric3.binding.jms.provision.JmsTargetDefinition;
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.runtime.lookup.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.spi.ObjectFactory;

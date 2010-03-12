@@ -34,14 +34,30 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.binding.jms.common;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.binding.jms.spi.common;
 
 /**
- * Defines the message delivery mode.
+ * A destination configuration.
  *
- * @version $Rev$ $Date$
+ * @version $Revision$ $Date$
  */
-public enum DeliveryMode {
-    PERSISTENT, NONPERSISTENT, UNDEFINED
+public class DestinationDefinition extends AdministeredObjectDefinition {
+    private static final long serialVersionUID = 2175092846182913179L;
+    private DestinationType type = DestinationType.QUEUE;
+
+    public DestinationType geType() {
+        return type;
+    }
+
+    public void setType(DestinationType type) {
+        this.type = type;
+    }
+
 }

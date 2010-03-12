@@ -34,22 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.common;
+*/
+package org.fabric3.binding.jms.spi.generator;
+
+import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Defines transaction types.
+ * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may
+ * update generated definitions.
+ * <p/>
+ * Note this extension is optional.
  *
  * @version $Rev$ $Date$
  */
-public enum TransactionType {
+public interface JmsResourceProvisioner {
 
-    GLOBAL, NONE, SESSION
+    /**
+     * Called after a source definition has been generated.
+     *
+     * @param definition the source definition
+     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     */
+    void generateSource(JmsSourceDefinition definition) throws GenerationException;
+
+    /**
+     * Called after a target definition has been generated.
+     *
+     * @param definition the target definition
+     * @throws GenerationException if an error occurs provisioning a required JMS artifact.
+     */
+    void generateTarget(JmsTargetDefinition definition) throws GenerationException;
 
 }

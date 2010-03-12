@@ -39,8 +39,8 @@ package org.fabric3.binding.jms.runtime;
 
 import java.util.List;
 
-import org.fabric3.binding.jms.common.CorrelationScheme;
-import org.fabric3.binding.jms.common.TransactionType;
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Holder for Wires and required metadata for performing an invocation.

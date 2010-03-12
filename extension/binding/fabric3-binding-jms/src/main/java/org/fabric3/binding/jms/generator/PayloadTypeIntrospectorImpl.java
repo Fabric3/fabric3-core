@@ -49,7 +49,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 

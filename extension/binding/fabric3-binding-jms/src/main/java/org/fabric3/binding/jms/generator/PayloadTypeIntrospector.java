@@ -43,11 +43,11 @@
  */
 package org.fabric3.binding.jms.generator;
 
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.model.type.contract.Operation;
 
 /**
- * Introspects an operation's in parameters to determine the payload type.
+ * Introspects operation in parameters to determine the payload type.
  *
  * @version $Rev$ $Date$
  */

@@ -59,7 +59,6 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;

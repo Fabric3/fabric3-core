@@ -55,7 +55,7 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.binding.jms.common.TransactionType;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
 import org.fabric3.host.work.WorkScheduler;

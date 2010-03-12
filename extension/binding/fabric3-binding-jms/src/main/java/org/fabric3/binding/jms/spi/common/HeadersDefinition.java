@@ -41,61 +41,48 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.fabric3.model.type.ModelObject;
+package org.fabric3.binding.jms.spi.common;
 
 /**
- * Represents a JMS binding configuration element that contains properties.
- *
- * @version $Revision$ $Date$
+ * Represents binding.jms\headers and binding.jms\operationProperties\headers.
  */
-public abstract class PropertyAwareObject extends ModelObject {
-    private static final long serialVersionUID = 7862305926561642783L;
-    private Map<String, String> properties = null;
+public class HeadersDefinition extends PropertyAwareObject {
+    private static final long serialVersionUID = 831415808031924363L;
+    private String type;
+    private DeliveryMode deliveryMode = DeliveryMode.UNDEFINED;
+    private Long timeToLive;
+    private Integer priority;
 
-    /**
-     * Sets the properties used to create the administered object.
-     *
-     * @param properties used to create the administered object.
-     */
-    public void setProperties(Map<String, String> properties) {
-        ensurePropertiesNotNull();
-        this.properties.putAll(properties);
+    public String getType() {
+        return type;
     }
 
-    /**
-     * Add a Property.
-     *
-     * @param name  Name of the property.
-     * @param value Value of the property.
-     */
-    public void addProperty(String name, String value) {
-        ensurePropertiesNotNull();
-        properties.put(name, value);
+    public void setType(String type) {
+        this.type = type;
     }
 
-    /**
-     * Returns properties used to create the administered object.
-     *
-     * @return Properties used to create the administered object.
-     */
-    public Map<String, String> getProperties() {
-        if (this.properties != null) {
-            return properties;
-        } else {
-            return Collections.emptyMap();
-        }
+    public DeliveryMode getDeliveryMode() {
+        return deliveryMode;
     }
 
-    private void ensurePropertiesNotNull() {
-        if (properties == null) {
-            properties = new HashMap<String, String>();
-        }
+    public void setDeliveryMode(DeliveryMode deliveryMode) {
+        this.deliveryMode = deliveryMode;
+    }
+
+    public Long getTimeToLive() {
+        return timeToLive;
+    }
+
+    public void setTimeToLive(Long timeToLive) {
+        this.timeToLive = timeToLive;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
 }

@@ -53,12 +53,13 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.TransactionType;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
-import org.fabric3.binding.jms.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.provision.JmsTargetDefinition;
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -87,56 +88,79 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
     private PayloadTypeIntrospector introspector;
 
+    // optional provisioner for host runtimes to receive callbacks
+    private JmsResourceProvisioner provisioner;
+
     public JmsBindingGenerator(@Reference PayloadTypeIntrospector introspector) {
         this.introspector = introspector;
     }
 
-    public JmsSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> logicalBinding,
+    @Reference(required = false)
+    public void setProvisioner(JmsResourceProvisioner provisioner) {
+        this.provisioner = provisioner;
+    }
+
+    public JmsSourceDefinition generateSource(LogicalBinding<JmsBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
 
-        TransactionType transactionType = getTransactionType(policy, operations);
+        TransactionType transactionType = getTransactionType(operations, policy);
 
-        JmsBindingMetadata metadata = logicalBinding.getDefinition().getJmsMetadata();
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         validateResponseDestination(metadata, contract);
         Map<String, PayloadType> payloadTypes = processPayloadTypes(contract);
-        URI uri = logicalBinding.getDefinition().getTargetUri();
+        URI uri = binding.getDefinition().getTargetUri();
+        JmsSourceDefinition definition = null;
         for (PayloadType payloadType : payloadTypes.values()) {
             if (PayloadType.XML == payloadType) {
                 // set the source type to string XML
-                return new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                break;
             }
         }
-        return new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType);
+        if (definition == null) {
+            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType);
+        }
+        if (provisioner != null) {
+            provisioner.generateSource(definition);
+        }
+        return definition;
     }
 
-    public JmsTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> logicalBinding,
+    public JmsTargetDefinition generateTarget(LogicalBinding<JmsBindingDefinition> binding,
                                               ServiceContract contract,
                                               List<LogicalOperation> operations,
                                               EffectivePolicy policy) throws GenerationException {
 
-        TransactionType transactionType = getTransactionType(policy, operations);
+        TransactionType transactionType = getTransactionType(operations, policy);
 
-        URI uri = logicalBinding.getDefinition().getTargetUri();
-        JmsBindingMetadata metadata = logicalBinding.getDefinition().getJmsMetadata();
+        URI uri = binding.getDefinition().getTargetUri();
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         validateResponseDestination(metadata, contract);
         Map<String, PayloadType> payloadTypes = processPayloadTypes(contract);
 
-        // FIXME hack
+        JmsTargetDefinition definition = null;
         for (PayloadType payloadType : payloadTypes.values()) {
             if (PayloadType.XML == payloadType) {
-                return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                break;
             }
         }
-        return new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType);
+        if (definition == null) {
+            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType);
+        }
+        if (provisioner != null) {
+            provisioner.generateTarget(definition);
+        }
+        return definition;
     }
 
-    public JmsTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> serviceBinding,
+    public JmsTargetDefinition generateServiceBindingTarget(LogicalBinding<JmsBindingDefinition> binding,
                                                             ServiceContract contract,
                                                             List<LogicalOperation> operations,
                                                             EffectivePolicy policy) throws GenerationException {
-        return generateTarget(serviceBinding, contract, operations, policy);
+        return generateTarget(binding, contract, operations, policy);
     }
 
     /**
@@ -158,10 +182,14 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
     }
 
-    /*
-     * Gets the transaction type.
+    /**
+     * Determines the service transaction type.
+     *
+     * @param operations the operations defined by the service contract
+     * @param policy     the applicable policy
+     * @return the transaction type
      */
-    private TransactionType getTransactionType(EffectivePolicy policy, List<LogicalOperation> operations) {
+    private TransactionType getTransactionType(List<LogicalOperation> operations, EffectivePolicy policy) {
 
         // If any operation has the intent, return that
         for (LogicalOperation operation : operations) {

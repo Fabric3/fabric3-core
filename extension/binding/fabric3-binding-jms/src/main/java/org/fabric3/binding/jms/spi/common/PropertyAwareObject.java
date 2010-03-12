@@ -41,41 +41,61 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.fabric3.model.type.ModelObject;
 
 /**
- * Represents binding.jms\operationProperties.
+ * A JMS binding configuration element that contains properties.
  *
  * @version $Revision$ $Date$
  */
-public class OperationPropertiesDefinition extends PropertyAwareObject {
-    private static final long serialVersionUID = -1325680761205311178L;
-    private String name;
-    private String nativeOperation;
-    private HeadersDefinition header;
+public abstract class PropertyAwareObject extends ModelObject {
+    private static final long serialVersionUID = 7862305926561642783L;
+    private Map<String, String> properties = null;
 
-    public String getName() {
-        return name;
+    /**
+     * Sets the properties used to create the administered object.
+     *
+     * @param properties used to create the administered object.
+     */
+    public void setProperties(Map<String, String> properties) {
+        ensurePropertiesNotNull();
+        this.properties.putAll(properties);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Add a Property.
+     *
+     * @param name  Name of the property.
+     * @param value Value of the property.
+     */
+    public void addProperty(String name, String value) {
+        ensurePropertiesNotNull();
+        properties.put(name, value);
     }
 
-    public String getNativeOperation() {
-        return nativeOperation;
+    /**
+     * Returns properties used to create the administered object.
+     *
+     * @return Properties used to create the administered object.
+     */
+    public Map<String, String> getProperties() {
+        if (this.properties != null) {
+            return properties;
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
-    public void setNativeOperation(String nativeOperation) {
-        this.nativeOperation = nativeOperation;
-    }
-
-    public HeadersDefinition getHeaders() {
-        return header;
-    }
-
-    public void setHeaders(HeadersDefinition header) {
-        this.header = header;
+    private void ensurePropertiesNotNull() {
+        if (properties == null) {
+            properties = new HashMap<String, String>();
+        }
     }
 
 }

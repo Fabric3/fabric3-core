@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.runtime;
 
-import org.fabric3.binding.jms.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
  * Template for configuring a JmsInterceptor.

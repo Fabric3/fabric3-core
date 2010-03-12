@@ -57,20 +57,20 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.AdministeredObjectDefinition;
-import org.fabric3.binding.jms.common.CacheLevel;
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.common.CorrelationScheme;
-import org.fabric3.binding.jms.common.CreateOption;
-import org.fabric3.binding.jms.common.DeliveryMode;
-import org.fabric3.binding.jms.common.DestinationDefinition;
-import org.fabric3.binding.jms.common.DestinationType;
-import org.fabric3.binding.jms.common.HeadersDefinition;
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.JmsURIMetadata;
-import org.fabric3.binding.jms.common.OperationPropertiesDefinition;
-import org.fabric3.binding.jms.common.PropertyAwareObject;
-import org.fabric3.binding.jms.common.ResponseDefinition;
+import org.fabric3.binding.jms.spi.common.AdministeredObjectDefinition;
+import org.fabric3.binding.jms.spi.common.CacheLevel;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+import org.fabric3.binding.jms.spi.common.CreateOption;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationType;
+import org.fabric3.binding.jms.spi.common.HeadersDefinition;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
+import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
+import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
+import org.fabric3.binding.jms.spi.common.ResponseDefinition;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -100,7 +100,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("initialContextFactory");
         ATTRIBUTES.add("requires");
         ATTRIBUTES.add("policySets");
-        ATTRIBUTES.add("name");
         ATTRIBUTES.add("create");
         ATTRIBUTES.add("type");
         ATTRIBUTES.add("destination");
@@ -130,6 +129,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         validateAttributes(reader, context);
 
         JmsBindingMetadata metadata;
+        String bindingName = reader.getAttributeValue(null, "name");
+
         String uri = reader.getAttributeValue(null, "uri");
         JmsBindingDefinition bd;
         if (uri != null) {
@@ -149,10 +150,10 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 InvalidValue error = new InvalidValue("Invalid JMS binding URI: " + targetURI, reader, e);
                 context.addError(error);
             }
-            bd = new JmsBindingDefinition(targetURI, metadata);
+            bd = new JmsBindingDefinition(bindingName, targetURI, metadata);
         } else {
             metadata = new JmsBindingMetadata();
-            bd = new JmsBindingDefinition(metadata);
+            bd = new JmsBindingDefinition(bindingName, metadata);
         }
         NamespaceContext namespace = reader.getNamespaceContext();
         String targetNamespace = context.getTargetNamespace();
@@ -352,7 +353,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     private ConnectionFactoryDefinition loadConnectionFactory(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
-        connectionFactory.setName(reader.getAttributeValue(null, "name"));
+        connectionFactory.setName(reader.getAttributeValue(null, "jndiName"));
         parseCreate(reader, context, connectionFactory);
         loadProperties(reader, connectionFactory, "connectionFactory");
         return connectionFactory;
@@ -360,7 +361,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     private DestinationDefinition loadDestination(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         DestinationDefinition destination = new DestinationDefinition();
-        destination.setName(reader.getAttributeValue(null, "name"));
+        destination.setName(reader.getAttributeValue(null, "jndiName"));
         parseCreate(reader, context, destination);
         String type = reader.getAttributeValue(null, "type");
         if (type != null) {
@@ -372,8 +373,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 InvalidValue error = new InvalidValue("Invalid value specified for destination type: " + type, reader);
                 context.addError(error);
             }
-
-
         }
         loadProperties(reader, destination, "destination");
         return destination;

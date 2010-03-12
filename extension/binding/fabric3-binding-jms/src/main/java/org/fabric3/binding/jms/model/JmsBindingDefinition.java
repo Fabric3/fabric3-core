@@ -47,9 +47,8 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
-import org.w3c.dom.Document;
 
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
@@ -71,22 +70,31 @@ public class JmsBindingDefinition extends BindingDefinition {
     /**
      * Constructor.
      *
-     * @param metadata Metadata to be initialized.
+     * @param metadata the JMS metadata
      */
     public JmsBindingDefinition(JmsBindingMetadata metadata) {
-        super(null, BINDING_QNAME);
-        this.metadata = metadata;
-        addRequiredCapability("jms");
+        this(null, null, metadata);
     }
 
     /**
      * Constructor.
      *
-     * @param targetURI URI of binding target
-     * @param metadata  Metadata to be initialized.
+     * @param bindingName the binding name
+     * @param metadata    the JMS metadata
      */
-    public JmsBindingDefinition(URI targetURI, JmsBindingMetadata metadata) {
-        super(targetURI, BINDING_QNAME);
+    public JmsBindingDefinition(String bindingName, JmsBindingMetadata metadata) {
+        this(bindingName, null, metadata);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param bindingName the binding name
+     * @param targetURI   the binding target URI
+     * @param metadata    the JMS metadata to be initialized
+     */
+    public JmsBindingDefinition(String bindingName, URI targetURI, JmsBindingMetadata metadata) {
+        super(bindingName, targetURI, BINDING_QNAME);
         this.metadata = metadata;
         addRequiredCapability("jms");
     }

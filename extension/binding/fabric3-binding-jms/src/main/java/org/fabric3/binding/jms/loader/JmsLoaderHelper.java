@@ -45,13 +45,13 @@ package org.fabric3.binding.jms.loader;
 
 import java.util.Map;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.common.CreateOption;
-import org.fabric3.binding.jms.common.DestinationDefinition;
-import org.fabric3.binding.jms.common.DestinationType;
-import org.fabric3.binding.jms.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.common.JmsURIMetadata;
-import org.fabric3.binding.jms.common.ResponseDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CreateOption;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationType;
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
+import org.fabric3.binding.jms.spi.common.ResponseDefinition;
 
 /**
  * Helper class for loading JMS binding configuration from a comppsite.
@@ -66,12 +66,12 @@ public class JmsLoaderHelper {
     /**
      * Transform a JmsURIMetadata object to a JmsBindingMetadata.
      *
-     * @param uriMeta JmsURIMetadata
+     * @param metadata JmsURIMetadata
      * @return a equivalent JmsURIMetadata object
      */
-    static JmsBindingMetadata getJmsMetadataFromURI(JmsURIMetadata uriMeta) {
+    static JmsBindingMetadata getJmsMetadataFromURI(JmsURIMetadata metadata) {
         JmsBindingMetadata result = new JmsBindingMetadata();
-        Map<String, String> uriProperties = uriMeta.getProperties();
+        Map<String, String> uriProperties = metadata.getProperties();
 
         // Destination
         DestinationDefinition destination = new DestinationDefinition();
@@ -79,14 +79,13 @@ public class JmsLoaderHelper {
         if ("topic".equalsIgnoreCase(destinationType)) {
             destination.setType(DestinationType.TOPIC);
         }
-        destination.setName(uriMeta.getDestination());
+        destination.setName(metadata.getDestination());
         destination.setCreate(CreateOption.NEVER); // always assume the destination already exists
         result.setDestination(destination);
 
         // ConnectionFactory
         ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
-        String connectionFactoryName = uriProperties
-                .get(JmsURIMetadata.CONNECTIONFACORYNAME);
+        String connectionFactoryName = uriProperties.get(JmsURIMetadata.CONNECTIONFACORYNAME);
         if (connectionFactoryName == null) {
             connectionFactory.setName(DEFAULT_JMS_CONNECTION_FACTORY);
         } else {

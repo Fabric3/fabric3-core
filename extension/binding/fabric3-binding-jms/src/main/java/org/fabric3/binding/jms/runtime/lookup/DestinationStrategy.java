@@ -47,7 +47,7 @@ import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import org.fabric3.binding.jms.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 
 /**
  * Strategy for looking up destinations.

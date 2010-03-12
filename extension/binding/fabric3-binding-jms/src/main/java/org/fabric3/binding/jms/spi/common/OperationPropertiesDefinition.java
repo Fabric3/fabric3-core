@@ -41,48 +41,41 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.common;
+package org.fabric3.binding.jms.spi.common;
 
 /**
- * Represents binding.jms\headers and binding.jms\operationProperties\headers.
+ * Represents binding.jms\operationProperties.
+ *
+ * @version $Revision$ $Date$
  */
-public class HeadersDefinition extends PropertyAwareObject {
-    private static final long serialVersionUID = 831415808031924363L;
-    private String type;
-    private DeliveryMode deliveryMode = DeliveryMode.UNDEFINED;
-    private Long timeToLive;
-    private Integer priority;
+public class OperationPropertiesDefinition extends PropertyAwareObject {
+    private static final long serialVersionUID = -1325680761205311178L;
+    private String name;
+    private String nativeOperation;
+    private HeadersDefinition header;
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public DeliveryMode getDeliveryMode() {
-        return deliveryMode;
+    public String getNativeOperation() {
+        return nativeOperation;
     }
 
-    public void setDeliveryMode(DeliveryMode deliveryMode) {
-        this.deliveryMode = deliveryMode;
+    public void setNativeOperation(String nativeOperation) {
+        this.nativeOperation = nativeOperation;
     }
 
-    public Long getTimeToLive() {
-        return timeToLive;
+    public HeadersDefinition getHeaders() {
+        return header;
     }
 
-    public void setTimeToLive(Long timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setHeaders(HeadersDefinition header) {
+        this.header = header;
     }
 
 }

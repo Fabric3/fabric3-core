@@ -47,18 +47,19 @@ import java.util.Collections;
 import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.jms.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
-import org.fabric3.binding.jms.spi.runtime.factory.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.factory.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryRegistry and then JNDI.
+ * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager and then JNDI.
  *
  * @version $Revision$ $Date$
  */
@@ -81,6 +82,8 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
         } catch (NameNotFoundException e) {
             throw new JmsLookupException("Connection factory not found: " + name, e);
         } catch (FactoryRegistrationException e) {
+            throw new JmsLookupException("Error looking up: " + name, e);
+        } catch (NamingException e) {
             throw new JmsLookupException("Error looking up: " + name, e);
         }
     }
