@@ -68,7 +68,7 @@ public class SystemImplementationLoader implements TypeLoader<SystemImplementati
     private final ImplementationProcessor<SystemImplementation> implementationProcessor;
 
     /**
-     * Constructor used during bootstrap and load scdl.
+     * Constructor.
      *
      * @param implementationProcessor the component type loader to use
      */
