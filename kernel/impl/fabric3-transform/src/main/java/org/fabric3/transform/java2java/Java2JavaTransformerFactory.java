@@ -47,7 +47,7 @@ import org.fabric3.spi.transform.TransformerFactory;
 /**
  * Factory for SerializableTransformer.
  *
- * @version $Rev: 7743 $ $Date: 2009-10-02 18:12:36 +0200 (Fri, 02 Oct 2009) $
+ * @version $Rev$ $Date$
  */
 public class Java2JavaTransformerFactory implements TransformerFactory {
 
