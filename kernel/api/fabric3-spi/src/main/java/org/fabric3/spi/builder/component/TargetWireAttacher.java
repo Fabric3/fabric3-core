@@ -50,7 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * Attaches and detachs a wire to a target component or transport binding.
+ * Attaches and detaches a wire to/from a target component or transport binding.
  *
  * @version $Rev$ $Date$
  */
