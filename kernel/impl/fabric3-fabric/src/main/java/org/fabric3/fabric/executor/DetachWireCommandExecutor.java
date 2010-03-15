@@ -49,6 +49,11 @@ import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
+/**
+ * Detaches a wire from its source component reference or binding and target service or binding.
+ *
+ * @version $Rev$ $Date$
+ */
 @EagerInit
 public class DetachWireCommandExecutor implements CommandExecutor<DetachWireCommand> {
 

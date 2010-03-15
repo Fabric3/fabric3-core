@@ -59,7 +59,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Executes AttachExtensionCommands.
+ * Detaches a parent extension classloader from another classloader.
  *
  * @version $Rev$ $Date$
  */

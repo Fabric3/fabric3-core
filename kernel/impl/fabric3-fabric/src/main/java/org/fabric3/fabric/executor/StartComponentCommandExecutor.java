@@ -58,7 +58,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Eagerly initializes a component on a service node.
+ * Eagerly initializes a component on a runtime.
  *
  * @version $Rev$ $Date$
  */

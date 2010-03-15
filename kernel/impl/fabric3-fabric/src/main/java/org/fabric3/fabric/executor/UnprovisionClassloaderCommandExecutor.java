@@ -48,6 +48,11 @@ import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
+/**
+ * Removes a classloader on a runtime.
+ *
+ * @version $Rev$ $Date$
+ */
 @EagerInit
 public class UnprovisionClassloaderCommandExecutor implements CommandExecutor<UnprovisionClassloaderCommand> {
 

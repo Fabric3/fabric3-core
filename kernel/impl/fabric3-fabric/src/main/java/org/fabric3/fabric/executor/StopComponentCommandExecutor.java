@@ -50,6 +50,11 @@ import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
+/**
+ * Stops a component.
+ *
+ * @version $Rev$ $Date$
+ */
 @EagerInit
 public class StopComponentCommandExecutor implements CommandExecutor<StopComponentCommand> {
 

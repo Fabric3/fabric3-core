@@ -75,7 +75,7 @@ import org.fabric3.fabric.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
 import org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor;
-import org.fabric3.fabric.executor.ReferenceConnectionCommandExecutor;
+import org.fabric3.fabric.executor.ConnectionCommandExecutor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.generator.CommandGenerator;
@@ -320,7 +320,7 @@ public class BootstrapAssemblyFactory {
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
         commandRegistry.register(ProvisionClassloaderCommand.class, new ProvisionClassloaderCommandExecutor(classLoaderBuilder));
-        commandRegistry.register(ConnectionCommand.class, new ReferenceConnectionCommandExecutor(commandRegistry));
+        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(commandRegistry));
 
         return commandRegistry;
 

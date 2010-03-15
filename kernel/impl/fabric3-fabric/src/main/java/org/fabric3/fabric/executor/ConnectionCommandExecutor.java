@@ -55,15 +55,15 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Eagerly initializes a component on a service node.
+ * Connects and disconnects wires from references of a component to target services.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ReferenceConnectionCommandExecutor implements CommandExecutor<ConnectionCommand> {
+public class ConnectionCommandExecutor implements CommandExecutor<ConnectionCommand> {
     private CommandExecutorRegistry commandExecutorRegistry;
 
-    public ReferenceConnectionCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry) {
+    public ConnectionCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry) {
         this.commandExecutorRegistry = commandExecutorRegistry;
     }
 

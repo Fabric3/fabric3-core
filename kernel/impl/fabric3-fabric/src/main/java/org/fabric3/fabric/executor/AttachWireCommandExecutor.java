@@ -56,7 +56,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Eagerly initializes a component on a service node.
+ * Attaches a wire to its source component reference or binding and target service or binding.
  *
  * @version $Rev$ $Date$
  */

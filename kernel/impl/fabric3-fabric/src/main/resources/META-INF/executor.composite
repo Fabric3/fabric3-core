@@ -74,8 +74,8 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnprovisionClassloaderCommandExecutor"/>
     </component>
 
-    <component name="ReferenceConnectionCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ReferenceConnectionCommandExecutor"/>
+    <component name="ConnectionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ConnectionCommandExecutor"/>
     </component>
 
     <component name="ProvisionExtensionsCommandExecutor">

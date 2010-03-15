@@ -67,10 +67,9 @@ public class ProvisionClassloaderCommandExecutor implements CommandExecutor<Prov
     private CommandExecutorRegistry commandExecutorRegistry;
 
     @Constructor
-    public ProvisionClassloaderCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry,
-                                               @Reference ClassLoaderBuilder classLoaderBuilder) {
-        this.classLoaderBuilder = classLoaderBuilder;
-        this.commandExecutorRegistry = commandExecutorRegistry;
+    public ProvisionClassloaderCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ClassLoaderBuilder builder) {
+        this.classLoaderBuilder = builder;
+        this.commandExecutorRegistry = executorRegistry;
     }
 
     public ProvisionClassloaderCommandExecutor(ClassLoaderBuilder classLoaderBuilder) {

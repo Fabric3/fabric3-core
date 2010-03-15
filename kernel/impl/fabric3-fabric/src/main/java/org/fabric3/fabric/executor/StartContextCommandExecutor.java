@@ -62,7 +62,7 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * Executes a {@link org.fabric3.fabric.command.StartContextCommand}.
+ * Starts a component context on a runtime.
  *
  * @version $Rev$ $Date$
  */
