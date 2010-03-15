@@ -49,10 +49,10 @@ package org.fabric3.spi.invocation;
  * @version $Rev$ $Date$
  */
 public final class WorkContextTunnel {
+    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
+
     private WorkContextTunnel() {
     }
-
-    private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
 
     /**
      * Set the WorkContext for the current thread. The current work context is returned and must be restored after the invocation is complete. Typical
