@@ -51,8 +51,9 @@ import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.spi.component.ScopeContainer;
 
 /**
+ * A specialized component that implements runtime functionality and is deployed to the runtime domain.
+ *
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the defined component
  */
 public class SystemComponent<T> extends PojoComponent<T> {
     public SystemComponent(URI componentId,
