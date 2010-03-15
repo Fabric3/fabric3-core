@@ -61,7 +61,7 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager and then JNDI.
+ * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, and then JNDI.
  *
  * @version $Revision$ $Date$
  */

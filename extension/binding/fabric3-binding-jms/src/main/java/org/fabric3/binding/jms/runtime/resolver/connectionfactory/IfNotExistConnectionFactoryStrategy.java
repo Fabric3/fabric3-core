@@ -61,7 +61,8 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, then JNDI and then, if not found, creating it.
+ * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, JNDI and then, if not found,
+ * creating it.
  */
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryStrategy always;

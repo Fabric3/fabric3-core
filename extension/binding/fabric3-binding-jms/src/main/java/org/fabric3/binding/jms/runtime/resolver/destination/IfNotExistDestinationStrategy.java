@@ -60,7 +60,7 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
- * Implementation that attempts to resolve a a destination in JNDI and if it is not found, will create it.
+ * Implementation that attempts to resolve a a destination via provider resolvers, in JNDI, and if it is not found, will create it.
  *
  * @version $Revision$ $Date$
  */
