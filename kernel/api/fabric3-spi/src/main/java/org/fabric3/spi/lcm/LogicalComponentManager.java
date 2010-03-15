@@ -44,7 +44,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Manages logical components in a domain. There is one LogicalComponentManager per domain. Implementations may bve transient or persistent.
+ * Manages logical components in a domain. There is one LogicalComponentManager per domain. 
  *
  * @version $Rev$ $Date$
  */
