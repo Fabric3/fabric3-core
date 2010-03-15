@@ -219,6 +219,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         exportedPackages.put("weblogic.kernel", "1.7.0.0");
         exportedPackages.put("weblogic.work", "1.7.0.0");
         exportedPackages.put("weblogic.work.commonj", "1.7.0.0");
+        exportedPackages.put("javax.jms", "1.1.0");
+        exportedPackages.put("javax.transaction", "1.1.0");
+        exportedPackages.put("javax.transaction.xa", "1.1.0");
         exportedPackages.put("org.fabric3.runtime.weblogic.api", Names.VERSION);
         configuration.setExportedPackages(exportedPackages);
     }
