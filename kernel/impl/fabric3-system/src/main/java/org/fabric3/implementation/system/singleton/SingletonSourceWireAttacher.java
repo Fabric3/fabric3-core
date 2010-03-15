@@ -86,7 +86,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
             throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SingletonComponent<?> sourceComponent = (SingletonComponent<?>) manager.getComponent(sourceId);
-        Injectable injectable = source.getValueSource();
+        Injectable injectable = source.getInjectable();
         // Add the object factory for the target to be reinjected.
         // The Injectable identifies the injection site (a field or method) on the singleton instance.
         sourceComponent.addObjectFactory(injectable, objectFactory);

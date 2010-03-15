@@ -48,11 +48,11 @@ public class SingletonSourceDefinition extends PhysicalSourceDefinition {
     private Injectable injectable;
 
     /**
-     * Returns the value source for this wire. This identifies which reference or resource on the component this wire applies to.
+     * Returns the Injectable for this wire. This identifies which reference or resource on the component this wire applies to.
      *
      * @return the value source for this wire
      */
-    public Injectable getValueSource() {
+    public Injectable getInjectable() {
         return injectable;
     }
 
