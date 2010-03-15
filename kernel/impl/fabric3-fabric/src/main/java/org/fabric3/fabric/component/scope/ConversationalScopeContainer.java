@@ -63,18 +63,16 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ConversationExpirationCallback;
 import org.fabric3.spi.component.ExpirationPolicy;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.component.GroupInitializationException;
-import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -210,16 +208,15 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     public void reinject() {
     }
 
-    public void addObjectFactory(AtomicComponent<?> component, ObjectFactory<?> factory, String referenceName, Object key) {
+    public void updated(AtomicComponent<?> component, String referenceName) {
 
     }
 
-    public void removeObjectFactory(AtomicComponent<?> component, String referenceName) {
+    public void removed(AtomicComponent<?> component, String referenceName) {
 
     }
 
-    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper)
-            throws InstanceDestructionException {
+    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper) {
     }
 
 

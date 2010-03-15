@@ -59,7 +59,6 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
@@ -258,21 +257,20 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper)
-            throws InstanceDestructionException {
+    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper) {
     }
 
-    public void addObjectFactory(AtomicComponent<?> component, ObjectFactory<?> factory, String referenceName, Object key) {
+    public void updated(AtomicComponent<?> component, String referenceName) {
         InstanceWrapper<?> wrapper = instanceWrappers.get(component);
         if (wrapper != null) {
-            wrapper.addObjectFactory(referenceName, factory, key);
+            wrapper.updated(referenceName);
         }
     }
 
-    public void removeObjectFactory(AtomicComponent<?> component, String referenceName) {
+    public void removed(AtomicComponent<?> component, String referenceName) {
         InstanceWrapper<?> wrapper = instanceWrappers.get(component);
         if (wrapper != null) {
-            wrapper.removeObjectFactory(referenceName);
+            wrapper.removed(referenceName);
         }
     }
 
@@ -315,11 +313,11 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
         public void reinject() {
         }
 
-        public void addObjectFactory(String referenceName, ObjectFactory<?> factory, Object key) {
+        public void updated(String referenceName) {
 
         }
 
-        public void removeObjectFactory(String referenceName) {
+        public void removed(String referenceName) {
 
         }
 

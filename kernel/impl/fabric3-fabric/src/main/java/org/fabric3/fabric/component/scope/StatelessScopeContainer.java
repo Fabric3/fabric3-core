@@ -49,7 +49,6 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
@@ -106,10 +105,10 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
     public void stopContext(WorkContext workContext) {
     }
 
-    public void addObjectFactory(AtomicComponent<?> component, ObjectFactory<?> factory, String referenceName, Object key) {
+    public void updated(AtomicComponent<?> component, String referenceName) {
     }
 
-    public void removeObjectFactory(AtomicComponent<?> component, String referenceName) {
+    public void removed(AtomicComponent<?> component, String referenceName) {
 
     }
 

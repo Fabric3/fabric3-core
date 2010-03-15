@@ -273,11 +273,11 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
             }
         }
 
-        public void addObjectFactory(String referenceName, ObjectFactory<?> factory, Object key) {
+        public void updated(String referenceName) {
             // no-op
         }
 
-        public void removeObjectFactory(String referenceName) {
+        public void removed(String referenceName) {
             // no-op
         }
 

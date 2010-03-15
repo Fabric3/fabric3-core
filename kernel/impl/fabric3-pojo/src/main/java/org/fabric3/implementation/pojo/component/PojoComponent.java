@@ -166,7 +166,7 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
      * @param key           key value for a Map reference
      */
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
-        scopeContainer.addObjectFactory(this, objectFactory, injectable.getName(), key);
+        scopeContainer.updated(this, injectable.getName());
         provider.setObjectFactory(injectable, objectFactory, key);
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first 
         // instance has been created.
@@ -174,7 +174,7 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
     }
 
     public void removeObjectFactory(Injectable injectable) {
-        scopeContainer.removeObjectFactory(this, injectable.getName());
+        scopeContainer.removed(this, injectable.getName());
         provider.removeObjectFactory(injectable);
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.

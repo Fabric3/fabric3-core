@@ -49,9 +49,8 @@ import org.osoa.sca.ConversationEndedException;
 
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.Lifecycle;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.F3Conversation;
+import org.fabric3.spi.invocation.WorkContext;
 
 
 /**
@@ -176,27 +175,28 @@ public interface ScopeContainer extends Lifecycle {
     <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper) throws InstanceDestructionException;
 
     /**
-     * Adds an object factory to references of active instances for a component.
+     * Callback received when component reference wire(s) are updated. Instances will be injected with updated wires when {@link #reinject()} is
+     * called.
      *
-     * @param component     Component with active instances, whose references need to be updated.
-     * @param factory       Object factory for the reference.
-     * @param referenceName Name of the reference.
-     * @param key           the component key
+     * @param component     the component being updated
+     * @param referenceName the reference name
      */
-    void addObjectFactory(AtomicComponent<?> component, ObjectFactory<?> factory, String referenceName, Object key);
+    void updated(AtomicComponent<?> component, String referenceName);
 
     /**
-     * Removes an object factory from references of active instances for a component.
+     * Callback received when a wire from a 0..1 or 1..1 reference or all wires from a multiplicity reference have been removed. The instance will be
+     * injected with updated wires when {@link #reinject()} is called.
      *
-     * @param component     Component with active instances, whose references need to be updated.
-     * @param referenceName Name of the reference.
+     * @param component     component with active instances, whose references need to be updated
+     * @param referenceName the reference name
      */
-    void removeObjectFactory(AtomicComponent<?> component, String referenceName);
+    void removed(AtomicComponent<?> component, String referenceName);
 
     /**
-     * Re-injects all live instances with updated wires.
+     * Reinjects all live instances with updated wires
      *
-     * @throws InstanceLifecycleException if an error occurs during reinjection.
+     * @throws InstanceLifecycleException if an error occurs during reinjection
      */
     void reinject() throws InstanceLifecycleException;
+
 }

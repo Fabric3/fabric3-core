@@ -44,13 +44,11 @@ import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 
 /**
- * Resolves targets configured in a multiplicity by delegating to object factories and returning an <code>List</code> containing object instances
+ * Creates a list of objects from a collection of ObjectFactory instances.
  *
  * @version $Rev$ $Date$
  */
 public class ListMultiplicityObjectFactory implements MultiplicityObjectFactory<List<?>> {
-
-    // Object factories
     private List<ObjectFactory<?>> factories = new CopyOnWriteArrayList<ObjectFactory<?>>();
 
     public List<Object> getInstance() throws ObjectCreationException {

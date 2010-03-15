@@ -43,13 +43,11 @@
  */
 package org.fabric3.spi.component;
 
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.invocation.WorkContext;
 
 
 /**
- * Provides lifecycle management for an implementation instance associated with an {@link org.fabric3.spi.component.AtomicComponent} for use by the
- * atomic component's associated {@link org.fabric3.spi.component.ScopeContainer}
+ * Provides lifecycle management for an implementation instance associated with an {@link org.fabric3.spi.component.AtomicComponent}.
  *
  * @version $Rev$ $Date$
  */
@@ -87,25 +85,25 @@ public interface InstanceWrapper<T> {
     void stop(WorkContext context) throws InstanceDestructionException;
 
     /**
+     * Callback received when component reference wire(s) are updated. The instance will be injected with updated wires when {@link #reinject()} is
+     * called.
+     *
+     * @param referenceName the reference name
+     */
+    void updated(String referenceName);
+
+    /**
+     * Callback received when a wire from a 0..1 or 1..1 reference or all wires from a multiplicity reference have been removed. The instance will be
+     * injected with updated wires when {@link #reinject()} is called.
+     *
+     * @param referenceName the reference name
+     */
+    void removed(String referenceName);
+
+    /**
      * Reinjects updated references on an instance.
      *
      * @throws InstanceLifecycleException if an error occurs during reinjection
      */
     void reinject() throws InstanceLifecycleException;
-
-    /**
-     * Adds an object factory for the given reference.
-     *
-     * @param referenceName the reference
-     * @param factory       the object factory
-     * @param key           the key associated with the object factory
-     */
-    void addObjectFactory(String referenceName, ObjectFactory<?> factory, Object key);
-
-    /**
-     * Removes an object factory for the given reference. Used to clear multiplicity references during reinjection.
-     *
-     * @param referenceName the reference
-     */
-    void removeObjectFactory(String referenceName);
 }

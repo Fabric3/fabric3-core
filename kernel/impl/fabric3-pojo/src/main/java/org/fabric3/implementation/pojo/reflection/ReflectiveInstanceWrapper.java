@@ -48,7 +48,6 @@ import java.util.Set;
 
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
@@ -158,7 +157,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         }
     }
 
-    public void addObjectFactory(String referenceName, ObjectFactory<?> factory, Object key) {
+    public void updated(String referenceName) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
@@ -166,7 +165,6 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
             Injectable attribute = attributes[i];
             if (attribute.getName().equals(referenceName)) {
                 Injector<T> injector = injectors[i];
-                injector.setObjectFactory(factory, key);
                 if (instance != null) {
                     updatedInjectors.add(injector);
                 }
@@ -174,7 +172,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         }
     }
 
-    public void removeObjectFactory(String referenceName) {
+    public void removed(String referenceName) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
@@ -183,6 +181,9 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
             if (attribute.getName().equals(referenceName)) {
                 Injector<T> injector = injectors[i];
                 injector.clearObjectFactory();
+                if (instance != null) {
+                    updatedInjectors.add(injector);
+                }
             }
         }
 
