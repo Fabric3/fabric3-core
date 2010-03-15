@@ -54,7 +54,6 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.ComponentContext;
 
-import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -70,7 +69,7 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
- * Wraps an object intended to service as a system component provided to the Fabric3 runtime by the host environment.
+ * Wraps an object intended to serve as a system component provided to the Fabric3 runtime by the host environment.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -79,7 +78,6 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
     private T instance;
     private Map<Member, Injectable> sites;
     private InstanceWrapper<T> wrapper;
-    private Map<String, PropertyValue> defaultPropertyValues;
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
 
