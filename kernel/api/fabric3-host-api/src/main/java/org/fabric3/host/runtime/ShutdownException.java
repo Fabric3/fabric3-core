@@ -51,6 +51,7 @@ import org.fabric3.host.Fabric3Exception;
  * @version $Rev$ $Date$
  */
 public class ShutdownException extends Fabric3Exception {
+    private static final long serialVersionUID = -1320534787918305986L;
 
     public ShutdownException(Throwable cause) {
         super(cause);
