@@ -37,5 +37,6 @@
 		<module>fabric3-weblogic-federation</module>
 		<module>fabric3-weblogic-host</module>
 		<module>fabric3-runtime-weblogic</module>
+		<module>fabric3-weblogic-jms</module>
 	</modules>
 </project>
