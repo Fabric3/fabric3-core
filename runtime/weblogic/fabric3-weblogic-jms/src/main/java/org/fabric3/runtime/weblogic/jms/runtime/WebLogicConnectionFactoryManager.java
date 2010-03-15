@@ -52,15 +52,17 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 public class WebLogicConnectionFactoryManager implements ConnectionFactoryManager {
 
     public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
-        throw new UnsupportedOperationException();
+        // no-op
+        return factory;
     }
 
     public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws FactoryRegistrationException {
-        throw new UnsupportedOperationException();
+        // no-op
+        return factory;
     }
 
     public void unregister(String name) {
-        throw new UnsupportedOperationException();
+        // no-op
     }
 
     public ConnectionFactory get(String name) {
