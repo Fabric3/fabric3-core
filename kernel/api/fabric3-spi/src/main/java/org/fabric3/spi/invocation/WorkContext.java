@@ -52,12 +52,12 @@ import java.util.Map;
 import org.fabric3.api.SecuritySubject;
 
 /**
- * Implementations track information associated with a request as it is processed by the runtime. Requests originate at a domain boundary (e.g. a
- * service bound to a transport). As a request is processed by a component providing the service, invocations to other services in the domain may be
- * made. State associated with each invocation is encapsulated in a CallFrame is added to the call stack associated with the WorkContext. When an
- * invocation completes, its CallFrame is removed from the stack.
+ * Tracks information associated with a request as it is processed by the runtime. Requests originate at a domain boundary (e.g. a service bound to a
+ * transport). As a request is processed by a component providing the service, invocations to other services in the domain may be made. State
+ * associated with each invocation is encapsulated in a CallFrame and is added to the call stack associated with the WorkContext. When an invocation
+ * completes, its CallFrame is removed from the stack.
  * <p/>
- * The implementation is <em>not</em> thread safe.
+ * This implementation is <em>not</em> thread safe.
  *
  * @version $Rev$ $Date$
  */

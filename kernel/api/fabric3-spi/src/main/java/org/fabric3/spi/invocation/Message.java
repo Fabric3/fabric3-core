@@ -46,9 +46,9 @@ package org.fabric3.spi.invocation;
 import java.io.Serializable;
 
 /**
- * Represents a request, response, or exception flowing through a wire
+ * Represents a request, response, or exception flowing through a wire.
  *
- * @version $Rev $Date
+ * @version $Rev$ $Date$
  */
 public interface Message extends Serializable {
 

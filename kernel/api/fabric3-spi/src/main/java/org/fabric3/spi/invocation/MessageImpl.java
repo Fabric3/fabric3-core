@@ -44,9 +44,9 @@
 package org.fabric3.spi.invocation;
 
 /**
- * The default implementation of a message flowed through a wire during an invocation
+ * The default implementation of a message flowed through a wire during an invocation.
  *
- * @version $Rev $Date
+ * @version $Rev$ $Date$
  */
 public class MessageImpl implements Message {
     private static final long serialVersionUID = 3774985131149736175L;
