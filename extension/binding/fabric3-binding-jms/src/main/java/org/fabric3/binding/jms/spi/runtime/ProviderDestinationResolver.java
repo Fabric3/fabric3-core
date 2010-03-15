@@ -34,29 +34,18 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
+*/
+package org.fabric3.binding.jms.spi.runtime;
+
+import javax.jms.Destination;
+
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+
+/**
+ * @version $Rev$ $Date$
  */
-package org.fabric3.binding.jms.loader;
+public interface ProviderDestinationResolver {
 
-import junit.framework.TestCase;
-
-import org.fabric3.binding.jms.spi.common.CreateOption;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
-
-public class JmsLoaderHelperTestCase extends TestCase {
-
-    public void testGetJmsMetadataFromURI() throws Exception {
-        JmsURIMetadata meta = JmsURIMetadata.parseURI("jms:dest?connectionFactoryName=factory&deliveryMode=PERSISTENT");
-        JmsBindingMetadata bindingMetadata = JmsLoaderHelper.getJmsMetadataFromURI(meta);
-        assertEquals("dest", bindingMetadata.getDestination().getName());
-        assertEquals("factory", bindingMetadata.getConnectionFactory().getName());
-        assertEquals(CreateOption.NEVER, bindingMetadata.getDestination().getCreate());
-    }
+    Destination resolve(DestinationDefinition definition) throws JmsResolutionException;
 
 }

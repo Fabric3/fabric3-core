@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.connectionfactory;
+package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -50,16 +50,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Collections;
 import javax.jms.ConnectionFactory;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
  * Implementation that always attempts to create a connection factory.
@@ -73,17 +72,17 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         this.manager = manager;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
+            throws JmsResolutionException {
 
+        String name = definition.getName();
         try {
-            String name = definition.getName();
             Map<String, String> props = definition.getProperties();
             String className = props.get("class");
             if (className == null) {
-                throw new JmsLookupException("The 'class' attribute must be set");
+                throw new JmsResolutionException("The 'class' attribute must be set for the connection factory: " + name);
             }
             ConnectionFactory factory = (ConnectionFactory) Class.forName(className).newInstance();
-            // TODO We may need to factor this into provider specific classes rather than making the general assumption on bean style props
             for (PropertyDescriptor pd : Introspector.getBeanInfo(factory.getClass()).getPropertyDescriptors()) {
                 String propName = pd.getName();
                 String propValue = props.get(propName);
@@ -92,19 +91,19 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
                     writeMethod.invoke(factory, propValue);
                 }
             }
-            return manager.register(name, factory, Collections.<String, String>emptyMap());
+            return manager.register(name, factory);
         } catch (InstantiationException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         } catch (IllegalAccessException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         } catch (ClassNotFoundException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         } catch (IntrospectionException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         } catch (InvocationTargetException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         } catch (FactoryRegistrationException e) {
-            throw new JmsLookupException("Unable to create connection factory", e);
+            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
         }
 
     }

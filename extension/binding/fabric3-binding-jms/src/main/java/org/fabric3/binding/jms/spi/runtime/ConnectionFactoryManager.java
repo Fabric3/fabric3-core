@@ -52,6 +52,16 @@ public interface ConnectionFactoryManager {
     /**
      * Registers a connection factory.
      *
+     * @param name    the connection factory name
+     * @param factory the connection factory
+     * @return the registered connection factory, which may be a wrapper
+     * @throws FactoryRegistrationException if there is an error registering
+     */
+    ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException;
+
+    /**
+     * Registers a connection factory.
+     *
      * @param name       the connection factory name
      * @param factory    the connection factory
      * @param properties properties such as pooling configuration

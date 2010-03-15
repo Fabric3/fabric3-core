@@ -35,23 +35,44 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.runtime.lookup;
-
-import org.fabric3.spi.builder.WiringException;
+package org.fabric3.binding.jms.spi.runtime;
 
 /**
- * Denotes an error looking up a connection factory or destination.
+ * Defines JMS constants.
  *
  * @version $Rev$ $Date$
  */
-public class JmsLookupException extends WiringException {
-    private static final long serialVersionUID = -2022498980450562546L;
+public interface JmsConstants {
 
-    public JmsLookupException(String message) {
-        super(message);
-    }
+    /**
+     * Header used to specify the service operation name being invoked.
+     */
+    String OPERATION_HEADER = "scaOperationName";
 
-    public JmsLookupException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Header used to send routing (callback and conversation) information.
+     */
+    String ROUTING_HEADER = "f3Context";
+
+    /**
+     * Header used to determine if a response is a fault.
+     */
+    String FAULT_HEADER = "f3Fault";
+
+    /**
+     * Identifies the default configured non-XA connection factory
+     */
+    String DEFAULT_CONNECTION_FACTORY = "default";
+
+    /**
+     * Identifies the default configured XA-enabled connection factory
+     */
+    String DEFAULT_XA_CONNECTION_FACTORY = "xaDefault";
+
+    int CACHE_NONE = 0;
+
+    int CACHE_CONNECTION = 1;
+
+    int CACHE_SESSION = 2;
+
 }

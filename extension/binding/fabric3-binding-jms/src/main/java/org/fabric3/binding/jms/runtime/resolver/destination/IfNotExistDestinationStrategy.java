@@ -41,19 +41,23 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.destination;
+package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import java.util.Hashtable;
+import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
+import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.runtime.lookup.DestinationStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
-import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
  * Implementation that attempts to resolve a a destination in JNDI and if it is not found, will create it.
@@ -62,19 +66,30 @@ import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
  */
 public class IfNotExistDestinationStrategy implements DestinationStrategy {
     private DestinationStrategy always = new AlwaysDestinationStrategy();
+    private List<ProviderDestinationResolver> resolvers;
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env)
-            throws JmsLookupException {
+    @Reference(required = false)
+    public void setResolvers(List<ProviderDestinationResolver> resolvers) {
+        this.resolvers = resolvers;
+    }
+
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
+            throws JmsResolutionException {
         try {
-            if (!env.contains(Context.INITIAL_CONTEXT_FACTORY)) {
-                // java.naming.factory.initial is not defined, resort to creating
-                return always.getDestination(definition, cf, env);
+            Destination destination;
+            for (ProviderDestinationResolver resolver : resolvers) {
+                destination = resolver.resolve(definition);
+                if (destination != null) {
+                    return destination;
+                }
             }
             return (Destination) JndiHelper.lookup(definition.getName(), env);
+        } catch (NoInitialContextException e) {
+            return always.getDestination(definition, factory, env);
         } catch (NameNotFoundException ex) {
-            return always.getDestination(definition, cf, env);
+            return always.getDestination(definition, factory, env);
         } catch (NamingException e) {
-            throw new JmsLookupException("Unable to lookup: " + definition.getName(), e);
+            throw new JmsResolutionException("Unable to resolve destination: " + definition.getName(), e);
         }
 
     }

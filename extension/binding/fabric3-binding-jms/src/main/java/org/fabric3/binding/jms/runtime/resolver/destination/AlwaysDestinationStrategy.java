@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.destination;
+package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import java.util.Hashtable;
 import javax.jms.Connection;
@@ -52,25 +52,24 @@ import javax.jms.QueueConnection;
 import javax.jms.Session;
 import javax.jms.TopicConnection;
 
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.runtime.helper.JmsHelper;
-import org.fabric3.binding.jms.runtime.lookup.DestinationStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
+import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- * Implementation that attempts to resolve the destination in JNDI.
+ * Implementation that attempts to always create the destination.
  *
  * @version $Revision$ $Date$
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env)
-            throws JmsLookupException {
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
+            throws JmsResolutionException {
         Connection connection = null;
+        String name = definition.getName();
         try {
-            String name = definition.getName();
-            connection = cf.createConnection();
-
+            connection = factory.createConnection();
             switch (definition.geType()) {
             case QUEUE:
                 QueueConnection qc = (QueueConnection) connection;
@@ -79,10 +78,10 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
                 TopicConnection tc = (TopicConnection) connection;
                 return tc.createTopicSession(false, Session.AUTO_ACKNOWLEDGE).createTopic(name);
             default:
-                throw new IllegalArgumentException("Unknown destination type");
+                throw new IllegalArgumentException("Unknown destination type for:" + name);
             }
         } catch (JMSException ex) {
-            throw new JmsLookupException("Unable to create destination", ex);
+            throw new JmsResolutionException("Unable to create destination:" + name, ex);
         } finally {
             JmsHelper.closeQuietly(connection);
         }

@@ -55,6 +55,11 @@ import javax.jms.JMSException;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
+import org.fabric3.binding.jms.runtime.host.JmsHost;
+import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
+import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
@@ -63,10 +68,6 @@ import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.binding.jms.runtime.host.JmsHost;
-import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
-import org.fabric3.binding.jms.runtime.lookup.AdministeredObjectResolver;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -192,7 +193,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
                 responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory, env);
             }
             return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
-        } catch (JmsLookupException e) {
+        } catch (JmsResolutionException e) {
             throw new WiringException(e);
         }
     }
@@ -222,13 +223,13 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     /**
      * Sets default connection factory values if not specified.
      *
-     * @param target                      the source definition
+     * @param source                      the source definition
      * @param connectionFactoryDefinition the connection factory definition
      */
-    private void checkDefaults(JmsSourceDefinition target, ConnectionFactoryDefinition connectionFactoryDefinition) {
+    private void checkDefaults(JmsSourceDefinition source, ConnectionFactoryDefinition connectionFactoryDefinition) {
         String name = connectionFactoryDefinition.getName();
         if (name == null) {
-            if (TransactionType.GLOBAL == target.getTransactionType()) {
+            if (TransactionType.GLOBAL == source.getTransactionType()) {
                 connectionFactoryDefinition.setName(JmsConstants.DEFAULT_XA_CONNECTION_FACTORY);
             } else {
                 connectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);

@@ -34,35 +34,18 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.runtime.lookup;
+*/
+package org.fabric3.binding.jms.spi.runtime;
 
-import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 
 /**
- * Strategy for looking up connection factories.
- *
- * @version $Revsion$ $Date$
+ * @version $Rev$ $Date$
  */
-public interface ConnectionFactoryStrategy {
+public interface ProviderConnectionFactoryResolver {
 
-    /**
-     * Gets the connection factory based on SCA JMS binding rules.
-     *
-     * @param definition Connection factory definition.
-     * @param env        JNDI environment.
-     * @return Lokked up or created destination.
-     * @throws JmsLookupException if there is an error returning the connection factory
-     */
-    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException;
-
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+    
 }

@@ -38,6 +38,7 @@
 
 package org.fabric3.tx.atomikos.jms.connection;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
@@ -85,11 +86,21 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         return nonXA.get(name);
     }
 
+    public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
+        return register(name, factory, Collections.<String, String>emptyMap());
+    }
+
     public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) throws FactoryRegistrationException {
 
         if (!(factory instanceof XAConnectionFactory)) {
+            if (nonXA.containsKey(name)) {
+                throw new FactoryRegistrationException("Connection factory already exists: " + name);
+            }
             nonXA.put(name, factory);
             return factory;
+        }
+        if (beans.containsKey(name)) {
+            throw new FactoryRegistrationException("Connection factory already exists: " + name);
         }
         AtomikosConnectionFactoryBean bean = new AtomikosConnectionFactoryBean();
         bean.setUniqueResourceName(name);

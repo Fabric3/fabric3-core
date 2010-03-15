@@ -41,35 +41,48 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.destination;
+package org.fabric3.binding.jms.runtime.resolver;
 
 import java.util.Hashtable;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.naming.NameNotFoundException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.runtime.lookup.DestinationStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
-import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
-
 /**
- * Implementation that always resolves a destination against JNDI and never attempts to create it.
+ * Performs JNDI resolution.
  *
  * @version $Revision$ $Date$
  */
-public class NeverDestinationStrategy implements DestinationStrategy {
+public class JndiHelper {
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env)
-            throws JmsLookupException {
-        try {
-            return (Destination) JndiHelper.lookup(definition.getName(), env);
-        } catch (NameNotFoundException ex) {
-            throw new JmsLookupException(definition.getName() + " not found", ex);
-        } catch (NamingException e) {
-            throw new JmsLookupException("Unable to lookup: " + definition.getName(), e);
-        }
+    private JndiHelper() {
     }
 
+    /**
+     * Looks up the administered object in JNDI.
+     *
+     * @param name the object name
+     * @param env  environment properties
+     * @return the object
+     * @throws NamingException if there was an error looking up the object. NameNotFoundException will be thrown if the object is not found in the
+     *                         JNDI tree.
+     */
+    public static Object lookup(String name, Hashtable<String, String> env) throws NamingException {
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        Context ctx = null;
+        try {
+            Thread.currentThread().setContextClassLoader(JndiHelper.class.getClassLoader());
+            ctx = new InitialContext(env);
+            return ctx.lookup(name);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
+            try {
+                if (ctx != null) {
+                    ctx.close();
+                }
+            } catch (NamingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

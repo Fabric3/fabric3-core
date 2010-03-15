@@ -41,51 +41,29 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.connectionfactory;
+package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.Collections;
 import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
-import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager and then JNDI.
+ * Strategy for looking up connection factories.
  *
- * @version $Revision$ $Date$
+ * @version $Revsion$ $Date$
  */
-public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy {
-    private ConnectionFactoryManager manager;
+public interface ConnectionFactoryStrategy {
 
-    public NeverConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
-        this.manager = manager;
-    }
-
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException {
-        String name = definition.getName();
-        try {
-            ConnectionFactory factory = manager.get(name);
-            if (factory != null) {
-                return factory;
-            }
-            factory = (ConnectionFactory) JndiHelper.lookup(name, env);
-            return manager.register(name, factory, Collections.<String, String>emptyMap());
-        } catch (NameNotFoundException e) {
-            throw new JmsLookupException("Connection factory not found: " + name, e);
-        } catch (FactoryRegistrationException e) {
-            throw new JmsLookupException("Error looking up: " + name, e);
-        } catch (NamingException e) {
-            throw new JmsLookupException("Error looking up: " + name, e);
-        }
-    }
+    /**
+     * Gets the connection factory based on SCA JMS binding rules.
+     *
+     * @param definition Connection factory definition.
+     * @param env        JNDI environment.
+     * @return Lokked up or created destination.
+     * @throws JmsResolutionException if there is an error returning the connection factory
+     */
+    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException;
 
 }

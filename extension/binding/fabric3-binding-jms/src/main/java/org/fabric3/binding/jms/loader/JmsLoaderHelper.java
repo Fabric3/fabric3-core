@@ -57,8 +57,6 @@ import org.fabric3.binding.jms.spi.common.ResponseDefinition;
  * Helper class for loading JMS binding configuration from a comppsite.
  */
 public class JmsLoaderHelper {
-    private static final String DEFAULT_CLIENT_QUEUE = "clientQueue";
-    private static final String DEFAULT_JMS_CONNECTION_FACTORY = "connectionFactory";
 
     private JmsLoaderHelper() {
     }
@@ -86,11 +84,7 @@ public class JmsLoaderHelper {
         // ConnectionFactory
         ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
         String connectionFactoryName = uriProperties.get(JmsURIMetadata.CONNECTIONFACORYNAME);
-        if (connectionFactoryName == null) {
-            connectionFactory.setName(DEFAULT_JMS_CONNECTION_FACTORY);
-        } else {
-            connectionFactory.setName(connectionFactoryName);
-        }
+        connectionFactory.setName(connectionFactoryName);
         connectionFactory.setCreate(CreateOption.NEVER);
         result.setConnectionFactory(connectionFactory);
 
@@ -99,12 +93,7 @@ public class JmsLoaderHelper {
         response.setConnectionFactory(connectionFactory);
         DestinationDefinition responseDestinationDef = new DestinationDefinition();
         String responseDestination = uriProperties.get(JmsURIMetadata.RESPONSEDESTINAT);
-        if (responseDestination != null) {
-            responseDestinationDef.setName(responseDestination);
-        } else {
-            responseDestinationDef.setName(DEFAULT_CLIENT_QUEUE);
-
-        }
+        responseDestinationDef.setName(responseDestination);
         responseDestinationDef.setCreate(CreateOption.NEVER);
         response.setDestination(responseDestinationDef);
         result.setResponse(response);

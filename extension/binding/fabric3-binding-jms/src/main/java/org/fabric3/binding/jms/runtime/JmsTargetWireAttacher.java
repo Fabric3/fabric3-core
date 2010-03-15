@@ -57,8 +57,9 @@ import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.binding.jms.runtime.lookup.AdministeredObjectResolver;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -148,7 +149,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 ResponseListener listener = new ResponseListener(responseDestination);
                 wireConfiguration.setResponseListener(listener);
             }
-        } catch (JmsLookupException e) {
+        } catch (JmsResolutionException e) {
             throw new WiringException(e);
         }
 

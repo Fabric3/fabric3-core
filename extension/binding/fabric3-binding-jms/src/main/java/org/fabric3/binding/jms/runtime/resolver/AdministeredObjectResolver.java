@@ -35,44 +35,43 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.runtime.lookup;
+package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import org.osoa.sca.annotations.Reference;
-
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.CreateOption;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- * Default implementation of AdministeredObjectResolver.
+ * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by
+ * {@link ConnectionFactoryDefinition} or {@link DestinationDefinition}.
  *
  * @version $Rev$ $Date$
  */
-public class AdministeredObjectResolverImpl implements AdministeredObjectResolver {
-    private Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies = new HashMap<CreateOption, ConnectionFactoryStrategy>();
-    private Map<CreateOption, DestinationStrategy> destinationStrategies = new HashMap<CreateOption, DestinationStrategy>();
+public interface AdministeredObjectResolver {
 
+    /**
+     * Resolves a ConnectionFactory.
+     *
+     * @param definition the connection factory definition
+     * @param env        properties for use when resolving the ConnectionFactory.
+     * @return the connection factory.
+     * @throws JmsResolutionException if there is an error during resolution
+     */
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException;
 
-    public AdministeredObjectResolverImpl(@Reference Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies,
-                                          @Reference Map<CreateOption, DestinationStrategy> destinationStrategies) {
-        this.factoryStrategies = factoryStrategies;
-        this.destinationStrategies = destinationStrategies;
-    }
-
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException {
-        CreateOption create = definition.getCreate();
-        return factoryStrategies.get(create).getConnectionFactory(definition, env);
-    }
-
-    public Destination resolve(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env) throws JmsLookupException {
-        CreateOption create = definition.getCreate();
-        return destinationStrategies.get(create).getDestination(definition, cf, env);
-    }
+    /**
+     * Resolves a destination.
+     *
+     * @param definition the destination definition
+     * @param factory    the connection factory
+     * @param env        environment properties used during resloution
+     * @return the destination
+     * @throws JmsResolutionException if there is an error during resolution
+     */
+    Destination resolve(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env) throws JmsResolutionException;
 
 }

@@ -41,48 +41,33 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup;
+package org.fabric3.binding.jms.runtime.resolver.destination;
 
 import java.util.Hashtable;
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
 import javax.naming.NamingException;
 
+import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
+import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+
 /**
- * Performs JNDI resolution.
+ * Implementation that always resolves a destination against JNDI and never attempts to create it.
  *
  * @version $Revision$ $Date$
  */
-public class JndiHelper {
+public class NeverDestinationStrategy implements DestinationStrategy {
 
-    private JndiHelper() {
-    }
-
-    /**
-     * Looks up the administered object in JNDI.
-     *
-     * @param name the object name
-     * @param env  environment properties
-     * @return the object
-     * @throws NamingException if there was an error looking up the object. NameNotFoundException will be thrown if the object is not found in the
-     *                         JNDI tree.
-     */
-    public static Object lookup(String name, Hashtable<String, String> env) throws NamingException {
-        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-        Context ctx = null;
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
+            throws JmsResolutionException {
+        String name = definition.getName();
         try {
-            Thread.currentThread().setContextClassLoader(JndiHelper.class.getClassLoader());
-            ctx = new InitialContext(env);
-            return ctx.lookup(name);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldCl);
-            try {
-                if (ctx != null) {
-                    ctx.close();
-                }
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
+            return (Destination) JndiHelper.lookup(name, env);
+        } catch (NamingException e) {
+            throw new JmsResolutionException("Unable to resolve destination: " + name, e);
         }
     }
+
 }

@@ -41,23 +41,24 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.lookup.connectionfactory;
+package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
-import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import javax.jms.ConnectionFactory;
-import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
+import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.runtime.lookup.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.runtime.lookup.JmsLookupException;
-import org.fabric3.binding.jms.runtime.lookup.JndiHelper;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
 
 /**
  * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, then JNDI and then, if not found, creating it.
@@ -65,32 +66,45 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryStrategy always;
     private ConnectionFactoryManager manager;
+    private List<ProviderConnectionFactoryResolver> resolvers;
 
     public IfNotExistConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
         this.always = new AlwaysConnectionFactoryStrategy(manager);
         this.manager = manager;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsLookupException {
+    @Reference(required = false)
+    public void setResolvers(List<ProviderConnectionFactoryResolver> resolvers) {
+        this.resolvers = resolvers;
+    }
+
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
+            throws JmsResolutionException {
         String name = definition.getName();
         try {
             ConnectionFactory factory = manager.get(name);
             if (factory != null) {
                 return factory;
             }
-            if (!env.contains(Context.INITIAL_CONTEXT_FACTORY)) {
-                // java.naming.factory.initial is not defined, resort to creating
-                factory = always.getConnectionFactory(definition, env);
-                return manager.register(name, factory, Collections.<String, String>emptyMap());
+            for (ProviderConnectionFactoryResolver resolver : resolvers) {
+                factory = resolver.resolve(definition);
+                if (factory != null) {
+                    manager.register(name, factory);
+                    return factory;
+                }
             }
-            factory = (ConnectionFactory) JndiHelper.lookup(name, env);
-            return manager.register(name, factory, Collections.<String, String>emptyMap());
-        } catch (NameNotFoundException ex) {
-            return always.getConnectionFactory(definition, env);
+            try {
+                factory = (ConnectionFactory) JndiHelper.lookup(name, env);
+            } catch (NoInitialContextException e) {
+                factory = always.getConnectionFactory(definition, env);
+            } catch (NameNotFoundException ex) {
+                factory = always.getConnectionFactory(definition, env);
+            }
+            return manager.register(name, factory);
         } catch (FactoryRegistrationException e) {
-            throw new JmsLookupException("Unable to lookup: " + name, e);
+            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
         } catch (NamingException e) {
-            throw new JmsLookupException("Unable to lookup: " + name, e);
+            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
         }
     }
 

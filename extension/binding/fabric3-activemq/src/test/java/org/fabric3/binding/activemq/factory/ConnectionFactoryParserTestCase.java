@@ -50,6 +50,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 
 /**
  * @version $Rev$ $Date$
@@ -98,6 +99,10 @@ public class ConnectionFactoryParserTestCase extends TestCase {
 
         public ConnectionFactory get(String name) {
             return factories.get(name);
+        }
+
+        public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
+            return null;
         }
 
         public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) {
