@@ -44,8 +44,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that can be applied to a service interface to indicate that it should be exposed to a management framework.
- * <p/>
- * This would typically be applied to system interfaces that should be exposed by a runtime.
  *
  * @version $Rev$ $Date$
  */

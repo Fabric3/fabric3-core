@@ -38,21 +38,14 @@
 package org.fabric3.api.annotation.scope;
 
 /**
- * Provides named <code>String</code> constants representing component scopes. The represented scopes includes those defined in the specification but
- * may also include extended scopes specific to Fabric 3
+ * Provides named <code>String</code> constants representing component scopes.
  */
-public class Scopes {
+public interface Scopes {
 
-    //Specification scope
-    public static final String STATELESS = "STATELESS";
+    String STATELESS = "STATELESS";
 
-    //Specification scope    
-    public static final String COMPOSITE = "COMPOSITE";
+    String COMPOSITE = "COMPOSITE";
 
-    //Specification scope    
-    public static final String CONVERSATION = "CONVERSATION";
-
-    //Specification scope    
-    public static final String REQUEST = "REQUEST";
+    String CONVERSATION = "CONVERSATION";
 
 }

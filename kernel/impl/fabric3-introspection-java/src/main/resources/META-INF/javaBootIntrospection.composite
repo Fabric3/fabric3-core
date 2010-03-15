@@ -135,10 +135,6 @@
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.CompositeProcessor"/>
     </component>
 
-    <component name="RequestProcessor" f3-core:key="org.fabric3.api.annotation.scope.Request">
-        <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.RequestProcessor"/>
-    </component>
-
     <component name="StatelessProcessor" f3-core:key="org.fabric3.api.annotation.scope.Stateless">
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.StatelessProcessor"/>
     </component>
