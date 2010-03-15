@@ -114,7 +114,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         this.monitor = monitor;
     }
 
-    @Property
+    @Property (required = false)
     public void setAdminServerUrl(String adminServerUrl) {
         this.adminServerUrl = adminServerUrl;
     }
