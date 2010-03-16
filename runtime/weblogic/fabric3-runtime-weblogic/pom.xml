@@ -59,7 +59,7 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-fabric</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-jmx</artifactId>
@@ -77,7 +77,7 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-security-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-recovery</artifactId>
@@ -154,7 +154,7 @@ Public License. See the accompanying license file for details.
             <scope>runtime</scope>
         </dependency>
 
-        <!-- extensions -->
+        <!-- base extensions -->
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-java</artifactId>
@@ -196,7 +196,7 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-federation-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-sca-intents</artifactId>
@@ -221,7 +221,66 @@ Public License. See the accompanying license file for details.
             <version>${project.version}</version>
         </dependency>
 
-        
+        <!--Data binding extensions -->
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-databinding-jaxb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jaxb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <!-- JMS extensions -->
+
+        <dependency>
+            <groupId>org.codehaus.fabric3.weblogic</groupId>
+            <artifactId>fabric3-weblogic-jms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-jms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Web Services extensions -->
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-interface-wsdl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-ws</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-ws-metro</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-ws-policy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.objectweb.asm</groupId>
+            <artifactId>com.springsource.org.objectweb.asm</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

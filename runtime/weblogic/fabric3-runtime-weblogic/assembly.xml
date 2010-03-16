@@ -78,6 +78,22 @@
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-federation</include>
                 <include>org.codehaus.fabric3:fabric3-tx</include>
+
+                <!-- Data binding -->
+                <include>org.codehaus.fabric3:fabric3-databinding-jaxb</include>
+                <include>org.codehaus.fabric3:fabric3-jaxb</include>
+
+                <!-- JMS -->
+                <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-jms</include>
+                <include>org.codehaus.fabric3:fabric3-binding-jms</include>
+
+                <!-- Web Services -->
+                <include>org.codehaus.fabric3:fabric3-interface-wsdl</include>
+                <include>org.codehaus.fabric3:fabric3-binding-ws</include>
+                <include>org.codehaus.fabric3:fabric3-binding-ws-metro</include>
+                <include>org.codehaus.fabric3:fabric3-binding-ws-policy</include>
+                <include>org.objectweb.asm:com.springsource.org.objectweb.asm</include>
+
             </includes>
             <outputDirectory>fabric3/repository</outputDirectory>
         </dependencySet>
