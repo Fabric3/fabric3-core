@@ -23,14 +23,4 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.jms.runtime.WebLogicConnectionFactoryManager"/>
     </component>
 
-    <component name="WebLogicConnectionFactoryResolver">
-        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.jms.runtime.WebLogicConnectionFactoryResolver"/>
-    </component>
-
-    <component name="WebLogicDestinationResolver">
-        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.jms.runtime.WebLogicDestinationResolver"/>
-        <property name="adminServerUrl" source="$systemConfig//weblogic/@adminServerUrl"/>
-    </component>
-
-
 </composite>
