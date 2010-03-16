@@ -51,6 +51,8 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.runtime.webapp.WebappHostInfo;
+import org.fabric3.spi.contribution.ContentTypeResolutionException;
+import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionProcessor;
@@ -61,8 +63,6 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
-import org.fabric3.spi.contribution.ContentTypeResolver;
 
 /**
  * Processes a WAR contribution in an embedded runtime.
@@ -161,8 +161,7 @@ public class WarContributionProcessor implements ContributionProcessor {
         }
     }
 
-    private void processResources(Set<String> paths, Action action, Contribution contribution,
-                                  ServletContext context) throws MalformedURLException,
+    private void processResources(Set<String> paths, Action action, Contribution contribution, ServletContext context) throws MalformedURLException,
             InstallException, ContentTypeResolutionException {
         if (paths == null || paths.isEmpty()) return;
         for (String path : paths) {
