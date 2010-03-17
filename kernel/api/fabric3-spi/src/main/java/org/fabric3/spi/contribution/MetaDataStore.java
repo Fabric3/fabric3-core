@@ -161,8 +161,8 @@ public interface MetaDataStore {
     List<Contribution> resolveExtensionProviders(String name);
 
     /**
-     * Resolves are contribution that provides an extension point. Multiple contributions can provide the same extension point, e.g. contributions
-     * that represent different versions of a set of services.
+     * Resolves a contribution that provides an extension point. Multiple contributions can provide the same extension point, e.g. contributions that
+     * represent different versions of a set of services.
      *
      * @param name the extension point name
      * @return the URIs of the contibutions that provide the extension points
