@@ -79,10 +79,8 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         }
 
         String urlString = contentUrl.toExternalForm();
-
         try {
 
-            URLConnection connection = contentUrl.openConnection();
             String contentType = null;
             int extensionIndex = urlString.lastIndexOf('.');
 
@@ -92,6 +90,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
                 if (contentType != null) {
                     return contentType;
                 }
+                URLConnection connection = contentUrl.openConnection();
                 contentType = connection.getContentType();
             }
 
@@ -108,7 +107,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
     }
 
     public void register(String fileExtension, String contentType) {
-        extensionMap.put(fileExtension,contentType);
+        extensionMap.put(fileExtension, contentType);
     }
 
     public void unregister(String fileExtension) {

@@ -139,7 +139,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, classLoader, url);
         Composite composite;
         try {
-            // check to see if the resoruce has already been evaluated
+            // check to see if the resource has already been evaluated
             composite = loader.load(url, Composite.class, childContext);
         } catch (LoaderException e) {
             throw new InstallException(e);
