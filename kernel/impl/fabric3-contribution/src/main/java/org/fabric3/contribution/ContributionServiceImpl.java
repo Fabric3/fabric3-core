@@ -594,7 +594,7 @@ public class ContributionServiceImpl implements ContributionService {
             }
             if (!found) {
                 URI uri = contribution.getUri();
-                InvalidDeployable failure = new InvalidDeployable("Deployable composite " + name + " not found in " + uri, uri, name);
+                InvalidDeployable failure = new InvalidDeployable("Deployable composite " + name + " not found in " + uri, name);
                 context.addError(failure);
             }
 

@@ -37,7 +37,6 @@
 */
 package org.fabric3.contribution;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.contribution.ValidationFailure;
@@ -55,10 +54,9 @@ public class InvalidDeployable extends ValidationFailure {
      * Constructor.
      *
      * @param message    the error message
-     * @param uri        the contribution URI
      * @param deployable the deployable qualified name
      */
-    public InvalidDeployable(String message, URI uri, QName deployable) {
+    public InvalidDeployable(String message, QName deployable) {
         super();
         this.message = message;
         this.deployable = deployable;
