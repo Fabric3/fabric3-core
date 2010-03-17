@@ -131,6 +131,10 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                 try {
                     URL entryUrl = file.toURI().toURL();
                     String contentType = contentTypeResolver.getContentType(entryUrl);
+                    // skip entry if we don't recognize the content type
+                    if (contentType == null) {
+                        continue;
+                    }
                     action.process(contribution, contentType, entryUrl);
                 } catch (MalformedURLException e) {
                     throw new InstallException(e);

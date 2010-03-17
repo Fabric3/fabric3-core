@@ -9,7 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/archive-tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -61,7 +61,6 @@
     <orderEntry type="module" module-name="fabric3-fabric" exported="" />
     <orderEntry type="module" module-name="fabric3-pojo" exported="" />
     <orderEntry type="module" module-name="fabric3-transform" exported="" />
-    <orderEntry type="module" module-name="fabric3-loader" exported="" />
     <orderEntry type="module" module-name="fabric3-system" exported="" />
     <orderEntry type="module" module-name="fabric3-jmx" exported="" />
     <orderEntry type="module" module-name="fabric3-java" exported="" />
@@ -77,19 +76,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.1/wstx-asl-3.2.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.tuscany:commonj-api_r1.1:1.0-incubator-M2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -176,19 +162,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.eclipse.jdt:core:3.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/eclipse/jdt/core/3.1.1/core-3.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/eclipse/jdt/core/3.1.1/core-3.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/eclipse/jdt/core/3.1.1/core-3.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
       <library name="ant:ant:1.6.5">
         <CLASSES>
           <root url="jar://$M2_REPO$/ant/ant/1.6.5/ant-1.6.5.jar!/" />
@@ -198,32 +171,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/ant/ant/1.6.5/ant-1.6.5-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:1.0.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-j2ee-connector_1.5_spec/1.0.1/geronimo-j2ee-connector_1.5_spec-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-j2ee-connector_1.5_spec/1.0.1/geronimo-j2ee-connector_1.5_spec-1.0.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-j2ee-connector_1.5_spec/1.0.1/geronimo-j2ee-connector_1.5_spec-1.0.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec:1.0.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

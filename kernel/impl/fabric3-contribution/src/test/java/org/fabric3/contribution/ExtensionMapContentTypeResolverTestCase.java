@@ -41,28 +41,25 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.contribution.ContentTypeResolver;
-
 /**
  * @version $Revision$ $Date$
  */
 public class ExtensionMapContentTypeResolverTestCase extends TestCase {
-    private ContentTypeResolver resolver;
+    private ExtensionMapContentTypeResolver resolver;
 
     public void testKnownContentType() throws Exception {
         URL url = getClass().getResource("test.txt");
-
         assertEquals("text/plain", resolver.getContentType(url));
     }
 
     public void testGetContentType() throws Exception {
         URL url = getClass().getResource("test.composite");
-
         assertEquals("text/vnd.fabric3.composite+xml", resolver.getContentType(url));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         resolver = new ExtensionMapContentTypeResolver();
+        resolver.init();
     }
 }

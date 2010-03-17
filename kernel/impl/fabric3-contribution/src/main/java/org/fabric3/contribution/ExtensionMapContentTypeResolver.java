@@ -42,9 +42,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.activation.FileTypeMap;
 
-import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Init;
 
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -55,21 +54,20 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
  * @version $Revision$ $Date$
  */
 public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
-
-    // Unknown content
     private static final String UNKNOWN_CONTENT = "content/unknown";
 
-    // Extension to content type map
+    // file extension to content type map
     private Map<String, String> extensionMap = new HashMap<String, String>();
 
-    private FileTypeMap typeMap = FileTypeMap.getDefaultFileTypeMap();
 
-    /**
-     * @param extensionMap Injected extension map.
-     */
-    @Property
-    public void setExtensionMap(Map<String, String> extensionMap) {
-        this.extensionMap = extensionMap;
+    @Init
+    public void init() {
+        extensionMap.put("xml","application/xml");
+        extensionMap.put("composite","text/vnd.fabric3.composite+xml");
+        extensionMap.put("zip","application/zip");
+        extensionMap.put("jar","application/zip");
+        extensionMap.put("definitions","text/vnd.fabric3.definitions+xml");
+        extensionMap.put("wsdl","text/wsdl+xml");
     }
 
     public String getContentType(URL contentUrl) throws ContentTypeResolutionException {
@@ -95,8 +93,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
             }
 
             if (contentType == null || UNKNOWN_CONTENT.equals(contentType) || "application/octet-stream".equals(contentType)) {
-                String filename = contentUrl.getFile();
-                contentType = typeMap.getContentType(filename);
+                return null;
             }
 
             return contentType;

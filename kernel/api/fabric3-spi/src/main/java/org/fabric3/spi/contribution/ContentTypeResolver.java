@@ -50,7 +50,7 @@ public interface ContentTypeResolver {
      * Gets the content type for the contribution source.
      *
      * @param contentUrl URL for the content.
-     * @return Content type for the contribution source.
+     * @return Content type for the contribution source or null if the content type is unknown.
      * @throws ContentTypeResolutionException if unable to resolve content type.
      */
     String getContentType(URL contentUrl) throws ContentTypeResolutionException;

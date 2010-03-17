@@ -28,15 +28,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-weblogic-api" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/javaee.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="fabric3-weblogic-mock" />
   </component>
 </module>

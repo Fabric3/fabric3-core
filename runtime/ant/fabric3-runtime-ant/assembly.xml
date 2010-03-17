@@ -51,7 +51,6 @@
                 <!-- JSP must be on the host classpath as end-user tags may implement interfaces -->
                 <include>org.mortbay.jetty:jsp-api-2.1</include>
                 <include>javax.annotation:com.springsource.javax.annotation</include>
-                <include>javax.activation:activation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.xml:webservices-api-osgi</include>
                 <include>stax:stax-api</include>

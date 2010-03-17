@@ -3,14 +3,12 @@
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
-    <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -240,19 +238,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.apache.tuscany:commonj-api_r1.1:1.0-incubator-M2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/tuscany/commonj-api_r1.1/1.0-incubator-M2/commonj-api_r1.1-1.0-incubator-M2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
       <library name="javax.servlet:servlet-api:2.4">
         <CLASSES>
           <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
@@ -262,19 +247,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="javax.activation:activation:1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
