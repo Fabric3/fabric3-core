@@ -181,7 +181,7 @@ public abstract class AbstractDomain implements Domain {
         instantiateAndDeploy(composite, SYNTHETIC_PLAN);
         QName name = composite.getName();
         for (DomainListener listener : listeners) {
-            listener.onInclude(name, null);
+            listener.onInclude(name, SYNTHETIC_PLAN_NAME);
         }
     }
 
@@ -212,7 +212,7 @@ public abstract class AbstractDomain implements Domain {
             // notify listeners
             for (Composite deployable : deployables) {
                 for (DomainListener listener : listeners) {
-                    listener.onInclude(deployable.getName(), null);
+                    listener.onInclude(deployable.getName(), SYNTHETIC_PLAN_NAME);
                 }
             }
         }
