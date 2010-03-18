@@ -64,7 +64,7 @@ public interface ContributionSource {
     URI getUri();
 
     /**
-     * Returns a input stream for the source.
+     * Returns a .
      *
      * @return a input stream for the source
      * @throws IOException if an error occurs returning the stream
@@ -72,9 +72,9 @@ public interface ContributionSource {
     InputStream getSource() throws IOException;
 
     /**
-     * If the source is local, returns the source URL
+     * Returns the contribution location in the form of a URL.
      *
-     * @return the source URL
+     * @return the URL or null
      */
     URL getLocation();
 

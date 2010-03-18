@@ -75,8 +75,8 @@ import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UpdateException;
 import org.fabric3.host.contribution.ValidationFailure;
-import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.repository.Repository;
+import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -658,6 +658,9 @@ public class ContributionServiceImpl implements ContributionService {
         }
         try {
             String type = source.getContentType();
+            if (type == null && locationUrl == null) {
+                throw new StoreException("Content type could not be determined for contribution: " + contributionUri);
+            }
             if (type == null) {
                 type = contentTypeResolver.getContentType(locationUrl);
             }

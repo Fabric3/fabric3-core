@@ -102,19 +102,15 @@ public class RepositoryScanner {
                     // if the file is not a JAR, it must be a user contribution
                     result.addUserContribution(source);
                 } else {
-                    toScan.put(source.getLocation(), source);
+                    toScan.put(location, source);
                 }
             } catch (MalformedURLException e) {
                 throw new InitializationException("Error loading contribution", file.getName(), e);
             }
         }
 
-        URL[] urls = new URL[toScan.size()];
-        int i = 0;
-        for (ContributionSource source : toScan.values()) {
-            urls[i] = source.getLocation();
-            ++i;
-        }
+
+        URL[] urls = toScan.keySet().toArray(new URL[toScan.size()]);
         URLClassLoader urlClassLoader = new URLClassLoader(urls);
         Enumeration<URL> scannedManifests;
         try {
