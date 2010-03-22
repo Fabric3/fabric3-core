@@ -90,7 +90,6 @@
                 <include>org.codehaus.fabric3:fabric3-conversation-propagation</include>
                 <include>org.codehaus.fabric3:fabric3-sca-intents</include>
                 <include>org.codehaus.fabric3:fabric3-jetty</include>
-                <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>
                 <include>org.codehaus.fabric3:fabric3-resource</include>
                 <include>org.codehaus.fabric3:fabric3-security-impl</include>
                 <include>javax.transaction:com.springsource.javax.transaction</include>
