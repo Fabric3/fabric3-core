@@ -121,11 +121,15 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
 
     private void buildIsolatedClassLoaderEnvironment(PhysicalClassLoaderDefinition definition) throws ClassLoaderBuilderException {
         URI uri = definition.getUri();
-        URL[] classpath = resolveClasspath(definition.getContributionUri());
-
         // build the classloader using the locally cached resources
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
-        MultiParentClassLoader loader = new MultiParentClassLoader(uri, classpath, hostClassLoader);
+        MultiParentClassLoader loader;
+        if (definition.isProvisionArtifact()) {
+            URL[] classpath = resolveClasspath(definition.getContributionUri());
+            loader = new MultiParentClassLoader(uri, classpath, hostClassLoader);
+        } else {
+            loader = new MultiParentClassLoader(uri, hostClassLoader);
+        }
         for (PhysicalClassLoaderWireDefinition wireDefinition : definition.getWireDefinitions()) {
             wireBuilder.build(loader, wireDefinition);
         }
@@ -158,20 +162,18 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
      */
     private URL[] resolveClasspath(URI uri) throws ClassLoaderBuilderException {
 
-        List<URL> classpath = new ArrayList<URL>();
-
         try {
             // resolve the remote contributions and cache them locally
             URL resolvedUrl = resolver.resolve(uri);
             // introspect and expand if necessary
+            List<URL> classpath = new ArrayList<URL>();
             classpath.addAll(classpathProcessorRegistry.process(resolvedUrl));
+            return classpath.toArray(new URL[classpath.size()]);
         } catch (ResolutionException e) {
             throw new ClassLoaderBuilderException("Error resolving artifact: " + uri.toString(), e);
         } catch (IOException e) {
             throw new ClassLoaderBuilderException("Error processing: " + uri.toString(), e);
         }
-        return classpath.toArray(new URL[classpath.size()]);
-
     }
 
 }

@@ -37,23 +37,25 @@
 */
 package org.fabric3.admin.controller;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.Source;
 
 /**
+ * A contribution artifact that is sourced from an InputStream.
+ *
  * @version $Rev$ $Date$
  */
-public class RemoteContributionSource implements ContributionSource {
+public class InputStreamContributionSource implements ContributionSource {
     private URI uri;
-    private InputStream stream;
+    private Source source;
 
-    public RemoteContributionSource(URI uri, InputStream stream) {
+    public InputStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
-        this.stream = stream;
+        this.source = new InputStreamSource(stream);
     }
 
     public boolean persist() {
@@ -64,8 +66,8 @@ public class RemoteContributionSource implements ContributionSource {
         return uri;
     }
 
-    public InputStream getSource() throws IOException {
-        return stream;
+    public Source getSource() {
+        return source;
     }
 
     public URL getLocation() {

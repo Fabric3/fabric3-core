@@ -37,19 +37,18 @@
 */
 package org.fabric3.host.contribution;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 /**
- * A contribution artifact that is on a filesystem
+ * A contribution artifact that is sourced from a filesystem.
  *
  * @version $Rev$ $Date$
  */
 public class FileContributionSource implements ContributionSource {
     private URI uri;
     private URL location;
+    private Source source;
     private long timestamp;
     private byte[] checksum;
     private String contentType;
@@ -64,6 +63,7 @@ public class FileContributionSource implements ContributionSource {
         this.timestamp = timestamp;
         this.checksum = checksum;
         this.contentType = contentType;
+        this.source = new UrlSource(location);
     }
 
     public boolean persist() {
@@ -74,8 +74,8 @@ public class FileContributionSource implements ContributionSource {
         return uri;
     }
 
-    public InputStream getSource() throws IOException {
-        return location.openStream();
+    public Source getSource() {
+        return source;
     }
 
     public URL getLocation() {

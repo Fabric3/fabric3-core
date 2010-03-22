@@ -185,7 +185,8 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         if (Names.BOOT_CONTRIBUTION.equals(uri) || Names.HOST_CONTRIBUTION.equals(uri)) {
             return null;
         }
-        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri);
+        boolean provisionArtifact = contribution.getLocation() != null;  // don't provision synthetic artifacts;
+        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, provisionArtifact);
         definition.setContributionUri(uri);
         List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
         for (ContributionWire<?, ?> wire : contributionWires) {

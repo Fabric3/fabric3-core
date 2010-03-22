@@ -51,11 +51,19 @@ public class PhysicalClassLoaderDefinition implements Serializable {
     private static final long serialVersionUID = 1869864181383360066L;
 
     private URI uri;
+    private boolean provisionArtifact;
     private URI contributionUri;
     private Set<PhysicalClassLoaderWireDefinition> wireDefinitions = new LinkedHashSet<PhysicalClassLoaderWireDefinition>();
 
-    public PhysicalClassLoaderDefinition(URI uri) {
+    /**
+     * Constructor.
+     *
+     * @param uri               the classloader name
+     * @param provisionArtifact true if the associated contribution should be provisioned. Synthetic contributions do not need to be provisioned.
+     */
+    public PhysicalClassLoaderDefinition(URI uri, boolean provisionArtifact) {
         this.uri = uri;
+        this.provisionArtifact = provisionArtifact;
     }
 
     /**
@@ -65,6 +73,15 @@ public class PhysicalClassLoaderDefinition implements Serializable {
      */
     public URI getUri() {
         return uri;
+    }
+
+    /**
+     * True if the artifact should be provisioned.
+     *
+     * @return true if the artifact should be provisioned
+     */
+    public boolean isProvisionArtifact() {
+        return provisionArtifact;
     }
 
     /**

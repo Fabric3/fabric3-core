@@ -43,20 +43,23 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.Source;
 
 /**
- * A ContributionSource that wraps an underlying input stream to avoid closing it. This implementation is used to handle input streams that contain
- * multiple contribution archives.
+ * A ContributionSource that wraps an underlying input stream to avoid closing it. This implementation is used to handle streams that contain multiple
+ * contribution archives.
  *
  * @version $Rev$ $Date$
  */
-public class StreamContributionSource implements ContributionSource {
+public class WrappedStreamContributionSource implements ContributionSource {
     private URI uri;
-    private StreamWrapper wrapped;
+    private InputStreamSource source;
 
-    public StreamContributionSource(URI uri, InputStream stream) {
+    public WrappedStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
-        this.wrapped = new StreamWrapper(stream);
+        StreamWrapper wrapper = new StreamWrapper(stream);
+        this.source = new InputStreamSource(wrapper);
+
     }
 
     public boolean persist() {
@@ -67,8 +70,8 @@ public class StreamContributionSource implements ContributionSource {
         return uri;
     }
 
-    public InputStream getSource() throws IOException {
-        return wrapped;
+    public Source getSource() {
+        return source;
     }
 
     public URL getLocation() {

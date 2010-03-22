@@ -90,7 +90,7 @@ public class ContributionServlet extends HttpServlet {
         String substr = path.substring(pos + 1);
         try {
             URI uri = new URI(substr);  // remove the leading "/"
-            ContributionSource source = new RemoteContributionSource(uri, req.getInputStream());
+            ContributionSource source = new InputStreamContributionSource(uri, req.getInputStream());
             contributionService.store(source);
             resp.setStatus(200);
         } catch (URISyntaxException e) {

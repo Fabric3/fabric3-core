@@ -37,12 +37,12 @@
 */
 package org.fabric3.runtime.maven;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.Source;
+import org.fabric3.host.contribution.UrlSource;
 
 /**
  * A representation of a Maven module contribution.
@@ -56,12 +56,14 @@ public class ModuleContributionSource implements ContributionSource {
     private URL url;
     private long timestamp;
     private byte[] checksum;
+    private Source source;
 
     public ModuleContributionSource(URI uri, URL url) {
         this.uri = uri;
         this.url = url;
-        checksum = new byte[0];
-        timestamp = System.currentTimeMillis();
+        this.checksum = new byte[0];
+        this.timestamp = System.currentTimeMillis();
+        this.source = new UrlSource(url);
     }
 
     public boolean persist() {
@@ -72,8 +74,8 @@ public class ModuleContributionSource implements ContributionSource {
         return uri;
     }
 
-    public InputStream getSource() throws IOException {
-        return url.openStream();
+    public Source getSource() {
+        return source;
     }
 
     public URL getLocation() {

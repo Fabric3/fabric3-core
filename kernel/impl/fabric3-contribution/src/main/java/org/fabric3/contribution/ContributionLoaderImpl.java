@@ -109,16 +109,18 @@ public class ContributionLoaderImpl implements ContributionLoader {
             return hostClassLoader;
         }
         MultiParentClassLoader loader = new MultiParentClassLoader(contributionUri, hostClassLoader);
-        List<URL> classpath;
-        try {
-            // construct the classpath for contained resources in the contribution
-            classpath = classpathProcessorRegistry.process(contribution.getLocation());
-        } catch (IOException e) {
-            throw new ContributionLoadException(e);
-        }
+        // construct the classpath for contained resources in the contribution if it is a physical artifact
+        URL location = contribution.getLocation();
+        if (location != null) {
+            try {
+                List<URL> classpath = classpathProcessorRegistry.process(location);
+                for (URL library : classpath) {
+                    loader.addURL(library);
+                }
+            } catch (IOException e) {
+                throw new ContributionLoadException(e);
+            }
 
-        for (URL library : classpath) {
-            loader.addURL(library);
         }
 
         // connect imported contribution classloaders according to their wires

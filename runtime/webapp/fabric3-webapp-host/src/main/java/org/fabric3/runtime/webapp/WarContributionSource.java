@@ -38,13 +38,12 @@
 package org.fabric3.runtime.webapp;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.Source;
 
 /**
  * Used to install the current webapp as a contribution.
@@ -75,7 +74,7 @@ public class WarContributionSource implements ContributionSource {
         return contributionUri;
     }
 
-    public InputStream getSource() throws IOException {
+    public Source getSource() {
         return null;
     }
 

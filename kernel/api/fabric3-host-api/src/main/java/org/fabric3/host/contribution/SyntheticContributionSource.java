@@ -37,8 +37,6 @@
 */
 package org.fabric3.host.contribution;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -73,7 +71,7 @@ public class SyntheticContributionSource implements ContributionSource {
         return location;
     }
 
-    public InputStream getSource() throws IOException {
+    public Source getSource() {
         throw new UnsupportedOperationException();
     }
 

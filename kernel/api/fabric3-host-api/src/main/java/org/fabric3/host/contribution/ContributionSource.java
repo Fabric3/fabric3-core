@@ -37,8 +37,6 @@
 */
 package org.fabric3.host.contribution;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -50,29 +48,29 @@ import java.net.URL;
 public interface ContributionSource {
 
     /**
-     * Returns true if the source shoud be persisted.
+     * Returns true if the source should be persisted.
      *
-     * @return true if the source shoud be persisted
+     * @return true if the source should be persisted
      */
     boolean persist();
 
     /**
-     * Returns the identifier for this contribution or null if one has not been assigned (i.e. it is a new contribution and not an update).
+     * Returns the identifier for this contribution.
      *
      * @return the identifier for this contribution
      */
     URI getUri();
 
     /**
-     * Returns a .
+     * Returns a {@link Source} for reading the contents of the contribution.
      *
-     * @return a input stream for the source
-     * @throws IOException if an error occurs returning the stream
+     * @return the source
      */
-    InputStream getSource() throws IOException;
+    Source getSource();
 
     /**
-     * Returns the contribution location in the form of a URL.
+     * Returns the contribution location in the form of a URL. Null may be returned if the contribution source is synthetic and not a physical
+     * artifact.
      *
      * @return the URL or null
      */

@@ -71,9 +71,11 @@ import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.DuplicateProfileException;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.RemoveException;
+import org.fabric3.host.contribution.Source;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UpdateException;
+import org.fabric3.host.contribution.UrlSource;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
@@ -97,7 +99,7 @@ import org.fabric3.spi.introspection.validation.InvalidContributionException;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
 
 /**
- * Default ContributionService implementation
+ * Default ContributionService implementation.
  *
  * @version $Rev$ $Date$
  */
@@ -143,8 +145,8 @@ public class ContributionServiceImpl implements ContributionService {
         this.repository = repository;
     }
 
-    public URI store(ContributionSource source) throws StoreException {
-        Contribution contribution = persist(source);
+    public URI store(ContributionSource contributionSource) throws StoreException {
+        Contribution contribution = persist(contributionSource);
         metaDataStore.store(contribution);
         for (ContributionServiceListener listener : listeners) {
             listener.onStore(contribution);
@@ -178,11 +180,11 @@ public class ContributionServiceImpl implements ContributionService {
         installInOrder(contributions);
     }
 
-    public List<URI> contribute(List<ContributionSource> sources) throws ContributionException {
-        List<Contribution> contributions = new ArrayList<Contribution>(sources.size());
-        for (ContributionSource source : sources) {
+    public List<URI> contribute(List<ContributionSource> contributionSources) throws ContributionException {
+        List<Contribution> contributions = new ArrayList<Contribution>(contributionSources.size());
+        for (ContributionSource contributionSource : contributionSources) {
             // store the contributions
-            Contribution contribution = persist(source);
+            Contribution contribution = persist(contributionSource);
             for (ContributionServiceListener listener : listeners) {
                 listener.onStore(contribution);
             }
@@ -192,8 +194,8 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
 
-    public URI contribute(ContributionSource source) throws ContributionException {
-        Contribution contribution = persist(source);
+    public URI contribute(ContributionSource contributionSource) throws ContributionException {
+        Contribution contribution = persist(contributionSource);
         for (ContributionServiceListener listener : listeners) {
             listener.onStore(contribution);
         }
@@ -208,13 +210,13 @@ public class ContributionServiceImpl implements ContributionService {
         return metaDataStore.find(uri) != null;
     }
 
-    public void update(ContributionSource source) throws UpdateException, ContributionNotFoundException {
-        URI uri = source.getUri();
-        byte[] checksum = source.getChecksum();
-        long timestamp = source.getTimestamp();
+    public void update(ContributionSource contributionSource) throws UpdateException, ContributionNotFoundException {
+        URI uri = contributionSource.getUri();
+        byte[] checksum = contributionSource.getChecksum();
+        long timestamp = contributionSource.getTimestamp();
         InputStream is = null;
         try {
-            is = source.getSource();
+            is = contributionSource.getSource().openStream();
             update(uri, checksum, timestamp);
         } catch (IOException e) {
             throw new UpdateException("Contribution error", e);
@@ -623,24 +625,28 @@ public class ContributionServiceImpl implements ContributionService {
     /**
      * Stores the contents of a contribution in the archive store if it is not local
      *
-     * @param source the contribution source
+     * @param contributionSource the contribution source
      * @return the contribution
      * @throws StoreException if an error occurs during the store operation
      */
-    private Contribution persist(ContributionSource source) throws StoreException {
-        URI contributionUri = source.getUri();
+    private Contribution persist(ContributionSource contributionSource) throws StoreException {
+        URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
             throw new DuplicateContributionException("Contribution is already installed: " + contributionUri);
         }
         URL locationUrl;
-        boolean persistent = source.persist();
+        boolean persistent = contributionSource.persist();
+        Source source;
         if (!persistent) {
-            locationUrl = source.getLocation();
+            locationUrl = contributionSource.getLocation();
+            // reuse the source as the contribution is locally resolvable
+            source = contributionSource.getSource();
         } else {
             InputStream stream = null;
             try {
-                stream = source.getSource();
+                stream = contributionSource.getSource().openStream();
                 locationUrl = getRepository().store(contributionUri, stream);
+                source = new UrlSource(locationUrl);
             } catch (IOException e) {
                 throw new StoreException(e);
             } catch (RepositoryException e) {
@@ -656,20 +662,20 @@ public class ContributionServiceImpl implements ContributionService {
             }
 
         }
-        try {
-            String type = source.getContentType();
-            if (type == null && locationUrl == null) {
-                throw new StoreException("Content type could not be determined for contribution: " + contributionUri);
-            }
-            if (type == null) {
-                type = contentTypeResolver.getContentType(locationUrl);
-            }
-            byte[] checksum = source.getChecksum();
-            long timestamp = source.getTimestamp();
-            return new Contribution(contributionUri, locationUrl, checksum, timestamp, type, persistent);
-        } catch (ContentTypeResolutionException e) {
-            throw new StoreException(e);
+        String type = contributionSource.getContentType();
+        if (type == null && locationUrl == null) {
+            throw new StoreException("Content type could not be determined for contribution: " + contributionUri);
         }
+        if (type == null) {
+            try {
+                type = contentTypeResolver.getContentType(locationUrl);
+            } catch (ContentTypeResolutionException e) {
+                throw new StoreException(e);
+            }
+        }
+        byte[] checksum = contributionSource.getChecksum();
+        long timestamp = contributionSource.getTimestamp();
+        return new Contribution(contributionUri, source, locationUrl, checksum, timestamp, type, persistent);
     }
 
     /**

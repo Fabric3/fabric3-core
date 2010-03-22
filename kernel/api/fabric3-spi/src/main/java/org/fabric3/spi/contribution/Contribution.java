@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.fabric3.host.contribution.Source;
+
 /**
  * The base representation of a deployed contribution
  *
@@ -55,6 +57,7 @@ public class Contribution implements Serializable {
     private static final long serialVersionUID = 2511879480122631196L;
 
     private final URI uri;
+    private Source source;
     private ContributionState state = ContributionState.STORED;
     private List<URI> profiles;
     private URL location;
@@ -75,17 +78,19 @@ public class Contribution implements Serializable {
     }
 
     /**
-     * Instantiates a new Contribution instance.
+     * Constructor.
      *
      * @param uri         the contribution URI
-     * @param location    a dereferenceble URL for the contribution archive
-     * @param checksum    the checksum for the contribution artifact
-     * @param timestamp   the time stamp of the contribution artifact
-     * @param contentType the MIME type of the contribution
+     * @param source      the source for reading the contribution contents
+     * @param location    the URL for the contribution archive. This can be null for contributions that are not physical archives.
+     * @param checksum    the contribution artifact checksum
+     * @param timestamp   the contribution artifact time stamp
+     * @param contentType the contribution MIME type
      * @param persistent  true if the contribution is persistent
      */
-    public Contribution(URI uri, URL location, byte[] checksum, long timestamp, String contentType, boolean persistent) {
+    public Contribution(URI uri, Source source, URL location, byte[] checksum, long timestamp, String contentType, boolean persistent) {
         this.uri = uri;
+        this.source = source;
         this.profiles = new ArrayList<URI>();
         this.location = location;
         this.checksum = checksum;
@@ -121,22 +126,20 @@ public class Contribution implements Serializable {
         this.state = state;
     }
 
-    public List<URI> getProfiles() {
-        return profiles;
-    }
-
-    public void addProfile(URI uri) {
-        profiles.add(uri);
-    }
-
-    public void addProfiles(List<URI> uris) {
-        profiles.addAll(uris);
+    /**
+     * Returns true if the contribution is persistent.
+     *
+     * @return true if the contribution is persistent.
+     */
+    public boolean isPersistent() {
+        return persistent;
     }
 
     /**
-     * Returns the locally dereferenceable URL for the contribution artifact.
+     * Returns the local URL for the contribution artifact or null if the contribution is not a physical artifact (e.g. it is synthesized from some
+     * source).
      *
-     * @return the dereferenceable URL for the contribution artifact
+     * @return the dereferenceable URL for the contribution artifact or null
      */
     public URL getLocation() {
         return location;
@@ -149,6 +152,15 @@ public class Contribution implements Serializable {
      */
     public String getContentType() {
         return contentType;
+    }
+
+    /**
+     * Returns a source for reading contents of the contribution.
+     *
+     * @return a source for reading contents of the contribution
+     */
+    public Source getSource() {
+        return source;
     }
 
     /**
@@ -167,15 +179,6 @@ public class Contribution implements Serializable {
      */
     public long getTimestamp() {
         return timestamp;
-    }
-
-    /**
-     * Returns true if the contribution is persistent.
-     *
-     * @return true if the contribution is persistent.
-     */
-    public boolean isPersistent() {
-        return persistent;
     }
 
     /**
@@ -230,6 +233,42 @@ public class Contribution implements Serializable {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the profiles this contribution is associated with.
+     *
+     * @return the profiles this contribution is associated with
+     */
+    public List<URI> getProfiles() {
+        return profiles;
+    }
+
+    /**
+     * Adds an associated profile.
+     *
+     * @param uri the profile URI
+     */
+    public void addProfile(URI uri) {
+        profiles.add(uri);
+    }
+
+    /**
+     * Adds associated profiles.
+     *
+     * @param uris the profile URIs
+     */
+    public void addProfiles(List<URI> uris) {
+        profiles.addAll(uris);
+    }
+
+    /**
+     * Removes the profile from the contribution. Contributions track the profiles they are members of.
+     *
+     * @param uri the profile URI
+     */
+    public void removeProfile(URI uri) {
+        profiles.remove(uri);
     }
 
     /**
@@ -313,15 +352,6 @@ public class Contribution implements Serializable {
         return !lockOwners.isEmpty();
     }
 
-    /**
-     * Removes the profile from the contribution. Contributions track the profiles they are members of.
-     *
-     * @param uri the profile URI
-     */
-    public void removeProfile(URI uri) {
-        profiles.remove(uri);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -330,11 +360,8 @@ public class Contribution implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Contribution that = (Contribution) o;
-
         return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
     }
 
 
