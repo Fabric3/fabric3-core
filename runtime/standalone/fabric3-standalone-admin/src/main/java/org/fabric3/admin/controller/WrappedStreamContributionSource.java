@@ -43,7 +43,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Source;
+import org.fabric3.host.stream.Source;
 
 /**
  * A ContributionSource that wraps an underlying input stream to avoid closing it. This implementation is used to handle streams that contain multiple
@@ -58,7 +58,7 @@ public class WrappedStreamContributionSource implements ContributionSource {
     public WrappedStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
         StreamWrapper wrapper = new StreamWrapper(stream);
-        this.source = new InputStreamSource(wrapper);
+        this.source = new InputStreamSource(uri.toString(), wrapper);
 
     }
 

@@ -50,6 +50,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.runtime.webapp.WebappHostInfo;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -107,10 +109,10 @@ public class WarContributionProcessor implements ContributionProcessor {
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
-        URL manifestURL;
+        URL manifestUrl;
         try {
-            manifestURL = info.getServletContext().getResource("/WEB-INF/sca-contribution.xml");
-            if (manifestURL == null) {
+            manifestUrl = info.getServletContext().getResource("/WEB-INF/sca-contribution.xml");
+            if (manifestUrl == null) {
                 return;
             }
         } catch (MalformedURLException e) {
@@ -123,7 +125,8 @@ public class WarContributionProcessor implements ContributionProcessor {
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            ContributionManifest manifest = loader.load(manifestURL, ContributionManifest.class, childContext);
+            Source source = new UrlSource(manifestUrl);
+            ContributionManifest manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }
@@ -139,9 +142,9 @@ public class WarContributionProcessor implements ContributionProcessor {
 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
         iterateArtifacts(contribution, new Action() {
-            public void process(Contribution contribution, String contentType, URL url)
-                    throws InstallException {
-                registry.indexResource(contribution, contentType, url, context);
+            public void process(Contribution contribution, String contentType, URL url) throws InstallException {
+                UrlSource source = new UrlSource(url);
+                registry.indexResource(contribution, contentType, source, context);
             }
         });
     }

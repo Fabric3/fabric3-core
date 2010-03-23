@@ -49,6 +49,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Property;
@@ -125,8 +127,9 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
             // this should not happen
             throw new LoaderException(e.getMessage(), e);
         }
+        Source source = new UrlSource(url);
         IntrospectionContext childContext = new DefaultIntrospectionContext(null, context.getClassLoader(), url);
-        ComponentType componentType = registry.load(url, ComponentType.class, childContext);
+        ComponentType componentType = registry.load(source, ComponentType.class, childContext);
         componentType.setScope("COMPOSITE");
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());

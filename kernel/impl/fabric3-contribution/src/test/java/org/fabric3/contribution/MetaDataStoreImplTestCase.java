@@ -53,6 +53,9 @@ import org.easymock.EasyMock;
 import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -63,7 +66,6 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.host.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -88,7 +90,9 @@ public class MetaDataStoreImplTestCase extends TestCase {
         QName qname = new QName("foo", "bar");
         QNameSymbol symbol = new QNameSymbol(qname);
         ResourceElement<QNameSymbol, Serializable> element = new ResourceElement<QNameSymbol, Serializable>(symbol);
-        Resource resource = new Resource(new URL("file://foo"), "resource");
+        URL url = new URL("file://foo");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(source, "resource");
         resource.addResourceElement(element);
         contribution.addResource(resource);
         store.store(contribution);

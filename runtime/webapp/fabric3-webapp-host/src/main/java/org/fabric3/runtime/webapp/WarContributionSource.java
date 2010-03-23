@@ -43,7 +43,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Source;
+import org.fabric3.host.stream.Source;
 
 /**
  * Used to install the current webapp as a contribution.

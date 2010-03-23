@@ -41,8 +41,8 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Source;
-import org.fabric3.host.contribution.UrlSource;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 
 /**
  * A representation of a Maven module contribution.

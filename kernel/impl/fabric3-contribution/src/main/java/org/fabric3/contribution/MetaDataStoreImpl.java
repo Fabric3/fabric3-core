@@ -68,7 +68,7 @@ import org.fabric3.spi.contribution.UnresolvedImportException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Default MetaDataStore implementation
+ * Default MetaDataStore implementation.
  *
  * @version $Rev$ $Date$
  */
@@ -419,7 +419,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
                         try {
                             processorRegistry.processResource(resource, context);
                         } catch (ContributionException e) {
-                            String identifier = resource.getUrl().toString();
+                            String identifier = resource.getSource().getSystemId();
                             throw new StoreException("Error resolving resource: " + identifier, identifier, e);
                         }
                     }

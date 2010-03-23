@@ -52,6 +52,8 @@ import java.util.zip.ZipInputStream;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -96,11 +98,12 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
         URL sourceUrl = contribution.getLocation();
         try {
-            URL manifestURL = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
+            URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            ContributionManifest manifest = loader.load(manifestURL, ContributionManifest.class, childContext);
+            Source source = new UrlSource(manifestUrl);
+            ContributionManifest manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }

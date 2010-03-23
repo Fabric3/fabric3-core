@@ -51,6 +51,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -104,7 +106,9 @@ public class XmlContributionProcessor implements ContributionProcessor {
             stream = locationURL.openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             reader.nextTag();
-            Resource resource = new Resource(contribution.getLocation(), "application/xml");
+            URL url = contribution.getLocation();
+            Source source = new UrlSource(url);
+            Resource resource = new Resource(source, "application/xml");
             xmlIndexerRegistry.index(resource, reader, context);
             contribution.addResource(resource);
         } catch (IOException e) {

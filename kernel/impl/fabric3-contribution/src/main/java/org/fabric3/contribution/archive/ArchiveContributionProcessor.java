@@ -45,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.contribution.UnsupportedContentTypeException;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.Action;
@@ -82,9 +83,9 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
         ArchiveContributionHandler handler = getHandler(contribution);
         handler.iterateArtifacts(contribution, new Action() {
-            public void process(Contribution contribution, String contentType, URL url)
-                    throws InstallException {
-                registry.indexResource(contribution, contentType, url, context);
+            public void process(Contribution contribution, String contentType, URL url) throws InstallException {
+                UrlSource source = new UrlSource(url);
+                registry.indexResource(contribution, contentType, source, context);
             }
         });
 

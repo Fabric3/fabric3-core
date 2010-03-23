@@ -47,19 +47,20 @@ import java.net.URL;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.util.FileHelper;
+import org.fabric3.spi.contribution.ContentTypeResolutionException;
+import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.archive.Action;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
-import org.fabric3.spi.contribution.ContentTypeResolver;
 
 /**
  * Handles exploded archives on a filesystem.
@@ -67,15 +68,11 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
     private final ContentTypeResolver contentTypeResolver;
-    private ProcessorRegistry registry;
 
 
-    public ExplodedArchiveContributionHandler(@Reference Loader loader,
-                                              @Reference ContentTypeResolver contentTypeResolver,
-                                              @Reference ProcessorRegistry registry) {
+    public ExplodedArchiveContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
         this.contentTypeResolver = contentTypeResolver;
-        this.registry = registry;
     }
 
     public String getContentType() {
@@ -94,7 +91,8 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            manifest = loader.load(manifestUrl, ContributionManifest.class, childContext);
+            Source source = new UrlSource(manifestUrl);
+            manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }
@@ -114,15 +112,13 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
 
     }
 
-    public void iterateArtifacts(Contribution contribution, Action action)
-            throws InstallException {
+    public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
         iterateArtifactsResursive(contribution, action, root);
     }
 
-    protected void iterateArtifactsResursive(Contribution contribution, Action action, File dir)
-            throws InstallException {
+    protected void iterateArtifactsResursive(Contribution contribution, Action action, File dir) throws InstallException {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {

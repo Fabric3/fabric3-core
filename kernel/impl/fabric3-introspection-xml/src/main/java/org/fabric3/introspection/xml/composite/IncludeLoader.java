@@ -55,7 +55,9 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -171,7 +173,8 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
         Composite composite;
         try {
-            composite = registry.load(url, Composite.class, childContext);
+            Source source = new UrlSource(url);
+            composite = registry.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
             InvalidValue failure = new InvalidValue("Error loading include", reader);
             context.addError(failure);

@@ -45,7 +45,6 @@ package org.fabric3.introspection.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -56,6 +55,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -107,18 +107,19 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         return type.cast(loader.load(reader, introspectionContext));
     }
 
-    public <O> O load(URL url, Class<O> type, IntrospectionContext ctx) throws LoaderException {
+    public <O> O load(Source source, Class<O> type, IntrospectionContext ctx) throws LoaderException {
+        String id = source.getSystemId();
         InputStream stream;
         try {
-            stream = url.openStream();
+            stream = source.openStream();
         } catch (IOException e) {
-            throw new LoaderException("Invalid URL: " + url.toString(), e);
+            throw new LoaderException("Invalid source: " + id, e);
         }
         try {
             try {
-                return load(url, stream, type, ctx);
+                return load(id, stream, type, ctx);
             } catch (XMLStreamException e) {
-                throw new LoaderException("Invalid URL: " + url.toString(), e);
+                throw new LoaderException("Invalid source: " + id, e);
             }
         } finally {
             try {
@@ -129,9 +130,10 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         }
     }
 
-    private <O> O load(URL url, InputStream stream, Class<O> type, IntrospectionContext ctx) throws XMLStreamException, UnrecognizedElementException {
+    private <O> O load(String id, InputStream stream, Class<O> type, IntrospectionContext ctx)
+            throws XMLStreamException, UnrecognizedElementException {
         XMLStreamReader reader;
-        reader = xmlFactory.createXMLStreamReader(url.toString(), stream);
+        reader = xmlFactory.createXMLStreamReader(id, stream);
 
         try {
             reader.nextTag();

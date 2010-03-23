@@ -37,13 +37,13 @@
 */
 package org.fabric3.contribution;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -103,13 +103,13 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         processor.index(contribution, context);
     }
 
-    public void indexResource(Contribution contribution, String contentType, URL url, IntrospectionContext context) throws InstallException {
+    public void indexResource(Contribution contribution, String contentType, Source source, IntrospectionContext context) throws InstallException {
         ResourceProcessor processor = resourceProcessorCache.get(contentType);
         if (processor == null) {
             // unknown type, skip
             return;
         }
-        processor.index(contribution, url, context);
+        processor.index(contribution, source, context);
     }
 
     public void processContribution(Contribution contribution, IntrospectionContext context) throws InstallException {

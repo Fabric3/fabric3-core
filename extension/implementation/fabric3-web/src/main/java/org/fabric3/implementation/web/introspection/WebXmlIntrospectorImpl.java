@@ -86,10 +86,10 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
                 return artifacts;
             }
         }
-        InputStream xmlStream = null;
+        InputStream stream = null;
         try {
-            xmlStream = resource.getUrl().openStream();
-            XMLStreamReader reader = xmlFactory.createXMLStreamReader(xmlStream);
+            stream = resource.getSource().openStream();
+            XMLStreamReader reader = xmlFactory.createXMLStreamReader(stream);
             while (true) {
                 // only match on local part since namespaces may be omitted
                 int event = reader.next();
@@ -131,8 +131,8 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
             context.addError(failure);
         } finally {
             try {
-                if (xmlStream != null) {
-                    xmlStream.close();
+                if (stream != null) {
+                    stream.close();
                 }
             } catch (IOException e) {
                 // ignore

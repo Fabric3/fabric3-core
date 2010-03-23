@@ -43,10 +43,10 @@
  */
 package org.fabric3.spi.introspection.xml;
 
-import java.net.URL;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -75,12 +75,12 @@ public interface Loader {
     /**
      * Load a model object from a specified location.
      *
-     * @param url     the location of an XML document to be loaded
+     * @param source  the source for the XML document to be loaded
      * @param type    the type of Java Object that should be returned
      * @param context the current loader context
      * @return the model ojbect loaded from the document
      * @throws LoaderException    if there was a problem loading the document
      * @throws ClassCastException if the XML type cannot be cast to the expected output type
      */
-    <OUTPUT> OUTPUT load(URL url, Class<OUTPUT> type, IntrospectionContext context) throws LoaderException;
+    <OUTPUT> OUTPUT load(Source source, Class<OUTPUT> type, IntrospectionContext context) throws LoaderException;
 }

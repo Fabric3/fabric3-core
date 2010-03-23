@@ -35,25 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.contribution;
+package org.fabric3.host.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 /**
- * Provides a content stream for for an artifact referenced by a URL.
+ * Provides an input stream for reading the contents of an artifact.
  *
  * @version $Rev$ $Date$
  */
-public class UrlSource implements Source {
-    private URL url;
+public interface Source {
 
-    public UrlSource(URL url) {
-        this.url = url;
-    }
+    /**
+     * Returns the system ID of the stream or null if not defined.
+     *
+     * @return the system ID of the stream or null if not defined
+     */
+    String getSystemId();
 
-    public InputStream openStream() throws IOException {
-        return url.openStream();
-    }
+    /**
+     * Returns the base location of the stream or null if not defined.
+     *
+     * @return the base location of the stream or null if not defined
+     */
+    URL getBaseLocation();
+
+    /**
+     * Returns an input stream for reading the contents of the artifact. Clients are responsible for closing the returned stream.
+     *
+     * @return an input stream
+     * @throws IOException if there is an error opening the stream
+     */
+    InputStream openStream() throws IOException;
 }

@@ -47,6 +47,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
@@ -69,7 +71,9 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
     public void testActivateDeactivatePolicySet() throws Exception {
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);
-        Resource resource = new Resource(new URL("file://test"), "text/xml");
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(source, "text/xml");
         QName name = new QName("test", "policyset");
         QNameSymbol symbol = new QNameSymbol(name);
         PolicySet policySet = new PolicySet(name, null, null, null, null, null, null);
@@ -93,7 +97,9 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
     public void testActivateDeactivateIntent() throws Exception {
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);
-        Resource resource = new Resource(new URL("file://test"), "text/xml");
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(source, "text/xml");
         QName name = new QName("test", "intent");
         QNameSymbol symbol = new QNameSymbol(name);
         Intent intent = new Intent(name, null, null, Collections.<Qualifier>emptySet(), false, null, IntentType.INTERACTION, false);
@@ -117,7 +123,9 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
     public void testActivateDeactivateBindingType() throws Exception {
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);
-        Resource resource = new Resource(new URL("file://test"), "text/xml");
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(source, "text/xml");
         QName name = new QName("test", "bindingtype");
         QNameSymbol symbol = new QNameSymbol(name);
         BindingType bindingType = new BindingType(name, null, null);
@@ -141,7 +149,9 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
     public void testActivateDeactivateImplementationType() throws Exception {
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);
-        Resource resource = new Resource(new URL("file://test"), "text/xml");
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(source, "text/xml");
         QName name = new QName("test", "impltype");
         QNameSymbol symbol = new QNameSymbol(name);
         ImplementationType implementationType = new ImplementationType(name, null, null);

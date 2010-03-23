@@ -40,6 +40,9 @@ package org.fabric3.host.contribution;
 import java.net.URI;
 import java.net.URL;
 
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+
 /**
  * A contribution artifact that is sourced from a filesystem.
  *

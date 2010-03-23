@@ -38,7 +38,6 @@
 package org.fabric3.introspection.xml.definitions;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.host.stream.Source;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.Intent;
@@ -259,7 +259,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
             return (OUTPUT) loaders.get(reader.getName()).load(reader, context);
         }
 
-        public <OUTPUT> OUTPUT load(URL url, Class<OUTPUT> type, IntrospectionContext context) throws LoaderException {
+        public <OUTPUT> OUTPUT load(Source source, Class<OUTPUT> type, IntrospectionContext context) throws LoaderException {
             return null;
         }
 

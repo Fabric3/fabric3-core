@@ -39,7 +39,6 @@ package org.fabric3.contribution.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -50,6 +49,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
@@ -91,16 +91,16 @@ public class XmlResourceProcessor implements ResourceProcessor {
         return "application/xml";
     }
 
-    public void index(Contribution contribution, URL url, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
-            stream = url.openStream();
+            stream = source.openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             if (skipToFirstTag(reader)) {
                 return;
             }
-            Resource resource = new Resource(url, "application/xml");
+            Resource resource = new Resource(source, "application/xml");
             indexerRegistry.index(resource, reader, context);
             contribution.addResource(resource);
         } catch (XMLStreamException e) {
@@ -129,7 +129,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
         InputStream stream = null;
         XMLStreamReader reader = null;
         try {
-            stream = resource.getUrl().openStream();
+            stream = resource.getSource().openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             if (skipToFirstTag(reader)) {
                 resource.setProcessed(true);

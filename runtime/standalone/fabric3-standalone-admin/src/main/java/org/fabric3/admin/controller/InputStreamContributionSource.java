@@ -42,7 +42,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Source;
+import org.fabric3.host.stream.Source;
 
 /**
  * A contribution artifact that is sourced from an InputStream.
@@ -55,7 +55,7 @@ public class InputStreamContributionSource implements ContributionSource {
 
     public InputStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
-        this.source = new InputStreamSource(stream);
+        this.source = new InputStreamSource(uri.toString(), stream);
     }
 
     public boolean persist() {

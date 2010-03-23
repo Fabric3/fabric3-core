@@ -40,8 +40,6 @@ package org.fabric3.wsdl.contribution.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +66,10 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -141,12 +141,12 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         return DEFINITIONS;
     }
 
-    public void index(Contribution contribution, URL url, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
         InputStream stream = null;
         try {
-            stream = url.openStream();
+            stream = source.openStream();
             // eagerly process the WSDL since port types need to be available during contribution processing.
-            Resource resource = new Resource(url, MIME_TYPE);
+            Resource resource = new Resource(source, MIME_TYPE);
             parse(resource, context);
             contribution.addResource(resource);
         } catch (IOException e) {
@@ -206,8 +206,8 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     @SuppressWarnings({"unchecked"})
     private void parse(Resource resource, IntrospectionContext context) throws InstallException {
         // parse the WSDL
-        URL wsdlLocation = resource.getUrl();
-        Definition definition = parseWsdl(wsdlLocation, context);
+        Source source = resource.getSource();
+        Definition definition = parseWsdl(source, context);
         QName wsdlQName = definition.getQName();
         WsdlSymbol wsdlSymbol = new WsdlSymbol(wsdlQName);
         ResourceElement<WsdlSymbol, Definition> wsdlElement = new ResourceElement<WsdlSymbol, Definition>(wsdlSymbol, definition);
@@ -254,15 +254,16 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     /**
      * Parses the WSDL document.
      *
-     * @param wsdlLocation the document location
-     * @param context      the introspection context
+     * @param source  the Soruce for reading the document
+     * @param context the introspection context
      * @return the parsed WSDL
      * @throws InstallException if an unexpected error occurs
      */
-    private Definition parseWsdl(URL wsdlLocation, IntrospectionContext context) throws InstallException {
+    private Definition parseWsdl(Source source, IntrospectionContext context) throws InstallException {
         try {
             WSDLReader reader = factory.newReader();
-            Definition definition = reader.readWSDL(wsdlLocation.toURI().toString());
+            InputSource inputSource = new InputSource(source.openStream());
+            Definition definition = reader.readWSDL(null, inputSource);
             if (!definition.getNamespaces().values().contains("http://schemas.xmlsoap.org/wsdl/soap/")) {
                 // Workaround for a bug in WSDL4J where a WSDL document does not reference the SOAP namespace and an attempt is made to serialize it,
                 // an exception is thrown. 
@@ -272,7 +273,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             return definition;
         } catch (WSDLException e) {
             throw new InstallException(e);
-        } catch (URISyntaxException e) {
+        } catch (IOException e) {
             throw new InstallException(e);
         }
     }

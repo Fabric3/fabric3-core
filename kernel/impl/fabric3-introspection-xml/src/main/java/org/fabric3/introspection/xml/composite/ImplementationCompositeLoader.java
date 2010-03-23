@@ -55,6 +55,8 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -116,10 +118,11 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
                 introspectionContext.addError(failure);
                 return impl;
             }
+            Source source = new UrlSource(url);
             IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
             Composite composite;
             try {
-                composite = registry.load(url, Composite.class, childContext);
+                composite = registry.load(source, Composite.class, childContext);
                 if (childContext.hasErrors()) {
                     introspectionContext.addErrors(childContext.getErrors());
                 }

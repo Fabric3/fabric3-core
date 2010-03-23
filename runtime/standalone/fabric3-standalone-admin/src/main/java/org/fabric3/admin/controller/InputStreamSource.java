@@ -39,18 +39,29 @@ package org.fabric3.admin.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
-import org.fabric3.host.contribution.Source;
+import org.fabric3.host.stream.Source;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InputStreamSource implements Source {
+    private String systemId;
     private InputStream source;
     private boolean opened = false;
 
-    public InputStreamSource(InputStream source) {
+    public InputStreamSource(String systemId, InputStream source) {
+        this.systemId = systemId;
         this.source = source;
+    }
+
+    public String getSystemId() {
+        return systemId;
+    }
+
+    public URL getBaseLocation() {
+        return null;
     }
 
     public InputStream openStream() throws IOException {

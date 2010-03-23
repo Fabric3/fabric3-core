@@ -49,6 +49,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -87,11 +89,12 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         ContributionManifest manifest;
         try {
             URL sourceUrl = contribution.getLocation();
-            URL manifestURL = new URL("jar:" + sourceUrl.toExternalForm() + "!/WEB-INF/sca-contribution.xml");
+            URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/WEB-INF/sca-contribution.xml");
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            manifest = loader.load(manifestURL, ContributionManifest.class, childContext);
+            Source source = new UrlSource(manifestUrl);
+            manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }

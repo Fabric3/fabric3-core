@@ -37,9 +37,10 @@
 */
 package org.fabric3.spi.contribution;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.fabric3.host.stream.Source;
 
 /**
  * Represents a resource in a contribution such as a WSDL document or composite.
@@ -48,12 +49,12 @@ import java.util.List;
  */
 public class Resource {
     private List<ResourceElement<?, ?>> elements = new ArrayList<ResourceElement<?, ?>>();
-    private URL url;
+    private Source source;
     private String contentType;
     private boolean processed;
 
-    public Resource(URL url, String contentType) {
-        this.url = url;
+    public Resource(Source source, String contentType) {
+        this.source = source;
         this.contentType = contentType;
     }
 
@@ -67,12 +68,12 @@ public class Resource {
     }
 
     /**
-     * Returns a derefereceable URL to the resource.
+     * Returns the source for reading the resource contents.
      *
-     * @return a derefereceable URL to the resource
+     * @return the source
      */
-    public URL getUrl() {
-        return url;
+    public Source getSource() {
+        return source;
     }
 
     /**

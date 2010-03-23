@@ -37,9 +37,8 @@
 */
 package org.fabric3.spi.contribution;
 
-import java.net.URL;
-
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -50,24 +49,24 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public interface ResourceProcessor {
 
     /**
-     * Returns the content type the processor handles
+     * Returns the content type the processor handles.
      *
      * @return the content type the processor handles
      */
     String getContentType();
 
     /**
-     * Indexes the resource
+     * Indexes the resource.
      *
      * @param contribution the containing contribution
-     * @param url          a dereferenceable url to the resource
+     * @param source       provides an input stream reading the contents of the resource
      * @param context      the context to which validation errors and warnings are reported
      * @throws InstallException if an error occurs during indexing
      */
-    void index(Contribution contribution, URL url, IntrospectionContext context) throws InstallException;
+    void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException;
 
     /**
-     * Loads the the Resource
+     * Loads the the Resource.
      *
      * @param resource the resource to process
      * @param context  the context to which validation errors and warnings are reported

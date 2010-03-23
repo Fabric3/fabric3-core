@@ -60,6 +60,7 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -126,11 +127,7 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
         expect(context.getContributionUri()).andReturn(null);
 
-        expect(registry.load(
-                eq(includeURL),
-                eq(Composite.class),
-                isA(IntrospectionContext.class)))
-                .andReturn(composite);
+        expect(registry.load(isA(Source.class), eq(Composite.class), isA(IntrospectionContext.class))).andReturn(composite);
         replay(registry, reader, namespaceContext, context, store);
 
         Include include = loader.load(reader, context);

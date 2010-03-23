@@ -51,19 +51,21 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.util.FileHelper;
+import org.fabric3.spi.contribution.ContentTypeResolutionException;
+import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.archive.Action;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
-import org.fabric3.host.util.FileHelper;
 
 /**
  * Processes a Maven module directory.
@@ -114,11 +116,12 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         ContributionManifest manifest;
         try {
             URL sourceUrl = contribution.getLocation();
-            URL manifestURL = new URL(sourceUrl.toExternalForm() + "/classes/META-INF/sca-contribution.xml");
+            URL manifestUrl = new URL(sourceUrl.toExternalForm() + "/classes/META-INF/sca-contribution.xml");
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            manifest = loader.load(manifestURL, ContributionManifest.class, childContext);
+            Source source = new UrlSource(manifestUrl);
+             manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }
@@ -140,9 +143,9 @@ public class ModuleContributionProcessor implements ContributionProcessor {
 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
         iterateArtifacts(contribution, context, new Action() {
-            public void process(Contribution contribution, String contentType, URL url)
-                    throws InstallException {
-                registry.indexResource(contribution, contentType, url, context);
+            public void process(Contribution contribution, String contentType, URL url) throws InstallException {
+                UrlSource source = new UrlSource(url);
+                registry.indexResource(contribution, contentType, source, context);
             }
         });
     }

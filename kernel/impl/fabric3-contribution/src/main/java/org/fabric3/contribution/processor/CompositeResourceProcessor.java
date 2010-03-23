@@ -51,6 +51,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -89,11 +90,11 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         return Constants.COMPOSITE_CONTENT_TYPE;
     }
 
-    public void index(Contribution contribution, URL url, IntrospectionContext context) throws InstallException {
+    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
-            stream = url.openStream();
+            stream = source.openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             reader.nextTag();
             String name = reader.getAttributeValue(null, "name");
@@ -101,7 +102,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
                 context.addError(new MissingAttribute("Composite name not specified", reader));
                 return;
             }
-            Resource resource = new Resource(url, Constants.COMPOSITE_CONTENT_TYPE);
+            Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
             QName compositeName = new QName(targetNamespace, name);
             QNameSymbol symbol = new QNameSymbol(compositeName);
@@ -133,14 +134,15 @@ public class CompositeResourceProcessor implements ResourceProcessor {
 
     @SuppressWarnings({"unchecked"})
     public void process(Resource resource, IntrospectionContext context) throws InstallException {
-        URL url = resource.getUrl();
+        Source source = resource.getSource();
         ClassLoader classLoader = context.getClassLoader();
         URI contributionUri = context.getContributionUri();
-        IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, classLoader, url);
+        URL location = source.getBaseLocation();
+        IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, classLoader, location);
         Composite composite;
         try {
             // check to see if the resource has already been evaluated
-            composite = loader.load(url, Composite.class, childContext);
+            composite = loader.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
             throw new InstallException(e);
         }

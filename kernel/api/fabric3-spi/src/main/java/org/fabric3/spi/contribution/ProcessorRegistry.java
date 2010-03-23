@@ -37,13 +37,12 @@
 */
 package org.fabric3.spi.contribution;
 
-import java.net.URL;
-
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * The system registry of contribution processors
+ * The system registry of contribution processors.
  *
  * @version $Rev$ $Date$
  */
@@ -99,11 +98,11 @@ public interface ProcessorRegistry {
      *
      * @param contribution the cntaining contribution
      * @param contentType  the content type of the resource to process
-     * @param url          a dereferenceable URL for the resource
+     * @param source       provides an input stream reading the contents of the resource
      * @param context      the context to which validation errors and warnings are reported
      * @throws InstallException if there was a problem indexing the contribution
      */
-    void indexResource(Contribution contribution, String contentType, URL url, IntrospectionContext context) throws InstallException;
+    void indexResource(Contribution contribution, String contentType, Source source, IntrospectionContext context) throws InstallException;
 
     /**
      * Loads all indexed resources in a contribution.
