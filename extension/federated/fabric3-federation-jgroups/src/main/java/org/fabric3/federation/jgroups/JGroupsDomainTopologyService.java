@@ -189,6 +189,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 if (o instanceof Exception) {
                     // an error was returned by the other end
                     RemoteSystemException response = new RemoteSystemException((Exception) o);
+                    response.setRuntimeName(UUID.get(address));
                     responses.add(response);
                     if (failFast) {
                         // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
@@ -211,14 +212,17 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 }
             } catch (TimeoutException e) {
                 RemoteSystemException response = new RemoteSystemException(e);
+                response.setRuntimeName(UUID.get(address));
                 responses.add(response);
                 break;
             } catch (SuspectedException e) {
                 RemoteSystemException response = new RemoteSystemException(e);
+                response.setRuntimeName(UUID.get(address));
                 responses.add(response);
                 break;
             } catch (MessageException e) {
                 RemoteSystemException response = new RemoteSystemException(e);
+                response.setRuntimeName(UUID.get(address));
                 responses.add(response);
                 break;
             }
