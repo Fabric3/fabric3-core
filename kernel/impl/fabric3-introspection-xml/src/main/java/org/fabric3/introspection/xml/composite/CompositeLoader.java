@@ -178,6 +178,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         NamespaceContext nsContext = createNamespaceContext(reader);
 
         Composite type = new Composite(compositeName);
+        type.setContributionUri(context.getContributionUri());
         type.setLocal(local);
         type.setAutowire(Autowire.fromString(reader.getAttributeValue(null, "autowire")));
         loaderHelper.loadPolicySetsAndIntents(type, reader, childContext);
