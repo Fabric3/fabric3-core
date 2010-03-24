@@ -186,12 +186,28 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             Message message = new Message(address, domainChannel.getAddress(), payload);
             try {
                 Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
-                assert o instanceof byte[] : "Expected byte[] but was " + o;
-                Response response = (Response) helper.deserialize((byte[]) o);
-                responses.add(response);
-                if (failFast && response instanceof ErrorResponse) {
-                    // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
-                    break;
+                if (o instanceof Exception) {
+                    // an error was returned by the other end
+                    RemoteSystemException response = new RemoteSystemException((Exception) o);
+                    responses.add(response);
+                    if (failFast) {
+                        // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
+                        break;
+                    }
+                } else if (o instanceof byte[]) {
+                    Object deserialized = helper.deserialize((byte[]) o);
+                    if (deserialized instanceof Response) {
+                        Response response = (Response) deserialized;
+                        responses.add(response);
+                        if (failFast && response instanceof ErrorResponse) {
+                            // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
+                            break;
+                        }
+                    } else {
+                        throw new AssertionError("Unknown response type: " + deserialized);
+                    }
+                } else {
+                    throw new AssertionError("Unknown response type: " + o);
                 }
             } catch (TimeoutException e) {
                 RemoteSystemException response = new RemoteSystemException(e);
