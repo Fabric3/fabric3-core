@@ -64,4 +64,7 @@ public interface WebLogicTopologyMonitor {
 
     @Info
     void updated();
+
+    @Info
+    void noManagedServers();
 }

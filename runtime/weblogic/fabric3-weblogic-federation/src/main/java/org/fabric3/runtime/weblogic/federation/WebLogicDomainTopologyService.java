@@ -40,11 +40,13 @@ package org.fabric3.runtime.weblogic.federation;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.event.EventContext;
@@ -251,6 +253,10 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
                 channels.add(channel);
             }
             return channels;
+        } catch (NameNotFoundException e) {
+            // managed servers may not have initialized
+            monitor.noManagedServers();
+            return Collections.emptyList();
         } catch (NamingException e) {
             throw new MessageException(e);
         }
