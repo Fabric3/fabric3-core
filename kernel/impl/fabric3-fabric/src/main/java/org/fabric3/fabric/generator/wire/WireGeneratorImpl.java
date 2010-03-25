@@ -365,7 +365,7 @@ public class WireGeneratorImpl implements WireGenerator {
         ComponentGenerator sourceGenerator = getGenerator(reference.getParent());
 
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
-        sourceDefinition.setClassLoaderId(target.getDefinition().getContributionUri());
+        sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         String key = source.getDefinition().getKey();
         sourceDefinition.setKey(key);
 
