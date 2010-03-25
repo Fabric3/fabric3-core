@@ -41,6 +41,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 
 /**
  * ContributionSource for a directory that serves as a synthetic composite. For example, a datasource directory that contains JDBC drivers.
@@ -51,10 +52,13 @@ public class SyntheticContributionSource implements ContributionSource {
     private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";
     private URI uri;
     private URL location;
+    private Source source;
 
     public SyntheticContributionSource(URI uri, URL location) {
         this.uri = uri;
         this.location = location;
+        this.source = new UrlSource(location);
+
     }
 
     public String getContentType() {
@@ -74,7 +78,7 @@ public class SyntheticContributionSource implements ContributionSource {
     }
 
     public Source getSource() {
-        throw new UnsupportedOperationException();
+        return source;
     }
 
     public long getTimestamp() {
