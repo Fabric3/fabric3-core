@@ -40,6 +40,10 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.net.generator.TcpBindingGenerator"/>
     </component>
 
+    <component name="NetTargetUrlResolver">
+        <f3-impl:implementation.system class="org.fabric3.binding.net.generator.NetTargetUrlResolverImpl"/>
+    </component>
+
     <component name="TcpBindingProvider">
         <f3-impl:implementation.system class="org.fabric3.binding.net.generator.TcpBindingProvider"/>
         <property name="enabled" source="$systemConfig//net.binding/@tcpBindingProvider"/>

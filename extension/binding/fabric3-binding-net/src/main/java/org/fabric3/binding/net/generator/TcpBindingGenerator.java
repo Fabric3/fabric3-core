@@ -37,7 +37,11 @@
 */
 package org.fabric3.binding.net.generator;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.net.model.TcpBindingDefinition;
 import org.fabric3.binding.net.provision.TcpSourceDefinition;
@@ -57,6 +61,11 @@ import org.fabric3.spi.policy.EffectivePolicy;
  * @version $Rev$ $Date$
  */
 public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinition> {
+    private NetTargetUrlResolver resolver;
+
+    public TcpBindingGenerator(@Reference NetTargetUrlResolver resolver) {
+        this.resolver = resolver;
+    }
 
     public PhysicalSourceDefinition generateSource(LogicalBinding<TcpBindingDefinition> binding,
                                                    ServiceContract contract,
@@ -73,17 +82,28 @@ public class TcpBindingGenerator implements BindingGenerator<TcpBindingDefinitio
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
-        TcpTargetDefinition targetDefinition = new TcpTargetDefinition();
-        TcpBindingDefinition bindingDefinition = binding.getDefinition();
-        targetDefinition.setConfig(bindingDefinition.getConfig());
-        targetDefinition.setUri(binding.getDefinition().getTargetUri());
-        return targetDefinition;
+        URI targetUri = binding.getDefinition().getTargetUri();
+        return generateTarget(binding, targetUri);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<TcpBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
+        try {
+            URI targetUri = resolver.resolveUrl(serviceBinding).toURI();
+            return generateTarget(serviceBinding, targetUri);
+        } catch (URISyntaxException e) {
+            throw new GenerationException(e);
+        }
     }
+
+    private PhysicalTargetDefinition generateTarget(LogicalBinding<TcpBindingDefinition> binding, URI targetUri) throws GenerationException {
+        TcpTargetDefinition targetDefinition = new TcpTargetDefinition();
+        TcpBindingDefinition bindingDefinition = binding.getDefinition();
+        targetDefinition.setConfig(bindingDefinition.getConfig());
+        targetDefinition.setUri(targetUri);
+        return targetDefinition;
+    }
+
 }

@@ -168,6 +168,18 @@ public class TransportServiceImpl implements TransportService {
         }
     }
 
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    public int getHttpsPort() {
+        return httpsPort;
+    }
+
+    public int getTcpPort() {
+        return tcpPort;
+    }
+
     public void registerHttp(String path, WireHolder wireHolder) throws WiringException {
         if (httpRequestHandler == null) {
             createHttpChannel();

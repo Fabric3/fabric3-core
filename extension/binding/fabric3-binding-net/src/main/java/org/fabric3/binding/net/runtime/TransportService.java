@@ -47,6 +47,27 @@ import org.fabric3.spi.builder.WiringException;
 public interface TransportService {
 
     /**
+     * Returns the HTTP port in use by the service.
+     *
+     * @return the HTTP port in use by the service
+     */
+    int getHttpPort();
+
+    /**
+     * Returns the HTTPs port in use by the service
+     *
+     * @return the HTTPs port in use by the service
+     */
+    int getHttpsPort();
+
+    /**
+     * Returns the TCP port in use by the service
+     *
+     * @return the TCP port in use by the service
+     */
+    int getTcpPort();
+
+    /**
      * Register the wire with the HTTP channel.
      *
      * @param path       the service path which is its relative URI
