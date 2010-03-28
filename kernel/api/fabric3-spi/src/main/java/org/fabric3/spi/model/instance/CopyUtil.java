@@ -81,6 +81,20 @@ public class CopyUtil {
         Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
         Map<URI, LogicalReference> references = new HashMap<URI, LogicalReference>();
         Map<URI, LogicalService> services = new HashMap<URI, LogicalService>();
+        LogicalCompositeComponent replica = copy(composite, parent, components, services, references);
+
+        // Wires must be  copies last since they may contain forward references to services provided by components not yet copied. This
+        // guarantees that all components and services will have been copied before wires are copied.
+        copyWires(composite, components, services);
+        return replica;
+    }
+
+    private static LogicalCompositeComponent copy(LogicalCompositeComponent composite,
+                                                  LogicalCompositeComponent parent,
+                                                  Map<URI, LogicalComponent<?>> components,
+                                                  Map<URI, LogicalService> services,
+                                                  Map<URI, LogicalReference> references) {
+
         URI uri = composite.getUri();
         ComponentDefinition<CompositeImplementation> definition = composite.getDefinition();
         LogicalCompositeComponent copy = new LogicalCompositeComponent(uri, definition, parent);
@@ -95,7 +109,7 @@ public class CopyUtil {
             copy.setProperties(property);
         }
         for (LogicalComponent<?> component : composite.getComponents()) {
-            copy(component, composite, copy, components, references, services);
+            copy(component, copy, components, services, references);
         }
         for (LogicalReference reference : composite.getReferences()) {
             copy(reference, copy, references);
@@ -106,23 +120,18 @@ public class CopyUtil {
         for (LogicalService service : composite.getServices()) {
             copy(service, copy, components, services);
         }
-        for (LogicalReference reference : composite.getReferences()) {
-            LogicalReference referenceCopy = references.get(reference.getUri());
-            copyWires(reference, referenceCopy, composite, copy, services);
-        }
         return copy;
     }
 
     @SuppressWarnings({"unchecked"})
     private static void copy(LogicalComponent<?> component,
-                             LogicalCompositeComponent originalParent,
                              LogicalCompositeComponent newParent,
                              Map<URI, LogicalComponent<?>> components,
-                             Map<URI, LogicalReference> references,
-                             Map<URI, LogicalService> services) {
+                             Map<URI, LogicalService> services,
+                             Map<URI, LogicalReference> references) {
         LogicalComponent<?> copy;
         if (component instanceof LogicalCompositeComponent) {
-            copy = copy((LogicalCompositeComponent) component, newParent);
+            copy = copy((LogicalCompositeComponent) component, newParent, components, services, references);
         } else {
             URI uri = component.getUri();
             copy = new LogicalComponent(uri, component.getDefinition(), newParent);
@@ -146,11 +155,6 @@ public class CopyUtil {
             for (LogicalService service : component.getServices()) {
                 copy(service, copy, components, services);
             }
-            for (LogicalReference reference : copy.getReferences()) {
-                LogicalReference referenceCopy = references.get(reference.getUri());
-                copyWires(reference, referenceCopy, originalParent, newParent, services);
-            }
-
         }
         newParent.addComponent(copy);
     }
@@ -227,6 +231,22 @@ public class CopyUtil {
             operations.add(copy);
         }
         to.overrideOperations(operations);
+    }
+
+    private static void copyWires(LogicalComponent<?> fromComponent, Map<URI, LogicalComponent<?>> components, Map<URI, LogicalService> services) {
+        LogicalComponent<?> toComponent = components.get(fromComponent.getUri());
+        if (fromComponent instanceof LogicalCompositeComponent) {
+            LogicalCompositeComponent composite = (LogicalCompositeComponent) fromComponent;
+            for (LogicalComponent component : composite.getComponents()) {
+                copyWires(component, components, services);
+            }
+        }
+        for (LogicalReference fromReference : fromComponent.getReferences()) {
+            LogicalReference toReference = toComponent.getReference(fromReference.getUri().getFragment());
+            LogicalCompositeComponent originalParent = fromComponent.getParent();
+            LogicalCompositeComponent newParent = toComponent.getParent();
+            copyWires(fromReference, toReference, originalParent, newParent, services);
+        }
     }
 
     private static void copyWires(LogicalReference fromReference,
