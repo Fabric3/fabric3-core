@@ -37,12 +37,6 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import javax.xml.namespace.QName;
-
 import com.sun.xml.wss.SecurityEnvironment;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -56,15 +50,10 @@ import org.fabric3.spi.host.ServletHost;
  * @version $Rev$ $Date$
  */
 public class EndpointServiceImpl implements EndpointService {
-
     private SecurityEnvironment securityEnvironment;
     private WorkScheduler scheduler;
     private ServletHost servletHost;
     private MetroBindingMonitor monitor;
-
-    // cached registered port names used to avoid duplicate registrations since they are not supported by Metro
-    private Set<QName> registeredPorts = new HashSet<QName>();
-    private Map<String, QName> pathToPorts = new HashMap<String, QName>();
 
     private MetroServlet metroServlet;
 
@@ -84,13 +73,11 @@ public class EndpointServiceImpl implements EndpointService {
     }
 
     public void registerService(EndpointConfiguration configuration) throws EndpointException {
-        QName portName = configuration.getPortName();
-        if (registeredPorts.contains(portName)) {
-            throw new EndpointException("Port already registered: " + portName);
-        }
         String servicePath = configuration.getServicePath();
-        registeredPorts.add(portName);
-        pathToPorts.put(servicePath, portName);
+        if (servletHost.isMappingRegistered(servicePath)) {
+            // wire reprovisioned
+            unregisterService(servicePath);
+        }
         servletHost.registerMapping(servicePath, metroServlet);
         // register <endpoint-url/mex> address for serving WS-MEX requests
         servletHost.registerMapping(servicePath + "/mex", metroServlet);
@@ -102,8 +89,6 @@ public class EndpointServiceImpl implements EndpointService {
         servletHost.unregisterMapping(path);
         servletHost.unregisterMapping(path + "/mex");
         metroServlet.unregisterService(path);
-        QName portName = pathToPorts.remove(path);
-        registeredPorts.remove(portName);
         monitor.endpointRemoved(path);
     }
 }

@@ -48,6 +48,7 @@ public interface EndpointService {
      * Registers a web service endpoint.
      *
      * @param configuration the endpoint configuration
+     * @throws EndpointException if there is an error registering the endpoint
      */
     void registerService(EndpointConfiguration configuration) throws EndpointException;
 
@@ -55,6 +56,7 @@ public interface EndpointService {
      * Unregisters a web service endpoint.
      *
      * @param path the endpoint path
+     * @throws EndpointException if there is an error unregistering the endpoint
      */
     void unregisterService(String path) throws EndpointException;
 }
