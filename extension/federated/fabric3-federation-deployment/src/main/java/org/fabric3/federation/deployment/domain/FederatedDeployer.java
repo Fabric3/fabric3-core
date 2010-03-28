@@ -85,7 +85,7 @@ public class FederatedDeployer implements Deployer {
     private DomainTopologyService topologyService;
     private SerializationService serializationService;
     private List<FederatedDeployerListener> listeners;
-    private long timeout = 3000;
+    private long timeout = 60000;
 
     public FederatedDeployer(@Reference DomainTopologyService topologyService,
                              @Reference SerializationService serializationService,
