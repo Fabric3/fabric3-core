@@ -347,7 +347,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     String name = uri.toString();
                     // URI is the file name
                     processed.put(name, uri);
-                    monitor.deployed(name);
+                    monitor.processed(name);
                 }
             } catch (ValidationException e) {
                 // print out the validation errors

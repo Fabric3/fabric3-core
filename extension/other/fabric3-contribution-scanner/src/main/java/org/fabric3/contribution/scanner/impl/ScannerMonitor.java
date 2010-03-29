@@ -53,7 +53,7 @@ public interface ScannerMonitor {
      * @param name the name of the contribution
      */
     @Info
-    void deployed(String name);
+    void processed(String name);
 
     /**
      * Called when a contribution is removed
