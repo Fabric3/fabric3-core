@@ -183,6 +183,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         }
         JmsBindingDefinition definition = new JmsBindingDefinition(metadata);
         definition.setJmsMetadata(metadata);
+        definition.setName("bindingSCAJMS");
         return definition;
     }
 
