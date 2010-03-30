@@ -85,7 +85,7 @@ public class CommandHelper {
                 ArtifactErrorInfo aei = (ArtifactErrorInfo) info;
                 out.println("Errors in " + aei.getName() + " \n");
                 for (ErrorInfo errorInfo : aei.getErrors()) {
-                    out.println("  " + errorInfo.getError());
+                    out.println("  " + errorInfo.getError() + "\n");
                 }
             } else {
                 out.println(info.getError());
