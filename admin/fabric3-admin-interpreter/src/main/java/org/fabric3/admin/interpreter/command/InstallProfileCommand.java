@@ -127,7 +127,7 @@ public class InstallProfileCommand implements Command {
             out.println("ERROR: Unable to connect to the domain controller");
             e.printStackTrace(out);
         } catch (ContributionManagementException e) {
-            out.println("ERROR: Error installing contribution");
+            out.println("ERROR: Error installing profile");
             out.println("       " + e.getMessage());
         } finally {
             if (disconnected && controller.isConnected()) {

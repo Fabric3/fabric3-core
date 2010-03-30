@@ -326,7 +326,8 @@ public class DomainControllerImpl implements DomainController {
             if (e.getTargetException() instanceof InvalidContributionException) {
                 throw (InvalidContributionException) e.getTargetException();
             } else {
-                throw new ContributionInstallException(e.getMessage(), e.getTargetException());
+                Exception target = e.getTargetException();
+                throw new ContributionInstallException(target.getMessage(), target);
             }
         } catch (JMException e) {
             throw new CommunicationException(e);
