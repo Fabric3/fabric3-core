@@ -78,7 +78,7 @@ import org.fabric3.management.domain.InvalidDeploymentException;
  * @version $Rev$ $Date$
  */
 public class DomainControllerImpl implements DomainController {
-    private static final String CONTRIBUTION_SERVICE_MBEAN = "fabric3:SubDomain=runtime, type=component, name=ContibutionServiceMBean";
+    private static final String CONTRIBUTION_SERVICE_MBEAN = "fabric3:SubDomain=runtime, type=component, name=ContributionServiceMBean";
     private static final String DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=DistributedDomainMBean";
 
     private static final String RUNTIME_DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeDomainMBean";

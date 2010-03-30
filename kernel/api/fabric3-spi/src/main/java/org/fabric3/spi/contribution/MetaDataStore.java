@@ -165,7 +165,7 @@ public interface MetaDataStore {
      * represent different versions of a set of services.
      *
      * @param name the extension point name
-     * @return the URIs of the contibutions that provide the extension points
+     * @return the URIs of the contributions that provide the extension points
      */
     List<Contribution> resolveExtensionPoints(String name);
 

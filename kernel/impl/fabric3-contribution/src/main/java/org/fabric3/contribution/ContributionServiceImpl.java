@@ -695,7 +695,7 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     /**
-     * Adds the contibution URI to a component and its children if it is a composite.
+     * Adds the contribution URI to a component and its children if it is a composite.
      *
      * @param contribution the contribution
      * @param composite    the composite

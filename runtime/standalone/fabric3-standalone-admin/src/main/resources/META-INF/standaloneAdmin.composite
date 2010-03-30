@@ -16,8 +16,8 @@
            name="StandaloneAdminExtension">
 
 
-    <component name="ContibutionServiceMBean">
-        <f3-impl:implementation.system class="org.fabric3.admin.controller.ContibutionServiceMBeanImpl"/>
+    <component name="ContributionServiceMBean">
+        <f3-impl:implementation.system class="org.fabric3.admin.controller.ContributionServiceMBeanImpl"/>
         <property name="hostName" source="$systemConfig//host.name"/>
     </component>
 

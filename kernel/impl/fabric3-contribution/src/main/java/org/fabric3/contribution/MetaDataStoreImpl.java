@@ -207,7 +207,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             Contribution resolved = cache.get(resolvedUri);
             if (resolved == null) {
                 String identifier = resolvedUri.toString();
-                throw new ContributionResolutionException("Dependent contibution not found: " + identifier, identifier);
+                throw new ContributionResolutionException("Dependent contribution not found: " + identifier, identifier);
             }
             element = resolve(resolved, type, symbol, context);
             if (element != null) {

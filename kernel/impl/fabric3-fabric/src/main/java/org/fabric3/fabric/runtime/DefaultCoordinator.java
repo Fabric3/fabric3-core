@@ -162,7 +162,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             String name = APPLICATION_DOMAIN_URI.toString();
             throw new InitializationException("Domain not found: " + name, name);
         }
-        // install user contibutions - they will be deployed when the domain recovers
+        // install user contributions - they will be deployed when the domain recovers
         installContributions(userContributions);
         eventService.publish(new RuntimeRecover());
     }

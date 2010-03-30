@@ -78,7 +78,7 @@ import org.fabric3.spi.host.ServletHost;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
+public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
     private static final String REPOSITORY = "/admin/repository";
     private static final String PROFILE = "/admin/profile";
 
@@ -90,7 +90,7 @@ public class ContibutionServiceMBeanImpl implements ContributionServiceMBean {
     private String contributionAddress;
     private String profileAddress;
 
-    public ContibutionServiceMBeanImpl(@Reference ServletHost servletHost,
+    public ContributionServiceMBeanImpl(@Reference ServletHost servletHost,
                                        @Reference ContributionService contributionService,
                                        @Reference MetaDataStore metaDataStore,
                                        @Monitor ContributionServiceMBeanMonitor monitor) {

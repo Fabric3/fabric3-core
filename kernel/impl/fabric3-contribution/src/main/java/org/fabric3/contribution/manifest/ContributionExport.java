@@ -55,8 +55,8 @@ public class ContributionExport implements Export {
     private static final QName TYPE = new QName(Namespaces.CORE, "contributionImport");
     private URI location;
 
-    public ContributionExport(URI contibutionId) {
-        location = contibutionId;
+    public ContributionExport(URI contributionId) {
+        location = contributionId;
     }
 
     public QName getType() {

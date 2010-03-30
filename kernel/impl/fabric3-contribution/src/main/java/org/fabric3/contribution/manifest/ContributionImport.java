@@ -53,8 +53,8 @@ public class ContributionImport implements Import {
     private static final QName TYPE = new QName(Namespaces.CORE, "contributionImport");
     private URI location;
 
-    public ContributionImport(URI contibutionId) {
-        location = contibutionId;
+    public ContributionImport(URI contributionId) {
+        location = contributionId;
     }
 
     public QName getType() {
