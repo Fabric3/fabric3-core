@@ -61,7 +61,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
- * Fabric3 may be configured to enforce a modular environment where isolation is maintained between user an extension contributions.
+ * Fabric3 enforces a modular environment where isolation is maintained between user and extension contributions.
  * <p/>
  * Isolation is achieved through a peer-classloader architecture. When contributions are installed, they are loaded in their own classloader, which is
  * given a URI matching the contribution. Imported artifacts will be resolved to contributions that export them based on the specific import/export
