@@ -58,6 +58,7 @@ import org.fabric3.management.domain.ContributionNotInstalledManagementException
 import org.fabric3.management.domain.DeploymentManagementException;
 import org.fabric3.management.domain.InvalidDeploymentException;
 import org.fabric3.management.domain.InvalidPathException;
+import org.fabric3.management.domain.NoDeployablesManagementException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -130,7 +131,11 @@ public abstract class AbstractDomainMBean {
         if (contribution == null) {
             throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
-        for (Deployable deployable : contribution.getManifest().getDeployables()) {
+        List<Deployable> deployables = contribution.getManifest().getDeployables();
+        if (deployables.isEmpty()) {
+            throw new NoDeployablesManagementException("The contribution does not contain any deployable composites: " + uri);
+        }
+        for (Deployable deployable : deployables) {
             try {
                 QName name = deployable.getName();
                 domain.undeploy(name);

@@ -229,6 +229,11 @@ public abstract class AbstractDomain implements Domain {
     }
 
     public synchronized void undeploy(QName deployable) throws DeploymentException {
+        QNameSymbol deployableSymbol = new QNameSymbol(deployable);
+        Contribution contribution = metadataStore.resolveContainingContribution(deployableSymbol);
+        if (!contribution.getLockOwners().contains(deployable)) {
+            throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
+        }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
@@ -246,8 +251,6 @@ public abstract class AbstractDomain implements Domain {
         } catch (GenerationException e) {
             throw new DeploymentException("Error undeploying: " + deployable, e);
         }
-        QNameSymbol deployableSymbol = new QNameSymbol(deployable);
-        Contribution contribution = metadataStore.resolveContainingContribution(deployableSymbol);
         contribution.releaseLock(deployable);
         logicalComponentManager.replaceRootComponent(domain);
         for (DomainListener listener : listeners) {
