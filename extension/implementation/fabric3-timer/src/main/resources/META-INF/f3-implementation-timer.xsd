@@ -11,12 +11,13 @@ Public License. See the accompanying license file for details.
 <!--
     $Rev$ $Date$
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="http://fabric3.org/xmlns/sca/2.0-alpha"
-        xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+<schema targetNamespace="http://fabric3.org/xmlns/sca/2.0-alpha"
+		xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://www.w3.org/2001/XMLSchema"
         elementFormDefault="qualified">
 
-    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-core.xsd"/>
+    <include schemaLocation="sca-core-1.1-cd05.xsd" />
 
     <element name="implementation.timer" type="TimerImplementation"
              substitutionGroup="sca:implementation"/>

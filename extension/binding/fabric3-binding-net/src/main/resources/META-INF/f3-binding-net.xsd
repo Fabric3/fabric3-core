@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fabric3 Copyright (c) 2009 Metaform Systems Fabric3 is licensed under 
+	modified terms of the GNU General Public License. See the accompanying license 
+	file for details. -->
+<!-- $Rev: 8551 $ $Date: 2010-01-11 06:39:34 -0600 (Mon, 11 Jan 2010) $ -->
+<schema targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		elementFormDefault="qualified">
+
+	<include schemaLocation="sca-core-1.1-cd05.xsd" />
+
+	<complexType name="NetBinding">
+		<complexContent>
+			<extension base="sca:Binding">
+				<sequence>
+					<element name="response" type="Response" minOccurs="0"
+						maxOccurs="1" />
+					<element name="sslSettings" type="SslSettings" minOccurs="0"
+						maxOccurs="1" />					
+					<!-- wiring.* defined here -->
+					<any namespace="##other" processContents="lax" minOccurs="0"
+						maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="uri" type="anyURI" use="required" />
+				<attribute name="readTimeout" type="xsd:integer" use="optional" />
+				<attribute name="numberOfRetries" type="xsd:integer" use="optional" />
+				<anyAttribute namespace="##any" processContents="lax" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="HttpBinding">
+		<complexContent>
+			<extension base="NetBinding">
+				<element name="authentication" type="Authentication"
+						minOccurs="0" maxOccurs="1" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="TcpBinding">
+		<complexContent>
+			<extension base="NetBinding"/>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Response">
+		<sequence>
+			<!-- wiring.* defined here -->
+			<any namespace="##other" processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="SslSettings">
+		<sequence>
+		<attribute name="alias" type="xsd:string" use="required" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="Authentication">
+		<sequence>
+			<attribute name="type" type="xsd:string" use="required" />
+		</sequence>
+	</complexType>
+
+
+	<element name="sca:binding.http" type="HttpBinding"
+		substitutionGroup="sca:binding" />
+
+	<element name="sca:binding.tcp" type="TcpBinding"
+		substitutionGroup="sca:binding" />
+
+</schema>
