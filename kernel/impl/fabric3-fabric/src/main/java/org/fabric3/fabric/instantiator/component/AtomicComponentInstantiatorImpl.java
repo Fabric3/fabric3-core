@@ -72,6 +72,10 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         createServices(definition, component, componentType);
         createReferences(definition, component, componentType);
         createResources(component, componentType);
+        if (parent.getComponent(uri) != null) {
+            DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
+            context.addError(error);
+        }
         parent.addComponent(component);
         return component;
     }

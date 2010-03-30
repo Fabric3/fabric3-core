@@ -94,6 +94,10 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         instantiateCompositeServices(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
         instantiateCompositeReferences(component, composite);
+        if (parent.getComponent(uri) != null) {
+            DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
+            context.addError(error);
+        }
         parent.addComponent(component);
         return component;
     }
