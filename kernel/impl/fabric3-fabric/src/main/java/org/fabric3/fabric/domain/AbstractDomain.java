@@ -427,6 +427,7 @@ public abstract class AbstractDomain implements Domain {
             }
             InstantiationContext context = logicalModelInstantiator.include(deployables, domain);
             if (context.hasErrors()) {
+                contributionHelper.releaseLocks(contributions);
                 throw new AssemblyException(context.getErrors());
             }
             policyAttacher.attachPolicies(domain, !recover);
@@ -487,6 +488,7 @@ public abstract class AbstractDomain implements Domain {
             activateDefinitions(contribution);
             InstantiationContext context = logicalModelInstantiator.include(composite, domain);
             if (context.hasErrors()) {
+                contribution.releaseLock(name);
                 throw new AssemblyException(context.getErrors());
             }
             policyAttacher.attachPolicies(domain, true);
