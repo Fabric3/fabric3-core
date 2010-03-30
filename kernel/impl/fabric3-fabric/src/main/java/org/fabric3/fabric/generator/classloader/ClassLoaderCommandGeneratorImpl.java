@@ -68,7 +68,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  * semantics. The exporting contribution classloaders will be set as a parent of the importing contribution. A contribution that imports artifacts
  * from multiple exporting contributions will have multiple parents.
  * <p/>
- * When a composite is deployed to a zone in multi-VM environments that support isolation, contributions required to run it (i.e. the contribution
+ * When a composite is deployed to a zone in multi-VM environments that supports isolation, contributions required to run it (i.e. the contribution
  * containing the composite and any resolved exporting contributions) will be provisioned to runtimes in that zone. The provisioned contributions will
  * be loaded in classloaders which are given a matching URI. Component implementation instances will then be instantiated on runtimes in the
  * appropriate contribution classloader to service requests.
