@@ -48,6 +48,7 @@ import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
 import org.fabric3.management.contribution.ContributionManagementException;
+import org.fabric3.management.contribution.ContributionRemoveException;
 import org.fabric3.management.contribution.DuplicateContributionManagementException;
 
 /**
@@ -129,6 +130,15 @@ public class InstallCommand implements Command {
         } catch (ContributionManagementException e) {
             out.println("ERROR: Error installing contribution");
             out.println("       " + e.getMessage());
+            try {
+                controller.remove(contributionUri);
+            } catch (CommunicationException ex) {
+                System.out.println("Unable to remove contribution due to a communication error:");
+                e.printStackTrace();
+            } catch (ContributionRemoveException ex) {
+                System.out.println("Error removing conribution:");
+                e.printStackTrace();
+            }
         } finally {
             if (disconnected && controller.isConnected()) {
                 try {

@@ -187,7 +187,6 @@ public class DeployCommand implements Command {
             out.println("The following errors were found in the deployment plan:\n");
             CommandHelper.printErrors(out, e);
             revertPlan(planContributionUri, out);
-
         } catch (DuplicateContributionManagementException e) {
             out.println("ERROR: Deployment plan already exists");
         } catch (ContributionManagementException e) {
