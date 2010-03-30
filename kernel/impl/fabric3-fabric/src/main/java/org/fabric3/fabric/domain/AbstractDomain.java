@@ -165,11 +165,18 @@ public abstract class AbstractDomain implements Domain {
         if (planName == null) {
             if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
                 plan = contributionHelper.resolveDefaultPlan(deployable);
+                if (plan == null) {
+                    plan = SYNTHETIC_PLAN;
+                }
             } else {
                 plan = SYNTHETIC_PLAN;
             }
         } else {
+            // plan not specified
             plan = contributionHelper.resolvePlan(planName);
+            if (plan == null) {
+                throw new DeploymentPlanNotFoundException("Deployment plan not found: " + planName);
+            }
         }
         instantiateAndDeploy(wrapper, plan);
         for (DomainListener listener : listeners) {
@@ -193,6 +200,9 @@ public abstract class AbstractDomain implements Domain {
             for (Contribution contribution : contributions) {
                 URI uri = contribution.getUri();
                 DeploymentPlan defaultPlan = contributionHelper.resolveDefaultPlan(contribution);
+                if (defaultPlan == null) {
+                    defaultPlan = SYNTHETIC_PLAN;
+                }
                 plans.put(uri, defaultPlan);
             }
             DeploymentPlan merged = merge(plans.values());
@@ -314,11 +324,17 @@ public abstract class AbstractDomain implements Domain {
                 if (RuntimeMode.CONTROLLER == info.getRuntimeMode()) {
                     // this can happen if the composite is deployed in single VM mode and the runtime is later booted in controller mode
                     plan = contributionHelper.resolveDefaultPlan(deployable);
+                    if (plan == null) {
+                        plan = SYNTHETIC_PLAN;
+                    }
                 } else {
                     plan = SYNTHETIC_PLAN;
                 }
             } else {
                 plan = contributionHelper.resolvePlan(planName);
+                if (plan == null) {
+                    plan = SYNTHETIC_PLAN;
+                }
             }
             if (plan == null) {
                 // this should not happen

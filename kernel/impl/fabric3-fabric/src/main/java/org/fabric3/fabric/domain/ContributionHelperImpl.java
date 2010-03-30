@@ -125,20 +125,20 @@ public class ContributionHelperImpl implements ContributionHelper {
         return (Composite) object;
     }
 
-    public DeploymentPlan resolveDefaultPlan(QName deployable) throws DeploymentPlanNotFoundException {
+    public DeploymentPlan resolveDefaultPlan(QName deployable) {
         // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
         Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(deployable));
         return resolveDefaultPlan(contribution);
     }
 
-    public DeploymentPlan resolveDefaultPlan(Contribution contribution) throws DeploymentPlanNotFoundException {
+    public DeploymentPlan resolveDefaultPlan(Contribution contribution) {
         DeploymentPlan plan;
         List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
         getDeploymentPlans(contribution, plans);
         if (!plans.isEmpty()) {
             plan = plans.get(0);
         } else {
-            throw new DeploymentPlanNotFoundException("No deployment plan in contribution: " + contribution.getUri());
+            return null;
         }
         return plan;
     }
@@ -153,7 +153,7 @@ public class ContributionHelperImpl implements ContributionHelper {
             throw new DeploymentException("Error finding plan: " + plan, e);
         }
         if (element == null) {
-            throw new DeployableNotFoundException("Plan not found: " + plan, plan);
+            return null;
         }
 
         Object object = element.getValue();

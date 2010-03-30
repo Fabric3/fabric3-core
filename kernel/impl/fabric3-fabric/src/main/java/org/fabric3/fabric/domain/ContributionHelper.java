@@ -76,30 +76,26 @@ public interface ContributionHelper {
      * Resolves the default plan for a deployable.
      *
      * @param deployable the deployable composite
-     * @return the default plan
-     * @throws DeploymentPlanNotFoundException
-     *          if a default plan is not found
+     * @return the default plan or null if none is found
      */
-    DeploymentPlan resolveDefaultPlan(QName deployable) throws DeploymentPlanNotFoundException;
+    DeploymentPlan resolveDefaultPlan(QName deployable);
 
     /**
      * Resolves the default plan for a contribution.
      *
      * @param contribution the contribution
-     * @return the default plan
-     * @throws DeploymentPlanNotFoundException
-     *          if a default plan is not found
+     * @return the default plan of null if none is found
      */
-    DeploymentPlan resolveDefaultPlan(Contribution contribution) throws DeploymentPlanNotFoundException;
+    DeploymentPlan resolveDefaultPlan(Contribution contribution);
 
     /**
      * Resolves a deployment plan by name.
      *
      * @param plan the deployment plan name
-     * @return the resolved deployment plan
+     * @return the resolved deployment plan or null if not found
      * @throws DeploymentException if the plan cannot be resolved
      */
-    DeploymentPlan resolvePlan(String plan) throws DeploymentException;
+    DeploymentPlan resolvePlan(String plan) throws DeploymentException;   
 
     /**
      * Resolves the contributions from the list of URIs.
