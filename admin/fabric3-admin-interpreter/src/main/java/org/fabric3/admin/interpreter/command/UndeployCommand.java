@@ -55,6 +55,7 @@ public class UndeployCommand implements Command {
     private URI contributionUri;
     private String username;
     private String password;
+    private boolean force = false;
 
     public UndeployCommand(DomainController controller) {
         this.controller = controller;
@@ -66,6 +67,10 @@ public class UndeployCommand implements Command {
 
     public void setContributionUri(URI uri) {
         this.contributionUri = uri;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
     }
 
     public String getUsername() {
@@ -96,7 +101,7 @@ public class UndeployCommand implements Command {
             if (disconnected) {
                 controller.connect();
             }
-            controller.undeploy(contributionUri);
+            controller.undeploy(contributionUri, force);
             return true;
         } catch (IOException e) {
             out.println("ERROR: Error connecting to domain controller");

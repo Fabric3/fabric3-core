@@ -71,10 +71,12 @@ public interface DomainMBean {
     /**
      * Undeploys deployables contained in a contribution.
      *
-     * @param uri the contribution URI.
+     * @param uri   the contribution URI.
+     * @param force true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If true,
+     *              undeployment will also succeed if no participants are available.
      * @throws DeploymentManagementException if an exception undeploying the contribution is encountered
      */
-    void undeploy(URI uri) throws DeploymentManagementException;
+    void undeploy(URI uri, boolean force) throws DeploymentManagementException;
 
     /**
      * Returns a list of ComponentInfo instances representing the components deployed to the given composite path. The path "/" is interpreted as the

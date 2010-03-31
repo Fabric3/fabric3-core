@@ -126,7 +126,7 @@ public abstract class AbstractDomainMBean {
         }
     }
 
-    public void undeploy(URI uri) throws DeploymentManagementException {
+    public void undeploy(URI uri, boolean force) throws DeploymentManagementException {
         Contribution contribution = store.find(uri);
         if (contribution == null) {
             throw new ContributionNotFoundException("Contribution not found: " + uri);

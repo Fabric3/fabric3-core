@@ -162,11 +162,13 @@ public interface DomainController {
     /**
      * Undeploys all deployables in a contribution.
      *
-     * @param uri the contribution URI.
+     * @param uri   the contribution URI.
+     * @param force true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If true,
+     *              undeployment will also succeed if no participants are available.
      * @throws CommunicationException        if there is an error communicating with the domain controller
      * @throws DeploymentManagementException if there is an error undeploying the contribution.
      */
-    void undeploy(URI uri) throws CommunicationException, DeploymentManagementException;
+    void undeploy(URI uri, boolean force) throws CommunicationException, DeploymentManagementException;
 
     /**
      * Uninstalls a contribution.

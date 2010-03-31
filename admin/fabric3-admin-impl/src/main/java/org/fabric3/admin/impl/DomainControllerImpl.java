@@ -221,14 +221,14 @@ public class DomainControllerImpl implements DomainController {
         }
     }
 
-    public void undeploy(URI uri) throws CommunicationException, DeploymentManagementException {
+    public void undeploy(URI uri, boolean force) throws CommunicationException, DeploymentManagementException {
         try {
             if (!isConnected()) {
                 throw new IllegalStateException("Not connected");
             }
             MBeanServerConnection conn = jmxc.getMBeanServerConnection();
             ObjectName oName = new ObjectName(DOMAIN_MBEAN);
-            conn.invoke(oName, "undeploy", new Object[]{uri}, new String[]{URI.class.getName()});
+            conn.invoke(oName, "undeploy", new Object[]{uri, force}, new String[]{URI.class.getName(), Boolean.TYPE.getName()});
         } catch (MBeanException e) {
             throw new DeploymentManagementException(e.getTargetException().getMessage(), e.getTargetException());
         } catch (JMException e) {

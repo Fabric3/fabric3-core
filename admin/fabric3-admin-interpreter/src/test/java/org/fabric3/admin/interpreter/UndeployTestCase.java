@@ -59,7 +59,7 @@ public class UndeployTestCase extends TestCase {
         controller.setUsername("username");
         controller.setPassword("password");
         EasyMock.expect(controller.isConnected()).andReturn(true);
-        controller.undeploy(URI.create("foo.jar"));
+        controller.undeploy(URI.create("foo.jar"), false);
         EasyMock.replay(controller);
 
         Interpreter interpreter = new InterpreterImpl(controller);
@@ -71,5 +71,36 @@ public class UndeployTestCase extends TestCase {
         EasyMock.verify(controller);
     }
 
+    public void testDeployWithNameAndForce() throws Exception {
+        DomainController controller = EasyMock.createMock(DomainController.class);
+        controller.setUsername("username");
+        controller.setPassword("password");
+        EasyMock.expect(controller.isConnected()).andReturn(true);
+        controller.undeploy(URI.create("foo.jar"), true);
+        EasyMock.replay(controller);
+
+        Interpreter interpreter = new InterpreterImpl(controller);
+
+        InputStream in = new ByteArrayInputStream("undeploy foo.jar -force -u username -p password \n quit".getBytes());
+        PrintStream out = new PrintStream(new ByteArrayOutputStream());
+        interpreter.processInteractive(in, out);
+
+        EasyMock.verify(controller);
+    }
+
+    public void testDeployWithNameAndForceNoSecurity() throws Exception {
+        DomainController controller = EasyMock.createMock(DomainController.class);
+        EasyMock.expect(controller.isConnected()).andReturn(true);
+        controller.undeploy(URI.create("foo.jar"), true);
+        EasyMock.replay(controller);
+
+        Interpreter interpreter = new InterpreterImpl(controller);
+
+        InputStream in = new ByteArrayInputStream("undeploy foo.jar -force \n quit".getBytes());
+        PrintStream out = new PrintStream(new ByteArrayOutputStream());
+        interpreter.processInteractive(in, out);
+
+        EasyMock.verify(controller);
+    }
 
 }

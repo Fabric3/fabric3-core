@@ -50,6 +50,9 @@ import org.fabric3.admin.interpreter.command.UndeployCommand;
  * @version $Rev$ $Date$
  */
 public class UndeployCommandParser implements CommandParser {
+    private static final String FORCE = "-force";
+    private static final String FORCE_ABBREVIATED = "-f";
+
     private DomainController controller;
 
     public UndeployCommandParser(DomainController controller) {
@@ -58,11 +61,11 @@ public class UndeployCommandParser implements CommandParser {
 
     public String getUsage() {
         return "undeploy (ude): Undeploys a contribution.\n" +
-                "usage: undeploy <contribution> [-u username -p password]";
+                "usage: undeploy <contribution> [-force (-f)] [-u username -p password]";
     }
 
     public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 1 && tokens.length != 5) {
+        if (tokens.length != 1 && tokens.length != 2 && tokens.length != 5 && tokens.length != 6) {
             throw new ParseException("Illegal number of arguments");
         }
         UndeployCommand command = new UndeployCommand(controller);
@@ -71,10 +74,24 @@ public class UndeployCommandParser implements CommandParser {
         } catch (URISyntaxException e) {
             throw new ParseException("Invalid contribution name", e);
         }
-        if (tokens.length == 5) {
+        if (tokens.length == 2) {
+            parseForce(tokens[1], command);
+        } else if (tokens.length == 5) {
             ParserHelper.parseAuthorization(command, tokens, 1);
+        } else if (tokens.length == 6) {
+            parseForce(tokens[1], command);
+            ParserHelper.parseAuthorization(command, tokens, 2);
         }
         return command;
+    }
+
+    private void parseForce(String token, UndeployCommand command) throws ParseException {
+        if (FORCE.equals(token) || FORCE_ABBREVIATED.equals(token)) {
+            command.setForce(true);
+        } else {
+            throw new ParseException("Unrecognized option: " + token);
+        }
+
     }
 
 }
