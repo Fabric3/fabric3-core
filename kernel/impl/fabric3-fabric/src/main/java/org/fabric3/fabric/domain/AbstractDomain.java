@@ -257,7 +257,7 @@ public abstract class AbstractDomain implements Domain {
                 if (!force) {
                     throw e;
                 }
-                // ignore deployment exceptions
+                // force undeployment in effect: ignore deployment exceptions
             }
         } catch (GenerationException e) {
             throw new DeploymentException("Error undeploying: " + deployable, e);
