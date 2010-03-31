@@ -229,6 +229,10 @@ public abstract class AbstractDomain implements Domain {
     }
 
     public synchronized void undeploy(QName deployable) throws DeploymentException {
+        undeploy(deployable, false);
+    }
+
+    public void undeploy(QName deployable, boolean force) throws DeploymentException {
         QNameSymbol deployableSymbol = new QNameSymbol(deployable);
         Contribution contribution = metadataStore.resolveContainingContribution(deployableSymbol);
         if (!contribution.getLockOwners().contains(deployable)) {
@@ -247,7 +251,14 @@ public abstract class AbstractDomain implements Domain {
                 fullDeployment = generator.generate(domain.getComponents(), false, isLocal());
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
+            try {
+                deployer.deploy(deploymentPackage);
+            } catch (DeploymentException e) {
+                if (!force) {
+                    throw e;
+                }
+                // ignore deployment exceptions
+            }
         } catch (GenerationException e) {
             throw new DeploymentException("Error undeploying: " + deployable, e);
         }

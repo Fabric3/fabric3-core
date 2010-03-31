@@ -95,6 +95,16 @@ public interface Domain {
     void undeploy(QName deployable) throws DeploymentException;
 
     /**
+     * Remove a deployable Composite from the domain.
+     *
+     * @param deployable the name of the deployable composite to remove
+     * @param force      true if the undeployment operation should ignore errors from runtimes and remove logical components on the controller. If
+     *                   true, undeployment will also succeed if no participants are available.
+     * @throws DeploymentException if an error is encountered during undeployment
+     */
+    void undeploy(QName deployable, boolean force) throws DeploymentException;
+
+    /**
      * Activates a set of definitions contained in the contribution.
      *
      * @param uri the contribution URI

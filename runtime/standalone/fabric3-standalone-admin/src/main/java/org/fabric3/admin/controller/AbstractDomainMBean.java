@@ -138,7 +138,7 @@ public abstract class AbstractDomainMBean {
         for (Deployable deployable : deployables) {
             try {
                 QName name = deployable.getName();
-                domain.undeploy(name);
+                domain.undeploy(name, force);
             } catch (DeploymentException e) {
                 reportError(uri, e);
             }
