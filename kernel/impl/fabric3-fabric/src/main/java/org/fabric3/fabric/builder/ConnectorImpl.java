@@ -172,7 +172,7 @@ public class ConnectorImpl implements Connector {
     }
 
     /**
-     * Handles adding required paramter data transformers to a wire.
+     * Handles adding required parameter data transformers to a wire.
      *
      * @param wire       the wire
      * @param definition the physical wire definition
