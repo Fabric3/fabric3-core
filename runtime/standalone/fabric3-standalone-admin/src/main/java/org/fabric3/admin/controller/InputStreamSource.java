@@ -42,6 +42,8 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -71,4 +73,9 @@ public class InputStreamSource implements Source {
         opened = true;
         return source;
     }
+
+	public Source getImportSource(String parentLocation, String importLocation) throws IOException 
+	{
+		return null;
+	}
 }
