@@ -41,16 +41,24 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
+import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.extensions.ExtensionSerializer;
+import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
+
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.wsdl.contribution.impl.SourceWsdlLocator;
 import org.w3c.dom.Element;
 
 /**
@@ -89,6 +97,24 @@ public class Wsdl4JFactoryImplTestCase extends TestCase {
         writer.writeWSDL(definition, stringWriter);
         assertTrue(stringWriter.getBuffer().toString().contains("mockExtensibilityElement"));
 
+    }
+    
+    public void testLocator() throws Exception
+    {
+    	Wsdl4JFactoryImpl factory = new Wsdl4JFactoryImpl();
+        WSDLReader reader = factory.newReader();
+        
+        Source urlSource = new UrlSource(getClass().getResource("locatorTest.wsdl"));
+        IntrospectionContext context = new DefaultIntrospectionContext();
+        WSDLLocator locator = new SourceWsdlLocator(urlSource, context);
+        Definition definition = reader.readWSDL(locator);
+        assertEquals(0, context.getErrors().size());
+        assertNotNull(definition);
+        
+        Service service = definition.getService(new QName("http://example.com/locatorTest.wsdl", "TestImportService"));
+        assertNotNull(service);
+        QName portType = service.getPort("TestImportPort").getBinding().getPortType().getQName();
+        assertEquals(new QName("http://example.com/stockquote.wsdl", "StockQuotePortType"), portType);
     }
 
     private boolean findElement(Binding binding) {
