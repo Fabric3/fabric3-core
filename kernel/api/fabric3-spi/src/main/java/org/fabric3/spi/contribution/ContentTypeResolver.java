@@ -55,7 +55,15 @@ public interface ContentTypeResolver {
      */
     String getContentType(URL contentUrl) throws ContentTypeResolutionException;
 
-
+    /**
+     * Gets the content type for the contribution source.
+     *
+     * @param pathURI location path for the source
+     * @return Content type for the contribution source or null if the content type is unknown.
+     * @throws ContentTypeResolutionException if unable to resolve content type.
+     */
+    String getContentType(String pathURI) throws ContentTypeResolutionException;
+    
     /**
      * Register a new file extension to content type mapping.
      *
