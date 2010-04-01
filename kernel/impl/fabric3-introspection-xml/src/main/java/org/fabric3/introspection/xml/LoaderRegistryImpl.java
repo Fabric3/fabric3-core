@@ -45,6 +45,8 @@ package org.fabric3.introspection.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -133,7 +135,12 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     private <O> O load(String id, InputStream stream, Class<O> type, IntrospectionContext ctx)
             throws XMLStreamException, UnrecognizedElementException {
         XMLStreamReader reader;
-        reader = xmlFactory.createXMLStreamReader(id, stream);
+        
+        // if the id is a URL, use it as the system id
+        if (isURL(id))
+        	reader = xmlFactory.createXMLStreamReader(id, stream);
+        else
+        	reader = xmlFactory.createXMLStreamReader(stream);
 
         try {
             reader.nextTag();
@@ -149,4 +156,21 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         }
     }
 
+    /**
+     * Tests to see if a string can be parsed as a URL
+     * @param aPath
+     * @return true if the string can be parsed as a URL
+     */
+    private boolean isURL(String aPath)
+    {
+    	try
+    	{
+    		URL url = new URL(aPath);
+    		return true;
+    	}
+    	catch (MalformedURLException ex)
+    	{
+    		return false;
+    	}
+    }
 }
