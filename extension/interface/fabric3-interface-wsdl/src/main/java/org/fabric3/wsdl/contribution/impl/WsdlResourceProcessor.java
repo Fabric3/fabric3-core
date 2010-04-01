@@ -51,6 +51,7 @@ import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
+import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.namespace.QName;
@@ -260,10 +261,10 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      * @throws InstallException if an unexpected error occurs
      */
     private Definition parseWsdl(Source source, IntrospectionContext context) throws InstallException {
+    	WSDLLocator locator = new SourceWsdlLocator(source, context);
         try {
             WSDLReader reader = factory.newReader();
-            InputSource inputSource = new InputSource(source.openStream());
-            Definition definition = reader.readWSDL(null, inputSource);
+            Definition definition = reader.readWSDL(locator);
             if (!definition.getNamespaces().values().contains("http://schemas.xmlsoap.org/wsdl/soap/")) {
                 // Workaround for a bug in WSDL4J where a WSDL document does not reference the SOAP namespace and an attempt is made to serialize it,
                 // an exception is thrown. 
@@ -273,8 +274,10 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             return definition;
         } catch (WSDLException e) {
             throw new InstallException(e);
-        } catch (IOException e) {
-            throw new InstallException(e);
+        }
+        finally
+        {
+        	locator.close();
         }
     }
 
