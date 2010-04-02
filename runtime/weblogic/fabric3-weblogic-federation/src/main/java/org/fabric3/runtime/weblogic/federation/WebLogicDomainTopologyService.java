@@ -115,6 +115,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             rootContext.close();
         }
         if (participantContext != null) {
+//            participantContext.removeNamingListener();
             participantContext.close();
         }
     }
@@ -277,8 +278,8 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
                 Context ctx = JndiHelper.getContext(PARTICIPANT_CONTEXT, rootContext);
                 assert ctx instanceof EventContext;
                 participantContext = (EventContext) ctx;
-                ParticipantContextListener listener = new ParticipantContextListener();
-                participantContext.addNamingListener("", EventContext.ONELEVEL_SCOPE, listener);
+//                ParticipantContextListener listener = new ParticipantContextListener();
+//                participantContext.addNamingListener("", EventContext.ONELEVEL_SCOPE, listener);
             } catch (NamingException e) {
                 monitor.errorMessage("Error initializing domain topology service", e);
             } catch (RuntimeException e) {
