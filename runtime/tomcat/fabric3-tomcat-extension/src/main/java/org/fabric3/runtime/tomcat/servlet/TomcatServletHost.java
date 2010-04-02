@@ -96,8 +96,9 @@ public class TomcatServletHost implements ServletHost {
         for (Container container : defaultHttpConnector.getContainer().findChildren()) {
             if (container instanceof StandardHost) {
                 Container child = container.findChild("");
-                if (child != null)
-                	container.removeChild(child);
+                if (child != null) {
+                	   container.removeChild(child);
+                }
                 StandardContext context = createContext("", ".");
                 context.addChild(wrapper);
                 context.addServletMapping("/*", "Fabric3Servlet");

@@ -99,9 +99,8 @@ public class Wsdl4JFactoryImplTestCase extends TestCase {
 
     }
     
-    public void testLocator() throws Exception
-    {
-    	Wsdl4JFactoryImpl factory = new Wsdl4JFactoryImpl();
+    public void testLocator() throws Exception {
+        Wsdl4JFactoryImpl factory = new Wsdl4JFactoryImpl();
         WSDLReader reader = factory.newReader();
         
         Source urlSource = new UrlSource(getClass().getResource("locatorTest.wsdl"));

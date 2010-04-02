@@ -261,7 +261,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      * @throws InstallException if an unexpected error occurs
      */
     private Definition parseWsdl(Source source, IntrospectionContext context) throws InstallException {
-    	WSDLLocator locator = new SourceWsdlLocator(source, context);
+    	  WSDLLocator locator = new SourceWsdlLocator(source, context);
         try {
             WSDLReader reader = factory.newReader();
             Definition definition = reader.readWSDL(locator);
@@ -275,9 +275,8 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         } catch (WSDLException e) {
             throw new InstallException(e);
         }
-        finally
-        {
-        	locator.close();
+        finally {
+        	   locator.close();
         }
     }
 

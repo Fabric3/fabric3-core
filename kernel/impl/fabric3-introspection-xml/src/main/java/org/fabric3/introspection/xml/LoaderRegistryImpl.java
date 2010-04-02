@@ -137,10 +137,12 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         XMLStreamReader reader;
         
         // if the id is a URL, use it as the system id
-        if (isURL(id))
-        	reader = xmlFactory.createXMLStreamReader(id, stream);
-        else
-        	reader = xmlFactory.createXMLStreamReader(stream);
+        if (isURL(id)) {
+        	   reader = xmlFactory.createXMLStreamReader(id, stream);
+        }
+        else {
+        	   reader = xmlFactory.createXMLStreamReader(stream);
+        }
 
         try {
             reader.nextTag();
@@ -161,16 +163,13 @@ public class LoaderRegistryImpl implements LoaderRegistry {
      * @param aPath
      * @return true if the string can be parsed as a URL
      */
-    private boolean isURL(String aPath)
-    {
-    	try
-    	{
-    		URL url = new URL(aPath);
-    		return true;
-    	}
-    	catch (MalformedURLException ex)
-    	{
-    		return false;
-    	}
+    private boolean isURL(String aPath) {
+    	  try {
+    	      URL url = new URL(aPath);
+            return true;
+        }
+        catch (MalformedURLException ex) {
+            return false;
+        }
     }
 }

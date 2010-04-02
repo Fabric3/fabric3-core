@@ -728,70 +728,69 @@ public class FileHelper {
        String fwdSlash = "/";
        
        // just return the path as-is if either location is null or empty
-       if (path == null || "".equals(path) || 
-    	   parentLocation == null || "".equals(parentLocation))
-          return path;
+       if (path == null || "".equals(path) || parentLocation == null || "".equals(parentLocation)) {
+              return path;
+       }
 
        // resolve relative path
-       if (!isAbsolute(path))
-       {
-          String basePath = parentLocation;
-          basePath = basePath.replace('\\', '/');
-          basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+       if (!isAbsolute(path)) {
+           String basePath = parentLocation;
+           basePath = basePath.replace('\\', '/');
+           basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
           
-          if (path.startsWith(CURRENT_DIRECTORY_INDICATOR+ fwdSlash))
-          {
-             path = path.substring(2);
-          }
-          else if (path.startsWith(PARENT_DIRECTORY_INDICATOR))
-          {
-             // if we have a parent directory indicator, then strip off segments
-             // from the basePath until there are no more '..'
-             StringBuilder builder = new StringBuilder();
-             StringTokenizer tokenizer = new StringTokenizer(path , fwdSlash);
-             int countParentInd = 0;
-             while(tokenizer.hasMoreTokens())
-             {
-                String token = tokenizer.nextToken();
-                if (PARENT_DIRECTORY_INDICATOR.equals(token))
-                   countParentInd++;
-                else
-                   builder.append(fwdSlash).append(token);
-             }
-             
-             if (basePath.endsWith(fwdSlash))
-                basePath = basePath.substring(0, basePath.length()-1);
-             
-             // remove segments from the basePath
-             for (int i = 0; i < countParentInd; i++)
-             {
-                int lastIdx = basePath.lastIndexOf(fwdSlash);
-                basePath = basePath.substring(0, lastIdx);
-                
-                // if the basePath is now the root, then add back a parent dir. ind.
-                // and break from this loop.
-                if (i != countParentInd-1 &&
-                    ((basePath.endsWith(fwdSlash) && basePath.length() == 1) ||
-                     basePath.endsWith(":"))) //$NON-NLS-1$
-                {
-                   int addParentIndCount = countParentInd - 1 - i;
-                   for (int j = 0; j < addParentIndCount; j++)
-                   {
-                      if (basePath.endsWith(":") || basePath.endsWith(PARENT_DIRECTORY_INDICATOR)) //$NON-NLS-1$
-                         basePath += fwdSlash + PARENT_DIRECTORY_INDICATOR;
-                      else
-                         basePath += PARENT_DIRECTORY_INDICATOR;
+           if (path.startsWith(CURRENT_DIRECTORY_INDICATOR+ fwdSlash)) {
+               path = path.substring(2);
+           }
+           else if (path.startsWith(PARENT_DIRECTORY_INDICATOR)) {
+               // if we have a parent directory indicator, then strip off segments
+               // from the basePath until there are no more '..'
+               StringBuilder builder = new StringBuilder();
+               StringTokenizer tokenizer = new StringTokenizer(path , fwdSlash);
+               int countParentInd = 0;
+               while(tokenizer.hasMoreTokens()) {
+                   String token = tokenizer.nextToken();
+                   if (PARENT_DIRECTORY_INDICATOR.equals(token)) {
+                       countParentInd++;
                    }
-                   break;
-                }
-             }
+                   else {
+                       builder.append(fwdSlash).append(token);
+                   }
+               }
              
-             path = builder.toString();
-          }
+               if (basePath.endsWith(fwdSlash)) {
+                   basePath = basePath.substring(0, basePath.length()-1);
+               }
+             
+               // remove segments from the basePath
+               for (int i = 0; i < countParentInd; i++) {
+                  
+                  int lastIdx = basePath.lastIndexOf(fwdSlash);
+                  basePath = basePath.substring(0, lastIdx);
+                
+                  // if the basePath is now the root, then add back a parent dir. ind.
+                  // and break from this loop.
+                  if (i != countParentInd-1 &&
+                      ((basePath.endsWith(fwdSlash) && basePath.length() == 1) ||
+                        basePath.endsWith(":"))) {
+                        int addParentIndCount = countParentInd - 1 - i;
+                        for (int j = 0; j < addParentIndCount; j++) {
+                           if (basePath.endsWith(":") || basePath.endsWith(PARENT_DIRECTORY_INDICATOR)) {
+                            basePath += fwdSlash + PARENT_DIRECTORY_INDICATOR;
+                           }
+                           else {
+                              basePath += PARENT_DIRECTORY_INDICATOR;
+                           }
+                        }
+                        break;
+                    }
+                }
+             
+                path = builder.toString();
+            }
           
-          path = basePath + path;
-       }
-       return path;
+            path = basePath + path;
+        }
+        return path;
     }
     
     /**
@@ -802,22 +801,18 @@ public class FileHelper {
      * @param aPath
      * @return true if path is absolute, otherwise false.
      */
-    public static boolean isAbsolute(String aPath)
-    {
-       boolean absolute = false;
-       String path = aPath.replace('\\', '/');
-       // the path has a scheme if a colon appears before the first '/'
-       if ( path.indexOf(':') > 0 && path.indexOf('/') >  path.indexOf(':') )
-       {
+    public static boolean isAbsolute(String aPath) {
+        boolean absolute = false;
+        String path = aPath.replace('\\', '/');
+        // the path has a scheme if a colon appears before the first '/'
+        if ( path.indexOf(':') > 0 && path.indexOf('/') >  path.indexOf(':') ) {
+            absolute = true;
+        }
+        // starts with a '/'
+        else if (path.startsWith("/")) {
           absolute = true;
-       }
-       // starts with a '/'
-       else if (path.startsWith("/")) //$NON-NLS-1$
-       {
-          absolute = true;
-       }
+        }
        
-       return absolute;
+        return absolute;
     }    
-    
 }
