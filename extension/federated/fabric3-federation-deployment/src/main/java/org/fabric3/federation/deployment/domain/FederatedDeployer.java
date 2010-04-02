@@ -219,7 +219,7 @@ public class FederatedDeployer implements Deployer {
         DeploymentUnit unit = deployment.getDeploymentUnit(zone);
         DeploymentUnit compensatingUnit = new DeploymentUnit();
         if (!unit.getExtensionCommands().isEmpty()) {
-            ListIterator<CompensatableCommand> iter = unit.getExtensionCommands().listIterator(unit.getExtensionCommands().size() - 1);
+            ListIterator<CompensatableCommand> iter = unit.getExtensionCommands().listIterator(unit.getExtensionCommands().size());
             while (iter.hasPrevious()) {
                 CompensatableCommand command = iter.previous();
                 CompensatableCommand compensating = command.getCompensatingCommand();
@@ -227,7 +227,7 @@ public class FederatedDeployer implements Deployer {
             }
         }
         if (!unit.getCommands().isEmpty()) {
-            ListIterator<CompensatableCommand> iter = unit.getCommands().listIterator(unit.getCommands().size() - 1);
+            ListIterator<CompensatableCommand> iter = unit.getCommands().listIterator(unit.getCommands().size());
             while (iter.hasPrevious()) {
                 CompensatableCommand command = iter.previous();
                 CompensatableCommand compensating = command.getCompensatingCommand();
