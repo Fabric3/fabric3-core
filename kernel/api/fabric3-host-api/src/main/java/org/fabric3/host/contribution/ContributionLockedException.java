@@ -38,7 +38,7 @@
 package org.fabric3.host.contribution;
 
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 /**
@@ -49,9 +49,9 @@ import javax.xml.namespace.QName;
 public class ContributionLockedException extends UninstallException {
     private static final long serialVersionUID = -5443601943113359365L;
     private URI uri;
-    private Set<QName> deployables;
+    private List<QName> deployables;
 
-    public ContributionLockedException(String message, URI uri, Set<QName> deployables) {
+    public ContributionLockedException(String message, URI uri, List<QName> deployables) {
         super(message);
         this.uri = uri;
         this.deployables = deployables;
@@ -61,7 +61,7 @@ public class ContributionLockedException extends UninstallException {
         return uri;
     }
 
-    public Set<QName> getDeployables() {
+    public List<QName> getDeployables() {
         return deployables;
     }
 

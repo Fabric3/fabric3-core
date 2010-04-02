@@ -46,6 +46,7 @@ package org.fabric3.host.contribution;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -111,13 +112,13 @@ public interface ContributionService {
     List<URI> contribute(List<ContributionSource> sources) throws ContributionException;
 
     /**
-     * Updates a previously stored artifact if its timestamp and checksum have changed.
+     * Returns a list of deployed deployable composites from the contribution in the order they were deployed.
      *
-     * @param source the contribution source
-     * @throws UpdateException               if an error occurs during the update procecedure, for example, a previuous contribution is not found
-     * @throws ContributionNotFoundException if a contribution is not found
+     * @param uri the contribution URI
+     * @return the list of deployed composite qualified names
+     * @throws ContributionNotFoundException if the contribution is not found
      */
-    void update(ContributionSource source) throws UpdateException, ContributionNotFoundException;
+    List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException;
 
     /**
      * Uninstalls a contribution.

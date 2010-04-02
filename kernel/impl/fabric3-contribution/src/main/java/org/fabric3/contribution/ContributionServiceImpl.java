@@ -71,14 +71,14 @@ import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.DuplicateProfileException;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.RemoveException;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UpdateException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -210,25 +210,12 @@ public class ContributionServiceImpl implements ContributionService {
         return metaDataStore.find(uri) != null;
     }
 
-    public void update(ContributionSource contributionSource) throws UpdateException, ContributionNotFoundException {
-        URI uri = contributionSource.getUri();
-        byte[] checksum = contributionSource.getChecksum();
-        long timestamp = contributionSource.getTimestamp();
-        InputStream is = null;
-        try {
-            is = contributionSource.getSource().openStream();
-            update(uri, checksum, timestamp);
-        } catch (IOException e) {
-            throw new UpdateException("Contribution error", e);
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                monitor.error("Error closing stream", e);
-            }
+    public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
+        Contribution contribution = metaDataStore.find(uri);
+        if (contribution == null) {
+            throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
+        return contribution.getLockOwners();
     }
 
     public long getContributionTimestamp(URI uri) {
@@ -355,7 +342,7 @@ public class ContributionServiceImpl implements ContributionService {
             throw new UninstallException("Contribution not installed: " + uri);
         }
         if (contribution.isLocked()) {
-            Set<QName> deployables = contribution.getLockOwners();
+            List<QName> deployables = contribution.getLockOwners();
             throw new ContributionLockedException("Contribution is currently in use by a deployment: " + uri, uri, deployables);
         }
         // unload from memory

@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -67,7 +68,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
@@ -285,16 +285,17 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     // an addition
                     additions.add(file);
                 }
-
             }
             processUpdates(updates);
             processAdditions(additions, false);
         } catch (IOException e) {
             monitor.error(e);
+        } catch (DeploymentException e) {
+            monitor.error(e);
         }
     }
 
-    private synchronized void processUpdates(List<File> files) throws IOException {
+    private synchronized void processUpdates(List<File> files) throws IOException, DeploymentException {
         for (File file : files) {
             String name = file.getName();
             URI artifactUri = processed.get(name);
@@ -306,7 +307,15 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             if (timestamp > previousTimestamp) {
                 try {
                     ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, checksum);
-                    contributionService.update(source);
+                    // undeploy any deployed composites in the reverse order that they were deployed in
+                    List<QName> deployables = contributionService.getDeployedComposites(artifactUri);
+                    ListIterator<QName> iter = deployables.listIterator(deployables.size());
+                    while (iter.hasPrevious()) {
+                        QName deployable = iter.previous();
+                        domain.undeploy(deployable);
+                    }
+                    contributionService.remove(artifactUri);
+                    contributionService.contribute(source);
                 } catch (ContributionException e) {
                     errorCache.put(name, cached);
                     monitor.error(e);
@@ -402,10 +411,12 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 try {
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
-                        List<Deployable> deployables = contributionService.getDeployables(uri);
-                        for (Deployable deployable : deployables) {
-                            QName name = deployable.getName();
-                            domain.undeploy(name);
+                        // undeploy any deployed composites in the reverse order that they were deployed in
+                        List<QName> deployables = contributionService.getDeployedComposites(uri);
+                        ListIterator<QName> iter = deployables.listIterator(deployables.size());
+                        while (iter.hasPrevious()) {
+                            QName deployable = iter.previous();
+                            domain.undeploy(deployable);
                         }
                         contributionService.uninstall(uri);
                         contributionService.remove(uri);

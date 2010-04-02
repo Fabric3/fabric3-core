@@ -41,9 +41,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.stream.Source;
@@ -70,7 +68,7 @@ public class Contribution implements Serializable {
     private List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
     private List<URI> resolvedExtensionProviders = new ArrayList<URI>();
 
-    private Set<QName> lockOwners = new HashSet<QName>();
+    private List<QName> lockOwners = new ArrayList<QName>();
 
     public Contribution(URI uri) {
         this.uri = uri;
@@ -335,11 +333,11 @@ public class Contribution implements Serializable {
     }
 
     /**
-     * Returns the set of current lock owners.
+     * Returns the set of current lock owners ordered by time of lock acquisition.
      *
      * @return the set of current lock owners
      */
-    public Set<QName> getLockOwners() {
+    public List<QName> getLockOwners() {
         return lockOwners;
     }
 
