@@ -183,6 +183,8 @@ public class JmsInterceptor implements Interceptor {
             throw new ServiceRuntimeException("Unable to receive response", ex);
         } catch (IOException ex) {
             throw new ServiceRuntimeException("Error serializing callframe", ex);
+        } catch (JmsBadMessageException ex) {
+            throw new ServiceRuntimeException("Unable to receive response", ex);
         } catch (SystemException e) {
             throw new ServiceRuntimeException(e);
         } catch (NotSupportedException e) {
@@ -214,9 +216,10 @@ public class JmsInterceptor implements Interceptor {
      * @param correlationId the id for correlating the response message
      * @param session       the session to perform the receive in
      * @return the response message
-     * @throws JMSException if an error occurs waiting for or processing the response
+     * @throws JMSException if an error occurs in the JMS provider waiting for or processing the response
+     * @throws JmsBadMessageException if an unrecoverable error such as a bad message type occurs waiting for or processing the response
      */
-    private Message receive(String correlationId, Session session) throws JMSException {
+    private Message receive(String correlationId, Session session) throws JMSException, JmsBadMessageException {
         javax.jms.Message resultMessage = responseListener.receive(correlationId, session, timeout);
         if (resultMessage == null) {
             throw new ServiceUnavailableException("Timeout waiting for response to message: " + correlationId);
