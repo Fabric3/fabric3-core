@@ -195,7 +195,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
         if (address == null) {
-            throw new MessageException("Runtme not found: " + runtimeName);
+            throw new MessageException("Runtime not found: " + runtimeName);
         }
         return send(address, command, timeout);
     }
