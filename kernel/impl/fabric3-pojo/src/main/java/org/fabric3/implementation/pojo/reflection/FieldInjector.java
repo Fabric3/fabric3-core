@@ -56,7 +56,6 @@ import org.fabric3.spi.Injector;
  * @version $Rev$ $Date$
  */
 public class FieldInjector<T> implements Injector<T> {
-
     private final Field field;
 
     private ObjectFactory<?> objectFactory;
@@ -79,13 +78,19 @@ public class FieldInjector<T> implements Injector<T> {
      */
     public void inject(T instance) throws ObjectCreationException {
         try {
-            Object o = objectFactory.getInstance();
-            if (o == null) {
-                // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
-                // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
-                return;
-            }
-            field.set(instance, o);
+            Object target;
+            if (objectFactory == null) {
+                // this can happen if a value is removed such as a reference being unwired
+                target = null;
+            } else {
+                target = objectFactory.getInstance();
+                if (target == null) {
+                    // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
+                    // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
+                    return;
+                }
+            }            
+            field.set(instance, target);
         } catch (IllegalAccessException e) {
             String id = field.getName();
             throw new AssertionError("Field is not accessible:" + id);

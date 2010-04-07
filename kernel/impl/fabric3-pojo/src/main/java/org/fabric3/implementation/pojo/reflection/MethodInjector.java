@@ -47,9 +47,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.Injector;
 
 /**
  * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} using a given method
@@ -69,11 +69,17 @@ public class MethodInjector<T> implements Injector<T> {
     }
 
     public void inject(T instance) throws ObjectCreationException {
-        Object target = objectFactory.getInstance();
-        if (target == null) {
-            // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
-            // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
-            return;
+        Object target;
+        if (objectFactory == null) {
+            // this can happen if a value is removed such as a reference being unwired
+            target = null;
+        } else {
+            target = objectFactory.getInstance();
+            if (target == null) {
+                // The object factory is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
+                // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
+                return;
+            }
         }
         try {
             method.invoke(instance, target);
