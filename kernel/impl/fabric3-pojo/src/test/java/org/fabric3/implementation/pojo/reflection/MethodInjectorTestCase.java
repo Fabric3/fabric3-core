@@ -84,17 +84,37 @@ public class MethodInjectorTestCase extends TestCase {
         }
     }
 
+    public void testReinjectionOfNullValue() throws Exception {
+        EasyMock.replay(objectFactory);
+        MethodInjector<Foo> injector = new MethodInjector<Foo>(fooMethod, objectFactory);
+        try {
+            injector.clearObjectFactory();
+            Foo foo = new Foo();
+            injector.inject(foo);
+            assertNull(foo.getFoo());
+        } catch (ObjectCreationException e) {
+            // expected
+        }
+    }
+
+
     protected void setUp() throws Exception {
         super.setUp();
-        fooMethod = Foo.class.getMethod("foo", String.class);
+        fooMethod = Foo.class.getMethod("setFoo", String.class);
         privateMethod = Foo.class.getDeclaredMethod("hidden", String.class);
         exceptionMethod = Foo.class.getDeclaredMethod("exception", String.class);
         objectFactory = EasyMock.createMock(ObjectFactory.class);
     }
 
     private class Foo {
+        private String foo = "default";
 
-        public void foo(String bar) {
+        public String getFoo() {
+            return foo;
+        }
+
+        public void setFoo(String foo) {
+            this.foo = foo;
         }
 
         private void hidden(String bar) {

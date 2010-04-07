@@ -56,6 +56,7 @@ import org.fabric3.spi.ObjectFactory;
 public class FieldInjectorTestCase extends TestCase {
 
     protected Field protectedField;
+    private Field fooField;
     private ObjectFactory<String> objectFactory;
     private Foo foo;
 
@@ -69,15 +70,28 @@ public class FieldInjectorTestCase extends TestCase {
         assertEquals(value, foo.hidden);
     }
 
+    public void testReinjectionOfNullValue() throws Exception {
+        EasyMock.replay(objectFactory);
+
+        FieldInjector<Foo> injector = new FieldInjector<Foo>(fooField, objectFactory);
+        injector.clearObjectFactory();
+        injector.inject(foo);
+        assertNull(foo.foo);
+    }
+
 
     protected void setUp() throws Exception {
         super.setUp();
         protectedField = Foo.class.getDeclaredField("hidden");
+        fooField = Foo.class.getDeclaredField("foo");
         objectFactory = EasyMock.createMock(ObjectFactory.class);
         foo = new Foo();
     }
 
     private class Foo {
         private String hidden;
+        public String foo = "default";
+
+
     }
 }
