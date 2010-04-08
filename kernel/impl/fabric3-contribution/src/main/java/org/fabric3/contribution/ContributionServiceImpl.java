@@ -48,7 +48,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,16 +72,11 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
-import org.fabric3.host.contribution.UpdateException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
@@ -557,7 +551,6 @@ public class ContributionServiceImpl implements ContributionService {
                 // there were just warnings, report them
                 monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
             }
-            addContributionUri(contribution);
         } catch (StoreException e) {
             throw new InstallException(e);
         }
@@ -587,25 +580,6 @@ public class ContributionServiceImpl implements ContributionService {
                 context.addError(failure);
             }
 
-        }
-    }
-
-    private void update(URI uri, byte[] checksum, long timestamp) throws UpdateException, IOException, ContributionNotFoundException {
-        Contribution contribution = metaDataStore.find(uri);
-        if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution not found for: " + uri);
-        }
-        long archivedTimestamp = contribution.getTimestamp();
-        if (timestamp > archivedTimestamp) {
-            // TODO update
-            for (ContributionServiceListener listener : listeners) {
-                listener.onUpdate(contribution);
-            }
-        } else if (timestamp == archivedTimestamp && Arrays.equals(checksum, contribution.getChecksum())) {
-            // TODO update
-            for (ContributionServiceListener listener : listeners) {
-                listener.onUpdate(contribution);
-            }
         }
     }
 
@@ -656,6 +630,9 @@ public class ContributionServiceImpl implements ContributionService {
         if (type == null) {
             try {
                 type = contentTypeResolver.getContentType(locationUrl);
+                if (type == null) {
+                    throw new StoreException("Unknown contribution type: " + contributionUri);
+                }
             } catch (ContentTypeResolutionException e) {
                 throw new StoreException(e);
             }
@@ -663,44 +640,6 @@ public class ContributionServiceImpl implements ContributionService {
         byte[] checksum = contributionSource.getChecksum();
         long timestamp = contributionSource.getTimestamp();
         return new Contribution(contributionUri, source, locationUrl, checksum, timestamp, type, persistent);
-    }
-
-    /**
-     * Recursively adds the contribution URI to all components.
-     *
-     * @param contribution the contribution the component is defined in
-     */
-    private void addContributionUri(Contribution contribution) {
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                Object value = element.getValue();
-                if (value instanceof Composite) {
-                    addContributionUri(contribution, (Composite) value);
-                }
-            }
-        }
-    }
-
-    /**
-     * Adds the contribution URI to a component and its children if it is a composite.
-     *
-     * @param contribution the contribution
-     * @param composite    the composite
-     */
-    private void addContributionUri(Contribution contribution, Composite composite) {
-        for (ComponentDefinition<?> definition : composite.getComponents().values()) {
-            Implementation<?> implementation = definition.getImplementation();
-            if (CompositeImplementation.class.isInstance(implementation)) {
-                CompositeImplementation compositeImplementation = CompositeImplementation.class.cast(implementation);
-                Composite componentType = compositeImplementation.getComponentType();
-                addContributionUri(contribution, componentType);
-            }
-            if (definition.getContributionUri() == null) {
-                // Check if the contribution URI has already been set. It can be set previously if a composite is used as an implementation
-                // (implementation.composite) and is contained in another contribution (i.e. imported into another contribution that uses it). 
-                definition.setContributionUri(contribution.getUri());
-            }
-        }
     }
 
     private Repository getRepository() {
