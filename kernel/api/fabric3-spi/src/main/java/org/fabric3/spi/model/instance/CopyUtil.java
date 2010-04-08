@@ -209,14 +209,14 @@ public class CopyUtil {
     @SuppressWarnings({"unchecked"})
     private static void copy(Bindable from, Bindable to) {
         for (LogicalBinding<?> binding : from.getBindings()) {
-            LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to);
+            LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to, binding.getDeployable());
             copy.setState(binding.getState());
             to.addBinding(copy);
             copy.addIntents(binding.getIntents());
             copy.addPolicySets(binding.getPolicySets());
         }
         for (LogicalBinding<?> binding : from.getCallbackBindings()) {
-            LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to);
+            LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to, binding.getDeployable());
             copy.setState(binding.getState());
             to.addCallbackBinding(copy);
             copy.setAssigned(binding.isAssigned());
