@@ -44,9 +44,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 
-import org.fabric3.contribution.ClasspathProcessorRegistryImpl;
-import org.fabric3.contribution.DefaultContributionResolver;
-import org.fabric3.contribution.archive.JarClasspathProcessor;
 import org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl;
 import org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl;
 import org.fabric3.contribution.wire.JavaContributionWire;
@@ -54,15 +51,11 @@ import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.binding.BindingSelectorImpl;
 import org.fabric3.fabric.builder.ConnectorImpl;
-import org.fabric3.fabric.builder.classloader.ClassLoaderBuilder;
-import org.fabric3.fabric.builder.classloader.ClassLoaderBuilderImpl;
-import org.fabric3.fabric.builder.classloader.ClassLoaderWireBuilderImpl;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.BuildComponentCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
-import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
@@ -74,7 +67,6 @@ import org.fabric3.fabric.domain.RuntimeDomain;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
-import org.fabric3.fabric.executor.ProvisionClassloaderCommandExecutor;
 import org.fabric3.fabric.executor.ConnectionCommandExecutor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
@@ -148,7 +140,6 @@ import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.jmx.control.JMXBindingGenerator;
 import org.fabric3.jmx.provision.JMXSourceDefinition;
 import org.fabric3.jmx.runtime.JMXWireAttacher;
-import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -159,7 +150,6 @@ import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
@@ -198,15 +188,12 @@ public class BootstrapAssemblyFactory {
                                       MBeanServer mbServer,
                                       HostInfo info) throws InitializationException {
 
-        BindingSelector bindingSelector = new BindingSelectorImpl();
-        CommandExecutorRegistry commandRegistry =
-                createCommandExecutorRegistry(monitorFactory,
-                                              classLoaderRegistry,
-                                              scopeRegistry,
-                                              componentManager,
-                                              mbServer,
-                                              metaDataStore,
-                                              info);
+        CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorFactory,
+                                                                                classLoaderRegistry,
+                                                                                scopeRegistry,
+                                                                                componentManager,
+                                                                                mbServer,
+                                                                                info);
         DeployerMonitor monitor = monitorFactory.getMonitor(DeployerMonitor.class);
         LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry, monitor);
 
@@ -222,6 +209,8 @@ public class BootstrapAssemblyFactory {
         LogicalModelInstantiator logicalModelInstantiator = createLogicalModelGenerator(matcher);
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
+
+        BindingSelector bindingSelector = new BindingSelectorImpl();
 
         return new RuntimeDomain(metaDataStore,
                                  generator,
@@ -244,8 +233,7 @@ public class BootstrapAssemblyFactory {
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
-        CompositeComponentInstantiator compositeInstantiator =
-                new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
+        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,
@@ -261,7 +249,6 @@ public class BootstrapAssemblyFactory {
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
                                                                          MBeanServer mbeanServer,
-                                                                         MetaDataStore metaDataStore,
                                                                          HostInfo info) {
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
@@ -297,10 +284,6 @@ public class BootstrapAssemblyFactory {
         connector.setSourceAttachers(sourceAttachers);
         connector.setTargetAttachers(targetAttachers);
 
-        ClasspathProcessorRegistry cpRegistry = new ClasspathProcessorRegistryImpl();
-
-        ClassLoaderBuilder classLoaderBuilder = createClassLoaderBuilder(classLoaderRegistry, cpRegistry, metaDataStore, componentManager, info);
-
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
 
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
@@ -319,24 +302,9 @@ public class BootstrapAssemblyFactory {
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
-        commandRegistry.register(ProvisionClassloaderCommand.class, new ProvisionClassloaderCommandExecutor(classLoaderBuilder));
         commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(commandRegistry));
 
         return commandRegistry;
-
-    }
-
-    private static ClassLoaderBuilder createClassLoaderBuilder(ClassLoaderRegistry classLoaderRegistry,
-                                                               ClasspathProcessorRegistry cpRegistry,
-                                                               MetaDataStore metaDataStore,
-                                                               ComponentManager componentManager,
-                                                               HostInfo info) {
-
-        DefaultContributionResolver resolver = new DefaultContributionResolver(metaDataStore);
-        JarClasspathProcessor classpathProcessor = new JarClasspathProcessor(cpRegistry, info);
-        classpathProcessor.init();
-        ClassLoaderWireBuilder wireBuilder = new ClassLoaderWireBuilderImpl(classLoaderRegistry);
-        return new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, cpRegistry, componentManager, resolver, info);
     }
 
     private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {

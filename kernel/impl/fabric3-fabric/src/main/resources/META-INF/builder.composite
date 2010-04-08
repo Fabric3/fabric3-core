@@ -26,6 +26,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderBuilderImpl"/>
     </component>
 
+    <component name="ClassLoaderTracker">
+        <f3-impl:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderTrackerImpl"/>
+    </component>
+
     <component name="ClassLoaderWireBuilder">
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderWireBuilderImpl"/>
     </component>

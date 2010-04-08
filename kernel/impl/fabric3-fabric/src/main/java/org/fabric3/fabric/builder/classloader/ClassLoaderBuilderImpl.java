@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -54,11 +55,10 @@ import org.osoa.sca.annotations.Reference;
 
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.Component;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
@@ -72,30 +72,37 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  */
 @EagerInit
 public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
-
     private ClassLoaderWireBuilder wireBuilder;
     private ClassLoaderRegistry classLoaderRegistry;
     private ClasspathProcessorRegistry classpathProcessorRegistry;
-    private ComponentManager componentManager;
     private ContributionResolver resolver;
+    private ClassLoaderTracker tracker;
     private boolean classLoaderIsolation;
+    private List<ClassLoaderListener> listeners;
 
     public ClassLoaderBuilderImpl(@Reference ClassLoaderWireBuilder wireBuilder,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference ClasspathProcessorRegistry classpathProcessorRegistry,
-                                  @Reference ComponentManager componentManager,
                                   @Reference ContributionResolver resolver,
+                                  @Reference ClassLoaderTracker tracker,
                                   @Reference HostInfo info) {
         this.wireBuilder = wireBuilder;
         this.classLoaderRegistry = classLoaderRegistry;
         this.classpathProcessorRegistry = classpathProcessorRegistry;
-        this.componentManager = componentManager;
         this.resolver = resolver;
+        this.tracker = tracker;
         classLoaderIsolation = info.supportsClassLoaderIsolation();
+        this.listeners = Collections.emptyList();
+    }
+
+    @Reference(required = false)
+    public void setListeners(List<ClassLoaderListener> listeners) {
+        this.listeners = listeners;
     }
 
     public void build(PhysicalClassLoaderDefinition definition) throws ClassLoaderBuilderException {
         URI uri = definition.getUri();
+        tracker.increment(uri);
         if (classLoaderRegistry.getClassLoader(uri) != null) {
             /*
              The classloader was already loaded. The classloader will already be created if: it is the boot classloader; the environment is
@@ -132,25 +139,31 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         }
         for (PhysicalClassLoaderWireDefinition wireDefinition : definition.getWireDefinitions()) {
             wireBuilder.build(loader, wireDefinition);
+            URI target = wireDefinition.getTargetClassLoader();
+            ClassLoader classLoader = classLoaderRegistry.getClassLoader(target);
+            tracker.incrementImported(classLoader);
         }
         classLoaderRegistry.register(uri, loader);
+        for (ClassLoaderListener listener : listeners) {
+            listener.onBuild(loader);
+        }
     }
 
     public void destroy(URI uri) throws ClassLoaderBuilderException {
-        List<Component> components = componentManager.getComponents();
-        // remove the classloader if there are no components that reference it
-        for (Component component : components) {
-            if (uri.equals(component.getClassLoaderId())) {
-                return;
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        boolean releasable = tracker.decrement(classLoader);
+        if (releasable) {
+            try {
+                classLoaderRegistry.unregister(uri);
+                // release the previously resolved contribution
+                resolver.release(uri);
+                for (ClassLoaderListener listener : listeners) {
+                    listener.onDestroy(classLoader);
+                }
+            } catch (ResolutionException e) {
+                throw new ClassLoaderBuilderException("Error releasing artifact: " + uri.toString(), e);
             }
         }
-        try {
-            // release the previously resolved contribution
-            resolver.release(uri);
-        } catch (ResolutionException e) {
-            throw new ClassLoaderBuilderException("Error releasing artifact: " + uri.toString(), e);
-        }
-        classLoaderRegistry.unregister(uri);
     }
 
     /**
@@ -161,7 +174,6 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
      * @throws ClassLoaderBuilderException if an error occurs resolving a url
      */
     private URL[] resolveClasspath(URI uri) throws ClassLoaderBuilderException {
-
         try {
             // resolve the remote contributions and cache them locally
             URL resolvedUrl = resolver.resolve(uri);
