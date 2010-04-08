@@ -140,6 +140,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         }
 
         ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<Implementation<?>>(name);
+        definition.setContributionUri(context.getContributionUri());
         Autowire autowire = Autowire.fromString(reader.getAttributeValue(null, "autowire"));
         definition.setAutowire(autowire);
 
