@@ -79,7 +79,7 @@ public class WireCommandGenerator implements CommandGenerator {
     }
 
     public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (component instanceof LogicalCompositeComponent || LogicalState.MARKED == component.getState()) {
+        if (component instanceof LogicalCompositeComponent) {
             return null;
         }
         ConnectionCommand command = new ConnectionCommand();

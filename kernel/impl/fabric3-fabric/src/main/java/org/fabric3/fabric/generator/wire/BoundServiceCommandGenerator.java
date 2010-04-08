@@ -85,17 +85,17 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             return null;
         }
 
-        // determine if a new binding has been added to a provisioned component. If so, an AttachWireCommand must be generated.
-        boolean newBinding = false;
+        // determine if a binding is being added ore removed. If so, an AttachWireCommand or DetachWireCommand must be generated.
+        boolean bindingChange = false;
         for (LogicalService service : component.getServices()) {
             for (LogicalBinding<?> binding : service.getBindings()) {
-                if (binding.getState() == LogicalState.NEW) {
-                    newBinding = true;
+                if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED) {
+                    bindingChange = true;
                     break;
                 }
             }
         }
-        if (LogicalState.PROVISIONED == component.getState() && incremental && !newBinding) {
+        if (LogicalState.PROVISIONED == component.getState() && incremental && !bindingChange) {
             return null;
         }
 
@@ -109,7 +109,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
 
     private void generatePhysicalWires(LogicalComponent<?> component, ConnectionCommand command, boolean incremental) throws GenerationException {
         for (LogicalService service : component.getServices()) {
-            if (!service.isConcreteBound()) {
+            if (service.getBindings().isEmpty()) {
                 continue;
             }
             ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
@@ -129,7 +129,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             for (LogicalBinding<?> binding : service.getBindings()) {
                 if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED || !incremental) {
                     PhysicalWireDefinition pwd = wireGenerator.generateBoundService(binding, callbackUri);
-                    if (LogicalState.MARKED == component.getState()) {
+                    if (LogicalState.MARKED == binding.getState()) {
                         DetachWireCommand detachWireCommand = new DetachWireCommand();
                         detachWireCommand.setPhysicalWireDefinition(pwd);
                         command.add(detachWireCommand);
@@ -147,7 +147,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                     || callbackBinding.getState() == LogicalState.MARKED
                     || !incremental)) {
                 PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundServiceCallback(callbackBinding);
-                if (LogicalState.MARKED == component.getState()) {
+                if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
                     detachWireCommand.setPhysicalWireDefinition(callbackPwd);
                     command.add(detachWireCommand);
