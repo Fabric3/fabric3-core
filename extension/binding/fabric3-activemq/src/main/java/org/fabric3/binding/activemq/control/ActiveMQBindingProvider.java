@@ -111,13 +111,14 @@ public class ActiveMQBindingProvider implements BindingProvider {
     public void bind(LogicalWire wire) throws BindingSelectionException {
         LogicalReference source = wire.getSource().getLeafReference();
         LogicalService target = wire.getTarget().getLeafService();
+        QName deployable = source.getParent().getDeployable();
+
         // setup forward bindings
         // derive the forward queue name from the service name
         String forwardQueue = target.getUri().toString();
         JmsBindingDefinition referenceDefinition = createBindingDefinition(forwardQueue, false);  // XA not enabled on references
-        LogicalBinding<JmsBindingDefinition> referenceBinding = new LogicalBinding<JmsBindingDefinition>(referenceDefinition, source);
+        LogicalBinding<JmsBindingDefinition> referenceBinding = new LogicalBinding<JmsBindingDefinition>(referenceDefinition, source, deployable);
         referenceBinding.setAssigned(true);
-        QName deployable = source.getParent().getDeployable();
         source.addBinding(referenceBinding);
 
         boolean xa = isXA(target, false);
@@ -134,7 +135,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
             boolean callbackXa = isXA(target, true);
             JmsBindingDefinition callbackReferenceDefinition = createBindingDefinition(callbackQueue, callbackXa);
             LogicalBinding<JmsBindingDefinition> callbackReferenceBinding =
-                    new LogicalBinding<JmsBindingDefinition>(callbackReferenceDefinition, source);
+                    new LogicalBinding<JmsBindingDefinition>(callbackReferenceDefinition, source, deployable);
             callbackReferenceBinding.setAssigned(true);
             source.addCallbackBinding(callbackReferenceBinding);
             JmsBindingDefinition callbackServiceDefinition = createBindingDefinition(callbackQueue, false); // XA not enabled on service side callback
