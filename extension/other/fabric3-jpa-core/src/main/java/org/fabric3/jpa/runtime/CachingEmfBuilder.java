@@ -39,7 +39,9 @@ package org.fabric3.jpa.runtime;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 
@@ -49,6 +51,7 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.jpa.spi.EmfBuilderException;
 import org.fabric3.jpa.spi.delegate.EmfBuilderDelegate;
+import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 
 /**
  * Creates entity manager factories using the JPA provider SPI. Creation of entity manager factories are expensive operations and hence created
@@ -56,17 +59,17 @@ import org.fabric3.jpa.spi.delegate.EmfBuilderDelegate;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {EmfBuilder.class, EmfCache.class})
-public class CachingEmfBuilder implements EmfBuilder, EmfCache {
-
-    private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
+@Service(interfaces = {EmfBuilder.class, EmfCache.class, ClassLoaderListener.class})
+public class CachingEmfBuilder implements EmfBuilder, EmfCache, ClassLoaderListener {
     private PersistenceUnitScanner scanner;
+    private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
     private Map<String, EmfBuilderDelegate> delegates = new HashMap<String, EmfBuilderDelegate>();
+    private Map<ClassLoader, Set<String>> classLoaderCache = new HashMap<ClassLoader, Set<String>>();
 
     /**
-     * Injects the scanner.
+     * Constructor.
      *
-     * @param scanner Injected scanner.
+     * @param scanner the scanner used to resolve persistence unit definitions.
      */
     public CachingEmfBuilder(@Reference PersistenceUnitScanner scanner) {
         this.scanner = scanner;
@@ -82,17 +85,34 @@ public class CachingEmfBuilder implements EmfBuilder, EmfCache {
         this.delegates = delegates;
     }
 
-    public synchronized EntityManagerFactory build(String unitName, ClassLoader classLoader) throws EmfBuilderException {
+    public void onBuild(ClassLoader loader) {
+        // no-op
+    }
 
-        if (cache.containsKey(unitName)) {
-            return cache.get(unitName);
+    public void onDestroy(ClassLoader loader) {
+        Set<String> names = classLoaderCache.remove(loader);
+        if (names != null) {
+            for (String name : names) {
+                cache.remove(name);
+                scanner.release(name);
+            }
         }
+    }
 
-        EntityManagerFactory emf = createEntityManagerFactory(unitName, classLoader);
+    public synchronized EntityManagerFactory build(String unitName, ClassLoader classLoader) throws EmfBuilderException {
+        EntityManagerFactory emf = cache.get(unitName);
+        if (emf != null) {
+            return emf;
+        }
+        emf = createEntityManagerFactory(unitName, classLoader);
         cache.put(unitName, emf);
-
+        Set<String> names = classLoaderCache.get(classLoader);
+        if (names == null) {
+            names = new HashSet<String>();
+            classLoaderCache.put(classLoader, names);
+        }
+        names.add(unitName);
         return emf;
-
     }
 
     /**
@@ -111,12 +131,16 @@ public class CachingEmfBuilder implements EmfBuilder, EmfCache {
         return cache.get(unitName);
     }
 
-    /*
-    * Creates the entity manager factory using the JPA provider API.
-    */
+    /**
+     * Creates the entity manager factory using the JPA provider API.
+     *
+     * @param unitName    the persistence unit name
+     * @param classLoader the persistence unit classloader
+     * @return the entity manager factory
+     * @throws EmfBuilderException if there is an error creating the factory
+     */
     private EntityManagerFactory createEntityManagerFactory(String unitName, ClassLoader classLoader) throws EmfBuilderException {
-
-        PersistenceUnitInfoImpl info = (PersistenceUnitInfoImpl) scanner.getPersistenceUnitInfo(unitName, classLoader);
+        F3PersistenceUnitInfo info = scanner.getPersistenceUnitInfo(unitName, classLoader);
         String providerClass = info.getPersistenceProviderClassName();
         String dataSourceName = info.getDataSourceName();
 

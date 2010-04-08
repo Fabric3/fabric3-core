@@ -74,61 +74,24 @@ import static org.fabric3.jpa.runtime.JpaConstants.TRANSACTION_TYPE;
  * This class is expected to be interogated by the provider only during the creation of the entity manager factory. Hence none of the values are
  * cached, rather every time a property is queried the underlying DOM is interogated.
  */
-class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
-
-    /**
-     * Persistence DOM
-     */
+public class F3PersistenceUnitInfo implements PersistenceUnitInfo {
     private Node persistenceDom;
-
-    /**
-     * Classloader
-     */
     private ClassLoader classLoader;
-
-    /**
-     * Root Url
-     */
     private URL rootUrl;
-
-    /**
-     * XPath API
-     */
     private XPath xpath = XPathFactory.newInstance().newXPath();
-
-    /**
-     * The name of the persistence unit wrapped by an instance of this type *
-     */
     private String unitName;
 
-    /**
-     * Static factory method to be used instead of a directly called constructor
-     *
-     * @param unitName
-     * @param persistenceDom
-     * @param classLoader
-     * @param rootUrl
-     * @return
-     */
-    public static PersistenceUnitInfoImpl getInstance(String unitName, Node persistenceDom, ClassLoader classLoader, URL rootUrl) {
-        PersistenceUnitInfoImpl matchedUnit = null;
+    public static F3PersistenceUnitInfo getInstance(String unitName, Node persistenceDom, ClassLoader classLoader, URL rootUrl) {
+        F3PersistenceUnitInfo matchedUnit = null;
         List<String> persistenceUnitNames = getPersistenceUnitNames(persistenceDom);
         if (persistenceUnitNames.contains(unitName)) {
-            matchedUnit = new PersistenceUnitInfoImpl(unitName, persistenceDom, classLoader, rootUrl);
+            matchedUnit = new F3PersistenceUnitInfo(unitName, persistenceDom, classLoader, rootUrl);
         }
 
         return matchedUnit;
     }
 
-    /**
-     * Initializes the properties.
-     *
-     * @param unitName
-     * @param persistenceDom
-     * @param classLoader
-     * @param rootUrl
-     */
-    private PersistenceUnitInfoImpl(String unitName, Node persistenceDom, ClassLoader classLoader, URL rootUrl) {
+    private F3PersistenceUnitInfo(String unitName, Node persistenceDom, ClassLoader classLoader, URL rootUrl) {
 
         this.persistenceDom = persistenceDom;
         this.classLoader = classLoader;
@@ -206,9 +169,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     }
 
-    /**
-     * @return Datasource name.
-     */
     public String getDataSourceName() {
 
         String dataSourceName = getSingleValue(persistenceDom, JTA_DATA_SOURCE);
@@ -219,9 +179,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     }
 
-    /*
-     * Extracts additional properties.
-     */
     private Properties getProperties(Node root) {
 
         try {
@@ -239,9 +196,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     }
 
-    /*
-     * Gets multiple values for the specified expression.
-     */
     private List<String> getMultipleValues(Node context, String expression) {
 
         try {
@@ -258,9 +212,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     }
 
-    /*
-     * Gets single value for the specified expression.
-     */
     private String getSingleValue(Node context, String expression) {
 
         try {
@@ -273,9 +224,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
     }
 
-    /*
-     * Gets single value for the specified expression.
-     */
     private boolean getBooleanValue(Node context, String expression) {
         return Boolean.valueOf(getSingleValue(context, expression));
     }

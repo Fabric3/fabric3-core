@@ -82,8 +82,8 @@ public class PersistenceUnitInfoImplTestCase extends TestCase {
         expectedProperties.put("openjpa.ConnectionPassword", "");
         expectedProperties.put("openjpa.Log", "DefaultLevel=WARN, Tool=INFO");
 
-        PersistenceUnitInfoImpl matchedUnit =
-                PersistenceUnitInfoImpl.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
+        F3PersistenceUnitInfo matchedUnit =
+                F3PersistenceUnitInfo.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
 
         assertState(matchedUnit, expectedSimpleValues, expectedEntityClasses, expectedProperties);
     }
@@ -112,8 +112,8 @@ public class PersistenceUnitInfoImplTestCase extends TestCase {
         expectedProperties.put("hibernate.transaction.manager_lookup_class", "org.fabric3.jpa.hibernate.F3HibernateTransactionManagerLookupThree");
         expectedProperties.put("hibernate.hbm2ddl.auto", "create-drop-three");
 
-        PersistenceUnitInfoImpl matchedUnit =
-                PersistenceUnitInfoImpl.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
+        F3PersistenceUnitInfo matchedUnit =
+                F3PersistenceUnitInfo.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
 
         assertState(matchedUnit, expectedSimpleValues, expectedEntityClasses, expectedProperties);
     }
@@ -141,14 +141,14 @@ public class PersistenceUnitInfoImplTestCase extends TestCase {
         expectedProperties.put("hibernate.transaction.manager_lookup_class", "org.fabric3.jpa.hibernate.F3HibernateTransactionManagerLookupTwo");
         expectedProperties.put("hibernate.hbm2ddl.auto", "create-drop-two");
 
-        PersistenceUnitInfoImpl matchedUnit =
-                PersistenceUnitInfoImpl.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
+        F3PersistenceUnitInfo matchedUnit =
+                F3PersistenceUnitInfo.getInstance(expectedUnitName, persistenceDom, getClass().getClassLoader(), persistenceUnitUrl);
 
         assertState(matchedUnit, expectedSimpleValues, expectedEntityClasses, expectedProperties);
     }
 
 
-    private void assertState(PersistenceUnitInfoImpl matchedUnit,
+    private void assertState(F3PersistenceUnitInfo matchedUnit,
                              Map<String, String> expectedResults,
                              HashSet<String> expectedEntityClasses,
                              Properties expectedProperties) {

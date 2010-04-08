@@ -44,7 +44,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.spi.PersistenceUnitInfo;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,39 +55,29 @@ import org.xml.sax.SAXException;
  * @version $Rev$ $Date$
  */
 public class ClasspathPersistenceUnitScanner implements PersistenceUnitScanner {
+    private static DocumentBuilderFactory DBF = DocumentBuilderFactory.newInstance();
 
-    private static DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    private final Map<String, F3PersistenceUnitInfo> cache = new HashMap<String, F3PersistenceUnitInfo>();
 
-    private Map<String, PersistenceUnitInfo> persistenceUnitInfos = new HashMap<String, PersistenceUnitInfo>();
-
-    public PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader) {
-
-        synchronized (persistenceUnitInfos) {
-
-            if (persistenceUnitInfos.containsKey(unitName)) {
-                return persistenceUnitInfos.get(unitName);
+    public F3PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader) {
+        synchronized (cache) {
+            if (cache.containsKey(unitName)) {
+                return cache.get(unitName);
             }
-
             try {
-
-                DocumentBuilder db = dbf.newDocumentBuilder();
-
+                DocumentBuilder db = DBF.newDocumentBuilder();
                 Enumeration<URL> persistenceUnitUrls = classLoader.getResources("META-INF/persistence.xml");
-
                 while (persistenceUnitUrls.hasMoreElements()) {
-
                     URL persistenceUnitUrl = persistenceUnitUrls.nextElement();
                     Document persistenceDom = db.parse(persistenceUnitUrl.openStream());
                     URL rootUrl = getRootJarUrl(persistenceUnitUrl);
 
-                    PersistenceUnitInfo info = PersistenceUnitInfoImpl.getInstance(unitName, persistenceDom, classLoader, rootUrl);
+                    F3PersistenceUnitInfo info = F3PersistenceUnitInfo.getInstance(unitName, persistenceDom, classLoader, rootUrl);
                     if (info != null) {
-                        persistenceUnitInfos.put(unitName, info);
+                        cache.put(unitName, info);
                         return info;
                     }
-
                 }
-
             } catch (IOException ex) {
                 throw new Fabric3JpaRuntimeException(ex);
             } catch (ParserConfigurationException ex) {
@@ -96,19 +85,18 @@ public class ClasspathPersistenceUnitScanner implements PersistenceUnitScanner {
             } catch (SAXException ex) {
                 throw new Fabric3JpaRuntimeException(ex);
             }
-
         }
-
         throw new Fabric3JpaRuntimeException("Unable to find persistence unit: " + unitName);
+    }
 
+    public void release(String unitName) {
+        cache.remove(unitName);
     }
 
     private URL getRootJarUrl(URL persistenceUnitUrl) throws IOException {
         String protocol = persistenceUnitUrl.getProtocol();
-
         if ("jar".equals(protocol)) {
-            JarURLConnection jarURLConnection = (JarURLConnection) persistenceUnitUrl
-                    .openConnection();
+            JarURLConnection jarURLConnection = (JarURLConnection) persistenceUnitUrl.openConnection();
             return jarURLConnection.getJarFileURL();
         } else if ("file".equals(protocol)) {
             String path = persistenceUnitUrl.getPath();

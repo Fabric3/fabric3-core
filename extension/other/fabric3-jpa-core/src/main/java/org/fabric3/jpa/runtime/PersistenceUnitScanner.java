@@ -37,9 +37,6 @@
 */
 package org.fabric3.jpa.runtime;
 
-import javax.persistence.spi.PersistenceUnitInfo;
-
-
 /**
  * @version $Rev$ $Date$
  */
@@ -51,8 +48,15 @@ public interface PersistenceUnitScanner {
      *
      * @param unitName    Persistence unit name.
      * @param classLoader Classloader to scan.
-     * @return Persistence unit information.
+     * @return the persistence unit information.
      */
-    public abstract PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader);
+    F3PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader);
+
+    /**
+     * Called when a persistence unit is no longer needed.
+     *
+     * @param unitName the persistence unit name
+     */
+    void release(String unitName);
 
 }
