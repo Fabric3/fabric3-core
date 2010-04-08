@@ -93,7 +93,9 @@ public class ContributionCollatorImpl implements ContributionCollator {
                     contributions.add(imported);
                 }
             }
-            contributions.add(contribution);
+            if (!contributions.contains(contribution)) {
+                contributions.add(contribution);
+            }
         }
         return contributionsPerZone;
     }
