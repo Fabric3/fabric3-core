@@ -69,15 +69,14 @@ public interface Source {
      * @throws IOException if there is an error opening the stream
      */
     InputStream openStream() throws IOException;
-    
+
     /**
-     * Returns a Source for an imported artifact, resolving it's location
-     * relative to the parent location
-     * 
+     * Returns a Source for an imported artifact, resolving it's location relative to the parent location
+     *
      * @param aParentLocation base location URI
      * @param aImportLocation import location URI
      * @return an input stream or null if the import location cannot be resolved
-     * @throws IOException
+     * @throws IOException if there is an error returning the import source
      */
     Source getImportSource(String aParentLocation, String aImportLocation) throws IOException;
 }
