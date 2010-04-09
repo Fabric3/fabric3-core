@@ -67,11 +67,10 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -261,7 +260,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      * @throws InstallException if an unexpected error occurs
      */
     private Definition parseWsdl(Source source, IntrospectionContext context) throws InstallException {
-    	  WSDLLocator locator = new SourceWsdlLocator(source, context);
+        WSDLLocator locator = new SourceWsdlLocator(source, context);
         try {
             WSDLReader reader = factory.newReader();
             Definition definition = reader.readWSDL(locator);
@@ -276,7 +275,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             throw new InstallException(e);
         }
         finally {
-        	   locator.close();
+            locator.close();
         }
     }
 
