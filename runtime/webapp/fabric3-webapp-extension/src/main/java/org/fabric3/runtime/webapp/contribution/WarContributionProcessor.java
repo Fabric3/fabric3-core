@@ -73,8 +73,9 @@ import org.fabric3.spi.introspection.xml.LoaderException;
  */
 @EagerInit
 public class WarContributionProcessor implements ContributionProcessor {
+    private static final String WAR_MIME_TYPE = "application/vnd.fabric3.war";
 
-    public static final List<String> CONTENT_TYPES = initializeContentTypes();
+    private static final List<String> CONTENT_TYPES = initializeContentTypes();
 
     private WebappHostInfo info;
     private ProcessorRegistry registry;
@@ -98,6 +99,7 @@ public class WarContributionProcessor implements ContributionProcessor {
     @Init
     public void init() {
         registry.register(this);
+        contentTypeResolver.register("war", WAR_MIME_TYPE);
     }
 
     public void process(Contribution contribution, IntrospectionContext context) throws InstallException {
@@ -176,7 +178,7 @@ public class WarContributionProcessor implements ContributionProcessor {
 
     private static List<String> initializeContentTypes() {
         List<String> list = new ArrayList<String>(1);
-        list.add("application/vnd.fabric3.war");
+        list.add(WAR_MIME_TYPE);
         return list;
     }
 

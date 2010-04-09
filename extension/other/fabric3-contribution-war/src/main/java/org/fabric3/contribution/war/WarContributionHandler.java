@@ -46,12 +46,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Constants;
+import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
-import org.fabric3.host.contribution.InstallException;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
@@ -68,12 +69,17 @@ import org.fabric3.spi.introspection.xml.LoaderException;
  */
 @EagerInit
 public class WarContributionHandler implements ArchiveContributionHandler {
-    private final Loader loader;
-    private final ContentTypeResolver contentTypeResolver;
+    private Loader loader;
+    private ContentTypeResolver contentTypeResolver;
 
     public WarContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
         this.contentTypeResolver = contentTypeResolver;
+    }
+
+    @Init
+    public void init() {
+        contentTypeResolver.register("war", Constants.ZIP_CONTENT_TYPE);
     }
 
     public String getContentType() {
