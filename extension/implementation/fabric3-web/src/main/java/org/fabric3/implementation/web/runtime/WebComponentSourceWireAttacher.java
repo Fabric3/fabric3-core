@@ -79,11 +79,11 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
     }
 
     public void detach(WebComponentSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
+        // TOOD implement
     }
 
     public void detachObjectFactory(WebComponentSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
+        // TOOD implement
     }
 
     public void attachObjectFactory(WebComponentSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
