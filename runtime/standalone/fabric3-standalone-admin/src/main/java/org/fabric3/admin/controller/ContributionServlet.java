@@ -38,6 +38,7 @@
 package org.fabric3.admin.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.servlet.ServletException;
@@ -102,7 +103,8 @@ public class ContributionServlet extends HttpServlet {
         } catch (ContributionException e) {
             monitor.error("Error storing contribution:", e);
             resp.setStatus(422);
-            resp.getWriter().write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Error storing contribution</description>");
+            PrintWriter writer = resp.getWriter();
+            writer.write("<?xml version=\"1.0\" encoding=\"ASCII\"?><description>Error storing contribution: " + e.getMessage() + "</description>");
         }
     }
 }

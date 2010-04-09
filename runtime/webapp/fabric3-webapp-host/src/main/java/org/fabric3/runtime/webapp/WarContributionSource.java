@@ -56,13 +56,11 @@ public class WarContributionSource implements ContributionSource {
 
     private URI contributionUri;
     private URL url;
-    private byte[] checksum;
     private long timestamp;
 
     public WarContributionSource(URI contributionUri) throws MalformedURLException {
         this.contributionUri = contributionUri;
         this.url = new File("/").toURI().toURL();
-        checksum = new byte[0];
         timestamp = System.currentTimeMillis();
     }
 
@@ -84,10 +82,6 @@ public class WarContributionSource implements ContributionSource {
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public byte[] getChecksum() {
-        return checksum;
     }
 
     public String getContentType() {

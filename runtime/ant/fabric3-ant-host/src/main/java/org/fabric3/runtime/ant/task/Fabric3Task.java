@@ -266,7 +266,7 @@ public class Fabric3Task extends Task {
             URI uri = URI.create(contributionFile.getName());
             URL url = contributionFile.toURI().toURL();
             long timestamp = System.currentTimeMillis();
-            return new FileContributionSource(uri, url, timestamp, new byte[0]);
+            return new FileContributionSource(uri, url, timestamp);
         } catch (MalformedURLException e) {
             throw new BuildException(e);
         }

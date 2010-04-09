@@ -59,7 +59,6 @@ public class Contribution implements Serializable {
     private ContributionState state = ContributionState.STORED;
     private List<URI> profiles;
     private URL location;
-    private byte[] checksum;
     private long timestamp;
     private String contentType;
     private boolean persistent;
@@ -81,17 +80,15 @@ public class Contribution implements Serializable {
      * @param uri         the contribution URI
      * @param source      the source for reading the contribution contents
      * @param location    the URL for the contribution archive. This can be null for contributions that are not physical archives.
-     * @param checksum    the contribution artifact checksum
      * @param timestamp   the contribution artifact time stamp
      * @param contentType the contribution MIME type
      * @param persistent  true if the contribution is persistent
      */
-    public Contribution(URI uri, Source source, URL location, byte[] checksum, long timestamp, String contentType, boolean persistent) {
+    public Contribution(URI uri, Source source, URL location, long timestamp, String contentType, boolean persistent) {
         this.uri = uri;
         this.source = source;
         this.profiles = new ArrayList<URI>();
         this.location = location;
-        this.checksum = checksum;
         this.timestamp = timestamp;
         this.contentType = contentType;
         this.persistent = persistent;
@@ -159,15 +156,6 @@ public class Contribution implements Serializable {
      */
     public Source getSource() {
         return source;
-    }
-
-    /**
-     * Returns the contribution artifact checksum.
-     *
-     * @return the contribution artifact checksum
-     */
-    public byte[] getChecksum() {
-        return checksum;
     }
 
     /**

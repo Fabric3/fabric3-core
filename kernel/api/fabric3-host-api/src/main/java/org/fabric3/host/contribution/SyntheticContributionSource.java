@@ -85,8 +85,4 @@ public class SyntheticContributionSource implements ContributionSource {
         return 0;
     }
 
-    public byte[] getChecksum() {
-        return new byte[0];
-    }
-
 }

@@ -53,7 +53,6 @@ public interface ArchiveContributionHandler {
      *
      * @return the content type.
      */
-
     String getContentType();
 
     /**

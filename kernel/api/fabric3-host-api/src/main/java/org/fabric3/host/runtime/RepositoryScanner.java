@@ -97,7 +97,7 @@ public class RepositoryScanner {
             try {
                 URI uri = URI.create(file.getName());
                 URL location = file.toURI().toURL();
-                ContributionSource source = new FileContributionSource(uri, location, -1, new byte[0]);
+                ContributionSource source = new FileContributionSource(uri, location, -1);
                 if (!file.getName().endsWith(".jar")) {
                     // if the file is not a JAR, it must be a user contribution
                     result.addUserContribution(source);

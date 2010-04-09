@@ -85,7 +85,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
                 URLConnection connection = contentUrl.openConnection();
                 contentType = connection.getContentType();
             }
-            
+
             if (contentType == null || UNKNOWN_CONTENT.equals(contentType) || "application/octet-stream".equals(contentType)) {
                 return null;
             }
@@ -98,24 +98,18 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
     }
 
     public String getContentType(String pathURI) throws ContentTypeResolutionException {
-        String contentType = null;
         int extensionIndex = pathURI.lastIndexOf('.');
-
         if (extensionIndex != -1) {
             String extension = pathURI.substring(extensionIndex + 1);
-            contentType = extensionMap.get(extension);
+            String contentType = extensionMap.get(extension);
             if (contentType != null) {
                 return contentType;
             }
         }
 
-        if (contentType == null || UNKNOWN_CONTENT.equals(contentType) || "application/octet-stream".equals(contentType)) {
-            return null;
-        }
-
-        return contentType;
+        return null;
     }
-    
+
     public void register(String fileExtension, String contentType) {
         extensionMap.put(fileExtension, contentType);
     }

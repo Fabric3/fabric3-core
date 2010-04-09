@@ -301,12 +301,11 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             URI artifactUri = processed.get(name);
             URL location = file.toURI().normalize().toURL();
             FileSystemResource cached = cache.remove(name);
-            byte[] checksum = cached.getChecksum();
             long timestamp = file.lastModified();
             long previousTimestamp = contributionService.getContributionTimestamp(artifactUri);
             if (timestamp > previousTimestamp) {
                 try {
-                    ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, checksum);
+                    ContributionSource source = new FileContributionSource(artifactUri, location, timestamp);
                     // undeploy any deployed composites in the reverse order that they were deployed in
                     List<QName> deployables = contributionService.getDeployedComposites(artifactUri);
                     ListIterator<QName> iter = deployables.listIterator(deployables.size());
@@ -334,10 +333,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             FileSystemResource cached = cache.remove(name);
             addedResources.add(cached);
             URL location = file.toURI().normalize().toURL();
-            byte[] checksum = cached.getChecksum();
             long timestamp = file.lastModified();
             try {
-                ContributionSource source = new FileContributionSource(URI.create(name), location, timestamp, checksum);
+                ContributionSource source = new FileContributionSource(URI.create(name), location, timestamp);
                 sources.add(source);
             } catch (NoClassDefFoundError e) {
                 errorCache.put(name, cached);

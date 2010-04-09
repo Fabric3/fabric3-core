@@ -98,7 +98,7 @@ public class ProvisionExtensionsCommandExecutor implements CommandExecutor<Provi
                     continue;
                 }
                 URL url = resolver.resolve(uri);
-                ContributionSource source = new FileContributionSource(uri, url, 0, new byte[]{});
+                ContributionSource source = new FileContributionSource(uri, url, 0);
                 contributionService.store(source);
                 stored.add(uri);
                 tracker.increment(uri);

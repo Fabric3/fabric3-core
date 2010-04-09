@@ -86,14 +86,6 @@ public interface ContributionSource {
     long getTimestamp();
 
     /**
-     * Returns the source checksum.
-     *
-     * @return the source checksum
-     */
-    byte[] getChecksum();
-
-
-    /**
      * Returns the content type of the source.
      *
      * @return the content type of the source

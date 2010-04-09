@@ -55,13 +55,11 @@ public class ModuleContributionSource implements ContributionSource {
     private URI uri;
     private URL url;
     private long timestamp;
-    private byte[] checksum;
     private Source source;
 
     public ModuleContributionSource(URI uri, URL url) {
         this.uri = uri;
         this.url = url;
-        this.checksum = new byte[0];
         this.timestamp = System.currentTimeMillis();
         this.source = new UrlSource(url);
     }
@@ -84,10 +82,6 @@ public class ModuleContributionSource implements ContributionSource {
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public byte[] getChecksum() {
-        return checksum;
     }
 
     public String getContentType() {

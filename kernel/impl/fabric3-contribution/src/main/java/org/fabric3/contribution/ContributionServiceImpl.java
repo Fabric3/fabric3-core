@@ -637,9 +637,8 @@ public class ContributionServiceImpl implements ContributionService {
                 throw new StoreException(e);
             }
         }
-        byte[] checksum = contributionSource.getChecksum();
         long timestamp = contributionSource.getTimestamp();
-        return new Contribution(contributionUri, source, locationUrl, checksum, timestamp, type, persistent);
+        return new Contribution(contributionUri, source, locationUrl, timestamp, type, persistent);
     }
 
     private Repository getRepository() {

@@ -78,10 +78,6 @@ public class InputStreamContributionSource implements ContributionSource {
         return 0;
     }
 
-    public byte[] getChecksum() {
-        return new byte[0];
-    }
-
     public String getContentType() {
         return null;
     }

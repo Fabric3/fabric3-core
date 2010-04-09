@@ -60,7 +60,7 @@ public interface ContributionProcessor {
      *
      * @return the content type this implementation handles
      */
-    public abstract List<String> getContentTypes();
+    List<String> getContentTypes();
 
     /**
      * Processses manifest information for the contribution, including imports and exports.
@@ -87,6 +87,6 @@ public interface ContributionProcessor {
      * @param context      the context to which validation errors and warnings are reported
      * @throws InstallException if there was a problem loading the contribution resoruces
      */
-    public void process(Contribution contribution, IntrospectionContext context) throws InstallException;
+    void process(Contribution contribution, IntrospectionContext context) throws InstallException;
 
 }

@@ -53,18 +53,16 @@ public class FileContributionSource implements ContributionSource {
     private URL location;
     private Source source;
     private long timestamp;
-    private byte[] checksum;
     private String contentType;
 
-    public FileContributionSource(URI uri, URL location, long timestamp, byte[] checksum) {
-        this(uri, location, timestamp, checksum, null);
+    public FileContributionSource(URI uri, URL location, long timestamp) {
+        this(uri, location, timestamp, null);
     }
 
-    public FileContributionSource(URI uri, URL location, long timestamp, byte[] checksum, String contentType) {
+    public FileContributionSource(URI uri, URL location, long timestamp, String contentType) {
         this.uri = uri;
         this.location = location;
         this.timestamp = timestamp;
-        this.checksum = checksum;
         this.contentType = contentType;
         this.source = new UrlSource(location);
     }
@@ -87,10 +85,6 @@ public class FileContributionSource implements ContributionSource {
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public byte[] getChecksum() {
-        return checksum;
     }
 
     public String getContentType() {
