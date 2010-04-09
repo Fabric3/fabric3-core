@@ -152,9 +152,9 @@ public class JmsHostImpl implements JmsHost, Fabric3EventListener<RuntimeStart> 
 //        container.setDurable();
 //        container.setDurableSubscriptionName();
 //        container.setLocalDelivery();
+        containers.put(serviceUri, container);
         if (started) {
             container.initialize();
-            containers.put(serviceUri, container);
             monitor.registerListener(serviceUri);
         }
     }
