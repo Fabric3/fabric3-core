@@ -126,7 +126,7 @@ public class DomainControllerImpl implements DomainController {
             } else if (420 == code) {
                 throw new DuplicateContributionManagementException("A contribution already exists for " + uri);
             } else {
-                throw new ContributionManagementException("Error storing contribution: " + code);
+                throw new ContributionManagementException("Error storing contribution. Specific error has been logged on the controller: " + code);
             }
 
         } catch (MBeanException e) {

@@ -114,20 +114,29 @@ public class InstallCommand implements Command {
                 contributionUri = CommandHelper.parseContributionName(contribution);
             }
             controller.store(contribution, contributionUri);
+        } catch (IOException e) {
+            out.println("ERROR: Unable to connect to the domain controller");
+            disconnect(disconnected);
+            return false;
+        } catch (DuplicateContributionManagementException e) {
+            out.println("ERROR: A contribution with that name already exists");
+            disconnect(disconnected);
+            return false;
+        } catch (CommunicationException e) {
+            boolean ret = handleException(e, out);
+            disconnect(disconnected);
+            return ret;
+        } catch (ContributionManagementException e) {
+            out.println("ERROR: " + e.getMessage());
+            disconnect(disconnected);
+            return false;
+        }
+        try {
             controller.install(contributionUri);
             out.println("Installed " + contributionUri);
             return true;
-        } catch (DuplicateContributionManagementException e) {
-            out.println("ERROR: A contribution with that name already exists");
         } catch (CommunicationException e) {
-            if (e.getCause() instanceof FileNotFoundException) {
-                out.println("ERROR: File not found:" + e.getMessage());
-                return false;
-            }
-            throw new CommandException(e);
-        } catch (IOException e) {
-            out.println("ERROR: Unable to connect to the domain controller");
-            e.printStackTrace(out);
+            return handleException(e, out);
         } catch (InvalidContributionException e) {
             out.println("ERROR: " + e.getMessage());
             CommandHelper.printErrors(out, e);
@@ -153,15 +162,27 @@ public class InstallCommand implements Command {
                 ex.printStackTrace();
             }
         } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            disconnect(disconnected);
         }
         return false;
+    }
+
+    private void disconnect(boolean disconnected) {
+        if (disconnected && controller.isConnected()) {
+            try {
+                controller.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean handleException(CommunicationException e, PrintStream out) throws CommandException {
+        if (e.getCause() instanceof FileNotFoundException) {
+            out.println("ERROR: File not found:" + e.getMessage());
+            return false;
+        }
+        throw new CommandException(e);
     }
 
 
