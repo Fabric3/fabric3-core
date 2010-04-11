@@ -185,13 +185,4 @@ public interface MetaDataStore {
      */
     Set<Contribution> resolveCapability(String capability);
 
-    /**
-     * Resolves all resources in a contribution
-     *
-     * @param uri the contribution URI
-     * @return the resources
-     */
-    List<Resource> resolveResources(URI uri);
-
-
 }

@@ -204,24 +204,6 @@ public class Contribution implements Serializable {
     }
 
     /**
-     * Returns a ResourceElement matching the symbol or null if not found.
-     *
-     * @param symbol the symbol to match
-     * @return a ResourceElement matching the symbol or null if not found
-     */
-    @SuppressWarnings({"unchecked"})
-    public <T extends Symbol> ResourceElement<T, Serializable> findResourceElement(Symbol<T> symbol) {
-        for (Resource resource : resources) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (element.getSymbol().equals(symbol)) {
-                    return (ResourceElement<T, Serializable>) element;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Returns the profiles this contribution is associated with.
      *
      * @return the profiles this contribution is associated with
