@@ -35,24 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.command;
+package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.spi.federation.Response;
+import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
- * A response to a {@link CommitCommand}.
+ * Caches the deployment command history. The history can be used to synchronize a runtime to a zone's current deployment state.
  *
  * @version $Rev$ $Date$
  */
-public class CommitCommandResponse implements Response {
-    private static final long serialVersionUID = 1766653997859562531L;
-    private String runtimeName;
+public interface DeploymentCache {
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
+    /**
+     * Cache the deployment command.
+     *
+     * @param command the deployment command
+     */
+    void cache(DeploymentCommand command);
 
-    public void setRuntimeName(String name) {
-        runtimeName = name;
-    }
+    /**
+     * Reverts to the previous cached command.
+     *
+     * @return the command that was discarded or null if no command was cached
+     */
+    public DeploymentCommand undo();
+
+    /**
+     * Returns the current deployment command or null if one is not cached.
+     *
+     * @return the current deployment command or null.
+     */
+    DeploymentCommand get();
+
 }

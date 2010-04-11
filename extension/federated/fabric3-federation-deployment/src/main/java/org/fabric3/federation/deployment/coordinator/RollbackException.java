@@ -35,25 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.command;
+package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Sent by a controller to instruct a runtime to commit changes made by a deployment.
+ * Thrown when an exception occurs reverting a runtime back to its previous deployment state.
  *
  * @version $Rev$ $Date$
  */
-public class CommitCommand implements ResponseCommand {
-    private static final long serialVersionUID = -7071792624678064377L;
-    private Response response;
+public class RollbackException extends Fabric3Exception {
+    private static final long serialVersionUID = 3843801407964395025L;
 
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
+    public RollbackException(Throwable cause) {
+        super(cause);
     }
 }

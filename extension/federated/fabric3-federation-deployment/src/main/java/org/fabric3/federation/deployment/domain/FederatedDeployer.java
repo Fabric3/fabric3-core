@@ -46,19 +46,14 @@ package org.fabric3.federation.deployment.domain;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.deployment.command.CommitCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
-import org.fabric3.federation.deployment.command.RollbackCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
@@ -107,12 +102,11 @@ public class FederatedDeployer implements Deployer {
     }
 
     @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
-    public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
+    public synchronized void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
         Deployment currentDeployment = deploymentPackage.getCurrentDeployment();
         Deployment fullDeployment = deploymentPackage.getFullDeployment();
 
         // tracks deployment responses by zone
-        Map<String, List<Response>> zoneResponses = new HashMap<String, List<Response>>();
         List<DeploymentCommand> completed = new ArrayList<DeploymentCommand>();
         for (String zone : currentDeployment.getZones()) {
             monitor.deploy(zone);
@@ -120,8 +114,6 @@ public class FederatedDeployer implements Deployer {
             try {
                 command = createCommand(zone, currentDeployment, fullDeployment);
             } catch (IOException e) {
-                // rollback previous zones
-                rollback(zone, currentDeployment, completed, zoneResponses);
                 throw new DeploymentException(e);
             }
             notifyDeploy(command);
@@ -130,7 +122,7 @@ public class FederatedDeployer implements Deployer {
                 // send deployments in a fail-fast manner
                 responses = topologyService.sendSynchronousToZone(zone, command, true, timeout);
             } catch (MessageException e) {
-                rollback(zone, currentDeployment, completed, zoneResponses);
+                // rollback(zone, currentDeployment, completed, zoneResponses);
                 throw new DeploymentException(e);
             }
 
@@ -138,28 +130,18 @@ public class FederatedDeployer implements Deployer {
                 throw new DeploymentException("Deployment responses not received");
             }
             completed.add(command);
-            zoneResponses.put(zone, responses);
             Response last = responses.get(responses.size() - 1);
 
             String runtimeName = last.getRuntimeName();
             if (last instanceof ErrorResponse) {
                 ErrorResponse response = (ErrorResponse) last;
                 monitor.deploymentError(runtimeName, response.getException());
-                rollback(zone, currentDeployment, completed, zoneResponses);
+                // rollback(zone, currentDeployment, completed, zoneResponses);
                 throw new DeploymentException("Deployment errors encountered and logged");
             }
         }
         for (DeploymentCommand command : completed) {
-            // send the commit
-            try {
-                String zone = command.getZone();
-                monitor.commit(zone);
-                CommitCommand commitCommand = new CommitCommand();
-                topologyService.sendSynchronousToZone(zone, commitCommand, false, timeout);
-            } catch (MessageException e) {
-                // TODO handle heuristic rollback - runtimes should rollback after a wait period
-                throw new DeploymentException(e);
-            }
+            // TODO a commit needs to be refactored to a separate coordinator
             notifyCompletion(command);
         }
     }
@@ -178,72 +160,6 @@ public class FederatedDeployer implements Deployer {
         List<CompensatableCommand> commands = deploymentUnit.getCommands();
         byte[] serializedCommands = serializationService.serialize((Serializable) commands);
         return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
-    }
-
-    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
-    private void rollback(String failedZone, Deployment deployment, List<DeploymentCommand> completed, Map<String, List<Response>> zoneResponses) {
-        for (Map.Entry<String, List<Response>> entry : zoneResponses.entrySet()) {
-            List<Response> responses = entry.getValue();
-            String zone = entry.getKey();
-            monitor.rollback(zone);
-            for (Response response : responses) {
-                String runtimeName = response.getRuntimeName();
-                try {
-                    DeploymentCommand rollback = createRollbackCommand(zone, deployment);
-                    if (failedZone.equals(zone) && response == responses.get(responses.size() - 1)) {
-                        // The last runtime in the failed zone is where the error occurred and it will have rolled back the deployment.
-                        // Return as the remaining zones never received a deployment due to this fail-fast behavior.
-                        return;
-                    }
-                    // send the rollback deployment command
-                    Response rollbackResponse = topologyService.sendSynchronous(runtimeName, rollback, timeout);
-                    if (rollbackResponse instanceof ErrorResponse) {
-                        ErrorResponse errorResponse = (ErrorResponse) rollbackResponse;
-                        monitor.deploymentError(runtimeName, errorResponse.getException());
-                    }
-                    // send the rollback notification
-                    RollbackCommand rollbackCommand = new RollbackCommand();
-                    topologyService.sendSynchronous(runtimeName, rollbackCommand, timeout);
-                } catch (MessageException e) {
-                    monitor.rollbackError(runtimeName, e);
-                } catch (IOException e) {
-                    monitor.rollbackError(runtimeName, e);
-                }
-            }
-        }
-        notifyRollback(completed);
-
-    }
-
-    private DeploymentCommand createRollbackCommand(String zone, Deployment deployment) throws IOException {
-        DeploymentUnit unit = deployment.getDeploymentUnit(zone);
-        DeploymentUnit compensatingUnit = new DeploymentUnit();
-        if (!unit.getExtensionCommands().isEmpty()) {
-            ListIterator<CompensatableCommand> iter = unit.getExtensionCommands().listIterator(unit.getExtensionCommands().size());
-            while (iter.hasPrevious()) {
-                CompensatableCommand command = iter.previous();
-                CompensatableCommand compensating = command.getCompensatingCommand();
-                compensatingUnit.addExtensionCommand(compensating);
-            }
-        }
-        if (!unit.getCommands().isEmpty()) {
-            ListIterator<CompensatableCommand> iter = unit.getCommands().listIterator(unit.getCommands().size());
-            while (iter.hasPrevious()) {
-                CompensatableCommand command = iter.previous();
-                CompensatableCommand compensating = command.getCompensatingCommand();
-                compensatingUnit.addCommand(compensating);
-            }
-        }
-        SerializedDeploymentUnit serializedUnit = createSerializedUnit(compensatingUnit);
-        return new DeploymentCommand(zone, serializedUnit, serializedUnit);
-    }
-
-    private void notifyRollback(List<DeploymentCommand> completed) {
-        for (DeploymentCommand command : completed) {
-            for (FederatedDeployerListener listener : listeners) {
-                listener.onRollback(command);
-            }
-        }
     }
 
     private void notifyDeploy(DeploymentCommand command) throws DeploymentException {

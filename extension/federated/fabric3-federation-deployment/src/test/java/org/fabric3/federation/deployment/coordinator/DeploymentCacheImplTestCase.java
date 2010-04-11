@@ -35,39 +35,54 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.cache;
+package org.fabric3.federation.deployment.coordinator;
+
+import junit.framework.TestCase;
 
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
- * Caches the current deployment commands.
- *
  * @version $Rev$ $Date$
  */
-public interface DeploymentCache {
+public class DeploymentCacheImplTestCase extends TestCase {
 
-    /**
-     * Cache the deployment command. Note the cached command will not be visible from get operations until it is commited.
-     *
-     * @param command the deployment command
-     */
-    void cache(DeploymentCommand command);
+    public void testUndo() throws Exception {
+        DeploymentCache cache = new DeploymentCacheImpl();
 
-    /**
-     * Commits the current cache command so it is visible from get operations.
-     */
-    public void commit();
+        DeploymentCommand command1 = new DeploymentCommand("zone1", null, null);
+        DeploymentCommand command2 = new DeploymentCommand("zone1", null, null);
 
-    /**
-     * Reverts to the previous cache command.
-     */
-    public void rollback();
+        cache.cache(command1);
+        assertSame(command1, cache.get());
+        cache.cache(command2);
+        assertSame(command2, cache.get());
+        cache.undo();
+        assertSame(command1, cache.get());
+        cache.undo();
+        assertNull(cache.get());
+    }
 
-    /**
-     * Returns the deployment command or null if one is not cached.
-     *
-     * @return the deployment command or null.
-     */
-    DeploymentCommand get();
+    public void testThreshold() throws Exception {
+        DeploymentCache cache = new DeploymentCacheImpl();
+
+        DeploymentCommand command1 = new DeploymentCommand("zone1", null, null);
+        DeploymentCommand command2 = new DeploymentCommand("zone1", null, null);
+        DeploymentCommand command3 = new DeploymentCommand("zone1", null, null);
+        DeploymentCommand command4 = new DeploymentCommand("zone1", null, null);
+
+        cache.cache(command1);
+        cache.cache(command2);
+        cache.cache(command3);
+        cache.cache(command4);
+
+        assertSame(command4, cache.get());
+        cache.undo();
+        assertSame(command3, cache.get());
+        cache.undo();
+        assertSame(command2, cache.get());
+        cache.undo();
+        assertNull(cache.get());
+
+    }
 
 }

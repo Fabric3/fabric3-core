@@ -39,18 +39,22 @@ package org.fabric3.federation.deployment.executor;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
-import org.fabric3.federation.deployment.cache.DeploymentCache;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.DeploymentErrorResponse;
 import org.fabric3.federation.deployment.command.DeploymentResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
+import org.fabric3.federation.deployment.coordinator.DeploymentCache;
+import org.fabric3.federation.deployment.coordinator.RollbackException;
+import org.fabric3.federation.deployment.coordinator.RollbackService;
+import org.fabric3.host.Fabric3Exception;
+import org.fabric3.host.work.DefaultPausableWork;
+import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
@@ -62,7 +66,8 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes a {@link DeploymentCommand} on a participant. If there is an error processing the command, a rollback will be performed.
+ * Processes a {@link DeploymentCommand} on a participant. If there is an error processing the command, a rollback to the previous runtime state will
+ * be performed.
  *
  * @version $Rev$ $Date$
  */
@@ -71,6 +76,8 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     private CommandExecutorRegistry executorRegistry;
     private DeploymentCache cache;
     private SerializationService serializationService;
+    private RollbackService rollbackService;
+    private WorkScheduler workScheduler;
     private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
 
@@ -78,10 +85,14 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                                      @Reference ScopeRegistry scopeRegistry,
                                      @Reference DeploymentCache cache,
                                      @Reference SerializationService serializationService,
+                                     @Reference RollbackService rollbackService,
+                                     @Reference WorkScheduler workScheduler,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.cache = cache;
         this.serializationService = serializationService;
+        this.rollbackService = rollbackService;
+        this.workScheduler = workScheduler;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
     }
@@ -91,100 +102,97 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         executorRegistry.register(DeploymentCommand.class, this);
     }
 
-    public void execute(DeploymentCommand command) throws ExecutionException {
+    public synchronized void execute(DeploymentCommand command) throws ExecutionException {
         monitor.received();
-        // execute the extension commands first before deserializing the other commands as the other commands may contain extension-specific classes
-        SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
-
-        byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
-        boolean result = execute(serializedExtensionCommands, command);
-        if (!result) {
-            // failed and rolled back
-            return;
-        }
-        byte[] serializedCommands = currentDeploymentUnit.getCommands();
-        result = execute(serializedCommands, command);
-        if (!result) {
-            // failed and rolled back
-            return;
-        }
-        cacheDeployment(command);
         DeploymentResponse response = new DeploymentResponse();
         command.setResponse(response);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private boolean execute(byte[] serializedCommands, DeploymentCommand command) {
-        int marker = 0;
-        List<CompensatableCommand> commands = null;
-        try {
-            commands = serializationService.deserialize(List.class, serializedCommands);
-            for (Command cmd : commands) {
-                executorRegistry.execute(cmd);
-                marker++;
-            }
-            if (!commands.isEmpty()) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-            return true;
-        } catch (IOException e) {
-            // no rollback because the commands were never deserialized
-            monitor.error(e);
-            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
-            command.setResponse(response);
-            return false;
-        } catch (ClassNotFoundException e) {
-            // no rollback because the commands were never deserialized
-            monitor.error(e);
-            rollback(commands, marker);
-            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
-            command.setResponse(response);
-            return false;
-        } catch (InstanceLifecycleException e) {
-            monitor.error(e);
-            rollback(commands, marker);
-            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
-            command.setResponse(response);
-            return false;
-        } catch (ExecutionException e) {
-            monitor.error(e);
-            rollback(commands, marker);
-            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
-            command.setResponse(response);
-            return false;
-        }
-
-    }
-
-    private void cacheDeployment(DeploymentCommand command) {
-        String zone = command.getZone();
-        SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
-        DeploymentCommand deploymentCommand = new DeploymentCommand(zone, fullDeploymentUnit, fullDeploymentUnit);
-        cache.cache(deploymentCommand);
+        // TODO synchronize this to avoid multiple deployments
+        workScheduler.scheduleWork(new DeploymentRunner(command));
     }
 
     /**
-     * Reverts the runtime state after a failed deployment by executing a collection of compensating commands.
-     *
-     * @param commands the deployment commands that failed
-     * @param marker   the deployment command index where the failure occured
+     * Asynchronously processes a deployment command.
      */
-    private void rollback(List<CompensatableCommand> commands, int marker) {
-        try {
-            ListIterator<CompensatableCommand> iter = commands.listIterator(marker);
-            while (iter.hasPrevious()) {
-                CompensatableCommand command = iter.previous();
-                Command compensating = command.getCompensatingCommand();
-                executorRegistry.execute(compensating);
-            }
-            if (scopeRegistry != null) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-        } catch (ExecutionException e) {
-            monitor.error(e);
-        } catch (InstanceLifecycleException e) {
-            monitor.error(e);
+    private class DeploymentRunner extends DefaultPausableWork {
+        private DeploymentCommand command;
+
+        public DeploymentRunner(DeploymentCommand command) {
+            this.command = command;
         }
+
+        protected void execute() {
+            // execute the extension commands first before deserializing the others as the latter may contain extension-specific classes
+            SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
+
+            byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
+            boolean result = execute(serializedExtensionCommands, command);
+            if (!result) {
+                // failed and rolled back
+                return;
+            }
+            byte[] serializedCommands = currentDeploymentUnit.getCommands();
+            result = execute(serializedCommands, command);
+            if (!result) {
+                // failed and rolled back
+                return;
+            }
+            cacheDeployment(command);
+        }
+
+        @SuppressWarnings({"unchecked"})
+        private boolean execute(byte[] serializedCommands, DeploymentCommand command) {
+            int marker = 0;
+            List<CompensatableCommand> commands = null;
+            try {
+                commands = serializationService.deserialize(List.class, serializedCommands);
+                for (Command cmd : commands) {
+                    executorRegistry.execute(cmd);
+                    marker++;
+                }
+                if (!commands.isEmpty()) {
+                    scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+                }
+                return true;
+            } catch (IOException e) {
+                // no rollback because the commands were never deserialized
+                monitor.error(e);
+                DeploymentErrorResponse response = new DeploymentErrorResponse(e);
+                command.setResponse(response);
+                return false;
+            } catch (ClassNotFoundException e) {
+                // no rollback because the commands were never deserialized
+                monitor.error(e);
+                DeploymentErrorResponse response = new DeploymentErrorResponse(e);
+                command.setResponse(response);
+                return false;
+            } catch (InstanceLifecycleException e) {
+                return handleRollback(command, marker, commands, e);
+            } catch (ExecutionException e) {
+                return handleRollback(command, marker, commands, e);
+            }
+        }
+
+        private void cacheDeployment(DeploymentCommand command) {
+            String zone = command.getZone();
+            SerializedDeploymentUnit fullDeploymentUnit = command.getFullDeploymentUnit();
+            DeploymentCommand deploymentCommand = new DeploymentCommand(zone, fullDeploymentUnit, fullDeploymentUnit);
+            cache.cache(deploymentCommand);
+        }
+
+        private boolean handleRollback(DeploymentCommand command, int marker, List<CompensatableCommand> commands, Fabric3Exception e) {
+            monitor.error(e);
+            try {
+                rollbackService.rollback(commands, marker);
+            } catch (RollbackException e1) {
+                monitor.error(e);
+            }
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
+            command.setResponse(response);
+            return false;
+        }
+
+
     }
+
 
 }

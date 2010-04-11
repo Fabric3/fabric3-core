@@ -24,16 +24,13 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RuntimeUpdateCommandExecutor"/>
     </component>
 
-    <component name="CommitCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.CommitCommandExecutor"/>
-    </component>
-
-    <component name="RollbackCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.RollbackCommandExecutor"/>
-    </component>
-
     <component name="DeploymentCache">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.cache.DeploymentCacheImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.coordinator.DeploymentCacheImpl"/>
+        <property name="threshold" source="$systemConfig//federation/deployment/@history.threshold"/>
+    </component>
+
+    <component name="RollbackService">
+        <f3-impl:implementation.system class="org.fabric3.federation.deployment.coordinator.RollbackServiceImpl"/>
     </component>
 
 

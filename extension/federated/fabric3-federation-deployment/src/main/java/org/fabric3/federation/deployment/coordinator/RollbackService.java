@@ -35,24 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.command;
+package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.spi.federation.Response;
+import java.util.List;
+
+import org.fabric3.spi.command.CompensatableCommand;
 
 /**
- * A response to a {@link RollbackCommand}.
+ * Reverts the runtime to a previous state.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
  */
-public class RollbackCommandResponse implements Response {
-    private static final long serialVersionUID = 1766653997859562531L;
-    private String runtimeName;
+public interface RollbackService {
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
+    /**
+     * Reverts the runtime to its previous deployment state.
+     *
+     * @throws RollbackException if an error occurs during rollback
+     */
+    void rollback() throws RollbackException;
 
-    public void setRuntimeName(String name) {
-        runtimeName = name;
-    }
+    /**
+     * Reverts the runtime state after a failure by executing a collection of compensating commands.
+     *
+     * @param commands the commands that failed
+     * @param marker   the command index where the failure occured
+     * @throws RollbackException if an error occurs during rollback
+     */
+    void rollback(List<CompensatableCommand> commands, int marker) throws RollbackException;
+
 }

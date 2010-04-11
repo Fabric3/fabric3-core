@@ -35,7 +35,11 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.cache;
+package org.fabric3.federation.deployment.coordinator;
+
+import java.util.LinkedList;
+
+import org.osoa.sca.annotations.Property;
 
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 
@@ -43,24 +47,33 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
  * @version $Rev$ $Date$
  */
 public class DeploymentCacheImpl implements DeploymentCache {
-    private DeploymentCommand prepare;
-    private DeploymentCommand command;
+    private LinkedList<DeploymentCommand> history = new LinkedList<DeploymentCommand>();
+    private int threshold = 3;
 
     public synchronized void cache(DeploymentCommand command) {
-        this.command = command;
+        if (history.size() >= threshold) {
+            history.removeFirst();
+        }
+        history.add(command);
     }
 
-    public synchronized void commit() {
-        command = prepare;
-        prepare = null;
+    @Property(required = false)
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
     }
 
-    public synchronized void rollback() {
-        prepare = null;
+    public synchronized DeploymentCommand undo() {
+        if (history.isEmpty()) {
+            return null;
+        }
+        return history.removeLast();
     }
 
     public synchronized DeploymentCommand get() {
-        return command;
+        if (history.isEmpty()) {
+            return null;
+        }
+        return history.getLast();
     }
 
 }

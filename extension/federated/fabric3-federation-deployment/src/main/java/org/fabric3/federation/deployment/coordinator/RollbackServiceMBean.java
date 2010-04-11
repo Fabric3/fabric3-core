@@ -35,25 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.deployment.command;
+package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.api.annotation.Management;
 
 /**
- * Sent by a controller to instruct a runtime to revert changes made by a deployment.
+ * MBean interface for the RollbackService.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
  */
-public class RollbackCommand implements ResponseCommand {
-    private static final long serialVersionUID = -4504244834945506036L;
-    private Response response;
+@Management
+public interface RollbackServiceMBean {
 
-    public Response getResponse() {
-        return response;
-    }
+    /**
+     * Reverts the runtime to its previous deployment state.
+     *
+     * @throws RollbackException if an error occurs during rollback
+     */
+    void rollback() throws RollbackException;
 
-    public void setResponse(Response response) {
-        this.response = response;
-    }
 }
