@@ -345,29 +345,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return extensions;
     }
 
-    public List<Resource> resolveResources(URI contributionUri) {
-        List<Resource> resources = new ArrayList<Resource>();
-        Contribution contribution = cache.get(contributionUri);
-        Set<URI> visited = new HashSet<URI>();
-        resolveResources(contribution, resources, visited);
-        return resources;
-    }
-
-    public List<Resource> resolveResources(Contribution contribution, List<Resource> resources, Set<URI> visited) {
-        resources.addAll(contribution.getResources());
-        visited.add(contribution.getUri());
-        for (ContributionWire<?, ?> wire : contribution.getWires()) {
-            Contribution imported = cache.get(wire.getExportContributionUri());
-            if (!visited.contains(imported.getUri())
-                    && !imported.getUri().equals(Names.HOST_CONTRIBUTION)
-                    && !imported.getUri().equals(Names.BOOT_CONTRIBUTION)) {
-                // recurse for the imported contribution
-                resolveResources(imported, resources, visited);
-            }
-        }
-        return resources;
-    }
-
     private Set<Contribution> resolveCapabilities(Contribution contribution, Set<Contribution> extensions) {
         Set<String> required = contribution.getManifest().getRequiredCapabilities();
         for (String capability : required) {
@@ -440,7 +417,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
      * @param contribution the contribution containing the exports to add
      */
     private void addToExports(Contribution contribution) {
-
         List<Export> exports = contribution.getManifest().getExports();
         if (exports.size() > 0) {
             for (Export export : exports) {
