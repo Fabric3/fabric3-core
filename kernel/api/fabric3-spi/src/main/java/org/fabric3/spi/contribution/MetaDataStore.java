@@ -53,6 +53,13 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public interface MetaDataStore {
 
     /**
+     * Returns the installed contributions in the domain.
+     *
+     * @return the installed contributions in the domain
+     */
+    Set<Contribution> getContributions();
+
+    /**
      * Stores the contribution metadata
      *
      * @param contribution the contribution metadata
@@ -61,61 +68,56 @@ public interface MetaDataStore {
     void store(Contribution contribution) throws StoreException;
 
     /**
-     * Returns the contribution for the given URI.
-     *
-     * @param contributionUri the contribution URI
-     * @return the contribution for the given URI or null if not found
-     */
-    Contribution find(URI contributionUri);
-
-    /**
-     * Returns the installed contributions in the domain.
-     *
-     * @return the installed contributions in the domain
-     */
-    Set<Contribution> getContributions();
-
-    /**
      * Removes the contribution metadata.
      *
-     * @param contributionUri the contribution uri
+     * @param uri the contribution uri
      */
-    void remove(URI contributionUri);
+    void remove(URI uri);
 
     /**
-     * Resolves a resource element by its symbol against the entire domain symbol space.
+     * Returns the contribution for the given URI.
      *
+     * @param uri the contribution URI
+     * @return the contribution for the given URI or null if not found
+     */
+    Contribution find(URI uri);
+
+    /**
+     * Finds a resource element by its symbol against the entire domain symbol space.
+     *
+     * @param type   the class representing the resource
+     * @param symbol the symbol used to represent the resource element.
+     * @return the resource element or null if not found
+     */
+    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(Class<V> type, S symbol);
+
+    /**
+     * Finds a resource element by its symbol against the given contribution uri. This method assumes the resource and .
+     *
+     * @param uri    the contribution URI to resolve against
+     * @param type   the class representing the resource
      * @param symbol the symbol used to represent the resource element.
      * @return the resource element or null if not found
      * @throws StoreException if an error occurs during resolution
      */
-    <S extends Symbol> ResourceElement<S, ?> resolve(S symbol) throws StoreException;
+    <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws StoreException;
+
 
     /**
-     * Resolves the containing resource for a resource element symbol against the given contribution symbol space.
+     * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
      *
-     * @param uri    the contribution uri
-     * @param symbol the symbol used to represent the resource element.
-     * @return the resource or null if not found
-     */
-    public Resource resolveContainingResource(URI uri, Symbol symbol);
-
-    /**
-     * Resolves a resource element by its symbol against the given contribution uri.
-     *
-     * @param contributionUri the contribution URI to resolve against
-     * @param type            the class representing the resource
-     * @param symbol          the symbol used to represent the resource element.
-     * @param context         the context to which validation errors and warnings are reported
+     * @param uri     the contribution URI to resolve against
+     * @param type    the class representing the resource
+     * @param symbol  the symbol used to represent the resource element.
+     * @param context the context to which validation errors and warnings are reported
      * @return the resource element or null if not found
      * @throws org.fabric3.host.contribution.StoreException
      *          if an error occurs during resolution
      */
-    <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI contributionUri,
+    <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri,
                                                                              Class<V> type,
                                                                              S symbol,
                                                                              IntrospectionContext context) throws StoreException;
-
     /**
      * Resolves an import or returns an empty list if it cannot be satisfied.
      *
@@ -143,14 +145,6 @@ public interface MetaDataStore {
      * @return the set of contributions that import the contribution
      */
     Set<Contribution> resolveDependentContributions(URI uri);
-
-    /**
-     * Resolves the contribution that contains the given symbol
-     *
-     * @param symbol the symbol to resolve
-     * @return the contribution or null
-     */
-    Contribution resolveContainingContribution(Symbol symbol);
 
     /**
      * Resolves the contributions that extend an extension point.

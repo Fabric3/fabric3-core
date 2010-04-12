@@ -41,6 +41,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.wsdl.Definition;
+import javax.wsdl.Port;
 import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
@@ -66,7 +67,7 @@ public class WsdlResolverImpl implements WsdlResolver {
 
     public WsdlResolverImpl(@Reference MetaDataStore store, @Reference Wsdl4JFactory wsdlFactory) throws WSDLException {
         this.store = store;
-        this.wsdlFactory =wsdlFactory;
+        this.wsdlFactory = wsdlFactory;
     }
 
     public Definition parseWsdl(URL wsdlLocation) throws WsdlResolutionException {
@@ -84,7 +85,7 @@ public class WsdlResolverImpl implements WsdlResolver {
     public Definition resolveWsdl(URI contributionUri, QName wsdlName) throws WsdlResolutionException {
         WsdlSymbol symbol = new WsdlSymbol(wsdlName);
         try {
-            ResourceElement<WsdlSymbol, Definition> element = store.resolve(contributionUri, Definition.class, symbol, null);
+            ResourceElement<WsdlSymbol, Definition> element = store.find(contributionUri, Definition.class, symbol);
             if (element == null) {
                 throw new WsdlResolutionException("WSDL not found: " + wsdlName);
             }
@@ -96,10 +97,16 @@ public class WsdlResolverImpl implements WsdlResolver {
 
     public Definition resolveWsdlByPortName(URI contributionUri, QName portName) throws WsdlResolutionException {
         PortSymbol symbol = new PortSymbol(portName);
-        Resource resource = store.resolveContainingResource(contributionUri, symbol);
-        if (resource == null) {
+        ResourceElement<PortSymbol, Port> resourceElement;
+        try {
+            resourceElement = store.find(contributionUri, Port.class, symbol);
+        } catch (StoreException e) {
+            throw new WsdlResolutionException("Error resolving port: " + portName, e);
+        }
+        if (resourceElement == null) {
             throw new WsdlResolutionException("WSDL port not found: " + portName);
         }
+        Resource resource = resourceElement.getResource();
         for (ResourceElement<?, ?> element : resource.getResourceElements()) {
             if (element.getSymbol() instanceof WsdlSymbol) {
                 return (Definition) element.getValue();

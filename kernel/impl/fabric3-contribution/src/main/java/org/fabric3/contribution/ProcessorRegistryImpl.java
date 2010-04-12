@@ -125,9 +125,7 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
     public void processResource(Resource resource, IntrospectionContext context) throws InstallException {
         ResourceProcessor processor = resourceProcessorCache.get(resource.getContentType());
         if (processor == null) {
-            // FIXME for now, return null
             return;
-            //throw new UnsupportedContentTypeException(contentType);
         }
         processor.process(resource, context);
     }

@@ -164,7 +164,7 @@ public abstract class AbstractDomain implements Domain {
         DeploymentPlan plan;
         if (planName == null) {
             if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
-                plan = contributionHelper.resolveDefaultPlan(deployable);
+                plan = contributionHelper.findDefaultPlan(deployable);
                 if (plan == null) {
                     plan = SYNTHETIC_PLAN;
                 }
@@ -173,7 +173,7 @@ public abstract class AbstractDomain implements Domain {
             }
         } else {
             // plan not specified
-            plan = contributionHelper.resolvePlan(planName);
+            plan = contributionHelper.findPlan(planName);
             if (plan == null) {
                 throw new DeploymentPlanNotFoundException("Deployment plan not found: " + planName);
             }
@@ -193,13 +193,13 @@ public abstract class AbstractDomain implements Domain {
     }
 
     public synchronized void include(List<URI> uris) throws DeploymentException {
-        Set<Contribution> contributions = contributionHelper.resolveContributions(uris);
+        Set<Contribution> contributions = contributionHelper.findContributions(uris);
         List<Composite> deployables = contributionHelper.getDeployables(contributions);
         if (RuntimeMode.CONTROLLER == info.getRuntimeMode() && !isLocal()) {
             Map<URI, DeploymentPlan> plans = new HashMap<URI, DeploymentPlan>();
             for (Contribution contribution : contributions) {
                 URI uri = contribution.getUri();
-                DeploymentPlan defaultPlan = contributionHelper.resolveDefaultPlan(contribution);
+                DeploymentPlan defaultPlan = contributionHelper.findDefaultPlan(contribution);
                 if (defaultPlan == null) {
                     defaultPlan = SYNTHETIC_PLAN;
                 }
@@ -234,7 +234,7 @@ public abstract class AbstractDomain implements Domain {
 
     public void undeploy(QName deployable, boolean force) throws DeploymentException {
         QNameSymbol deployableSymbol = new QNameSymbol(deployable);
-        Contribution contribution = metadataStore.resolveContainingContribution(deployableSymbol);
+        Contribution contribution = metadataStore.find(DeploymentPlan.class, deployableSymbol).getResource().getContribution();
         if (!contribution.getLockOwners().contains(deployable)) {
             throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
         }
@@ -327,7 +327,7 @@ public abstract class AbstractDomain implements Domain {
             QName deployable = entry.getKey();
             String planName = entry.getValue();
             QNameSymbol symbol = new QNameSymbol(deployable);
-            Contribution contribution = metadataStore.resolveContainingContribution(symbol);
+            Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
             if (contribution == null) {
                 // this should not happen
                 throw new DeploymentException("Contribution for deployable not found: " + deployable);
@@ -337,7 +337,7 @@ public abstract class AbstractDomain implements Domain {
             if (SYNTHETIC_PLAN_NAME.equals(planName)) {
                 if (RuntimeMode.CONTROLLER == info.getRuntimeMode()) {
                     // this can happen if the composite is deployed in single VM mode and the runtime is later booted in controller mode
-                    plan = contributionHelper.resolveDefaultPlan(deployable);
+                    plan = contributionHelper.findDefaultPlan(deployable);
                     if (plan == null) {
                         plan = SYNTHETIC_PLAN;
                     }
@@ -345,7 +345,7 @@ public abstract class AbstractDomain implements Domain {
                     plan = SYNTHETIC_PLAN;
                 }
             } else {
-                plan = contributionHelper.resolvePlan(planName);
+                plan = contributionHelper.findPlan(planName);
                 if (plan == null) {
                     plan = SYNTHETIC_PLAN;
                 }
@@ -385,7 +385,7 @@ public abstract class AbstractDomain implements Domain {
      * @throws DeploymentException if there is an error creating the composite wrapper
      */
     private Composite createWrapper(QName deployable) throws DeploymentException {
-        Composite composite = contributionHelper.resolveComposite(deployable);
+        Composite composite = contributionHelper.findComposite(deployable);
         // In order to include a composite at the domain level, it must first be wrapped in a composite that includes it.
         // This wrapper is thrown away during the inclusion.
         Composite wrapper = new Composite(deployable);
@@ -481,7 +481,8 @@ public abstract class AbstractDomain implements Domain {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
-        Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(name));
+        QNameSymbol symbol = new QNameSymbol(name);
+        Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
         }

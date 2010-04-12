@@ -129,7 +129,7 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         componentManager = new ComponentManagerImpl();
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         ProcessorRegistry processorRegistry = new ProcessorRegistryImpl();
-        metaDataStore = new MetaDataStoreImpl(classLoaderRegistry, processorRegistry);
+        metaDataStore = new MetaDataStoreImpl(processorRegistry);
         scopeContainer = new CompositeScopeContainer(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
         scopeContainer.start();
         scopeRegistry = new ScopeRegistryImpl();

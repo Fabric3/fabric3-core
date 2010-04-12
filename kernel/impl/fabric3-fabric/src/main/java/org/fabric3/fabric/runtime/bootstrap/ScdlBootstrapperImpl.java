@@ -61,10 +61,10 @@ import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationFailure;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.ScdlBootstrapper;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
@@ -119,7 +119,7 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
             URI contributionUri = contribution.getUri();
             IntrospectionContext introspectionContext = new DefaultIntrospectionContext(contributionUri, bootClassLoader, scdlLocation);
             Source source = new UrlSource(scdlLocation);
-             Composite composite = loader.load(source, Composite.class, introspectionContext);
+            Composite composite = loader.load(source, Composite.class, introspectionContext);
             if (introspectionContext.hasErrors()) {
                 QName name = composite.getName();
                 List<ValidationFailure> errors = introspectionContext.getErrors();
@@ -217,8 +217,9 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
         Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
         QName compositeName = composite.getName();
         QNameSymbol symbol = new QNameSymbol(compositeName);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
         resource.addResourceElement(element);
+        resource.setProcessed(true);
         contribution.addResource(resource);
     }
 

@@ -38,34 +38,24 @@
 package org.fabric3.contribution;
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Import;
-import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
-import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
  * @version $Rev$ $Date$
@@ -84,21 +74,6 @@ public class MetaDataStoreImplTestCase extends TestCase {
         assertEquals(RESOURCE_URI, wires.get(0).getExportContributionUri());
     }
 
-    public void testResolveContainingResource() throws Exception {
-        URI uri = URI.create("resource");
-        Contribution contribution = new Contribution(uri);
-        QName qname = new QName("foo", "bar");
-        QNameSymbol symbol = new QNameSymbol(qname);
-        ResourceElement<QNameSymbol, Serializable> element = new ResourceElement<QNameSymbol, Serializable>(symbol);
-        URL url = new URL("file://foo");
-        Source source = new UrlSource(url);
-        Resource resource = new Resource(source, "resource");
-        resource.addResourceElement(element);
-        contribution.addResource(resource);
-        store.store(contribution);
-        assertEquals(resource, store.resolveContainingResource(uri, symbol));
-    }
-
     public void testResolveDependentContributions() throws Exception {
         Set<Contribution> contributions = store.resolveDependentContributions(RESOURCE_URI);
         assertEquals(RESOURCE_URI2, contributions.iterator().next().getUri());
@@ -106,10 +81,7 @@ public class MetaDataStoreImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ClassLoaderRegistry registry = EasyMock.createMock(ClassLoaderRegistry.class);
-        EasyMock.expect(registry.getClassLoader(URI.create("resource"))).andReturn(getClass().getClassLoader());
-        EasyMock.replay(registry);
-        store = new MetaDataStoreImpl(registry, null);
+        store = new MetaDataStoreImpl(null);
         Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators =
                 new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
         instantiators.put(QNameImport.class, new QNameWireInstantiator());

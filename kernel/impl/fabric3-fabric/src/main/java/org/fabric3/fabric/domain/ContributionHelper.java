@@ -64,13 +64,13 @@ public interface ContributionHelper {
     List<Composite> getDeployables(Set<Contribution> contributions);
 
     /**
-     * Resolves a deployable by name.
+     * Finds a deployable by name.
      *
      * @param deployable the deployable name
      * @return the deployable
      * @throws DeploymentException if the deployable cannot be resolved
      */
-    Composite resolveComposite(QName deployable) throws DeploymentException;
+    Composite findComposite(QName deployable) throws DeploymentException;
 
     /**
      * Resolves the default plan for a deployable.
@@ -78,7 +78,7 @@ public interface ContributionHelper {
      * @param deployable the deployable composite
      * @return the default plan or null if none is found
      */
-    DeploymentPlan resolveDefaultPlan(QName deployable);
+    DeploymentPlan findDefaultPlan(QName deployable);
 
     /**
      * Resolves the default plan for a contribution.
@@ -86,7 +86,7 @@ public interface ContributionHelper {
      * @param contribution the contribution
      * @return the default plan of null if none is found
      */
-    DeploymentPlan resolveDefaultPlan(Contribution contribution);
+    DeploymentPlan findDefaultPlan(Contribution contribution);
 
     /**
      * Resolves a deployment plan by name.
@@ -95,7 +95,7 @@ public interface ContributionHelper {
      * @return the resolved deployment plan or null if not found
      * @throws DeploymentException if the plan cannot be resolved
      */
-    DeploymentPlan resolvePlan(String plan) throws DeploymentException;   
+    DeploymentPlan findPlan(String plan) throws DeploymentException;
 
     /**
      * Resolves the contributions from the list of URIs.
@@ -103,7 +103,7 @@ public interface ContributionHelper {
      * @param uris the contribution  URIs
      * @return the set of contributions
      */
-    Set<Contribution> resolveContributions(List<URI> uris);
+    Set<Contribution> findContributions(List<URI> uris);
 
     /**
      * Locks a set of contributions. The lock owners are the deployables in the contribution.

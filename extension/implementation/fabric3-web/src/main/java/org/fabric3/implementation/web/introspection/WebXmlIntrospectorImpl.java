@@ -39,6 +39,8 @@ package org.fabric3.implementation.web.introspection;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
@@ -53,10 +55,12 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.xml.XMLFactory;
+import org.fabric3.host.contribution.StoreException;
 
 /**
  * Default implementation of WebXmlIntrospector.
@@ -78,14 +82,23 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
     public List<Class<?>> introspectArtifactClasses(IntrospectionContext context) {
         List<Class<?>> artifacts = new ArrayList<Class<?>>();
         ClassLoader cl = context.getClassLoader();
-        Resource resource = store.resolveContainingResource(context.getContributionUri(), WEB_APP_NAMESPACE);
-        if (resource == null) {
-            resource = store.resolveContainingResource(context.getContributionUri(), WEB_APP_NO_NAMESPACE);
-            if (resource == null) {
-                // tolerate no web.xml
-                return artifacts;
+        URI uri = context.getContributionUri();
+        ResourceElement<QNameSymbol, ?> resourceElement;
+        try {
+            resourceElement = store.resolve(uri, Serializable.class, WEB_APP_NAMESPACE, context);
+            if (resourceElement == null) {
+                resourceElement = store.resolve(uri, Serializable.class, WEB_APP_NO_NAMESPACE, context);
+                if (resourceElement == null) {
+                    // tolerate no web.xml
+                    return artifacts;
+                }
             }
+        } catch (StoreException e) {
+            InvalidWebManifest failure = new InvalidWebManifest("Error reading web.xml", e);
+            context.addError(failure);
+            return artifacts;
         }
+        Resource resource = resourceElement.getResource();
         InputStream stream = null;
         try {
             stream = resource.getSource().openStream();

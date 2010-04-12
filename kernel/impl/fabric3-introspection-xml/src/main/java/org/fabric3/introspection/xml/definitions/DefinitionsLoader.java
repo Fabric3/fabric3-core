@@ -63,7 +63,6 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.ResourceElementNotFoundException;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
@@ -142,7 +141,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                     }
                 }
                 if (definition != null) {
-                    if (definitions.contains(definition)){
+                    if (definitions.contains(definition)) {
                         QName name = definition.getName();
                         DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, reader);
                         context.addError(error);
@@ -164,8 +163,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                     }
                     if (!found) {
                         String id = candidate.toString();
-                        // xcv should not throw?
-                        throw new ResourceElementNotFoundException("Definition not found: " + id, id);
+                        throw new AssertionError("Definition not found: " + id);
                     }
                     if (candidate instanceof Intent) {
                         expandQualifiers((Intent) candidate, resource);

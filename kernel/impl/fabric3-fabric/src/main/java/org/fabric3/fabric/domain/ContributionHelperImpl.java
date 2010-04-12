@@ -48,7 +48,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.DeployableNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
@@ -104,34 +103,25 @@ public class ContributionHelperImpl implements ContributionHelper {
         return deployables;
     }
 
-    public Composite resolveComposite(QName deployable) throws DeploymentException {
-        ResourceElement<QNameSymbol, ?> element;
-        try {
-            element = metadataStore.resolve(new QNameSymbol(deployable));
-        } catch (StoreException e) {
-            throw new DeploymentException("Error deploying: " + deployable, e);
-        }
+    public Composite findComposite(QName deployable) throws DeploymentException {
+        QNameSymbol symbol = new QNameSymbol(deployable);
+        ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
         if (element == null) {
             String id = deployable.toString();
             throw new DeployableNotFoundException("Deployable not found: " + id, id);
         }
 
-        Object object = element.getValue();
-        if (!(object instanceof Composite)) {
-            String id = deployable.toString();
-            throw new IllegalDeployableTypeException("Deployable must be a composite:" + id, id);
-        }
-
-        return (Composite) object;
+        return element.getValue();
     }
 
-    public DeploymentPlan resolveDefaultPlan(QName deployable) {
+    public DeploymentPlan findDefaultPlan(QName deployable) {
         // default to first found deployment plan in a contribution if one is not specifed for a distributed deployment
-        Contribution contribution = metadataStore.resolveContainingContribution(new QNameSymbol(deployable));
-        return resolveDefaultPlan(contribution);
+        QNameSymbol symbol = new QNameSymbol(deployable);
+        Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
+        return findDefaultPlan(contribution);
     }
 
-    public DeploymentPlan resolveDefaultPlan(Contribution contribution) {
+    public DeploymentPlan findDefaultPlan(Contribution contribution) {
         DeploymentPlan plan;
         List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
         getDeploymentPlans(contribution, plans);
@@ -143,29 +133,17 @@ public class ContributionHelperImpl implements ContributionHelper {
         return plan;
     }
 
-    public DeploymentPlan resolvePlan(String plan) throws DeploymentException {
-        ResourceElement<QNameSymbol, ?> element;
-        DeploymentPlan deploymentPlan;
-        try {
-            QName planName = new QName(PLAN_NAMESPACE, plan);
-            element = metadataStore.resolve(new QNameSymbol(planName));
-        } catch (StoreException e) {
-            throw new DeploymentException("Error finding plan: " + plan, e);
-        }
+    public DeploymentPlan findPlan(String plan) throws DeploymentException {
+        QName planName = new QName(PLAN_NAMESPACE, plan);
+        QNameSymbol symbol = new QNameSymbol(planName);
+        ResourceElement<QNameSymbol, DeploymentPlan> element = metadataStore.find(DeploymentPlan.class, symbol);
         if (element == null) {
             return null;
         }
-
-        Object object = element.getValue();
-        if (!(object instanceof DeploymentPlan)) {
-            throw new IllegalDeployableTypeException("Not a deployment plan:" + plan, plan);
-        }
-
-        deploymentPlan = (DeploymentPlan) object;
-        return deploymentPlan;
+        return element.getValue();
     }
 
-    public Set<Contribution> resolveContributions(List<URI> uris) {
+    public Set<Contribution> findContributions(List<URI> uris) {
         Set<Contribution> contributions = new LinkedHashSet<Contribution>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = metadataStore.find(uri);

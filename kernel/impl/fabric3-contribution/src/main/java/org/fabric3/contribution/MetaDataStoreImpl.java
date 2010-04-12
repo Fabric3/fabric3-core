@@ -54,7 +54,6 @@ import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.StoreException;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;
@@ -76,11 +75,9 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
     private Map<QName, Map<Export, List<Contribution>>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, List<Contribution>>>();
     private ProcessorRegistry processorRegistry;
-    private ClassLoaderRegistry classLoaderRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
 
-    public MetaDataStoreImpl(ClassLoaderRegistry classLoaderRegistry, ProcessorRegistry processorRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
+    public MetaDataStoreImpl(ProcessorRegistry processorRegistry) {
         this.processorRegistry = processorRegistry;
     }
 
@@ -136,16 +133,16 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <S extends Symbol> ResourceElement<S, ?> resolve(S symbol) throws StoreException {
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(Class<V> type, S symbol) {
         for (Contribution contribution : cache.values()) {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                     if (element.getSymbol().equals(symbol)) {
                         if (!resource.isProcessed()) {
                             // this is a programming error as resolve(Symbol) should only be called after contribution resources have been processed
-                            throw new StoreException("Attempt to resolve a resource before it is processed");
+                            throw new AssertionError("Attempt to resolve a resource before it is processed");
                         }
-                        return (ResourceElement<S, ?>) element;
+                        return (ResourceElement<S, V>) element;
                     }
                 }
             }
@@ -153,31 +150,8 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return null;
     }
 
-    public Contribution resolveContainingContribution(Symbol symbol) {
-        for (Contribution contribution : cache.values()) {
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                    if (element.getSymbol().equals(symbol)) {
-                        return contribution;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Resource resolveContainingResource(URI contributionUri, Symbol symbol) {
-        Contribution contribution = cache.get(contributionUri);
-        if (contribution != null) {
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                    if (element.getSymbol().equals(symbol)) {
-                        return resource;
-                    }
-                }
-            }
-        }
-        return null;
+    public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws StoreException {
+        return resolve(uri, type, symbol, null);
     }
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
@@ -203,11 +177,10 @@ public class MetaDataStoreImpl implements MetaDataStore {
                 continue;
             }
             URI resolvedUri = wire.getExportContributionUri();
-
             Contribution resolved = cache.get(resolvedUri);
             if (resolved == null) {
-                String identifier = resolvedUri.toString();
-                throw new ContributionResolutionException("Dependent contribution not found: " + identifier, identifier);
+                // programming error
+                throw new AssertionError("Dependent contribution not found: " + resolvedUri);
             }
             element = resolve(resolved, type, symbol, context);
             if (element != null) {
@@ -384,20 +357,19 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolveInternal(Contribution contribution,
                                                                                              Class<V> type,
                                                                                              S symbol,
-                                                                                             IntrospectionContext context)
-            throws StoreException {
-        URI contributionUri = contribution.getUri();
-        ClassLoader loader = classLoaderRegistry.getClassLoader(contributionUri);
-        assert loader != null;
+                                                                                             IntrospectionContext context) throws StoreException {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
-                    if (!resource.isProcessed()) {
+                    if (!resource.isProcessed() && context == null) {
+                        String identifier = resource.getSource().getSystemId();
+                        throw new AssertionError("Resource not resolved: " + identifier);
+                    } else if (!resource.isProcessed() && context != null) {
                         try {
                             processorRegistry.processResource(resource, context);
                         } catch (ContributionException e) {
                             String identifier = resource.getSource().getSystemId();
-                            throw new StoreException("Error resolving resource: " + identifier, identifier, e);
+                            throw new StoreException("Error resolving resource: " + identifier, e);
                         }
                     }
                     Object val = element.getValue();

@@ -45,6 +45,7 @@ package org.fabric3.spi.contribution;
 public class ResourceElement<SYMBOL extends Symbol, VALUE> {
     private SYMBOL symbol;
     private VALUE value;
+    private Resource resource;
 
     public ResourceElement(SYMBOL symbol) {
         this.symbol = symbol;
@@ -55,14 +56,47 @@ public class ResourceElement<SYMBOL extends Symbol, VALUE> {
         this.value = value;
     }
 
+    /**
+     * Returns the resource this element is contained in.
+     *
+     * @return the resource this element is contained in.
+     */
+    public Resource getResource() {
+        return resource;
+    }
+
+    /**
+     * Sets the resource this element is contained in.
+     *
+     * @param resource the resource this element is contained in.
+     */
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    /**
+     * Returns the symbol the resource element is indexed by.
+     *
+     * @return the symbol the resource element is indexed by.
+     */
     public SYMBOL getSymbol() {
         return symbol;
     }
 
+    /**
+     * Returns the actual resource element.
+     *
+     * @return the resource element
+     */
     public VALUE getValue() {
         return value;
     }
 
+    /**
+     * Sets the actual resource element.
+     *
+     * @param value the resource element
+     */
     public void setValue(VALUE value) {
         this.value = value;
     }

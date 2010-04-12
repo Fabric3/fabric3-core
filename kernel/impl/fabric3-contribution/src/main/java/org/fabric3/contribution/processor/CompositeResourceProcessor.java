@@ -57,7 +57,6 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.ResourceElementNotFoundException;
 import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -155,8 +154,9 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             }
         }
         if (!found) {
+            // should not happen
             String identifier = composite.getName().toString();
-            throw new ResourceElementNotFoundException("Resource element not found: " + identifier, identifier);
+            throw new AssertionError("Resource element not found: " + identifier);
         }
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());

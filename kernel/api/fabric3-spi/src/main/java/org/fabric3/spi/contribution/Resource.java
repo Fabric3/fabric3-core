@@ -51,11 +51,31 @@ public class Resource {
     private List<ResourceElement<?, ?>> elements = new ArrayList<ResourceElement<?, ?>>();
     private Source source;
     private String contentType;
+    private Contribution contribution;
+
     private boolean processed;
 
     public Resource(Source source, String contentType) {
         this.source = source;
         this.contentType = contentType;
+    }
+
+    /**
+     * Returns the contribution this resource is contained in.
+     *
+     * @return the contribution this resource is contained in
+     */
+    public Contribution getContribution() {
+        return contribution;
+    }
+
+    /**
+     * Sets the contribution this resource is contained in.
+     *
+     * @param contribution the contribution this resource is contained in
+     */
+    public void setContribution(Contribution contribution) {
+        this.contribution = contribution;
     }
 
     /**
@@ -83,6 +103,7 @@ public class Resource {
      */
     public void addResourceElement(ResourceElement<?, ?> element) {
         elements.add(element);
+        element.setResource(this);
     }
 
     /**
