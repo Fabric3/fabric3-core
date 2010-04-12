@@ -284,7 +284,7 @@ public class Contribution implements Serializable {
      */
     public void acquireLock(QName owner) {
         if (lockOwners.contains(owner)) {
-            throw new IllegalStateException("Lock already held by owner for contribution" + uri + " :" + owner);
+            throw new IllegalStateException("Lock already held by owner for contribution " + uri + " :" + owner);
         }
         lockOwners.add(owner);
     }
