@@ -60,7 +60,6 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.ContributionInUseException;
 import org.fabric3.host.contribution.ContributionLockedException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
@@ -139,6 +138,43 @@ public class ContributionServiceImpl implements ContributionService {
         this.repository = repository;
     }
 
+    public Set<URI> getContributions() {
+        Set<Contribution> contributions = metaDataStore.getContributions();
+        Set<URI> uris = new HashSet<URI>(contributions.size());
+        for (Contribution contribution : contributions) {
+            uris.add(contribution.getUri());
+        }
+        return uris;
+    }
+
+    public boolean exists(URI uri) {
+        return metaDataStore.find(uri) != null;
+    }
+
+    public long getContributionTimestamp(URI uri) {
+        Contribution contribution = metaDataStore.find(uri);
+        if (contribution == null) {
+            return -1;
+        }
+        return contribution.getTimestamp();
+    }
+
+    public List<Deployable> getDeployables(URI uri) throws ContributionNotFoundException {
+        Contribution contribution = find(uri);
+        List<Deployable> list = new ArrayList<Deployable>();
+        if (contribution.getManifest() != null) {
+            for (Deployable deployable : contribution.getManifest().getDeployables()) {
+                list.add(deployable);
+            }
+        }
+        return list;
+    }
+
+    public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
+        Contribution contribution = find(uri);
+        return contribution.getLockOwners();
+    }
+
     public URI store(ContributionSource contributionSource) throws StoreException {
         Contribution contribution = persist(contributionSource);
         metaDataStore.store(contribution);
@@ -148,30 +184,25 @@ public class ContributionServiceImpl implements ContributionService {
         return contribution.getUri();
     }
 
-    public void install(URI uri) throws InstallException {
-        Contribution contribution = metaDataStore.find(uri);
-        install(contribution);
-        // update the store with changes
-        try {
-            metaDataStore.store(contribution);
-        } catch (StoreException e) {
-            throw new InstallException(e);
-        }
-        for (ContributionServiceListener listener : listeners) {
-            listener.onInstall(contribution);
-        }
+    public void install(URI uri) throws InstallException, ContributionNotFoundException {
+        List<URI> uris = new ArrayList<URI>();
+        uris.add(uri);
+        install(uris);
     }
 
     public void install(List<URI> uris) throws InstallException, ContributionNotFoundException {
         List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
         for (URI uri : uris) {
-            Contribution contribution = metaDataStore.find(uri);
-            if (contribution == null) {
-                throw new ContributionNotFoundException("Contribution not found: " + uri);
-            }
+            Contribution contribution = find(uri);
             contributions.add(contribution);
         }
         installInOrder(contributions);
+    }
+
+    public URI contribute(ContributionSource contributionSource) throws ContributionException {
+        List<ContributionSource> contributionSources = new ArrayList<ContributionSource>();
+        contributionSources.add(contributionSource);
+        return contribute(contributionSources).get(0);
     }
 
     public List<URI> contribute(List<ContributionSource> contributionSources) throws ContributionException {
@@ -187,46 +218,43 @@ public class ContributionServiceImpl implements ContributionService {
         return installInOrder(contributions);
     }
 
-
-    public URI contribute(ContributionSource contributionSource) throws ContributionException {
-        Contribution contribution = persist(contributionSource);
-        for (ContributionServiceListener listener : listeners) {
-            listener.onStore(contribution);
-        }
-        install(contribution);
-        for (ContributionServiceListener listener : listeners) {
-            listener.onInstall(contribution);
-        }
-        return contribution.getUri();
+    public void uninstall(URI uri) throws UninstallException, ContributionNotFoundException {
+        Contribution contribution = find(uri);
+        uninstall(contribution);
     }
 
-    public boolean exists(URI uri) {
-        return metaDataStore.find(uri) != null;
-    }
-
-    public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
-        Contribution contribution = metaDataStore.find(uri);
-        if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution not found: " + uri);
+    public void uninstall(List<URI> uris) throws UninstallException, ContributionNotFoundException {
+        List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
+        for (URI uri : uris) {
+            Contribution contribution = find(uri);
+            contributions.add(contribution);
         }
-        return contribution.getLockOwners();
-    }
-
-    public long getContributionTimestamp(URI uri) {
-        Contribution contribution = metaDataStore.find(uri);
-        if (contribution == null) {
-            return -1;
-        }
-        return contribution.getTimestamp();
-    }
-
-    public Set<URI> getContributions() {
-        Set<Contribution> contributions = metaDataStore.getContributions();
-        Set<URI> uris = new HashSet<URI>(contributions.size());
+        contributions = dependencyService.orderForUninstall(contributions);
         for (Contribution contribution : contributions) {
-            uris.add(contribution.getUri());
+            uninstall(contribution);
         }
-        return uris;
+    }
+
+    public void remove(URI uri) throws RemoveException, ContributionNotFoundException {
+        Contribution contribution = find(uri);
+        if (contribution.getState() != ContributionState.STORED) {
+            throw new RemoveException("Contribution must first be uninstalled: " + uri);
+        }
+        metaDataStore.remove(uri);
+        try {
+            getRepository().remove(uri);
+        } catch (RepositoryException e) {
+            throw new RemoveException("Error removing contribution archive", e);
+        }
+        for (ContributionServiceListener listener : listeners) {
+            listener.onRemove(contribution);
+        }
+    }
+
+    public void remove(List<URI> uris) throws ContributionNotFoundException, RemoveException {
+        for (URI uri : uris) {
+            remove(uri);
+        }
     }
 
     public boolean profileExists(URI uri) {
@@ -236,6 +264,52 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
         return false;
+    }
+
+    public List<URI> getContributionsInProfile(URI uri) {
+        List<URI> profileContributions = new ArrayList<URI>();
+        Set<Contribution> contributions = metaDataStore.getContributions();
+        for (Contribution contribution : contributions) {
+            if (contribution.getProfiles().contains(uri)) {
+                profileContributions.add(contribution.getUri());
+            }
+        }
+        return profileContributions;
+    }
+
+    public List<URI> getSortedContributionsInProfile(URI uri) {
+        List<Contribution> sortedContributions = new ArrayList<Contribution>();
+        Set<Contribution> contributions = metaDataStore.getContributions();
+        for (Contribution contribution : contributions) {
+            if (contribution.getProfiles().contains(uri)) {
+                sortedContributions.add(contribution);
+            }
+        }
+        List<URI> profileContributions = new ArrayList<URI>();
+        sortedContributions = dependencyService.orderForUninstall(sortedContributions);
+        for (Contribution contribution : sortedContributions) {
+            profileContributions.add(contribution.getUri());
+        }
+        return profileContributions;
+    }
+    
+    public void registerProfile(URI profileUri, List<URI> contributionUris) throws DuplicateProfileException {
+        if (profileExists(profileUri)) {
+            throw new DuplicateProfileException("Profile already installed: " + profileUri);
+        }
+        for (URI contributionUri : contributionUris) {
+            Contribution contribution = metaDataStore.find(contributionUri);
+            if (contribution == null) {
+                throw new AssertionError("Contribution not found: " + contributionUri);
+            }
+            List<URI> profiles = contribution.getProfiles();
+            if (!profiles.contains(profileUri)) {
+                profiles.add(profileUri);
+                for (ContributionServiceListener listener : listeners) {
+                    listener.onUpdate(contribution);
+                }
+            }
+        }
     }
 
     public void installProfile(URI uri) throws InstallException, ContributionNotFoundException {
@@ -292,172 +366,19 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
-    public void registerProfile(URI profileUri, List<URI> contributionUris) throws DuplicateProfileException {
-        if (profileExists(profileUri)) {
-            throw new DuplicateProfileException("Profile already installed: " + profileUri);
-        }
-        for (URI contributionUri : contributionUris) {
-            Contribution contribution = metaDataStore.find(contributionUri);
-            if (contribution == null) {
-                throw new AssertionError("Contribution not found: " + contributionUri);
-            }
-            List<URI> profiles = contribution.getProfiles();
-            if (!profiles.contains(profileUri)) {
-                profiles.add(profileUri);
-                for (ContributionServiceListener listener : listeners) {
-                    listener.onUpdate(contribution);
-                }
-            }
-        }
-    }
-
-    public List<Deployable> getDeployables(URI contributionUri) throws ContributionNotFoundException {
-        Contribution contribution = find(contributionUri);
-        List<Deployable> list = new ArrayList<Deployable>();
-        if (contribution.getManifest() != null) {
-            for (Deployable deployable : contribution.getManifest().getDeployables()) {
-                list.add(deployable);
-            }
-        }
-        return list;
-    }
-
-    public void uninstall(URI uri) throws UninstallException, ContributionNotFoundException {
-        Contribution contribution = metaDataStore.find(uri);
-        if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution does not exist:" + uri);
-        }
-        uninstall(contribution);
-    }
-
-    private void uninstall(Contribution contribution) throws UninstallException, ContributionNotFoundException {
-        URI uri = contribution.getUri();
-        if (contribution.getState() != ContributionState.INSTALLED) {
-            throw new UninstallException("Contribution not installed: " + uri);
-        }
-        if (contribution.isLocked()) {
-            List<QName> deployables = contribution.getLockOwners();
-            throw new ContributionLockedException("Contribution is currently in use by a deployment: " + uri, uri, deployables);
-        }
-        // unload from memory
-        contributionLoader.unload(contribution);
-        contribution.setState(ContributionState.STORED);
-        for (ContributionServiceListener listener : listeners) {
-            listener.onUninstall(contribution);
-        }
-        String description = contribution.getManifest().getDescription();
-        if (description != null) {
-            monitor.uninstalled(description);
-        }
-    }
-
-    public void uninstall(List<URI> uris) throws UninstallException, ContributionNotFoundException {
-        List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
-        for (URI uri : uris) {
-            Contribution contribution = metaDataStore.find(uri);
-            if (contribution == null) {
-                throw new ContributionNotFoundException("Contribution does not exist:" + uri);
-            }
-            contributions.add(contribution);
-        }
-        contributions = dependencyService.orderForUninstall(contributions);
-        for (Contribution contribution : contributions) {
-            uninstall(contribution);
-        }
-    }
-
-    public void remove(URI uri) throws RemoveException, ContributionNotFoundException {
-        Contribution contribution = metaDataStore.find(uri);
-        if (contribution == null) {
-            throw new ContributionNotFoundException("Contribution not found:" + uri);
-        }
-        if (contribution.getState() != ContributionState.STORED) {
-            throw new RemoveException("Contribution must first be uninstalled: " + uri);
-        }
-        metaDataStore.remove(uri);
-        try {
-            getRepository().remove(uri);
-        } catch (RepositoryException e) {
-            throw new RemoveException("Error removing contribution archive", e);
-        }
-        for (ContributionServiceListener listener : listeners) {
-            listener.onRemove(contribution);
-        }
-    }
-
-    public void remove(List<URI> uris) throws ContributionNotFoundException, RemoveException {
-        for (URI uri : uris) {
-            remove(uri);
-        }
-    }
-
-    public List<URI> getContributionsInProfile(URI uri) {
-        List<URI> profileContributions = new ArrayList<URI>();
-        Set<Contribution> contributions = metaDataStore.getContributions();
-        for (Contribution contribution : contributions) {
-            if (contribution.getProfiles().contains(uri)) {
-                profileContributions.add(contribution.getUri());
-            }
-        }
-
-        return profileContributions;
-    }
-
-    public List<URI> getSortedContributionsInProfile(URI uri) {
-        List<Contribution> sortedContributions = new ArrayList<Contribution>();
-        Set<Contribution> contributions = metaDataStore.getContributions();
-        for (Contribution contribution : contributions) {
-            if (contribution.getProfiles().contains(uri)) {
-                sortedContributions.add(contribution);
-            }
-        }
-        List<URI> profileContributions = new ArrayList<URI>();
-        sortedContributions = dependencyService.orderForUninstall(sortedContributions);
-        for (Contribution contribution : sortedContributions) {
-            profileContributions.add(contribution.getUri());
-        }
-        return profileContributions;
-    }
-
     /**
      * Resolves a contribution by its URI.
      *
-     * @param contributionUri the contribution URI
+     * @param uri the contribution URI
      * @return the contribution
      * @throws ContributionNotFoundException if the contribution does not exist
      */
-    private Contribution find(URI contributionUri) throws ContributionNotFoundException {
-        Contribution contribution = metaDataStore.find(contributionUri);
+    private Contribution find(URI uri) throws ContributionNotFoundException {
+        Contribution contribution = metaDataStore.find(uri);
         if (contribution == null) {
-            throw new ContributionNotFoundException("No contribution found for: " + contributionUri);
+            throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
         return contribution;
-    }
-
-    /**
-     * Installs a contribution by introspecting and loading it in memory.
-     *
-     * @param contribution the contribution
-     * @throws InstallException if there is an error installing the contribution
-     */
-    private void install(Contribution contribution) throws InstallException {
-        if (ContributionState.STORED != contribution.getState()) {
-            throw new ContributionAlreadyInstalledException("Contribution is already installed");
-        }
-        processManifest(contribution);
-        ClassLoader loader = contributionLoader.load(contribution);
-        try {
-            processContents(contribution, loader);
-        } catch (InstallException e) {
-            try {
-                contributionLoader.unload(contribution);
-            } catch (ContributionInUseException ex) {
-                // this can't happen
-                throw new InstallException(ex);
-            }
-            throw e;
-        }
-        contribution.setState(ContributionState.INSTALLED);
     }
 
     /**
@@ -468,6 +389,11 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws InstallException if there is an error installing the contributions
      */
     private List<URI> installInOrder(List<Contribution> contributions) throws InstallException {
+        for (Contribution contribution : contributions) {
+            if (ContributionState.STORED != contribution.getState()) {
+                throw new ContributionAlreadyInstalledException("Contribution is already installed: " + contribution.getUri());
+            }
+        }
         for (Contribution contribution : contributions) {
             // process any SCA manifest information, including imports and exports
             processManifest(contribution);
@@ -497,6 +423,27 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
         return uris;
+    }
+
+    private void uninstall(Contribution contribution) throws UninstallException, ContributionNotFoundException {
+        URI uri = contribution.getUri();
+        if (contribution.getState() != ContributionState.INSTALLED) {
+            throw new UninstallException("Contribution not installed: " + uri);
+        }
+        if (contribution.isLocked()) {
+            List<QName> deployables = contribution.getLockOwners();
+            throw new ContributionLockedException("Contribution is currently in use by a deployment: " + uri, uri, deployables);
+        }
+        // unload from memory
+        contributionLoader.unload(contribution);
+        contribution.setState(ContributionState.STORED);
+        for (ContributionServiceListener listener : listeners) {
+            listener.onUninstall(contribution);
+        }
+        String description = contribution.getManifest().getDescription();
+        if (description != null) {
+            monitor.uninstalled(description);
+        }
     }
 
     /**
@@ -593,7 +540,7 @@ public class ContributionServiceImpl implements ContributionService {
     private Contribution persist(ContributionSource contributionSource) throws StoreException {
         URI contributionUri = contributionSource.getUri();
         if (metaDataStore.find(contributionUri) != null) {
-            throw new DuplicateContributionException("Contribution is already installed: " + contributionUri);
+            throw new DuplicateContributionException("Contribution already exists: " + contributionUri);
         }
         URL locationUrl;
         boolean persistent = contributionSource.persist();
@@ -621,7 +568,6 @@ public class ContributionServiceImpl implements ContributionService {
                     monitor.error("Error closing contribution stream", e);
                 }
             }
-
         }
         String type = contributionSource.getContentType();
         if (type == null && locationUrl == null) {

@@ -67,6 +67,47 @@ import javax.xml.namespace.QName;
 public interface ContributionService {
 
     /**
+     * Returns the URIs of contributions in the domain.
+     *
+     * @return the URIs of contributions in the domain
+     */
+    Set<URI> getContributions();
+
+    /**
+     * Returns true if a contribution for the given URI exists.
+     *
+     * @param uri the contribution URI
+     * @return true if a contribution for the given URI exists
+     */
+    boolean exists(URI uri);
+
+    /**
+     * Returns the contribution timestamp.
+     *
+     * @param uri the contribution URI
+     * @return the timestamp or -1 if no contribution was found
+     */
+    long getContributionTimestamp(URI uri);
+
+    /**
+     * Returns a list of deployables in a contribution.
+     *
+     * @param uri the URI of the contribution to search
+     * @return a list of deployables in a contribution. If no deployables are found, an empty list is returned.
+     * @throws ContributionNotFoundException if a contribution corresponding to the URI is not found
+     */
+    List<Deployable> getDeployables(URI uri) throws ContributionNotFoundException;
+
+    /**
+     * Returns a list of deployed deployable composites from the contribution in the order they were deployed.
+     *
+     * @param uri the contribution URI
+     * @return the list of deployed composite qualified names
+     * @throws ContributionNotFoundException if the contribution is not found
+     */
+    List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException;
+
+    /**
      * Persistently stores a contribution in the domain.
      *
      * @param source the contribution source
@@ -112,15 +153,6 @@ public interface ContributionService {
     List<URI> contribute(List<ContributionSource> sources) throws ContributionException;
 
     /**
-     * Returns a list of deployed deployable composites from the contribution in the order they were deployed.
-     *
-     * @param uri the contribution URI
-     * @return the list of deployed composite qualified names
-     * @throws ContributionNotFoundException if the contribution is not found
-     */
-    List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException;
-
-    /**
      * Uninstalls a contribution.
      *
      * @param uri The URI of the contribution
@@ -157,29 +189,6 @@ public interface ContributionService {
     void remove(List<URI> uris) throws ContributionNotFoundException, RemoveException;
 
     /**
-     * Returns true if a contribution for the given URI exists.
-     *
-     * @param uri the contribution URI
-     * @return true if a contribution for the given URI exists
-     */
-    boolean exists(URI uri);
-
-    /**
-     * Returns the contribution timestamp.
-     *
-     * @param uri the contribution URI
-     * @return the timestamp or -1 if no contribution was found
-     */
-    long getContributionTimestamp(URI uri);
-
-    /**
-     * Returns the URIs of contributions in the domain.
-     *
-     * @return the URIs of contributions in the domain
-     */
-    Set<URI> getContributions();
-
-    /**
      * Returns true if the profile exists.
      *
      * @param uri the profile URI
@@ -187,6 +196,22 @@ public interface ContributionService {
      */
     boolean profileExists(URI uri);
 
+    /**
+     * Returns a list of contributions contained in a profile.
+     *
+     * @param uri the profile URI
+     * @return the list of contributions contained in the profile
+     */
+    List<URI> getContributionsInProfile(URI uri);
+
+    /**
+     * Returns a list of contributions contained in a profile sorted topologically by dependencies.
+     *
+     * @param uri the profile URI
+     * @return the list of contributions contained in the profile
+     */
+    List<URI> getSortedContributionsInProfile(URI uri);
+    
     /**
      * Registers a profile.
      *
@@ -224,30 +249,5 @@ public interface ContributionService {
      * @throws ContributionNotFoundException if a contribution was not found;
      */
     void removeProfile(URI uri) throws RemoveException, ContributionNotFoundException;
-
-    /**
-     * Returns a list of contributions contained in a profile order.
-     *
-     * @param uri the profile URI
-     * @return the list of contributions contained in the profile
-     */
-    List<URI> getContributionsInProfile(URI uri);
-
-    /**
-     * Returns a list of contributions contained in a profile sorted topologically by dependencies.
-     *
-     * @param uri the profile URI
-     * @return the list of contributions contained in the profile
-     */
-    List<URI> getSortedContributionsInProfile(URI uri);
-
-    /**
-     * Returns a list of deployables in a contribution.
-     *
-     * @param uri the URI of the contribution to search
-     * @return a list of deployables in a contribution. If no deployables are found, an empty list is returned.
-     * @throws ContributionNotFoundException if a contribution corresponding to the URI is not found
-     */
-    List<Deployable> getDeployables(URI uri) throws ContributionNotFoundException;
 
 }
