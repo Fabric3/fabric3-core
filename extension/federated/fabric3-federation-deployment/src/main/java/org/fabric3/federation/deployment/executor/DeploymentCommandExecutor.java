@@ -39,7 +39,11 @@ package org.fabric3.federation.deployment.executor;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
+import org.oasisopen.sca.annotation.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -66,8 +70,11 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes a {@link DeploymentCommand} on a participant. If there is an error processing the command, a rollback to the previous runtime state will
- * be performed.
+ * Processes {@link DeploymentCommand}s on a participant. If there is an error processing a command, a rollback to the previous runtime state will be
+ * performed.
+ * <p/>
+ * This implementation queues deployment commands in the order they are received. A single, asynchronously executing message pump dequeues and
+ * processes the deployment commands. This guarantees deployment commands are executed in the order they were received by the runtime.
  *
  * @version $Rev$ $Date$
  */
@@ -80,6 +87,8 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     private WorkScheduler workScheduler;
     private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
+    private BlockingQueue<DeploymentCommand> deploymentQueue;
+    private MessagePump messagePump;
 
     public DeploymentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                      @Reference ScopeRegistry scopeRegistry,
@@ -95,48 +104,70 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         this.workScheduler = workScheduler;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
+        this.deploymentQueue = new LinkedBlockingDeque<DeploymentCommand>();
     }
 
     @Init
     public void init() {
+        messagePump = new MessagePump();
+        workScheduler.scheduleWork(messagePump);
         executorRegistry.register(DeploymentCommand.class, this);
     }
 
+    @Destroy
+    public void destroy() {
+        messagePump.stop();
+    }
+
     public synchronized void execute(DeploymentCommand command) throws ExecutionException {
-        monitor.received();
-        DeploymentResponse response = new DeploymentResponse();
-        command.setResponse(response);
-        // TODO synchronize this to avoid multiple deployments
-        workScheduler.scheduleWork(new DeploymentRunner(command));
+        try {
+            monitor.received();
+            deploymentQueue.put(command);
+            DeploymentResponse response = new DeploymentResponse();
+            command.setResponse(response);
+        } catch (InterruptedException e) {
+            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
+            command.setResponse(response);
+        }
     }
 
     /**
-     * Asynchronously processes a deployment command.
+     * Asynchronously dequeues and processes deployment commands in the order they were received by the runtime.
      */
-    private class DeploymentRunner extends DefaultPausableWork {
-        private DeploymentCommand command;
+    private class MessagePump extends DefaultPausableWork {
 
-        public DeploymentRunner(DeploymentCommand command) {
-            this.command = command;
+        private MessagePump() {
+            super(true);
         }
 
         protected void execute() {
-            // execute the extension commands first before deserializing the others as the latter may contain extension-specific classes
-            SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
+            try {
+                DeploymentCommand command = deploymentQueue.poll(1000, TimeUnit.MILLISECONDS);
+                if (command == null) {
+                    // no deployment
+                    return;
+                }
 
-            byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
-            boolean result = execute(serializedExtensionCommands, command);
-            if (!result) {
-                // failed and rolled back
-                return;
+                monitor.processing(); 
+
+                // execute the extension commands first before deserializing the others as the latter may contain extension-specific classes
+                SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
+                byte[] serializedExtensionCommands = currentDeploymentUnit.getExtensionCommands();
+                boolean result = execute(serializedExtensionCommands, command);
+                if (!result) {
+                    // failed and rolled back
+                    return;
+                }
+                byte[] serializedCommands = currentDeploymentUnit.getCommands();
+                result = execute(serializedCommands, command);
+                if (!result) {
+                    // failed and rolled back
+                    return;
+                }
+                cacheDeployment(command);
+            } catch (InterruptedException e) {
+                monitor.error(e);
             }
-            byte[] serializedCommands = currentDeploymentUnit.getCommands();
-            result = execute(serializedCommands, command);
-            if (!result) {
-                // failed and rolled back
-                return;
-            }
-            cacheDeployment(command);
         }
 
         @SuppressWarnings({"unchecked"})
