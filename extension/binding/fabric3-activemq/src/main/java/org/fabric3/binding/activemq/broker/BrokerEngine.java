@@ -39,6 +39,7 @@ package org.fabric3.binding.activemq.broker;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.util.logging.Level;
@@ -70,7 +71,7 @@ public class BrokerEngine {
     private BrokerService broker;
     private File tempDir;
     private int selectedPort = 61616;
-    private String hostAddress = "localhost";
+    private String bindAddress;
     private int maxPort = 71717;
     private int minPort = 61616;
     private File dataDir;
@@ -90,8 +91,8 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
+    public void setDefaultBindAddress(String bindAddress) {
+        this.bindAddress = bindAddress;
     }
 
     @Property(required = false)
@@ -100,8 +101,13 @@ public class BrokerEngine {
         brokerConfiguration = parser.parse(reader);
     }
 
+
     @Init
     public void init() throws Exception {
+        if (bindAddress == null) {
+            // if the host address is not specified, use localhost address
+            bindAddress = InetAddress.getLocalHost().getHostAddress();
+        }
         // ActiveMQ default level is INFO which is verbose. Only log warnings by default
         Logger.getLogger("org.apache.activemq").setLevel(logLevel);
         broker = new BrokerService();
@@ -117,7 +123,7 @@ public class BrokerEngine {
             TransportConnector connector = null;
             while (loop) {
                 try {
-                    connector = broker.addConnector("tcp://" + hostAddress + ":" + selectedPort);
+                    connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort);
                     loop = false;
                 } catch (IOException e) {
                     selectPort();
