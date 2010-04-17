@@ -83,6 +83,7 @@ public abstract class AbstractTopologyService {
     protected EventService eventService;
     protected TopologyServiceMonitor monitor;
 
+    protected String defaultBindAddress;
     protected boolean printlocalAddress;
     protected String logLevel = "error";
     protected long defaultTimeout = 10000;
@@ -123,9 +124,17 @@ public abstract class AbstractTopologyService {
         this.defaultTimeout = defaultTimeout;
     }
 
+    @Property(required = false)
+    public void setDefaultBindAddress(String defaultBindAddress) {
+        this.defaultBindAddress = defaultBindAddress;
+    }
 
     @Init
     public void init() throws ChannelException {
+        // set the bind address if it is specified in the system configuration and not specified at JVM startup 
+        if (defaultBindAddress != null && System.getProperty("jgroups.bind_addr") == null) {
+            System.setProperty("jgroups.bind_addr", defaultBindAddress);
+        }
         LogFactory.getLog(JChannel.class).setLevel(logLevel);
         domainName = info.getDomain().getAuthority();
         if (runtimeId == null) {
@@ -174,9 +183,9 @@ public abstract class AbstractTopologyService {
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
             } catch (MessageException e) {
-                monitor.error("Error receiving message from: "+ runtimeName, e);
+                monitor.error("Error receiving message from: " + runtimeName, e);
             } catch (ExecutionException e) {
-                monitor.error("Error receiving message from: "+ runtimeName, e);
+                monitor.error("Error receiving message from: " + runtimeName, e);
             }
         }
 
@@ -195,7 +204,7 @@ public abstract class AbstractTopologyService {
             try {
                 String runtimeName = org.jgroups.util.UUID.get(msg.getSrc());
                 monitor.handleMessage(runtimeName);
-                Object deserialized =  helper.deserialize(msg.getBuffer());
+                Object deserialized = helper.deserialize(msg.getBuffer());
                 assert deserialized instanceof ResponseCommand;
                 ResponseCommand command = (ResponseCommand) deserialized;
                 executorRegistry.execute(command);
@@ -203,22 +212,22 @@ public abstract class AbstractTopologyService {
                 response.setRuntimeName(getRuntimeName());
                 return helper.serialize(response);
             } catch (MessageException e) {
-                monitor.error("Error handling message from: "+ runtimeName, e);
+                monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
                 ex.setRuntimeName(getRuntimeName());
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {
-                    monitor.error("Error handling message from: "+ runtimeName, e);
+                    monitor.error("Error handling message from: " + runtimeName, e);
                 }
             } catch (ExecutionException e) {
-                monitor.error("Error handling message from: "+ runtimeName, e);
+                monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
                 ex.setRuntimeName(getRuntimeName());
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {
-                    monitor.error("Error handling message from: "+ runtimeName, e);
+                    monitor.error("Error handling message from: " + runtimeName, e);
                 }
             }
             throw new MessageRuntimeException("Unable to handle request");
