@@ -212,7 +212,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
     private void setExportedPackages(BootConfiguration configuration) {
         Map<String, String> exportedPackages = new HashMap<String, String>();
-        exportedPackages.put("org.fabric3.spi.*", "1.4");
+        exportedPackages.put("org.fabric3.spi.*", Names.VERSION);
         exportedPackages.put("com.bea.core.workmanager", "1.7.0.0");
         exportedPackages.put("com.bea.core.workmanager.internal", "1.7.0.0");
         exportedPackages.put("weblogic.common", "1.7.0.0");
