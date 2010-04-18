@@ -83,7 +83,7 @@ public class CopyUtil {
         Map<URI, LogicalService> services = new HashMap<URI, LogicalService>();
         LogicalCompositeComponent replica = copy(composite, parent, components, services, references);
 
-        // Wires must be  copies last since they may contain forward references to services provided by components not yet copied. This
+        // Wires must be copied last since they may contain forward references to services provided by components not yet copied. This
         // guarantees that all components and services will have been copied before wires are copied.
         copyWires(composite, components, services);
         return replica;
