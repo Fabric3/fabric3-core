@@ -18,7 +18,7 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-extension-other-parent-pom</artifactId>
-        <version>1.5</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-atomikos-jms</artifactId>

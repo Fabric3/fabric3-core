@@ -13,7 +13,7 @@
     <parent>
         <artifactId>fabric3-runtime-maven-parent-pom</artifactId>
         <groupId>org.codehaus.fabric3</groupId>
-        <version>1.5</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.codehaus.fabric3</groupId>
