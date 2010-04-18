@@ -13,7 +13,7 @@ Public License. See the accompanying license file for details.
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-kernel-api-parent-pom</artifactId>
-        <version>1.5</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-host-api</artifactId>
