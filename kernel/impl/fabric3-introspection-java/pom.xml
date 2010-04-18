@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-kernel-impl-parent-pom</artifactId>
-        <version>1.5</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-introspection-java</artifactId>

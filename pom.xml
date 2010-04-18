@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-modules-parent-pom</artifactId>
-    <version>1.5</version>
+    <version>1.5-SNAPSHOT</version>
     <name>Fabric3 Modules Parent POM</name>
     <description>Fabric3 Modules Parent POM.</description>
     <packaging>pom</packaging>
@@ -91,9 +91,9 @@
     </repositories>
 
     <scm>
-        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/tags/fabric3-modules-parent-pom-1.5</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/tags/fabric3-modules-parent-pom-1.5</developerConnection>
-        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/tags/fabric3-modules-parent-pom-1.5</url>
+        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk</developerConnection>
+        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk</url>
     </scm>
 
 </project>
