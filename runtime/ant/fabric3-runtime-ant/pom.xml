@@ -19,7 +19,7 @@ licensed under the Apache 2.0 license.
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-runtime-ant-parent-pom</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5</version>
     </parent>
 
     <artifactId>fabric3-runtime-ant</artifactId>
