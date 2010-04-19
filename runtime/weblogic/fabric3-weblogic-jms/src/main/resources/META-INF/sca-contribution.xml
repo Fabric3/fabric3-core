@@ -13,12 +13,12 @@ Public License. See the accompanying license file for details.
               xmlns:weblogic="urn:fabric3.org:weblogic"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
     <import.java package="javax.jms" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.spi.common" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.model" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.spi.common" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.model" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.spi.*" version="1.6"/>
     <deployable composite="weblogic:WebLogicJmsControllerExtension" modes="controller vm"/>
     <deployable composite="weblogic:WebLogicJmsParticipantExtension" modes="participant vm"/>
 </contribution>

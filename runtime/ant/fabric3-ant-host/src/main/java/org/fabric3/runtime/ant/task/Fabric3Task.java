@@ -89,7 +89,7 @@ import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
  *
  *  &lt;taskdef name="fabric3" classname="org.fabric3.runtime.ant.task.Fabric3Task"&gt;
  *       &lt;classpath&gt;
- *           &lt;fileset dir="&lt;path to distribution&gt;/fabric3-runtime-ant-1.5-bin/lib"&gt;
+ *           &lt;fileset dir="&lt;path to distribution&gt;/fabric3-runtime-ant-1.6-bin/lib"&gt;
  *               &lt;include name="*.jar"/&gt;
  *           &lt;/fileset&gt;
  *       &lt;/classpath&gt;

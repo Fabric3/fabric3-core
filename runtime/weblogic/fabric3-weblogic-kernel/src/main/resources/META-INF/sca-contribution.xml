@@ -13,8 +13,8 @@ Public License. See the accompanying license file for details.
               xmlns:weblogic="urn:fabric3.org:weblogic"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <import.java package="org.fabric3.runtime.weblogic.api" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.runtime.weblogic.api" version="1.6"/>
     <import.java package="com.bea.core.workmanager" version="1.7.0.0"/>
     <import.java package="com.bea.core.workmanager.internal" version="1.7.0.0"/>
     <import.java package="weblogic.common" version="1.7.0.0"/>

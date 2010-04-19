@@ -16,10 +16,10 @@ Public License. See the accompanying license file for details.
               f3-core:capabilities="jms"
               f3-core:extension="true">
     <import.java package="javax.jms" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.spi.common" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.model" version="1.5"/>
-    <import.java package="org.fabric3.binding.jms.spi.*" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.spi.common" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.model" version="1.6"/>
+    <import.java package="org.fabric3.binding.jms.spi.*" version="1.6"/>
     <deployable composite="f3-binding:ActiveMQRuntimeExtension" modes="participant vm"/>
     <deployable composite="f3-binding:ActiveMQControllerExtension" modes="controller vm"/>
     <f3-core:extends name="jms"/>

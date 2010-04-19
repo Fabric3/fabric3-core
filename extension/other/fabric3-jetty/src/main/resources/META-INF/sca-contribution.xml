@@ -14,13 +14,13 @@ Public License. See the accompanying license file for details.
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true"
               f3-core:description="HTTP extension">
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <export.java package="org.fabric3.transport.jetty" version="1.5"/>
-    <export.java package="org.mortbay.jetty.web" version="6.1.5"/>
-    <export.java package="org.mortbay.component" version="6.1.5"/>
-    <export.java package="org.mortbay.jetty" version="6.1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <export.java package="org.fabric3.transport.jetty" version="1.6"/>
+    <export.java package="org.mortbay.jetty.web" version="6.1.6"/>
+    <export.java package="org.mortbay.component" version="6.1.6"/>
+    <export.java package="org.mortbay.jetty" version="6.1.6"/>
     <!-- The following exports are required for JSP compilation -->
-    <export.java package="org.apache.jasper.runtime" version="6.1.5"/>
-    <export.java package="com.sun.el" version="6.1.5"/>
+    <export.java package="org.apache.jasper.runtime" version="6.1.6"/>
+    <export.java package="com.sun.el" version="6.1.6"/>
     <deployable composite="other:JettyExtension"/>
 </contribution>

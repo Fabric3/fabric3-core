@@ -13,15 +13,15 @@ Public License. See the accompanying license file for details.
               xmlns:web="urn:fabric3.org:web"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="1.5"/>
-    <import.java package="org.fabric3.container.web.spi" version="1.5"/>
-    <import.java package="org.fabric3.transport.jetty" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="1.6"/>
+    <import.java package="org.fabric3.container.web.spi" version="1.6"/>
+    <import.java package="org.fabric3.transport.jetty" version="1.6"/>
     <!-- Jetty, Jasper and EL classes must be visible for as this extension accesses Jetty classes and for JSP compilation -->
-    <import.java package="org.mortbay.jetty.web" version="6.1.5"/>
-    <import.java package="org.mortbay.component" version="6.1.5"/>
-    <import.java package="org.mortbay.jetty" version="6.1.5"/>
-    <import.java package="org.apache.jasper.runtime" version="6.1.5"/>
-    <import.java package="com.sun.el" version="6.1.5"/>
+    <import.java package="org.mortbay.jetty.web" version="6.1.6"/>
+    <import.java package="org.mortbay.component" version="6.1.6"/>
+    <import.java package="org.mortbay.jetty" version="6.1.6"/>
+    <import.java package="org.apache.jasper.runtime" version="6.1.6"/>
+    <import.java package="com.sun.el" version="6.1.6"/>
     <deployable composite="web:JettyWebContainerExtension"/>
 </contribution>

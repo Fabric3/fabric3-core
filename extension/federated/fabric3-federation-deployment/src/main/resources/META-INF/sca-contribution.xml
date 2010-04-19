@@ -13,10 +13,10 @@ Public License. See the accompanying license file for details.
               xmlns:federation="urn:fabric3.org:federation"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.5"/>
-    <export.java package="org.fabric3.federation.deployment.command" version="1.5"/>
-    <export.java package="org.fabric3.federation.deployment.executor" version="1.5"/>
-    <export.java package="org.fabric3.federation.deployment.spi" version="1.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <export.java package="org.fabric3.federation.deployment.command" version="1.6"/>
+    <export.java package="org.fabric3.federation.deployment.executor" version="1.6"/>
+    <export.java package="org.fabric3.federation.deployment.spi" version="1.6"/>
 
     <deployable composite="federation:FederationControllerDeploymentExtension" modes="controller"/>
     <deployable composite="federation:FederationParticipantDeploymentExtension" modes="participant"/>
