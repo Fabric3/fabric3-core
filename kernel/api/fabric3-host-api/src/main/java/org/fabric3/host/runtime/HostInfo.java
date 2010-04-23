@@ -65,9 +65,9 @@ public interface HostInfo {
     RuntimeMode getRuntimeMode();
 
     /**
-     * Returns the SCA domain associated with this runtime. A null domain indicates that this is a standalone runtime with a self-contained domain.
+     * Returns the SCA domain associated with this runtime.
      *
-     * @return the SCA domain associated with this runtime; may be null
+     * @return the SCA domain associated with this runtime
      */
     URI getDomain();
 
