@@ -67,6 +67,7 @@ import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
+import org.fabric3.jmx.agent.ManagementException;
 
 /**
  * This class provides the commandline interface for starting the Fabric3 standalone server. The class boots a Fabric3 runtime and launches a daemon
@@ -166,23 +167,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            // boot the JMX agent
-            String jmxString = props.getProperty(JMX_PORT, "1199");
-            String[] tokens = jmxString.split("-");
-
-            RmiAgent agent;
-            if (tokens.length == 1) {
-                // port specified
-                int jmxPort = parsePortNumber(jmxString, "JMX");
-                agent = new RmiAgent(jmxPort);
-            } else if (tokens.length == 2) {
-                // port range specified
-                int minPort = parsePortNumber(tokens[0], "JMX");
-                int maxPort = parsePortNumber(tokens[1], "JMX");
-                agent = new RmiAgent(minPort, maxPort);
-            } else {
-                throw new IllegalArgumentException("Invalid JMX port specified in runtime.properties");
-            }
+            // create the JMX agent 
+            RmiAgent agent = createAgent(props);
             MBeanServer mbServer = agent.getMBeanServer();
 
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mbServer);
@@ -232,6 +218,26 @@ public class Fabric3Server implements Fabric3ServerMBean {
         } catch (ShutdownException ex) {
             monitor.runError(ex);
         }
+    }
+
+    private RmiAgent createAgent(Properties props) throws ManagementException {
+        String jmxString = props.getProperty(JMX_PORT, "1199");
+        String[] tokens = jmxString.split("-");
+
+        RmiAgent agent;
+        if (tokens.length == 1) {
+            // port specified
+            int jmxPort = parsePortNumber(jmxString, "JMX");
+            agent = new RmiAgent(jmxPort);
+        } else if (tokens.length == 2) {
+            // port range specified
+            int minPort = parsePortNumber(tokens[0], "JMX");
+            int maxPort = parsePortNumber(tokens[1], "JMX");
+            agent = new RmiAgent(minPort, maxPort);
+        } else {
+            throw new IllegalArgumentException("Invalid JMX port specified in runtime.properties");
+        }
+        return agent;
     }
 
     private int parsePortNumber(String portVal, String portType) {
