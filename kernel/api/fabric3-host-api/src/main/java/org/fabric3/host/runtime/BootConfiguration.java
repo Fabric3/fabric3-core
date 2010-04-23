@@ -50,8 +50,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.stream.Source;
 
 /**
  * Encapsulates configuration needed to boostrap a runtime.
@@ -61,7 +62,7 @@ import org.fabric3.host.stream.Source;
 public class BootConfiguration {
     private Fabric3Runtime<?> runtime;
     private URL systemCompositeUrl;
-    private Source systemConfigSource;
+    private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages = new HashMap<String, String>();
     private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
@@ -84,12 +85,12 @@ public class BootConfiguration {
         this.systemCompositeUrl = url;
     }
 
-    public Source getSystemConfigSource() {
-        return systemConfigSource;
+    public Document getSystemConfig() {
+        return systemConfig;
     }
 
-    public void setSystemConfigSource(Source source) {
-        this.systemConfigSource = source;
+    public void setSystemConfig(Document systemConfig) {
+        this.systemConfig = systemConfig;
     }
 
     public ClassLoader getBootClassLoader() {

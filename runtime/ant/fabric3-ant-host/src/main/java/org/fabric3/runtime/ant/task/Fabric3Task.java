@@ -42,7 +42,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +55,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileList;
 import org.apache.tools.ant.types.FileSet;
+import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
@@ -66,13 +66,16 @@ import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.ant.api.TestRunner;
@@ -161,8 +164,14 @@ public class Fabric3Task extends Task {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
+
             MonitorFactory monitorFactory = new AntMonitorFactory(this);
 
             // clear out the tmp directory
@@ -171,13 +180,27 @@ public class Fabric3Task extends Task {
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
-            runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
+
+            runtime = factory.createDefaultRuntime(runtimeConfig);
 
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
 
+            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+
+            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
+
+            BootConfiguration configuration = new BootConfiguration();
+            configuration.setRuntime(runtime);
+            configuration.setBootClassLoader(bootLoader);
+            configuration.setSystemCompositeUrl(systemComposite);
+            configuration.setSystemConfig(systemConfig);
+            configuration.setExtensionContributions(result.getExtensionContributions());
+            configuration.setUserContributions(result.getUserContributions());
+            configuration.setExportedPackages(exportedPackages);
+
             // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(runtime, exportedPackages, Collections.<ComponentRegistration>emptyList(), bootLoader);
+            coordinator = factory.createCoordinator(configuration);
             coordinator.start();
         } catch (Exception e) {
             throw new BuildException(e);

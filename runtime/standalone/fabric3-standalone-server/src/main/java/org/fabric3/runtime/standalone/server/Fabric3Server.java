@@ -45,29 +45,34 @@ package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import org.w3c.dom.Document;
 
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.jmx.agent.rmi.RmiAgent;
 import org.fabric3.jmx.agent.ManagementException;
+import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 /**
  * This class provides the commandline interface for starting the Fabric3 standalone server. The class boots a Fabric3 runtime and launches a daemon
@@ -132,9 +137,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * @throws Fabric3ServerException if catostrophic exception was encountered leaving the runtime in an unstable state
      */
     public void start(RuntimeMode runtimeMode) throws Fabric3ServerException {
-        HostInfo hostInfo;
-        Fabric3Runtime<HostInfo> runtime;
-
         try {
             //  calculate config directories based on the mode the runtime is booted in
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
@@ -159,8 +161,13 @@ public class Fabric3Server implements Fabric3ServerMBean {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+
             // create the HostInfo, MonitorFactory, and runtime
-            hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 
@@ -172,14 +179,25 @@ public class Fabric3Server implements Fabric3ServerMBean {
             MBeanServer mbServer = agent.getMBeanServer();
 
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mbServer);
-            runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
-            monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
+
+            Fabric3Runtime<HostInfo> runtime = factory.createDefaultRuntime(runtimeConfig);
+
+            monitor = monitorFactory.getMonitor(ServerMonitor.class);
+
+            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+
+            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
+
+            BootConfiguration configuration = new BootConfiguration();
+            configuration.setRuntime(runtime);
+            configuration.setBootClassLoader(bootLoader);
+            configuration.setSystemCompositeUrl(systemComposite);
+            configuration.setSystemConfig(systemConfig);
+            configuration.setExtensionContributions(result.getExtensionContributions());
+            configuration.setUserContributions(result.getUserContributions());
 
             // start the runtime
-            coordinator = BootstrapHelper.createCoordinator(runtime,
-                                                            Collections.<String, String>emptyMap(),
-                                                            Collections.<ComponentRegistration>emptyList(),
-                                                            bootLoader);
+            coordinator = factory.createCoordinator(configuration);
             coordinator.start();
 
             // register the runtime with the MBean server
@@ -272,7 +290,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             throw new Fabric3ServerException(ex);
         }
     }
-
 
     public interface ServerMonitor {
         @Severe

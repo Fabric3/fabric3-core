@@ -45,8 +45,8 @@ package org.fabric3.runtime.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import javax.management.MBeanServer;
@@ -57,9 +57,13 @@ import org.apache.catalina.Server;
 import org.apache.catalina.Service;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
+import org.w3c.dom.Document;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
@@ -68,6 +72,7 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 
@@ -116,6 +121,12 @@ public class Fabric3Listener implements LifecycleListener {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+
+            // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
@@ -127,9 +138,14 @@ public class Fabric3Listener implements LifecycleListener {
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
-            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
 
-            monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
+            Fabric3Runtime<HostInfo> runtime = factory.createDefaultRuntime(runtimeConfig);
+
+            monitor = monitorFactory.getMonitor(ServerMonitor.class);
+
+            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+
+            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
 
             Service service = server.findService("Catalina");
             if (service == null) {
@@ -140,10 +156,18 @@ public class Fabric3Listener implements LifecycleListener {
             ComponentRegistration registration = new ComponentRegistration("CatalinaService", Service.class, service, false);
             registrations.add(registration);
 
-            // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(runtime, Collections.<String, String>emptyMap(), registrations, bootLoader);
-            coordinator.start();
+            BootConfiguration configuration = new BootConfiguration();
+            configuration.setRuntime(runtime);
+            configuration.setBootClassLoader(bootLoader);
+            configuration.setSystemCompositeUrl(systemComposite);
+            configuration.setSystemConfig(systemConfig);
+            configuration.setExtensionContributions(result.getExtensionContributions());
+            configuration.setUserContributions(result.getUserContributions());
+            configuration.addRegistrations(registrations);
 
+            // boot the runtime
+            coordinator = factory.createCoordinator(configuration);
+            coordinator.start();
             monitor.started(RuntimeMode.VM.toString());
         } catch (Exception e) {
             if (monitor != null) {

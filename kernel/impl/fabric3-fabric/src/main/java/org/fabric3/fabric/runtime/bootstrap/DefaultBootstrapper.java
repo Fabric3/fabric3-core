@@ -69,7 +69,6 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.stream.Source;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -123,7 +122,7 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     private Fabric3Runtime<?> runtime;
     private URL systemCompositeUrl;
-    private Source systemConfigSource;
+    private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
@@ -139,14 +138,14 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
                                   URL systemCompositeUrl,
-                                  Source systemConfigSource,
+                                  Document systemConfig,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> components,
                                   Map<String, String> exportedPackages) throws InitializationException {
 
         this.runtime = runtime;
         this.systemCompositeUrl = systemCompositeUrl;
-        this.systemConfigSource = systemConfigSource;
+        this.systemConfig = systemConfig;
         this.bootClassLoader = bootClassLoader;
         this.exportedPackages = exportedPackages;
         // classloader shared by extension and application classes
@@ -197,14 +196,6 @@ public class DefaultBootstrapper implements Bootstrapper {
             // load the system composite
             Composite composite =
                     BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl, bootContribution, bootClassLoader, implementationProcessor);
-
-            // load system configuration property value
-            Document systemConfig;
-            if (systemConfigSource == null) {
-                systemConfig = BootstrapSystemConfigFactory.createDefaultSystemConfig();
-            } else {
-                systemConfig = BootstrapSystemConfigFactory.createSystemConfig(systemConfigSource);
-            }
 
             // create the property and merge it into the composite
             LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);

@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.runtime;
+package org.fabric3.fabric.runtime.bootstrap;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -58,6 +58,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.SyntheticContributionSource;

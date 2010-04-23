@@ -51,13 +51,6 @@ import org.fabric3.host.repository.Repository;
 public interface Fabric3Runtime<HI extends HostInfo> {
 
     /**
-     * Sets the dependencies required from the host environment.
-     *
-     * @param configuration the dependencies required from the host environment
-     */
-    void setConfiguration(RuntimeConfiguration<HI> configuration);
-
-    /**
      * Returns the host ClassLoader that is parent to all Fabric3 classloaders.
      *
      * @return the host's ClassLoader

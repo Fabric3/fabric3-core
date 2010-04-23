@@ -38,7 +38,7 @@
 package org.fabric3.runtime.weblogic.boot;
 
 import java.io.File;
-import java.util.Collections;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,18 +49,23 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.w3c.dom.Document;
+
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
@@ -156,6 +161,11 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
 
@@ -164,16 +174,30 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             MonitorFactory monitorFactory = new WebLogicMonitorFactory();
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
-            Fabric3Runtime<HostInfo> runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
 
-            monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
+            Fabric3Runtime<HostInfo> runtime = factory.createDefaultRuntime(runtimeConfig);
+
+            monitor = monitorFactory.getMonitor(ServerMonitor.class);
 
             Thread.currentThread().setContextClassLoader(hostLoader);
 
             Map<String, String> exportedPackages = getExportedPackages();
 
+            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+
+            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
+
+            BootConfiguration configuration = new BootConfiguration();
+            configuration.setRuntime(runtime);
+            configuration.setBootClassLoader(bootLoader);
+            configuration.setSystemCompositeUrl(systemComposite);
+            configuration.setSystemConfig(systemConfig);
+            configuration.setExtensionContributions(result.getExtensionContributions());
+            configuration.setUserContributions(result.getUserContributions());
+            configuration.setExportedPackages(exportedPackages);
+
             // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(runtime, exportedPackages, Collections.<ComponentRegistration>emptyList(), bootLoader);
+            coordinator = factory.createCoordinator(configuration);
             coordinator.start();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             monitor.started(runtimeMode.toString());

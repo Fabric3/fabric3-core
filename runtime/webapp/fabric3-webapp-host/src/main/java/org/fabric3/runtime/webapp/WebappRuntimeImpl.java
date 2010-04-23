@@ -53,6 +53,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.host.Names;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import org.fabric3.host.contribution.ContributionException;
@@ -77,8 +78,9 @@ public class WebappRuntimeImpl extends AbstractRuntime<WebappHostInfo> implement
     private HttpSessionListener sessionListener;
     private F3RequestListener listener;
 
-    public WebappRuntimeImpl() {
+    public WebappRuntimeImpl(RuntimeConfiguration<WebappHostInfo> configuration) {
         super(WebappHostInfo.class);
+        setConfiguration(configuration);
     }
 
     public void deploy(QName qName, URI componentId) throws ContributionException, DeploymentException {

@@ -42,7 +42,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
+import org.fabric3.fabric.runtime.bootstrap.Bootstrapper;
 import org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapper;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
@@ -53,21 +56,18 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.fabric.runtime.bootstrap.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.stream.Source;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
-import org.fabric3.spi.policy.PolicyActivationException;
 
 /**
  * Default implementation of the RuntimeCoordinator.
@@ -84,17 +84,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private List<ContributionSource> userContributions;
     private List<ComponentRegistration> registrations;
     private URL systemCompositeUrl;
-    private Source systemConfigSource;
+    private Document systemConfig;
 
-    public DefaultCoordinator() {
+    public DefaultCoordinator(BootConfiguration configuration) {
         bootstrapper = new DefaultBootstrapper();
-    }
-
-    public RuntimeState getState() {
-        return state;
-    }
-
-    public void setConfiguration(BootConfiguration configuration) {
         runtime = configuration.getRuntime();
         bootClassLoader = configuration.getBootClassLoader();
         exportedPackages = configuration.getExportedPackages();
@@ -102,7 +95,11 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         userContributions = configuration.getUserContributions();
         registrations = configuration.getRegistrations();
         systemCompositeUrl = configuration.getSystemCompositeUrl();
-        systemConfigSource = configuration.getSystemConfigSource();
+        systemConfig = configuration.getSystemConfig();
+    }
+
+    public RuntimeState getState() {
+        return state;
     }
 
     public void start() throws InitializationException {
@@ -136,7 +133,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      */
     private void bootPrimordial() throws InitializationException {
         runtime.boot();
-        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfigSource, bootClassLoader, registrations, exportedPackages);
+        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfig, bootClassLoader, registrations, exportedPackages);
     }
 
     /**
@@ -147,16 +144,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private void loadExtensions() throws InitializationException {
         // initialize core system components
         bootstrapper.bootSystem();
-
-        try {
-            // install extensions
-            List<URI> uris = installContributions(extensionContributions);
-            // deploy extensions
-            deploy(uris);
-        } catch (PolicyActivationException e) {
-            state = RuntimeState.ERROR;
-            throw new InitializationException(e);
-        }
+        // install extensions
+        List<URI> uris = installContributions(extensionContributions);
+        // deploy extensions
+        deploy(uris);
     }
 
     /**
@@ -187,6 +178,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         eventService.publish(new DomainRecover());
     }
 
+    /**
+     * Installs a collection of contributions.
+     *
+     * @param sources the contribution sources
+     * @return the list of installed contribution URIs
+     * @throws InitializationException if an installation error occurs
+     */
     private List<URI> installContributions(List<ContributionSource> sources) throws InitializationException {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
@@ -198,7 +196,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         }
     }
 
-    private void deploy(List<URI> contributionUris) throws InitializationException, PolicyActivationException {
+    /**
+     * Deploys a collection of contributions.
+     *
+     * @param contributionUris the contribution URIs
+     * @throws InitializationException if a deployment exception occurs
+     */
+    private void deploy(List<URI> contributionUris) throws InitializationException {
         try {
             Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
             domain.include(contributionUris);

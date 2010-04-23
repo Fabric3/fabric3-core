@@ -60,6 +60,7 @@ import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.ContextStartException;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
@@ -77,8 +78,9 @@ import org.fabric3.spi.invocation.WorkContext;
 public class MavenRuntimeImpl extends AbstractRuntime<MavenHostInfo> implements MavenRuntime {
     private static final URI CONTRIBUTION_URI = URI.create("iTestContribution");
 
-    public MavenRuntimeImpl() {
+    public MavenRuntimeImpl(RuntimeConfiguration<MavenHostInfo> configuration) {
         super(MavenHostInfo.class);
+        setConfiguration(configuration);
     }
 
     public void deploy(URL base, QName qName) throws ContributionException, DeploymentException {

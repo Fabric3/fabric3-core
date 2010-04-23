@@ -96,14 +96,6 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
 
     private ClassLoader hostClassLoader;
 
-    public void setConfiguration(RuntimeConfiguration<HI> configuration) {
-        hostClassLoader = configuration.getHostClassLoader();
-        hostInfo = configuration.getHostInfo();
-        monitorFactory = configuration.getMonitorFactory();
-        mbServer = configuration.getMBeanServer();
-        repository = configuration.getRepository();
-    }
-
     public ClassLoader getHostClassLoader() {
         return hostClassLoader;
     }
@@ -223,5 +215,11 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         this.hostInfoType = runtimeInfoType;
     }
 
-
+    protected void setConfiguration(RuntimeConfiguration<HI> configuration) {
+        hostClassLoader = configuration.getHostClassLoader();
+        hostInfo = configuration.getHostInfo();
+        monitorFactory = configuration.getMonitorFactory();
+        mbServer = configuration.getMBeanServer();
+        repository = configuration.getRepository();
+    }
 }

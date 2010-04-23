@@ -47,10 +47,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.stream.Source;
 
 /**
  * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime
@@ -72,7 +73,7 @@ public interface Bootstrapper {
      */
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
                                   URL systemCompositeUrl,
-                                  Source systemConfigSource,
+                                  Document systemConfigSource,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> registrations,
                                   Map<String, String> exportedPackages) throws InitializationException;

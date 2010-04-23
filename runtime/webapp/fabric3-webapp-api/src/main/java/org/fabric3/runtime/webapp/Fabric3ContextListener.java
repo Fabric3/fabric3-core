@@ -64,6 +64,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Document;
+
 import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionSource;
@@ -72,6 +74,7 @@ import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -116,9 +119,8 @@ public class Fabric3ContextListener implements ServletContextListener {
             }
             runtime = createRuntime(webappClassLoader, servletContext, utils);
             monitor = runtime.getMonitorFactory().getMonitor(WebAppMonitor.class);
-            coordinator = utils.getCoordinator(webappClassLoader);
             BootConfiguration configuration = createBootConfiguration(runtime, webappClassLoader, utils);
-            coordinator.setConfiguration(configuration);
+            coordinator = utils.getCoordinator(configuration, webappClassLoader);
 
             coordinator.start();
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
@@ -156,15 +158,12 @@ public class Fabric3ContextListener implements ServletContextListener {
             URI domain = new URI(utils.getInitParameter(DOMAIN_PARAM, "fabric3://domain"));
             WebappHostInfo info = new WebappHostInfoImpl(context, domain, baseDir, tempDir);
 
-            WebappRuntime runtime = utils.createRuntime(webappClassLoader);
             MonitorFactory factory = utils.createMonitorFactory(webappClassLoader);
             MBeanServer mBeanServer = utils.createMBeanServer();
 
             RuntimeConfiguration<WebappHostInfo> configuration =
                     new RuntimeConfiguration<WebappHostInfo>(webappClassLoader, info, factory, mBeanServer);
-
-            runtime.setConfiguration(configuration);
-            return runtime;
+            return utils.createRuntime(webappClassLoader, configuration);
         } catch (URISyntaxException e) {
             throw new Fabric3InitException(e);
         } catch (UnsupportedEncodingException e) {
@@ -188,7 +187,8 @@ public class Fabric3ContextListener implements ServletContextListener {
         configuration.setSystemCompositeUrl(systemComposite);
 
         Source source = utils.getSystemConfig();
-        configuration.setSystemConfigSource(source);
+        Document systemCofig = BootstrapFactoryFinder.getFactory(webappClassLoader).loadSystemConfig(source);
+        configuration.setSystemConfig(systemCofig);
 
         Map<String, String> exportedPackages = new HashMap<String, String>();
         exportedPackages.put("org.fabric3.runtime.webapp", Names.VERSION);

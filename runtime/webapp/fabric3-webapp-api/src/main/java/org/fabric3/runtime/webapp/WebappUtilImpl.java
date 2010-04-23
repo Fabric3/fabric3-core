@@ -44,12 +44,16 @@
 package org.fabric3.runtime.webapp;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.management.MBeanServer;
 import javax.servlet.ServletContext;
 
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
@@ -74,16 +78,21 @@ public class WebappUtilImpl implements WebappUtil {
         this.servletContext = servletContext;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException {
+    public RuntimeCoordinator getCoordinator(BootConfiguration configuration, ClassLoader bootClassLoader) throws Fabric3InitException {
         try {
-            return (RuntimeCoordinator) bootClassLoader.loadClass(COORDINATOR_CLASS).newInstance();
+            Class<?> clazz = bootClassLoader.loadClass(COORDINATOR_CLASS);
+            Constructor<?> ctor = clazz.getConstructor(BootConfiguration.class);
+            return (RuntimeCoordinator) ctor.newInstance(configuration);
         } catch (InstantiationException e) {
             throw new Fabric3InitException(e);
         } catch (IllegalAccessException e) {
             throw new Fabric3InitException(e);
         } catch (ClassNotFoundException e) {
-            throw new Fabric3InitException("Bootstrapper Implementation not found", e);
+            throw new Fabric3InitException(e);
+        } catch (InvocationTargetException e) {
+            throw new Fabric3InitException(e);
+        } catch (NoSuchMethodException e) {
+            throw new Fabric3InitException(e);
         }
     }
 
@@ -132,18 +141,23 @@ public class WebappUtilImpl implements WebappUtil {
      * Extension point for creating the runtime.
      *
      * @param bootClassLoader Classloader for loading the runtime class.
+     * @param configuration   the runtime configuration
      * @return Webapp runtime instance.
      * @throws Fabric3InitException If unable to initialize the runtime.
      */
-    public WebappRuntime createRuntime(ClassLoader bootClassLoader) throws Fabric3InitException {
+    public WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration<WebappHostInfo> configuration) throws Fabric3InitException {
         try {
-            return (WebappRuntime) bootClassLoader.loadClass(RUNTIME_CLASS).newInstance();
+            return (WebappRuntime) bootClassLoader.loadClass(RUNTIME_CLASS).getConstructor(RuntimeConfiguration.class).newInstance(configuration);
         } catch (InstantiationException e) {
             throw new Fabric3InitException(e);
         } catch (IllegalAccessException e) {
             throw new Fabric3InitException(e);
         } catch (ClassNotFoundException e) {
-            throw new Fabric3InitException("Runtime Implementation not found", e);
+            throw new Fabric3InitException(e);
+        } catch (InvocationTargetException e) {
+            throw new Fabric3InitException(e);
+        } catch (NoSuchMethodException e) {
+            throw new Fabric3InitException(e);
         }
     }
 

@@ -44,6 +44,7 @@
 package org.fabric3.fabric.runtime;
 
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 
 /**
  * The default Fabric3Runtime implementation.
@@ -52,8 +53,8 @@ import org.fabric3.host.runtime.HostInfo;
  */
 public class DefaultRuntime extends AbstractRuntime<HostInfo> {
 
-    public DefaultRuntime() {
+    public DefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
         super(HostInfo.class);
+        setConfiguration(configuration);
     }
-
 }

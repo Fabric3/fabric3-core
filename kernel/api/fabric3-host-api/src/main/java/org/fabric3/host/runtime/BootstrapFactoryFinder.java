@@ -44,33 +44,33 @@
 package org.fabric3.host.runtime;
 
 /**
- * Manages the lifecycle of a Fabric3 runtime instance.
+ * Factory for creating BootstrapFactory instances.
  *
- * @version $Rev$ $Date$
+ * @version $Revision: 8902 $ $Date: 2010-04-23 11:34:05 +0200 (Fri, 23 Apr 2010) $
  */
-public interface RuntimeCoordinator {
+public class BootstrapFactoryFinder {
+    private static final String FACTORY_CLASS = "org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapFactory";
 
     /**
-     * Returns the runtime state.
+     * Returns a BootstrapFactory for the given classloader.
      *
-     * @return the runtime state
+     * @param bootClassLoader the classloader the BootstrapFactory should be loaded by
+     * @return a BootstrapFactory
      */
-    RuntimeState getState();
+    public static BootstrapFactory getFactory(ClassLoader bootClassLoader) {
+        try {
+            Class<?> implClass = Class.forName(FACTORY_CLASS, true, bootClassLoader);
+            return (BootstrapFactory) implClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            // programming error
+            throw new AssertionError(e);
+        } catch (IllegalAccessException e) {
+            // programming error
+            throw new AssertionError(e);
+        } catch (InstantiationException e) {
+            // programming error
+            throw new AssertionError(e);
+        }
+    }
 
-    /**
-     * Boots the runtime, synchronizes it with the domain, and places it in a state to receive requests.
-     *
-     * @throws InitializationException if an error occurs starting the runtime
-     */
-    void start() throws InitializationException;
-
-    /**
-     * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed
-     * to proceed to completion.
-     *
-     * @throws ShutdownException if an error ocurrs shutting down the runtime
-     */
-    void shutdown() throws ShutdownException;
 }
-
-

@@ -34,30 +34,36 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.fabric.runtime.bootstrap;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.host.runtime;
 
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.stream.Source;
 
 /**
- * Creates a configuration property value for the runtime domain.
+ * Utility class for boostrap operations.
  *
- * @version $Rev$ $Date$
+ * @version $Revision$ $Date$
  */
-public class BootstrapSystemConfigFactory {
-    private static final DocumentLoader LOADER = new DocumentLoaderImpl();
+public interface BootstrapFactory {
+
+    /**
+     * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
+     *
+     * @param directory the repository directory
+     * @return the result
+     * @throws InitializationException if an error occurs during the scan operation
+     */
+    ScanResult scanRepository(File directory) throws InitializationException;
 
     /**
      * Returns a configuration property value for the runtime domain from the given source.
@@ -66,43 +72,29 @@ public class BootstrapSystemConfigFactory {
      * @return the domain configuration property
      * @throws InitializationException if an error reading the source is encountered
      */
-    public static Document createSystemConfig(Source source) throws InitializationException {
-        try {
-            InputSource inputSource = new InputSource(source.openStream());
-            Document document = LOADER.load(inputSource, true);
-            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
-            Element oldRoot = document.getDocumentElement();
-            Element newRoot = document.createElement("values");
-            document.removeChild(oldRoot);
-            document.appendChild(newRoot);
-            newRoot.appendChild(oldRoot);
-            return document;
-        } catch (IOException e) {
-            throw new InitializationException(e);
-        } catch (SAXException e) {
-            throw new InitializationException(e);
-        }
-    }
+    Document loadSystemConfig(Source source) throws InitializationException;
 
     /**
      * Creates a default configuration property value for the runtime domain.
      *
      * @return a document representing the configuration property
      */
-    public static Document createDefaultSystemConfig() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            Document document = factory.newDocumentBuilder().newDocument();
-            Element root = document.createElement("values");
-            document.appendChild(root);
-            Element config = document.createElement("config");
-            root.appendChild(config);
-            return document;
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
-    }
+    Document createDefaultSystemConfig();
 
+    /**
+     * Instantiates a default runtime implementation.
+     *
+     * @param configuration the base configuration for the runtime
+     * @return the runtime instance
+     */
+    Fabric3Runtime<HostInfo> createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration);
+
+    /**
+     * Instantiates a RuntimeCoordinator.
+     *
+     * @param configuration the configuration for the coordinator
+     * @return the coordinator instance
+     */
+    RuntimeCoordinator createCoordinator(BootConfiguration configuration);
 
 }
