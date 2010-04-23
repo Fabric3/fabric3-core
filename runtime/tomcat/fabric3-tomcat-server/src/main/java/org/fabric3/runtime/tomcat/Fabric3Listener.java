@@ -110,7 +110,7 @@ public class Fabric3Listener implements LifecycleListener {
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
-            
+
             ClassLoader systemClassLoader = getClass().getClassLoader();
             systemClassLoader = hidePackages(systemClassLoader, props);
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
@@ -118,7 +118,7 @@ public class Fabric3Listener implements LifecycleListener {
 
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
 
-            MonitorFactory monitorFactory = createMonitorFactory(configDir, props, bootLoader);
+            MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -184,15 +184,8 @@ public class Fabric3Listener implements LifecycleListener {
         return systemClassLoader;
     }
 
-    private MonitorFactory createMonitorFactory(File configDir, Properties props, ClassLoader bootLoader)
-            throws InitializationException, IOException {
-        MonitorFactory monitorFactory;
-        String monitorFactoryName = props.getProperty("fabric3.monitorFactoryClass");
-        if (monitorFactoryName != null) {
-            monitorFactory = BootstrapHelper.createMonitorFactory(bootLoader, monitorFactoryName);
-        } else {
-            monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
-        }
+    private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {
+        MonitorFactory monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
         File logConfigFile = new File(configDir, "monitor.properties");
         if (logConfigFile.exists()) {
             monitorFactory.readConfiguration(logConfigFile.toURI().toURL());

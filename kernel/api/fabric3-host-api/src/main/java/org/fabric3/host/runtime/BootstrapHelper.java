@@ -224,12 +224,8 @@ public final class BootstrapHelper {
     }
 
     public static MonitorFactory createDefaultMonitorFactory(ClassLoader classLoader) throws InitializationException {
-        return createMonitorFactory(classLoader, DEFAULT_MONITOR_FACTORY);
-    }
-
-    public static MonitorFactory createMonitorFactory(ClassLoader classLoader, String factoryClass) throws InitializationException {
         try {
-            Class<?> monitorClass = Class.forName(factoryClass, true, classLoader);
+            Class<?> monitorClass = Class.forName(DEFAULT_MONITOR_FACTORY, true, classLoader);
             return (MonitorFactory) monitorClass.newInstance();
         } catch (ClassNotFoundException e) {
             throw new InitializationException(e);

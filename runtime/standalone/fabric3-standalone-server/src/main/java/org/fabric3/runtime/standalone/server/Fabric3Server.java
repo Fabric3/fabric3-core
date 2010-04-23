@@ -44,6 +44,7 @@
 package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -63,6 +64,7 @@ import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
@@ -159,17 +161,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // create the HostInfo, MonitorFactory, and runtime
             hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
 
-            String monitorFactoryName = props.getProperty("fabric3.monitorFactoryClass");
-            MonitorFactory monitorFactory;
-            if (monitorFactoryName != null) {
-                monitorFactory = BootstrapHelper.createMonitorFactory(bootLoader, monitorFactoryName);
-            } else {
-                monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
-            }
-            File logConfigFile = new File(configDir, "monitor.properties");
-            if (logConfigFile.exists()) {
-                monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
-            }
+            MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -253,6 +245,16 @@ public class Fabric3Server implements Fabric3ServerMBean {
             throw new IllegalArgumentException("Invalid " + portType + " port", e);
         }
         return port;
+    }
+
+    private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {
+        MonitorFactory monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
+
+        File logConfigFile = new File(configDir, "monitor.properties");
+        if (logConfigFile.exists()) {
+            monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
+        }
+        return monitorFactory;
     }
 
     private void handleStartException(Exception ex) throws Fabric3ServerException {
