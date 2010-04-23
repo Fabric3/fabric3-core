@@ -44,12 +44,11 @@
 package org.fabric3.runtime.webapp;
 
 import java.net.URL;
-
 import javax.management.MBeanServer;
 
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.stream.Source;
 
 /**
  * @version $Rev$ $Date$
@@ -60,11 +59,11 @@ public interface WebappUtil {
 
     MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException;
 
-    ScdlBootstrapper getBootstrapper(ClassLoader bootClassLoader) throws Fabric3InitException;
-
     RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException;
 
     URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
+
+    Source getSystemConfig() throws InvalidResourcePath;
 
     /**
      * Return a init parameter from the servlet context or provide a default.

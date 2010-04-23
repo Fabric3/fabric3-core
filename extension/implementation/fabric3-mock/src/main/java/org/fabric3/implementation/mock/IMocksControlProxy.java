@@ -66,14 +66,12 @@ public class IMocksControlProxy implements IMocksControl {
     }
 
     public <T> T createMock(Class<T> toMock) {
-
         Object mock = mocks.get(toMock);
         if (mock == null) {
             mock = delegate.createMock(toMock);
             mocks.put(toMock, mock);
         }
-        return (T) mock;
-
+        return toMock.cast(mock);
     }
 
     public void replay() {
@@ -89,14 +87,17 @@ public class IMocksControlProxy implements IMocksControl {
         delegate.verify();
     }
 
+    @SuppressWarnings({"unchecked"})
     public IExpectationSetters andAnswer(IAnswer answer) {
         return delegate.andAnswer(answer);
     }
 
+    @SuppressWarnings({"unchecked"})
     public IExpectationSetters andReturn(Object value) {
         return delegate.andReturn(value);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void andStubAnswer(IAnswer answer) {
         delegate.andStubAnswer(answer);
     }

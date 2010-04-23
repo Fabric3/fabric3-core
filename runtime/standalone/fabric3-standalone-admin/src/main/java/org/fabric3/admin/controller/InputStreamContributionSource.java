@@ -43,6 +43,7 @@ import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.InputStreamSource;
 
 /**
  * A contribution artifact that is sourced from an InputStream.

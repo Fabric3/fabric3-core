@@ -51,7 +51,8 @@ import javax.servlet.ServletContext;
 
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScdlBootstrapper;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
 import static org.fabric3.runtime.webapp.Constants.MONITOR_FACTORY_DEFAULT;
@@ -64,7 +65,6 @@ public class WebappUtilImpl implements WebappUtil {
 
     private static final String SYSTEM_CONFIG = "/WEB-INF/systemConfig.xml";
     private static final String RUNTIME_CLASS = "org.fabric3.runtime.webapp.WebappRuntimeImpl";
-    private static final String BOOTSTRAPPER_CLASS = "org.fabric3.fabric.runtime.bootstrap.ScdlBootstrapperImpl";
     private static final String COORDINATOR_CLASS = "org.fabric3.fabric.runtime.DefaultCoordinator";
     private static final String SYSETM_COMPOSITE = "META-INF/fabric3/webapp.composite";
 
@@ -74,34 +74,10 @@ public class WebappUtilImpl implements WebappUtil {
         this.servletContext = servletContext;
     }
 
-    public ScdlBootstrapper getBootstrapper(ClassLoader bootClassLoader) throws Fabric3InitException {
-
-        try {
-
-            ScdlBootstrapper scdlBootstrapper = (ScdlBootstrapper) bootClassLoader.loadClass(BOOTSTRAPPER_CLASS).newInstance();
-            scdlBootstrapper.setSystemConfig(servletContext.getResource(SYSTEM_CONFIG));
-
-            return scdlBootstrapper;
-
-        } catch (InstantiationException e) {
-            throw new Fabric3InitException(e);
-        } catch (IllegalAccessException e) {
-            throw new Fabric3InitException(e);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3InitException("Bootstrapper Implementation not found", e);
-        } catch (MalformedURLException e) {
-            throw new Fabric3InitException(e);
-        }
-
-    }
-
     @SuppressWarnings({"unchecked"})
     public RuntimeCoordinator getCoordinator(ClassLoader bootClassLoader) throws Fabric3InitException {
-
         try {
-
             return (RuntimeCoordinator) bootClassLoader.loadClass(COORDINATOR_CLASS).newInstance();
-
         } catch (InstantiationException e) {
             throw new Fabric3InitException(e);
         } catch (IllegalAccessException e) {
@@ -109,27 +85,31 @@ public class WebappUtilImpl implements WebappUtil {
         } catch (ClassNotFoundException e) {
             throw new Fabric3InitException("Bootstrapper Implementation not found", e);
         }
-
     }
 
     public URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath {
-
         try {
             return convertToURL(SYSETM_COMPOSITE, bootClassLoader);
         } catch (MalformedURLException e) {
             throw new InvalidResourcePath("Webapp system composite", SYSETM_COMPOSITE, e);
         }
+    }
 
+    public Source getSystemConfig() throws InvalidResourcePath {
+        try {
+            URL url = servletContext.getResource(SYSTEM_CONFIG);
+            return new UrlSource(url);
+        } catch (MalformedURLException e) {
+            throw new InvalidResourcePath("Webapp system composite", SYSETM_COMPOSITE, e);
+        }
     }
 
     public String getInitParameter(String name, String value) {
-
         String result = servletContext.getInitParameter(name);
         if (result != null && result.length() != 0) {
             return result;
         }
         return value;
-
     }
 
     /**
@@ -156,7 +136,6 @@ public class WebappUtilImpl implements WebappUtil {
      * @throws Fabric3InitException If unable to initialize the runtime.
      */
     public WebappRuntime createRuntime(ClassLoader bootClassLoader) throws Fabric3InitException {
-
         try {
             return (WebappRuntime) bootClassLoader.loadClass(RUNTIME_CLASS).newInstance();
         } catch (InstantiationException e) {
@@ -166,7 +145,6 @@ public class WebappUtilImpl implements WebappUtil {
         } catch (ClassNotFoundException e) {
             throw new Fabric3InitException("Runtime Implementation not found", e);
         }
-
     }
 
     /**
@@ -177,7 +155,6 @@ public class WebappUtilImpl implements WebappUtil {
      * @throws Fabric3InitException If unable to initialize the monitor factory.
      */
     public MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException {
-
         try {
             String monitorFactoryClass = getInitParameter(MONITOR_FACTORY_PARAM, MONITOR_FACTORY_DEFAULT);
             MonitorFactory factory = (MonitorFactory) bootClassLoader.loadClass(monitorFactoryClass).newInstance();
@@ -186,7 +163,6 @@ public class WebappUtilImpl implements WebappUtil {
                 factory.readConfiguration(configUrl);
             }
             return factory;
-
         } catch (InstantiationException e) {
             throw new Fabric3InitException(e);
         } catch (IllegalAccessException e) {
@@ -196,11 +172,9 @@ public class WebappUtilImpl implements WebappUtil {
         } catch (IOException e) {
             throw new Fabric3InitException(e);
         }
-
     }
 
     URL convertToURL(String path, ClassLoader classLoader) throws MalformedURLException {
-
         URL ret = null;
         if (path.charAt(0) == '/') {
             // user supplied an absolute path - look up as a webapp resource
@@ -211,7 +185,6 @@ public class WebappUtilImpl implements WebappUtil {
             ret = classLoader.getResource(path);
         }
         return ret;
-
     }
 
 }

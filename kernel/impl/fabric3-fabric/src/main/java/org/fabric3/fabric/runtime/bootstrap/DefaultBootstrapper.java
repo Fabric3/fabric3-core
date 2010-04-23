@@ -44,6 +44,7 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
@@ -56,7 +57,6 @@ import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl
 import org.fabric3.fabric.runtime.FabricNames;
 import org.fabric3.fabric.runtime.RuntimeServices;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
-import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
@@ -65,11 +65,11 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.repository.Repository;
-import org.fabric3.host.runtime.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -93,21 +93,20 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
-import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * The base Bootstrapper implementation.
+ * The default Bootstrapper implementation.
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractBootstrapper implements Bootstrapper {
+public class DefaultBootstrapper implements Bootstrapper {
 
     private static final URI RUNTIME_SERVICES = URI.create("fabric3://RuntimeServices");
 
     // bootstrap components - these are disposed of after the core runtime system components are booted
-    private final JavaContractProcessor contractProcessor;
-    private final AtomicComponentInstantiator instantiator;
-    private final ImplementationProcessor<SystemImplementation> systemImplementationProcessor;
+    private JavaContractProcessor contractProcessor;
+    private AtomicComponentInstantiator instantiator;
+    private ImplementationProcessor<SystemImplementation> implementationProcessor;
     private ComponentSynthesizer synthesizer;
 
     // runtime components - these are persistent and supplied by the runtime implementation
@@ -120,31 +119,34 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
     private ComponentManager componentManager;
     private ScopeContainer scopeContainer;
 
-    private XMLFactory xmlFactory;
-
     private Domain runtimeDomain;
 
     private Fabric3Runtime<?> runtime;
+    private URL systemCompositeUrl;
+    private Source systemConfigSource;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
     private Contribution bootContribution;
 
-    protected AbstractBootstrapper() {
-        this.xmlFactory = new XMLFactoryImpl();
-        // create components needed for to bootstrap the runtime
+    public DefaultBootstrapper() {
+        // create components needed to bootstrap the runtime
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
         instantiator = new AtomicComponentInstantiatorImpl();
-        systemImplementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
+        implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
+                                  URL systemCompositeUrl,
+                                  Source systemConfigSource,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> components,
                                   Map<String, String> exportedPackages) throws InitializationException {
 
         this.runtime = runtime;
+        this.systemCompositeUrl = systemCompositeUrl;
+        this.systemConfigSource = systemConfigSource;
         this.bootClassLoader = bootClassLoader;
         this.exportedPackages = exportedPackages;
         // classloader shared by extension and application classes
@@ -162,7 +164,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         scopeRegistry = runtimeServices.getScopeRegistry();
         scopeContainer = runtimeServices.getScopeContainer();
 
-        synthesizer = new SingletonComponentSynthesizer(systemImplementationProcessor,
+        synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
                                                         instantiator,
                                                         logicalComponetManager,
                                                         componentManager,
@@ -192,50 +194,28 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
 
     public void bootSystem() throws InitializationException {
         try {
-
             // load the system composite
-            Composite composite = loadSystemComposite(bootContribution, bootClassLoader, systemImplementationProcessor);
+            Composite composite =
+                    BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl, bootContribution, bootClassLoader, implementationProcessor);
 
-            // load system configuration
-            Document systemConfig = loadSystemConfig();
-            if (systemConfig != null) {
-                LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
-                domain.setProperties(logicalProperty);
+            // load system configuration property value
+            Document systemConfig;
+            if (systemConfigSource == null) {
+                systemConfig = BootstrapSystemConfigFactory.createDefaultSystemConfig();
+            } else {
+                systemConfig = BootstrapSystemConfigFactory.createSystemConfig(systemConfigSource);
             }
+
+            // create the property and merge it into the composite
+            LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
+            domain.setProperties(logicalProperty);
 
             // deploy the composite to the runtime domain
             runtimeDomain.include(composite);
         } catch (DeploymentException e) {
             throw new InitializationException(e);
         }
-
     }
-
-    protected XMLFactory getXmlFactory() {
-        return xmlFactory;
-    }
-
-    /**
-     * Loads the composite that supplies core system components to the runtime.
-     *
-     * @param contribution    the boot contribution the core components are part of
-     * @param bootClassLoader the classloader core components are loaded in
-     * @param processor       the ImplementationProcessor for introspecting component implementations.
-     * @return the loaded composite
-     * @throws InitializationException if an error occurs loading the composite
-     */
-    protected abstract Composite loadSystemComposite(Contribution contribution,
-                                                     ClassLoader bootClassLoader,
-                                                     ImplementationProcessor<SystemImplementation> processor) throws InitializationException;
-
-    /**
-     * Subclasses return a Document representing the domain-level runtime configuration property or null if none is defined. This property may be
-     * referenced entirely or in part via XPath by components in the runtime domain to supply configuration values.
-     *
-     * @return a Document representing the domain-level user configuration property or null if none is defined
-     * @throws InitializationException if an error occurs loading the configuration file
-     */
-    protected abstract Document loadSystemConfig() throws InitializationException;
 
     /**
      * Registers the primordial runtime components.
@@ -281,7 +261,7 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Registers the runtime domain
+     * Registers the runtime domain.
      *
      * @throws InitializationException if there is an error during registration
      */
@@ -292,9 +272,8 @@ public abstract class AbstractBootstrapper implements Bootstrapper {
         runtime.getComponent(MetaDataStore.class, FabricNames.METADATA_STORE_URI);
     }
 
-
     /**
-     * Registers a primordial component
+     * Registers a primordial component.
      *
      * @param name       the component name
      * @param type       the service interface type

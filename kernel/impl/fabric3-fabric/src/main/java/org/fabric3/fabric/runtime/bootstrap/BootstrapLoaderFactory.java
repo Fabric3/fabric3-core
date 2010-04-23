@@ -56,9 +56,7 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * Factory class for an implementation of Loader that can handle system SCDL.
- * <p/>
- * This loader can handle a constrained version of SCDL for bootstrapping a runtime. The constraints are:
+ * Creates a Loader that processes bootstrap system composite, which uses a constrained version of the SCA programming model. The constraints are:
  * <pre>
  * <ul>
  * <li>The only implementation type allowed is system</li>
@@ -70,6 +68,9 @@ import org.fabric3.spi.xml.XMLFactory;
  * @version $Rev$ $Date$
  */
 public class BootstrapLoaderFactory {
+
+    private BootstrapLoaderFactory() {
+    }
 
     public static Loader createLoader(ImplementationProcessor<SystemImplementation> processor, XMLFactory xmlFactory) {
         LoaderHelper loaderHelper = new DefaultLoaderHelper();

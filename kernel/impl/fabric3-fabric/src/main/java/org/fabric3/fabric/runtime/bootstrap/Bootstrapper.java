@@ -41,13 +41,19 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host.runtime;
+package org.fabric3.fabric.runtime.bootstrap;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.host.runtime.ComponentRegistration;
+import org.fabric3.host.runtime.Fabric3Runtime;
+import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.stream.Source;
+
 /**
- * Implementations bootstrap a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime
+ * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime
  * services.
  *
  * @version $Rev$ $Date$
@@ -56,13 +62,17 @@ public interface Bootstrapper {
     /**
      * Initializes the domain for the given runtime.
      *
-     * @param runtime          the runtime to initialize the domain for
-     * @param bootClassLoader  the bootstrap classloader
-     * @param registrations    extension components provided by the host runtime
-     * @param exportedPackages the Java packages exported by the boot contribution
+     * @param runtime            the runtime to initialize the domain for
+     * @param systemCompositeUrl the URL of the system composite file
+     * @param systemConfigSource the source for the system configuration property
+     * @param bootClassLoader    the bootstrap classloader
+     * @param registrations      extension components provided by the host runtime
+     * @param exportedPackages   the Java packages exported by the boot contribution
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
+                                  URL systemCompositeUrl,
+                                  Source systemConfigSource,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> registrations,
                                   Map<String, String> exportedPackages) throws InitializationException;

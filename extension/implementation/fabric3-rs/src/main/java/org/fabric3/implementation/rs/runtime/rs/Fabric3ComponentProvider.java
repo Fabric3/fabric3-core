@@ -48,14 +48,13 @@ import com.sun.jersey.spi.service.ComponentProvider;
  * @version $Rev$ $Date$
  */
 public class Fabric3ComponentProvider implements ComponentProvider {
+    private ConcurrentHashMap<Class<?>, Object> instances = new ConcurrentHashMap<Class<?>, Object>();
 
-    ConcurrentHashMap<Class<?>, Object> instances = new ConcurrentHashMap<Class<?>, Object>();
-
-    public Object getInstance(Scope scope, Class c) throws InstantiationException, IllegalAccessException {
-        return instances.get(c);
+    public <T> T getInstance(Scope scope, Class<T> c) throws InstantiationException, IllegalAccessException {
+        return c.cast(instances.get(c));
     }
 
-    public Object getInstance(Scope scope, Constructor constructor, Object[] parameters) throws InstantiationException,
+    public <T> T getInstance(Scope scope, Constructor<T> constructor, Object[] parameters) throws InstantiationException,
             IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         return null;
     }

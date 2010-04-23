@@ -80,6 +80,7 @@ public class FieldInjectorTestCase extends TestCase {
     }
 
 
+    @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {
         super.setUp();
         protectedField = Foo.class.getDeclaredField("hidden");

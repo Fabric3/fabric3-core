@@ -49,6 +49,12 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.fabric.monitor.MonitorProcessor;
+import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
+import org.fabric3.implementation.system.introspection.SystemHeuristic;
+import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
+import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
+import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
+import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.annotation.DestroyProcessor;
@@ -67,12 +73,6 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
-import org.fabric3.implementation.system.introspection.SystemHeuristic;
-import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
-import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
-import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
-import org.fabric3.implementation.system.model.SystemImplementation;
 
 /**
  * Instantiates an ImplementationProcessor for introspecting system components. System components are composite-scoped and support the standard SCA
@@ -81,6 +81,9 @@ import org.fabric3.implementation.system.model.SystemImplementation;
  * @version $Rev$ $Date$
  */
 public class BootstrapIntrospectionFactory {
+
+    private BootstrapIntrospectionFactory() {
+    }
 
     /**
      * Returns a new ImplementationProcessor for system components.

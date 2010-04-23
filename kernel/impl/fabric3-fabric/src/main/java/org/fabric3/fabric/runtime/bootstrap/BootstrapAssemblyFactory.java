@@ -179,6 +179,9 @@ import org.fabric3.transform.string2java.String2QNameTransformer;
  */
 public class BootstrapAssemblyFactory {
 
+    private BootstrapAssemblyFactory() {
+    }
+
     public static Domain createDomain(MonitorFactory monitorFactory,
                                       ClassLoaderRegistry classLoaderRegistry,
                                       ScopeRegistry scopeRegistry,

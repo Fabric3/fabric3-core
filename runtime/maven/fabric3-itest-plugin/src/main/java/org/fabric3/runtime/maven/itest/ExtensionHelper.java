@@ -52,7 +52,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
-import org.fabric3.host.runtime.BootConfiguration;
 
 /**
  * @version $Rev$ $Date$
@@ -60,10 +59,9 @@ import org.fabric3.host.runtime.BootConfiguration;
 public class ExtensionHelper {
     public ArtifactHelper artifactHelper;
 
-    public void processExtensions(BootConfiguration configuration, Set<Dependency> extensions) throws MojoExecutionException {
+    public  List<ContributionSource> processExtensions(Set<Dependency> extensions) throws MojoExecutionException {
         Set<URL> extensionUrls = resolveDependencies(extensions);
-        List<ContributionSource> sources = createContributionSources(extensionUrls);
-        configuration.setExtensionContributions(sources);
+        return createContributionSources(extensionUrls);
     }
 
     private List<ContributionSource> createContributionSources(Set<URL> urls) {

@@ -116,6 +116,7 @@ public class DomainMBeanImplTestCase extends TestCase {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     @Override
     protected void setUp() throws Exception {
         super.setUp();

@@ -38,10 +38,12 @@
 package org.fabric3.fabric.runtime;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
+import org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapper;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
@@ -51,13 +53,14 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.Bootstrapper;
+import org.fabric3.fabric.runtime.bootstrap.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
@@ -67,7 +70,7 @@ import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.policy.PolicyActivationException;
 
 /**
- * Default implementation of a RuntimeCoordinator.
+ * Default implementation of the RuntimeCoordinator.
  *
  * @version $Rev$ $Date$
  */
@@ -80,6 +83,12 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private List<ContributionSource> extensionContributions;
     private List<ContributionSource> userContributions;
     private List<ComponentRegistration> registrations;
+    private URL systemCompositeUrl;
+    private Source systemConfigSource;
+
+    public DefaultCoordinator() {
+        bootstrapper = new DefaultBootstrapper();
+    }
 
     public RuntimeState getState() {
         return state;
@@ -87,12 +96,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     public void setConfiguration(BootConfiguration configuration) {
         runtime = configuration.getRuntime();
-        bootstrapper = configuration.getBootstrapper();
         bootClassLoader = configuration.getBootClassLoader();
         exportedPackages = configuration.getExportedPackages();
         extensionContributions = configuration.getExtensionContributions();
         userContributions = configuration.getUserContributions();
         registrations = configuration.getRegistrations();
+        systemCompositeUrl = configuration.getSystemCompositeUrl();
+        systemConfigSource = configuration.getSystemConfigSource();
     }
 
     public void start() throws InitializationException {
@@ -126,7 +136,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      */
     private void bootPrimordial() throws InitializationException {
         runtime.boot();
-        bootstrapper.bootRuntimeDomain(runtime, bootClassLoader, registrations, exportedPackages);
+        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfigSource, bootClassLoader, registrations, exportedPackages);
     }
 
     /**
@@ -182,7 +192,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
             // install the contributions
             return contributionService.contribute(sources);
-
         } catch (ContributionException e) {
             state = RuntimeState.ERROR;
             throw new ExtensionInitializationException("Error contributing extensions", e);

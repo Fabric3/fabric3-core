@@ -75,8 +75,8 @@ import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.stream.Source;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_DEFAULT;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_PARAM;
 import static org.fabric3.runtime.webapp.Constants.COMPONENT_PARAM;
@@ -99,7 +99,6 @@ public class Fabric3ContextListener implements ServletContextListener {
     private RuntimeCoordinator coordinator;
 
     public void contextInitialized(ServletContextEvent event) {
-
         ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
         ServletContext servletContext = event.getServletContext();
         WebappUtil utils = getUtils(servletContext);
@@ -150,9 +149,7 @@ public class Fabric3ContextListener implements ServletContextListener {
     }
 
     private WebappRuntime createRuntime(ClassLoader webappClassLoader, ServletContext context, WebappUtil utils) {
-
         try {
-
             File baseDir = new File(URLDecoder.decode(context.getResource("/WEB-INF/lib/").getFile(), "UTF-8"));
             File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
             tempDir.mkdir();
@@ -163,14 +160,11 @@ public class Fabric3ContextListener implements ServletContextListener {
             MonitorFactory factory = utils.createMonitorFactory(webappClassLoader);
             MBeanServer mBeanServer = utils.createMBeanServer();
 
-
             RuntimeConfiguration<WebappHostInfo> configuration =
                     new RuntimeConfiguration<WebappHostInfo>(webappClassLoader, info, factory, mBeanServer);
 
             runtime.setConfiguration(configuration);
-
             return runtime;
-
         } catch (URISyntaxException e) {
             throw new Fabric3InitException(e);
         } catch (UnsupportedEncodingException e) {
@@ -178,7 +172,6 @@ public class Fabric3ContextListener implements ServletContextListener {
         } catch (MalformedURLException e) {
             throw new Fabric3InitException(e);
         }
-
     }
 
     /*
@@ -191,11 +184,11 @@ public class Fabric3ContextListener implements ServletContextListener {
         BootConfiguration configuration = new BootConfiguration();
         configuration.setBootClassLoader(webappClassLoader);
 
-        // create the runtime bootrapper
-        URL systemScdl = utils.getSystemScdl(webappClassLoader);
-        ScdlBootstrapper bootstrapper = utils.getBootstrapper(webappClassLoader);
-        bootstrapper.setScdlLocation(systemScdl);
-        configuration.setBootstrapper(bootstrapper);
+        URL systemComposite = utils.getSystemScdl(webappClassLoader);
+        configuration.setSystemCompositeUrl(systemComposite);
+
+        Source source = utils.getSystemConfig();
+        configuration.setSystemConfigSource(source);
 
         Map<String, String> exportedPackages = new HashMap<String, String>();
         exportedPackages.put("org.fabric3.runtime.webapp", Names.VERSION);
@@ -216,7 +209,6 @@ public class Fabric3ContextListener implements ServletContextListener {
      * Gets the extension contributions.
      */
     private List<ContributionSource> getExtensionContributions(String extensionDefinitions, ServletContext context) throws InitializationException {
-
         InputStream stream = context.getResourceAsStream(extensionDefinitions);
         if (stream == null) {
             return Collections.emptyList();
@@ -252,9 +244,7 @@ public class Fabric3ContextListener implements ServletContextListener {
             }
             return sources;
         }
-
         return Collections.emptyList();
-
     }
 
     /**
@@ -271,7 +261,6 @@ public class Fabric3ContextListener implements ServletContextListener {
      * Invoked when the servlet context is destroyed. This is used to shutdown the runtime.
      */
     public void contextDestroyed(ServletContextEvent event) {
-
         ServletContext servletContext = event.getServletContext();
         WebappRuntime runtime = (WebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
 
@@ -279,7 +268,6 @@ public class Fabric3ContextListener implements ServletContextListener {
             servletContext.removeAttribute(RUNTIME_ATTRIBUTE);
             runtime.getMonitorFactory().getMonitor(WebAppMonitor.class).stopped();
         }
-
         try {
             if (coordinator == null) {
                 return;
@@ -288,8 +276,6 @@ public class Fabric3ContextListener implements ServletContextListener {
         } catch (ShutdownException e) {
             servletContext.log("Error shutting runtume down", e);
         }
-
     }
-
 
 }

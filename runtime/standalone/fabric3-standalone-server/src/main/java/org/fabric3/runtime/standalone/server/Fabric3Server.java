@@ -44,6 +44,7 @@
 package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
@@ -54,17 +55,13 @@ import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.Bootstrapper;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
@@ -161,6 +158,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             // create the HostInfo, MonitorFactory, and runtime
             hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
+
             String monitorFactoryName = props.getProperty("fabric3.monitorFactoryClass");
             MonitorFactory monitorFactory;
             if (monitorFactoryName != null) {
@@ -200,9 +198,10 @@ public class Fabric3Server implements Fabric3ServerMBean {
             monitor = runtime.getMonitorFactory().getMonitor(ServerMonitor.class);
 
             // start the runtime
-            coordinator = BootstrapHelper.createCoordinator(bootLoader);
-            BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
-            coordinator.setConfiguration(configuration);
+            coordinator = BootstrapHelper.createCoordinator(runtime,
+                                                            Collections.<String, String>emptyMap(),
+                                                            Collections.<ComponentRegistration>emptyList(),
+                                                            bootLoader);
             coordinator.start();
 
             // register the runtime with the MBean server
@@ -241,26 +240,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
         } catch (ShutdownException ex) {
             monitor.runError(ex);
         }
-    }
-
-    private BootConfiguration createBootConfiguration(Fabric3Runtime<HostInfo> runtime, ClassLoader bootClassLoader) throws InitializationException {
-        HostInfo hostInfo = runtime.getHostInfo();
-        BootConfiguration configuration = new BootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-
-        Bootstrapper bootstrapper = BootstrapHelper.createBootstrapper(hostInfo, bootClassLoader);
-        // create the runtime bootrapper
-        configuration.setBootstrapper(bootstrapper);
-
-        // process extensions
-        File repositoryDirectory = hostInfo.getRepositoryDirectory();
-        RepositoryScanner scanner = new RepositoryScanner();
-        ScanResult result = scanner.scan(repositoryDirectory);
-        configuration.setExtensionContributions(result.getExtensionContributions());
-        configuration.setUserContributions(result.getUserContributions());
-
-        configuration.setRuntime(runtime);
-        return configuration;
     }
 
     private int parsePortNumber(String portVal, String portType) {

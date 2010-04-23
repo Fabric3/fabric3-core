@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,6 @@ import org.apache.tools.ant.types.FileSet;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
@@ -66,18 +66,15 @@ import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.Bootstrapper;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.ant.api.TestRunner;
 import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
 
@@ -86,7 +83,7 @@ import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
  * <p/>
  * To define the task, create a <code>taskdef</code> pointing to the Fabric3 ant runtime distribution /lib directory entry as follows:
  * <pre>
- *
+ * <p/>
  *  &lt;taskdef name="fabric3" classname="org.fabric3.runtime.ant.task.Fabric3Task"&gt;
  *       &lt;classpath&gt;
  *           &lt;fileset dir="&lt;path to distribution&gt;/fabric3-runtime-ant-1.6-bin/lib"&gt;
@@ -98,7 +95,7 @@ import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
  * This Task may be configured with <code>contribution</code> sub-elements which are <code>FileLists</code> pointing to contribution jars or
  * <code>contributionSet</code> sub-elements which are <code>FileSet</code> filters for calculating sets of contributions as follows:
  * <pre>
- * 
+ * <p/>
  *  &lt;fabric3&gt;
  *     &lt;contribution dir="lib" files="mycontribution.jar"/&gt;
  *     &lt;contributionSet dir="build"&gt;
@@ -141,7 +138,6 @@ public class Fabric3Task extends Task {
     }
 
     private void startRuntime() throws BuildException {
-
         try {
             //  calculate config directories based on the mode the runtime is booted in
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
@@ -171,18 +167,18 @@ public class Fabric3Task extends Task {
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
-            
+
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
+
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
             runtime = BootstrapHelper.createDefaultRuntime(runtimeConfig, bootLoader);
 
+            Map<String, String> exportedPackages = new HashMap<String, String>();
+            exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
+
             // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(bootLoader);
-            BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
-
-            coordinator.setConfiguration(configuration);
+            coordinator = BootstrapHelper.createCoordinator(runtime, exportedPackages, Collections.<ComponentRegistration>emptyList(), bootLoader);
             coordinator.start();
-
         } catch (Exception e) {
             throw new BuildException(e);
         }
@@ -194,31 +190,6 @@ public class Fabric3Task extends Task {
         } catch (ShutdownException e) {
             throw new BuildException(e);
         }
-    }
-
-    private BootConfiguration createBootConfiguration(Fabric3Runtime<HostInfo> runtime, ClassLoader bootClassLoader) throws InitializationException {
-        HostInfo hostInfo = runtime.getHostInfo();
-        BootConfiguration configuration = new BootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-
-        Bootstrapper bootstrapper = BootstrapHelper.createBootstrapper(hostInfo, bootClassLoader);
-        // create the runtime bootrapper
-        configuration.setBootstrapper(bootstrapper);
-
-        // set exported packages
-        Map<String, String> exportedPackages = new HashMap<String, String>();
-        exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
-        configuration.setExportedPackages(exportedPackages);
-
-        // process extensions
-        File repositoryDirectory = hostInfo.getRepositoryDirectory();
-        RepositoryScanner scanner = new RepositoryScanner();
-        ScanResult result = scanner.scan(repositoryDirectory);
-        configuration.setExtensionContributions(result.getExtensionContributions());
-        configuration.setUserContributions(result.getUserContributions());
-
-        configuration.setRuntime(runtime);
-        return configuration;
     }
 
     private void deployContributions() throws BuildException {

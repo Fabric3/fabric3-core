@@ -38,6 +38,7 @@
 package org.fabric3.runtime.weblogic.boot;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -53,17 +54,13 @@ import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.Bootstrapper;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.RepositoryScanner;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
@@ -173,12 +170,12 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             Thread.currentThread().setContextClassLoader(hostLoader);
 
+            Map<String, String> exportedPackages = getExportedPackages();
+
             // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(bootLoader);
-            BootConfiguration configuration = createBootConfiguration(runtime, bootLoader);
-            coordinator.setConfiguration(configuration);
+            coordinator = BootstrapHelper.createCoordinator(runtime, exportedPackages, Collections.<ComponentRegistration>emptyList(), bootLoader);
             coordinator.start();
-            context.setAttribute(RUNTIME_ATTRIBUTE, configuration.getRuntime());
+            context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             monitor.started(runtimeMode.toString());
         } catch (RuntimeException e) {
             context.log("Error initializing Fabric3", e);
@@ -189,28 +186,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         }
     }
 
-    private BootConfiguration createBootConfiguration(Fabric3Runtime<HostInfo> runtime, ClassLoader bootClassLoader) throws InitializationException {
-        HostInfo hostInfo = runtime.getHostInfo();
-        BootConfiguration configuration = new BootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-        configuration.setRuntime(runtime);
-
-        // create the runtime bootrapper
-        Bootstrapper bootstrapper = BootstrapHelper.createBootstrapper(hostInfo, bootClassLoader);
-        configuration.setBootstrapper(bootstrapper);
-
-        // process extensions
-        File repositoryDirectory = hostInfo.getRepositoryDirectory();
-        RepositoryScanner scanner = new RepositoryScanner();
-        ScanResult result = scanner.scan(repositoryDirectory);
-        configuration.setExtensionContributions(result.getExtensionContributions());
-        configuration.setUserContributions(result.getUserContributions());
-
-        setExportedPackages(configuration);
-        return configuration;
-    }
-
-    private void setExportedPackages(BootConfiguration configuration) {
+    private Map<String, String> getExportedPackages() {
         Map<String, String> exportedPackages = new HashMap<String, String>();
         exportedPackages.put("org.fabric3.spi.*", Names.VERSION);
         exportedPackages.put("com.bea.core.workmanager", "1.7.0.0");
@@ -223,9 +199,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         exportedPackages.put("javax.transaction", "1.1.0");
         exportedPackages.put("javax.transaction.xa", "1.1.0");
         exportedPackages.put("org.fabric3.runtime.weblogic.api", Names.VERSION);
-        configuration.setExportedPackages(exportedPackages);
+        return exportedPackages;
     }
-
 
     private static RuntimeMode getRuntimeMode() {
         // TODO implement by introspecting MBeans

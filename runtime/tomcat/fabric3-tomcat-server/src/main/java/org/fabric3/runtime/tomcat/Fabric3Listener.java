@@ -45,8 +45,10 @@ package org.fabric3.runtime.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
-
 import javax.management.MBeanServer;
 
 import org.apache.catalina.LifecycleEvent;
@@ -57,21 +59,17 @@ import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
 
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.Bootstrapper;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.RepositoryScanner;
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanResult;
-import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * Bootstraps Fabric3 in a host Tomcat runtime.
@@ -112,6 +110,7 @@ public class Fabric3Listener implements LifecycleListener {
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
+            
             ClassLoader systemClassLoader = getClass().getClassLoader();
             systemClassLoader = hidePackages(systemClassLoader, props);
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
@@ -137,11 +136,14 @@ public class Fabric3Listener implements LifecycleListener {
                 throw new InitializationException("Catalina service not found");
             }
 
+            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            ComponentRegistration registration = new ComponentRegistration("CatalinaService", Service.class, service, false);
+            registrations.add(registration);
+
             // boot the runtime
-            coordinator = BootstrapHelper.createCoordinator(bootLoader);
-            BootConfiguration configuration = createBootConfiguration(runtime, bootLoader, service);
-            coordinator.setConfiguration(configuration);
+            coordinator = BootstrapHelper.createCoordinator(runtime, Collections.<String, String>emptyMap(), registrations, bootLoader);
             coordinator.start();
+
             monitor.started(RuntimeMode.VM.toString());
         } catch (Exception e) {
             if (monitor != null) {
@@ -151,7 +153,6 @@ public class Fabric3Listener implements LifecycleListener {
             throw new Fabric3ListenerException(e);
         }
     }
-
 
     private void stop() {
         try {
@@ -163,30 +164,6 @@ public class Fabric3Listener implements LifecycleListener {
             monitor.runError(ex);
             throw new Fabric3ListenerException(ex);
         }
-    }
-
-    private BootConfiguration createBootConfiguration(Fabric3Runtime<HostInfo> runtime, ClassLoader bootClassLoader, Service service)
-            throws InitializationException {
-        HostInfo hostInfo = runtime.getHostInfo();
-        BootConfiguration configuration = new BootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-
-        // create the runtime bootrapper
-        Bootstrapper bootstrapper = BootstrapHelper.createBootstrapper(hostInfo, bootClassLoader);
-        configuration.setBootstrapper(bootstrapper);
-
-        // register the catalina service
-        configuration.addRegistration(new ComponentRegistration("CatalinaService", Service.class, service, false));
-
-        // process extensions
-        File repositoryDirectory = hostInfo.getRepositoryDirectory();
-        RepositoryScanner scanner = new RepositoryScanner();
-        ScanResult result = scanner.scan(repositoryDirectory);
-        configuration.setExtensionContributions(result.getExtensionContributions());
-        configuration.setUserContributions(result.getUserContributions());
-
-        configuration.setRuntime(runtime);
-        return configuration;
     }
 
     /**
@@ -222,7 +199,6 @@ public class Fabric3Listener implements LifecycleListener {
         }
         return monitorFactory;
     }
-
 
 
 }

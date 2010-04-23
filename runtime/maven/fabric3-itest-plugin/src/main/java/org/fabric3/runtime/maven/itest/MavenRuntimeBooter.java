@@ -37,14 +37,17 @@
 */
 package org.fabric3.runtime.maven.itest;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -53,22 +56,25 @@ import javax.management.MBeanServer;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.xml.sax.InputSource;
 
 import org.fabric3.host.Names;
+import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapHelper;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.stream.InputStreamSource;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.Agent;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
-import org.fabric3.host.util.FileHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -77,8 +83,6 @@ public class MavenRuntimeBooter {
     private static final String SYSTEM_CONFIG_XML_FILE = "systemConfig.xml";
     private static final String DEFAULT_SYSTEM_CONFIG_DIR = "test-classes" + File.separator + "META-INF" + File.separator;
     private static final String RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
-    private static final String BOOTSTRAPPER_IMPL = "org.fabric3.fabric.runtime.bootstrap.ScdlBootstrapperImpl";
-    private static final String COORDINATOR_IMPL = "org.fabric3.fabric.runtime.DefaultCoordinator";
     private static final String DOMAIN = "fabric3://domain";
 
     // configuration elements
@@ -92,9 +96,8 @@ public class MavenRuntimeBooter {
     private Set<org.apache.maven.model.Dependency> extensions;
     private Log log;
 
-
     private RuntimeCoordinator coordinator;
-    private MavenRuntime runtime;
+
     private ExtensionHelper extensionHelper;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
@@ -112,11 +115,45 @@ public class MavenRuntimeBooter {
 
     @SuppressWarnings({"unchecked"})
     public MavenRuntime boot() throws MojoExecutionException {
-        runtime = createRuntime();
-        BootConfiguration configuration = createBootConfiguration();
-        coordinator = instantiate(RuntimeCoordinator.class, COORDINATOR_IMPL, bootClassLoader);
-        coordinator.setConfiguration(configuration);
-        bootRuntime();
+        MavenRuntime runtime = createRuntime();
+
+        URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
+        Source source = null;
+        if (systemConfig != null) {
+            try {
+                InputStream stream = new ByteArrayInputStream(systemConfig.getBytes("UTF-8"));
+                source = new InputStreamSource("systemConfig", stream);
+            } catch (UnsupportedEncodingException e) {
+                throw new MojoExecutionException("Error loading system configuration", e);
+            }
+        } else {
+            URL systemConfig = getSystemConfig();
+            if (systemConfig != null) {
+                source = new UrlSource(systemConfig);
+            }
+        }
+
+        Map<String, String> exportedPackages = new HashMap<String, String>();
+        exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
+        exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
+
+        // process extensions
+        List<ContributionSource> contributions = extensionHelper.processExtensions(extensions);
+
+        try {
+            coordinator = BootstrapHelper.createCoordinator(runtime,
+                                                            systemComposite,
+                                                            source,
+                                                            exportedPackages,
+                                                            Collections.<ComponentRegistration>emptyList(),
+                                                            contributions,
+                                                            Collections.<ContributionSource>emptyList(),
+                                                            bootClassLoader);
+            log.info("Starting Fabric3 Runtime ...");
+            coordinator.start();
+        } catch (InitializationException e) {
+            throw new MojoExecutionException("Error booting Fabric3 runtime", e);
+        }
         return runtime;
     }
 
@@ -153,51 +190,6 @@ public class MavenRuntimeBooter {
         runtime.setConfiguration(configuration);
 
         return runtime;
-    }
-
-    private BootConfiguration createBootConfiguration() throws MojoExecutionException {
-
-        BootConfiguration configuration = new BootConfiguration();
-        configuration.setBootClassLoader(bootClassLoader);
-
-        // create the runtime bootrapper
-        ScdlBootstrapper bootstrapper = createBootstrapper(bootClassLoader);
-        configuration.setBootstrapper(bootstrapper);
-
-        Map<String, String> exportedPackages = new HashMap<String, String>();
-        exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
-        exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
-        configuration.setExportedPackages(exportedPackages);
-        // process extensions
-        extensionHelper.processExtensions(configuration, extensions);
-
-        configuration.setRuntime(runtime);
-
-        return configuration;
-    }
-
-    private ScdlBootstrapper createBootstrapper(ClassLoader bootClassLoader) throws MojoExecutionException {
-        ScdlBootstrapper bootstrapper = instantiate(ScdlBootstrapper.class, BOOTSTRAPPER_IMPL, bootClassLoader);
-        URL systemScdl = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
-        bootstrapper.setScdlLocation(systemScdl);
-        if (systemConfig != null) {
-            Reader reader = new StringReader(systemConfig);
-            InputSource source = new InputSource(reader);
-            bootstrapper.setSystemConfig(source);
-        } else {
-            URL systemConfig = getSystemConfig();
-            bootstrapper.setSystemConfig(systemConfig);
-        }
-        return bootstrapper;
-    }
-
-    private void bootRuntime() throws MojoExecutionException {
-        try {
-            log.info("Starting Fabric3 Runtime ...");
-            coordinator.start();
-        } catch (InitializationException e) {
-            throw new MojoExecutionException("Error booting Fabric3 runtime", e);
-        }
     }
 
     public void shutdown() throws ShutdownException, InterruptedException, ExecutionException {

@@ -34,45 +34,45 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.runtime;
+*/
+package org.fabric3.host.stream;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
-import org.xml.sax.InputSource;
-
 /**
- * A bootstrapper subtype that instantiates a runtime from a system composite definition.
+ * A Source that wraps an InputStream.
  *
  * @version $Rev$ $Date$
  */
-public interface ScdlBootstrapper extends Bootstrapper {
+public class InputStreamSource implements Source {
+    private String systemId;
+    private InputStream source;
+    private boolean opened = false;
 
-    /**
-     * Sets the location of the SCDL used to boot this runtime.
-     *
-     * @param scdlLocation the location of the SCDL used to boot this runtime
-     */
-    void setScdlLocation(URL scdlLocation);
+    public InputStreamSource(String systemId, InputStream source) {
+        this.systemId = systemId;
+        this.source = source;
+    }
 
-    /**
-     * Sets the system configuration for the host.
-     *
-     * @param systemConfig System configuration.
-     */
-    void setSystemConfig(URL systemConfig);
+    public String getSystemId() {
+        return systemId;
+    }
 
-    /**
-     * Sets the system configuration for the host.
-     *
-     * @param document System configuration as an InputSource.
-     */
-    void setSystemConfig(InputSource document);
+    public URL getBaseLocation() {
+        return null;
+    }
 
+    public InputStream openStream() throws IOException {
+        if (opened) {
+            throw new IllegalStateException("Inputstream can only be opened once");
+        }
+        opened = true;
+        return source;
+    }
+
+    public Source getImportSource(String parentLocation, String importLocation) throws IOException {
+        return null;
+    }
 }

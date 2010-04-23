@@ -186,7 +186,7 @@ public class MavenHelper {
                                                                                      rootArtifact.getType());
         try {
             if (resolve(artifact)) {
-                rootArtifact.setUrl(artifact.getFile().toURL());
+                rootArtifact.setUrl(artifact.getFile().toURI().toURL());
                 return resolveDependencies(rootArtifact, artifact);
             } else {
                 return false;
@@ -400,7 +400,7 @@ public class MavenHelper {
                 artifact.setType(depArtifact.getType());
                 artifact.setVersion(depArtifact.getVersion());
                 artifact.setClassifier(depArtifact.getClassifier());
-                artifact.setUrl(depArtifact.getFile().toURL());
+                artifact.setUrl(depArtifact.getFile().toURI().toURL());
                 rootArtifact.addDependency(artifact);
             }
 

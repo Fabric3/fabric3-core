@@ -43,6 +43,7 @@
  */
 package org.fabric3.host.runtime;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.stream.Source;
 
 /**
  * Encapsulates configuration needed to boostrap a runtime.
@@ -58,13 +60,13 @@ import org.fabric3.host.contribution.ContributionSource;
  */
 public class BootConfiguration {
     private Fabric3Runtime<?> runtime;
-    private Bootstrapper bootstrapper;
+    private URL systemCompositeUrl;
+    private Source systemConfigSource;
     private ClassLoader bootClassLoader;
+    private Map<String, String> exportedPackages = new HashMap<String, String>();
     private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
     private List<ContributionSource> userContributions = Collections.emptyList();
-    private Map<String, String> exportedPackages = new HashMap<String, String>();
-
 
     public Fabric3Runtime<?> getRuntime() {
         return runtime;
@@ -74,12 +76,20 @@ public class BootConfiguration {
         this.runtime = runtime;
     }
 
-    public Bootstrapper getBootstrapper() {
-        return bootstrapper;
+    public URL getSystemCompositeUrl() {
+        return systemCompositeUrl;
     }
 
-    public void setBootstrapper(Bootstrapper bootstrapper) {
-        this.bootstrapper = bootstrapper;
+    public void setSystemCompositeUrl(URL url) {
+        this.systemCompositeUrl = url;
+    }
+
+    public Source getSystemConfigSource() {
+        return systemConfigSource;
+    }
+
+    public void setSystemConfigSource(Source source) {
+        this.systemConfigSource = source;
     }
 
     public ClassLoader getBootClassLoader() {
@@ -90,20 +100,20 @@ public class BootConfiguration {
         this.bootClassLoader = bootClassLoader;
     }
 
-    public List<ComponentRegistration> getRegistrations() {
-        return registrations;
-    }
-
-    public void addRegistration(ComponentRegistration registration) {
-        this.registrations.add(registration);
-    }
-
     public Map<String, String> getExportedPackages() {
         return exportedPackages;
     }
 
     public void setExportedPackages(Map<String, String> exportedPackages) {
         this.exportedPackages = exportedPackages;
+    }
+
+    public List<ComponentRegistration> getRegistrations() {
+        return registrations;
+    }
+
+    public void addRegistrations(List<ComponentRegistration> registrations) {
+        this.registrations.addAll(registrations);
     }
 
     public List<ContributionSource> getExtensionContributions() {

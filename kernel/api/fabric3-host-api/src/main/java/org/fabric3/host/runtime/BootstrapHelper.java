@@ -55,21 +55,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 
 /**
- * Utility class for boostrap related operations.
+ * Utility class for boostrap operations.
  *
  * @version $Revision$ $Date$
  */
 public final class BootstrapHelper {
-
     private static final String DEFAULT_MONITOR_FACTORY = "org.fabric3.monitor.impl.JavaLoggingMonitorFactory";
-    private static final String BOOTSTRAPPER_CLASS = "org.fabric3.fabric.runtime.bootstrap.ScdlBootstrapperImpl";
     private static final String COORDINATOR_CLASS = "org.fabric3.fabric.runtime.DefaultCoordinator";
     private static final String RUNTIME_CLASS = "org.fabric3.fabric.runtime.DefaultRuntime";
 
@@ -85,7 +90,6 @@ public final class BootstrapHelper {
      * @throws IllegalStateException if the location could not be determined from the location of the class file
      */
     public static File getInstallDirectory(Class<?> clazz) throws IllegalStateException {
-
         // get the name of the Class's bytecode
         String name = clazz.getName();
         int last = name.lastIndexOf('.');
@@ -169,7 +173,6 @@ public final class BootstrapHelper {
                 throw new AssertionError();
             }
         }
-
         return new URLClassLoader(urls, parent);
     }
 
@@ -214,12 +217,10 @@ public final class BootstrapHelper {
             } else {
                 throw new InitializationException("Domain URI was not set. Ensure it is set as a system property or in runtime.properties.");
             }
-
             return new DefaultHostInfo(runtimeMode, domain, baseDir, repositoryDir, configDir, modeDir, props, tempDir, dataDir);
         } catch (URISyntaxException ex) {
             throw new IOException(ex.getMessage());
         }
-
     }
 
     public static MonitorFactory createDefaultMonitorFactory(ClassLoader classLoader) throws InitializationException {
@@ -267,46 +268,121 @@ public final class BootstrapHelper {
         }
     }
 
-    public static ScdlBootstrapper createBootstrapper(HostInfo hostInfo, ClassLoader bootClassLoader) throws InitializationException {
+    @SuppressWarnings({"unchecked"})
+    public static RuntimeCoordinator createCoordinator(Fabric3Runtime<?> runtime,
+                                                       Map<String, String> exportedPackages,
+                                                       List<ComponentRegistration> registrations,
+                                                       ClassLoader bootClassLoader) throws InitializationException {
         try {
-            Class<?> implClass = Class.forName(BOOTSTRAPPER_CLASS, true, bootClassLoader);
-            ScdlBootstrapper bootstrapper = (ScdlBootstrapper) implClass.newInstance();
+            Class<?> implClass = Class.forName(COORDINATOR_CLASS, true, bootClassLoader);
+            RuntimeCoordinator coordinator = (RuntimeCoordinator) implClass.newInstance();
+            BootConfiguration configuration = createBootConfiguration(runtime, exportedPackages, registrations, bootClassLoader);
+            coordinator.setConfiguration(configuration);
+            return coordinator;
+        } catch (ClassNotFoundException e) {
+            throw new InitializationException(e);
+        } catch (IllegalAccessException e) {
+            throw new InitializationException(e);
+        } catch (InstantiationException e) {
+            throw new InitializationException(e);
+        }
+    }
 
-            // set the system SCDL location
+    public static RuntimeCoordinator createCoordinator(Fabric3Runtime<?> runtime,
+                                                       URL systemComposite,
+                                                       Source systemConfig,
+                                                       Map<String, String> exportedPackages,
+                                                       List<ComponentRegistration> registrations,
+                                                       List<ContributionSource> extensions,
+                                                       List<ContributionSource> userContributions,
+                                                       ClassLoader bootClassLoader) throws InitializationException {
+        try {
+            Class<?> implClass = Class.forName(COORDINATOR_CLASS, true, bootClassLoader);
+            RuntimeCoordinator coordinator = (RuntimeCoordinator) implClass.newInstance();
+            BootConfiguration configuration = createBootConfiguration(runtime,
+                                                                      systemComposite,
+                                                                      systemConfig,
+                                                                      exportedPackages,
+                                                                      registrations,
+                                                                      extensions,
+                                                                      userContributions,
+                                                                      bootClassLoader);
+            coordinator.setConfiguration(configuration);
+            return coordinator;
+        } catch (ClassNotFoundException e) {
+            throw new InitializationException(e);
+        } catch (IllegalAccessException e) {
+            throw new InitializationException(e);
+        } catch (InstantiationException e) {
+            throw new InitializationException(e);
+        }
+    }
+
+
+    private static BootConfiguration createBootConfiguration(Fabric3Runtime<?> runtime,
+                                                             Map<String, String> exportedPackages,
+                                                             List<ComponentRegistration> registrations,
+                                                             ClassLoader bootClassLoader) throws InitializationException {
+
+        HostInfo hostInfo = runtime.getHostInfo();
+        URL systemComposite;
+        Source source = null;
+        try {
+            // set the system composite location
             File configDir = hostInfo.getConfigDirectory();
-            URL systemSCDL = new File(configDir, "system.composite").toURI().toURL();
-            bootstrapper.setScdlLocation(systemSCDL);
+            systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
             // set the system configuration
             File systemConfig = new File(hostInfo.getModeConfigDirectory(), "systemConfig.xml");
             if (systemConfig.exists()) {
-                bootstrapper.setSystemConfig(systemConfig.toURI().toURL());
+                URL url = systemConfig.toURI().toURL();
+                source = new UrlSource(url);
             }
-            return bootstrapper;
-        } catch (IllegalAccessException e) {
-            throw new InitializationException(e);
         } catch (MalformedURLException e) {
-            throw new InitializationException(e);
-        } catch (InstantiationException e) {
-            throw new InitializationException(e);
-        } catch (ClassNotFoundException e) {
+            // should not happen
             throw new InitializationException(e);
         }
 
+        // process extensions
+        File repositoryDirectory = hostInfo.getRepositoryDirectory();
+        RepositoryScanner scanner = new RepositoryScanner();
+        ScanResult result = scanner.scan(repositoryDirectory);
+
+        return createBootConfiguration(runtime,
+                                       systemComposite,
+                                       source,
+                                       exportedPackages,
+                                       registrations,
+                                       result.getExtensionContributions(),
+                                       result.getUserContributions(),
+                                       bootClassLoader);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public static RuntimeCoordinator createCoordinator(ClassLoader bootClassLoader) throws InitializationException {
-        try {
-            Class<?> implClass = Class.forName(COORDINATOR_CLASS, true, bootClassLoader);
-            return (RuntimeCoordinator) implClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new InitializationException(e);
-        } catch (IllegalAccessException e) {
-            throw new InitializationException(e);
-        } catch (InstantiationException e) {
-            throw new InitializationException(e);
-        }
+    private static BootConfiguration createBootConfiguration(Fabric3Runtime<?> runtime,
+                                                             URL systemComposite,
+                                                             Source systemConfig,
+                                                             Map<String, String> exportedPackages,
+                                                             List<ComponentRegistration> registrations,
+                                                             List<ContributionSource> extensions,
+                                                             List<ContributionSource> userContributions,
+                                                             ClassLoader bootClassLoader) throws InitializationException {
+        BootConfiguration configuration = new BootConfiguration();
+        configuration.setRuntime(runtime);
+        configuration.setBootClassLoader(bootClassLoader);
+
+        configuration.setSystemCompositeUrl(systemComposite);
+        configuration.setSystemConfigSource(systemConfig);
+
+        configuration.setExtensionContributions(extensions);
+        configuration.setUserContributions(userContributions);
+
+        Map<String, String> newPackages = new HashMap<String, String>(exportedPackages);
+        configuration.setExportedPackages(newPackages);
+
+        List<ComponentRegistration> newRegistrations = new ArrayList<ComponentRegistration>(registrations);
+        configuration.addRegistrations(newRegistrations);
+
+        return configuration;
     }
 
 }

@@ -35,34 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.ScdlBootstrapper;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.system.model.SystemImplementation;
@@ -80,45 +65,29 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.validation.InvalidCompositeException;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
+import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * Bootstrapper that initializes a runtime by reading a system SCDL file.
+ * Creates the initial system composite that is deployed to the runtime domain.
  *
  * @version $Rev$ $Date$
  */
-public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBootstrapper {
+public class BootstrapCompositeFactory {
+    private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();
 
-    private DocumentLoader documentLoader;
-
-    private URL scdlLocation;
-    private URL systemConfig;
-    private InputSource systemConfigSource;
-
-    public ScdlBootstrapperImpl() {
-        this.documentLoader = new DocumentLoaderImpl();
+    private BootstrapCompositeFactory() {
     }
 
-    public void setScdlLocation(URL scdlLocation) {
-        this.scdlLocation = scdlLocation;
-    }
-
-    public void setSystemConfig(URL systemConfig) {
-        this.systemConfig = systemConfig;
-    }
-
-    public void setSystemConfig(InputSource source) {
-        this.systemConfigSource = source;
-    }
-
-    protected Composite loadSystemComposite(Contribution contribution,
-                                            ClassLoader bootClassLoader,
-                                            ImplementationProcessor<SystemImplementation> processor) throws InitializationException {
+    public static Composite createSystemComposite(URL compositeUrl,
+                                                  Contribution contribution,
+                                                  ClassLoader bootClassLoader,
+                                                  ImplementationProcessor<SystemImplementation> processor) throws InitializationException {
         try {
-            // load the system composite
-            Loader loader = BootstrapLoaderFactory.createLoader(processor, getXmlFactory());
+            // load and introspect the system composite XML
+            Loader loader = BootstrapLoaderFactory.createLoader(processor, XML_FACTORY);
             URI contributionUri = contribution.getUri();
-            IntrospectionContext introspectionContext = new DefaultIntrospectionContext(contributionUri, bootClassLoader, scdlLocation);
-            Source source = new UrlSource(scdlLocation);
+            IntrospectionContext introspectionContext = new DefaultIntrospectionContext(contributionUri, bootClassLoader, compositeUrl);
+            Source source = new UrlSource(compositeUrl);
             Composite composite = loader.load(source, Composite.class, introspectionContext);
             if (introspectionContext.hasErrors()) {
                 QName name = composite.getName();
@@ -128,7 +97,7 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
             }
 
             addContributionUri(contributionUri, composite);
-            addResource(contribution, composite);
+            addResource(contribution, composite, compositeUrl);
             return composite;
         } catch (ContributionException e) {
             throw new InitializationException(e);
@@ -137,62 +106,13 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
         }
     }
 
-    protected Document loadSystemConfig() throws InitializationException {
-        if (systemConfigSource == null && systemConfig == null) {
-            // no system configuration specified, create a default one
-            return createDefaultConfigProperty();
-        }
-        Document document;
-        try {
-            if (systemConfigSource != null) {
-                // load from an external URL
-                document = documentLoader.load(systemConfigSource, true);
-            } else {
-                // load from an external URL
-                document = documentLoader.load(systemConfig, true);
-            }
-        } catch (IOException e) {
-            throw new InitializationException(e);
-        } catch (SAXException e) {
-            throw new InitializationException(e);
-        }
-        // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
-        Element oldRoot = document.getDocumentElement();
-        Element newRoot = document.createElement("values");
-        document.removeChild(oldRoot);
-        document.appendChild(newRoot);
-        newRoot.appendChild(oldRoot);
-        return document;
-    }
-
-
     /**
-     * Creates a default configuration domain property.
-     *
-     * @return a document representing the configuration domain property
-     */
-    protected Document createDefaultConfigProperty() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            Document document = factory.newDocumentBuilder().newDocument();
-            Element root = document.createElement("values");
-            document.appendChild(root);
-            Element config = document.createElement("config");
-            root.appendChild(config);
-            return document;
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
-     * Adds the contribution URI to a component and its children if it is a composite.
+     * Adds the contribution URI to the system composite and its children.
      *
      * @param contributionUri the contribution URI
      * @param composite       the composite
      */
-    private void addContributionUri(URI contributionUri, Composite composite) {
+    private static void addContributionUri(URI contributionUri, Composite composite) {
         composite.setContributionUri(contributionUri);
         for (ComponentDefinition<?> definition : composite.getComponents().values()) {
             Implementation<?> implementation = definition.getImplementation();
@@ -211,8 +131,9 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
      *
      * @param contribution the contribution
      * @param composite    the composite
+     * @param scdlLocation the location of the composite file
      */
-    private void addResource(Contribution contribution, Composite composite) {
+    private static void addResource(Contribution contribution, Composite composite, URL scdlLocation) {
         Source source = new UrlSource(scdlLocation);
         Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
         QName compositeName = composite.getName();
@@ -222,6 +143,5 @@ public class ScdlBootstrapperImpl extends AbstractBootstrapper implements ScdlBo
         resource.setProcessed(true);
         contribution.addResource(resource);
     }
-
 
 }
