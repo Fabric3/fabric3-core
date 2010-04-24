@@ -118,7 +118,7 @@ public class DefaultBootstrapFactory implements BootstrapFactory {
         }
     }
 
-    public Fabric3Runtime<HostInfo> createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
+    public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
         return new DefaultRuntime(configuration);
     }
 

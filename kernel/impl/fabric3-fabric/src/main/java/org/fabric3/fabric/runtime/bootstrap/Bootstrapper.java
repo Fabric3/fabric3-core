@@ -71,7 +71,7 @@ public interface Bootstrapper {
      * @param exportedPackages   the Java packages exported by the boot contribution
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
-    public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
+    public void bootRuntimeDomain(Fabric3Runtime runtime,
                                   URL systemCompositeUrl,
                                   Document systemConfigSource,
                                   ClassLoader hostClassLoader,

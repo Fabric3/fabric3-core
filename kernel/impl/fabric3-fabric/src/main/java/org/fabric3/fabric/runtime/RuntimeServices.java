@@ -39,14 +39,15 @@ package org.fabric3.fabric.runtime;
 
 import javax.management.MBeanServer;
 
+import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
-import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.repository.Repository;
 
 /**
  * Interface for accessing services provided by a runtime.
@@ -56,6 +57,13 @@ import org.fabric3.host.repository.Repository;
  * @version $Rev$ $Date$
  */
 public interface RuntimeServices {
+
+    /**
+     * Returns the info this runtime will make available to service components.
+     *
+     * @return the info this runtime will make available to service components
+     */
+    HostInfo getHostInfo();
 
     /**
      * Returns the MonitorFactory that this runtime is using.

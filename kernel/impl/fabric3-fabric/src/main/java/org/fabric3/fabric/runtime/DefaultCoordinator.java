@@ -76,7 +76,7 @@ import org.fabric3.spi.event.RuntimeStart;
  */
 public class DefaultCoordinator implements RuntimeCoordinator {
     private RuntimeState state = RuntimeState.UNINITIALIZED;
-    private Fabric3Runtime<?> runtime;
+    private Fabric3Runtime runtime;
     private Bootstrapper bootstrapper;
     private ClassLoader hostClassLoader;
     private ClassLoader bootClassLoader;

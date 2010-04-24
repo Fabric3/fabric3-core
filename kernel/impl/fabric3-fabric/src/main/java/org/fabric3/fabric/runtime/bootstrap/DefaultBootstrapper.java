@@ -119,10 +119,11 @@ public class DefaultBootstrapper implements Bootstrapper {
     private ScopeContainer scopeContainer;
     private Repository repository;
     private MBeanServer mbeanServer;
+    private HostInfo hostInfo;
 
     private Domain runtimeDomain;
 
-    private Fabric3Runtime<?> runtime;
+    private Fabric3Runtime runtime;
     private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
@@ -138,7 +139,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
-    public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
+    public void bootRuntimeDomain(Fabric3Runtime runtime,
                                   URL systemCompositeUrl,
                                   Document systemConfig,
                                   ClassLoader hostClassLoader,
@@ -154,9 +155,9 @@ public class DefaultBootstrapper implements Bootstrapper {
         this.exportedPackages = exportedPackages;
         // classloader shared by extension and application classes
 
-        HostInfo hostInfo = runtime.getHostInfo();
 
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
+        hostInfo = runtimeServices.getHostInfo();
         monitorFactory = runtimeServices.getMonitorFactory();
         logicalComponetManager = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
@@ -167,6 +168,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         scopeContainer = runtimeServices.getScopeContainer();
         repository = runtimeServices.getRepository();
         mbeanServer = runtimeServices.getMBeanServer();
+        hostInfo = runtimeServices.getHostInfo();
 
         synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
                                                         instantiator,
@@ -219,14 +221,12 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @throws InitializationException if there is an error during registration
      */
     @SuppressWarnings({"unchecked"})
-    private <T extends HostInfo, S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations)
-            throws InitializationException {
+    private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws InitializationException {
 
         // services available through the outward facing Fabric3Runtime API
         registerComponent("MonitorFactory", MonitorFactory.class, monitorFactory, true);
-        Class<T> type = (Class<T>) runtime.getHostInfoType();
-        T info = (T) runtime.getHostInfo();
-        registerComponent("HostInfo", type, info, true);
+        Class<HostInfo> type = getHostInfoType(hostInfo);
+        registerComponent("HostInfo", type, hostInfo, true);
         if (mbeanServer != null) {
             registerComponent("MBeanServer", MBeanServer.class, mbeanServer, false);
         }
@@ -251,6 +251,26 @@ public class DefaultBootstrapper implements Bootstrapper {
             boolean introspect = registration.isIntrospect();
             registerComponent(name, service, instance, introspect);
         }
+    }
+
+    /**
+     * Determines the specific HostInfo interface subtype to register the HostInfo instance with.
+     *
+     * @param info the HostInfo
+     * @return the interface to register the HostInfo instance with
+     */
+    @SuppressWarnings({"unchecked"})
+    private Class<HostInfo> getHostInfoType(HostInfo info) {
+        Class<?>[] interfaces = info.getClass().getInterfaces();
+        if (interfaces.length == 1) {
+            return HostInfo.class;
+        }
+        for (Class<?> interfaze : interfaces) {
+            if (!HostInfo.class.equals(interfaze) && HostInfo.class.isAssignableFrom(interfaze)) {
+                return (Class<HostInfo>) interfaze;
+            }
+        }
+        return HostInfo.class;
     }
 
     /**

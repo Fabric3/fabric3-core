@@ -87,7 +87,7 @@ public interface BootstrapFactory {
      * @param configuration the base configuration for the runtime
      * @return the runtime instance
      */
-    Fabric3Runtime<HostInfo> createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration);
+    Fabric3Runtime createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration);
 
     /**
      * Instantiates a RuntimeCoordinator.

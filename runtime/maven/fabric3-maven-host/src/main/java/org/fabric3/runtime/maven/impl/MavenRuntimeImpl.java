@@ -79,7 +79,7 @@ public class MavenRuntimeImpl extends AbstractRuntime<MavenHostInfo> implements 
     private static final URI CONTRIBUTION_URI = URI.create("iTestContribution");
 
     public MavenRuntimeImpl(RuntimeConfiguration<MavenHostInfo> configuration) {
-        super(MavenHostInfo.class, configuration);
+        super(configuration);
     }
 
     public void deploy(URL base, QName qName) throws ContributionException, DeploymentException {

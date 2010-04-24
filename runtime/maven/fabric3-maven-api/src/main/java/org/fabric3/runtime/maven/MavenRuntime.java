@@ -60,7 +60,7 @@ import org.fabric3.host.runtime.Fabric3Runtime;
  *
  * @version $Rev$ $Date$
  */
-public interface MavenRuntime extends Fabric3Runtime<MavenHostInfo> {
+public interface MavenRuntime extends Fabric3Runtime {
 
     /**
      * Deploys a composite by qualified name contained in the Maven module the runtime is currently executing for.

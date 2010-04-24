@@ -180,7 +180,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mbServer);
 
-            Fabric3Runtime<HostInfo> runtime = factory.createDefaultRuntime(runtimeConfig);
+            Fabric3Runtime runtime = factory.createDefaultRuntime(runtimeConfig);
 
             monitor = monitorFactory.getMonitor(ServerMonitor.class);
 

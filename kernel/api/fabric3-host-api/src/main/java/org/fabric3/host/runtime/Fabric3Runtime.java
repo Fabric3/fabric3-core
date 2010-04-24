@@ -44,21 +44,7 @@ import java.net.URI;
  *
  * @version $Rev$ $Date$
  */
-public interface Fabric3Runtime<HI extends HostInfo> {
-
-    /**
-     * Returns the type of info supplied by the host.
-     *
-     * @return the type of info supplied by the host
-     */
-    Class<HI> getHostInfoType();
-
-    /**
-     * Returns the info this runtime will make available to service components.
-     *
-     * @return the info this runtime will make available to service components
-     */
-    HI getHostInfo();
+public interface Fabric3Runtime {
 
     /**
      * Returns the system component providing the designated service.

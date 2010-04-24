@@ -67,7 +67,7 @@ public class WebLogicDispatchingServlet extends HttpServlet {
 
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        Fabric3Runtime<?> runtime = (Fabric3Runtime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
+        Fabric3Runtime runtime = (Fabric3Runtime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
         if (runtime == null) {
             throw new ServletException("Fabric3 runtime not configured");
         }

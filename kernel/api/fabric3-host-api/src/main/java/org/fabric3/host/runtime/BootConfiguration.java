@@ -60,7 +60,7 @@ import org.fabric3.host.contribution.ContributionSource;
  * @version $Rev$ $Date$
  */
 public class BootConfiguration {
-    private Fabric3Runtime<?> runtime;
+    private Fabric3Runtime runtime;
     private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
@@ -70,11 +70,11 @@ public class BootConfiguration {
     private List<ContributionSource> userContributions = Collections.emptyList();
     private ClassLoader hostClassLoader;
 
-    public Fabric3Runtime<?> getRuntime() {
+    public Fabric3Runtime getRuntime() {
         return runtime;
     }
 
-    public void setRuntime(Fabric3Runtime<?> runtime) {
+    public void setRuntime(Fabric3Runtime runtime) {
         this.runtime = runtime;
     }
 

@@ -79,7 +79,7 @@ public class WebappRuntimeImpl extends AbstractRuntime<WebappHostInfo> implement
     private F3RequestListener listener;
 
     public WebappRuntimeImpl(RuntimeConfiguration<WebappHostInfo> configuration) {
-        super(WebappHostInfo.class, configuration);
+        super(configuration);
     }
 
     public void deploy(QName qName, URI componentId) throws ContributionException, DeploymentException {

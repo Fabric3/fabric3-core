@@ -58,7 +58,7 @@ import org.fabric3.host.runtime.Fabric3Runtime;
  *
  * @version $Rev$ $Date$
  */
-public interface WebappRuntime extends ServletRequestListener, HttpSessionListener, Fabric3Runtime<WebappHostInfo> {
+public interface WebappRuntime extends ServletRequestListener, HttpSessionListener, Fabric3Runtime {
 
     /**
      * Deploys a composite in the domain.

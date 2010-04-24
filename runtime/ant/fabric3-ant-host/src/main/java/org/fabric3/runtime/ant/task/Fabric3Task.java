@@ -115,7 +115,7 @@ public class Fabric3Task extends Task {
     private List<FileSet> contributionSets = new ArrayList<FileSet>();
 
     private File installDirectory;
-    private Fabric3Runtime<HostInfo> runtime;
+    private Fabric3Runtime runtime;
     private RuntimeCoordinator coordinator;
 
     public Fabric3Task() {
