@@ -68,13 +68,13 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.command.Response;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.Response;
 import org.fabric3.spi.federation.RuntimeInstance;
 
 /**

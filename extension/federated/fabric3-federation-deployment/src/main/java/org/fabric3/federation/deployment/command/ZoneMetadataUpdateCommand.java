@@ -38,7 +38,7 @@
 package org.fabric3.federation.deployment.command;
 
 import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.command.Response;
 
 /**
  * Sent by a controller to a zone leader to obtain transport metadata. A request is sent to existing zone leaders when a controller joins the domain.

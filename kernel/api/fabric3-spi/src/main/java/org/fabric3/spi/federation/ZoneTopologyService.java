@@ -41,6 +41,7 @@ import java.util.List;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.command.Response;
 
 /**
  * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and

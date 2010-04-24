@@ -75,6 +75,7 @@ import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.command.Response;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -84,7 +85,6 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.ControllerNotFoundException;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.Response;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**

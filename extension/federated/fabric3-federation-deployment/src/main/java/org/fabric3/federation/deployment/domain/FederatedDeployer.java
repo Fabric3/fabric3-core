@@ -59,13 +59,13 @@ import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.command.Response;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.ErrorResponse;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.Response;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 

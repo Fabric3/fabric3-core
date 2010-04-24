@@ -43,8 +43,6 @@
  */
 package org.fabric3.spi.command;
 
-import org.fabric3.spi.federation.Response;
-
 /**
  * A Command that produces a response.
  *

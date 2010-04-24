@@ -38,7 +38,7 @@
 package org.fabric3.federation.jgroups;
 
 import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.command.Response;
 
 /**
  * @version $Rev$ $Date$

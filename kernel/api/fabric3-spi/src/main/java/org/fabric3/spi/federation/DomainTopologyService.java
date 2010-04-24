@@ -41,6 +41,7 @@ import java.util.List;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.command.Response;
 
 /**
  * Responsible for group communications across a federated (distributed) domain. Federated communication takes place between the controller

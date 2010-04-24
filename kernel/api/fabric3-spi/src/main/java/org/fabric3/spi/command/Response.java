@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.command;
 
 import java.io.Serializable;
 

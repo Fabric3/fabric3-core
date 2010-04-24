@@ -40,7 +40,7 @@ package org.fabric3.federation.deployment.command;
 import java.util.Map;
 
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.federation.Response;
+import org.fabric3.spi.command.Response;
 
 /**
  * @version $Rev: 8589 $ $Date: 2010-01-20 09:52:59 -0800 (Wed, 20 Jan 2010) $
