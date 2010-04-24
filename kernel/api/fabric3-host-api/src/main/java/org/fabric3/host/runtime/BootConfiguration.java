@@ -68,6 +68,7 @@ public class BootConfiguration {
     private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
     private List<ContributionSource> userContributions = Collections.emptyList();
+    private ClassLoader hostClassLoader;
 
     public Fabric3Runtime<?> getRuntime() {
         return runtime;
@@ -99,6 +100,14 @@ public class BootConfiguration {
 
     public void setBootClassLoader(ClassLoader bootClassLoader) {
         this.bootClassLoader = bootClassLoader;
+    }
+
+    public ClassLoader getHostClassLoader() {
+        return hostClassLoader;
+    }
+
+    public void setHostClassLoader(ClassLoader hostClassLoader) {
+        this.hostClassLoader = hostClassLoader;
     }
 
     public Map<String, String> getExportedPackages() {

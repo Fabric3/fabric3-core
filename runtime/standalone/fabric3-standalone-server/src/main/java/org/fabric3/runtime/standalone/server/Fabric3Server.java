@@ -190,6 +190,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
+            configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);

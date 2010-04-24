@@ -192,6 +192,7 @@ public class Fabric3Task extends Task {
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
+            configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);

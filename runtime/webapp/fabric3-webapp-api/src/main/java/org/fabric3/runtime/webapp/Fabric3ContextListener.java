@@ -46,7 +46,6 @@ package org.fabric3.runtime.webapp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -98,15 +97,15 @@ import static org.fabric3.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  * @version $Rev$ $Date$
  */
 public class Fabric3ContextListener implements ServletContextListener {
-
     private RuntimeCoordinator coordinator;
+    private WebAppMonitor monitor;
 
     public void contextInitialized(ServletContextEvent event) {
         ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
         ServletContext servletContext = event.getServletContext();
         WebappUtil utils = getUtils(servletContext);
         WebappRuntime runtime;
-        WebAppMonitor monitor = null;
+
         try {
             String defaultComposite = "WebappComposite";
             String compositeNamespace = utils.getInitParameter(COMPOSITE_NAMESPACE_PARAM, null);
@@ -117,9 +116,19 @@ public class Fabric3ContextListener implements ServletContextListener {
             if (scdl == null) {
                 throw new InitializationException("Web composite not found");
             }
-            runtime = createRuntime(webappClassLoader, servletContext, utils);
-            monitor = runtime.getMonitorFactory().getMonitor(WebAppMonitor.class);
-            BootConfiguration configuration = createBootConfiguration(runtime, webappClassLoader, utils);
+            MonitorFactory monitorFactory = utils.createMonitorFactory(webappClassLoader);
+            MBeanServer mBeanServer = utils.createMBeanServer();
+
+            File baseDir = new File(URLDecoder.decode(servletContext.getResource("/WEB-INF/lib/").getFile(), "UTF-8"));
+            File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
+            tempDir.mkdir();
+            URI domain = new URI(utils.getInitParameter(DOMAIN_PARAM, "fabric3://domain"));
+            WebappHostInfo info = new WebappHostInfoImpl(servletContext, domain, baseDir, tempDir);
+
+
+            runtime = createRuntime(webappClassLoader, info, monitorFactory, mBeanServer, utils);
+            monitor = monitorFactory.getMonitor(WebAppMonitor.class);
+            BootConfiguration configuration = createBootConfiguration(runtime, webappClassLoader, servletContext, utils);
             coordinator = utils.getCoordinator(configuration, webappClassLoader);
 
             coordinator.start();
@@ -150,27 +159,14 @@ public class Fabric3ContextListener implements ServletContextListener {
         }
     }
 
-    private WebappRuntime createRuntime(ClassLoader webappClassLoader, ServletContext context, WebappUtil utils) {
-        try {
-            File baseDir = new File(URLDecoder.decode(context.getResource("/WEB-INF/lib/").getFile(), "UTF-8"));
-            File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
-            tempDir.mkdir();
-            URI domain = new URI(utils.getInitParameter(DOMAIN_PARAM, "fabric3://domain"));
-            WebappHostInfo info = new WebappHostInfoImpl(context, domain, baseDir, tempDir);
-
-            MonitorFactory factory = utils.createMonitorFactory(webappClassLoader);
-            MBeanServer mBeanServer = utils.createMBeanServer();
-
-            RuntimeConfiguration<WebappHostInfo> configuration =
-                    new RuntimeConfiguration<WebappHostInfo>(webappClassLoader, info, factory, mBeanServer);
-            return utils.createRuntime(webappClassLoader, configuration);
-        } catch (URISyntaxException e) {
-            throw new Fabric3InitException(e);
-        } catch (UnsupportedEncodingException e) {
-            throw new Fabric3InitException(e);
-        } catch (MalformedURLException e) {
-            throw new Fabric3InitException(e);
-        }
+    private WebappRuntime createRuntime(ClassLoader webappClassLoader,
+                                        WebappHostInfo info,
+                                        MonitorFactory factory,
+                                        MBeanServer mBeanServer,
+                                        WebappUtil utils) {
+        RuntimeConfiguration<WebappHostInfo> configuration =
+                new RuntimeConfiguration<WebappHostInfo>(webappClassLoader, info, factory, mBeanServer);
+        return utils.createRuntime(webappClassLoader, configuration);
     }
 
     /*
@@ -178,9 +174,11 @@ public class Fabric3ContextListener implements ServletContextListener {
      */
     private BootConfiguration createBootConfiguration(WebappRuntime runtime,
                                                       ClassLoader webappClassLoader,
+                                                      ServletContext servletContext,
                                                       WebappUtil utils) throws InitializationException {
 
         BootConfiguration configuration = new BootConfiguration();
+        configuration.setHostClassLoader(webappClassLoader);
         configuration.setBootClassLoader(webappClassLoader);
 
         URL systemComposite = utils.getSystemScdl(webappClassLoader);
@@ -196,8 +194,7 @@ public class Fabric3ContextListener implements ServletContextListener {
         configuration.setExportedPackages(exportedPackages);
 
         // process extensions
-        ServletContext context = runtime.getHostInfo().getServletContext();
-        List<ContributionSource> extensions = getExtensionContributions("/WEB-INF/lib/f3Extensions.properties", context);
+        List<ContributionSource> extensions = getExtensionContributions("/WEB-INF/lib/f3Extensions.properties", servletContext);
         configuration.setExtensionContributions(extensions);
 
         configuration.setRuntime(runtime);
@@ -266,7 +263,7 @@ public class Fabric3ContextListener implements ServletContextListener {
 
         if (runtime != null) {
             servletContext.removeAttribute(RUNTIME_ATTRIBUTE);
-            runtime.getMonitorFactory().getMonitor(WebAppMonitor.class).stopped();
+            monitor.stopped();
         }
         try {
             if (coordinator == null) {

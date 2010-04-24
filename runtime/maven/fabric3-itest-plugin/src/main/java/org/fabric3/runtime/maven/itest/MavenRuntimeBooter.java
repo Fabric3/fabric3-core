@@ -133,6 +133,7 @@ public class MavenRuntimeBooter {
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
+            configuration.setHostClassLoader(hostClassLoader);
             configuration.setBootClassLoader(bootClassLoader);
             configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);

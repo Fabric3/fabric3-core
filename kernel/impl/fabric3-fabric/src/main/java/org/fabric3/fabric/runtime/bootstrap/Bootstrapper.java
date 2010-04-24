@@ -54,8 +54,7 @@ import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 
 /**
- * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime
- * services.
+ * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime services.
  *
  * @version $Rev$ $Date$
  */
@@ -66,6 +65,7 @@ public interface Bootstrapper {
      * @param runtime            the runtime to initialize the domain for
      * @param systemCompositeUrl the URL of the system composite file
      * @param systemConfigSource the source for the system configuration property
+     * @param hostClassLoader    the host classloader that is shared between application classes and runtime classes
      * @param bootClassLoader    the bootstrap classloader
      * @param registrations      extension components provided by the host runtime
      * @param exportedPackages   the Java packages exported by the boot contribution
@@ -74,6 +74,7 @@ public interface Bootstrapper {
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
                                   URL systemCompositeUrl,
                                   Document systemConfigSource,
+                                  ClassLoader hostClassLoader,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> registrations,
                                   Map<String, String> exportedPackages) throws InitializationException;

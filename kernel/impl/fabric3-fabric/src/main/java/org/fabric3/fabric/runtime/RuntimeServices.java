@@ -37,12 +37,16 @@
 */
 package org.fabric3.fabric.runtime;
 
+import javax.management.MBeanServer;
+
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.repository.Repository;
 
 /**
  * Interface for accessing services provided by a runtime.
@@ -53,6 +57,20 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
  */
 public interface RuntimeServices {
 
+    /**
+     * Returns the MonitorFactory that this runtime is using.
+     *
+     * @return the MonitorFactory that this runtime is using
+     */
+    MonitorFactory getMonitorFactory();
+
+    /**
+     * Returns the MBeanServer this runtime should use.
+     *
+     * @return the MBeanServer
+     */
+    MBeanServer getMBeanServer();
+    
     /**
      * Returns this runtime's logical component manager.
      *
@@ -95,4 +113,11 @@ public interface RuntimeServices {
      */
     MetaDataStore getMetaDataStore();
 
+    /**
+     * Returns the runtime repository.
+     *
+     * @return the runtime repository.
+     */
+    Repository getRepository();
+    
 }

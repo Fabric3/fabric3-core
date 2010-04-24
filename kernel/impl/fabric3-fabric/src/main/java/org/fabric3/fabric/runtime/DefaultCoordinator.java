@@ -78,6 +78,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private RuntimeState state = RuntimeState.UNINITIALIZED;
     private Fabric3Runtime<?> runtime;
     private Bootstrapper bootstrapper;
+    private ClassLoader hostClassLoader;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
     private List<ContributionSource> extensionContributions;
@@ -89,6 +90,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     public DefaultCoordinator(BootConfiguration configuration) {
         bootstrapper = new DefaultBootstrapper();
         runtime = configuration.getRuntime();
+        hostClassLoader = configuration.getHostClassLoader();
         bootClassLoader = configuration.getBootClassLoader();
         exportedPackages = configuration.getExportedPackages();
         extensionContributions = configuration.getExtensionContributions();
@@ -133,7 +135,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      */
     private void bootPrimordial() throws InitializationException {
         runtime.boot();
-        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfig, bootClassLoader, registrations, exportedPackages);
+        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfig, hostClassLoader, bootClassLoader, registrations, exportedPackages);
     }
 
     /**

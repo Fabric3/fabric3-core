@@ -117,6 +117,8 @@ public class DefaultBootstrapper implements Bootstrapper {
     private LogicalComponentManager logicalComponetManager;
     private ComponentManager componentManager;
     private ScopeContainer scopeContainer;
+    private Repository repository;
+    private MBeanServer mbeanServer;
 
     private Domain runtimeDomain;
 
@@ -139,6 +141,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public void bootRuntimeDomain(Fabric3Runtime<?> runtime,
                                   URL systemCompositeUrl,
                                   Document systemConfig,
+                                  ClassLoader hostClassLoader,
                                   ClassLoader bootClassLoader,
                                   List<ComponentRegistration> components,
                                   Map<String, String> exportedPackages) throws InitializationException {
@@ -146,15 +149,15 @@ public class DefaultBootstrapper implements Bootstrapper {
         this.runtime = runtime;
         this.systemCompositeUrl = systemCompositeUrl;
         this.systemConfig = systemConfig;
+        this.hostClassLoader = hostClassLoader;
         this.bootClassLoader = bootClassLoader;
         this.exportedPackages = exportedPackages;
         // classloader shared by extension and application classes
-        this.hostClassLoader = runtime.getHostClassLoader();
 
-        monitorFactory = runtime.getMonitorFactory();
         HostInfo hostInfo = runtime.getHostInfo();
 
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
+        monitorFactory = runtimeServices.getMonitorFactory();
         logicalComponetManager = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
         domain = logicalComponetManager.getRootComponent();
@@ -162,6 +165,8 @@ public class DefaultBootstrapper implements Bootstrapper {
         metaDataStore = runtimeServices.getMetaDataStore();
         scopeRegistry = runtimeServices.getScopeRegistry();
         scopeContainer = runtimeServices.getScopeContainer();
+        repository = runtimeServices.getRepository();
+        mbeanServer = runtimeServices.getMBeanServer();
 
         synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
                                                         instantiator,
@@ -173,7 +178,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         // register primordial components provided by the runtime itself
         registerRuntimeComponents(components);
 
-        MBeanServer mbeanServer = runtime.getMBeanServer();
         runtimeDomain = BootstrapAssemblyFactory.createDomain(monitorFactory,
                                                               classLoaderRegistry,
                                                               scopeRegistry,
@@ -223,9 +227,8 @@ public class DefaultBootstrapper implements Bootstrapper {
         Class<T> type = (Class<T>) runtime.getHostInfoType();
         T info = (T) runtime.getHostInfo();
         registerComponent("HostInfo", type, info, true);
-        MBeanServer mbServer = runtime.getMBeanServer();
-        if (mbServer != null) {
-            registerComponent("MBeanServer", MBeanServer.class, mbServer, false);
+        if (mbeanServer != null) {
+            registerComponent("MBeanServer", MBeanServer.class, mbeanServer, false);
         }
 
         // services available through the inward facing RuntimeServices SPI
@@ -238,7 +241,6 @@ public class DefaultBootstrapper implements Bootstrapper {
 
         registerComponent("MetaDataStore", MetaDataStore.class, metaDataStore, true);
 
-        Repository repository = runtime.getRepository();
         registerComponent("Repository", Repository.class, repository, true);
 
         // register other components provided by the host environment

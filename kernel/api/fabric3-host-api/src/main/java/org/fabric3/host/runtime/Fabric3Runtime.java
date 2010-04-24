@@ -38,10 +38,6 @@
 package org.fabric3.host.runtime;
 
 import java.net.URI;
-import javax.management.MBeanServer;
-
-import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.repository.Repository;
 
 /**
  * Represents a runtime in a domain.
@@ -49,13 +45,6 @@ import org.fabric3.host.repository.Repository;
  * @version $Rev$ $Date$
  */
 public interface Fabric3Runtime<HI extends HostInfo> {
-
-    /**
-     * Returns the host ClassLoader that is parent to all Fabric3 classloaders.
-     *
-     * @return the host's ClassLoader
-     */
-    ClassLoader getHostClassLoader();
 
     /**
      * Returns the type of info supplied by the host.
@@ -70,27 +59,6 @@ public interface Fabric3Runtime<HI extends HostInfo> {
      * @return the info this runtime will make available to service components
      */
     HI getHostInfo();
-
-    /**
-     * Returns the MonitorFactory that this runtime is using.
-     *
-     * @return the MonitorFactory that this runtime is using
-     */
-    MonitorFactory getMonitorFactory();
-
-    /**
-     * Returns the MBeanServer this runtime should use.
-     *
-     * @return the MBeanServer
-     */
-    MBeanServer getMBeanServer();
-
-    /**
-     * Returns the runtime repository.
-     *
-     * @return the runtime repository.
-     */
-    Repository getRepository();
 
     /**
      * Returns the system component providing the designated service.
