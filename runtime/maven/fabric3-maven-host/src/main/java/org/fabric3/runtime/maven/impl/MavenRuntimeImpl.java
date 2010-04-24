@@ -58,7 +58,7 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
-import org.fabric3.host.runtime.ContextStartException;
+import org.fabric3.runtime.maven.ContextStartException;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.runtime.maven.MavenHostInfo;

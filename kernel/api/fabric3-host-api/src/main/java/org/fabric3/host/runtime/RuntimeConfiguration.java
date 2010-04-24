@@ -43,7 +43,7 @@ import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.repository.Repository;
 
 /**
- * Host dependencies required to boot a runtime instance.
+ * Contains host dependencies required to boot a runtime instance.
  *
  * @version $Rev$ $Date$
  */

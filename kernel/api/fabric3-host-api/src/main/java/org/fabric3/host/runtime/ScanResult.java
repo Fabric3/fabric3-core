@@ -43,7 +43,7 @@ import java.util.List;
 import org.fabric3.host.contribution.ContributionSource;
 
 /**
- * Holder for extension and user contributions in the runtime repository.
+ * Result containing extension and user contribution sources provided by introspecting the contents of a runtime repository.
  *
  * @version $Rev$ $Date$
  */

@@ -50,7 +50,6 @@ import org.apache.maven.surefire.suite.SurefireTestSuite;
 
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.runtime.ContextStartException;
 import org.fabric3.host.runtime.Fabric3Runtime;
 
 /**
