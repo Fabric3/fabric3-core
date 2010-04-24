@@ -52,7 +52,6 @@ import javax.management.MBeanServer;
 import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.FabricNames;
 import org.fabric3.fabric.runtime.RuntimeServices;
@@ -65,11 +64,11 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.repository.Repository;
+import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -87,7 +86,6 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
@@ -100,12 +98,11 @@ import org.fabric3.spi.synthesize.ComponentSynthesizer;
  * @version $Rev$ $Date$
  */
 public class DefaultBootstrapper implements Bootstrapper {
-
     private static final URI RUNTIME_SERVICES = URI.create("fabric3://RuntimeServices");
 
     // bootstrap components - these are disposed of after the core runtime system components are booted
-    private JavaContractProcessor contractProcessor;
-    private AtomicComponentInstantiator instantiator;
+    private JavaContractProcessorImpl contractProcessor;
+    private AtomicComponentInstantiatorImpl instantiator;
     private ImplementationProcessor<SystemImplementation> implementationProcessor;
     private ComponentSynthesizer synthesizer;
 
@@ -131,26 +128,25 @@ public class DefaultBootstrapper implements Bootstrapper {
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
     private Contribution bootContribution;
+    private List<ComponentRegistration> registrations;
 
-    public DefaultBootstrapper() {
-        // create components needed to bootstrap the runtime
+    public DefaultBootstrapper(BootConfiguration configuration) {
+        runtime = configuration.getRuntime();
+        systemCompositeUrl = configuration.getSystemCompositeUrl();
+        systemConfig = configuration.getSystemConfig();
+        hostClassLoader = configuration.getHostClassLoader();
+        bootClassLoader = configuration.getBootClassLoader();
+        exportedPackages = configuration.getExportedPackages();
+        registrations = configuration.getRegistrations();
+
+        // create disposable components needed to bootstrap the runtime
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
         instantiator = new AtomicComponentInstantiatorImpl();
         implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
-    public void bootRuntimeDomain(BootConfiguration configuration) throws InitializationException {
-
-        this.runtime = configuration.getRuntime();
-        this.systemCompositeUrl = configuration.getSystemCompositeUrl();
-        this.systemConfig = configuration.getSystemConfig();
-        this.hostClassLoader = configuration.getHostClassLoader();
-        this.bootClassLoader = configuration.getBootClassLoader();
-        this.exportedPackages = configuration.getExportedPackages();
-        // classloader shared by extension and application classes
-
-
+    public void bootRuntimeDomain() throws InitializationException {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
         monitorFactory = runtimeServices.getMonitorFactory();
@@ -172,8 +168,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                         contractProcessor,
                                                         scopeContainer);
 
-        // register primordial components provided by the runtime itself
-        List<ComponentRegistration> registrations = configuration.getRegistrations();
+        // register components provided by the runtime itself so they may be wired to
         registerRuntimeComponents(registrations);
 
         runtimeDomain = BootstrapAssemblyFactory.createDomain(monitorFactory,
@@ -185,10 +180,10 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               mbeanServer,
                                                               hostInfo);
 
-        // create and register bootstrap components provided by this bootstrapper
+        // register domain components
         registerDomain();
 
-        // register the classloaders
+        // create host and boot contributions
         synthesizeContributions();
 
     }

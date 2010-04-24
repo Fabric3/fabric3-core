@@ -47,7 +47,7 @@ import java.net.URI;
 public interface Fabric3Runtime {
 
     /**
-     * Returns the system component providing the designated service.
+     * Returns a system component providing the designated service.
      *
      * @param service the service interface required
      * @param uri     the id of the system component

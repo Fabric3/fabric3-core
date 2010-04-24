@@ -57,12 +57,12 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
-import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.event.JoinDomain;
+import org.fabric3.spi.event.DomainRecover;
 
 /**
  * Default implementation of the RuntimeCoordinator.
@@ -73,12 +73,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     private RuntimeState state = RuntimeState.UNINITIALIZED;
     private BootConfiguration configuration;
     private Fabric3Runtime runtime;
-    private Bootstrapper bootstrapper;
 
     public DefaultCoordinator(BootConfiguration configuration) {
         this.configuration = configuration;
         runtime = configuration.getRuntime();
-        bootstrapper = new DefaultBootstrapper();
     }
 
     public RuntimeState getState() {
@@ -86,7 +84,16 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     }
 
     public void start() throws InitializationException {
-        bootPrimordial();
+        // boot primordial services
+        runtime.boot();
+
+        Bootstrapper bootstrapper = new DefaultBootstrapper(configuration);
+
+        // boot runtime domain
+        bootstrapper.bootRuntimeDomain();
+
+        // initialize core system components
+        bootstrapper.bootSystem();
 
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
@@ -94,10 +101,15 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
         eventService.publish(new ExtensionsInitialized());
 
+        // initiate local runtime recovery
         recover(eventService);
-        joinDomain(eventService);
 
-        // starts the runtime by publishing a start event
+        eventService.publish(new JoinDomain());
+
+        // initiate domain recovery
+        eventService.publish(new DomainRecover());
+
+        // signal runtime start
         eventService.publish(new RuntimeStart());
         state = RuntimeState.STARTED;
     }
@@ -110,23 +122,11 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     }
 
     /**
-     * Boots the runtime domain and primordial components.
-     *
-     * @throws InitializationException if an error booting the runtime domain is encountered
-     */
-    private void bootPrimordial() throws InitializationException {
-        runtime.boot();
-        bootstrapper.bootRuntimeDomain(configuration);
-    }
-
-    /**
      * Loads runtime extensions.
      *
      * @throws InitializationException if an error loading runtime extensions
      */
     private void loadExtensions() throws InitializationException {
-        // initialize core system components
-        bootstrapper.bootSystem();
         // install extensions
         List<ContributionSource> contributions = configuration.getExtensionContributions();
         List<URI> uris = installContributions(contributions);
@@ -151,16 +151,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         List<ContributionSource> contributions = configuration.getUserContributions();
         installContributions(contributions);
         eventService.publish(new RuntimeRecover());
-    }
-
-    /**
-     * Synchronizes the runtime with the domain
-     *
-     * @param eventService the event service
-     */
-    private void joinDomain(EventService eventService) {
-        eventService.publish(new JoinDomain());
-        eventService.publish(new DomainRecover());
     }
 
     /**

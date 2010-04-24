@@ -43,7 +43,6 @@
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
-import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
 
 /**
@@ -52,13 +51,13 @@ import org.fabric3.host.runtime.InitializationException;
  * @version $Rev$ $Date$
  */
 public interface Bootstrapper {
+    
     /**
      * Initializes the domain for the given runtime.
      *
-     * @param configuration the boot configuration
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
-    public void bootRuntimeDomain(BootConfiguration configuration) throws InitializationException;
+    public void bootRuntimeDomain() throws InitializationException;
 
     /**
      * Initialize the core system components for the supplied runtime.
