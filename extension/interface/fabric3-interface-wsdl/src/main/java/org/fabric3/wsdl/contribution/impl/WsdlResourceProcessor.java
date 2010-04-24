@@ -84,7 +84,6 @@ import org.fabric3.wsdl.contribution.WsdlResourceProcessorExtension;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
-import org.fabric3.wsdl.loader.PortTypeNotFound;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.fabric3.wsdl.processor.WsdlContractProcessor;
 

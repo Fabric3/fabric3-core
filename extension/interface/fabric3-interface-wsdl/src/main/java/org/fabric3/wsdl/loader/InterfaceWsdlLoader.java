@@ -63,6 +63,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
+import org.fabric3.wsdl.contribution.impl.PortTypeNotFound;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
