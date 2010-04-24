@@ -65,7 +65,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
-import org.fabric3.binding.jms.runtime.helper.JmsHelper;
+import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.host.work.DefaultPausableWork;
 import org.fabric3.host.work.PausableWork;
 import org.fabric3.host.work.WorkScheduler;

@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.helper;
+package org.fabric3.binding.jms.runtime.common;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;

@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.helper;
+package org.fabric3.binding.jms.runtime.common;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
@@ -51,7 +51,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.binding.jms.runtime.JmsBadMessageException;
 
 /**
  * Utility class for message processing.
@@ -98,7 +97,7 @@ public class MessageHelper {
         switch (payloadType) {
         case OBJECT:
             if (!(message instanceof ObjectMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting ObjectMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting ObjectMessage");
             }
             ObjectMessage objectMessage = (ObjectMessage) message;
             payload = objectMessage.getObject();
@@ -107,63 +106,63 @@ public class MessageHelper {
             throw new UnsupportedOperationException("Stream message not yet supported");
         case TEXT:
             if (!(message instanceof TextMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting TextMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting TextMessage");
             }
             TextMessage textMessage = (TextMessage) message;
             payload = textMessage.getText();
             break;
         case XML:
             if (!(message instanceof TextMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting TextMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting TextMessage");
             }
             TextMessage xmlMessage = (TextMessage) message;
             payload = xmlMessage.getText();
             break;
         case BOOLEAN:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage booleanMessage = (BytesMessage) message;
             return booleanMessage.readBoolean();
         case BYTE:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage bytesMessage = (BytesMessage) message;
             return bytesMessage.readByte();
         case CHARACTER:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage charMessage = (BytesMessage) message;
             return charMessage.readChar();
         case DOUBLE:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage doubleMessage = (BytesMessage) message;
             return doubleMessage.readDouble();
         case FLOAT:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage floatMessage = (BytesMessage) message;
             return floatMessage.readFloat();
         case INTEGER:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage intMessage = (BytesMessage) message;
             return intMessage.readInt();
         case LONG:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage longMessage = (BytesMessage) message;
             return longMessage.readLong();
         case SHORT:
             if (!(message instanceof BytesMessage)) {
-               throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
             }
             BytesMessage shortMessage = (BytesMessage) message;
             return shortMessage.readShort();
