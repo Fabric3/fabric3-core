@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
 import org.fabric3.host.stream.Source;
 
 /**
- * Utility class for boostrap operations.
+ * Used to bootstrap a runtime.
  *
  * @version $Revision$ $Date$
  */
