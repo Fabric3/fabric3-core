@@ -179,7 +179,7 @@ public class Fabric3Task extends Task {
 
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 
-            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostLoader, hostInfo, monitorFactory, mBeanServer);
+            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostInfo, monitorFactory, mBeanServer);
 
             runtime = factory.createDefaultRuntime(runtimeConfig);
 

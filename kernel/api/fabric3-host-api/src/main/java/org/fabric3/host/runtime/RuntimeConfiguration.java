@@ -48,7 +48,6 @@ import org.fabric3.host.repository.Repository;
  * @version $Rev$ $Date$
  */
 public class RuntimeConfiguration<HI extends HostInfo> {
-    private ClassLoader hostClassLoader;
     private HI hostInfo;
     private MonitorFactory monitorFactory;
     private MBeanServer mBeanServer;
@@ -57,13 +56,11 @@ public class RuntimeConfiguration<HI extends HostInfo> {
     /**
      * Constructor taking the minimal host dependencies to boot a runtime.
      *
-     * @param hostClassLoader the host classloader.
      * @param hostInfo        the host info instance
      * @param monitorFactory  the monitor factory
      * @param mBeanServer     the JMX MBean server
      */
-    public RuntimeConfiguration(ClassLoader hostClassLoader, HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
-        this.hostClassLoader = hostClassLoader;
+    public RuntimeConfiguration(HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
         this.hostInfo = hostInfo;
         this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
@@ -72,31 +69,16 @@ public class RuntimeConfiguration<HI extends HostInfo> {
     /**
      * Constructor taking all configurable dependencies to boot a runtime.
      *
-     * @param hostClassLoader the host classloader.
-     * @param hostInfo        the host info instance
-     * @param monitorFactory  the monitor factory
-     * @param mBeanServer     the JMX MBean server
-     * @param repository      the artifact repository
+     * @param hostInfo       the host info instance
+     * @param monitorFactory the monitor factory
+     * @param mBeanServer    the JMX MBean server
+     * @param repository     the artifact repository
      */
-    public RuntimeConfiguration(ClassLoader hostClassLoader,
-                                HI hostInfo,
-                                MonitorFactory monitorFactory,
-                                MBeanServer mBeanServer,
-                                Repository repository) {
-        this.hostClassLoader = hostClassLoader;
+    public RuntimeConfiguration(HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer, Repository repository) {
         this.hostInfo = hostInfo;
         this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
         this.repository = repository;
-    }
-
-    /**
-     * Returns the host classloader.
-     *
-     * @return the host classloader
-     */
-    public ClassLoader getHostClassLoader() {
-        return hostClassLoader;
     }
 
     /**

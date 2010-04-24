@@ -81,7 +81,6 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Runtime, RuntimeServices {
-    private ClassLoader hostClassLoader;
     private HI hostInfo;
     private MonitorFactory monitorFactory;
     private LogicalComponentManager logicalComponentManager;
@@ -94,15 +93,10 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
     private Repository repository;
 
     protected AbstractRuntime(RuntimeConfiguration<HI> configuration) {
-        hostClassLoader = configuration.getHostClassLoader();
         hostInfo = configuration.getHostInfo();
         monitorFactory = configuration.getMonitorFactory();
         mbServer = configuration.getMBeanServer();
         repository = configuration.getRepository();
-    }
-
-    public ClassLoader getHostClassLoader() {
-        return hostClassLoader;
     }
 
     public HI getHostInfo() {

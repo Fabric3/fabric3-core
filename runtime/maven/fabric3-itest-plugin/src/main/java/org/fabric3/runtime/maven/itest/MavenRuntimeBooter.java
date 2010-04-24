@@ -175,8 +175,7 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = agent.getMBeanServer();
 
-        RuntimeConfiguration<MavenHostInfo> configuration =
-                new RuntimeConfiguration<MavenHostInfo>(hostClassLoader, hostInfo, monitorFactory, mBeanServer);
+        RuntimeConfiguration<MavenHostInfo> configuration = new RuntimeConfiguration<MavenHostInfo>(hostInfo, monitorFactory, mBeanServer);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }
