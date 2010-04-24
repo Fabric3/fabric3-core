@@ -38,11 +38,7 @@
 package org.fabric3.fabric.runtime;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
-
-import org.w3c.dom.Document;
 
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
 import org.fabric3.fabric.runtime.bootstrap.Bootstrapper;
@@ -56,7 +52,6 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -76,28 +71,14 @@ import org.fabric3.spi.event.RuntimeStart;
  */
 public class DefaultCoordinator implements RuntimeCoordinator {
     private RuntimeState state = RuntimeState.UNINITIALIZED;
+    private BootConfiguration configuration;
     private Fabric3Runtime runtime;
     private Bootstrapper bootstrapper;
-    private ClassLoader hostClassLoader;
-    private ClassLoader bootClassLoader;
-    private Map<String, String> exportedPackages;
-    private List<ContributionSource> extensionContributions;
-    private List<ContributionSource> userContributions;
-    private List<ComponentRegistration> registrations;
-    private URL systemCompositeUrl;
-    private Document systemConfig;
 
     public DefaultCoordinator(BootConfiguration configuration) {
+        this.configuration = configuration;
         bootstrapper = new DefaultBootstrapper();
         runtime = configuration.getRuntime();
-        hostClassLoader = configuration.getHostClassLoader();
-        bootClassLoader = configuration.getBootClassLoader();
-        exportedPackages = configuration.getExportedPackages();
-        extensionContributions = configuration.getExtensionContributions();
-        userContributions = configuration.getUserContributions();
-        registrations = configuration.getRegistrations();
-        systemCompositeUrl = configuration.getSystemCompositeUrl();
-        systemConfig = configuration.getSystemConfig();
     }
 
     public RuntimeState getState() {
@@ -135,7 +116,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      */
     private void bootPrimordial() throws InitializationException {
         runtime.boot();
-        bootstrapper.bootRuntimeDomain(runtime, systemCompositeUrl, systemConfig, hostClassLoader, bootClassLoader, registrations, exportedPackages);
+        bootstrapper.bootRuntimeDomain(configuration);
     }
 
     /**
@@ -147,7 +128,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         // initialize core system components
         bootstrapper.bootSystem();
         // install extensions
-        List<URI> uris = installContributions(extensionContributions);
+        List<ContributionSource> contributions = configuration.getExtensionContributions();
+        List<URI> uris = installContributions(contributions);
         // deploy extensions
         deploy(uris);
     }
@@ -166,7 +148,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
             throw new InitializationException("Domain not found: " + name, name);
         }
         // install user contributions - they will be deployed when the domain recovers
-        installContributions(userContributions);
+        List<ContributionSource> contributions = configuration.getUserContributions();
+        installContributions(contributions);
         eventService.publish(new RuntimeRecover());
     }
 

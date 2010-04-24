@@ -43,14 +43,7 @@
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
-import org.w3c.dom.Document;
-
-import org.fabric3.host.runtime.ComponentRegistration;
-import org.fabric3.host.runtime.Fabric3Runtime;
+import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.InitializationException;
 
 /**
@@ -62,22 +55,10 @@ public interface Bootstrapper {
     /**
      * Initializes the domain for the given runtime.
      *
-     * @param runtime            the runtime to initialize the domain for
-     * @param systemCompositeUrl the URL of the system composite file
-     * @param systemConfigSource the source for the system configuration property
-     * @param hostClassLoader    the host classloader that is shared between application classes and runtime classes
-     * @param bootClassLoader    the bootstrap classloader
-     * @param registrations      extension components provided by the host runtime
-     * @param exportedPackages   the Java packages exported by the boot contribution
+     * @param configuration the boot configuration
      * @throws InitializationException if there was a problem bootstrapping the runtime
      */
-    public void bootRuntimeDomain(Fabric3Runtime runtime,
-                                  URL systemCompositeUrl,
-                                  Document systemConfigSource,
-                                  ClassLoader hostClassLoader,
-                                  ClassLoader bootClassLoader,
-                                  List<ComponentRegistration> registrations,
-                                  Map<String, String> exportedPackages) throws InitializationException;
+    public void bootRuntimeDomain(BootConfiguration configuration) throws InitializationException;
 
     /**
      * Initialize the core system components for the supplied runtime.

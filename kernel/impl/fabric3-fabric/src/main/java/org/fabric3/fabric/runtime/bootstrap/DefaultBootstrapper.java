@@ -69,6 +69,7 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -139,20 +140,14 @@ public class DefaultBootstrapper implements Bootstrapper {
         implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
-    public void bootRuntimeDomain(Fabric3Runtime runtime,
-                                  URL systemCompositeUrl,
-                                  Document systemConfig,
-                                  ClassLoader hostClassLoader,
-                                  ClassLoader bootClassLoader,
-                                  List<ComponentRegistration> components,
-                                  Map<String, String> exportedPackages) throws InitializationException {
+    public void bootRuntimeDomain(BootConfiguration configuration) throws InitializationException {
 
-        this.runtime = runtime;
-        this.systemCompositeUrl = systemCompositeUrl;
-        this.systemConfig = systemConfig;
-        this.hostClassLoader = hostClassLoader;
-        this.bootClassLoader = bootClassLoader;
-        this.exportedPackages = exportedPackages;
+        this.runtime = configuration.getRuntime();
+        this.systemCompositeUrl = configuration.getSystemCompositeUrl();
+        this.systemConfig = configuration.getSystemConfig();
+        this.hostClassLoader = configuration.getHostClassLoader();
+        this.bootClassLoader = configuration.getBootClassLoader();
+        this.exportedPackages = configuration.getExportedPackages();
         // classloader shared by extension and application classes
 
 
@@ -178,7 +173,8 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                         scopeContainer);
 
         // register primordial components provided by the runtime itself
-        registerRuntimeComponents(components);
+        List<ComponentRegistration> registrations = configuration.getRegistrations();
+        registerRuntimeComponents(registrations);
 
         runtimeDomain = BootstrapAssemblyFactory.createDomain(monitorFactory,
                                                               classLoaderRegistry,
