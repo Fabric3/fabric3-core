@@ -49,7 +49,7 @@ package org.fabric3.host.runtime;
  * @version $Revision: 8902 $ $Date: 2010-04-23 11:34:05 +0200 (Fri, 23 Apr 2010) $
  */
 public class BootstrapFactory {
-    private static final String FACTORY_CLASS = "org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapService";
+    private static final String FACTORY_CLASS = "org.fabric3.fabric.runtime.DefaultBootstrapService";
 
     /**
      * Returns a BootstrapService for the given classloader.

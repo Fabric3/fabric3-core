@@ -41,8 +41,8 @@ import java.net.URI;
 import java.util.List;
 
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
-import org.fabric3.fabric.runtime.bootstrap.Bootstrapper;
-import org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapper;
+import org.fabric3.fabric.runtime.Bootstrapper;
+import org.fabric3.fabric.runtime.DefaultBootstrapper;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;

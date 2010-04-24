@@ -41,22 +41,14 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.runtime.bootstrap;
+package org.fabric3.fabric.runtime;
 
 import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import org.fabric3.fabric.runtime.DefaultCoordinator;
-import org.fabric3.fabric.runtime.DefaultRuntime;
-import org.fabric3.fabric.xml.DocumentLoader;
-import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
+import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
@@ -73,48 +65,23 @@ import org.fabric3.host.stream.Source;
  */
 public class DefaultBootstrapService implements BootstrapService {
     private RepositoryScanner scanner;
-    private DocumentLoader loader;
+    private SystemConfigLoader systemConfigLoader;
 
     public DefaultBootstrapService() {
         scanner = new RepositoryScanner();
-        loader = new DocumentLoaderImpl();
+        systemConfigLoader = new SystemConfigLoader();
+    }
+
+    public Document loadSystemConfig(Source source) throws InitializationException {
+        return systemConfigLoader.loadSystemConfig(source);
+    }
+
+    public Document createDefaultSystemConfig() {
+        return systemConfigLoader.createDefaultSystemConfig();
     }
 
     public ScanResult scanRepository(File directory) throws InitializationException {
         return scanner.scan(directory);
-    }
-
-    public Document loadSystemConfig(Source source) throws InitializationException {
-        try {
-            InputSource inputSource = new InputSource(source.openStream());
-            Document document = loader.load(inputSource, true);
-            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
-            Element oldRoot = document.getDocumentElement();
-            Element newRoot = document.createElement("values");
-            document.removeChild(oldRoot);
-            document.appendChild(newRoot);
-            newRoot.appendChild(oldRoot);
-            return document;
-        } catch (IOException e) {
-            throw new InitializationException(e);
-        } catch (SAXException e) {
-            throw new InitializationException(e);
-        }
-    }
-
-    public Document createDefaultSystemConfig() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            Document document = factory.newDocumentBuilder().newDocument();
-            Element root = document.createElement("values");
-            document.appendChild(root);
-            Element config = document.createElement("config");
-            root.appendChild(config);
-            return document;
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
     }
 
     public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration) {

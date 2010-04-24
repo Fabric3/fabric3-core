@@ -114,13 +114,8 @@ public class Fabric3Task extends Task {
     private List<FileList> contributions = new ArrayList<FileList>();
     private List<FileSet> contributionSets = new ArrayList<FileSet>();
 
-    private File installDirectory;
     private Fabric3Runtime runtime;
     private RuntimeCoordinator coordinator;
-
-    public Fabric3Task() {
-        installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Task.class);
-    }
 
     public void addContribution(FileList contribution) {
         this.contributions.add(contribution);
@@ -142,6 +137,8 @@ public class Fabric3Task extends Task {
 
     private void startRuntime() throws BuildException {
         try {
+            File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Task.class);
+
             //  calculate config directories based on the mode the runtime is booted in
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());

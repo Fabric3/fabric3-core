@@ -58,11 +58,11 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.SyntheticContributionSource;
+import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.ScanResult;
 
 /**
  * Scans a repository for extension and user contributions.

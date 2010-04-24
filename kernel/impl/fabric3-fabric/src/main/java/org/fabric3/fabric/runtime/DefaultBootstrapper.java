@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.runtime.bootstrap;
+package org.fabric3.fabric.runtime;
 
 import java.net.URI;
 import java.net.URL;
@@ -53,8 +53,11 @@ import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.runtime.FabricNames;
-import org.fabric3.fabric.runtime.RuntimeServices;
+import org.fabric3.fabric.runtime.bootstrap.BootExports;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
+import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;

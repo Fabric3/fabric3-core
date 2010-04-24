@@ -41,20 +41,33 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host.runtime;
+package org.fabric3.fabric.runtime.bootstrap;
 
-import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import org.fabric3.fabric.xml.DocumentLoader;
+import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.stream.Source;
 
 /**
- * Provides operations to bootstrap a runtime.
+ * Loads the system configuration property for a runtime domain.
  *
  * @version $Revision$ $Date$
  */
-public interface BootstrapService {
+public class SystemConfigLoader {
+    private DocumentLoader loader;
+
+    public SystemConfigLoader() {
+        loader = new DocumentLoaderImpl();
+    }
 
     /**
      * Returns a configuration property value for the runtime domain from the given source.
@@ -63,38 +76,42 @@ public interface BootstrapService {
      * @return the domain configuration property
      * @throws InitializationException if an error reading the source is encountered
      */
-    Document loadSystemConfig(Source source) throws InitializationException;
+    public Document loadSystemConfig(Source source) throws InitializationException {
+        try {
+            InputSource inputSource = new InputSource(source.openStream());
+            Document document = loader.load(inputSource, true);
+            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
+            Element oldRoot = document.getDocumentElement();
+            Element newRoot = document.createElement("values");
+            document.removeChild(oldRoot);
+            document.appendChild(newRoot);
+            newRoot.appendChild(oldRoot);
+            return document;
+        } catch (IOException e) {
+            throw new InitializationException(e);
+        } catch (SAXException e) {
+            throw new InitializationException(e);
+        }
+    }
 
     /**
      * Creates a default configuration property value for the runtime domain.
      *
      * @return a document representing the configuration property
      */
-    Document createDefaultSystemConfig();
-
-    /**
-     * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
-     *
-     * @param directory the repository directory
-     * @return the result
-     * @throws InitializationException if an error occurs during the scan operation
-     */
-    ScanResult scanRepository(File directory) throws InitializationException;
-
-    /**
-     * Instantiates a default runtime implementation.
-     *
-     * @param configuration the base configuration for the runtime
-     * @return the runtime instance
-     */
-    Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration);
-
-    /**
-     * Instantiates a RuntimeCoordinator.
-     *
-     * @param configuration the configuration for the coordinator
-     * @return the coordinator instance
-     */
-    RuntimeCoordinator createCoordinator(BootConfiguration configuration);
+    public Document createDefaultSystemConfig() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            Document document = factory.newDocumentBuilder().newDocument();
+            Element root = document.createElement("values");
+            document.appendChild(root);
+            Element config = document.createElement("config");
+            root.appendChild(config);
+            return document;
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e);
+        }
+    }
 
 }

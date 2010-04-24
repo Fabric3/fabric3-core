@@ -210,8 +210,8 @@ public final class BootstrapHelper {
                 throw new InitializationException("Domain URI was not set. Ensure it is set as a system property or in runtime.properties.");
             }
             return new DefaultHostInfo(runtimeMode, domain, baseDir, repositoryDir, configDir, modeDir, props, tempDir, dataDir);
-        } catch (URISyntaxException ex) {
-            throw new IOException(ex.getMessage());
+        } catch (URISyntaxException e) {
+            throw new InitializationException(e);
         }
     }
 
