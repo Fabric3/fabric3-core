@@ -54,7 +54,6 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
 public class DefaultRuntime extends AbstractRuntime<HostInfo> {
 
     public DefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
-        super(HostInfo.class);
-        setConfiguration(configuration);
+        super(HostInfo.class, configuration);
     }
 }

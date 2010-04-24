@@ -62,8 +62,8 @@ import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
@@ -82,8 +82,7 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
  */
 public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Runtime<HI>, RuntimeServices {
     private Class<HI> hostInfoType;
-    private MBeanServer mbServer;
-
+    private ClassLoader hostClassLoader;
     private HI hostInfo;
     private MonitorFactory monitorFactory;
     private LogicalComponentManager logicalComponentManager;
@@ -92,9 +91,17 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
+    private MBeanServer mbServer;
     private Repository repository;
 
-    private ClassLoader hostClassLoader;
+    protected AbstractRuntime(Class<HI> runtimeInfoType, RuntimeConfiguration<HI> configuration) {
+        this.hostInfoType = runtimeInfoType;
+        hostClassLoader = configuration.getHostClassLoader();
+        hostInfo = configuration.getHostInfo();
+        monitorFactory = configuration.getMonitorFactory();
+        mbServer = configuration.getMBeanServer();
+        repository = configuration.getRepository();
+    }
 
     public ClassLoader getHostClassLoader() {
         return hostClassLoader;
@@ -129,24 +136,6 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         if (repository == null) {
             // if the runtime has not been configured with a repository, create one
             repository = createRepository();
-        }
-    }
-
-    /**
-     * Creates a default repository which may be overriden by Runtime subclasses.
-     *
-     * @return an initialized repository
-     * @throws InitializationException if an error is encountered initializing a repository
-     */
-    protected Repository createRepository() throws InitializationException {
-        try {
-            RepositoryImpl repository = new RepositoryImpl(hostInfo);
-            repository.init();
-            return repository;
-        } catch (IOException e) {
-            throw new InitializationException(e);
-        } catch (RepositoryException e) {
-            throw new InitializationException(e);
         }
     }
 
@@ -211,15 +200,22 @@ public abstract class AbstractRuntime<HI extends HostInfo> implements Fabric3Run
         return repository;
     }
 
-    protected AbstractRuntime(Class<HI> runtimeInfoType) {
-        this.hostInfoType = runtimeInfoType;
+    /**
+     * Creates a default repository which may be overriden by Runtime subclasses.
+     *
+     * @return an initialized repository
+     * @throws InitializationException if an error is encountered initializing a repository
+     */
+    protected Repository createRepository() throws InitializationException {
+        try {
+            RepositoryImpl repository = new RepositoryImpl(hostInfo);
+            repository.init();
+            return repository;
+        } catch (IOException e) {
+            throw new InitializationException(e);
+        } catch (RepositoryException e) {
+            throw new InitializationException(e);
+        }
     }
 
-    protected void setConfiguration(RuntimeConfiguration<HI> configuration) {
-        hostClassLoader = configuration.getHostClassLoader();
-        hostInfo = configuration.getHostInfo();
-        monitorFactory = configuration.getMonitorFactory();
-        mbServer = configuration.getMBeanServer();
-        repository = configuration.getRepository();
-    }
 }
