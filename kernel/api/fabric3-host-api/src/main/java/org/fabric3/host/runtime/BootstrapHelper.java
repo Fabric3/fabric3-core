@@ -228,18 +228,18 @@ public final class BootstrapHelper {
         }
     }
 
-    public static Document loadSystemConfig(File configDirectory, BootstrapFactory factory) throws InitializationException {
+    public static Document loadSystemConfig(File configDirectory, BootstrapService bootstrapService) throws InitializationException {
         File systemConfig = new File(configDirectory, "systemConfig.xml");
         if (systemConfig.exists()) {
             try {
                 URL url = systemConfig.toURI().toURL();
                 Source source = new UrlSource(url);
-                return factory.loadSystemConfig(source);
+                return bootstrapService.loadSystemConfig(source);
             } catch (MalformedURLException e) {
                 throw new InitializationException(e);
             }
         }
-        return factory.createDefaultSystemConfig();
+        return bootstrapService.createDefaultSystemConfig();
     }
 
 }

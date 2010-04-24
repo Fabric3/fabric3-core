@@ -73,7 +73,7 @@ import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapFactoryFinder;
+import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -184,7 +184,7 @@ public class Fabric3ContextListener implements ServletContextListener {
         configuration.setSystemCompositeUrl(systemComposite);
 
         Source source = utils.getSystemConfig();
-        Document systemCofig = BootstrapFactoryFinder.getFactory(webappClassLoader).loadSystemConfig(source);
+        Document systemCofig = BootstrapFactory.getService(webappClassLoader).loadSystemConfig(source);
         configuration.setSystemConfig(systemCofig);
 
         Map<String, String> exportedPackages = new HashMap<String, String>();

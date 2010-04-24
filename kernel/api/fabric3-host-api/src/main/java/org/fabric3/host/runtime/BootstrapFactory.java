@@ -43,58 +43,34 @@
  */
 package org.fabric3.host.runtime;
 
-import java.io.File;
-
-import org.w3c.dom.Document;
-
-import org.fabric3.host.stream.Source;
-
 /**
- * Used to bootstrap a runtime.
+ * Creates BootstrapService instances.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 8902 $ $Date: 2010-04-23 11:34:05 +0200 (Fri, 23 Apr 2010) $
  */
-public interface BootstrapFactory {
+public class BootstrapFactory {
+    private static final String FACTORY_CLASS = "org.fabric3.fabric.runtime.bootstrap.DefaultBootstrapService";
 
     /**
-     * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
+     * Returns a BootstrapService for the given classloader.
      *
-     * @param directory the repository directory
-     * @return the result
-     * @throws InitializationException if an error occurs during the scan operation
+     * @param bootClassLoader the classloader the BootstrapService should be loaded by
+     * @return a BootstrapService
      */
-    ScanResult scanRepository(File directory) throws InitializationException;
-
-    /**
-     * Returns a configuration property value for the runtime domain from the given source.
-     *
-     * @param source the source to read
-     * @return the domain configuration property
-     * @throws InitializationException if an error reading the source is encountered
-     */
-    Document loadSystemConfig(Source source) throws InitializationException;
-
-    /**
-     * Creates a default configuration property value for the runtime domain.
-     *
-     * @return a document representing the configuration property
-     */
-    Document createDefaultSystemConfig();
-
-    /**
-     * Instantiates a default runtime implementation.
-     *
-     * @param configuration the base configuration for the runtime
-     * @return the runtime instance
-     */
-    Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration);
-
-    /**
-     * Instantiates a RuntimeCoordinator.
-     *
-     * @param configuration the configuration for the coordinator
-     * @return the coordinator instance
-     */
-    RuntimeCoordinator createCoordinator(BootConfiguration configuration);
+    public static BootstrapService getService(ClassLoader bootClassLoader) {
+        try {
+            Class<?> implClass = Class.forName(FACTORY_CLASS, true, bootClassLoader);
+            return (BootstrapService) implClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            // programming error
+            throw new AssertionError(e);
+        } catch (IllegalAccessException e) {
+            // programming error
+            throw new AssertionError(e);
+        } catch (InstantiationException e) {
+            // programming error
+            throw new AssertionError(e);
+        }
+    }
 
 }

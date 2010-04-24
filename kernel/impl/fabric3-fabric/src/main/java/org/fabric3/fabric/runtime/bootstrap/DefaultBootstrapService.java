@@ -58,7 +58,7 @@ import org.fabric3.fabric.runtime.DefaultRuntime;
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
@@ -71,11 +71,11 @@ import org.fabric3.host.stream.Source;
  *
  * @version $Revision$ $Date$
  */
-public class DefaultBootstrapFactory implements BootstrapFactory {
+public class DefaultBootstrapService implements BootstrapService {
     private RepositoryScanner scanner;
     private DocumentLoader loader;
 
-    public DefaultBootstrapFactory() {
+    public DefaultBootstrapService() {
         scanner = new RepositoryScanner();
         loader = new DocumentLoaderImpl();
     }

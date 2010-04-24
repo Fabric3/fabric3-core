@@ -67,8 +67,8 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
-import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
@@ -164,10 +164,10 @@ public class Fabric3Task extends Task {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
-            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, bootstrapService);
 
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
@@ -181,14 +181,14 @@ public class Fabric3Task extends Task {
 
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
 
-            runtime = factory.createDefaultRuntime(runtimeConfig);
+            runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
@@ -201,7 +201,7 @@ public class Fabric3Task extends Task {
             configuration.setExportedPackages(exportedPackages);
 
             // boot the runtime
-            coordinator = factory.createCoordinator(configuration);
+            coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
         } catch (Exception e) {
             throw new BuildException(e);

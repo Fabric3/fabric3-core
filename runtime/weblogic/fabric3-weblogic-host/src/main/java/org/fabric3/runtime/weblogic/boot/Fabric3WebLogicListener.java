@@ -57,8 +57,8 @@ import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
-import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
@@ -161,10 +161,10 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
-            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootLoader);
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, factory);
+            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, bootstrapService);
 
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
@@ -175,7 +175,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             MonitorFactory monitorFactory = new WebLogicMonitorFactory();
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
 
-            Fabric3Runtime runtime = factory.createDefaultRuntime(runtimeConfig);
+            Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
             monitor = monitorFactory.getMonitor(ServerMonitor.class);
 
@@ -185,7 +185,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = factory.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
@@ -198,7 +198,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             configuration.setExportedPackages(exportedPackages);
 
             // boot the runtime
-            coordinator = factory.createCoordinator(configuration);
+            coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             monitor.started(runtimeMode.toString());

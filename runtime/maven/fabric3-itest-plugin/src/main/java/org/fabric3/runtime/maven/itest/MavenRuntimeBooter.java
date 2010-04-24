@@ -62,8 +62,8 @@ import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
-import org.fabric3.host.runtime.BootstrapFactoryFinder;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -117,11 +117,11 @@ public class MavenRuntimeBooter {
     @SuppressWarnings({"unchecked"})
     public MavenRuntime boot() throws MojoExecutionException {
         try {
-            BootstrapFactory factory = BootstrapFactoryFinder.getFactory(bootClassLoader);
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootClassLoader);
             MavenRuntime runtime = createRuntime();
 
             URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
-            Document systemConfig = getSystemConfig(factory);
+            Document systemConfig = getSystemConfig(bootstrapService);
 
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
@@ -139,7 +139,7 @@ public class MavenRuntimeBooter {
             configuration.setExtensionContributions(contributions);
             configuration.setExportedPackages(exportedPackages);
 
-            coordinator = factory.createCoordinator(configuration);
+            coordinator = bootstrapService.createCoordinator(configuration);
             log.info("Starting Fabric3 Runtime ...");
             coordinator.start();
             return runtime;
@@ -179,7 +179,7 @@ public class MavenRuntimeBooter {
         return instantiateRuntime(configuration, bootClassLoader);
     }
 
-    private Document getSystemConfig(BootstrapFactory factory) throws MojoExecutionException, InitializationException {
+    private Document getSystemConfig(BootstrapService bootstrapService) throws MojoExecutionException, InitializationException {
         Source source = null;
         if (systemConfig != null) {
             try {
@@ -196,9 +196,9 @@ public class MavenRuntimeBooter {
         }
         Document systemConfig;
         if (source == null) {
-            systemConfig = factory.createDefaultSystemConfig();
+            systemConfig = bootstrapService.createDefaultSystemConfig();
         } else {
-            systemConfig = factory.loadSystemConfig(source);
+            systemConfig = bootstrapService.loadSystemConfig(source);
         }
         return systemConfig;
     }
