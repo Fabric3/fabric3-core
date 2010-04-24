@@ -60,7 +60,6 @@ import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -118,7 +117,7 @@ public class DefaultBootstrapFactory implements BootstrapFactory {
         }
     }
 
-    public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
+    public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration) {
         return new DefaultRuntime(configuration);
     }
 

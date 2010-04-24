@@ -77,8 +77,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     public DefaultCoordinator(BootConfiguration configuration) {
         this.configuration = configuration;
-        bootstrapper = new DefaultBootstrapper();
         runtime = configuration.getRuntime();
+        bootstrapper = new DefaultBootstrapper();
     }
 
     public RuntimeState getState() {

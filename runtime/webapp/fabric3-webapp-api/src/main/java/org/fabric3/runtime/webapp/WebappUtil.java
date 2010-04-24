@@ -57,7 +57,7 @@ import org.fabric3.host.stream.Source;
  */
 public interface WebappUtil {
 
-    WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration<WebappHostInfo> configuration) throws Fabric3InitException;
+    WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration configuration) throws Fabric3InitException;
 
     MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException;
 

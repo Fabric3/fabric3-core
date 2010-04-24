@@ -156,7 +156,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             RmiAgent agent = createAgent(props);
             MBeanServer mbServer = agent.getMBeanServer();
 
-            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostInfo, monitorFactory, mbServer);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mbServer);
 
             Fabric3Runtime runtime = factory.createDefaultRuntime(runtimeConfig);
 

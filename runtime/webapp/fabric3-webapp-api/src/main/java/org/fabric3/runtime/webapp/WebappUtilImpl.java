@@ -145,7 +145,7 @@ public class WebappUtilImpl implements WebappUtil {
      * @return Webapp runtime instance.
      * @throws Fabric3InitException If unable to initialize the runtime.
      */
-    public WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration<WebappHostInfo> configuration) throws Fabric3InitException {
+    public WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration configuration) throws Fabric3InitException {
         try {
             return (WebappRuntime) bootClassLoader.loadClass(RUNTIME_CLASS).getConstructor(RuntimeConfiguration.class).newInstance(configuration);
         } catch (InstantiationException e) {

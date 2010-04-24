@@ -43,7 +43,6 @@
  */
 package org.fabric3.fabric.runtime;
 
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 
 /**
@@ -51,9 +50,9 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultRuntime extends AbstractRuntime<HostInfo> {
+public class DefaultRuntime extends AbstractRuntime {
 
-    public DefaultRuntime(RuntimeConfiguration<HostInfo> configuration) {
+    public DefaultRuntime(RuntimeConfiguration configuration) {
         super(configuration);
     }
 }

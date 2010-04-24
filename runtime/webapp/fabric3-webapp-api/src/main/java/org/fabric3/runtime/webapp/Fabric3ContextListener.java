@@ -164,7 +164,7 @@ public class Fabric3ContextListener implements ServletContextListener {
                                         MonitorFactory factory,
                                         MBeanServer mBeanServer,
                                         WebappUtil utils) {
-        RuntimeConfiguration<WebappHostInfo> configuration = new RuntimeConfiguration<WebappHostInfo>(info, factory, mBeanServer);
+        RuntimeConfiguration configuration = new RuntimeConfiguration(info, factory, mBeanServer);
         return utils.createRuntime(webappClassLoader, configuration);
     }
 

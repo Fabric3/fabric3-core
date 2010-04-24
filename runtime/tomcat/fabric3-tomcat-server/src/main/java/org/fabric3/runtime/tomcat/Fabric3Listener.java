@@ -137,7 +137,7 @@ public class Fabric3Listener implements LifecycleListener {
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostInfo, monitorFactory, mBeanServer);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
 
             Fabric3Runtime runtime = factory.createDefaultRuntime(runtimeConfig);
 

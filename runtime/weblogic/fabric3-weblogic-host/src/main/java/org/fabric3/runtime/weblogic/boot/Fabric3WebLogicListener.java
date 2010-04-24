@@ -173,7 +173,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             MonitorFactory monitorFactory = new WebLogicMonitorFactory();
-            RuntimeConfiguration<HostInfo> runtimeConfig = new RuntimeConfiguration<HostInfo>(hostInfo, monitorFactory, mBeanServer);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
 
             Fabric3Runtime runtime = factory.createDefaultRuntime(runtimeConfig);
 

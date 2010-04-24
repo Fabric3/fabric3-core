@@ -47,8 +47,8 @@ import org.fabric3.host.repository.Repository;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeConfiguration<HI extends HostInfo> {
-    private HI hostInfo;
+public class RuntimeConfiguration {
+    private HostInfo hostInfo;
     private MonitorFactory monitorFactory;
     private MBeanServer mBeanServer;
     private Repository repository;
@@ -60,7 +60,7 @@ public class RuntimeConfiguration<HI extends HostInfo> {
      * @param monitorFactory  the monitor factory
      * @param mBeanServer     the JMX MBean server
      */
-    public RuntimeConfiguration(HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
+    public RuntimeConfiguration(HostInfo hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
         this.hostInfo = hostInfo;
         this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
@@ -74,7 +74,7 @@ public class RuntimeConfiguration<HI extends HostInfo> {
      * @param mBeanServer    the JMX MBean server
      * @param repository     the artifact repository
      */
-    public RuntimeConfiguration(HI hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer, Repository repository) {
+    public RuntimeConfiguration(HostInfo hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer, Repository repository) {
         this.hostInfo = hostInfo;
         this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
@@ -86,7 +86,7 @@ public class RuntimeConfiguration<HI extends HostInfo> {
      *
      * @return the runtime host info
      */
-    public HI getHostInfo() {
+    public HostInfo getHostInfo() {
         return hostInfo;
     }
 

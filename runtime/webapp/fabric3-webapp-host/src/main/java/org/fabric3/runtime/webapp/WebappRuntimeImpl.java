@@ -73,12 +73,12 @@ import org.fabric3.host.domain.Domain;
  * @version $$Rev$$ $$Date$$
  */
 
-public class WebappRuntimeImpl extends AbstractRuntime<WebappHostInfo> implements WebappRuntime {
+public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime {
     private ServletRequestInjector requestInjector;
     private HttpSessionListener sessionListener;
     private F3RequestListener listener;
 
-    public WebappRuntimeImpl(RuntimeConfiguration<WebappHostInfo> configuration) {
+    public WebappRuntimeImpl(RuntimeConfiguration configuration) {
         super(configuration);
     }
 

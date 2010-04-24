@@ -75,7 +75,6 @@ import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.Agent;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
-import org.fabric3.runtime.maven.MavenHostInfo;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
@@ -175,7 +174,7 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = agent.getMBeanServer();
 
-        RuntimeConfiguration<MavenHostInfo> configuration = new RuntimeConfiguration<MavenHostInfo>(hostInfo, monitorFactory, mBeanServer);
+        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }
