@@ -88,7 +88,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
-    private File installDirectory;
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
     private CountDownLatch latch;
@@ -108,28 +107,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
         System.exit(0);
     }
 
-    private static RuntimeMode getRuntimeMode(String[] args) {
-        RuntimeMode runtimeMode = RuntimeMode.VM;
-        if (args.length > 0) {
-            if ("controller".equals(args[0])) {
-                runtimeMode = RuntimeMode.CONTROLLER;
-            } else if ("participant".equals(args[0])) {
-                runtimeMode = RuntimeMode.PARTICIPANT;
-            } else if (!"vm".equals(args[0])) {
-                throw new IllegalArgumentException("Invalid runtime mode: " + args[0]
-                        + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
-            }
-        }
-        return runtimeMode;
-    }
-
-    /**
-     * Constructor.
-     */
-    private Fabric3Server() {
-        installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
-    }
-
     /**
      * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
      *
@@ -139,6 +116,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     public void start(RuntimeMode runtimeMode) throws Fabric3ServerException {
         try {
             //  calculate config directories based on the mode the runtime is booted in
+            File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
 
@@ -237,6 +215,21 @@ public class Fabric3Server implements Fabric3ServerMBean {
         } catch (ShutdownException ex) {
             monitor.runError(ex);
         }
+    }
+
+    private static RuntimeMode getRuntimeMode(String[] args) {
+        RuntimeMode runtimeMode = RuntimeMode.VM;
+        if (args.length > 0) {
+            if ("controller".equals(args[0])) {
+                runtimeMode = RuntimeMode.CONTROLLER;
+            } else if ("participant".equals(args[0])) {
+                runtimeMode = RuntimeMode.PARTICIPANT;
+            } else if (!"vm".equals(args[0])) {
+                throw new IllegalArgumentException("Invalid runtime mode: " + args[0]
+                        + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+            }
+        }
+        return runtimeMode;
     }
 
     private RmiAgent createAgent(Properties props) throws ManagementException {
