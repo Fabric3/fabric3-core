@@ -60,6 +60,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;

@@ -52,7 +52,6 @@ import javax.xml.stream.XMLStreamReader;
 import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentService;

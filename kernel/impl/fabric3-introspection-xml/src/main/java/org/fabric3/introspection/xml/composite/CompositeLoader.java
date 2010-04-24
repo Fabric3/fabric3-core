@@ -89,6 +89,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.util.UriHelper;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 
 /**
  * Loads a composite component definition from an XML-based assembly file

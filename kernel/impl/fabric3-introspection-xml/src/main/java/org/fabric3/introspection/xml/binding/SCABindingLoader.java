@@ -47,7 +47,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.introspection.xml.composite.AbstractExtensibleTypeLoader;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
