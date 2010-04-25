@@ -161,11 +161,6 @@ public class Fabric3Task extends Task {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
-
-            // load the system configuration
-            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, bootstrapService);
-
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
 
@@ -173,6 +168,11 @@ public class Fabric3Task extends Task {
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
+
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 

@@ -56,6 +56,8 @@ import org.fabric3.host.stream.Source;
  */
 public interface BootstrapService {
 
+    public Document loadSystemConfig(File configDirectory) throws InitializationException;
+
     /**
      * Returns a configuration property value for the runtime domain from the given source.
      *

@@ -139,11 +139,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
-
-            // load the system configuration
-            Document systemConfig = BootstrapHelper.loadSystemConfig(configDir, bootstrapService);
-
             // create the HostInfo, MonitorFactory, and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
 
@@ -152,7 +147,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            // create the JMX agent 
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
+
+            // create the JMX agent
             RmiAgent agent = createAgent(props);
             MBeanServer mbServer = agent.getMBeanServer();
 

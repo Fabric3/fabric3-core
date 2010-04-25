@@ -72,6 +72,11 @@ public class DefaultBootstrapService implements BootstrapService {
         systemConfigLoader = new SystemConfigLoader();
     }
 
+    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+        return systemConfigLoader.loadSystemConfig(configDirectory);
+    }
+
+
     public Document loadSystemConfig(Source source) throws InitializationException {
         return systemConfigLoader.loadSystemConfig(source);
     }

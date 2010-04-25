@@ -43,7 +43,10 @@
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -56,6 +59,7 @@ import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 
 /**
  * Loads the system configuration property for a runtime domain.
@@ -67,6 +71,20 @@ public class SystemConfigLoader {
 
     public SystemConfigLoader() {
         loader = new DocumentLoaderImpl();
+    }
+
+    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+        File systemConfig = new File(configDirectory, "systemConfig.xml");
+        if (systemConfig.exists()) {
+            try {
+                URL url = systemConfig.toURI().toURL();
+                Source source = new UrlSource(url);
+                return loadSystemConfig(source);
+            } catch (MalformedURLException e) {
+                throw new InitializationException(e);
+            }
+        }
+        return createDefaultSystemConfig();
     }
 
     /**

@@ -56,12 +56,8 @@ import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
-import org.w3c.dom.Document;
-
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
 
 /**
  * Utility class for boostrap operations.
@@ -226,20 +222,6 @@ public final class BootstrapHelper {
         } catch (InstantiationException e) {
             throw new InitializationException(e);
         }
-    }
-
-    public static Document loadSystemConfig(File configDirectory, BootstrapService bootstrapService) throws InitializationException {
-        File systemConfig = new File(configDirectory, "systemConfig.xml");
-        if (systemConfig.exists()) {
-            try {
-                URL url = systemConfig.toURI().toURL();
-                Source source = new UrlSource(url);
-                return bootstrapService.loadSystemConfig(source);
-            } catch (MalformedURLException e) {
-                throw new InitializationException(e);
-            }
-        }
-        return bootstrapService.createDefaultSystemConfig();
     }
 
 }
