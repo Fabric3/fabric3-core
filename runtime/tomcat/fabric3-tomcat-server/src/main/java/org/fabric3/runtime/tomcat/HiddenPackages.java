@@ -34,80 +34,23 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.runtime.webapp;
-
-import java.io.File;
-import java.net.URI;
-import javax.servlet.ServletContext;
-
-import org.fabric3.host.RuntimeMode;
+*/
+package org.fabric3.runtime.tomcat;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WebappHostInfoImpl implements WebappHostInfo {
+public final class HiddenPackages {
+    private static final String[] PACKAGES = new String[]{
+            "javax.xml.bind.",
+            "javax.xml.ws.",
+            "javax.xml.soap."
+    };
 
-    private final ServletContext servletContext;
-    private final URI domain;
-    private final File baseDir;
-    private final File tempDirectory;
-
-    public WebappHostInfoImpl(ServletContext servletContext, URI domain, File baseDir, File tempDirectory) {
-        this.servletContext = servletContext;
-        this.domain = domain;
-        this.baseDir = baseDir;
-        this.tempDirectory = tempDirectory;
+    public static String[] getPackages() {
+        return PACKAGES;
     }
 
-    public ServletContext getServletContext() {
-        return servletContext;
-    }
-
-    public File getBaseDir() {
-        return baseDir;
-    }
-
-    public File getTempDir() {
-        return tempDirectory;
-    }
-
-    public File getDataDir() {
-        // use the temp directory
-        return tempDirectory;
-    }
-
-    public File getInstallDirectory() {
-        throw new UnsupportedOperationException();
-    }
-
-    public File getConfigDirectory() {
-        return null;
-    }
-
-    public File getModeConfigDirectory() {
-        return null;
-    }
-
-    public File getRepositoryDirectory() {
-        return null;
-    }
-
-    public RuntimeMode getRuntimeMode() {
-        return RuntimeMode.VM;
-    }
-
-    public URI getDomain() {
-        return domain;
-    }
-
-    public boolean supportsClassLoaderIsolation() {
-        return false;
+    private HiddenPackages() {
     }
 }

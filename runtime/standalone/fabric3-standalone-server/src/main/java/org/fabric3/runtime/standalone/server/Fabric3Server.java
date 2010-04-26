@@ -47,7 +47,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -85,7 +84,6 @@ import org.fabric3.jmx.agent.rmi.RmiAgent;
  * @version $Rev$ $Date$
  */
 public class Fabric3Server implements Fabric3ServerMBean {
-    private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
     private RuntimeCoordinator coordinator;
@@ -120,23 +118,14 @@ public class Fabric3Server implements Fabric3ServerMBean {
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
 
-            // load properties for this runtime
-            File propFile = new File(modeConfigDir, "runtime.properties");
-            Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
 
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
             ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-            String hiddenPackageString = (String) props.get(HIDE_PACKAGES);
-            if (hiddenPackageString != null && hiddenPackageString.length() > 0) {
-                // mask hidden JDK and system classpath packages
-                String[] hiddenPackages = hiddenPackageString.split(",");
-                systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages);
-            }
-            ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
@@ -147,7 +136,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 

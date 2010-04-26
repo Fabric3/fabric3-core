@@ -45,7 +45,6 @@ package org.fabric3.host.runtime;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Properties;
 
 import org.fabric3.host.RuntimeMode;
 
@@ -59,7 +58,6 @@ public class DefaultHostInfo implements HostInfo {
     private final URI domain;
     private final File baseDir;
     private File modeConfigDirectory;
-    private final Properties properties;
     private final File repositoryDirectory;
     private final File configDirectory;
     private final File tempDirectory;
@@ -74,7 +72,6 @@ public class DefaultHostInfo implements HostInfo {
      * @param repositoryDirectory directory containing the standalone repository
      * @param configDir           directory containing the standalone configuration
      * @param modeConfigDir       directory containing the standalone boot mode configuration
-     * @param properties          properties for this runtime
      * @param tempDirectory       the directory for writing temporary files
      * @param dataDirectory       the directory for writing persistent data that survives restarts
      */
@@ -84,7 +81,6 @@ public class DefaultHostInfo implements HostInfo {
                            File repositoryDirectory,
                            File configDir,
                            File modeConfigDir,
-                           Properties properties,
                            File tempDirectory,
                            File dataDirectory) {
         this.runtimeMode = runtimeMode;
@@ -93,7 +89,6 @@ public class DefaultHostInfo implements HostInfo {
         this.repositoryDirectory = repositoryDirectory;
         this.configDirectory = configDir;
         this.modeConfigDirectory = modeConfigDir;
-        this.properties = properties;
         this.tempDirectory = tempDirectory;
         this.dataDirectory = dataDirectory;
     }
@@ -116,10 +111,6 @@ public class DefaultHostInfo implements HostInfo {
 
     public File getDataDir() {
         return dataDirectory;
-    }
-
-    public String getProperty(String name, String defaultValue) {
-        return properties.getProperty(name, defaultValue);
     }
 
     public boolean supportsClassLoaderIsolation() {

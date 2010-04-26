@@ -55,15 +55,16 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.host.util.IOHelper;
 
 /**
  * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome
- * using one of two strategies. If the <code>fabric3.extensions.dependecies.extract</code> system property is set to false (the default), embedded
+ * using one of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded
  * jars will be copied to a temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file
  * will be extracted to the filesystem and placed on the classpath using a file: URL instead.
  * <p/>
@@ -75,17 +76,18 @@ import org.fabric3.host.util.IOHelper;
  */
 @EagerInit
 public class JarClasspathProcessor implements ClasspathProcessor {
-    // system property to set when exploding jars
-    private static final String EXTRACT = "fabric3.extensions.dependencies.extract";
-
-    private final ClasspathProcessorRegistry registry;
+    private ClasspathProcessorRegistry registry;
     private HostInfo hostInfo;
     private boolean explodeJars;
 
     public JarClasspathProcessor(@Reference ClasspathProcessorRegistry registry, @Reference HostInfo hostInfo) {
         this.registry = registry;
         this.hostInfo = hostInfo;
-        explodeJars = Boolean.valueOf(hostInfo.getProperty(EXTRACT, "false"));
+    }
+
+    @Property(required = false)
+    public void setExplodeJars(boolean explodeJars) {
+        this.explodeJars = explodeJars;
     }
 
     @Init

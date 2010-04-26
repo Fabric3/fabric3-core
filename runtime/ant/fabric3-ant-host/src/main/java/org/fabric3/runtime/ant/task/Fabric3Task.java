@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
@@ -67,9 +66,9 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
@@ -110,7 +109,6 @@ import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
  * @version $Rev$ $Date$
  */
 public class Fabric3Task extends Task {
-    private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private List<FileList> contributions = new ArrayList<FileList>();
     private List<FileSet> contributionSets = new ArrayList<FileSet>();
 
@@ -143,22 +141,14 @@ public class Fabric3Task extends Task {
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
 
-            // load properties for this runtime
-            File propFile = new File(modeConfigDir, "runtime.properties");
-            Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
             // create the classloaders for booting the runtime
             ClassLoader systemClassLoader = getClass().getClassLoader();
-            String hiddenPackageString = (String) props.get(HIDE_PACKAGES);
-            if (hiddenPackageString != null && hiddenPackageString.length() > 0) {
-                // mask hidden JDK and system classpath packages
-                String[] hiddenPackages = hiddenPackageString.split(",");
-                systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages);
-            }
-            ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
+            // mask hidden JDK and system classpath packages
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
@@ -167,9 +157,9 @@ public class Fabric3Task extends Task {
             Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
-                    
+
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
 
             MonitorFactory monitorFactory = new AntMonitorFactory(this);
 

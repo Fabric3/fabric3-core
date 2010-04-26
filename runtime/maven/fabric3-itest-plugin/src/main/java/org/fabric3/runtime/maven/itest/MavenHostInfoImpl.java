@@ -46,7 +46,6 @@ package org.fabric3.runtime.maven.itest;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.Properties;
 import java.util.Set;
 
 import org.fabric3.host.RuntimeMode;
@@ -57,13 +56,11 @@ import org.fabric3.runtime.maven.MavenHostInfo;
  */
 public class MavenHostInfoImpl implements MavenHostInfo {
     private final URI domain;
-    private final Properties hostProperties;
     private final Set<URL> dependencyUrls;
     private final File tempDir;
 
-    public MavenHostInfoImpl(URI domain, Properties hostProperties, Set<URL> dependencyUrls, File tempDir) {
+    public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File tempDir) {
         this.domain = domain;
-        this.hostProperties = hostProperties;
         this.dependencyUrls = dependencyUrls;
         this.tempDir = tempDir;
     }
@@ -91,14 +88,6 @@ public class MavenHostInfoImpl implements MavenHostInfo {
 
     public File getRepositoryDirectory() {
         return null;
-    }
-
-    public Properties getHostProperties() {
-        return hostProperties;
-    }
-
-    public String getProperty(String name, String defaultValue) {
-        return hostProperties.getProperty(name, defaultValue);
     }
 
     public boolean supportsClassLoaderIsolation() {

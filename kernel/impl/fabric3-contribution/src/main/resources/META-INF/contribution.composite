@@ -44,6 +44,7 @@
 
     <component name="JarClasspathProcessor">
         <f3-impl:implementation.system class="org.fabric3.contribution.archive.JarClasspathProcessor"/>
+        <property name="explodeJars" source="$systemConfig//runtime/explode.jars"/>
     </component>
 
     <component name="ArchiveContributionProcessor">

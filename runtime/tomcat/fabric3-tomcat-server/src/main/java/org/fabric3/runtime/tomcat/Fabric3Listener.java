@@ -49,7 +49,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import javax.management.MBeanServer;
 
 import org.apache.catalina.LifecycleEvent;
@@ -83,7 +82,6 @@ import org.fabric3.host.util.FileHelper;
  * @version $Rev$ $Date$
  */
 public class Fabric3Listener implements LifecycleListener {
-    private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
 
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
@@ -109,17 +107,13 @@ public class Fabric3Listener implements LifecycleListener {
             // only support single VM mode
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
 
-            // load properties for this runtime
-            File propFile = new File(modeConfigDir, "runtime.properties");
-            Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
             ClassLoader systemClassLoader = getClass().getClassLoader();
-            systemClassLoader = hidePackages(systemClassLoader, props);
-            ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
@@ -130,7 +124,7 @@ public class Fabric3Listener implements LifecycleListener {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -192,24 +186,6 @@ public class Fabric3Listener implements LifecycleListener {
             monitor.runError(ex);
             throw new Fabric3ListenerException(ex);
         }
-    }
-
-    /**
-     * Hides JDK and classpath packages from the Fabric3 runtime such as the JAX-WS and JAXB RIs.
-     *
-     * @param systemClassLoader the system classloader
-     * @param props             environment properties
-     * @return a classloader that masks packages
-     */
-    private ClassLoader hidePackages(ClassLoader systemClassLoader, Properties props) {
-        // FIXME - Mask Tomcat classes
-        String hiddenPackageString = (String) props.get(HIDE_PACKAGES);
-        if (hiddenPackageString != null && hiddenPackageString.length() > 0) {
-            // mask hidden JDK and system classpath packages
-            String[] hiddenPackages = hiddenPackageString.split(",");
-            systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages);
-        }
-        return systemClassLoader;
     }
 
     private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {

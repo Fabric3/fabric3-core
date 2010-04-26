@@ -38,11 +38,10 @@
 package org.fabric3.runtime.weblogic.boot;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import javax.management.MBeanServer;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -58,9 +57,9 @@ import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
@@ -81,8 +80,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
     private static final String FABRIC3_MODE = "fabric3.mode";
 
-    private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
-    private static final String HIDE_RESOURCES = "fabric3.hidden.resources";
     private ServletContext context;
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
@@ -137,10 +134,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
 
-            // load properties for this runtime
-            File propFile = new File(modeConfigDir, "runtime.properties");
-            Properties props = BootstrapHelper.loadProperties(propFile, System.getProperties());
-
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
 
@@ -148,18 +141,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             // set the context classloader to the host classloader
             ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
-            String hiddenPackageString = (String) props.get(HIDE_PACKAGES);
-            String hiddenResourceString = (String) props.get(HIDE_RESOURCES);
-            if (hiddenPackageString != null && hiddenPackageString.length() > 0) {
-                // mask hidden JDK and system classpath packages
-                String[] hiddenPackages = hiddenPackageString.split(",");
-                String[] hiddenResources = null;
-                if (hiddenResourceString != null && hiddenResourceString.length() > 0) {
-                    hiddenResources = hiddenResourceString.split(",");
-                }
-                systemClassLoader = new MaskingClassLoader(systemClassLoader, hiddenPackages, hiddenResources);
-            }
-            ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
+
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages(), HiddenPackages.getResources());
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
@@ -170,7 +154,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

@@ -45,14 +45,12 @@ package org.fabric3.host.runtime;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Properties;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
@@ -164,37 +162,12 @@ public final class BootstrapHelper {
         return new URLClassLoader(urls, parent);
     }
 
-    /**
-     * Load properties from the specified file. If the file does not exist then an empty properties object is returned.
-     *
-     * @param propFile the file to load from
-     * @param defaults defaults for the properties
-     * @return a Properties object loaded from the file
-     * @throws IOException if there was a problem loading the properties
-     */
-    public static Properties loadProperties(File propFile, Properties defaults) throws IOException {
-        Properties props = defaults == null ? new Properties() : new Properties(defaults);
-        FileInputStream is;
-        try {
-            is = new FileInputStream(propFile);
-        } catch (FileNotFoundException e) {
-            return props;
-        }
-        try {
-            props.load(is);
-            return props;
-        } finally {
-            is.close();
-        }
-    }
-
-    public static HostInfo createHostInfo(RuntimeMode runtimeMode, URI domainName, File baseDir, File configDir, File modeDir, Properties props)
+    public static HostInfo createHostInfo(RuntimeMode runtimeMode, URI domainName, File baseDir, File configDir, File modeDir)
             throws InitializationException, IOException {
-
         File repositoryDir = getDirectory(baseDir, "repository");
         File tempDir = getDirectory(baseDir, "tmp");
         File dataDir = getDirectory(baseDir, "data");
-        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, props, tempDir, dataDir);
+        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, tempDir, dataDir);
     }
 
     public static MonitorFactory createDefaultMonitorFactory(ClassLoader classLoader) throws InitializationException {

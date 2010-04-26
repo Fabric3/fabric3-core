@@ -115,15 +115,6 @@ public interface HostInfo {
     File getRepositoryDirectory();
 
     /**
-     * Return the value of the named property.
-     *
-     * @param name         the name of the property
-     * @param defaultValue default value to return if the property is not defined
-     * @return the value of the named property
-     */
-    String getProperty(String name, String defaultValue);
-
-    /**
      * True if the host environment supports classloader isolation.
      *
      * @return true if the host environment supports classloader isolation

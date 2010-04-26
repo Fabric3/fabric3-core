@@ -151,7 +151,6 @@ public class MavenRuntimeBooter {
     private MavenRuntime createRuntime() throws MojoExecutionException {
         MonitorFactory monitorFactory = new MavenMonitorFactory(log);
 
-        Properties hostProperties = properties != null ? properties : System.getProperties();
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
         if (tempDir.exists()) {
             try {
@@ -162,7 +161,7 @@ public class MavenRuntimeBooter {
         }
         tempDir.mkdir();
 
-        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(URI.create(DOMAIN), hostProperties, moduleDependencies, tempDir);
+        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(URI.create(DOMAIN), moduleDependencies, tempDir);
 
         // TODO Add better host JMX support from the next release
         Agent agent;
