@@ -41,8 +41,6 @@ import java.net.URI;
 import java.util.List;
 
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
-import org.fabric3.fabric.runtime.Bootstrapper;
-import org.fabric3.fabric.runtime.DefaultBootstrapper;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
@@ -57,12 +55,12 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.RuntimeState;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
+import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
-import org.fabric3.spi.event.JoinDomain;
-import org.fabric3.spi.event.DomainRecover;
 
 /**
  * Default implementation of the RuntimeCoordinator.
@@ -145,7 +143,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         if (domain == null) {
             state = RuntimeState.ERROR;
             String name = APPLICATION_DOMAIN_URI.toString();
-            throw new InitializationException("Domain not found: " + name, name);
+            throw new InitializationException("Domain not found: " + name);
         }
         // install user contributions - they will be deployed when the domain recovers
         List<ContributionSource> contributions = configuration.getUserContributions();

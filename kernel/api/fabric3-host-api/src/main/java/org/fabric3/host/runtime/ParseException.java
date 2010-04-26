@@ -43,26 +43,22 @@
  */
 package org.fabric3.host.runtime;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
- * Denotes an error starting the runtime
  *
  * @version $Rev$ $Date$
  */
-public class InitializationException extends Fabric3Exception {
-    private static final long serialVersionUID = 6534511626734824318L;
+public class ParseException extends InitializationException {
+    private static final long serialVersionUID = 5070537845475682060L;
 
-    public InitializationException(String message) {
+    public ParseException(String message) {
         super(message);
     }
 
-    public InitializationException(Throwable cause) {
+    public ParseException(Throwable cause) {
         super(cause);
     }
 
-    public InitializationException(String message, Throwable cause) {
-        super(message, null, cause);
+    public ParseException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

@@ -50,7 +50,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
@@ -189,26 +188,13 @@ public final class BootstrapHelper {
         }
     }
 
-    public static HostInfo createHostInfo(RuntimeMode runtimeMode, File baseDir, File configDir, File modeDir, Properties props)
+    public static HostInfo createHostInfo(RuntimeMode runtimeMode, URI domainName, File baseDir, File configDir, File modeDir, Properties props)
             throws InitializationException, IOException {
 
         File repositoryDir = getDirectory(baseDir, "repository");
         File tempDir = getDirectory(baseDir, "tmp");
         File dataDir = getDirectory(baseDir, "data");
-
-        try {
-            // set the domain from runtime properties
-            String domainName = props.getProperty("domain");
-            URI domain;
-            if (domainName != null) {
-                domain = new URI(domainName);
-            } else {
-                throw new InitializationException("Domain URI was not set. Ensure it is set as a system property or in runtime.properties.");
-            }
-            return new DefaultHostInfo(runtimeMode, domain, baseDir, repositoryDir, configDir, modeDir, props, tempDir, dataDir);
-        } catch (URISyntaxException e) {
-            throw new InitializationException(e);
-        }
+        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, props, tempDir, dataDir);
     }
 
     public static MonitorFactory createDefaultMonitorFactory(ClassLoader classLoader) throws InitializationException {

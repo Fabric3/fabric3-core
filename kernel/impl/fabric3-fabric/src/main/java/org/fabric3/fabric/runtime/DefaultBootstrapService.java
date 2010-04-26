@@ -44,6 +44,7 @@
 package org.fabric3.fabric.runtime;
 
 import java.io.File;
+import java.net.URI;
 
 import org.w3c.dom.Document;
 
@@ -52,10 +53,12 @@ import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
+import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
+import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.Source;
 
 /**
@@ -72,12 +75,12 @@ public class DefaultBootstrapService implements BootstrapService {
         systemConfigLoader = new SystemConfigLoader();
     }
 
-    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+    public Document loadSystemConfig(File configDirectory) throws ParseException {
         return systemConfigLoader.loadSystemConfig(configDirectory);
     }
 
 
-    public Document loadSystemConfig(Source source) throws InitializationException {
+    public Document loadSystemConfig(Source source) throws ParseException {
         return systemConfigLoader.loadSystemConfig(source);
     }
 
@@ -85,7 +88,15 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.createDefaultSystemConfig();
     }
 
-    public ScanResult scanRepository(File directory) throws InitializationException {
+    public URI parseDomainName(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseDomainName(systemConfig);
+    }
+
+    public PortRange parseJmxPort(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseJmxPort(systemConfig);
+    }
+
+    public ScanResult scanRepository(File directory) throws ScanException {
         return scanner.scan(directory);
     }
 

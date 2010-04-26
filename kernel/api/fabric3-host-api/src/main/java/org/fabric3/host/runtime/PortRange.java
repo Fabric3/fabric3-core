@@ -34,35 +34,42 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.host.runtime;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
- * Denotes an error starting the runtime
+ * Encapsulates a configured port range.
  *
  * @version $Rev$ $Date$
  */
-public class InitializationException extends Fabric3Exception {
-    private static final long serialVersionUID = 6534511626734824318L;
+public class PortRange {
+    private int minimum;
+    private int maximum;
 
-    public InitializationException(String message) {
-        super(message);
+    /**
+     * Constuctor.
+     *
+     * @param minimum the minimum port number
+     * @param maximum the maximum port number
+     */
+    public PortRange(int minimum, int maximum) {
+        this.minimum = minimum;
+        this.maximum = maximum;
     }
 
-    public InitializationException(Throwable cause) {
-        super(cause);
+    public int getMinimum() {
+        return minimum;
     }
 
-    public InitializationException(String message, Throwable cause) {
-        super(message, null, cause);
+    public void setMinimum(int minimum) {
+        this.minimum = minimum;
     }
 
+    public int getMaximum() {
+        return maximum;
+    }
+
+    public void setMaximum(int maximum) {
+        this.maximum = maximum;
+    }
 }

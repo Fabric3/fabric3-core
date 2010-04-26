@@ -46,18 +46,22 @@ package org.fabric3.fabric.runtime.bootstrap;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
-import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.ParseException;
+import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 
@@ -67,13 +71,22 @@ import org.fabric3.host.stream.UrlSource;
  * @version $Revision$ $Date$
  */
 public class SystemConfigLoader {
+    private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
+    private static final int DEFAULT_JMX_PORT = 1199;
     private DocumentLoader loader;
 
     public SystemConfigLoader() {
         loader = new DocumentLoaderImpl();
     }
 
-    public Document loadSystemConfig(File configDirectory) throws InitializationException {
+    /**
+     * Loads the system configuration value from a systemConfig.xml file or creates a default value if the file does not exist.
+     *
+     * @param configDirectory the directory where the file is located
+     * @return the loaded value
+     * @throws ParseException if an error parsing the file contents is encountered
+     */
+    public Document loadSystemConfig(File configDirectory) throws ParseException {
         File systemConfig = new File(configDirectory, "systemConfig.xml");
         if (systemConfig.exists()) {
             try {
@@ -81,7 +94,7 @@ public class SystemConfigLoader {
                 Source source = new UrlSource(url);
                 return loadSystemConfig(source);
             } catch (MalformedURLException e) {
-                throw new InitializationException(e);
+                throw new ParseException(e);
             }
         }
         return createDefaultSystemConfig();
@@ -92,9 +105,9 @@ public class SystemConfigLoader {
      *
      * @param source the source to read
      * @return the domain configuration property
-     * @throws InitializationException if an error reading the source is encountered
+     * @throws ParseException if an error reading the source is encountered
      */
-    public Document loadSystemConfig(Source source) throws InitializationException {
+    public Document loadSystemConfig(Source source) throws ParseException {
         try {
             InputSource inputSource = new InputSource(source.openStream());
             Document document = loader.load(inputSource, true);
@@ -106,9 +119,9 @@ public class SystemConfigLoader {
             newRoot.appendChild(oldRoot);
             return document;
         } catch (IOException e) {
-            throw new InitializationException(e);
+            throw new ParseException(e);
         } catch (SAXException e) {
-            throw new InitializationException(e);
+            throw new ParseException(e);
         }
     }
 
@@ -130,6 +143,78 @@ public class SystemConfigLoader {
         } catch (ParserConfigurationException e) {
             throw new AssertionError(e);
         }
+    }
+
+    /**
+     * Returns the configured domain name the runtime should join. If not configured, the default domain name will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the domain name
+     * @throws ParseException if there is an error parsing the domain name
+     */
+    public URI parseDomainName(Document systemConfig) throws ParseException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("runtime");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String name = node.getAttribute("domain");
+            if (name.length() > 0) {
+                try {
+                    return new URI("fabric3://" + name);
+                } catch (URISyntaxException e) {
+                    throw new ParseException("Invalid domain name specified in system configuration", e);
+                }
+            }
+        }
+        return DEFAULT_DOMAIN;
+    }
+
+    /**
+     * Returns the configured JMX port range. If not configured, the default range (1199) will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the JMX port range
+     * @throws ParseException if there is an error parsing the JMX port range
+     */
+    public PortRange parseJmxPort(Document systemConfig) throws ParseException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("runtime");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String ports = node.getAttribute("jmxPort");
+            if (ports.length() > 0) {
+                String[] tokens = ports.split("-");
+                int minPort;
+                int maxPort;
+                if (tokens.length == 1) {
+                    // port specified
+                    minPort = parsePortNumber(ports);
+                    maxPort = minPort;
+
+                } else if (tokens.length == 2) {
+                    // port range specified
+                    minPort = parsePortNumber(tokens[0]);
+                    maxPort = parsePortNumber(tokens[1]);
+                } else {
+                    throw new ParseException("Invalid JMX port specified in system configuration: " + ports);
+                }
+                return new PortRange(minPort, maxPort);
+            }
+        }
+        return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
+    }
+
+    private int parsePortNumber(String portVal) {
+        int port;
+        try {
+            port = Integer.parseInt(portVal);
+            if (port < 0) {
+                throw new IllegalArgumentException("Invalid JMX port number specified in runtime.properties:" + port);
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid JMX port", e);
+        }
+        return port;
     }
 
 }

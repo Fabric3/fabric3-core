@@ -61,7 +61,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.SyntheticContributionSource;
-import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
 
 /**
@@ -83,9 +83,9 @@ public class RepositoryScanner {
      *
      * @param directory the directory
      * @return the contributions grouped by user and extension contributions
-     * @throws InitializationException if there is an error scanning teh directory
+     * @throws ScanException if there is an error scanning teh directory
      */
-    public ScanResult scan(File directory) throws InitializationException {
+    public ScanResult scan(File directory) throws ScanException {
 
         File[] files = directory.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
@@ -107,7 +107,7 @@ public class RepositoryScanner {
                     toScan.put(location, source);
                 }
             } catch (MalformedURLException e) {
-                throw new InitializationException("Error loading contribution", file.getName(), e);
+                throw new ScanException("Error loading contribution:" + file.getName(), e);
             }
         }
 
@@ -118,7 +118,7 @@ public class RepositoryScanner {
         try {
             scannedManifests = urlClassLoader.getResources(MANIFEST_PATH);
         } catch (IOException e) {
-            throw new InitializationException("Error scanning repository", e);
+            throw new ScanException("Error scanning repository", e);
         }
 
         Set<URL> manifests = new HashSet<URL>();
@@ -152,7 +152,7 @@ public class RepositoryScanner {
                     ContributionSource source = new SyntheticContributionSource(uri, location);
                     result.addExtensionContribution(source);
                 } catch (MalformedURLException e) {
-                    throw new InitializationException(e);
+                    throw new ScanException(e);
                 }
             }
         }
@@ -166,9 +166,9 @@ public class RepositoryScanner {
      *
      * @param manifestUrl the URL of the contribution manifest
      * @return true if the contribution is an extension
-     * @throws InitializationException if there is an error scanning the manifest
+     * @throws ScanException if there is an error scanning the manifest
      */
-    private boolean isExtension(URL manifestUrl) throws InitializationException {
+    private boolean isExtension(URL manifestUrl) throws ScanException {
         try {
             DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
 
@@ -179,11 +179,11 @@ public class RepositoryScanner {
             String extension = document.getDocumentElement().getAttributeNS(Namespaces.CORE, "extension");
             return extension != null && !"".equals(extension.trim());
         } catch (IOException e) {
-            throw new InitializationException(e);
+            throw new ScanException(e);
         } catch (ParserConfigurationException e) {
-            throw new InitializationException(e);
+            throw new ScanException(e);
         } catch (SAXException e) {
-            throw new InitializationException(e);
+            throw new ScanException(e);
         }
     }
 
@@ -192,9 +192,9 @@ public class RepositoryScanner {
      *
      * @param manifestUrl the manifest URL
      * @return the contribution URL
-     * @throws InitializationException if there is an error computing the URL
+     * @throws ScanException if there is an error computing the URL
      */
-    private URL getContributionUrl(URL manifestUrl) throws InitializationException {
+    private URL getContributionUrl(URL manifestUrl) throws ScanException {
 
         String externalForm = manifestUrl.toExternalForm();
         String protocol = manifestUrl.getProtocol();
@@ -210,7 +210,7 @@ public class RepositoryScanner {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            throw new InitializationException(e);
+            throw new ScanException(e);
         }
 
     }

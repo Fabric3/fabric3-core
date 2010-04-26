@@ -230,11 +230,8 @@ public class DefaultBootstrapper implements Bootstrapper {
         registerComponent("RuntimeLogicalComponentManager", LogicalComponentManager.class, logicalComponetManager, true);
         registerComponent("CompositeScopeContainer", ScopeContainer.class, scopeContainer, true);
         registerComponent("ClassLoaderRegistry", ClassLoaderRegistry.class, classLoaderRegistry, true);
-
         registerComponent("ScopeRegistry", ScopeRegistry.class, scopeRegistry, true);
-
         registerComponent("MetaDataStore", MetaDataStore.class, metaDataStore, true);
-
         registerComponent("Repository", Repository.class, repository, true);
 
         // register other components provided by the host environment

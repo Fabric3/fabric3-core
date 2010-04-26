@@ -44,6 +44,7 @@
 package org.fabric3.host.runtime;
 
 import java.io.File;
+import java.net.URI;
 
 import org.w3c.dom.Document;
 
@@ -56,16 +57,23 @@ import org.fabric3.host.stream.Source;
  */
 public interface BootstrapService {
 
-    public Document loadSystemConfig(File configDirectory) throws InitializationException;
+    /**
+     * Loads the system configuration value from a systemConfig.xml file or creates a default value if the file does not exist.
+     *
+     * @param configDirectory the directory where the file is located
+     * @return the loaded value
+     * @throws ParseException if an error parsing the file contents is encountered
+     */
+    public Document loadSystemConfig(File configDirectory) throws ParseException;
 
     /**
      * Returns a configuration property value for the runtime domain from the given source.
      *
      * @param source the source to read
      * @return the domain configuration property
-     * @throws InitializationException if an error reading the source is encountered
+     * @throws ParseException if an error reading the source is encountered
      */
-    Document loadSystemConfig(Source source) throws InitializationException;
+    Document loadSystemConfig(Source source) throws ParseException;
 
     /**
      * Creates a default configuration property value for the runtime domain.
@@ -75,13 +83,32 @@ public interface BootstrapService {
     Document createDefaultSystemConfig();
 
     /**
+     * Returns the configured domain name the runtime should join. If not configured, the default domain name will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the domain name
+     * @throws ParseException if there is an error parsing the domain name
+     */
+    URI parseDomainName(Document systemConfig) throws ParseException;
+
+
+    /**
+     * Returns the configured JMX port range. If not configured, the default range (1199) will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the JMX port range
+     * @throws ParseException if there is an error parsing the JMX port range
+     */
+    PortRange parseJmxPort(Document systemConfig) throws ParseException;
+
+    /**
      * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
      *
      * @param directory the repository directory
      * @return the result
-     * @throws InitializationException if an error occurs during the scan operation
+     * @throws ScanException if an error occurs during the scan operation
      */
-    ScanResult scanRepository(File directory) throws InitializationException;
+    ScanResult scanRepository(File directory) throws ScanException;
 
     /**
      * Instantiates a default runtime implementation.

@@ -45,6 +45,7 @@ package org.fabric3.runtime.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,18 +122,20 @@ public class Fabric3Listener implements LifecycleListener {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+
+            URI domainName = bootstrapService.parseDomainName(systemConfig);
+
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir, props);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
-
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
-
-            // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();

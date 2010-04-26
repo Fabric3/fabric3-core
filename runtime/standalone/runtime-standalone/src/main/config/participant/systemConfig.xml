@@ -1,4 +1,5 @@
 <config>
+    <runtime jmxPort="8000-9000"/>
     <web.server>
         <http port="8181-8281"/>
     </web.server>

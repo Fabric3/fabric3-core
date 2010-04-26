@@ -45,6 +45,7 @@ package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -59,19 +60,19 @@ import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
+import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 /**
@@ -84,7 +85,6 @@ import org.fabric3.jmx.agent.rmi.RmiAgent;
  * @version $Rev$ $Date$
  */
 public class Fabric3Server implements Fabric3ServerMBean {
-    private static final String JMX_PORT = "fabric3.jmx.port";
     private static final String HIDE_PACKAGES = "fabric3.hidden.packages";
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
@@ -139,21 +139,24 @@ public class Fabric3Server implements Fabric3ServerMBean {
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(systemClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+
+            // load the system configuration
+            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+
+            URI domainName = bootstrapService.parseDomainName(systemConfig);
+
             // create the HostInfo, MonitorFactory, and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, installDirectory, configDir, modeConfigDir, props);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir, props);
 
             MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
-
-            // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
-
             // create the JMX agent
-            RmiAgent agent = createAgent(props);
+            PortRange range = bootstrapService.parseJmxPort(systemConfig);
+            RmiAgent agent = new RmiAgent(range.getMinimum(), range.getMaximum());
             MBeanServer mbServer = agent.getMBeanServer();
 
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mbServer);
@@ -230,39 +233,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             }
         }
         return runtimeMode;
-    }
-
-    private RmiAgent createAgent(Properties props) throws ManagementException {
-        String jmxString = props.getProperty(JMX_PORT, "1199");
-        String[] tokens = jmxString.split("-");
-
-        RmiAgent agent;
-        if (tokens.length == 1) {
-            // port specified
-            int jmxPort = parsePortNumber(jmxString, "JMX");
-            agent = new RmiAgent(jmxPort);
-        } else if (tokens.length == 2) {
-            // port range specified
-            int minPort = parsePortNumber(tokens[0], "JMX");
-            int maxPort = parsePortNumber(tokens[1], "JMX");
-            agent = new RmiAgent(minPort, maxPort);
-        } else {
-            throw new IllegalArgumentException("Invalid JMX port specified in runtime.properties");
-        }
-        return agent;
-    }
-
-    private int parsePortNumber(String portVal, String portType) {
-        int port;
-        try {
-            port = Integer.parseInt(portVal);
-            if (port < 0) {
-                throw new IllegalArgumentException("Invalid " + portType + " port number specified in runtime.properties:" + port);
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid " + portType + " port", e);
-        }
-        return port;
     }
 
     private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {

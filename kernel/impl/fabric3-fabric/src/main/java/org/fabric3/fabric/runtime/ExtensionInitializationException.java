@@ -49,14 +49,6 @@ public class ExtensionInitializationException extends InitializationException {
         super(message);
     }
 
-    public ExtensionInitializationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public ExtensionInitializationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public ExtensionInitializationException(String message, Throwable cause) {
         super(message, cause);
     }
