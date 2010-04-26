@@ -20,25 +20,12 @@ Public License. See the accompanying license file for details.
 
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jpa-hibernate</artifactId>
-    <name>Fabric3 JPA Integration (Hibernate)</name>
-    <description>Fabric3 JPA Integration (Hibernate).</description>
+    <name>Fabric3 JPA/Hibernate Extension</name>
+    <description>Fabric3 JPA/Hibernate Extension.</description>
 
     <packaging>sca-contribution-jar</packaging>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-jpa-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-jpa-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -117,6 +104,11 @@ Public License. See the accompanying license file for details.
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

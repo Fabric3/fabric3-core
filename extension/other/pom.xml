@@ -41,9 +41,7 @@
 		<module>fabric3-ftp-spi</module>
 		<module>fabric3-jdk-proxy</module>
 		<module>fabric3-jetty</module>
-		<module>fabric3-jpa-core</module>
 		<module>fabric3-jpa-hibernate</module>
-		<module>fabric3-jpa-spi</module>
 		<module>fabric3-resource</module>
 		<module>fabric3-sca-taglib</module>
 		<module>fabric3-security</module>

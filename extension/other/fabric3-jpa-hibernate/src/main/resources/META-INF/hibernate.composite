@@ -18,24 +18,61 @@ Public License. See the accompanying license file for details.
            name="HibernateJpaExtension"
            autowire="true">
 
-    <!-- EMF Builder Delegate -->
-    <component name="HibernateDelegate" f3-core:key="org.hibernate.ejb.HibernatePersistence">
-        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateDelegate"/>
-        <property name="logLevel" source="$systemConfig//jpa/@logging"/>
+    <component name="DefaultEmfCache">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.proxy.DefaultEmfCache"/>
     </component>
 
-    <component name="HibernateEmfClassLoaderService">
-        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateEmfClassLoaderService"/>
-    </component>
-
-    <!-- Transaction manager lookup -->
-    <component name="F3HibernateTransactionManagerLookup">
-        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.F3HibernateTransactionManagerLookup"/>
+    <component name="F3TransactionManagerLookup">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.tx.F3TransactionManagerLookup"/>
     </component>
 
     <component name="HibernateContributionListener">
-        <f3-impl:implementation.system class="org.fabric3.jpa.hibernate.HibernateContributionListener"/>
+        <f3-impl:implementation.system class="org.fabric3.jpa.contribution.HibernateContributionListener"/>
     </component>
 
-    <include name="JPACore" scdlResource="META-INF/jpa.composite"/>
+    <component name="PersistenceUnitProcessor" f3-core:key="javax.persistence.PersistenceUnit">
+        <f3-impl:implementation.system class="org.fabric3.jpa.introspection.PersistenceUnitProcessor"/>
+    </component>
+
+    <component name="PersistenceContextProcessor" f3-core:key="javax.persistence.PersistenceContext">
+        <f3-impl:implementation.system class="org.fabric3.jpa.introspection.PersistenceContextProcessor"/>
+    </component>
+
+    <component name="SessionResourceGenerator" f3-core:key="org.fabric3.jpa.model.HibernateSessionResource">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.SessionResourceGenerator"/>
+    </component>
+
+    <component name="PersistenceUnitResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceUnitResource">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceUnitResourceGenerator"/>
+    </component>
+
+    <component name="PersistenceContextResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceContextResource">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceGenerator"/>
+    </component>
+
+    <component name="PersistenceUnitWireAttacher" f3-core:key="org.fabric3.jpa.provision.PersistenceUnitTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.PersistenceUnitWireAttacher"/>
+    </component>
+
+    <component name="PersistenceContextWireAttacher" f3-core:key="org.fabric3.jpa.provision.PersistenceContextTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.PersistenceContextWireAttacher"/>
+    </component>
+
+    <component name="SessionWireAttacher" f3-core:key="org.fabric3.jpa.provision.SessionTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.SessionWireAttacher"/>
+    </component>
+
+    <component name="ClasspathPersistenceUnitScanner">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.builder.ClasspathPersistenceUnitScanner"/>
+    </component>
+
+    <component name="CachingEmfBuilder">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.builder.CachingEmfBuilder"/>
+        <property name="logLevel" source="$systemConfig//jpa/@logging"/>
+    </component>
+
+    <component name="EntityManagerService">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.proxy.EntityManagerServiceImpl"/>
+    </component>
+
 </composite>
