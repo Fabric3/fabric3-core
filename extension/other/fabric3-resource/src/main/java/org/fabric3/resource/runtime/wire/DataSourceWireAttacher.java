@@ -35,31 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.ds;
+package org.fabric3.resource.runtime.wire;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.resource.provision.DataSourceTargetDefinition;
+import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.SingletonObjectFactory;
+import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.resource.DataSourceRegistry;
+import org.fabric3.spi.wire.Wire;
 
 /**
- * Default DataSourceRegistry implementation.
+ * Attaches to a runtime DataSource.
  *
  * @version $Rev$ $Date$
  */
-public class DataSourceRegistryImpl implements DataSourceRegistry {
-    private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
+public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceTargetDefinition> {
+    private DataSourceRegistry registry;
 
-    public DataSource getDataSource(String name) {
-        return dataSources.get(name);
+    public DataSourceWireAttacher(@Reference DataSourceRegistry registry) {
+        this.registry = registry;
     }
 
-    public void register(String name, DataSource dataSource) {
-        dataSources.put(name, dataSource);
+    public void attach(PhysicalSourceDefinition source, DataSourceTargetDefinition target, Wire wire) throws WiringException {
+        throw new AssertionError();
     }
 
-    public DataSource unregister(String name) {
-        return dataSources.remove(name);
+    public void detach(PhysicalSourceDefinition source, DataSourceTargetDefinition target) throws WiringException {
+        throw new AssertionError();
+    }
+
+    public ObjectFactory<DataSource> createObjectFactory(DataSourceTargetDefinition target) throws WiringException {
+        String dataSourceName = target.getDataSourceName();
+        DataSource source = registry.getDataSource(dataSourceName);
+        if (!target.isOptional() && source == null) {
+            throw new DataSourceNotFoundException("DataSource not found: " + dataSourceName);
+        }
+        return new SingletonObjectFactory<DataSource>(source);
     }
 }

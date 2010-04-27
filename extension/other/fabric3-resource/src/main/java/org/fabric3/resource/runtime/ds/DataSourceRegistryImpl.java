@@ -35,27 +35,31 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.resource.runtime.ds;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
+
+import org.fabric3.spi.resource.DataSourceRegistry;
 
 /**
- * A resource sourced from the runtime domain.
+ * Default DataSourceRegistry implementation.
  *
  * @version $Rev$ $Date$
  */
-public class SystemSourcedResource extends ResourceDefinition {
-    private static final long serialVersionUID = 8542386357450347005L;
-    private String mappedName;
+public class DataSourceRegistryImpl implements DataSourceRegistry {
+    private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
 
-    public SystemSourcedResource(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
-        super(name, serviceContract, optional);
-        this.mappedName = mappedName;
+    public DataSource getDataSource(String name) {
+        return dataSources.get(name);
     }
 
-    public String getMappedName() {
-        return this.mappedName;
+    public void register(String name, DataSource dataSource) {
+        dataSources.put(name, dataSource);
     }
 
+    public DataSource unregister(String name) {
+        return dataSources.remove(name);
+    }
 }

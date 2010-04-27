@@ -35,27 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.resource.generator;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.resource.model.DataSourceResource;
+import org.fabric3.resource.provision.DataSourceTargetDefinition;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
- * A resource sourced from the runtime domain.
- *
  * @version $Rev$ $Date$
  */
-public class SystemSourcedResource extends ResourceDefinition {
-    private static final long serialVersionUID = 8542386357450347005L;
-    private String mappedName;
+@EagerInit
+public class DataSourceGenerator implements ResourceGenerator<DataSourceResource> {
 
-    public SystemSourcedResource(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
-        super(name, serviceContract, optional);
-        this.mappedName = mappedName;
-    }
-
-    public String getMappedName() {
-        return this.mappedName;
+    public DataSourceTargetDefinition generateWireTarget(LogicalResource<DataSourceResource> resource) throws GenerationException {
+        DataSourceResource definition = resource.getResourceDefinition();
+        String dataSourceName = definition.getDataSourceName();
+        boolean optional = definition.isOptional();
+        return  new DataSourceTargetDefinition(dataSourceName, optional);
     }
 
 }

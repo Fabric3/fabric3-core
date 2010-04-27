@@ -18,29 +18,40 @@ Public License. See the accompanying license file for details.
            name="ResourceExtension"
            autowire="true">
 
-    <!-- Processor for F3 resources -->
-    <component name="Fabric3ResourceProcessor" f3-core:key="org.fabric3.api.annotation.Resource">
-        <f3-impl:implementation.system class="org.fabric3.resource.introspection.Fabric3ResourceProcessor"/>
+    <component name="ResourceProcessor" f3-core:key="org.fabric3.api.annotation.Resource">
+        <f3-impl:implementation.system class="org.fabric3.resource.introspection.ResourceProcessor"/>
     </component>
 
-    <!-- Processor for JSR250 resources -->
     <component name="JSR250ResourceProcessor" f3-core:key="javax.annotation.Resource">
         <f3-impl:implementation.system class="org.fabric3.resource.introspection.JSR250ResourceProcessor"/>
     </component>
 
-    <!-- Wire Target Definition Generator -->
+    <component name="DataSourceTypeHandler" f3-core:key="javax.sql.DataSource">
+        <f3-impl:implementation.system class="org.fabric3.resource.introspection.DataSourceTypeHandler"/>
+    </component>
+
+    <component name="JSR250DataSourceTypeHandler" f3-core:key="javax.sql.DataSource">
+        <f3-impl:implementation.system class="org.fabric3.resource.introspection.JSR250DataSourceTypeHandler"/>
+    </component>
+
     <component name="SystemSourcedResourceWireGenerator" f3-core:key="org.fabric3.resource.model.SystemSourcedResource">
         <f3-impl:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceGenerator"/>
     </component>
 
-    <!-- Wire Attacher for System Sourced Resources -->
-    <component name="SystemSourcedResourceWireAttacher" f3-core:key="org.fabric3.resource.model.SystemSourcedTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.resource.wire.SystemSourcedResourceWireAttacher"/>
+    <component name="DataSourceGenerator" f3-core:key="org.fabric3.resource.model.DataSourceResource">
+        <f3-impl:implementation.system class="org.fabric3.resource.generator.DataSourceGenerator"/>
     </component>
 
-    <!-- Datasource registry -->
+    <component name="SystemSourcedResourceWireAttacher" f3-core:key="org.fabric3.resource.provision.SystemSourcedTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.resource.runtime.wire.SystemSourcedResourceWireAttacher"/>
+    </component>
+
+    <component name="DataSourceWireAttacher" f3-core:key="org.fabric3.resource.provision.DataSourceTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.resource.runtime.wire.DataSourceWireAttacher"/>
+    </component>
+
     <component name="DataSourceRegistry">
-        <f3-impl:implementation.system class="org.fabric3.resource.ds.DataSourceRegistryImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.resource.runtime.ds.DataSourceRegistryImpl"/>
     </component>
 
 </composite>

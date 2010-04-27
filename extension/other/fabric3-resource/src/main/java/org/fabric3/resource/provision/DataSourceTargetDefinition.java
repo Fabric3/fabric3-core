@@ -35,27 +35,32 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.resource.provision;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * A resource sourced from the runtime domain.
+ * Defines the DataSource to inject on a resource.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
-public class SystemSourcedResource extends ResourceDefinition {
-    private static final long serialVersionUID = 8542386357450347005L;
-    private String mappedName;
+public class DataSourceTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = 7832372892587547800L;
 
-    public SystemSourcedResource(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
-        super(name, serviceContract, optional);
-        this.mappedName = mappedName;
+    private String dataSourceName;
+    private boolean optional;
+
+    public DataSourceTargetDefinition(String dataSourceName, boolean optional) {
+        this.dataSourceName = dataSourceName;
+        this.optional = optional;
+        setOptimizable(true);
     }
 
-    public String getMappedName() {
-        return this.mappedName;
+    public String getDataSourceName() {
+        return dataSourceName;
     }
 
+    public boolean isOptional() {
+        return optional;
+    }
 }

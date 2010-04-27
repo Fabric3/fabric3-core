@@ -35,13 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.resource.runtime.wire;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.builder.WiringException;
 
 /**
- * @version $Rev$ $Date$
+ * Denotes a missing or invalid DataSource.
+ *
+ * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
-public class SystemSourcedTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 6025755392533002246L;
+public class DataSourceNotFoundException extends WiringException {
+    private static final long serialVersionUID = 1775542460273141013L;
+
+    public DataSourceNotFoundException(String message) {
+        super(message);
+    }
 }

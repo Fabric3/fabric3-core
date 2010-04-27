@@ -43,7 +43,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.host.Names;
 import org.fabric3.resource.model.SystemSourcedResource;
-import org.fabric3.resource.model.SystemSourcedTargetDefinition;
+import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -54,19 +54,13 @@ import org.fabric3.spi.model.instance.LogicalResource;
 @EagerInit
 public class SystemSourcedResourceGenerator implements ResourceGenerator<SystemSourcedResource> {
 
-    public SystemSourcedTargetDefinition generateWireTarget(LogicalResource<SystemSourcedResource> logicalResource) throws GenerationException {
-
-        SystemSourcedResource resourceDefinition = logicalResource.getResourceDefinition();
-        String mappedName = resourceDefinition.getMappedName();
-
+    public SystemSourcedTargetDefinition generateWireTarget(LogicalResource<SystemSourcedResource> resource) throws GenerationException {
+        SystemSourcedResource definition = resource.getResourceDefinition();
+        String mappedName = definition.getMappedName();
         URI targetUri = URI.create(Names.RUNTIME_NAME + "/" + mappedName);
-
-        SystemSourcedTargetDefinition wtd = new SystemSourcedTargetDefinition();
-        wtd.setOptimizable(true);
-        wtd.setUri(targetUri);
-
-        return wtd;
-
+        SystemSourcedTargetDefinition targetDefinition = new SystemSourcedTargetDefinition();
+        targetDefinition.setUri(targetUri);
+        return targetDefinition;
     }
 
 }

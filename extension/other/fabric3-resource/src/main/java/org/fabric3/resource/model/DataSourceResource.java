@@ -35,47 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.wire;
+package org.fabric3.resource.model;
 
-import java.net.URI;
-
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.resource.model.SystemSourcedTargetDefinition;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
+ * A resource that takes a DataSource type.
+ *
  * @version $Rev$ $Date$
  */
-public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedTargetDefinition> {
-    private final ComponentManager manager;
+public class DataSourceResource extends ResourceDefinition {
+    private static final long serialVersionUID = -7941116454357577579L;
+    private String dataSourceName;
 
-    public SystemSourcedResourceWireAttacher(@Reference ComponentManager manager) {
-        this.manager = manager;
+    public DataSourceResource(String resourceName, ServiceContract contract, boolean optional, String dataSourceName) {
+        super(resourceName, contract, optional);
+        this.dataSourceName = dataSourceName;
     }
 
-    public void attach(PhysicalSourceDefinition source, SystemSourcedTargetDefinition target, Wire wire)
-            throws WiringException {
-        throw new AssertionError();
+    public String getDataSourceName() {
+        return this.dataSourceName;
     }
 
-    public void detach(PhysicalSourceDefinition source, SystemSourcedTargetDefinition target) throws WiringException {
-        throw new AssertionError();
-    }
-
-    public ObjectFactory<?> createObjectFactory(SystemSourcedTargetDefinition target) throws WiringException {
-        URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        AtomicComponent<?> targetComponent = (AtomicComponent<?>) manager.getComponent(targetId);
-        if (targetComponent == null) {
-            throw new ResourceNotFoundException("Resource not found: " + targetId);
-        }
-        return targetComponent.createObjectFactory();
-    }
 }

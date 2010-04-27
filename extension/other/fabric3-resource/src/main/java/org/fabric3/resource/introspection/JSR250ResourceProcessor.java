@@ -40,31 +40,40 @@ package org.fabric3.resource.introspection;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Resource;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.resource.model.SystemSourcedResource;
+import org.fabric3.resource.spi.JSR250ResourceTypeHandler;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.TypeMapping;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.model.SystemSourcedResource;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.TypeMapping;
-import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * Processes metadata for the {@link Resource{ annotation.
+ * Processes metadata for the {@link Resource} annotation.
  *
  * @version $Rev$ $Date$
  */
 public class JSR250ResourceProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Resource, I> {
-    private final IntrospectionHelper helper;
-    private final JavaContractProcessor contractProcessor;
+    private IntrospectionHelper helper;
+    private JavaContractProcessor contractProcessor;
+    private Map<Class<?>, JSR250ResourceTypeHandler> handlers = new HashMap<Class<?>, JSR250ResourceTypeHandler>();
+
+    @Reference(required = false)
+    public void setHandlers(Map<Class<?>, JSR250ResourceTypeHandler> handlers) {
+        this.handlers = handlers;
+    }
 
     public JSR250ResourceProcessor(@Reference IntrospectionHelper helper, @Reference JavaContractProcessor contractProcessor) {
         super(Resource.class);
@@ -78,12 +87,20 @@ public class JSR250ResourceProcessor<I extends Implementation<? extends Injectin
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         FieldInjectionSite site = new FieldInjectionSite(field);
-        String mappedName = annotation.mappedName();
-        if (mappedName.length() == 0) {
-            // default to the field type simple name
-            mappedName = type.getSimpleName();
+
+        ResourceDefinition definition;
+        JSR250ResourceTypeHandler handler = handlers.get(type);
+        if (handler != null) {
+            // there is a specific Handler for this type
+            definition = handler.createResource(name, annotation, field, context);
+        } else {
+            String mappedName = annotation.mappedName();
+            if (mappedName.length() == 0) {
+                // default to the field type simple name
+                mappedName = type.getSimpleName();
+            }
+            definition = createResource(name, type, false, mappedName, context);
         }
-        ResourceDefinition definition = createResource(name, type, false, mappedName, context);
         implementation.getComponentType().add(definition, site);
     }
 
@@ -93,12 +110,20 @@ public class JSR250ResourceProcessor<I extends Implementation<? extends Injectin
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        String mappedName = annotation.mappedName();
-        if (mappedName.length() == 0) {
-            // default to the field type simple name
-            mappedName = type.getSimpleName();
+
+        ResourceDefinition definition;
+        JSR250ResourceTypeHandler handler = handlers.get(type);
+        if (handler != null) {
+            // there is a specific Handler for this type
+            definition = handler.createResource(name, annotation, method, context);
+        } else {
+            String mappedName = annotation.mappedName();
+            if (mappedName.length() == 0) {
+                // default to the field type simple name
+                mappedName = type.getSimpleName();
+            }
+            definition = createResource(name, type, false, mappedName, context);
         }
-        ResourceDefinition definition = createResource(name, type, false, mappedName, context);
         implementation.getComponentType().add(definition, site);
     }
 
