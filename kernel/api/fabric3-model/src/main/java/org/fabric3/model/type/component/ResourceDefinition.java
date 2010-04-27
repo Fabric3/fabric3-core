@@ -74,7 +74,7 @@ public class ResourceDefinition extends ModelObject {
     }
 
     /**
-     * If true, the resource is optional
+     * If true, the resource is optional.
      *
      * @return true if the resource is optional
      */
@@ -83,7 +83,7 @@ public class ResourceDefinition extends ModelObject {
     }
 
     /**
-     * Returned the service contract for the resource.
+     * Returna the service contract for the resource.
      *
      * @return the service contract
      */
