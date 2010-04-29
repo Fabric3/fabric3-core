@@ -62,7 +62,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -421,7 +421,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 continue;
             } else {
                 String serviceName = promotedUri.getFragment();
-                AbstractComponentType componentType = promotedComponent.getComponentType();
+                ComponentType componentType = promotedComponent.getComponentType();
                 if (serviceName != null) {
                     promotedService = componentType.getServices().get(serviceName);
                     if (promotedService == null) {

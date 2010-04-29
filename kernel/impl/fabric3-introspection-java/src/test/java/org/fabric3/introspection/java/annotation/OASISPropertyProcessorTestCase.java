@@ -51,7 +51,7 @@ import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -127,7 +127,7 @@ public class OASISPropertyProcessorTestCase extends TestCase {
             return null;
         }
 
-        public AbstractComponentType getComponentType() {
+        public ComponentType getComponentType() {
             return new InjectingComponentType();
         }
     }

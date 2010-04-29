@@ -51,7 +51,7 @@ import junit.framework.TestCase;
 import org.osoa.sca.annotations.Property;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -133,7 +133,7 @@ public class PropertyProcessorTestCase extends TestCase {
             return null;
         }
 
-        public AbstractComponentType getComponentType() {
+        public ComponentType getComponentType() {
             return type;
         }
     }

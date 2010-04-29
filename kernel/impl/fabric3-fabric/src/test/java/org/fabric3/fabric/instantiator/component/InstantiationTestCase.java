@@ -55,7 +55,7 @@ import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -167,7 +167,7 @@ public class InstantiationTestCase extends TestCase {
 
     }
 
-    private class MockImplementation extends Implementation<AbstractComponentType> {
+    private class MockImplementation extends Implementation<ComponentType> {
         private static final long serialVersionUID = 4128780797281194069L;
 
         public QName getType() {

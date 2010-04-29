@@ -61,7 +61,7 @@ import org.w3c.dom.Document;
 import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -177,7 +177,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 throw new AssertionError("Impementation loader must position the cursor to the end element");
             }
             definition.setImplementation(impl);
-            AbstractComponentType componentType = impl.getComponentType();
+            ComponentType componentType = impl.getComponentType();
 
             while (true) {
                 switch (reader.next()) {
@@ -213,7 +213,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parseService(ComponentDefinition<?> definition,
-                              AbstractComponentType componentType,
+                              ComponentType componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         ComponentService service;
@@ -242,7 +242,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parseReference(ComponentDefinition<?> definition,
-                                AbstractComponentType componentType,
+                                ComponentType componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         ComponentReference reference;
@@ -274,7 +274,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parsePropertyValue(ComponentDefinition<?> definition,
-                                    AbstractComponentType componentType,
+                                    ComponentType componentType,
                                     XMLStreamReader reader,
                                     IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         PropertyValue value;
@@ -458,7 +458,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void validateRequiredProperties(ComponentDefinition<?> definition, XMLStreamReader reader, IntrospectionContext context) {
-        AbstractComponentType type = definition.getImplementation().getComponentType();
+        ComponentType type = definition.getImplementation().getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();
         for (Property property : properties.values()) {

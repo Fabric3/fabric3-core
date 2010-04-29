@@ -46,7 +46,7 @@ import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ReferenceNotFound;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -177,7 +177,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
 
         ServiceContract contract = new JavaServiceContract(requiredInterface);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition("ref", contract, Multiplicity.ONE_ONE);
-        AbstractComponentType type = new AbstractComponentType();
+        ComponentType type = new ComponentType();
         type.add(referenceDefinition);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
@@ -198,7 +198,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         URI uri = URI.create("target");
         JavaServiceContract contract = new JavaServiceContract(serviceInterface);
         ServiceDefinition service = new ServiceDefinition("service", contract);
-        AbstractComponentType type = new AbstractComponentType();
+        ComponentType type = new ComponentType();
         type.add(service);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
@@ -210,7 +210,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         return component;
     }
 
-    private class MockAtomicImpl extends Implementation<AbstractComponentType> {
+    private class MockAtomicImpl extends Implementation<ComponentType> {
         private static final long serialVersionUID = 9075647188452892957L;
 
         public QName getType() {

@@ -46,7 +46,7 @@ package org.fabric3.spi.model.type.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.CallbackDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -57,7 +57,7 @@ import org.fabric3.model.type.component.ResourceDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class InjectingComponentType extends AbstractComponentType {
+public class InjectingComponentType extends ComponentType {
     private static final long serialVersionUID = -2602867276842414240L;
 
     private String implClass;

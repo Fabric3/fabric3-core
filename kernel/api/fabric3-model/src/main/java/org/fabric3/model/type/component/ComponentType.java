@@ -56,7 +56,7 @@ import org.fabric3.model.type.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public class AbstractComponentType extends ModelObject implements CapabilityAware {
+public class ComponentType extends ModelObject implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
@@ -64,9 +64,6 @@ public class AbstractComponentType extends ModelObject implements CapabilityAwar
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceDefinition> resources = new HashMap<String, ResourceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
-
-    public AbstractComponentType() {
-    }
 
     /**
      * Returns a live Map of the services provided by the implementation.
@@ -140,20 +137,10 @@ public class AbstractComponentType extends ModelObject implements CapabilityAwar
         resources.put(resource.getName(), resource);
     }
 
-    /**
-     * Returns the capabilities required by this component implementation.
-     *
-     * @return the capabilities required by this component implementation
-     */
     public Set<String> getRequiredCapabilities() {
         return requiredCapabilities;
     }
 
-    /**
-     * Adds a capability required by this implementation.
-     *
-     * @param capability the capability
-     */
     public void addRequiredCapability(String capability) {
         requiredCapabilities.add(capability);
     }

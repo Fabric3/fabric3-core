@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  *
  * @version $Rev$ $Date$
  */
-public interface HeuristicProcessor<I extends Implementation<? extends AbstractComponentType>> {
+public interface HeuristicProcessor<I extends Implementation<? extends ComponentType>> {
 
     /**
      * Apply heuristics to an implementation and update the component type accordingly. If errors or warnings are encountered, they will be collated

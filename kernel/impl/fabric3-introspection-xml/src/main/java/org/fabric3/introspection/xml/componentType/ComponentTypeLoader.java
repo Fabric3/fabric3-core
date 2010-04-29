@@ -59,7 +59,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.introspection.xml.common.MissingReferenceName;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
@@ -82,7 +82,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ComponentTypeLoader implements TypeLoader<AbstractComponentType> {
+public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     private static final QName COMPONENT_TYPE = new QName(SCA_NS, "componentType");
     private static final QName PROPERTY = new QName(SCA_NS, "property");
     private static final QName SERVICE = new QName(SCA_NS, "service");
@@ -116,8 +116,8 @@ public class ComponentTypeLoader implements TypeLoader<AbstractComponentType> {
         return COMPONENT_TYPE;
     }
 
-    public AbstractComponentType load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        AbstractComponentType type = new AbstractComponentType();
+    public ComponentType load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
+        ComponentType type = new ComponentType();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:

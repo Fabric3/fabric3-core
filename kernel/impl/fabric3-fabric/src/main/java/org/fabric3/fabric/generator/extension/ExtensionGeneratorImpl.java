@@ -57,7 +57,7 @@ import org.fabric3.fabric.generator.GenerationType;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
@@ -186,7 +186,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      */
     private void evaluateComponent(LogicalComponent<?> component, AbstractExtensionsCommand command, GenerationType type) throws GenerationException {
         Implementation<?> impl = component.getDefinition().getImplementation();
-        AbstractComponentType componentType = impl.getComponentType();
+        ComponentType componentType = impl.getComponentType();
         Set<Contribution> extensions = new HashSet<Contribution>();
         if (isGenerate(component.getState(), type)) {
             for (String capability : componentType.getRequiredCapabilities()) {

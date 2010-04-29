@@ -40,7 +40,7 @@ package org.fabric3.implementation.web.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectionSite;
 
@@ -49,7 +49,7 @@ import org.fabric3.spi.model.type.java.InjectionSite;
  *
  * @version $Rev$ $Date$
  */
-public class WebComponentType extends AbstractComponentType {
+public class WebComponentType extends ComponentType {
     private static final long serialVersionUID = 9213093177241637932L;
     private final Map<String, Map<InjectionSite, Injectable>> sites = new HashMap<String, Map<InjectionSite, Injectable>>();
 

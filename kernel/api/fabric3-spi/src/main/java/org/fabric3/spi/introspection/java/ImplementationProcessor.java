@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -47,7 +47,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  * @param <I>            the type of Implementation an implementation can handle
  */
-public interface ImplementationProcessor<I extends Implementation<? extends AbstractComponentType>> {
+public interface ImplementationProcessor<I extends Implementation<? extends ComponentType>> {
 
     /**
      * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the

@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.model.type.component.AbstractComponentType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
@@ -91,7 +91,7 @@ public abstract class AbstractComponentInstantiator {
     protected void initializeProperties(LogicalComponent<?> component, ComponentDefinition<?> definition, InstantiationContext context) {
 
         Map<String, PropertyValue> propertyValues = definition.getPropertyValues();
-        AbstractComponentType componentType = definition.getComponentType();
+        ComponentType componentType = definition.getComponentType();
 
         for (Property property : componentType.getProperties().values()) {
 
