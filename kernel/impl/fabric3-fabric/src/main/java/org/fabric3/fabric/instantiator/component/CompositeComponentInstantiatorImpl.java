@@ -47,6 +47,7 @@ import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -74,11 +75,14 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
 
     private AtomicComponentInstantiator atomicInstantiator;
     private WireInstantiator wireInstantiator;
+    private ChannelInstantiator channelInstantiator;
 
     public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,
-                                              @Reference WireInstantiator wireInstantiator) {
+                                              @Reference WireInstantiator wireInstantiator,
+                                              @Reference ChannelInstantiator channelInstantiator) {
         this.atomicInstantiator = atomicInstantiator;
         this.wireInstantiator = wireInstantiator;
+        this.channelInstantiator = channelInstantiator;
     }
 
     public LogicalComponent<CompositeImplementation> instantiate(ComponentDefinition<CompositeImplementation> definition,
@@ -94,6 +98,8 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         instantiateCompositeServices(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
         instantiateCompositeReferences(component, composite);
+        wireInstantiator.instantiateCompositeWires(composite, component, context);
+        channelInstantiator.instantiateChannels(composite, component, context);
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
             context.addError(error);

@@ -49,6 +49,8 @@ import javax.management.MBeanServer;
 
 import org.fabric3.contribution.MetaDataStoreImpl;
 import org.fabric3.contribution.ProcessorRegistryImpl;
+import org.fabric3.fabric.channel.ChannelManager;
+import org.fabric3.fabric.channel.ChannelManagerImpl;
 import org.fabric3.fabric.classloader.ClassLoaderRegistryImpl;
 import org.fabric3.fabric.cm.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
@@ -62,8 +64,8 @@ import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
@@ -85,6 +87,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private MonitorFactory monitorFactory;
     private LogicalComponentManager logicalComponentManager;
     private ComponentManager componentManager;
+    private ChannelManager channelManager;
     private ScopeContainer scopeContainer;
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore metaDataStore;
@@ -114,6 +117,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     public void boot() throws InitializationException {
         logicalComponentManager = new LogicalComponentManagerImpl();
         componentManager = new ComponentManagerImpl();
+        channelManager = new ChannelManagerImpl();
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         ProcessorRegistry processorRegistry = new ProcessorRegistryImpl();
         metaDataStore = new MetaDataStoreImpl(processorRegistry);
@@ -166,6 +170,14 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public ComponentManager getComponentManager() {
         return componentManager;
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void setChannelManager(ChannelManager channelManager) {
+        this.channelManager = channelManager;
     }
 
     public ScopeContainer getScopeContainer() {

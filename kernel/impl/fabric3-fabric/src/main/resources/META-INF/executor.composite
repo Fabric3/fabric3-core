@@ -46,6 +46,14 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildComponentCommandExecutor"/>
     </component>
 
+    <component name="BuildChannelsCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildChannelsCommandExecutor"/>
+    </component>
+
+    <component name="UnBuildChannelsCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildChannelsCommandExecutor"/>
+    </component>
+
     <component name="WireAttachCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachWireCommandExecutor"/>
     </component>

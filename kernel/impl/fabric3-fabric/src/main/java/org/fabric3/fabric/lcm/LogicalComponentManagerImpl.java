@@ -174,6 +174,7 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager, Log
         impl.setComponentType(type);
         ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(domainUri.toString());
         definition.setImplementation(impl);
+        definition.setContributionUri(Names.BOOT_CONTRIBUTION);
         type.setAutowire(autowire);
         domain = new LogicalCompositeComponent(domainUri, definition, null);
         domain.setAutowire(autowire);

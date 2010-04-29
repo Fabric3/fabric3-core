@@ -48,6 +48,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.fabric.channel.ChannelManager;
 
 /**
  * Interface for accessing services provided by a runtime.
@@ -92,6 +93,13 @@ public interface RuntimeServices {
      * @return this runtime's physical component manager
      */
     ComponentManager getComponentManager();
+
+    /**
+     * Returns this runtime's channel manager.
+     *
+     * @return this runtime's channel manager
+     */
+    ChannelManager getChannelManager();
 
     /**
      * Returns the ScopeRegistry used to manage runtime ScopeContainers.

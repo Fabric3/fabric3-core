@@ -96,9 +96,9 @@ public class ConnectorImplTestCase extends TestCase {
         builders = new HashMap<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>>();
         connector.setInterceptorBuilders(builders);
 
-        PhysicalSourceDefinition sourceDefinition = new PhysicalSourceDefinition();
+        PhysicalSourceDefinition sourceDefinition = new PhysicalSourceDefinition(){};
         sourceDefinition.setUri(URI.create("source"));
-        PhysicalTargetDefinition targetDefinition = new PhysicalTargetDefinition();
+        PhysicalTargetDefinition targetDefinition = new PhysicalTargetDefinition(){};
         targetDefinition.setUri(URI.create("target"));
         Set<PhysicalOperationDefinition> operations = new HashSet<PhysicalOperationDefinition>();
         definition = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);

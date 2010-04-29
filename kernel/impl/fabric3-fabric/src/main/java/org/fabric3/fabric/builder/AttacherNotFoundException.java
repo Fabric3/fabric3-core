@@ -51,10 +51,6 @@ import org.fabric3.spi.builder.BuilderException;
 public class AttacherNotFoundException extends BuilderException {
     private static final long serialVersionUID = 2604579115547966762L;
 
-    public AttacherNotFoundException() {
-        super();
-    }
-
     public AttacherNotFoundException(String message) {
         super(message);
     }

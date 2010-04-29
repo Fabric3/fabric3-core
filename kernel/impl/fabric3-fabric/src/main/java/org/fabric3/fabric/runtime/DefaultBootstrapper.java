@@ -59,6 +59,7 @@ import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
+import org.fabric3.fabric.channel.ChannelManager;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
@@ -117,6 +118,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private LogicalCompositeComponent domain;
     private LogicalComponentManager logicalComponetManager;
     private ComponentManager componentManager;
+    private ChannelManager channelManager;
     private ScopeContainer scopeContainer;
     private Repository repository;
     private MBeanServer mbeanServer;
@@ -155,6 +157,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         monitorFactory = runtimeServices.getMonitorFactory();
         logicalComponetManager = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
+        channelManager = runtimeServices.getChannelManager();
         domain = logicalComponetManager.getRootComponent();
         classLoaderRegistry = runtimeServices.getClassLoaderRegistry();
         metaDataStore = runtimeServices.getMetaDataStore();
@@ -227,6 +230,7 @@ public class DefaultBootstrapper implements Bootstrapper {
 
         // services available through the inward facing RuntimeServices SPI
         registerComponent("ComponentManager", ComponentManager.class, componentManager, true);
+        registerComponent("ChannelManager", ChannelManager.class, channelManager, true);
         registerComponent("RuntimeLogicalComponentManager", LogicalComponentManager.class, logicalComponetManager, true);
         registerComponent("CompositeScopeContainer", ScopeContainer.class, scopeContainer, true);
         registerComponent("ClassLoaderRegistry", ClassLoaderRegistry.class, classLoaderRegistry, true);

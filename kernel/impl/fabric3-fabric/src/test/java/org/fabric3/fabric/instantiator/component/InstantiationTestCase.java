@@ -47,12 +47,13 @@ import org.easymock.classextension.EasyMock;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
+import org.fabric3.fabric.instantiator.AutowireNormalizer;
+import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.instantiator.AutowireNormalizer;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -109,10 +110,13 @@ public class InstantiationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
+        ChannelInstantiator channelInstantiator = EasyMock.createMock(ChannelInstantiator.class);
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(null);
-        CompositeComponentInstantiatorImpl compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
-        AutowireInstantiator autowireService = EasyMock.createMock(AutowireInstantiator.class);
+        CompositeComponentInstantiatorImpl compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator,
+                                                                                                          wireInstantiator,
+                                                                                                          channelInstantiator);
+        AutowireInstantiator autowireInstantiator = EasyMock.createMock(AutowireInstantiator.class);
         PromotionResolutionService promotionResolutionService = EasyMock.createMock(PromotionResolutionService.class);
         PromotionNormalizer normalizer = EasyMock.createMock(PromotionNormalizer.class);
         AutowireNormalizer autowireNormalizer = EasyMock.createMock(AutowireNormalizer.class);
@@ -120,10 +124,11 @@ public class InstantiationTestCase extends TestCase {
         logicalModelInstantiator = new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                                     atomicInstantiator,
                                                                     wireInstantiator,
+                                                                    autowireInstantiator,
+                                                                    channelInstantiator,
                                                                     normalizer,
                                                                     autowireNormalizer,
-                                                                    promotionResolutionService,
-                                                                    autowireService);
+                                                                    promotionResolutionService);
         parent = new LogicalCompositeComponent(PARENT_URI, null, null);
     }
 

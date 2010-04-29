@@ -60,9 +60,11 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.ArtifactValidationFailure;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Autowire;
+import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeReference;
@@ -89,7 +91,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -100,6 +101,7 @@ import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     public static final QName COMPOSITE = new QName(SCA_NS, "composite");
     public static final QName INCLUDE = new QName(SCA_NS, "include");
+    public static final QName CHANNEL = new QName(SCA_NS, "channel");
     public static final QName PROPERTY = new QName(SCA_NS, "property");
     public static final QName SERVICE = new QName(SCA_NS, "service");
     public static final QName REFERENCE = new QName(SCA_NS, "reference");
@@ -116,6 +118,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
         ATTRIBUTES.put("constrainingType", "constrainingType");
+        ATTRIBUTES.put("channel", "channel");
     }
 
     private TypeLoader<CompositeService> serviceLoader;
@@ -196,6 +199,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         continue;
                     } else if (SERVICE.equals(qname)) {
                         handleService(type, reader, childContext);
+                        continue;
+                    } else if (CHANNEL.equals(qname)) {
+                        handleChannel(type, reader, childContext);
                         continue;
                     } else if (REFERENCE.equals(qname)) {
                         handleReference(type, reader, childContext);
@@ -296,6 +302,22 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         type.add(componentDefinition);
         return true;
+    }
+
+    private void handleChannel(Composite type, XMLStreamReader reader, IntrospectionContext context)
+            throws XMLStreamException, UnrecognizedElementException {
+        ChannelDefinition channelDefinition = registry.load(reader, ChannelDefinition.class, context);
+        if (channelDefinition == null) {
+            // errror encountered loading the channel definition
+            return;
+        }
+        String key = channelDefinition.getName();
+        if (type.getChannels().containsKey(key)) {
+            DuplicateChannelName failure = new DuplicateChannelName(key, reader);
+            context.addError(failure);
+            return;
+        }
+        type.add(channelDefinition);
     }
 
     private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext context)

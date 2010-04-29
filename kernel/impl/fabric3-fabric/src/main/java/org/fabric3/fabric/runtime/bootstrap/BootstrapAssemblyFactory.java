@@ -72,6 +72,8 @@ import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.generator.channel.DomainChannelCommandGenerator;
+import org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl;
 import org.fabric3.fabric.generator.collator.ContributionCollator;
@@ -95,12 +97,14 @@ import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.AutowireNormalizer;
+import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.fabric.instantiator.channel.ChannelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.AutowireNormalizerImpl;
 import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
@@ -236,14 +240,18 @@ public class BootstrapAssemblyFactory {
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
-        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
+        ChannelInstantiator channelInstantiator = new ChannelInstantiatorImpl();
+
+        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator,
+                                                                                                      wireInstantiator,
+                                                                                                      channelInstantiator);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,
-                                                promotionNormalizer,
+                                                autowireInstantiator,
+                                                channelInstantiator, promotionNormalizer,
                                                 autowireNormalizer,
-                                                promotionResolutionService,
-                                                autowireInstantiator);
+                                                promotionResolutionService);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -333,7 +341,8 @@ public class BootstrapAssemblyFactory {
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
         ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
-        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, startContextGenerator, stopContextGenerator);
+        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl();
+        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, channelGenerator, startContextGenerator, stopContextGenerator);
     }
 
     @SuppressWarnings({"unchecked"})

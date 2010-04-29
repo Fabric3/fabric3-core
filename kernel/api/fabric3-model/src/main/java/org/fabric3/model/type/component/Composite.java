@@ -61,22 +61,24 @@ import org.fabric3.model.type.PolicyAware;
 public class Composite extends AbstractComponentType<CompositeService, CompositeReference, Property, ResourceDefinition> implements PolicyAware {
     private static final long serialVersionUID = -3126069884608566611L;
 
-    private final QName name;
+    private QName name;
     private URI contributionUri;
     private boolean local;
     private Autowire autowire;
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
-    private final Map<QName, Include> includes = new HashMap<QName, Include>();
-    private final List<WireDefinition> wires = new ArrayList<WireDefinition>();
+    private Map<QName, Include> includes = new HashMap<QName, Include>();
+    private List<WireDefinition> wires = new ArrayList<WireDefinition>();
+    private Map<String, ChannelDefinition> channels = new HashMap<String, ChannelDefinition>();
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
-    private final Map<String, Property> propertiesView = new HashMap<String, Property>();
-    private final Map<String, CompositeReference> referencesView = new HashMap<String, CompositeReference>();
-    private final Map<String, CompositeService> servicesView = new HashMap<String, CompositeService>();
-    private final Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
+    private Map<String, Property> propertiesView = new HashMap<String, Property>();
+    private Map<String, CompositeReference> referencesView = new HashMap<String, CompositeReference>();
+    private Map<String, CompositeService> servicesView = new HashMap<String, CompositeService>();
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
-    private final List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
+    private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
+    private List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
 
     private Set<QName> intents;
     private Set<QName> policySets;
@@ -225,6 +227,10 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         return wiresView;
     }
 
+    public Map<String, ChannelDefinition> getChannels() {
+        return channelsView;
+    }
+
     /**
      * Get declared properties in this composite type, except properties from included composites.
      *
@@ -280,6 +286,15 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         return includes;
     }
 
+    public Map<String, ChannelDefinition> getDeclaredChannels() {
+        return channels;
+    }
+
+    public void add(ChannelDefinition channelDefinition) {
+        channelsView.put(channelDefinition.getName(), channelDefinition);
+        channels.put(channelDefinition.getName(), channelDefinition);
+    }
+
     public void add(Include include) {
         includes.put(include.getName(), include);
         componentsView.putAll(include.getIncluded().getComponents());
@@ -287,8 +302,8 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         propertiesView.putAll(include.getIncluded().getProperties());
         servicesView.putAll(include.getIncluded().getServices());
         wiresView.addAll(include.getIncluded().getWires());
+        channelsView.putAll(include.getIncluded().getChannels());
     }
-
 
     public void addIntent(QName intent) {
         intents.add(intent);

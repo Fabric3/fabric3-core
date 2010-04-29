@@ -56,7 +56,7 @@ import org.fabric3.model.type.contract.DataType;
  *
  * @version $Revision$ $Date$
  */
-public class PhysicalTargetDefinition implements Serializable {
+public abstract class PhysicalTargetDefinition implements Serializable {
     private static final long serialVersionUID = -8430498259706831133L;
 
     private URI uri;

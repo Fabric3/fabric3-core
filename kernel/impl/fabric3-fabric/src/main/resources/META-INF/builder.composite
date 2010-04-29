@@ -22,6 +22,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.ConnectorImpl"/>
     </component>
 
+    <component name="ChannelConnector">
+        <f3-impl:implementation.system class="org.fabric3.fabric.builder.ChannelConnectorImpl"/>
+    </component>
+
     <component name="ClassLoaderBuilder">
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderBuilderImpl"/>
     </component>

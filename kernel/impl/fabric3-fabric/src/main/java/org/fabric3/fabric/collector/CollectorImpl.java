@@ -42,6 +42,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -97,6 +98,11 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
+        for (LogicalChannel channel : composite.getChannels()) {
+            if (LogicalState.NEW == channel.getState()) {
+                channel.setState(LogicalState.PROVISIONED);
+            }
+        }
     }
 
 
@@ -148,6 +154,11 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
+        for (LogicalChannel channel : composite.getChannels()) {
+            if (deployable.equals(channel.getDeployable())) {
+                channel.setState(LogicalState.MARKED);
+            }
+        }
     }
 
     public void collect(LogicalCompositeComponent composite) {
@@ -176,6 +187,14 @@ public class CollectorImpl implements Collector {
                 if (LogicalState.MARKED == wire.getState()) {
                     it.remove();
                 }
+            }
+        }
+
+        Iterator<LogicalChannel> channelIter = composite.getChannels().iterator();
+        while(channelIter.hasNext()) {
+            LogicalChannel channel = channelIter.next();
+            if (LogicalState.MARKED == channel.getState()) {
+                channelIter.remove();
             }
         }
     }

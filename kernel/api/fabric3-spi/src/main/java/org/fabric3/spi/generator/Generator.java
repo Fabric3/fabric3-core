@@ -43,9 +43,7 @@
  */
 package org.fabric3.spi.generator;
 
-import java.util.Collection;
-
-import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Generates a {@link Deployment} from the set of logical components.
@@ -57,13 +55,13 @@ public interface Generator {
     /**
      * Performs the generation.
      *
-     * @param components  the logical components.
+     * @param domain      the logical domain composite
      * @param incremental true if generation should be incremental, i.e. commands are generated only for new components and wires as opposed to all
      *                    components (new and existing ones)
      * @param local       true if the deployment is local, i.e. it is to the same runtime
      * @return the deployment
      * @throws GenerationException If unable to generate the deployment
      */
-    Deployment generate(Collection<LogicalComponent<?>> components, boolean incremental, boolean local) throws GenerationException;
+    Deployment generate(LogicalCompositeComponent domain, boolean incremental, boolean local) throws GenerationException;
 
 }

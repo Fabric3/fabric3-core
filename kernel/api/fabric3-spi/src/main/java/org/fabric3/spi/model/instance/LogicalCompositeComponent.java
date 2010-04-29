@@ -56,6 +56,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
 
     private Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
     private Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
+    private Map<URI, LogicalChannel> channels = new HashMap<URI, LogicalChannel>();
 
     /**
      * Instantiates a composite component.
@@ -87,7 +88,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      * Adds a set of wires to this composite component.
      *
      * @param logicalReference the source for the wires
-     * @param newWires     the wires to add
+     * @param newWires         the wires to add
      */
     public void addWires(LogicalReference logicalReference, List<LogicalWire> newWires) {
         List<LogicalWire> logicalWires = wires.get(logicalReference);
@@ -175,6 +176,34 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      */
     public void addComponent(LogicalComponent<?> component) {
         components.put(component.getUri(), component);
+    }
+
+    /**
+     * Returns the channels contained in the current component.
+     *
+     * @return the channels contained in the current component
+     */
+    public Collection<LogicalChannel> getChannels() {
+        return channels.values();
+    }
+
+    /**
+     * Returns a channel with the given URI.
+     *
+     * @param uri the channel URI
+     * @return the channel
+     */
+    public LogicalChannel getChannel(URI uri) {
+        return channels.get(uri);
+    }
+
+    /**
+     * Adds a channel.
+     *
+     * @param channel the channel to add
+     */
+    public void addChannel(LogicalChannel channel) {
+        channels.put(channel.getUri(), channel);
     }
 
     /**

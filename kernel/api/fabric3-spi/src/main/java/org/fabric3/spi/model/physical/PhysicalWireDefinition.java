@@ -48,7 +48,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Used to provision a physical wire on a runtime. Contains metadata for attaching the wire to a source transport or component and target transport or
+ * Used to provision a wire on a runtime. Contains metadata for attaching the wire to a source transport or component and target transport or
  * component.
  *
  * @version $Rev$ $Date$

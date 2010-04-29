@@ -54,6 +54,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
     </component>
 
+    <component name="DomainChannelCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl"/>
+    </component>
+
     <component name="BindingSelector">
         <f3-impl:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
     </component>
@@ -71,6 +75,11 @@
 
     <component name="ComponentBuildCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
+        <property name="order">2</property>
+    </component>
+
+    <component name="BuildChannelCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.BuildChannelCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
@@ -101,6 +110,11 @@
 
     <component name="UnBuildComponentCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.UnBuildComponentCommandGenerator"/>
+        <property name="order">5</property>
+    </component>
+
+    <component name="UnBuildChannelCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.UnBuildChannelCommandGenerator"/>
         <property name="order">5</property>
     </component>
 

@@ -43,6 +43,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -67,6 +68,11 @@ public class CollectorImplTestCase extends TestCase {
         LogicalComponent<I> child2 = new LogicalComponent<I>(child2Uri, null, domain);
         child2.setState(LogicalState.PROVISIONED);
 
+        URI childChannel1 = URI.create("childChannel1");
+        LogicalChannel channel1 = new LogicalChannel(childChannel1, null, domain);
+        channel1.setDeployable(DEPLOYABLE);
+        channel1.setState(LogicalState.PROVISIONED);
+
         URI childCompositeUri = URI.create("childComposite");
         LogicalCompositeComponent childComposite = new LogicalCompositeComponent(childCompositeUri, null, domain);
         childComposite.setState(LogicalState.PROVISIONED);
@@ -80,6 +86,7 @@ public class CollectorImplTestCase extends TestCase {
         domain.addComponent(child1);
         domain.addComponent(child2);
         domain.addComponent(childComposite);
+        domain.addChannel(channel1);
 
         collector.markForCollection(DEPLOYABLE, domain);
 
@@ -87,6 +94,7 @@ public class CollectorImplTestCase extends TestCase {
         assertEquals(LogicalState.MARKED, child1.getState());
         assertEquals(LogicalState.MARKED, child3.getState());
         assertEquals(LogicalState.PROVISIONED, child2.getState());
+        assertEquals(LogicalState.MARKED, channel1.getState());
 
         collector.collect(domain);
 

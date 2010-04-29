@@ -35,6 +35,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl"/>
     </component>
 
+    <component name="ChannelInstantiator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.channel.ChannelInstantiatorImpl"/>
+    </component>
+
     <component name="PromotionNormalizer">
         <f3-impl:implementation.system class="org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl"/>
     </component>

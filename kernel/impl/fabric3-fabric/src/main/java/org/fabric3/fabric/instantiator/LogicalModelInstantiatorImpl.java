@@ -66,6 +66,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      */
     private QName SYNTHENTIC_COMPOSITE = new QName(Namespaces.IMPLEMENTATION, "SyntheticComposite");
 
+    private ChannelInstantiator channelInstantiator;
     private PromotionNormalizer promotionNormalizer;
     private AtomicComponentInstantiator atomicComponentInstantiator;
     private CompositeComponentInstantiator compositeComponentInstantiator;
@@ -77,10 +78,12 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     public LogicalModelInstantiatorImpl(@Reference CompositeComponentInstantiator compositeComponentInstantiator,
                                         @Reference AtomicComponentInstantiator atomicComponentInstantiator,
                                         @Reference WireInstantiator wireInstantiator,
+                                        @Reference AutowireInstantiator autowireInstantiator,
+                                        @Reference ChannelInstantiator channelInstantiator,
                                         @Reference PromotionNormalizer promotionNormalizer,
                                         @Reference AutowireNormalizer autowireNormalizer,
-                                        @Reference PromotionResolutionService promotionResolutionService,
-                                        @Reference AutowireInstantiator autowireInstantiator) {
+                                        @Reference PromotionResolutionService promotionResolutionService) {
+        this.channelInstantiator = channelInstantiator;
         this.promotionNormalizer = promotionNormalizer;
         this.atomicComponentInstantiator = atomicComponentInstantiator;
         this.compositeComponentInstantiator = compositeComponentInstantiator;
@@ -107,8 +110,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
         // instantiate all the components in the composite and add them to the parent
         List<LogicalComponent<?>> newComponents = instantiate(composite, domain, synthetic, context);
-
-        // @FIXME XCV log warning about domain level services and references being ignored: composite.getServices(), composite.getReferences()
 
         // normalize autowire settings and bindings for each new component - this must come before resolution since target URIs may be inherited
         for (LogicalComponent<?> component : newComponents) {
@@ -170,6 +171,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         for (LogicalComponent<?> component : newComponents) {
             wireInstantiator.instantiateReferenceWires(component, context);
         }
+
+        // instantiate channels
+        channelInstantiator.instantiateChannels(composite, domain, context);
 
         return newComponents;
     }
