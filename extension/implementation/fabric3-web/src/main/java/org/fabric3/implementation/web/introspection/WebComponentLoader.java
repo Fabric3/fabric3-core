@@ -52,7 +52,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.web.model.WebImplementation;
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -97,9 +97,9 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
         introspector.introspect(impl, introspectionContext);
 
         try {
-            ComponentType type = impl.getComponentType();
+            AbstractComponentType type = impl.getComponentType();
             // FIXME we should allow implementation to specify the component type;
-            ComponentType componentType = loadComponentType(introspectionContext);
+            AbstractComponentType componentType = loadComponentType(introspectionContext);
             for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
             }
@@ -119,7 +119,7 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
         return impl;
     }
 
-    private ComponentType loadComponentType(IntrospectionContext context) throws LoaderException {
+    private AbstractComponentType loadComponentType(IntrospectionContext context) throws LoaderException {
         URL url;
         try {
             url = new URL(context.getSourceBase(), "web.componentType");
@@ -129,7 +129,7 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
         }
         Source source = new UrlSource(url);
         IntrospectionContext childContext = new DefaultIntrospectionContext(null, context.getClassLoader(), url);
-        ComponentType componentType = registry.load(source, ComponentType.class, childContext);
+        AbstractComponentType componentType = registry.load(source, AbstractComponentType.class, childContext);
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());
         }

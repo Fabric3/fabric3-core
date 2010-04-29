@@ -49,10 +49,8 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.api.annotation.scope.Stateless;
-import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.introspection.java.annotation.StatelessProcessor;
 
 @SuppressWarnings("unchecked")
 public class StatelessProcessorTestCase extends TestCase {
@@ -65,30 +63,19 @@ public class StatelessProcessorTestCase extends TestCase {
                 new StatelessProcessor<Implementation<? extends InjectingComponentType>>();
         processor.visitType(annotation, componentToProcess.getClass(), componentToProcess, null);
 
-        assertEquals("Unexpected scope", Scopes.STATELESS, componentToProcess.getScope());
+        assertEquals(Scopes.STATELESS, componentToProcess.getComponentType().getScope());
     }
 
     @SuppressWarnings("serial")
     @Stateless
-    public static class StatelessAnnotated extends Implementation {
+    public static class StatelessAnnotated extends Implementation<InjectingComponentType> {
 
-        private String scope;
-
-        public String getScope() {
-            return scope;
-        }
+        private InjectingComponentType type = new InjectingComponentType();
 
         @Override
-        public AbstractComponentType getComponentType() {
-            return new InjectingComponentType() {
-                @Override
-                public void setScope(String introspectedScope) {
-                    scope = introspectedScope;
-                }
-            };
+        public InjectingComponentType getComponentType() {
+            return type;
         }
-
-        ;
 
         @Override
         public QName getType() {

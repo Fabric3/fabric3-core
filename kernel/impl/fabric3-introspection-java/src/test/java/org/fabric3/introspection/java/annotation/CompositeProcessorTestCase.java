@@ -49,10 +49,8 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Composite;
 import org.fabric3.api.annotation.scope.Scopes;
-import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.introspection.java.annotation.CompositeProcessor;
 
 @SuppressWarnings("unchecked")
 public class CompositeProcessorTestCase extends TestCase {
@@ -61,34 +59,23 @@ public class CompositeProcessorTestCase extends TestCase {
 
         CompositeAnnotated componentToProcess = new CompositeAnnotated();
         Composite annotation = componentToProcess.getClass().getAnnotation(Composite.class);
-        CompositeProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new CompositeProcessor<Implementation<? extends InjectingComponentType>>();
+        CompositeProcessor<Implementation<InjectingComponentType>> processor =
+                new CompositeProcessor<Implementation<InjectingComponentType>>();
         processor.visitType(annotation, componentToProcess.getClass(), componentToProcess, null);
 
-        assertEquals("Unexpected scope", Scopes.COMPOSITE, componentToProcess.getScope());
+        assertEquals(Scopes.COMPOSITE, componentToProcess.getComponentType().getScope());
     }
 
     @SuppressWarnings("serial")
     @Composite
-    public static class CompositeAnnotated extends Implementation {
+    public static class CompositeAnnotated extends Implementation<InjectingComponentType> {
 
-        private String scope;
-
-        public String getScope() {
-            return scope;
-        }
+        private InjectingComponentType type = new InjectingComponentType();
 
         @Override
-        public AbstractComponentType getComponentType() {
-            return new InjectingComponentType() {
-                @Override
-                public void setScope(String introspectedScope) {
-                    scope = introspectedScope;
-                }
-            };
+        public InjectingComponentType getComponentType() {
+            return type;
         }
-
-        ;
 
         @Override
         public QName getType() {

@@ -51,9 +51,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class InitProcessorTestCase extends TestCase {
@@ -76,9 +76,7 @@ public class InitProcessorTestCase extends TestCase {
                 new InitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
         TestImplementation impl = new TestImplementation();
-        InjectingComponentType componentType = new InjectingComponentType() {
-
-        };
+        InjectingComponentType componentType = new InjectingComponentType();
         impl.setComponentType(componentType);
         Method method = TestClass.class.getDeclaredMethod("init");
         processor.visitMethod(annotation, method, TestClass.class, impl, context);

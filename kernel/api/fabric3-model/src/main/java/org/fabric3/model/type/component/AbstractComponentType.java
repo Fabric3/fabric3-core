@@ -56,7 +56,7 @@ import org.fabric3.model.type.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractComponentType extends ModelObject implements CapabilityAware {
+public class AbstractComponentType extends ModelObject implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
@@ -65,7 +65,7 @@ public abstract class AbstractComponentType extends ModelObject implements Capab
     private Map<String, ResourceDefinition> resources = new HashMap<String, ResourceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
 
-    protected AbstractComponentType() {
+    public AbstractComponentType() {
     }
 
     /**

@@ -50,9 +50,9 @@ import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Init;
 
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class OASISInitProcessorTestCase extends TestCase {
@@ -75,9 +75,7 @@ public class OASISInitProcessorTestCase extends TestCase {
                 new OASISInitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
         TestImplementation impl = new TestImplementation();
-        InjectingComponentType componentType = new InjectingComponentType() {
-
-        };
+        InjectingComponentType componentType = new InjectingComponentType();
         impl.setComponentType(componentType);
         Method method = TestClass.class.getDeclaredMethod("init");
         processor.visitMethod(annotation, method, TestClass.class, impl, context);
@@ -92,9 +90,7 @@ public class OASISInitProcessorTestCase extends TestCase {
                 new OASISInitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
         TestImplementation impl = new TestImplementation();
-        InjectingComponentType componentType = new InjectingComponentType() {
-
-        };
+        InjectingComponentType componentType = new InjectingComponentType();
         impl.setComponentType(componentType);
         Method method = TestClass.class.getDeclaredMethod("init");
         processor.visitMethod(annotation, method, TestClass.class, impl, context);

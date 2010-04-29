@@ -57,7 +57,6 @@ import org.fabric3.fabric.instantiator.WireInstantiator;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.CompositeReference;
@@ -68,6 +67,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -133,7 +133,7 @@ public class InstantiationTestCase extends TestCase {
     }
 
     private ComponentDefinition<?> createParentWithChild() {
-        ComponentType childType = new ComponentType();
+        InjectingComponentType childType = new InjectingComponentType();
         MockImplementation childImp = new MockImplementation();
         childImp.setComponentType(childType);
         ComponentDefinition<MockImplementation> child =

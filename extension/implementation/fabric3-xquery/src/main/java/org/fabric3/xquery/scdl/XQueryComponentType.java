@@ -37,11 +37,11 @@
 */
 package org.fabric3.xquery.scdl;
 
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.AbstractComponentType;
 
 /**
  * @version $Rev$ $Date$
  */
-public class XQueryComponentType extends ComponentType {
-
+public class XQueryComponentType extends AbstractComponentType {
+    private static final long serialVersionUID = -2485755542995266394L;
 }
