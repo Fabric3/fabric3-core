@@ -47,6 +47,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -58,7 +59,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
     public MockComponentDefinition generate(LogicalComponent<ImplementationMock> component) throws GenerationException {
         MockComponentDefinition componentDefinition = new MockComponentDefinition();
         ImplementationMock implementationMock = component.getDefinition().getImplementation();
-        MockComponentType componentType = implementationMock.getComponentType();
+        InjectingComponentType componentType = implementationMock.getComponentType();
         componentDefinition.setInterfaces(implementationMock.getMockedInterfaces());
         componentDefinition.setScope(componentType.getScope());
         return componentDefinition;

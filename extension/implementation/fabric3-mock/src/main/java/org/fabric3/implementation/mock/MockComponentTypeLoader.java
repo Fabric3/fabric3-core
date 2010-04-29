@@ -40,6 +40,7 @@ package org.fabric3.implementation.mock;
 import java.util.List;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Component type loader for the mock component type.
@@ -55,6 +56,6 @@ public interface MockComponentTypeLoader {
      * @param introspectionContext Loader context.
      * @return Mock component type.
      */
-    MockComponentType load(List<String> interfaces, IntrospectionContext introspectionContext);
+    InjectingComponentType load(List<String> interfaces, IntrospectionContext introspectionContext);
 
 }

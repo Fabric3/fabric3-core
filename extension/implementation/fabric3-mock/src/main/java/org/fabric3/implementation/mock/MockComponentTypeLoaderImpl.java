@@ -48,6 +48,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -71,9 +72,9 @@ public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
      * @param context          Loader context.
      * @return Mock component type.
      */
-    public MockComponentType load(List<String> mockedInterfaces, IntrospectionContext context) {
+    public InjectingComponentType load(List<String> mockedInterfaces, IntrospectionContext context) {
 
-        MockComponentType componentType = new MockComponentType();
+        InjectingComponentType componentType = new InjectingComponentType();
 
         ClassLoader classLoader = context.getClassLoader();
         for (String mockedInterface : mockedInterfaces) {

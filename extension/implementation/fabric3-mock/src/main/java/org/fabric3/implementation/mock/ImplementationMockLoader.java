@@ -48,6 +48,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads implementation.mock from the scdl. The XML fragment is expeced to look like,
@@ -93,7 +94,7 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
             mockedInterfaces.add(tok.nextToken().trim());
         }
 
-        MockComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
+        InjectingComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
 
         assert reader.getName().equals(ImplementationMock.IMPLEMENTATION_MOCK);
 

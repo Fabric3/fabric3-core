@@ -42,13 +42,14 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Implementation type for mock components.
  *
  * @version $Rev$ $Date$
  */
-public class ImplementationMock extends Implementation<MockComponentType> {
+public class ImplementationMock extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3519206465795353416L;
 
     static final QName IMPLEMENTATION_MOCK = new QName(Namespaces.IMPLEMENTATION, "implementation.mock");
@@ -59,8 +60,9 @@ public class ImplementationMock extends Implementation<MockComponentType> {
      * Initializes the mocked interfaces.
      *
      * @param mockedInterfaces Mocked interfaces.
+     * @param componentType    the component type
      */
-    public ImplementationMock(List<String> mockedInterfaces, MockComponentType componentType) {
+    public ImplementationMock(List<String> mockedInterfaces, InjectingComponentType componentType) {
         super(componentType);
         this.mockedInterfaces = mockedInterfaces;
     }

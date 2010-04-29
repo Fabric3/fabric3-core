@@ -46,6 +46,7 @@ import org.easymock.IMocksControl;
 
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
@@ -78,7 +79,7 @@ public class MockComponentTypeLoaderImplTestCase extends TestCase {
         List<String> mockedInterfaces = new LinkedList<String>();
         mockedInterfaces.add(Foo.class.getName());
 
-        MockComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
+        InjectingComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
 
         assertNotNull(componentType);
         java.util.Map<String, ServiceDefinition> services = componentType.getServices();
