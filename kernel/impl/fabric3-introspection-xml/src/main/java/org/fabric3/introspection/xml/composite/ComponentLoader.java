@@ -177,7 +177,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 throw new AssertionError("Impementation loader must position the cursor to the end element");
             }
             definition.setImplementation(impl);
-            AbstractComponentType<?, ?, ?, ?> componentType = impl.getComponentType();
+            AbstractComponentType componentType = impl.getComponentType();
 
             while (true) {
                 switch (reader.next()) {
@@ -213,7 +213,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parseService(ComponentDefinition<?> definition,
-                              AbstractComponentType<?, ?, ?, ?> componentType,
+                              AbstractComponentType componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         ComponentService service;
@@ -242,7 +242,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parseReference(ComponentDefinition<?> definition,
-                                AbstractComponentType<?, ?, ?, ?> componentType,
+                                AbstractComponentType componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         ComponentReference reference;
@@ -274,7 +274,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void parsePropertyValue(ComponentDefinition<?> definition,
-                                    AbstractComponentType<?, ?, ?, ?> componentType,
+                                    AbstractComponentType componentType,
                                     XMLStreamReader reader,
                                     IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
         PropertyValue value;
@@ -458,7 +458,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     private void validateRequiredProperties(ComponentDefinition<?> definition, XMLStreamReader reader, IntrospectionContext context) {
-        AbstractComponentType<?, ?, ?, ?> type = definition.getImplementation().getComponentType();
+        AbstractComponentType type = definition.getImplementation().getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();
         for (Property property : properties.values()) {

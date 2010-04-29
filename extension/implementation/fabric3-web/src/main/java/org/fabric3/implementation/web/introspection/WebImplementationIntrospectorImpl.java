@@ -80,7 +80,6 @@ public class WebImplementationIntrospectorImpl implements WebImplementationIntro
 
     public void introspect(WebImplementation implementation, IntrospectionContext context) {
         WebComponentType componentType = new WebComponentType();
-        componentType.setScope("STATELESS");
         implementation.setComponentType(componentType);
         // load the servlet, filter and context listener classes referenced in the web.xml descriptor
         List<Class<?>> artifacts = xmlIntrospector.introspectArtifactClasses(context);

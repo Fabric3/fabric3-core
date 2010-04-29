@@ -56,106 +56,16 @@ import org.fabric3.model.type.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractComponentType<S extends ServiceDefinition,
-        R extends ReferenceDefinition,
-        P extends Property,
-        RD extends ResourceDefinition>
-        extends ModelObject implements CapabilityAware {
+public abstract class AbstractComponentType extends ModelObject implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
-    private String scope;
-    private int initLevel;
-    private long maxAge;
-    private long maxIdleTime;
-    private final Map<String, S> services = new HashMap<String, S>();
-    private final Map<String, R> references = new HashMap<String, R>();
-    private final Map<String, P> properties = new HashMap<String, P>();
-    private final Map<String, RD> resources = new HashMap<String, RD>();
-    private final Set<String> requiredCapabilities = new HashSet<String>();
+
+    private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
+    private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
+    private Map<String, Property> properties = new HashMap<String, Property>();
+    private Map<String, ResourceDefinition> resources = new HashMap<String, ResourceDefinition>();
+    private Set<String> requiredCapabilities = new HashSet<String>();
 
     protected AbstractComponentType() {
-    }
-
-    /**
-     * Returns the lifecycle scope for the component.
-     *
-     * @return the lifecycle scope for the component
-     */
-    public String getScope() {
-        return scope;
-    }
-
-    /**
-     * Sets the lifecycle scope for the component.
-     *
-     * @param scope the lifecycle scope for the component
-     */
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    /**
-     * Returns the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
-     * initialized.
-     *
-     * @return the default initialization level
-     */
-    public int getInitLevel() {
-        return initLevel;
-    }
-
-    /**
-     * Sets the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
-     * initialized.
-     *
-     * @param initLevel default initialization level for components of this type
-     */
-    public void setInitLevel(int initLevel) {
-        this.initLevel = initLevel;
-    }
-
-    /**
-     * Returns true if this component should be eagerly initialized.
-     *
-     * @return true if this component should be eagerly initialized
-     */
-    public boolean isEagerInit() {
-        return initLevel > 0;
-    }
-
-    /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
-     *
-     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    /**
-     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @param maxIdleTime the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @param maxAge the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
     }
 
     /**
@@ -163,7 +73,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @return a live Map of the services provided by the implementation
      */
-    public Map<String, S> getServices() {
+    public Map<String, ServiceDefinition> getServices() {
         return services;
     }
 
@@ -172,7 +82,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @param service a service provided by the implementation
      */
-    public void add(S service) {
+    public void add(ServiceDefinition service) {
         services.put(service.getName(), service);
     }
 
@@ -181,7 +91,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @return a live Map of references to services consumed by the implementation
      */
-    public Map<String, R> getReferences() {
+    public Map<String, ReferenceDefinition> getReferences() {
         return references;
     }
 
@@ -190,7 +100,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @param reference a reference to a service consumed by the implementation
      */
-    public void add(R reference) {
+    public void add(ReferenceDefinition reference) {
         references.put(reference.getName(), reference);
     }
 
@@ -199,7 +109,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @return a live Map of properties that can be used to configure the implementation
      */
-    public Map<String, P> getProperties() {
+    public Map<String, Property> getProperties() {
         return properties;
     }
 
@@ -208,7 +118,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @param property a property that can be used to configure the implementation
      */
-    public void add(P property) {
+    public void add(Property property) {
         properties.put(property.getName(), property);
     }
 
@@ -217,7 +127,7 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @return a live Map of resources that can be used to configure the implementation
      */
-    public Map<String, RD> getResources() {
+    public Map<String, ResourceDefinition> getResources() {
         return resources;
     }
 
@@ -226,24 +136,24 @@ public abstract class AbstractComponentType<S extends ServiceDefinition,
      *
      * @param resource a resource that can be used to configure the implementation
      */
-    public void add(RD resource) {
+    public void add(ResourceDefinition resource) {
         resources.put(resource.getName(), resource);
     }
 
     /**
-     * Checks if this component type has a resource with a certain name.
+     * Returns the capabilities required by this component implementation.
      *
-     * @param name the name of the resource to check
-     * @return true if there is a resource defined with that name
+     * @return the capabilities required by this component implementation
      */
-    public boolean hasResource(String name) {
-        return resources.containsKey(name);
-    }
-
     public Set<String> getRequiredCapabilities() {
         return requiredCapabilities;
     }
 
+    /**
+     * Adds a capability required by this implementation.
+     *
+     * @param capability the capability
+     */
     public void addRequiredCapability(String capability) {
         requiredCapabilities.add(capability);
     }

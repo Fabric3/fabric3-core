@@ -58,14 +58,17 @@ import org.fabric3.model.type.PolicyAware;
  *
  * @version $Rev$ $Date$
  */
-public class Composite extends AbstractComponentType<CompositeService, CompositeReference, Property, ResourceDefinition> implements PolicyAware {
+public class Composite extends AbstractComponentType implements PolicyAware {
     private static final long serialVersionUID = -3126069884608566611L;
 
     private QName name;
     private URI contributionUri;
     private boolean local;
     private Autowire autowire;
-    private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
+    private Set<QName> intents;
+    private Set<QName> policySets;
+
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> components =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<QName, Include> includes = new HashMap<QName, Include>();
     private List<WireDefinition> wires = new ArrayList<WireDefinition>();
@@ -73,25 +76,22 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
     private Map<String, Property> propertiesView = new HashMap<String, Property>();
-    private Map<String, CompositeReference> referencesView = new HashMap<String, CompositeReference>();
-    private Map<String, CompositeService> servicesView = new HashMap<String, CompositeService>();
+    private Map<String, ReferenceDefinition> referencesView = new HashMap<String, ReferenceDefinition>();
+    private Map<String, ServiceDefinition> servicesView = new HashMap<String, ServiceDefinition>();
     private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
     private List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
 
-    private Set<QName> intents;
-    private Set<QName> policySets;
     private Map<QName, Object> metadata = new HashMap<QName, Object>();
 
     /**
-     * Constructor defining the composite name.
+     * Constructor.
      *
      * @param name the qualified name of this composite
      */
     public Composite(QName name) {
         this.name = name;
-        setScope("COMPOSITE");
     }
 
     /**
@@ -105,16 +105,16 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Returns the URI of the contribution this componentType is associated with.
+     * Returns the URI of the contribution this composite is associated with.
      *
-     * @return the URI of the contribution this componentType is associated with
+     * @return the URI of the contribution this composite is associated with
      */
     public URI getContributionUri() {
         return contributionUri;
     }
 
     /**
-     * Sets the URI of the contribution this componentType is associated with.
+     * Sets the URI of the contribution this composite is associated with.
      *
      * @param contributionUri tcontribution URI
      */
@@ -123,7 +123,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Indicates that components in this composite should be co-located.
+     * Indicates if components in this composite should be co-located.
      *
      * @return true if components in this composite should be co-located
      */
@@ -141,7 +141,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Returns if the autowire status for composite.
+     * Returns the autowire status for the composite.
      *
      * @return the autowire status for the composite
      */
@@ -158,11 +158,6 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         this.autowire = autowire;
     }
 
-    /**
-     * Get all properties including the ones are from included composites.
-     *
-     * @return properties
-     */
     @Override
     public Map<String, Property> getProperties() {
         return propertiesView;
@@ -173,39 +168,55 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         propertiesView.put(property.getName(), property);
     }
 
-    /**
-     * Get all references including the ones are from included composites.
-     *
-     * @return references
-     */
     @Override
-    public Map<String, CompositeReference> getReferences() {
+    public Map<String, ReferenceDefinition> getReferences() {
         return referencesView;
     }
 
-    public void add(CompositeReference reference) {
+    /**
+     * Returns all references including ones are included composites as a CompositeReference subtype.
+     *
+     * @return references
+     */
+    public Map<String, CompositeReference> getCompositeReferences() {
+        return cast(referencesView);
+    }
+
+    @Override
+    public void add(ReferenceDefinition reference) {
+        if (!(reference instanceof CompositeReference)) {
+            throw new IllegalArgumentException("Reference type must be " + CompositeReference.class.getName());
+        }
         super.add(reference);
         referencesView.put(reference.getName(), reference);
     }
 
-    /**
-     * Get all services including the ones are from included composites.
-     *
-     * @return services
-     */
     @Override
-    public Map<String, CompositeService> getServices() {
+    public Map<String, ServiceDefinition> getServices() {
         return servicesView;
     }
 
+    /**
+     * Returns all services including ones from included composites as a CompositeService subtype.
+     *
+     * @return services
+     */
+    public Map<String, CompositeService> getCompositeServices() {
+        return cast(servicesView);
+    }
+
+    @SuppressWarnings({"unchecked"})
     @Override
-    public void add(CompositeService service) {
+    public void add(ServiceDefinition service) {
+        if (!(service instanceof CompositeService)) {
+            throw new IllegalArgumentException("Service type must be " + CompositeService.class.getName());
+        }
         super.add(service);
         servicesView.put(service.getName(), service);
     }
 
     /**
-     * Get all components including the ones are from included composites
+     * Returns all components including ones from included composites
      *
      * @return components
      */
@@ -213,13 +224,18 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         return componentsView;
     }
 
-    public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
-        componentsView.put(componentDefinition.getName(), componentDefinition);
-        components.put(componentDefinition.getName(), componentDefinition);
+    /**
+     * Adds a component to this composite.
+     *
+     * @param component the component
+     */
+    public void add(ComponentDefinition<? extends Implementation<?>> component) {
+        componentsView.put(component.getName(), component);
+        components.put(component.getName(), component);
     }
 
     /**
-     * Get all wires including the ones are from included composites.
+     * Returns all wires including the ones from included composites.
      *
      * @return wires
      */
@@ -232,7 +248,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Get declared properties in this composite type, except properties from included composites.
+     * Returns properties declared in this composite, except properties from included composites.
      *
      * @return properties
      */
@@ -241,25 +257,25 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Get declared references in this composite type, except references from included composites.
+     * Returns references declared in this composite, except references from included composites.
      *
      * @return references
      */
-    public Map<String, CompositeReference> getDeclaredReferences() {
+    public Map<String, ReferenceDefinition> getDeclaredReferences() {
         return super.getReferences();
     }
 
     /**
-     * Get declared services in this composite type, except services from included composites.
+     * Returns services declared in this composite, except services from included composites.
      *
      * @return services
      */
-    public Map<String, CompositeService> getDeclaredServices() {
+    public Map<String, ServiceDefinition> getDeclaredServices() {
         return super.getServices();
     }
 
     /**
-     * Get declared components in this composite type, except components from included composites.
+     * Returns components declared in this composite, except components from included composites.
      *
      * @return components
      */
@@ -268,7 +284,7 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
     }
 
     /**
-     * Get declared wires in this composite type, except wires from included composites.
+     * Returns the wires declared in this composite, except wires from included composites.
      *
      * @return wires
      */
@@ -276,25 +292,49 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         return wires;
     }
 
-    public void add(WireDefinition wireDefn) {
-        wires.add(wireDefn);
-        wiresView.add(wireDefn);
+    /**
+     * Adds a wire to the composite.
+     *
+     * @param wire the wire
+     */
+    public void add(WireDefinition wire) {
+        wires.add(wire);
+        wiresView.add(wire);
     }
 
-
-    public Map<QName, Include> getIncludes() {
-        return includes;
-    }
-
+    /**
+     * Returns channels declared in this composite, except channels from included composites.
+     *
+     * @return channels
+     */
     public Map<String, ChannelDefinition> getDeclaredChannels() {
         return channels;
     }
 
-    public void add(ChannelDefinition channelDefinition) {
-        channelsView.put(channelDefinition.getName(), channelDefinition);
-        channels.put(channelDefinition.getName(), channelDefinition);
+    /**
+     * Adds a channel to the composite.
+     *
+     * @param channel the channel
+     */
+    public void add(ChannelDefinition channel) {
+        channelsView.put(channel.getName(), channel);
+        channels.put(channel.getName(), channel);
     }
 
+    /**
+     * Returns included composites.
+     *
+     * @return included composites
+     */
+    public Map<QName, Include> getIncludes() {
+        return includes;
+    }
+
+    /**
+     * Adds an included composite.
+     *
+     * @param include the composite to include
+     */
     public void add(Include include) {
         includes.put(include.getName(), include);
         componentsView.putAll(include.getIncluded().getComponents());
@@ -357,5 +397,11 @@ public class Composite extends AbstractComponentType<CompositeService, Composite
         Composite that = (Composite) o;
         return name.equals(that.name);
     }
+
+    @SuppressWarnings({"unchecked"})
+    private <T> T cast(Object o) {
+        return (T) o;
+    }
+
 
 }

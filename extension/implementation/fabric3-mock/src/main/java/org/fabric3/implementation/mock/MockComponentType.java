@@ -37,15 +37,11 @@
 */
 package org.fabric3.implementation.mock;
 
-import org.fabric3.model.type.component.AbstractComponentType;
-import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MockComponentType extends AbstractComponentType<ServiceDefinition, ReferenceDefinition, Property, ResourceDefinition> {
-
+public class MockComponentType extends InjectingComponentType {
+    private static final long serialVersionUID = -2329134232100087435L;
 }

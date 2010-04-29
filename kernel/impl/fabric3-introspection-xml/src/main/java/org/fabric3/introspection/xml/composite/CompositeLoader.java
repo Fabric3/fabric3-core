@@ -407,7 +407,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     }
 
     private void updateAndValidateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext context) {
-        for (CompositeService service : type.getServices().values()) {
+        for (ServiceDefinition definition : type.getServices().values()) {
+            CompositeService service = (CompositeService) definition;
             URI promotedUri = service.getPromote();
             String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
             ComponentDefinition promotedComponent = type.getComponents().get(componentName);
@@ -420,7 +421,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 continue;
             } else {
                 String serviceName = promotedUri.getFragment();
-                AbstractComponentType<?, ?, ?, ?> componentType = promotedComponent.getComponentType();
+                AbstractComponentType componentType = promotedComponent.getComponentType();
                 if (serviceName != null) {
                     promotedService = componentType.getServices().get(serviceName);
                     if (promotedService == null) {
@@ -430,7 +431,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         continue;
                     }
                 } else {
-                    Map<String, ? extends ServiceDefinition> services = componentType.getServices();
+                    Map<String, ServiceDefinition> services = componentType.getServices();
                     int numberOfServices = services.size();
                     if (numberOfServices == 2) {
                         Iterator<? extends ServiceDefinition> iter = services.values().iterator();
@@ -464,7 +465,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     }
 
     private void updateAndValidateReferencePromotions(Composite type, XMLStreamReader reader, IntrospectionContext context) {
-        for (CompositeReference reference : type.getReferences().values()) {
+        for (ReferenceDefinition definition : type.getReferences().values()) {
+            CompositeReference reference = (CompositeReference) definition;
             for (URI promotedUri : reference.getPromotedUris()) {
                 String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
                 ComponentDefinition<?> promoted = type.getComponents().get(componentName);
@@ -483,7 +485,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     }
                     ReferenceDefinition promotedReference;
                     if (referenceName == null && promoted.getComponentType().getReferences().size() == 1) {
-                        promotedReference = promoted.getComponentType().getReferences().get(0);
+                        promotedReference = promoted.getComponentType().getReferences().values().iterator().next();
                     } else {
                         promotedReference = promoted.getComponentType().getReferences().get(referenceName);
                     }

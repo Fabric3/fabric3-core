@@ -47,7 +47,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  * @param <I>            the type of Implementation an implementation can handle
  */
-public interface ImplementationProcessor<I extends Implementation<? extends AbstractComponentType<?, ?, ?, ?>>> {
+public interface ImplementationProcessor<I extends Implementation<? extends AbstractComponentType>> {
 
     /**
      * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the

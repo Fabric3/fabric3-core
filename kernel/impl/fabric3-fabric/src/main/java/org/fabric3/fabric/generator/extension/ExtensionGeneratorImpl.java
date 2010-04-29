@@ -186,7 +186,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      */
     private void evaluateComponent(LogicalComponent<?> component, AbstractExtensionsCommand command, GenerationType type) throws GenerationException {
         Implementation<?> impl = component.getDefinition().getImplementation();
-        AbstractComponentType<?, ?, ?, ?> componentType = impl.getComponentType();
+        AbstractComponentType componentType = impl.getComponentType();
         Set<Contribution> extensions = new HashSet<Contribution>();
         if (isGenerate(component.getState(), type)) {
             for (String capability : componentType.getRequiredCapabilities()) {

@@ -44,10 +44,10 @@ import java.util.List;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -134,7 +134,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         ComponentDefinition<CompositeImplementation> definition = component.getDefinition();
         String uriBase = component.getUri().toString() + "/";
 
-        for (CompositeService service : composite.getServices().values()) {
+        for (CompositeService service : composite.getCompositeServices().values()) {
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
             LogicalService logicalService = new LogicalService(serviceUri, service, component);
@@ -175,7 +175,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         String uriBase = component.getUri().toString() + "/";
 
         // create logical references based on promoted references in the composite definition
-        for (CompositeReference reference : composite.getReferences().values()) {
+        for (CompositeReference reference : composite.getCompositeReferences().values()) {
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);

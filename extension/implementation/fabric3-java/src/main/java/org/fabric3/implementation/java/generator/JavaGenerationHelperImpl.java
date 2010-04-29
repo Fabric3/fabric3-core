@@ -49,10 +49,8 @@ import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
-import org.fabric3.model.type.component.AbstractComponentType;
 import org.fabric3.model.type.component.CallbackDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -169,15 +167,16 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         wireDefinition.setInterfaceName(interfaceName);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void generateWireTarget(JavaTargetDefinition definition, LogicalService service) throws GenerationException {
-        LogicalComponent<?> component = service.getLeafComponent();
+        LogicalComponent<JavaImplementation> component = (LogicalComponent<JavaImplementation>) service.getLeafComponent();
         URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
         definition.setUri(uri);
 
         // assume only wires to composite scope components can be optimized
-        ComponentDefinition<? extends Implementation<?>> componentDefinition = component.getDefinition();
-        Implementation<?> implementation = componentDefinition.getImplementation();
-        AbstractComponentType<?, ?, ?, ?> componentType = implementation.getComponentType();
+        ComponentDefinition<JavaImplementation> componentDefinition = component.getDefinition();
+        JavaImplementation implementation = componentDefinition.getImplementation();
+        InjectingComponentType componentType = implementation.getComponentType();
         String scope = componentType.getScope();
         definition.setOptimizable("COMPOSITE".equals(scope));
     }

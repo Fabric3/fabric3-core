@@ -208,7 +208,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      *
      * @return Component type.
      */
-    public AbstractComponentType<?, ?, ?, ?> getComponentType() {
+    public AbstractComponentType getComponentType() {
         return getImplementation().getComponentType();
     }
 

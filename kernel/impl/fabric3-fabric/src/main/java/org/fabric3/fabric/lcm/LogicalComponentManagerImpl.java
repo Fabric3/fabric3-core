@@ -53,8 +53,6 @@ import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.CompositeReference;
-import org.fabric3.model.type.component.CompositeService;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.lcm.LogicalComponentManagerMBean;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -160,10 +158,10 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager, Log
             composite.add(component.getDefinition());
         }
         for (LogicalService service : domain.getServices()) {
-            composite.add((CompositeService) service.getDefinition());
+            composite.add(service.getDefinition());
         }
         for (LogicalReference reference : domain.getReferences()) {
-            composite.add((CompositeReference) reference.getDefinition());
+            composite.add(reference.getDefinition());
         }
         return composite;
     }

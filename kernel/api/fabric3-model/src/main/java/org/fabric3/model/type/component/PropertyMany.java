@@ -38,7 +38,8 @@
 package org.fabric3.model.type.component;
 
 /**
- * Specifies the many setting for a property value configuration
+ * Specifies the many setting for a property value configuration.
+ *
  * @version $Rev$ $Date$
  */
 public enum PropertyMany {

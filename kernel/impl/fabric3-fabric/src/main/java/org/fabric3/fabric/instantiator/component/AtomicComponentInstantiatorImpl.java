@@ -65,7 +65,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     @SuppressWarnings({"unchecked"})
     public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
         Implementation<?> impl = definition.getImplementation();
-        AbstractComponentType<?, ?, ?, ?> componentType = impl.getComponentType();
+        AbstractComponentType componentType = impl.getComponentType();
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
         LogicalComponent<?> component = new LogicalComponent(uri, definition, parent);
         initializeProperties(component, definition, context);
@@ -80,7 +80,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         return component;
     }
 
-    private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, AbstractComponentType<?, ?, ?, ?> componentType) {
+    private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, AbstractComponentType componentType) {
         for (ServiceDefinition service : componentType.getServices().values()) {
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
@@ -113,7 +113,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         }
     }
 
-    private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, AbstractComponentType<?, ?, ?, ?> componentType) {
+    private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, AbstractComponentType componentType) {
         for (ReferenceDefinition reference : componentType.getReferences().values()) {
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
@@ -136,7 +136,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         }
     }
 
-    private void createResources(LogicalComponent<?> component, AbstractComponentType<?, ?, ?, ?> componentType) {
+    private void createResources(LogicalComponent<?> component, AbstractComponentType componentType) {
         for (ResourceDefinition resource : componentType.getResources().values()) {
             URI resourceUri = component.getUri().resolve('#' + resource.getName());
             LogicalResource<ResourceDefinition> logicalResource = new LogicalResource<ResourceDefinition>(resourceUri, resource, component);

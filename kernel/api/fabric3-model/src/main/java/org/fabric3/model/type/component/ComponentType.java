@@ -43,33 +43,13 @@
  */
 package org.fabric3.model.type.component;
 
-import javax.xml.namespace.QName;
-
 /**
  * Base non-composite component type.
  *
  * @version $Rev$ $Date$
  */
-public class ComponentType extends AbstractComponentType<ServiceDefinition, ReferenceDefinition, Property, ResourceDefinition> {
+public class ComponentType extends AbstractComponentType {
     private static final long serialVersionUID = 1431781466875898050L;
-    private QName constrainingType;
 
-    /**
-     * Returns the name of the constraining type for this component type.
-     *
-     * @return the name of the constraining type for this component type
-     */
-    public QName getConstrainingType() {
-        return constrainingType;
-    }
-
-    /**
-     * Sets the name of the constraining type for this component type.
-     *
-     * @param constrainingType the name of the constraining type for this component type
-     */
-    public void setConstrainingType(QName constrainingType) {
-        this.constrainingType = constrainingType;
-    }
 
 }

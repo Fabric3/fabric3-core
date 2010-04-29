@@ -91,7 +91,7 @@ public abstract class AbstractComponentInstantiator {
     protected void initializeProperties(LogicalComponent<?> component, ComponentDefinition<?> definition, InstantiationContext context) {
 
         Map<String, PropertyValue> propertyValues = definition.getPropertyValues();
-        AbstractComponentType<?, ?, ?, ?> componentType = definition.getComponentType();
+        AbstractComponentType componentType = definition.getComponentType();
 
         for (Property property : componentType.getProperties().values()) {
 

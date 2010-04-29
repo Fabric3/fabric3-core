@@ -60,12 +60,16 @@ import org.fabric3.model.type.component.ResourceDefinition;
 public class InjectingComponentType extends ComponentType {
     private static final long serialVersionUID = -2602867276842414240L;
 
-    private final Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
+    private String implClass;
+    private String scope;
+    private int initLevel;
     private Signature constructor;
     private Signature initMethod;
     private Signature destroyMethod;
-    private final Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
-    private String implClass;
+    private long maxAge;
+    private long maxIdleTime;
+    private Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
+    private Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
 
     /**
      * Constructor.
@@ -89,6 +93,89 @@ public class InjectingComponentType extends ComponentType {
      */
     public String getImplClass() {
         return implClass;
+    }
+
+    /**
+     * Returns the lifecycle scope for the component.
+     *
+     * @return the lifecycle scope for the component
+     */
+    public String getScope() {
+        return scope;
+    }
+
+    /**
+     * Sets the lifecycle scope for the component.
+     *
+     * @param scope the lifecycle scope for the component
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    /**
+     * Returns the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
+     * initialized.
+     *
+     * @return the default initialization level
+     */
+    public int getInitLevel() {
+        return initLevel;
+    }
+
+    /**
+     * Sets the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
+     * initialized.
+     *
+     * @param initLevel default initialization level for components of this type
+     */
+    public void setInitLevel(int initLevel) {
+        this.initLevel = initLevel;
+    }
+
+    /**
+     * Returns true if this component should be eagerly initialized.
+     *
+     * @return true if this component should be eagerly initialized
+     */
+    public boolean isEagerInit() {
+        return initLevel > 0;
+    }
+
+    /**
+     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
+     *
+     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
+     */
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    /**
+     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational.
+     *
+     * @param maxIdleTime the idle time allowed between operations in milliseconds if the implementation is conversational
+     */
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
+    }
+
+    /**
+     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     *
+     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     */
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    /**
+     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
+     *
+     * @param maxAge the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     */
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
     }
 
     /**

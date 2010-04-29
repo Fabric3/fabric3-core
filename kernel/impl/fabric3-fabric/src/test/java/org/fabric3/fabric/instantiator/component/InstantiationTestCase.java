@@ -167,7 +167,7 @@ public class InstantiationTestCase extends TestCase {
 
     }
 
-    private class MockImplementation extends Implementation<AbstractComponentType<?, ?, ?, ?>> {
+    private class MockImplementation extends Implementation<AbstractComponentType> {
         private static final long serialVersionUID = 4128780797281194069L;
 
         public QName getType() {

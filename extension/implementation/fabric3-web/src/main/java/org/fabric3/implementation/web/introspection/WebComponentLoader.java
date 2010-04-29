@@ -130,7 +130,6 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
         Source source = new UrlSource(url);
         IntrospectionContext childContext = new DefaultIntrospectionContext(null, context.getClassLoader(), url);
         ComponentType componentType = registry.load(source, ComponentType.class, childContext);
-        componentType.setScope("COMPOSITE");
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());
         }

@@ -55,7 +55,7 @@ import org.fabric3.model.type.CapabilityAware;
  *
  * @version $Rev$ $Date$
  */
-public abstract class Implementation<T extends AbstractComponentType<?, ?, ?, ?>> extends AbstractPolicyAware implements CapabilityAware {
+public abstract class Implementation<T extends AbstractComponentType> extends AbstractPolicyAware implements CapabilityAware {
     private static final long serialVersionUID = -6060603636927660850L;
     private T componentType;
     private final Set<String> requiredCapabilities = new HashSet<String>();

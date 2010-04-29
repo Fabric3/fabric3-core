@@ -53,9 +53,7 @@ import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -220,7 +218,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         }
     }
 
-    private class MockComponentType extends AbstractComponentType<ServiceDefinition, ReferenceDefinition, Property, ResourceDefinition> {
+    private class MockComponentType extends AbstractComponentType {
         private static final long serialVersionUID = 1030610904165857606L;
     }
 
