@@ -47,11 +47,11 @@ import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A component type producer.
+ * A component type consumer.
  *
  * @version $Rev$ $Date$
  */
-public class ProducerDefinition extends AbstractPolicyAware {
+public class ConsumerDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = -4222312633353056234L;
 
     private String name;
@@ -60,16 +60,16 @@ public class ProducerDefinition extends AbstractPolicyAware {
     /**
      * Constructor.
      *
-     * @param name            the producer name
-     * @param serviceContract the service contract required by this producer
+     * @param name            the consumer name
+     * @param serviceContract the service contract required by this consumer
      */
-    public ProducerDefinition(String name, ServiceContract serviceContract) {
+    public ConsumerDefinition(String name, ServiceContract serviceContract) {
         this.name = name;
         this.serviceContract = serviceContract;
     }
 
     /**
-     * Returns the reference name.
+     * Returns the consumer name.
      *
      * @return the reference name
      */
@@ -78,9 +78,9 @@ public class ProducerDefinition extends AbstractPolicyAware {
     }
 
     /**
-     * Returns the service contract required by this producer.
+     * Returns the service contract required by this consumer.
      *
-     * @return the service contract required by this producer
+     * @return the service contract required by this consumer
      */
     public ServiceContract getServiceContract() {
         return serviceContract;
