@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.builder.component;
 
-import org.fabric3.spi.channel.ChannelHandler;
+import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
@@ -55,23 +55,22 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 public interface TargetConnectionAttacher<PCTD extends PhysicalConnectionTargetDefinition> {
 
     /**
-     * Attach a connection to a channel, component consumer, or channel binding
+     * Attach a connection to a target, which can be a channel, component consumer, or channel binding.
      *
-     * @param source  the source metadata
-     * @param target  the target metadata
-     * @param handler the handler that flows events from a source
+     * @param source     the source metadata
+     * @param target     the target metadata
+     * @param connection the connection that flows events from a source
      * @throws ConnectionAttachException if an error is encountered performing the attach
      */
-    void attach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelHandler handler) throws ConnectionAttachException;
+    void attach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelConnection connection) throws ConnectionAttachException;
 
     /**
-     * Detach a connection from a channel or channel binding
+     * Detach a connection from a target.
      *
-     * @param source  the source metadata
-     * @param target  the target metadata
-     * @param handler the handler that flows events from a source
+     * @param source the source metadata
+     * @param target the target metadata
      * @throws ConnectionAttachException if an error is encountered performing the attach
      */
-    void detach(PhysicalConnectionSourceDefinition source, PCTD target, ChannelHandler handler) throws ConnectionAttachException;
+    void detach(PhysicalConnectionSourceDefinition source, PCTD target) throws ConnectionAttachException;
 
 }

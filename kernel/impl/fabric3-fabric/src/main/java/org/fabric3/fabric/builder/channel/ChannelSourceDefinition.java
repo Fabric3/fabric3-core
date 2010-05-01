@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Metadata for attaching the source side of a pub/sub connection to a channel.
+ * Metadata for attaching the source side of a channel connection to a channel.
  *
  * @version $Rev$ $Date$
  */
@@ -50,6 +50,6 @@ public class ChannelSourceDefinition extends PhysicalConnectionSourceDefinition 
     private static final long serialVersionUID = -345332613558717623L;
 
     public ChannelSourceDefinition(URI uri) {
-        super(uri);
+        setUri(uri);
     }
 }

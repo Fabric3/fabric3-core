@@ -48,7 +48,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
- * Used to attach the target side of a pub/sub connection. The target may be a consumer, channel binding or channel.
+ * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
  *
  * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
@@ -56,6 +56,7 @@ public class PhysicalConnectionTargetDefinition implements Serializable {
     private static final long serialVersionUID = 3395589699751449558L;
     private URI uri;
     private QName deployable;
+    private URI classLoaderId;
 
     public PhysicalConnectionTargetDefinition(URI uri) {
         this.uri = uri;
@@ -71,6 +72,14 @@ public class PhysicalConnectionTargetDefinition implements Serializable {
 
     public void setDeployable(QName deployable) {
         this.deployable = deployable;
+    }
+
+    public URI getClassLoaderId() {
+        return classLoaderId;
+    }
+
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
     }
 
 

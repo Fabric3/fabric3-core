@@ -44,28 +44,29 @@
 package org.fabric3.fabric.builder;
 
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.model.physical.PhysicalConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- * Connects (and disconnects) component producers and consumers to a channel or channel binding.
+ * Establishes (and removes) event channel connections.
  *
  * @version $$Rev$$ $$Date$$
  */
 public interface ChannelConnector {
 
     /**
-     * Performs the connect operation
+     * Establishes a channel connection from an event source (component producer, channel, or channel binding) to an event target (component consumer,
+     * channel, or channel binding).
      *
      * @param definition the connection metadata
      * @throws BuilderException if an error creating the connect is encountered
      */
-    void connect(PhysicalConnectionDefinition definition) throws BuilderException;
+    void connect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
 
     /**
-     * Performs the disconnect operation
+     * Removes a channel connection.
      *
      * @param definition the connection metadata
      * @throws BuilderException if an error disconnecting is encountered
      */
-    void disconnect(PhysicalConnectionDefinition definition) throws BuilderException;
+    void disconnect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
 }

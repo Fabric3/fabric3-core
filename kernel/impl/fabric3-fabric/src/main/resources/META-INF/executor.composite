@@ -58,6 +58,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachWireCommandExecutor"/>
     </component>
 
+    <component name="AttachChannelConnectionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.AttachChannelConnectionCommandExecutor"/>
+    </component>
+
     <component name="ComponentStartCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.StartComponentCommandExecutor"/>
     </component>
@@ -78,12 +82,20 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.DetachWireCommandExecutor"/>
     </component>
 
+    <component name="DetachChannelConnectionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DetachChannelConnectionCommandExecutor"/>
+    </component>
+
     <component name="UnprovisionClassloaderCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnprovisionClassloaderCommandExecutor"/>
     </component>
 
     <component name="ConnectionCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.ConnectionCommandExecutor"/>
+    </component>
+
+    <component name="ChannelConnectionCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.ChannelConnectionCommandExecutor"/>
     </component>
 
     <component name="ProvisionExtensionsCommandExecutor">

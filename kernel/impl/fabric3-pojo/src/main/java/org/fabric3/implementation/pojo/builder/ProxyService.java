@@ -56,7 +56,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
+ * Creates proxies that implement Java interfaces and invocation handlers for fronting wires.
  *
  * @version $Rev$ $Date$
  */

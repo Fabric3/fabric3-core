@@ -69,11 +69,13 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.policy.EffectivePolicy;
@@ -124,6 +126,10 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
 
     public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
         return null;
+    }
+
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+        throw new UnsupportedOperationException();
     }
 
     private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type) {

@@ -54,9 +54,11 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -125,6 +127,10 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         definition.setOptimizable(true);
         definition.setUri(service.getUri());
         return definition;
+    }
+
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+        throw new UnsupportedOperationException();
     }
 
     public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {

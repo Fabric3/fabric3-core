@@ -41,13 +41,16 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.channel.ChannelConnectionImpl;
+import org.fabric3.fabric.channel.EventStreamImpl;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelHandler;
-import org.fabric3.spi.model.physical.PhysicalConnectionDefinition;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  * Default ChannelConnector implementation.
@@ -69,7 +72,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void connect(PhysicalConnectionDefinition definition) throws BuilderException {
+    public void connect(PhysicalChannelConnectionDefinition definition) throws BuilderException {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -80,12 +83,15 @@ public class ChannelConnectorImpl implements ChannelConnector {
         if (targetAttacher == null) {
             throw new AttacherNotFoundException("Attacher not found for type: " + target.getClass().getName());
         }
-        ChannelHandler handler = sourceAttacher.attach(source, target);
-        targetAttacher.attach(source, target, handler);
+
+        ChannelConnection connection = createConnection(definition);
+
+        sourceAttacher.attach(source, target, connection);
+        targetAttacher.attach(source, target, connection);
     }
 
     @SuppressWarnings({"unchecked"})
-    public void disconnect(PhysicalConnectionDefinition definition) throws BuilderException {
+    public void disconnect(PhysicalChannelConnectionDefinition definition) throws BuilderException {
         PhysicalConnectionSourceDefinition source = definition.getSource();
         PhysicalConnectionTargetDefinition target = definition.getTarget();
         SourceConnectionAttacher sourceAttacher = sourceAttachers.get(source.getClass());
@@ -96,7 +102,18 @@ public class ChannelConnectorImpl implements ChannelConnector {
         if (targetAttacher == null) {
             throw new AttacherNotFoundException("Attacher not found for type: " + target.getClass().getName());
         }
-        ChannelHandler handler = sourceAttacher.detach(source, target);
-        targetAttacher.detach(source, target, handler);
+        sourceAttacher.detach(source, target);
+        targetAttacher.detach(source, target);
     }
+
+    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
+        ChannelConnection connection = new ChannelConnectionImpl();
+        for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
+            EventStreamImpl stream = new EventStreamImpl(streamDefinition);
+            connection.addEventStream(stream);
+        }
+        return connection;
+    }
+
+
 }

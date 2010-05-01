@@ -43,16 +43,14 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.channel.PassThroughHandler;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelHandler;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * Attaches the source side of a pub/sub connection to a channel.
+ * Attaches the source side of a channel connection to a channel.
  *
  * @version $Rev$ $Date$
  */
@@ -64,21 +62,19 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
         this.channelManager = channelManager;
     }
 
-    public ChannelHandler attach(PhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws
-            ConnectionAttachException {
+    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target,  ChannelConnection connection)
+            throws ConnectionAttachException {
         URI uri = source.getSourceUri();
         Channel channel = getChannel(uri);
         URI targetUri = target.getTargetUri();
-        PassThroughHandler handler = new PassThroughHandler();
-        channel.subscribe(targetUri, handler);
-        return handler;
+        channel.subscribe(targetUri, connection);
     }
 
-    public ChannelHandler detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+    public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         URI uri = source.getSourceUri();
         Channel channel = getChannel(uri);
         URI targetUri = target.getTargetUri();
-        return channel.unsubscribe(targetUri);
+        channel.unsubscribe(targetUri);
     }
 
     private Channel getChannel(URI uri) throws ChannelNotFoundException {

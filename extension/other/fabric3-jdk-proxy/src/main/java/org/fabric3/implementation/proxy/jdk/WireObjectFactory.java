@@ -53,7 +53,7 @@ import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Creates a proxy for a wire that implements a provided interface
+ * Creates a proxy for a wire that implements a specified interface.
  *
  * @version $Rev$ $Date$
  */
@@ -68,10 +68,10 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     /**
      * Constructor.
      *
-     * @param interfaze    the interface to inject on the client
+     * @param interfaze    the interface the proxy implements
      * @param type         if the wire is stateless, conversational or propagates a conversational context
      * @param callbackUri  the callback URI for the wire or null if the wire is unidirectional
-     * @param proxyService the wire service to create the proxy
+     * @param proxyService the proxy creation service
      * @param mappings     proxy method to wire invocation chain mappings
      * @throws NoMethodForOperationException if a method matching the operation cannot be found
      */

@@ -139,6 +139,10 @@
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.StatelessProcessor"/>
     </component>
 
+    <component name="ProducerProcessor" f3-core:key="org.fabric3.api.annotation.Producer">
+        <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.ProducerProcessor"/>
+    </component>
+
     <component name="PolicyAnnotationProcessor">
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.PolicyAnnotationProcessorImpl"/>
         <property name="intentsToQualifiers">

@@ -57,5 +57,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.implementation.java.runtime.JavaTargetWireAttacher"/>
     </component>
 
+    <component name="JavaSourceConnectionAttacher" f3-core:key="org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.implementation.java.runtime.JavaSourceConnectionAttacher"/>
+    </component>
 
 </composite>

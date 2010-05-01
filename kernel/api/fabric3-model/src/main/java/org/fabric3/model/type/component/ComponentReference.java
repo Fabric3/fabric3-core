@@ -56,7 +56,7 @@ public class ComponentReference extends ReferenceDefinition {
     private List<Target> targets = new ArrayList<Target>();
 
     /**
-     * Construct a ComponentReference specifying the name of the reference being configured.
+     * Constructor.
      *
      * @param name         the name of the reference being configured
      * @param multiplicity the reference multiplicity
@@ -67,6 +67,10 @@ public class ComponentReference extends ReferenceDefinition {
 
     public List<Target> getTargets() {
         return targets;
+    }
+
+    public void addTargets(List<Target> targets) {
+        this.targets.addAll(targets);
     }
 
     public void addTarget(Target target) {

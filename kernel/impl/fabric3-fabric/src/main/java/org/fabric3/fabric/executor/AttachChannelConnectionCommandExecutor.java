@@ -34,35 +34,57 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.spi.channel;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.fabric.executor;
+
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.fabric.builder.ChannelConnector;
+import org.fabric3.fabric.command.AttachChannelConnectionCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * Processes an event in a pub/sub connection.
+ *
  *
  * @version $Rev$ $Date$
  */
-public interface ChannelHandler {
+@EagerInit
+public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
+    private CommandExecutorRegistry commandExecutorRegistry;
+    private final ChannelConnector connector;
 
-    /**
-     * Process the event.
-     *
-     * @param event the event.
-     */
-    void handle(Object event);
+    @Constructor
+    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry, @Reference ChannelConnector connector) {
+        this.commandExecutorRegistry = commandExecutorRegistry;
+        this.connector = connector;
+    }
 
-    /**
-     * Sets the next handler in the handler chain.
-     *
-     * @param next the next ChannelHandler
-     */
-    void setNext(ChannelHandler next);
+    public AttachChannelConnectionCommandExecutor(ChannelConnector connector) {
+        this.connector = connector;
+    }
 
-    /**
-     * Returns the next handler in the handler chain.
-     *
-     * @return the next ChannelHandler
-     */
-    ChannelHandler getNext();
+    @Init
+    public void init() {
+        commandExecutorRegistry.register(AttachChannelConnectionCommand.class, this);
+    }
 
+    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
+        try {
+            connector.connect(command.getDefinition());
+        } catch (BuilderException e) {
+            throw new ExecutionException(e.getMessage(), e);
+        }
+    }
 }

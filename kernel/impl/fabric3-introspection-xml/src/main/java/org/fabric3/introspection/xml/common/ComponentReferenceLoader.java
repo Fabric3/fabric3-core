@@ -74,7 +74,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
- * Loads a reference from an XML-based assembly file
+ * Loads a component reference configuration.
  *
  * @version $Rev$ $Date$
  */
@@ -148,7 +148,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             InvalidValue failure = new InvalidValue("Invalid target format", reader, e);
             context.addError(failure);
         }
-        reference.getTargets().addAll(targets);
+        reference.addTargets(targets);
 
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 

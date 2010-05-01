@@ -105,7 +105,7 @@ public abstract class PhysicalSourceDefinition implements Serializable {
     }
 
     /**
-     * Sets the id of the classloader associated with the source..
+     * Sets the id of the classloader associated with the source.
      *
      * @param classLoaderId the id of the classloader associated with the source
      */

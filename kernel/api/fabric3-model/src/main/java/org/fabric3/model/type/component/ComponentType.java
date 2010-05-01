@@ -61,77 +61,96 @@ public class ComponentType extends ModelObject implements CapabilityAware {
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
     private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
+    private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceDefinition> resources = new HashMap<String, ResourceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
 
     /**
-     * Returns a live Map of the services provided by the implementation.
+     * Returns the services provided by the implementation keyed by name.
      *
-     * @return a live Map of the services provided by the implementation
+     * @return services provided by the implementation
      */
     public Map<String, ServiceDefinition> getServices() {
         return services;
     }
 
     /**
-     * Add a service to those provided by the implementation. Any existing service with the same name is replaced.
+     * Adds a service provided by the implementation.
      *
-     * @param service a service provided by the implementation
+     * @param service the service to add
      */
     public void add(ServiceDefinition service) {
         services.put(service.getName(), service);
     }
 
     /**
-     * Returns a live Map of references to services consumed by the implementation.
+     * Returns references defined by the implementation keyed by name.
      *
-     * @return a live Map of references to services consumed by the implementation
+     * @return references defined by the implementation
      */
     public Map<String, ReferenceDefinition> getReferences() {
         return references;
     }
 
     /**
-     * Add a reference to a service consumed by the implementation. Any existing reference with the same name is replaced.
+     * Adds a reference defined by the implementation.
      *
-     * @param reference a reference to a service consumed by the implementation
+     * @param reference the reference to add
      */
     public void add(ReferenceDefinition reference) {
         references.put(reference.getName(), reference);
     }
 
     /**
-     * Returns a live Map of properties that can be used to configure the implementation.
+     * Returns producers defined by implementation keyed by name.
      *
-     * @return a live Map of properties that can be used to configure the implementation
+     * @return producers defined by implementation
+     */
+    public Map<String, ProducerDefinition> getProducers() {
+        return producers;
+    }
+
+    /**
+     * Adds a producer to the implementation.
+     *
+     * @param producer the producer to add
+     */
+    public void add(ProducerDefinition producer) {
+        producers.put(producer.getName(), producer);
+    }
+
+    /**
+     * Returns properties defined by the implementation keyed by name.
+     *
+     * @return properties defined by the implementation
      */
     public Map<String, Property> getProperties() {
         return properties;
     }
 
     /**
-     * Add a property that can be used to configure the implementation. Any existing property with the same name is replaced.
+     * Add a property defined by the implementation.
      *
-     * @param property a property that can be used to configure the implementation
+     * @param property the property to add
      */
     public void add(Property property) {
         properties.put(property.getName(), property);
     }
 
     /**
-     * Returns a live Map of resoures that can be used to configure the implementation.
+     * Returns resoures defined by the implementation keyed by name.
      *
-     * @return a live Map of resources that can be used to configure the implementation
+     * @return resources defined by the implementation
      */
     public Map<String, ResourceDefinition> getResources() {
         return resources;
     }
 
     /**
-     * Add a resource that can be used to configure the implementation. Any existing resource with the same name is replaced.
+     * Adds a resource defined by the implementation keyed by name.
      *
-     * @param resource a resource that can be used to configure the implementation
+     * @param resource the resource to add
      */
     public void add(ResourceDefinition resource) {
         resources.put(resource.getName(), resource);

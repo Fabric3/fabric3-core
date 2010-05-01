@@ -60,6 +60,6 @@ public class IncompatibleArgumentException extends ObjectCreationException {
     }
 
     public String getMessage() {
-        return "Unable to assign parameter of type " + type + " to parameter " + param + "of " + getIdentifier();
+        return "Unable to assign parameter of type " + type + " to parameter " + param + " of " + getIdentifier();
     }
 }

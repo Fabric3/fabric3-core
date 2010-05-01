@@ -75,7 +75,7 @@ public class PojoSourceDefinition extends PhysicalSourceDefinition {
     }
 
     /**
-     * Returns the Injectable for this wire applies to.
+     * Returns the Injectable this wire applies to.
      *
      * @return the the injectible this wire applies to
      */

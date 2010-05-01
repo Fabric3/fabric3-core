@@ -60,26 +60,27 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     private final String name;
     private Autowire autowire = Autowire.INHERITED;
     private I implementation;
-    private final Map<String, ComponentService> services = new HashMap<String, ComponentService>();
-    private final Map<String, ComponentReference> references = new HashMap<String, ComponentReference>();
-    private final Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
+    private Map<String, ComponentService> services = new HashMap<String, ComponentService>();
+    private Map<String, ComponentReference> references = new HashMap<String, ComponentReference>();
+    private Map<String, ComponentProducer> producers = new HashMap<String, ComponentProducer>();
+    private Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
     private String key;
     private URI contributionUri;
 
     /**
-     * Constructor specifying the component's name.
+     * Constructor.
      *
-     * @param name the name of this component
+     * @param name the compnent name
      */
     public ComponentDefinition(String name) {
         this.name = name;
     }
 
     /**
-     * Constructor specifying the component's name and implementation.
+     * Constructor.
      *
-     * @param name           the name of this component
-     * @param implementation the implementation of this component
+     * @param name           the component name
+     * @param implementation the component implementation
      */
     public ComponentDefinition(String name, I implementation) {
         this.name = name;
@@ -87,21 +88,30 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     }
 
     /**
-     * Sets the {@link Implementation} of this component.
+     * Sets the component implementation.
      *
-     * @param implementation the implementation of this component
+     * @param implementation the component implementation
      */
     public void setImplementation(I implementation) {
         this.implementation = implementation;
     }
 
     /**
-     * Returns the {@link Implementation} of this component.
+     * Returns the component implementation.
      *
      * @return the implementation of this component
      */
     public I getImplementation() {
         return implementation;
+    }
+
+    /**
+     * Gets the component type.
+     *
+     * @return Component type.
+     */
+    public ComponentType getComponentType() {
+        return getImplementation().getComponentType();
     }
 
     /**
@@ -116,7 +126,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Returns the autowire status for the component.
      *
-     * @return the autowire status for the component.
+     * @return the autowire status for the component
      */
     public Autowire getAutowire() {
         return autowire;
@@ -125,32 +135,32 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Sets the autowire status for the component.
      *
-     * @param autowire the autowire status.
+     * @param autowire the autowire status
      */
     public void setAutowire(Autowire autowire) {
         this.autowire = autowire;
     }
 
     /**
-     * Returns a live Map of the {@link ComponentReference targets} configured by this component definition.
+     * Returns the references configured by this component.
      *
-     * @return the reference targets configured by this component
+     * @return the component references
      */
     public Map<String, ComponentReference> getReferences() {
         return references;
     }
 
     /**
-     * Add a reference target configuration to this component. Any existing configuration for the reference named in the target is replaced.
+     * Add a reference to this component.
      *
-     * @param target the target to add
+     * @param target the reference to add
      */
     public void add(ComponentReference target) {
         references.put(target.getName(), target);
     }
 
     /**
-     * Returns a live Map of the {@link ComponentService}s configured by this component definition.
+     * Returns the services configured by this component definition.
      *
      * @return the services configured by this component
      */
@@ -159,7 +169,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     }
 
     /**
-     * Add a service configuration to this component. Any existing configuration for the service is replaced.
+     * Adds a service to this component.
      *
      * @param service the service to add
      */
@@ -168,16 +178,34 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     }
 
     /**
-     * Returns a live Map of {@link PropertyValue property values} configured by this component definition.
+     * Adds a producer to this component.
      *
-     * @return the property values configured by this component
+     * @param producer the producer to add
+     */
+    public void add(ComponentProducer producer) {
+        producers.put(producer.getName(), producer);
+    }
+
+    /**
+     * Returns the producers configured by this component definition.
+     *
+     * @return the producers configured by this component
+     */
+    public Map<String, ComponentProducer> getProducers() {
+        return producers;
+    }
+
+    /**
+     * Returns the property values configured by this component definition.
+     *
+     * @return the configured property values
      */
     public Map<String, PropertyValue> getPropertyValues() {
         return propertyValues;
     }
 
     /**
-     * Add a property value configuration to this component. Any existing configuration for the property names in the property value is replaced.
+     * Adds a configured property value.
      *
      * @param value the property value to add
      */
@@ -197,25 +225,16 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Sets the key to be used if this component is wired to a map of references.
      *
-     * @param key The value of the key.
+     * @param key The value of the key
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * Gets the component type.
-     *
-     * @return Component type.
-     */
-    public ComponentType getComponentType() {
-        return getImplementation().getComponentType();
-    }
-
-    /**
      * Returns the URI of the contribution the component definition is contained in.
      *
-     * @return the URI of the contribution the component definition is contained in.
+     * @return the URI of the contribution the component definition is contained in
      */
     public URI getContributionUri() {
         return contributionUri;
@@ -224,7 +243,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Sets the URI of the contribution the component definition is contained in.
      *
-     * @param contributionUri the URI of the contribution the component definition is contained in.
+     * @param contributionUri the URI of the contribution the component definition is contained in
      */
     public void setContributionUri(URI contributionUri) {
         this.contributionUri = contributionUri;

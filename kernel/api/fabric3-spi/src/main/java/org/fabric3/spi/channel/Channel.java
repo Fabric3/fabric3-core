@@ -41,7 +41,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
- * An SCA event channel.
+ * An SCA event channel. Responsible for transmitting events from events sources to event sinks.
  *
  * @version $Rev$ $Date$
  */
@@ -54,54 +54,40 @@ public interface Channel {
     URI getUri();
 
     /**
-     * Returns the deployable composite this channel was deployed with.
+     * Returns the composite this channel was deployed with.
      *
      * @return the deployable composite
      */
     QName getDeployable();
 
     /**
-     * Adds a handler for processing events to the channel.
+     * Adds a handler for transmitting events to the channel.
      *
      * @param handler the handler
      */
-    void addHandler(ChannelHandler handler);
+    void addHandler(EventStreamHandler handler);
 
     /**
-     * Publish an event to the channel.
+     * Attach a connection to the channel so that it can flow events.
      *
-     * @param event the event
+     * @param connection the connection to attach
      */
-    void publish(Object event);
-
-    /**
-     * Attach a handler to the channel so that it can flow events.
-     *
-     * @param handler the handler to attach
-     */
-    void attach(ChannelHandler handler);
-
-    /**
-     * Detach a previously attached handler from the channel.
-     *
-     * @param handler the handler to detach
-     */
-    void detach(ChannelHandler handler);
+    void attach(ChannelConnection connection);
 
     /**
      * Subscribe to receive events from the channel.
      *
-     * @param uri     the URI indentifying the subscription
-     * @param handler the handler to receive events with
+     * @param uri        the URI indentifying the subscription
+     * @param connection the connection to receive events on
      */
-    void subscribe(URI uri, ChannelHandler handler);
+    void subscribe(URI uri, ChannelConnection connection);
 
     /**
      * Unsubscribe from receiving events from the channel
      *
      * @param uri the subscription URI
-     * @return the unsubscribed handler
+     * @return the unsubscribed conection
      */
-    ChannelHandler unsubscribe(URI uri);
+    ChannelConnection unsubscribe(URI uri);
 
 }

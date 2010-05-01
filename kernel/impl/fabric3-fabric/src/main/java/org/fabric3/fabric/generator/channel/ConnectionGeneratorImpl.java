@@ -1,0 +1,118 @@
+/*
+ * Fabric3
+ * Copyright (c) 2009 Metaform Systems
+ *
+ * Fabric3 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version, with the
+ * following exception:
+ *
+ * Linking this software statically or dynamically with other
+ * modules is making a combined work based on this software.
+ * Thus, the terms and conditions of the GNU General Public
+ * License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this software
+ * give you permission to link this software with independent
+ * modules to produce an executable, regardless of the license
+ * terms of these independent modules, and to copy and distribute
+ * the resulting executable under terms of your choice, provided
+ * that you also meet, for each linked independent module, the
+ * terms and conditions of the license of that module. An
+ * independent module is a module which is not derived from or
+ * based on this software. If you modify this software, you may
+ * extend this exception to your version of the software, but
+ * you are not obligated to do so. If you do not wish to do so,
+ * delete this exception statement from your version.
+ *
+ * Fabric3 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the
+ * GNU General Public License along with Fabric3.
+ * If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.fabric3.fabric.generator.channel;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
+import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.model.type.contract.Operation;
+import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class ConnectionGeneratorImpl implements ConnectionGenerator {
+    private GeneratorRegistry generatorRegistry;
+
+    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
+        this.generatorRegistry = generatorRegistry;
+    }
+
+    public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer) throws GenerationException {
+        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
+        LogicalComponent<?> component = producer.getParent();
+        ComponentGenerator<?> generator = getGenerator(component);
+        PhysicalConnectionSourceDefinition sourceDefinition = generator.generateConnectionSource(producer);
+        URI classLoaderId = component.getDefinition().getContributionUri();
+        sourceDefinition.setClassLoaderId(classLoaderId);
+
+        List<PhysicalEventStreamDefinition> eventStreams = new ArrayList<PhysicalEventStreamDefinition>();
+
+        for (LogicalOperation operation : producer.getOperations()) {
+            eventStreams.add(generate(operation));
+        }
+
+        // TODO handle bindings and policies
+        for (URI uri : producer.getTargets()) {
+            PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(uri);
+            targetDefinition.setClassLoaderId(classLoaderId);
+            PhysicalChannelConnectionDefinition connectionDefinition =
+                    new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+            definitions.add(connectionDefinition);
+        }
+
+        return definitions;
+    }
+
+    private PhysicalEventStreamDefinition generate(LogicalOperation operation) {
+        Operation o = operation.getDefinition();
+        PhysicalEventStreamDefinition eventStreamDefinition = new PhysicalEventStreamDefinition(o.getName());
+        eventStreamDefinition.setName(o.getName());
+        List<DataType<?>> params = o.getInputTypes();
+        for (DataType<?> param : params) {
+            Class<?> paramType = param.getPhysical();
+            String paramName = paramType.getName();
+            eventStreamDefinition.addEventType(paramName);
+        }
+        return eventStreamDefinition;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws GeneratorNotFoundException {
+        Implementation<?> implementation = component.getDefinition().getImplementation();
+        return (ComponentGenerator<C>) generatorRegistry.getComponentGenerator(implementation.getClass());
+    }
+
+}

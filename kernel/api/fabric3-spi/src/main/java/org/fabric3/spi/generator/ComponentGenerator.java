@@ -46,10 +46,12 @@ package org.fabric3.spi.generator;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
@@ -115,4 +117,5 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      */
     PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException;
 
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException;
 }

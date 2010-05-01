@@ -45,43 +45,49 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.fabric3.host.work.DefaultPausableWork;
 import org.fabric3.host.work.WorkScheduler;
-import org.fabric3.spi.channel.ChannelHandler;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Asynchronously broadcasts a received event to a collection of handlers.
  *
  * @version $Rev$ $Date$
  */
-public class FanOutHandler implements ChannelHandler {
+public class FanOutHandler implements EventStreamHandler {
     private WorkScheduler workScheduler;
-    private List<ChannelHandler> handlers = new CopyOnWriteArrayList<ChannelHandler>();
-    private Map<URI, ChannelHandler> index = new HashMap<URI, ChannelHandler>();
+    private List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
+    private Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
 
     public FanOutHandler(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
     }
 
-    public synchronized void addHandler(URI uri, ChannelHandler handler) {
-        handlers.add(handler);
-        index.put(uri, handler);
+    public synchronized void addConnection(URI uri, ChannelConnection connection) {
+        connections.add(connection);
+        index.put(uri, connection);
     }
 
-    public synchronized ChannelHandler removeHandler(URI uri) {
-        ChannelHandler handler = index.remove(uri);
-        handlers.remove(handler);
-        return handler;
+    public synchronized ChannelConnection removeConnection(URI uri) {
+        ChannelConnection connection = index.remove(uri);
+        connections.remove(connection);
+        return connection;
     }
 
     public void handle(Object event) {
+        if (connections.isEmpty()) {
+            // no connections, skip scheduling work
+            return;
+        }
         FanOutWork work = new FanOutWork(event);
         workScheduler.scheduleWork(work);
     }
 
-    public void setNext(ChannelHandler next) {
-        throw new IllegalStateException("This ChannelHandler must be the last one in the handler chain");
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This EventStreamHandler must be the last one in the handler chain");
     }
 
-    public ChannelHandler getNext() {
+    public EventStreamHandler getNext() {
         return null;
     }
 
@@ -93,8 +99,10 @@ public class FanOutHandler implements ChannelHandler {
         }
 
         protected void execute() {
-            for (ChannelHandler handler : handlers) {
-                handler.handle(event);
+            for (ChannelConnection connection : connections) {
+                for (EventStream stream : connection.getEventStreams()) {
+                    stream.getHeadHandler().handle(event);
+                }
             }
         }
     }

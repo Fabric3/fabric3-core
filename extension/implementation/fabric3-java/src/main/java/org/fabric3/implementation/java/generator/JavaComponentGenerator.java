@@ -42,6 +42,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
@@ -49,10 +50,12 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
@@ -96,6 +99,12 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
     public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
         JavaTargetDefinition definition = new JavaTargetDefinition();
         generationHelper.generateWireTarget(definition, service);
+        return definition;
+    }
+
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
+        generationHelper.generateConnectionSource(definition, producer);
         return definition;
     }
 

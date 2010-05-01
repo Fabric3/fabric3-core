@@ -41,32 +41,53 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.implementation.pojo.provision;
 
-import java.io.Serializable;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.type.java.Injectable;
 
 /**
- * Metadata for provisioning a pub/sub channel connection on a runtime. Specifically, contains metadata for establishing a connection from a producer
- * to a channel and from the channel to a consumer.
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Rev$ $Date$
  */
-public class PhysicalConnectionDefinition implements Serializable {
-    private static final long serialVersionUID = -3810294574460985743L;
+public class PojoConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
+    private static final long serialVersionUID = -4308379086425414609L;
+    private String interfaceName;
+    private Injectable injectable;
 
-    private PhysicalConnectionSourceDefinition source;
-    private PhysicalConnectionTargetDefinition target;
-
-    public PhysicalConnectionDefinition(PhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
-        this.source = source;
-        this.target = target;
+    /**
+     * Returns the name of the Java interface for the service contract.
+     *
+     * @return the name of the Java interface for the service contract
+     */
+    public String getInterfaceName() {
+        return interfaceName;
     }
 
-    public PhysicalConnectionSourceDefinition getSource() {
-        return source;
+    /**
+     * Sets the name of the Java interface for the service contract.
+     *
+     * @param interfaceName the name of the Java interface for the service contract
+     */
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
     }
 
-    public PhysicalConnectionTargetDefinition getTarget() {
-        return target;
+    /**
+     * Returns the Injectable this wire applies to.
+     *
+     * @return the the injectible this wire applies to
+     */
+    public Injectable getInjectable() {
+        return injectable;
     }
+
+    /**
+     * Sets the Injectable for this wire appies to.
+     *
+     * @param injectable the injectible this wire applies to
+     */
+    public void setInjectable(Injectable injectable) {
+        this.injectable = injectable;
+    }
+
 }

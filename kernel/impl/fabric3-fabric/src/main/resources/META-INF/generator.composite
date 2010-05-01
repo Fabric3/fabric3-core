@@ -42,6 +42,11 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireGeneratorImpl"/>
     </component>
 
+    <component name="ConnectionGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl"/>
+    </component>
+
+
     <component name="ContributionCollator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.collator.ContributionCollatorImpl"/>
     </component>
@@ -95,6 +100,11 @@
 
     <component name="BoundServiceCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator"/>
+        <property name="order">3</property>
+    </component>
+
+    <component name="ProducerCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ProducerCommandGenerator"/>
         <property name="order">3</property>
     </component>
 

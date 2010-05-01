@@ -65,7 +65,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
- * Loads a service definition from an XML-based assembly file
+ * Loads a component service configuration.
  *
  * @version $Rev$ $Date$
  */

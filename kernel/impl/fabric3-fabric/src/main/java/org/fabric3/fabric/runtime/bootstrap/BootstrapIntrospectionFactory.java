@@ -48,6 +48,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.Producer;
 import org.fabric3.fabric.monitor.MonitorProcessor;
 import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
 import org.fabric3.implementation.system.introspection.SystemHeuristic;
@@ -65,6 +66,7 @@ import org.fabric3.introspection.java.annotation.OASISEagerInitProcessor;
 import org.fabric3.introspection.java.annotation.OASISInitProcessor;
 import org.fabric3.introspection.java.annotation.OASISPropertyProcessor;
 import org.fabric3.introspection.java.annotation.OASISReferenceProcessor;
+import org.fabric3.introspection.java.annotation.ProducerProcessor;
 import org.fabric3.introspection.java.annotation.PropertyProcessor;
 import org.fabric3.introspection.java.annotation.ReferenceProcessor;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -114,6 +116,7 @@ public class BootstrapIntrospectionFactory {
 
         // F3 annotations
         processors.put(Monitor.class, new MonitorProcessor<SystemImplementation>(helper, contractProcessor));
+        processors.put(Producer.class, new ProducerProcessor<SystemImplementation>(contractProcessor, helper));
 
         ClassVisitor<SystemImplementation> classVisitor = new DefaultClassVisitor<SystemImplementation>(processors);
 

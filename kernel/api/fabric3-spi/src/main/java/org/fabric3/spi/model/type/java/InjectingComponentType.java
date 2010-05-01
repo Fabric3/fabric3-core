@@ -46,8 +46,9 @@ package org.fabric3.spi.model.type.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.CallbackDefinition;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceDefinition;
@@ -179,7 +180,7 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a reference and associate with an injection site.
+     * Add a reference and its associated with an injection site.
      *
      * @param reference     the reference to add
      * @param injectionSite the injection site for the reference
@@ -191,7 +192,19 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a property and associate with an injection site.
+     * Add a producer and its associated with an injection site.
+     *
+     * @param producer      the producer to add
+     * @param injectionSite the injection site for the producer
+     */
+    public void add(ProducerDefinition producer, InjectionSite injectionSite) {
+        super.add(producer);
+        Injectable injectable = new Injectable(InjectableType.PRODUCER, producer.getName());
+        addInjectionSite(injectionSite, injectable);
+    }
+
+    /**
+     * Add a property and its associated with an injection site.
      *
      * @param property      the property to add
      * @param injectionSite the injection site for the property
@@ -203,7 +216,7 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a resource and associate with an injection site.
+     * Add a resource and its associated with an injection site.
      *
      * @param resource      the resource to add
      * @param injectionSite the injection site for the resource

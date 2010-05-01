@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -56,14 +55,10 @@ import org.fabric3.spi.executor.ExecutionException;
  */
 @EagerInit
 public class DetachWireCommandExecutor implements CommandExecutor<DetachWireCommand> {
-
-
     private CommandExecutorRegistry commandExecutorRegistry;
-    private final Connector connector;
+    private Connector connector;
 
-    @Constructor
-    public DetachWireCommandExecutor(@Reference CommandExecutorRegistry registry,
-                                     @Reference Connector connector) {
+    public DetachWireCommandExecutor(@Reference CommandExecutorRegistry registry, @Reference Connector connector) {
         this.commandExecutorRegistry = registry;
         this.connector = connector;
     }

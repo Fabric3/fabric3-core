@@ -68,7 +68,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * the default implementation of a wire service that uses JDK dynamic proxies
+ * The default ProxyService implementation that uses JDK dynamic proxies.
  *
  * @version $$Rev$$ $$Date$$
  */

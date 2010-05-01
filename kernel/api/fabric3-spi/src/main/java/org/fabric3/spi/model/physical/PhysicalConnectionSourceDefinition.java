@@ -48,7 +48,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
- * Used to attach the source side of a pub/sub connection. The source may be a producer, channel binding or channel.
+ * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
  *
  * @version $Revision$ $Date$
  */
@@ -56,13 +56,17 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     private static final long serialVersionUID = 3395589699751449558L;
     private URI uri;
     private QName deployable;
+    private URI classLoaderId;
 
-    public PhysicalConnectionSourceDefinition(URI uri) {
-        this.uri = uri;
+    public PhysicalConnectionSourceDefinition() {
     }
 
     public URI getSourceUri() {
         return uri;
+    }
+
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     public QName getDeployable() {
@@ -72,4 +76,14 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     public void setDeployable(QName deployable) {
         this.deployable = deployable;
     }
+
+    public URI getClassLoaderId() {
+        return classLoaderId;
+    }
+
+    public void setClassLoaderId(URI classLoaderId) {
+        this.classLoaderId = classLoaderId;
+    }
+
+
 }

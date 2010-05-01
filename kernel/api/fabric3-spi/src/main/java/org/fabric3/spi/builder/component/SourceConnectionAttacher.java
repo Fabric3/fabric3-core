@@ -43,35 +43,34 @@
  */
 package org.fabric3.spi.builder.component;
 
-import org.fabric3.spi.channel.ChannelHandler;
+import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * Attaches and detaches a pub/sub connection from a component producer, channel or channel binding.
+ * Attaches and detaches a {@link ChannelConnection} from a component producer, channel or channel binding.
  *
  * @version $Rev$ $Date$
  */
 public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceDefinition> {
 
     /**
-     * Attach a connection to a channel, component consumer, or channel binding
+     * Attach a connection to a source, which can be a channel, component producer, or channel binding.
      *
-     * @param source the source metadata
-     * @param target the target metadata
-     * @return a handler that flows events from the source channel or channel binding
+     * @param source     the source metadata
+     * @param target     the target metadata
+     * @param connection the channel connection
      * @throws ConnectionAttachException if an error is encountered performing the attach
      */
-    ChannelHandler attach(PhysicalConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException;
+    void attach(PCSD source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ConnectionAttachException;
 
     /**
-     * Detach a connection from a channel or channel binding
+     * Detach a connection from a source.
      *
      * @param source the source metadata
      * @param target the target metadata
-     * @return the handler that flows events from the source channel or channel binding
      * @throws ConnectionAttachException if an error is encountered performing the attach
      */
-    ChannelHandler detach(PCSD source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException;
+    void detach(PCSD source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException;
 
 }

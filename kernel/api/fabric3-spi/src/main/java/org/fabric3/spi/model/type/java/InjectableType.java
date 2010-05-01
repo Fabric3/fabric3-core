@@ -46,12 +46,13 @@ package org.fabric3.spi.model.type.java;
 /**
  * Enumeration of the type of InjectableAttribute supported.
  * <p/>
- * Currently supported types are: <ul> <li>Callbacks</li> <li>References</li> <li>Properties</li> <li>Resources</li> <li>Context (the
- * implementation-specific context)</li> </ul>
+ * Currently supported types are: <ul> <li>Callbacks</li> <li>References</li> <ul> <li>Producers</li> <li>Properties</li> <li>Resources</li>
+ * <li>Context (the implementation-specific context)</li> </ul>
  */
 public enum InjectableType {
     CALLBACK,
     REFERENCE,
+    PRODUCER,
     PROPERTY,
     RESOURCE,
     CONTEXT

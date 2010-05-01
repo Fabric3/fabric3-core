@@ -64,7 +64,7 @@ public abstract class PhysicalComponentDefinition implements Serializable {
     private long maxAge;
     private boolean eager;
     private URI classLoaderId;
-    private final List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<PhysicalPropertyDefinition>();
+    private List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<PhysicalPropertyDefinition>();
 
     /**
      * Gets the component URI.

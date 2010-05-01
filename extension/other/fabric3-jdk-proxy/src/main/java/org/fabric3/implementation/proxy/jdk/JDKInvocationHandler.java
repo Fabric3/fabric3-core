@@ -55,11 +55,11 @@ import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.implementation.pojo.component.ConversationImpl;
 import org.fabric3.spi.component.ConversationExpirationCallback;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.component.InstanceInvocationException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -86,7 +86,7 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
     private String callbackUri;
 
     /**
-     * Creates a stateless wire proxy
+     * Constructor.
      *
      * @param interfaze   the proxy interface
      * @param callbackUri the callback uri or null if the wire is unidirectional
@@ -98,7 +98,7 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
     }
 
     /**
-     * Creates a wire proxy.
+     * Constructor.
      *
      * @param interfaze      the proxy interface
      * @param type           the interaction style for the wire

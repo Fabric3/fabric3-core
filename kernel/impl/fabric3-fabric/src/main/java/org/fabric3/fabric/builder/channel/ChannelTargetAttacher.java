@@ -46,11 +46,13 @@ import org.fabric3.fabric.channel.ChannelManager;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelHandler;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Attaches the target side of a pub/sub connection to a channel.
+ * Attaches the target side of a channel connection to a channel.
  *
  * @version $Rev$ $Date$
  */
@@ -62,18 +64,20 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         this.channelManager = channelManager;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelHandler handler)
+    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
         URI uri = target.getTargetUri();
         Channel channel = getChannel(uri);
-        channel.attach(handler);
+        for (EventStream stream : connection.getEventStreams()) {
+            PassThroughHandler handler = new PassThroughHandler();
+            stream.addHandler(handler);
+        }
+        channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelHandler handler)
+    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
             throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.detach(handler);
+        // no-op since channel do not maintain references to incoming handlers
     }
 
     private Channel getChannel(URI uri) throws ChannelNotFoundException {

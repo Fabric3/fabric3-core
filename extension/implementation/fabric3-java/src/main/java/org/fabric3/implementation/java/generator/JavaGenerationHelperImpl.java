@@ -45,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
@@ -59,6 +60,7 @@ import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -127,6 +129,15 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
     }
 
+    public void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws GenerationException {
+        URI uri = producer.getUri();
+        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
+        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        definition.setUri(uri);
+        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
+        definition.setInterfaceName(interfaceName);
+    }
+
     public void generateCallbackWireSource(JavaSourceDefinition definition,
                                            LogicalComponent<? extends JavaImplementation> component,
                                            ServiceContract serviceContract,
@@ -180,7 +191,6 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         String scope = componentType.getScope();
         definition.setOptimizable("COMPOSITE".equals(scope));
     }
-
 
     /**
      * Determines if the wire propagates conversations. Conversational propagation is handled by the source component.

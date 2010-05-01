@@ -25,6 +25,10 @@
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.ComponentServiceLoader"/>
     </component>
 
+    <component name="ComponentProducerLoader">
+        <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.ComponentProducerLoader"/>
+    </component>
+
     <component name="PropertyLoader">
         <f3-impl:implementation.system class="org.fabric3.introspection.xml.common.PropertyLoader"/>
     </component>

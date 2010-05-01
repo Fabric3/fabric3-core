@@ -58,16 +58,18 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentProducer;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyMany;
 import org.fabric3.model.type.component.PropertyValue;
@@ -100,6 +102,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private static final QName PROPERTY = new QName(SCA_NS, "property");
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
+    private static final QName PRODUCER = new QName(SCA_NS, "producer");
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
     static {
@@ -155,12 +158,12 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             reader.nextTag();
             QName elementName = reader.getName();
             if (COMPONENT.equals(elementName)) {
-                // the read er has hit the end of the component definition without an implementation being specified
+                // the reader has hit the end of the component definition without an implementation being specified
                 MissingComponentImplementation error =
                         new MissingComponentImplementation("The component " + name + " must specify an implementation", reader);
                 context.addError(error);
                 return definition;
-            } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName)) {
+            } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName) || PRODUCER.equals(elementName)) {
                 MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
                         + " must specify an implementation as the first child element", reader);
                 context.addError(error);
@@ -189,6 +192,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                         parseReference(definition, componentType, reader, context);
                     } else if (SERVICE.equals(qname)) {
                         parseService(definition, componentType, reader, context);
+                    } else if (PRODUCER.equals(qname)) {
+                        parseProducer(definition, componentType, reader, context);
                     } else {
                         // Unknown extension element - issue an error and continue
                         context.addError(new UnrecognizedElement(reader));
@@ -216,8 +221,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                               ComponentType componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
-        ComponentService service;
-        service = registry.load(reader, ComponentService.class, context);
+        ComponentService service = registry.load(reader, ComponentService.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
             return;
@@ -245,8 +249,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                 ComponentType componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
-        ComponentReference reference;
-        reference = registry.load(reader, ComponentReference.class, context);
+        ComponentReference reference = registry.load(reader, ComponentReference.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
             return;
@@ -273,12 +276,32 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     }
 
+    private void parseProducer(ComponentDefinition<Implementation<?>> definition,
+                               ComponentType componentType,
+                               XMLStreamReader reader,
+                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        ComponentProducer producer = registry.load(reader, ComponentProducer.class, context);
+        if (producer == null) {
+            // there was an error with the producer configuration, just skip it
+            return;
+        }
+        String name = producer.getName();
+        ProducerDefinition typeProducer = componentType.getProducers().get(name);
+        if (typeProducer == null) {
+            // ensure the producer exists
+            ComponentProducerNotFound failure = new ComponentProducerNotFound(name, definition, reader);
+            context.addError(failure);
+            return;
+        }
+        definition.add(producer);
+    }
+
+
     private void parsePropertyValue(ComponentDefinition<?> definition,
                                     ComponentType componentType,
                                     XMLStreamReader reader,
                                     IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
-        PropertyValue value;
-        value = registry.load(reader, PropertyValue.class, context);
+        PropertyValue value = registry.load(reader, PropertyValue.class, context);
         if (value == null) {
             // there was an error with the property configuration, just skip it
             return;

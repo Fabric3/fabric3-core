@@ -40,21 +40,24 @@ package org.fabric3.fabric.channel;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelHandler;
 import org.fabric3.host.work.WorkScheduler;
+import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
- * The SCA event channel implementation.
+ * The default Channel implementation.
  *
  * @version $Rev$ $Date$
  */
 public class ChannelImpl implements Channel {
     private URI uri;
     private QName deployable;
-    private ChannelHandler headHandler;
-    private ChannelHandler tailHandler;
-    private ChannelHandler inHandler;
+    private EventStreamHandler headHandler;
+    private EventStreamHandler tailHandler;
+    private EventStreamHandler inHandler;
     private FanOutHandler fanOutHandler;
 
     public ChannelImpl(URI uri, QName deployable, WorkScheduler workScheduler) {
@@ -73,7 +76,7 @@ public class ChannelImpl implements Channel {
         return deployable;
     }
 
-    public void addHandler(ChannelHandler handler) {
+    public void addHandler(EventStreamHandler handler) {
         if (headHandler == null) {
             headHandler = handler;
             inHandler.setNext(handler);
@@ -84,23 +87,17 @@ public class ChannelImpl implements Channel {
         tailHandler.setNext(fanOutHandler);
     }
 
-    public void publish(Object event) {
-        inHandler.handle(event);
+    public void attach(ChannelConnection connection) {
+        for (EventStream stream : connection.getEventStreams()) {
+            stream.getTailHandler().setNext(inHandler);
+        }
     }
 
-    public void attach(ChannelHandler handler) {
-       handler.setNext(inHandler);
+    public void subscribe(URI uri, ChannelConnection connection) {
+        fanOutHandler.addConnection(uri, connection);
     }
 
-    public void detach(ChannelHandler handler) {
-       handler.setNext(null);
-    }
-
-    public void subscribe(URI uri, ChannelHandler handler) {
-        fanOutHandler.addHandler(uri, handler);
-    }
-
-    public ChannelHandler unsubscribe(URI uri) {
-        return fanOutHandler.removeHandler(uri);
+    public ChannelConnection unsubscribe(URI uri) {
+        return fanOutHandler.removeConnection(uri);
     }
 }

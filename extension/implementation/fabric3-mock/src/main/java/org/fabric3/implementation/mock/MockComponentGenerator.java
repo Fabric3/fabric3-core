@@ -46,7 +46,9 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.policy.EffectivePolicy;
 
@@ -79,6 +81,10 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
 
     public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
         throw new UnsupportedOperationException("Mock objects cannot be source of a wire");
+    }
+
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+        throw new UnsupportedOperationException();
     }
 
     public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {

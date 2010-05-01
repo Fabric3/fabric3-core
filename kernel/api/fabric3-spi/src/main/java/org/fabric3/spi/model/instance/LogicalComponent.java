@@ -68,6 +68,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalProperty> properties = new HashMap<String, LogicalProperty>();
     private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
+    private Map<String, LogicalProducer> producers = new HashMap<String, LogicalProducer>();
     private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
     private String zone = LOCAL_ZONE;
     private QName deployable;
@@ -238,6 +239,34 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
+     * Returns the component producers.
+     *
+     * @return the producers
+     */
+    public Collection<LogicalProducer> getProducers() {
+        return producers.values();
+    }
+
+    /**
+     * Returns a producers with the given URI.
+     *
+     * @param name the producer name
+     * @return the producer.
+     */
+    public LogicalProducer getProducer(String name) {
+        return producers.get(name);
+    }
+
+    /**
+     * Adds a the producer
+     *
+     * @param producer the producer to add
+     */
+    public void addProducer(LogicalProducer producer) {
+        producers.put(producer.getUri().getFragment(), producer);
+    }
+
+    /**
      * Returns the resolved properties for the component.
      *
      * @return the resolved properties for the component
@@ -259,7 +288,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     /**
      * Sets a collection of resolved property values
      *
-     * @param property  the parsed property
+     * @param property the parsed property
      */
     public void setProperties(LogicalProperty property) {
         properties.put(property.getName(), property);

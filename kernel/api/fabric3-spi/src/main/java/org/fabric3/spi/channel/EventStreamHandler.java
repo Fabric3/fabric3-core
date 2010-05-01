@@ -35,27 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
-
-import org.fabric3.spi.channel.ChannelHandler;
+package org.fabric3.spi.channel;
 
 /**
- * A ChannelHandler that forwards an event.
+ * Processes events flowing through an event stream.
  *
  * @version $Rev$ $Date$
  */
-public class PassThroughHandler implements ChannelHandler {
-    private ChannelHandler next;
+public interface EventStreamHandler {
 
-    public void handle(Object event) {
-        next.handle(event);
-    }
+    /**
+     * Process the event.
+     *
+     * @param event the event.
+     */
+    void handle(Object event);
 
-    public void setNext(ChannelHandler next) {
-        this.next = next;
-    }
+    /**
+     * Sets the next handler in the handler chain.
+     *
+     * @param next the next EventStreamHandler
+     */
+    void setNext(EventStreamHandler next);
 
-    public ChannelHandler getNext() {
-        return next;
-    }
+    /**
+     * Returns the next handler in the handler chain.
+     *
+     * @return the next EventStreamHandler
+     */
+    EventStreamHandler getNext();
+
 }
