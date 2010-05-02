@@ -62,7 +62,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * Attaches wires to and from components implemented using the Java programming model.
+ * Attaches and detaches wires from Java components.
  *
  * @version $Rev$ $Date$
  */

@@ -63,6 +63,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     private Map<String, ComponentService> services = new HashMap<String, ComponentService>();
     private Map<String, ComponentReference> references = new HashMap<String, ComponentReference>();
     private Map<String, ComponentProducer> producers = new HashMap<String, ComponentProducer>();
+    private Map<String, ComponentConsumer> consumers = new HashMap<String, ComponentConsumer>();
     private Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
     private String key;
     private URI contributionUri;
@@ -196,6 +197,24 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     }
 
     /**
+     * Adds a consumer to this component.
+     *
+     * @param consumer the consumer to add
+     */
+    public void add(ComponentConsumer consumer) {
+        consumers.put(consumer.getName(), consumer);
+    }
+
+    /**
+     * Returns the consumers configured by this component definition.
+     *
+     * @return the consumers configured by this component
+     */
+    public Map<String, ComponentConsumer> getConsumers() {
+        return consumers;
+    }
+
+    /**
      * Returns the property values configured by this component definition.
      *
      * @return the configured property values
@@ -248,5 +267,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     public void setContributionUri(URI contributionUri) {
         this.contributionUri = contributionUri;
     }
+
 
 }

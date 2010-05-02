@@ -62,7 +62,7 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * Attaches wires to and from components implemented using the Java programming model.
+ * Attaches and detaches wires to and from Java components.
  *
  * @version $Rev$ $Date$
  */

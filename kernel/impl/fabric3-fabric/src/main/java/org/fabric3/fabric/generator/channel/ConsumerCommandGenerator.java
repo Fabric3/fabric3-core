@@ -49,20 +49,20 @@ import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- * Generates a command to establish or remove an event channel connection from a producer.
+ * Generates a command to establish or remove an event channel connection from a consumer.
  *
  * @version $Revision$ $Date$
  */
-public class ProducerCommandGenerator implements CommandGenerator {
+public class ConsumerCommandGenerator implements CommandGenerator {
     private ConnectionGenerator connectionGenerator;
     private int order;
 
-    public ProducerCommandGenerator(@Reference ConnectionGenerator connectionGenerator, @Property(name = "order") int order) {
+    public ConsumerCommandGenerator(@Reference ConnectionGenerator connectionGenerator, @Property(name = "order") int order) {
         this.connectionGenerator = connectionGenerator;
         this.order = order;
     }
@@ -79,8 +79,8 @@ public class ProducerCommandGenerator implements CommandGenerator {
 
         ChannelConnectionCommand command = new ChannelConnectionCommand();
 
-        for (LogicalProducer producer : component.getProducers()) {
-            generateCommand(producer, command, incremental);
+        for (LogicalConsumer consumer : component.getConsumers()) {
+            generateCommand(consumer, command, incremental);
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;
@@ -88,16 +88,16 @@ public class ProducerCommandGenerator implements CommandGenerator {
         return command;
     }
 
-    private void generateCommand(LogicalProducer producer, ChannelConnectionCommand command, boolean incremental) throws GenerationException {
-        LogicalComponent<?> component = producer.getParent();
+    private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command, boolean incremental) throws GenerationException {
+        LogicalComponent<?> component = consumer.getParent();
         if (LogicalState.MARKED == component.getState()) {
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateProducer(producer);
+            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer);
             for (PhysicalChannelConnectionDefinition definition : definitions) {
                 DetachChannelConnectionCommand channelConnectionCommand = new DetachChannelConnectionCommand(definition);
                 command.add(channelConnectionCommand);
             }
         } else if (LogicalState.NEW == component.getState() || !incremental) {
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateProducer(producer);
+            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer);
             for (PhysicalChannelConnectionDefinition definition : definitions) {
                 AttachChannelConnectionCommand channelConnectionCommand = new AttachChannelConnectionCommand(definition);
                 command.add(channelConnectionCommand);

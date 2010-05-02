@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.builder.channel.ChannelSourceDefinition;
 import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
@@ -52,6 +53,7 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
@@ -91,22 +93,53 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                     new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
             definitions.add(connectionDefinition);
         }
+        return definitions;
+    }
+
+    public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer) throws GenerationException {
+        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
+        LogicalComponent<?> component = consumer.getParent();
+        ComponentGenerator<?> generator = getGenerator(component);
+        PhysicalConnectionTargetDefinition targetDefinition = generator.generateConnectionTarget(consumer);
+        URI classLoaderId = component.getDefinition().getContributionUri();
+        targetDefinition.setClassLoaderId(classLoaderId);
+
+        // TODO handle bindings and policies
+        for (URI uri : consumer.getSources()) {
+            PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(uri);
+            sourceDefinition.setClassLoaderId(classLoaderId);
+            List<PhysicalEventStreamDefinition> eventStreams = generate(consumer);
+            PhysicalChannelConnectionDefinition connectionDefinition =
+                    new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+            definitions.add(connectionDefinition);
+        }
 
         return definitions;
     }
 
     private PhysicalEventStreamDefinition generate(LogicalOperation operation) {
         Operation o = operation.getDefinition();
-        PhysicalEventStreamDefinition eventStreamDefinition = new PhysicalEventStreamDefinition(o.getName());
-        eventStreamDefinition.setName(o.getName());
+        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(o.getName());
+        definition.setName(o.getName());
         List<DataType<?>> params = o.getInputTypes();
         for (DataType<?> param : params) {
             Class<?> paramType = param.getPhysical();
             String paramName = paramType.getName();
-            eventStreamDefinition.addEventType(paramName);
+            definition.addEventType(paramName);
         }
-        return eventStreamDefinition;
+        return definition;
 
+    }
+
+    private List<PhysicalEventStreamDefinition> generate(LogicalConsumer consumer) {
+        // there is only one event strem from a channel to a consumer
+        List<PhysicalEventStreamDefinition> streams = new ArrayList<PhysicalEventStreamDefinition>();
+        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
+        for (DataType<?> dataType : consumer.getDefinition().getTypes()) {
+            definition.addEventType(dataType.getPhysical().getName());
+        }
+        streams.add(definition);
+        return streams;
     }
 
     @SuppressWarnings("unchecked")

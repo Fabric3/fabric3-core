@@ -73,10 +73,6 @@ public class ComponentProducer extends ProducerDefinition {
         return targets;
     }
 
-    public void addTargets(List<URI> targets) {
-        targets.addAll(targets);
-    }
-
     public void addTarget(URI target) {
         targets.add(target);
     }

@@ -40,11 +40,13 @@ package org.fabric3.implementation.java.generator;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -108,6 +110,15 @@ public interface JavaGenerationHelper {
      * @throws GenerationException if there is an error generating the JavaConnectionSourceDefinition
      */
     void generateConnectionSource(JavaConnectionSourceDefinition definition, LogicalProducer producer) throws GenerationException;
+
+    /**
+     * Populates the JavaConnectionTargetDefinition with information for connecting it to a component consumer .
+     *
+     * @param definition the JavaConnectionTargetDefinition to populate
+     * @param consumer   the consumer
+     * @throws GenerationException if there is an error generating the JavaConnectionSourceDefinition
+     */
+    void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws GenerationException;
 
     /**
      * Populates the JavaWireSourceDefinition with resource wiring information.

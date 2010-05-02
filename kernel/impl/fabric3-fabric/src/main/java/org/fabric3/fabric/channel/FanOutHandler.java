@@ -84,7 +84,7 @@ public class FanOutHandler implements EventStreamHandler {
     }
 
     public void setNext(EventStreamHandler next) {
-        throw new IllegalStateException("This EventStreamHandler must be the last one in the handler chain");
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
     }
 
     public EventStreamHandler getNext() {

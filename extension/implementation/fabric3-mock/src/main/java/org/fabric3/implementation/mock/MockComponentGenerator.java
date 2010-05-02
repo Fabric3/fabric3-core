@@ -47,8 +47,10 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.policy.EffectivePolicy;
 
@@ -84,6 +86,10 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+        throw new UnsupportedOperationException();
+    }
+
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

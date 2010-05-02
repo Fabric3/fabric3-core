@@ -43,29 +43,28 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.annotation.Producer;
+import org.fabric3.api.annotation.Consumer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
+import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 
-public class ProducerProcessorTestCase extends TestCase {
-    private ProducerProcessor<Implementation<? extends InjectingComponentType>> processor;
+public class ConsumerProcessorTestCase extends TestCase {
+    private ConsumerProcessor<Implementation<? extends InjectingComponentType>> processor;
 
     public void testMethod() throws Exception {
-        Method method = TestClass.class.getDeclaredMethod("setProducer", TestClass.class);
-        Producer annotation = method.getAnnotation(Producer.class);
+        Method method = TestClass.class.getDeclaredMethod("onEvent", String.class);
+        Consumer annotation = method.getAnnotation(Consumer.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
@@ -73,47 +72,18 @@ public class ProducerProcessorTestCase extends TestCase {
         TestImplementation implementation = new TestImplementation();
         processor.visitMethod(annotation, method, TestClass.class, implementation, context);
         assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("producer"));
-    }
-
-    public void testField() throws Exception {
-        Field field = TestClass.class.getDeclaredField("producer");
-        Producer annotation = field.getAnnotation(Producer.class);
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(TestClass.class, mapping);
-
-        TestImplementation implementation = new TestImplementation();
-        processor.visitField(annotation, field, TestClass.class, implementation, context);
-        assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("producer"));
-    }
-
-    public void testName() throws Exception {
-        Field field = TestClass.class.getDeclaredField("producer2");
-        Producer annotation = field.getAnnotation(Producer.class);
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(TestClass.class, mapping);
-
-        TestImplementation implementation = new TestImplementation();
-        processor.visitField(annotation, field, TestClass.class, implementation, context);
-        assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("foo"));
+        Map<String, ConsumerDefinition> consumers = implementation.getComponentType().getConsumers();
+        ConsumerDefinition definition = consumers.get("onEvent");
+        assertEquals(1, definition.getTypes().size());
+        assertEquals(String.class, definition.getTypes().get(0).getPhysical());
     }
 
     public static class TestClass {
 
-        @Producer
-        public void setProducer(TestClass clazz) {
+        @Consumer
+        public void onEvent(String message) {
 
         }
-
-        @Producer
-        public TestClass producer;
-
-        @Producer("foo")
-        public TestClass producer2;
 
     }
 
@@ -133,20 +103,7 @@ public class ProducerProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
-        final JavaServiceContract contract = new JavaServiceContract(Implementation.class);
-
-        JavaContractProcessor contractProcessor = new JavaContractProcessor() {
-
-
-            public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context) {
-                return contract;
-            }
-
-            public JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context) {
-                return contract;
-            }
-        };
-        processor = new ProducerProcessor<Implementation<? extends InjectingComponentType>>(contractProcessor, helper);
+        processor = new ConsumerProcessor<Implementation<? extends InjectingComponentType>>(helper);
 
     }
 }

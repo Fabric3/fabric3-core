@@ -56,6 +56,6 @@ public @interface Producer {
      *
      * @return the name of the producer declared by the implementation
      */
-    public abstract String name() default "";
+    public abstract String value() default "";
 
 }

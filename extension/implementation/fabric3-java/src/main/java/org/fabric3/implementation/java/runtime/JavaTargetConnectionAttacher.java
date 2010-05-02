@@ -37,68 +37,73 @@
 */
 package org.fabric3.implementation.java.runtime;
 
+import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
+import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * Attaches and detaches a {@link ChannelConnection} from a Java component producer.
+ * Attaches and detaches a {@link ChannelConnection} from a Java component consumer.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<JavaConnectionSourceDefinition> {
+public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<JavaConnectionTargetDefinition> {
     private ComponentManager manager;
-    private ChannelProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaSourceConnectionAttacher(@Reference ComponentManager manager,
-                                        @Reference ChannelProxyService proxyService,
-                                        @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaTargetConnectionAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
-        this.proxyService = proxyService;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
+    public void attach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI sourceUri = source.getSourceUri();
-        URI sourceName = UriHelper.getDefragmentedName(sourceUri);
-        JavaComponent<?> component = (JavaComponent) manager.getComponent(sourceName);
+        URI targetUri = target.getTargetUri();
+        URI targetName = UriHelper.getDefragmentedName(targetUri);
+        JavaComponent<?> component = (JavaComponent) manager.getComponent(targetName);
         if (component == null) {
-            throw new ConnectionAttachException("Source component not found: " + sourceName);
+            throw new ConnectionAttachException("Target component not found: " + targetName);
         }
-        Injectable injectable = source.getInjectable();
-        Class<?> type;
+        ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+        Method method = loadMethod(target, component);
+        InvokerEventStreamHandler handler = createHandler(component, loader, method);
+        for (EventStream stream : connection.getEventStreams()) {
+            stream.addHandler(handler);
+        }
+    }
+
+    public void detach(PhysicalConnectionSourceDefinition source, JavaConnectionTargetDefinition target) throws ConnectionAttachException {
+        // no-op
+    }
+
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent<?> component) throws ConnectionAttachException {
+        Signature signature = target.getConsumerSignature();
+        Class<?> implementationClass = component.getImplementationClass();
         try {
-            type = classLoaderRegistry.loadClass(source.getClassLoaderId(), source.getInterfaceName());
+           return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException e) {
-            String name = source.getInterfaceName();
-            throw new ConnectionAttachException("Unable to load interface class: " + name, e);
+            throw new ConnectionAttachException(e);
+        } catch (NoSuchMethodException e) {
+            throw new ConnectionAttachException(e);
         }
-        ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
-        component.setObjectFactory(injectable, factory);
     }
 
-    public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI sourceName = UriHelper.getDefragmentedName(source.getSourceUri());
-        JavaComponent<?> component = (JavaComponent) manager.getComponent(sourceName);
-        Injectable injectable = source.getInjectable();
-        component.removeObjectFactory(injectable);
+    private <T> InvokerEventStreamHandler createHandler(JavaComponent<T> component, ClassLoader loader, Method method) {
+        return new InvokerEventStreamHandler<T>(method, component,component.getScopeContainer(), loader);
     }
-
 
 }

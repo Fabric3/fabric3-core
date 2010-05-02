@@ -41,46 +41,24 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.introspection.java.annotation;
 
-import java.io.Serializable;
-import java.net.URI;
-import javax.xml.namespace.QName;
+import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
+ * Denotes an invalid consumer method.
  *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Rev$ $Date$
  */
-public class PhysicalConnectionTargetDefinition implements Serializable {
-    private static final long serialVersionUID = 3395589699751449558L;
-    private URI uri;
-    private QName deployable;
-    private URI classLoaderId;
+public class InvalidConsumerMethod extends ValidationFailure {
+    private String message;
 
-    public void setTargetUri(URI uri) {
-        this.uri = uri;
+    public InvalidConsumerMethod(String message) {
+        super();
+        this.message = message;
     }
 
-    public URI getTargetUri() {
-        return uri;
+    public String getMessage() {
+        return message;
     }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-
 }

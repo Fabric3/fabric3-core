@@ -69,6 +69,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalService> services = new HashMap<String, LogicalService>();
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
     private Map<String, LogicalProducer> producers = new HashMap<String, LogicalProducer>();
+    private Map<String, LogicalConsumer> consumers = new HashMap<String, LogicalConsumer>();
     private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
     private String zone = LOCAL_ZONE;
     private QName deployable;
@@ -248,7 +249,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Returns a producers with the given URI.
+     * Returns a producer with the given URI.
      *
      * @param name the producer name
      * @return the producer.
@@ -258,12 +259,40 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Adds a the producer
+     * Adds a producer.
      *
      * @param producer the producer to add
      */
     public void addProducer(LogicalProducer producer) {
         producers.put(producer.getUri().getFragment(), producer);
+    }
+
+    /**
+     * Returns the component consumer.
+     *
+     * @return the producers
+     */
+    public Collection<LogicalConsumer> getConsumers() {
+        return consumers.values();
+    }
+
+    /**
+     * Returns a consumer with the given URI.
+     *
+     * @param name the producer name
+     * @return the producer.
+     */
+    public LogicalConsumer getConsumer(String name) {
+        return consumers.get(name);
+    }
+
+    /**
+     * Adds a the consumer.
+     *
+     * @param consumer the consumer to add
+     */
+    public void addConsumer(LogicalConsumer consumer) {
+        consumers.put(consumer.getUri().getFragment(), consumer);
     }
 
     /**

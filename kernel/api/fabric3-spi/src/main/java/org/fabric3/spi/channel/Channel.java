@@ -86,7 +86,7 @@ public interface Channel {
      * Unsubscribe from receiving events from the channel
      *
      * @param uri the subscription URI
-     * @return the unsubscribed conection
+     * @return the unsubscribed connection
      */
     ChannelConnection unsubscribe(URI uri);
 

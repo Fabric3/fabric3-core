@@ -62,11 +62,13 @@ import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAtttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.Autowire;
+import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentProducer;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ProducerDefinition;
@@ -103,6 +105,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName PRODUCER = new QName(SCA_NS, "producer");
+    private static final QName CONSUMER = new QName(SCA_NS, "consumer");
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
     static {
@@ -194,6 +197,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                         parseService(definition, componentType, reader, context);
                     } else if (PRODUCER.equals(qname)) {
                         parseProducer(definition, componentType, reader, context);
+                    } else if (CONSUMER.equals(qname)) {
+                        parseConsumer(definition, componentType, reader, context);
                     } else {
                         // Unknown extension element - issue an error and continue
                         context.addError(new UnrecognizedElement(reader));
@@ -294,6 +299,27 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return;
         }
         definition.add(producer);
+    }
+
+    private void parseConsumer(ComponentDefinition<Implementation<?>> definition,
+                               ComponentType componentType,
+                               XMLStreamReader reader,
+                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        ComponentConsumer consumer = registry.load(reader, ComponentConsumer.class, context);
+        if (consumer == null) {
+            // there was an error with the consumer configuration, just skip it
+            return;
+        }
+        String name = consumer.getName();
+        ConsumerDefinition typeConsumer = componentType.getConsumers().get(name);
+        if (typeConsumer == null) {
+            // ensure the consumer exists
+            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, reader);
+            context.addError(failure);
+            return;
+        }
+        consumer.setTypes(typeConsumer.getTypes());
+        definition.add(consumer);
     }
 
 

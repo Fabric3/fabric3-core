@@ -35,15 +35,33 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.java.provision;
+package org.fabric3.introspection.xml.composite;
 
-import org.fabric3.implementation.pojo.provision.PojoConnectionSourceDefinition;
+import javax.xml.stream.XMLStreamReader;
+
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Used to attach the source side of a channel connection to a Java component producer.
+ * A validation failure indicating an attempt to configure a non-existent component consumer.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class JavaConnectionSourceDefinition extends PojoConnectionSourceDefinition {
-    private static final long serialVersionUID = -8889157817825983356L;
+public class ComponentConsumerNotFound extends XmlValidationFailure {
+    private String name;
+    private ComponentDefinition definition;
+
+    public ComponentConsumerNotFound(String name, ComponentDefinition definition, XMLStreamReader reader) {
+        super("The component " + definition.getName() + " does not have a consumer " + name, reader);
+        this.name = name;
+        this.definition = definition;
+    }
+
+    public String getConsumerName() {
+        return name;
+    }
+
+    public ComponentDefinition getComponentDefinition() {
+        return definition;
+    }
 }

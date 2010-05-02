@@ -60,6 +60,7 @@ public class ComponentType extends ModelObject implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
+    private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
     private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
     private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
     private Map<String, Property> properties = new HashMap<String, Property>();
@@ -82,6 +83,24 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      */
     public void add(ServiceDefinition service) {
         services.put(service.getName(), service);
+    }
+
+    /**
+     * Returns the consumers provided by the implementation.
+     *
+     * @return the consumers provided by the implementation
+     */
+    public Map<String, ConsumerDefinition> getConsumers() {
+        return consumers;
+    }
+
+    /**
+     * Adds a consumer provided by the implementation.
+     *
+     * @param definition the consumer to add
+     */
+    public void add(ConsumerDefinition definition) {
+        consumers.put(definition.getName(), definition);
     }
 
     /**

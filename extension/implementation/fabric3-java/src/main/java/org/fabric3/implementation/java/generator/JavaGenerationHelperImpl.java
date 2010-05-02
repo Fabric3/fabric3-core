@@ -46,6 +46,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
@@ -60,6 +61,7 @@ import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -68,6 +70,7 @@ import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -136,6 +139,21 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setUri(uri);
         definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
         definition.setInterfaceName(interfaceName);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void generateConnectionTarget(JavaConnectionTargetDefinition definition, LogicalConsumer consumer) throws GenerationException {
+        LogicalComponent<? extends JavaImplementation> component = (LogicalComponent<? extends JavaImplementation>) consumer.getParent();
+        // TODO support promotion by returning the leaf component URI instead of the parent component URI
+        URI uri = component.getUri();
+        definition.setTargetUri(uri);
+        InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
+        Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
+        if (signature == null) {
+            // programming error
+            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
+        }
+        definition.setConsumerSignature(signature);
     }
 
     public void generateCallbackWireSource(JavaSourceDefinition definition,

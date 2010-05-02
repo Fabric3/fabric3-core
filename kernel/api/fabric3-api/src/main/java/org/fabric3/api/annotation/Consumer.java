@@ -35,15 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.java.provision;
+package org.fabric3.api.annotation;
 
-import org.fabric3.implementation.pojo.provision.PojoConnectionSourceDefinition;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Used to attach the source side of a channel connection to a Java component producer.
+ * Annotation used to indicate an implementation method is an event consumer.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class JavaConnectionSourceDefinition extends PojoConnectionSourceDefinition {
-    private static final long serialVersionUID = -8889157817825983356L;
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Consumer {
+
+    /**
+     * Denotes the name of the consumer declared by the implementation method.
+     *
+     * @return the name of the consumer declared by the implementation method
+     */
+    public abstract String value() default "";
+
 }

@@ -46,12 +46,14 @@ package org.fabric3.spi.generator;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
@@ -108,6 +110,24 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
+     * Generates a {@link PhysicalConnectionSourceDefinition} used to attach an event connection to its source producer.
+     *
+     * @param producer the producer
+     * @return the connection metadata
+     * @throws GenerationException if an error occurs during the generation process
+     */
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException;
+
+    /**
+     * Generates a {@link PhysicalConnectionTargetDefinition} used to attach an event connection to its target consumer.
+     *
+     * @param consumer the consumer
+     * @return the connection metadata
+     * @throws GenerationException if an error occurs during the generation process
+     */
+    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException;
+
+    /**
      * Generates a {@link PhysicalSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
@@ -117,5 +137,4 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      */
     PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException;
 
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException;
 }

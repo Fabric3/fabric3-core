@@ -41,46 +41,24 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.implementation.pojo.provision;
 
-import java.io.Serializable;
-import java.net.URI;
-import javax.xml.namespace.QName;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Rev$ $Date$
  */
-public class PhysicalConnectionTargetDefinition implements Serializable {
-    private static final long serialVersionUID = 3395589699751449558L;
-    private URI uri;
-    private QName deployable;
-    private URI classLoaderId;
+public class PojoConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
+    private static final long serialVersionUID = 6177213006707271474L;
+    private Signature consumer;
 
-    public void setTargetUri(URI uri) {
-        this.uri = uri;
+    public Signature getConsumerSignature() {
+        return consumer;
     }
 
-    public URI getTargetUri() {
-        return uri;
+    public void setConsumerSignature(Signature consumer) {
+        this.consumer = consumer;
     }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
 
 }

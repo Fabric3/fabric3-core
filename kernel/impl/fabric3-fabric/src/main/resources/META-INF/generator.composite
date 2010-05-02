@@ -46,7 +46,6 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl"/>
     </component>
 
-
     <component name="ContributionCollator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.collator.ContributionCollatorImpl"/>
     </component>
@@ -105,6 +104,11 @@
 
     <component name="ProducerCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ProducerCommandGenerator"/>
+        <property name="order">3</property>
+    </component>
+
+    <component name="ConsumerCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ConsumerCommandGenerator"/>
         <property name="order">3</property>
     </component>
 

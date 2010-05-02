@@ -68,12 +68,14 @@ import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.xquery.provision.XQueryComponentDefinition;
@@ -257,6 +259,10 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
+        throw new UnsupportedOperationException();
+    }
+
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 

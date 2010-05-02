@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.fabric3.model.type.component.CallbackDefinition;
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -71,6 +72,7 @@ public class InjectingComponentType extends ComponentType {
     private long maxIdleTime;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
     private Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
+    private Map<String, Signature> consumerSignatures = new HashMap<String, Signature>();
 
     /**
      * Constructor.
@@ -192,7 +194,7 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a producer and its associated with an injection site.
+     * Add a producer and its associated injection site.
      *
      * @param producer      the producer to add
      * @param injectionSite the injection site for the producer
@@ -201,6 +203,27 @@ public class InjectingComponentType extends ComponentType {
         super.add(producer);
         Injectable injectable = new Injectable(InjectableType.PRODUCER, producer.getName());
         addInjectionSite(injectionSite, injectable);
+    }
+
+    /**
+     * Add a consumer and its associated method signature.
+     *
+     * @param consumer  the consumer to add
+     * @param signature the consumer method signature
+     */
+    public void add(ConsumerDefinition consumer, Signature signature) {
+        super.add(consumer);
+        consumerSignatures.put(consumer.getName(), signature);
+    }
+
+    /**
+     * Returns the consumer method signature for the given consumer name
+     *
+     * @param name the consumer  name
+     * @return the method signature
+     */
+    public Signature getConsumerSignature(String name) {
+        return consumerSignatures.get(name);
     }
 
     /**

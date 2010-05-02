@@ -63,14 +63,13 @@ public class LogicalProducer extends LogicalAttachPoint {
     /**
      * Constructor.
      *
-     * @param uri        the reference URI
-     * @param definition the reference type definition
+     * @param uri        the producer URI
+     * @param definition the producer type definition
      * @param parent     the parent component
      */
     public LogicalProducer(URI uri, ProducerDefinition definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.uri = uri;
-        //super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         targets = new ArrayList<URI>();
         if (definition != null) {

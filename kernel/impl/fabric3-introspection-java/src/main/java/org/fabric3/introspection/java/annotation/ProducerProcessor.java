@@ -82,7 +82,7 @@ public class ProducerProcessor<I extends Implementation<? extends InjectingCompo
     }
 
     public void visitField(Producer annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
-        String name = helper.getSiteName(field, annotation.name());
+        String name = helper.getSiteName(field, annotation.value());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);
@@ -91,7 +91,7 @@ public class ProducerProcessor<I extends Implementation<? extends InjectingCompo
 
     public void visitMethod(Producer annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
 
-        String name = helper.getSiteName(method, annotation.name());
+        String name = helper.getSiteName(method, annotation.value());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);
@@ -105,7 +105,7 @@ public class ProducerProcessor<I extends Implementation<? extends InjectingCompo
                                           I implementation,
                                           IntrospectionContext context) {
 
-        String name = helper.getSiteName(constructor, index, annotation.name());
+        String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);

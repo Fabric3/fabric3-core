@@ -41,46 +41,37 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.model.type.component;
 
-import java.io.Serializable;
 import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.List;
 
 /**
- * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
+ * A consumer configured on a component.
  *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Rev$ $Date$
  */
-public class PhysicalConnectionTargetDefinition implements Serializable {
-    private static final long serialVersionUID = 3395589699751449558L;
-    private URI uri;
-    private QName deployable;
-    private URI classLoaderId;
+public class ComponentConsumer extends ConsumerDefinition {
+    private static final long serialVersionUID = -4230400252060306972L;
+    private List<URI> sources;
 
-    public void setTargetUri(URI uri) {
-        this.uri = uri;
+    /**
+     * Constructor.
+     *
+     * @param name     the name of the consumer being configured
+     * @param sources  the channel targets
+     */
+    public ComponentConsumer(String name, List<URI> sources) {
+        super(name, null);
+        this.sources = sources;
     }
 
-    public URI getTargetUri() {
-        return uri;
+    public List<URI> getSources() {
+        return sources;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    public void addSource(URI source) {
+        sources.add(source);
     }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
 
 }

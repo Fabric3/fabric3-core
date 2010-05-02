@@ -42,11 +42,13 @@ import java.net.URI;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentProducer;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -55,6 +57,7 @@ import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -75,6 +78,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         createServices(definition, component, componentType);
         createReferences(definition, component, componentType);
         createProducers(definition, component, componentType);
+        createConsumers(definition, component, componentType);
         createResources(component, componentType);
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
@@ -137,6 +141,26 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 }
             }
             component.addReference(logicalReference);
+        }
+    }
+
+    private void createConsumers(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
+        for (ConsumerDefinition consumer : componentType.getConsumers().values()) {
+            String name = consumer.getName();
+            URI consumerUri = component.getUri().resolve('#' + name);
+            LogicalConsumer logicalConsumer = new LogicalConsumer(consumerUri, consumer, component);
+
+            // producer is configured in the component definition
+            ComponentConsumer componentConsumer = definition.getConsumers().get(name);
+            if (componentConsumer != null) {
+                logicalConsumer.addIntents(componentConsumer.getIntents());
+                // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
+                for (URI uri : componentConsumer.getSources()) {
+                    logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+                }
+                // TODO handle bindings
+            }
+            component.addConsumer(logicalConsumer);
         }
     }
 

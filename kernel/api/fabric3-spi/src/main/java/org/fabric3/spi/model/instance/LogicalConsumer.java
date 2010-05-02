@@ -41,68 +41,95 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.model.type.component;
+package org.fabric3.spi.model.instance;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.AbstractPolicyAware;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.model.type.component.ConsumerDefinition;
 
 /**
- * A component type consumer.
+ * Represents a consumer on an instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */
-public class ConsumerDefinition extends AbstractPolicyAware {
-    private static final long serialVersionUID = -4222312633353056234L;
-
-    private String name;
-    private List<DataType<?>> types;
-
-    /**
-     * Constructor.
-     *
-     * @param name the consumer name
-     */
-    public ConsumerDefinition(String name) {
-        this(name, null);
-    }
+public class LogicalConsumer extends LogicalScaArtifact<LogicalComponent<?>> {
+    private static final long serialVersionUID = -8094856609591381761L;
+    private URI uri;
+    private ConsumerDefinition definition;
+    private List<URI> sources;
 
     /**
      * Constructor.
      *
-     * @param name  the consumer name
-     * @param types the data types required by this consumer
+     * @param uri        the consumer URI
+     * @param definition the consumer type definition
+     * @param parent     the parent component
      */
-    public ConsumerDefinition(String name, List<DataType<?>> types) {
-        this.name = name;
-        this.types = types;
+    public LogicalConsumer(URI uri, ConsumerDefinition definition, LogicalComponent<?> parent) {
+        super(parent);
+        this.uri = uri;
+        this.definition = definition;
+        sources = new ArrayList<URI>();
+        if (definition != null) {
+            // null check for testing so full model does not need to be instantiated
+            addIntents(definition.getIntents());
+            addPolicySets(definition.getPolicySets());
+        }
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     /**
-     * Returns the consumer name.
+     * Returns the producer type definition.
      *
-     * @return the reference name
+     * @return the producer type definition
      */
-    public String getName() {
-        return name;
+    public ConsumerDefinition getDefinition() {
+        return definition;
     }
 
     /**
-     * Returns the data types required by this consumer.
+     * Returns the configured source channel URIs.
      *
-     * @return the data types required by this consumer
+     * @return the configured source channel URIs
      */
-    public List<DataType<?>> getTypes() {
-        return types;
+    public List<URI> getSources() {
+        return sources;
     }
 
     /**
-     * Sets the data types required by this consumer.
+     * Adds a configured source channel URI.
      *
-     * @param types the data types required by this consumer
+     * @param uri the source channel URI
      */
-    public void setTypes(List<DataType<?>> types) {
-        this.types = types;
+    public void addSource(URI uri) {
+        sources.add(uri);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+
+        LogicalConsumer test = (LogicalConsumer) obj;
+        return getUri().equals(test.getUri());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getUri().hashCode();
+    }
+
+
 }
