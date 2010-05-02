@@ -41,7 +41,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
- * An SCA event channel. Responsible for transmitting events from events sources to event sinks.
+ * An SCA event channel. Responsible for transmitting events from event sources to event sinks.
  *
  * @version $Rev$ $Date$
  */
