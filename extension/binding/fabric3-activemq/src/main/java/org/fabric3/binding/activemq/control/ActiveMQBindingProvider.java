@@ -47,16 +47,15 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CreateOption;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
-import org.fabric3.spi.model.instance.LogicalAttachPoint;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -200,27 +199,27 @@ public class ActiveMQBindingProvider implements BindingProvider {
      * <p/>
      * TODO this should be refactored to normalize intents
      *
-     * @param attachPoint the service or reference
+     * @param service the service or reference
      * @param callback    true if callback operations should be evaluated
      * @return true if XA is required
      */
-    private boolean isXA(LogicalAttachPoint attachPoint, boolean callback) {
+    private boolean isXA(LogicalService service, boolean callback) {
         // check operations
         if (callback) {
-            for (LogicalOperation operation : attachPoint.getCallbackOperations()) {
+            for (LogicalOperation operation : service.getCallbackOperations()) {
                 if (containsTransactionIntent(operation.getIntents())) {
                     return true;
                 }
             }
         } else {
-            for (LogicalOperation operation : attachPoint.getOperations()) {
+            for (LogicalOperation operation : service.getOperations()) {
                 if (containsTransactionIntent(operation.getIntents())) {
                     return true;
                 }
             }
         }
         // recurse the parents
-        LogicalComponent<?> parent = attachPoint.getParent();
+        LogicalComponent<?> parent = service.getParent();
         while (parent != null) {
             if (containsTransactionIntent(parent.getIntents())) {
                 return true;
