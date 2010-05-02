@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.model.type.contract.ServiceContract;
@@ -56,6 +57,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 public class ComponentProducer extends ProducerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;
     private List<URI> targets;
+    private List<BindingDefinition> bindings;
 
     /**
      * Constructor.
@@ -67,6 +69,7 @@ public class ComponentProducer extends ProducerDefinition {
     public ComponentProducer(String name, ServiceContract contract, List<URI> targets) {
         super(name, contract);
         this.targets = targets;
+        bindings = new ArrayList<BindingDefinition>();
     }
 
     public List<URI> getTargets() {
@@ -77,4 +80,21 @@ public class ComponentProducer extends ProducerDefinition {
         targets.add(target);
     }
 
+    /**
+     * Returns the bindings configured on the producer.
+     *
+     * @return the bindings configured on the producer
+     */
+    public List<BindingDefinition> getBindings() {
+        return bindings;
+    }
+
+    /**
+     * Adds a configured binding.
+     *
+     * @param binding the binding to be added
+     */
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
+    }
 }

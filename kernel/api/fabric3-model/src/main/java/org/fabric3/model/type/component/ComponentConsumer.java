@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,16 +55,18 @@ import java.util.List;
 public class ComponentConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;
     private List<URI> sources;
+    private List<BindingDefinition> bindings;
 
     /**
      * Constructor.
      *
-     * @param name     the name of the consumer being configured
-     * @param sources  the channel targets
+     * @param name    the name of the consumer being configured
+     * @param sources the channel targets
      */
     public ComponentConsumer(String name, List<URI> sources) {
         super(name, null);
         this.sources = sources;
+        bindings = new ArrayList<BindingDefinition>();
     }
 
     public List<URI> getSources() {
@@ -72,6 +75,24 @@ public class ComponentConsumer extends ConsumerDefinition {
 
     public void addSource(URI source) {
         sources.add(source);
+    }
+
+    /**
+     * Returns the bindings configured on the consumer.
+     *
+     * @return the bindings configured on the consumer
+     */
+    public List<BindingDefinition> getBindings() {
+        return bindings;
+    }
+
+    /**
+     * Adds a configured binding.
+     *
+     * @param binding the binding to be added
+     */
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
     }
 
 }

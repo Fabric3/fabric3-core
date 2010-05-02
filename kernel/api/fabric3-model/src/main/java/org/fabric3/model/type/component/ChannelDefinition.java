@@ -38,6 +38,8 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.model.type.AbstractPolicyAware;
 
@@ -51,17 +53,48 @@ public class ChannelDefinition extends AbstractPolicyAware {
 
     private String name;
     private URI contributionUri;
+    private List<BindingDefinition> bindings;
 
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
         this.contributionUri = contributionUri;
+        bindings = new ArrayList<BindingDefinition>();
     }
 
+    /**
+     * Returns the channel name.
+     *
+     * @return the channel name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the URI of the contribution this channel is defned in.
+     *
+     * @return the URI of the contribution this channel is defned in
+     */
     public URI getContributionUri() {
         return contributionUri;
     }
+
+    /**
+     * Returns the bindings configured on the channel.
+     *
+     * @return the bindings configured on the channel
+     */
+    public List<BindingDefinition> getBindings() {
+        return bindings;
+    }
+
+    /**
+     * Adds a configured binding.
+     *
+     * @param binding the binding to be added
+     */
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
+    }
+
 }
