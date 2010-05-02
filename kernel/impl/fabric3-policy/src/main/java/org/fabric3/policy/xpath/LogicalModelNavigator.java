@@ -220,9 +220,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
                 return bindings.iterator();
             } else {
                 // assume it is an operation name
-                for (Object o : bindable.getOperations()) {
-
-                }
+                
             }
         } else if (contextNode instanceof LogicalBinding) {
             LogicalBinding<?> binding = (LogicalBinding<?>) contextNode;

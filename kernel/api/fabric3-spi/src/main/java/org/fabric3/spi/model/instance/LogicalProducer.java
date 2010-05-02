@@ -54,9 +54,8 @@ import org.fabric3.model.type.component.ProducerDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LogicalProducer extends LogicalAttachPoint {
+public class LogicalProducer extends Bindable {
     private static final long serialVersionUID = 5403855901902189810L;
-    private URI uri;
     private ProducerDefinition definition;
     private List<URI> targets;
 
@@ -69,7 +68,6 @@ public class LogicalProducer extends LogicalAttachPoint {
      */
     public LogicalProducer(URI uri, ProducerDefinition definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
-        this.uri = uri;
         this.definition = definition;
         targets = new ArrayList<URI>();
         if (definition != null) {
@@ -77,10 +75,6 @@ public class LogicalProducer extends LogicalAttachPoint {
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
-    }
-
-    public URI getUri() {
-        return uri;
     }
 
     /**

@@ -54,9 +54,8 @@ import org.fabric3.model.type.component.ConsumerDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LogicalConsumer extends LogicalScaArtifact<LogicalComponent<?>> {
+public class LogicalConsumer extends Bindable {
     private static final long serialVersionUID = -8094856609591381761L;
-    private URI uri;
     private ConsumerDefinition definition;
     private List<URI> sources;
 
@@ -68,8 +67,7 @@ public class LogicalConsumer extends LogicalScaArtifact<LogicalComponent<?>> {
      * @param parent     the parent component
      */
     public LogicalConsumer(URI uri, ConsumerDefinition definition, LogicalComponent<?> parent) {
-        super(parent);
-        this.uri = uri;
+        super(uri, null, parent);
         this.definition = definition;
         sources = new ArrayList<URI>();
         if (definition != null) {
@@ -77,10 +75,6 @@ public class LogicalConsumer extends LogicalScaArtifact<LogicalComponent<?>> {
             addIntents(definition.getIntents());
             addPolicySets(definition.getPolicySets());
         }
-    }
-
-    public URI getUri() {
-        return uri;
     }
 
     /**

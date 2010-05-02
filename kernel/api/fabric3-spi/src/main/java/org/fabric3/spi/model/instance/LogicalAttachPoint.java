@@ -68,6 +68,15 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
         createOperations(contract);
     }
 
+    /**
+     * Returns the uri.
+     *
+     * @return the uri
+     */
+    public URI getUri() {
+        return uri;
+    }
+
     public List<LogicalOperation> getOperations() {
         return operations;
     }
@@ -77,12 +86,12 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
     }
 
     /**
-     * Returns the uri.
+     * Used to replace operations during a copy.
      *
-     * @return the uri
+     * @param operations the new operations
      */
-    public URI getUri() {
-        return uri;
+    void overrideOperations(List<LogicalOperation> operations) {
+        this.operations = operations;
     }
 
     /**

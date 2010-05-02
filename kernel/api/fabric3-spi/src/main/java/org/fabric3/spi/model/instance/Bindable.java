@@ -161,7 +161,6 @@ public abstract class Bindable extends LogicalAttachPoint {
         callbackBindings.add(binding);
     }
 
-
     /**
      * The effective service contract for this bindable. The effective contract may be set through promotion.
      *
@@ -181,12 +180,5 @@ public abstract class Bindable extends LogicalAttachPoint {
         createOperations(serviceContract);
     }
 
-    /**
-     * Used to replace operations during a copy.
-     *
-     * @param operations the new operations
-     */
-    void overrideOperations(List<LogicalOperation> operations) {
-        this.operations = operations;
-    }
+
 }
