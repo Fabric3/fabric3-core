@@ -68,6 +68,10 @@ public class ProducerDefinition extends AbstractPolicyAware {
         this.serviceContract = serviceContract;
     }
 
+    public ProducerDefinition(String name) {
+        this(name, null);
+    }
+
     /**
      * Returns the reference name.
      *
@@ -85,5 +89,15 @@ public class ProducerDefinition extends AbstractPolicyAware {
     public ServiceContract getServiceContract() {
         return serviceContract;
     }
+
+    /**
+     * Sets the service contract required by this producer.
+     *
+     * @param serviceContract the service contract required by this producer
+     */
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+    }
+
 
 }

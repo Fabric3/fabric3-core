@@ -60,6 +60,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentProducer;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -115,7 +116,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
             InvalidValue failure = new InvalidValue("Invalid target format", reader, e);
             context.addError(failure);
         }
-        ServiceContract contract = null;
+        ComponentProducer producer = new ComponentProducer(name, targets);
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
@@ -129,7 +130,13 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                     continue;
                 }
                 if (type instanceof ServiceContract) {
-                    contract = (ServiceContract) type;
+                    producer.setServiceContract((ServiceContract) type);
+                } else if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
+                    boolean check = BindingHelper.checkDuplicateNames(binding, producer.getBindings(), reader, context);
+                    if (check) {
+                        producer.addBinding(binding);
+                    }
                 } else if (type == null) {
                     // no type, continue processing
                     continue;
@@ -143,7 +150,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                 break;
             case END_ELEMENT:
                 if (PRODUCER.equals(reader.getName())) {
-                    return new ComponentProducer(name, contract, targets);
+                    return producer;
                 }
             }
         }

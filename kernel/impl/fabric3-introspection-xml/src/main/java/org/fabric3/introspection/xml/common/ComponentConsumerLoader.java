@@ -52,17 +52,22 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads a component consumer configuration.
@@ -110,11 +115,41 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
             InvalidValue failure = new InvalidValue("Invalid source format", reader, e);
             context.addError(failure);
         }
+        ComponentConsumer consumer = new ComponentConsumer(name, targets);
         while (true) {
             switch (reader.next()) {
+            case START_ELEMENT:
+                QName elementName = reader.getName();
+                ModelObject type;
+                try {
+                    type = registry.load(reader, ModelObject.class, context);
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
+                    continue;
+                }
+                if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
+                    boolean check = BindingHelper.checkDuplicateNames(binding, consumer.getBindings(), reader, context);
+                    if (check) {
+                        consumer.addBinding(binding);
+                    }
+                } else if (type == null) {
+                    // no type, continue processing
+                    continue;
+                } else {
+                    context.addError(new UnrecognizedElement(reader));
+                    continue;
+                }
+                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                    throw new AssertionError("Loader must position the cursor to the end element");
+                }
+                break;
+
+
             case END_ELEMENT:
                 if (CONSUMER.equals(reader.getName())) {
-                    return new ComponentConsumer(name, targets);
+                    return consumer;
                 }
             }
         }

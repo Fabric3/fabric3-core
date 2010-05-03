@@ -47,8 +47,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.contract.ServiceContract;
-
 /**
  * A producer configured on a component.
  *
@@ -63,11 +61,10 @@ public class ComponentProducer extends ProducerDefinition {
      * Constructor.
      *
      * @param name     the name of the producer being configured
-     * @param contract the service contract
      * @param targets  the channel targets
      */
-    public ComponentProducer(String name, ServiceContract contract, List<URI> targets) {
-        super(name, contract);
+    public ComponentProducer(String name, List<URI> targets) {
+        super(name);
         this.targets = targets;
         bindings = new ArrayList<BindingDefinition>();
     }
@@ -97,4 +94,5 @@ public class ComponentProducer extends ProducerDefinition {
     public void addBinding(BindingDefinition binding) {
         this.bindings.add(binding);
     }
+
 }
