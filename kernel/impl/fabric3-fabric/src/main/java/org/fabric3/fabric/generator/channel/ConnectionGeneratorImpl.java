@@ -47,11 +47,15 @@ import org.fabric3.fabric.builder.channel.ChannelSourceDefinition;
 import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.Bindable;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -60,6 +64,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * @version $Rev$ $Date$
@@ -71,11 +76,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         this.generatorRegistry = generatorRegistry;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer) throws GenerationException {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
         LogicalComponent<?> component = producer.getParent();
-        ComponentGenerator<?> generator = getGenerator(component);
-        PhysicalConnectionSourceDefinition sourceDefinition = generator.generateConnectionSource(producer);
+        ComponentGenerator<?> componentGenerator = getGenerator(component);
+        PhysicalConnectionSourceDefinition sourceDefinition = componentGenerator.generateConnectionSource(producer);
         URI classLoaderId = component.getDefinition().getContributionUri();
         sourceDefinition.setClassLoaderId(classLoaderId);
 
@@ -85,17 +91,29 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             eventStreams.add(generate(operation));
         }
 
-        // TODO handle bindings and policies
-        for (URI uri : producer.getTargets()) {
-            PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(uri);
-            targetDefinition.setClassLoaderId(classLoaderId);
-            PhysicalChannelConnectionDefinition connectionDefinition =
-                    new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
-            definitions.add(connectionDefinition);
+        // TODO handle policies
+        boolean bound = isBound(producer);
+        if (bound) {
+            for (LogicalBinding<?> binding : producer.getBindings()) {
+                ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+                PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(binding);
+                PhysicalChannelConnectionDefinition connectionDefinition =
+                        new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+                definitions.add(connectionDefinition);
+            }
+        } else {
+            for (URI uri : producer.getTargets()) {
+                PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(uri);
+                targetDefinition.setClassLoaderId(classLoaderId);
+                PhysicalChannelConnectionDefinition connectionDefinition =
+                        new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+                definitions.add(connectionDefinition);
+            }
         }
         return definitions;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer) throws GenerationException {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
         LogicalComponent<?> component = consumer.getParent();
@@ -104,17 +122,37 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI classLoaderId = component.getDefinition().getContributionUri();
         targetDefinition.setClassLoaderId(classLoaderId);
 
-        // TODO handle bindings and policies
-        for (URI uri : consumer.getSources()) {
-            PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(uri);
-            sourceDefinition.setClassLoaderId(classLoaderId);
-            List<PhysicalEventStreamDefinition> eventStreams = generate(consumer);
-            PhysicalChannelConnectionDefinition connectionDefinition =
-                    new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
-            definitions.add(connectionDefinition);
-        }
+        // TODO handle policies
+        List<PhysicalEventStreamDefinition> eventStreams = generate(consumer);
+        boolean bound = isBound(consumer);
+        if (bound) {
+            for (LogicalBinding<?> binding : consumer.getBindings()) {
+                ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+                PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(binding);
+                PhysicalChannelConnectionDefinition connectionDefinition =
+                        new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+                definitions.add(connectionDefinition);
 
+            }
+        } else {
+            for (URI uri : consumer.getSources()) {
+                PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(uri);
+                sourceDefinition.setClassLoaderId(classLoaderId);
+                PhysicalChannelConnectionDefinition connectionDefinition =
+                        new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+                definitions.add(connectionDefinition);
+            }
+        }
         return definitions;
+    }
+
+    private boolean isBound(Bindable bindable) {
+        for (LogicalBinding<?> binding : bindable.getBindings()) {
+            if (!(binding.getDefinition() instanceof SCABinding)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private PhysicalEventStreamDefinition generate(LogicalOperation operation) {
@@ -146,6 +184,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws GeneratorNotFoundException {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         return (ComponentGenerator<C>) generatorRegistry.getComponentGenerator(implementation.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+        return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 
 }

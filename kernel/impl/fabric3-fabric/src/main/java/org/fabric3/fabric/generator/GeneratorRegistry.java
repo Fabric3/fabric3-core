@@ -50,14 +50,14 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
-import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * A registry for {@link ComponentGenerator}s, {@link BindingGenerator}s, and {@link InterceptorGenerator}s . Generators are responsible for producing
- * physical model objects that are provisioned to service nodes from their logical counterparts.
+ * A registry for {@link ComponentGenerator}s, {@link BindingGenerator}s, {@link ConnectionBindingGenerator}s, and {@link InterceptorGenerator}s .
+ * Generators are responsible for producing physical model objects that are provisioned to service nodes from their logical counterparts.
  *
  * @version $Rev$ $Date$
  */
@@ -80,6 +80,9 @@ public interface GeneratorRegistry {
      * @throws GeneratorNotFoundException if no generator is registered for the binding type
      */
     <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+
+
+    <T extends BindingDefinition> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Gets the resource wire generator for the resource type.

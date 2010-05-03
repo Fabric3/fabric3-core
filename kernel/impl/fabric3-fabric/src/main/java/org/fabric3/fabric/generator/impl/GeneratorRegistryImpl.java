@@ -49,13 +49,14 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -69,9 +70,17 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
 
     private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new ConcurrentHashMap<Class<?>, BindingGenerator<?>>();
 
+    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators =
+            new ConcurrentHashMap<Class<?>, ConnectionBindingGenerator<?>>();
+
     private Map<QName, InterceptorGenerator> interceptorGenerators = new ConcurrentHashMap<QName, InterceptorGenerator>();
 
     private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator<?>>();
+
+    @Reference(required = false)
+    public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
+        this.componentGenerators = componentGenerators;
+    }
 
     @Reference(required = false)
     public void setBindingGenerators(Map<Class<?>, BindingGenerator<?>> bindingGenerators) {
@@ -79,8 +88,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @Reference(required = false)
-    public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
-        this.componentGenerators = componentGenerators;
+    public void setConnectionBindingGenerators(Map<Class<?>, ConnectionBindingGenerator<?>> bindingGenerators) {
+        this.connectionBindingGenerators = bindingGenerators;
     }
 
     @Reference(required = false)
@@ -115,25 +124,31 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz)
-            throws GeneratorNotFoundException {
+    public <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         if (!bindingGenerators.containsKey(clazz)) {
             throw new GeneratorNotFoundException(clazz);
         }
         return (BindingGenerator<T>) bindingGenerators.get(clazz);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends ResourceDefinition> ResourceGenerator<T> getResourceWireGenerator(Class<T> clazz)
+    @SuppressWarnings({"unchecked"})
+    public <T extends BindingDefinition> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz)
             throws GeneratorNotFoundException {
+        if (!connectionBindingGenerators.containsKey(clazz)) {
+            throw new GeneratorNotFoundException(clazz);
+        }
+        return (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ResourceDefinition> ResourceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         if (!resourceGenerators.containsKey(clazz)) {
             throw new GeneratorNotFoundException(clazz);
         }
         return (ResourceGenerator<T>) resourceGenerators.get(clazz);
     }
 
-    public InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName)
-            throws GeneratorNotFoundException {
+    public InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException {
         if (!interceptorGenerators.containsKey(extensionName)) {
             throw new GeneratorNotFoundException(extensionName);
         }

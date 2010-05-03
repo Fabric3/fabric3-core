@@ -54,7 +54,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
- * Generates {@link PhysicalSourceDefinition}s and {@link PhysicalTargetDefinition}s for a resolved binding.
+ * Generates {@link PhysicalSourceDefinition}s and {@link PhysicalTargetDefinition}s for resolved wire bindings.
  *
  * @version $Rev$ $Date$
  */
@@ -108,6 +108,5 @@ public interface BindingGenerator<BD extends BindingDefinition> {
                                                           ServiceContract contract,
                                                           List<LogicalOperation> operations,
                                                           EffectivePolicy policy) throws GenerationException;
-
 
 }
