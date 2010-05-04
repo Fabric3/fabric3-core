@@ -76,8 +76,8 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
-                                       @Reference WorkScheduler workScheduler,
-                                       @Reference CommandExecutorRegistry executorRegistry) {
+                                        @Reference WorkScheduler workScheduler,
+                                        @Reference CommandExecutorRegistry executorRegistry) {
         this.channelManager = channelManager;
         this.workScheduler = workScheduler;
         this.executorRegistry = executorRegistry;
@@ -101,6 +101,5 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
             throw new ExecutionException(e.getMessage(), e);
         }
     }
-
 
 }

@@ -158,7 +158,10 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 for (URI uri : componentConsumer.getSources()) {
                     logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
                 }
-                // TODO handle bindings
+                for (BindingDefinition binding : componentConsumer.getBindings()) {
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalConsumer);
+                    logicalConsumer.addBinding(logicalBinding);
+                }
             }
             component.addConsumer(logicalConsumer);
         }
@@ -178,7 +181,10 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 for (URI uri : componentProducer.getTargets()) {
                     logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
                 }
-                // TODO handle bindings
+                for (BindingDefinition binding : componentProducer.getBindings()) {
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalProducer);
+                    logicalProducer.addBinding(logicalBinding);
+                }
             }
             component.addProducer(logicalProducer);
         }

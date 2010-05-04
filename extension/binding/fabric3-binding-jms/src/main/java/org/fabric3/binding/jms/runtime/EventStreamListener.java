@@ -34,71 +34,57 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.fabric.channel;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.binding.jms.runtime;
 
-import org.fabric3.spi.channel.EventStream;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
+
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
- * @version $Rev$ $Date$
+ * Listens for requests sent to a destination and dispatches to a channel.
+ *
+ * @version $Revison$ $Date$
  */
-public class EventStreamImpl implements EventStream {
-    private PhysicalEventStreamDefinition definition;
-    private EventStreamHandler headHandler;
-    private EventStreamHandler tailHandler;
+public class EventStreamListener implements MessageListener {
+    private ClassLoader cl;
+    private ListenerMonitor monitor;
+    private EventStreamHandler handler;
 
-    public EventStreamImpl(PhysicalEventStreamDefinition definition) {
-        this.definition = definition;
-        PassThroughHandler handler = new PassThroughHandler();
-        addHandler(handler);
+    public EventStreamListener(ClassLoader cl, EventStreamHandler handler, ListenerMonitor monitor) {
+        this.cl = cl;
+        this.handler = handler;
+        this.monitor = monitor;
     }
 
-    public PhysicalEventStreamDefinition getDefinition() {
-        return definition;
-    }
-
-    public EventStreamHandler getHeadHandler() {
-        return headHandler;
-    }
-
-    public EventStreamHandler getTailHandler() {
-        return tailHandler;
-    }
-
-    public void addHandler(EventStreamHandler handler) {
-        if (headHandler == null) {
-            headHandler = handler;
-        } else {
-            tailHandler.setNext(handler);
-        }
-        tailHandler = handler;
-    }
-
-    public void addHandler(int index, EventStreamHandler handler) {
-        int i = 0;
-        EventStreamHandler next = headHandler;
-        EventStreamHandler prev = null;
-        while (next != null && i < index) {
-            prev = next;
-            next = next.getNext();
-            i++;
-        }
-        if (i == index) {
-            if (prev != null) {
-                prev.setNext(handler);
-            } else {
-                headHandler = handler;
+    public void onMessage(Message request) {
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        try {
+            // set the TCCL to the target service classloader
+            Thread.currentThread().setContextClassLoader(cl);
+            if (!(request instanceof ObjectMessage)) {
+                String type = request.getClass().getName();
+                monitor.errorMessage("Message is an invalid type. Since the message is invalid, redelivery will not be attempted:" + type);
+                return;
             }
-            handler.setNext(next);
-            if (next == null) {
-                tailHandler = handler;
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException(index);
+            ObjectMessage message = (ObjectMessage) request;
+            handler.handle(message.getObject());
+        } catch (JMSException e) {
+            // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
+            monitor.error("Error processing message. Redelivery will not be attempted", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
+
 
 }

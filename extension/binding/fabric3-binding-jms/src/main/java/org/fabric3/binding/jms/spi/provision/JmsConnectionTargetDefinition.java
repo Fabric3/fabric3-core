@@ -34,35 +34,42 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.runtime.weblogic.jms.generator;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.binding.jms.spi.provision;
 
-import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
+import java.net.URI;
+
+import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ * Generated metadata used for attaching producers to a JMS destination.
+ *
+ * @version $Revision$ $Date$
  */
-public class WebLogicJmsResourceProvisioner implements JmsResourceProvisioner {
+public class JmsConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
+    private static final long serialVersionUID = -2617453498606879652L;
+    private JmsBindingMetadata metadata;
 
-    public void generateSource(JmsSourceDefinition definition) throws GenerationException {
-        // TODO implement
+    /**
+     * Constructor.
+     *
+     * @param uri      the target URI
+     * @param metadata metadata used to create a JMS message producer.
+     */
+    public JmsConnectionTargetDefinition(URI uri, JmsBindingMetadata metadata) {
+        this.metadata = metadata;
+        setTargetUri(uri);
     }
 
-    public void generateTarget(JmsTargetDefinition definition) throws GenerationException {
-        // TODO implement
-    }
-
-    public void generateConnectionSource(JmsConnectionSourceDefinition definition) throws GenerationException {
-        // TODO implement
-    }
-
-    public void generateConnectionTarget(JmsConnectionTargetDefinition definition) throws GenerationException {
-        // TODO implement
+    public JmsBindingMetadata getMetadata() {
+        return metadata;
     }
 
 }

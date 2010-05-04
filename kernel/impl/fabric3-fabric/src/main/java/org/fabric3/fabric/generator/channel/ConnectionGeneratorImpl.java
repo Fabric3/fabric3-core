@@ -54,7 +54,6 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -64,7 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * @version $Rev$ $Date$
@@ -92,11 +90,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         }
 
         // TODO handle policies
-        boolean bound = isBound(producer);
-        if (bound) {
+        if (producer.isConcreteBound()) {
             for (LogicalBinding<?> binding : producer.getBindings()) {
                 ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
                 PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(binding);
+                targetDefinition.setClassLoaderId(classLoaderId);
                 PhysicalChannelConnectionDefinition connectionDefinition =
                         new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
                 definitions.add(connectionDefinition);
@@ -124,11 +122,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         // TODO handle policies
         List<PhysicalEventStreamDefinition> eventStreams = generate(consumer);
-        boolean bound = isBound(consumer);
-        if (bound) {
+        if (consumer.isConcreteBound()) {
             for (LogicalBinding<?> binding : consumer.getBindings()) {
                 ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
                 PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(binding);
+                sourceDefinition.setClassLoaderId(classLoaderId);
                 PhysicalChannelConnectionDefinition connectionDefinition =
                         new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
                 definitions.add(connectionDefinition);
@@ -144,15 +142,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             }
         }
         return definitions;
-    }
-
-    private boolean isBound(Bindable bindable) {
-        for (LogicalBinding<?> binding : bindable.getBindings()) {
-            if (!(binding.getDefinition() instanceof SCABinding)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private PhysicalEventStreamDefinition generate(LogicalOperation operation) {

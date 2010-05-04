@@ -45,6 +45,8 @@ package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 /**
@@ -56,17 +58,66 @@ public class PhysicalChannelDefinition implements Serializable {
     private static final long serialVersionUID = 8681183877136491160L;
     private URI uri;
     private QName deployable;
+    private List<PhysicalConnectionSourceDefinition> sourceDefinitions = new ArrayList<PhysicalConnectionSourceDefinition>();
+    private List<PhysicalConnectionTargetDefinition> targetDefinitions = new ArrayList<PhysicalConnectionTargetDefinition>();
 
     public PhysicalChannelDefinition(URI uri, QName deployable) {
         this.uri = uri;
         this.deployable = deployable;
     }
 
+    /**
+     * Returns the channel URI.
+     *
+     * @return the channel URI
+     */
     public URI getUri() {
         return uri;
     }
 
+    /**
+     * Returns the deployable composite this channel is defined in.
+     *
+     * @return the composite qualified name
+     */
     public QName getDeployable() {
         return deployable;
     }
+
+    /**
+     * Returns the source definitions if this channel is bound to transports for incoming event streams.
+     *
+     * @return the source definitions
+     */
+    public List<PhysicalConnectionSourceDefinition> getSourceDefinitions() {
+        return sourceDefinitions;
+    }
+
+    /**
+     * Adds a source definition to bind the channel to a transport for incoming event streams.
+     *
+     * @param definition the source definition
+     */
+    public void addSourceDefinition(PhysicalConnectionSourceDefinition definition) {
+        sourceDefinitions.add(definition);
+    }
+
+    /**
+     * Returns the target definitions if this channel is bound to transports for outgoing event streams.
+     *
+     * @return the target definition
+     */
+    public List<PhysicalConnectionTargetDefinition> getTargetDefinitions() {
+        return targetDefinitions;
+    }
+
+    /**
+     * Adds a target definition to bind the channel to a transport for outgoing event streams.
+     *
+     * @param definition the target definition
+     */
+    public void addTargetDefinition(PhysicalConnectionTargetDefinition definition) {
+        targetDefinitions.add(definition);
+    }
+
 }

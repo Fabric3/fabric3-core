@@ -85,7 +85,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             return null;
         }
 
-        // determine if a binding is being added ore removed. If so, an AttachWireCommand or DetachWireCommand must be generated.
+        // determine if a binding is being added or removed. If so, an AttachWireCommand or DetachWireCommand must be generated.
         boolean bindingChange = false;
         for (LogicalService service : component.getServices()) {
             for (LogicalBinding<?> binding : service.getBindings()) {

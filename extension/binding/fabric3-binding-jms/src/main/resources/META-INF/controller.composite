@@ -24,6 +24,10 @@ licensed under the Apache 2.0 license.
         <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
     </component>
 
+    <component name="JmsConnectionBindingGenerator" f3-core:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator"/>
+    </component>
+
     <component name="MessageTypeIntrospector">
         <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
     </component>

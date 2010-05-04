@@ -43,9 +43,9 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URI;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -57,14 +57,17 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
+import org.fabric3.introspection.xml.common.BindingHelper;
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads a channel definition from an XML-based assembly file
@@ -105,14 +108,34 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                QName qname = reader.getName();
-                // For now issue an unknown extension element - issue an error and continue
-                context.addError(new UnrecognizedElement(reader));
-                LoaderUtil.skipToEndElement(reader);
-                break;
+                QName elementName = reader.getName();
+                ModelObject type;
+                try {
+                    type = registry.load(reader, ModelObject.class, context);
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
+                    continue;
+                }
+                if (type instanceof BindingDefinition) {
+                    BindingDefinition binding = (BindingDefinition) type;
+                    boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), reader, context);
+                    if (check) {
+                        definition.addBinding(binding);
+                    }
+                } else if (type == null) {
+                    // no type, continue processing
+                    continue;
+                } else {
+                    context.addError(new UnrecognizedElement(reader));
+                    continue;
+                }
+                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                    throw new AssertionError("Loader must position the cursor to the end element");
+                }
             case END_ELEMENT:
-                qname = reader.getName();
-                if (CHANNEL.equals(qname)) {
+                elementName = reader.getName();
+                if (CHANNEL.equals(elementName)) {
                     return definition;
                 }
             }

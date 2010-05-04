@@ -86,14 +86,14 @@ public class ServiceListener implements MessageListener {
     private ConnectionFactory responseFactory;
     private TransactionType transactionType;
     private ClassLoader cl;
-    private ServiceListenerMonitor monitor;
+    private ListenerMonitor monitor;
 
     public ServiceListener(WireHolder wireHolder,
                            Destination responseDestination,
                            ConnectionFactory responseFactory,
                            TransactionType transactionType,
                            ClassLoader cl,
-                           ServiceListenerMonitor monitor) {
+                           ListenerMonitor monitor) {
         this.wireHolder = wireHolder;
         this.responseDestination = responseDestination;
         this.responseFactory = responseFactory;

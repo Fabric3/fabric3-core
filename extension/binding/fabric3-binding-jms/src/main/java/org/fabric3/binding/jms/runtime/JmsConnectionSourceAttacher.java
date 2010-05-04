@@ -44,10 +44,8 @@
 package org.fabric3.binding.jms.runtime;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -60,65 +58,63 @@ import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.builder.component.ConnectionAttachException;
+import org.fabric3.spi.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Attaches a channel or consumer to a JMS destination.
  *
  * @version $Revision$ $Date$
  */
-public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefinition>, JmsSourceWireAttacherMBean {
+public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSourceDefinition> {
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
     private JmsHost jmsHost;
     private ListenerMonitor monitor;
 
-    public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
-                                 @Reference ClassLoaderRegistry classLoaderRegistry,
-                                 @Reference JmsHost jmsHost,
-                                 @Monitor ListenerMonitor monitor) {
+    public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
+                                       @Reference ClassLoaderRegistry classLoaderRegistry,
+                                       @Reference JmsHost jmsHost,
+                                       @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.jmsHost = jmsHost;
         this.monitor = monitor;
     }
 
-    public void attach(JmsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
-        URI serviceUri = target.getUri();
+    public void attach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
+            throws ConnectionAttachException {
+        URI serviceUri = target.getTargetUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
-        TransactionType trxType = source.getTransactionType();
-        WireHolder wireHolder = createWireHolder(wire, source, target, trxType);
 
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
         ListenerConfiguration configuration = new ListenerConfiguration();
         try {
-            ConnectionFactory requestFactory = objects.getRequestFactory();
-            Destination requestDestination = objects.getRequestDestination();
-            ConnectionFactory responseFactory = objects.getResponseFactory();
-            Destination responseDestination = objects.getResponseDestination();
-            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, sourceClassLoader, monitor);
-            configuration.setDestination(requestDestination);
-            configuration.setFactory(requestFactory);
+            ConnectionFactory connectionFactory = objects.getRequestFactory();
+            Destination destination = objects.getRequestDestination();
+            List<EventStream> streams = connection.getEventStreams();
+            if (streams.size() != 1) {
+                throw new ConnectionAttachException("There must be a single event stream:" + streams.size());
+            }
+            EventStream stream = streams.get(0);
+            EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
+            configuration.setDestination(destination);
+            configuration.setFactory(connectionFactory);
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
-            configuration.setType(trxType);
+            configuration.setType(TransactionType.NONE);
             populateConfiguration(configuration, source.getMetadata());
             if (jmsHost.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
@@ -126,9 +122,14 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             }
             jmsHost.register(configuration);
         } catch (JMSException e) {
-            throw new WiringException(e);
+            throw new ConnectionAttachException(e);
         }
     }
+
+    public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
+
+    }
+
 
     private void populateConfiguration(ListenerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
@@ -152,30 +153,12 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 //        configuration.setLocalDelivery();
     }
 
-    public void detach(JmsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        try {
-            jmsHost.unregister(target.getUri());
-        } catch (JMSException e) {
-            throw new WiringException(e);
-        }
-    }
-
-    public void attachObjectFactory(JmsSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition definition)
-            throws WiringException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void detachObjectFactory(JmsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
-    }
-
-    private ResolvedObjects resolveAdministeredObjects(JmsSourceDefinition source) throws WiringException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source) throws ConnectionAttachException {
         try {
             JmsBindingMetadata metadata = source.getMetadata();
             Hashtable<String, String> env = metadata.getEnv();
             ConnectionFactoryDefinition requestConnectionFactoryDefinition = metadata.getConnectionFactory();
-
-            checkDefaults(source, requestConnectionFactoryDefinition);
+            requestConnectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
 
             ConnectionFactory requestConnectionFactory = resolver.resolve(requestConnectionFactoryDefinition, env);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
@@ -183,57 +166,9 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 
             ConnectionFactory responseConnectionFactory = null;
             Destination responseDestination = null;
-            if (metadata.isResponse()) {
-                ConnectionFactoryDefinition responseConnectionFactoryDefinition = metadata.getResponseConnectionFactory();
-
-                checkDefaults(source, responseConnectionFactoryDefinition);
-
-                responseConnectionFactory = resolver.resolve(responseConnectionFactoryDefinition, env);
-                DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
-                responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory, env);
-            }
             return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
         } catch (JmsResolutionException e) {
-            throw new WiringException(e);
-        }
-    }
-
-    private WireHolder createWireHolder(Wire wire, JmsSourceDefinition source, PhysicalTargetDefinition target, TransactionType trxType)
-            throws WiringException {
-        String callbackUri = null;
-        if (target.getCallbackUri() != null) {
-            callbackUri = target.getCallbackUri().toString();
-        }
-
-        JmsBindingMetadata metadata = source.getMetadata();
-        Map<String, PayloadType> payloadTypes = source.getPayloadTypes();
-        CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
-        List<InvocationChainHolder> chainHolders = new ArrayList<InvocationChainHolder>();
-        for (InvocationChain chain : wire.getInvocationChains()) {
-            PhysicalOperationDefinition definition = chain.getPhysicalOperation();
-            PayloadType payloadType = payloadTypes.get(definition.getName());
-            if (payloadType == null) {
-                throw new WiringException("Payload type not found for operation: " + definition.getName());
-            }
-            chainHolders.add(new InvocationChainHolder(chain, payloadType));
-        }
-        return new WireHolder(chainHolders, callbackUri, correlationScheme, trxType);
-    }
-
-    /**
-     * Sets default connection factory values if not specified.
-     *
-     * @param source                      the source definition
-     * @param connectionFactoryDefinition the connection factory definition
-     */
-    private void checkDefaults(JmsSourceDefinition source, ConnectionFactoryDefinition connectionFactoryDefinition) {
-        String name = connectionFactoryDefinition.getName();
-        if (name == null) {
-            if (TransactionType.GLOBAL == source.getTransactionType()) {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_XA_CONNECTION_FACTORY);
-            } else {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
-            }
+            throw new ConnectionAttachException(e);
         }
     }
 

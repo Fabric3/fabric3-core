@@ -43,9 +43,12 @@ import org.fabric3.api.annotation.logging.Severe;
 /**
  * @version $Rev$ $Date$
  */
-public interface ServiceListenerMonitor {
+public interface ListenerMonitor {
 
     @Severe
     public void error(String message, Throwable e);
+
+    @Severe
+    public void errorMessage(String message);
 
 }

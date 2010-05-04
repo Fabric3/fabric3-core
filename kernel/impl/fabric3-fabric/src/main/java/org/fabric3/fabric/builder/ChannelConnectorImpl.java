@@ -47,6 +47,7 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -109,7 +110,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
         ChannelConnection connection = new ChannelConnectionImpl();
         for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
-            EventStreamImpl stream = new EventStreamImpl(streamDefinition);
+            EventStream stream = new EventStreamImpl(streamDefinition);
             connection.addEventStream(stream);
         }
         return connection;

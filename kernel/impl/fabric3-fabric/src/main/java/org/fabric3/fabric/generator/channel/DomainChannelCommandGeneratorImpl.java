@@ -41,20 +41,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.BuildChannelsCommand;
+import org.fabric3.fabric.command.ChannelConnectionCommand;
+import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.command.UnBuildChannelsCommand;
+import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGenerator {
+public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGenerator implements DomainChannelCommandGenerator {
+
+    public DomainChannelCommandGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
+        super(generatorRegistry);
+    }
 
     public CompensatableCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = createBuildDefinitions(channel, incremental);
@@ -70,6 +80,44 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
             return null;
         }
         return new UnBuildChannelsCommand(definitions);
+    }
+
+    public ChannelConnectionCommand generateAttach(LogicalChannel channel, boolean incremental) throws GenerationException {
+        if (!channel.isConcreteBound()) {
+            return null;
+        }
+        ChannelConnectionCommand connectionCommand = new ChannelConnectionCommand();
+        List<PhysicalChannelConnectionDefinition> definitions = generateDefinitions(channel);
+        if (LogicalState.NEW == channel.getState() || !incremental) {
+            for (PhysicalChannelConnectionDefinition definition : definitions) {
+                AttachChannelConnectionCommand attachCommand = new AttachChannelConnectionCommand(definition);
+                connectionCommand.add(attachCommand);
+            }
+        }
+
+        if (connectionCommand.getAttachCommands().isEmpty() && connectionCommand.getDetachCommands().isEmpty()) {
+            return null;
+        }
+        return connectionCommand;
+    }
+
+    public ChannelConnectionCommand generateDetach(LogicalChannel channel) throws GenerationException {
+        if (!channel.isConcreteBound()) {
+            return null;
+        }
+        ChannelConnectionCommand connectionCommand = new ChannelConnectionCommand();
+        List<PhysicalChannelConnectionDefinition> definitions = generateDefinitions(channel);
+        if (LogicalState.MARKED == channel.getState()) {
+            for (PhysicalChannelConnectionDefinition definition : definitions) {
+                DetachChannelConnectionCommand attachCommand = new DetachChannelConnectionCommand(definition);
+                connectionCommand.add(attachCommand);
+            }
+        }
+
+        if (connectionCommand.getAttachCommands().isEmpty() && connectionCommand.getDetachCommands().isEmpty()) {
+            return null;
+        }
+        return connectionCommand;
     }
 
     private List<PhysicalChannelDefinition> createBuildDefinitions(LogicalChannel channel, boolean incremental) {
@@ -90,6 +138,4 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
         }
         return definitions;
     }
-
-
 }

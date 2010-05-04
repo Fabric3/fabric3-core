@@ -341,7 +341,7 @@ public class BootstrapAssemblyFactory {
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
         ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
-        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl();
+        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl(generatorRegistry);
         return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, channelGenerator, startContextGenerator, stopContextGenerator);
     }
 

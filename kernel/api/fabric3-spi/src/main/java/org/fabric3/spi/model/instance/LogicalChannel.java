@@ -53,12 +53,11 @@ import org.fabric3.model.type.component.ChannelDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LogicalChannel extends LogicalScaArtifact<LogicalCompositeComponent> {
+public class LogicalChannel extends Bindable {
     private static final long serialVersionUID = -1098943196013754799L;
 
     public static final String LOCAL_ZONE = "LocalZone";
 
-    private URI uri;
     private ChannelDefinition definition;
 
     private String zone = LOCAL_ZONE;
@@ -66,18 +65,8 @@ public class LogicalChannel extends LogicalScaArtifact<LogicalCompositeComponent
     private LogicalState state = LogicalState.NEW;
 
     public LogicalChannel(URI uri, ChannelDefinition definition, LogicalCompositeComponent parent) {
-        super(parent);
-        this.uri = uri;
+        super(uri, null, parent);
         this.definition = definition;
-    }
-
-    /**
-     * Returns the channel uri.
-     *
-     * @return the uri
-     */
-    public URI getUri() {
-        return uri;
     }
 
     /**

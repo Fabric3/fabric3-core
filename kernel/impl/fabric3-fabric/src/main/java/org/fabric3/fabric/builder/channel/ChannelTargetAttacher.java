@@ -47,8 +47,6 @@ import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
@@ -68,10 +66,6 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
             throws ConnectionAttachException {
         URI uri = target.getTargetUri();
         Channel channel = getChannel(uri);
-        for (EventStream stream : connection.getEventStreams()) {
-            PassThroughHandler handler = new PassThroughHandler();
-            stream.addHandler(handler);
-        }
         channel.attach(connection);
     }
 
