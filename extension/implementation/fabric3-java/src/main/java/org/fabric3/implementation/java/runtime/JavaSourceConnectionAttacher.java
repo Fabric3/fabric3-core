@@ -44,6 +44,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
@@ -89,8 +90,12 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
             String name = source.getInterfaceName();
             throw new ConnectionAttachException("Unable to load interface class: " + name, e);
         }
-        ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
-        component.setObjectFactory(injectable, factory);
+        try {
+            ObjectFactory<?> factory = proxyService.createObjectFactory(type, connection);
+            component.setObjectFactory(injectable, factory);
+        } catch (ProxyCreationException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
     public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {

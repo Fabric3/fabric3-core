@@ -43,47 +43,28 @@
  */
 package org.fabric3.implementation.proxy.jdk;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.channel.EventStream;
 
 /**
- * Creates a proxy for a channel connection that implements a specified interface.
+ * Thrown when an event stream cannot be mapped to a method on an interface
  *
  * @version $Rev$ $Date$
  */
-public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
-    private Class<T> interfaze;
-    private ChannelProxyService proxyService;
-    // the cache of proxy interface method to operation mappings
-    private Map<Method, EventStream> mappings;
+public class NoMethodForEventStreamException extends ProxyCreationException {
+    private static final long serialVersionUID = -5203755690182265124L;
 
-    /**
-     * Constructor.
-     *
-     * @param interfaze    the interface the proxy implements
-     * @param proxyService the proxy creation service
-     * @param mappings     proxy method to channel handler mappings
-     * @throws NoMethodForOperationException if a method matching the operation cannot be found
-     */
-    public ChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, Map<Method, EventStream> mappings)
-            throws NoMethodForOperationException {
-        this.interfaze = interfaze;
-        this.proxyService = proxyService;
-        this.mappings = mappings;
+    public NoMethodForEventStreamException() {
     }
 
+    public NoMethodForEventStreamException(String message) {
+        super(message);
+    }
 
-    public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, mappings));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
-        }
+    public NoMethodForEventStreamException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NoMethodForEventStreamException(Throwable cause) {
+        super(cause);
     }
 }

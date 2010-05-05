@@ -46,6 +46,7 @@ package org.fabric3.implementation.proxy.jdk;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.ProxyService;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -89,7 +90,11 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
 
 
     public T getInstance() throws ObjectCreationException {
-        return interfaze.cast(proxyService.createProxy(interfaze, type, callbackUri, mappings));
+        try {
+            return interfaze.cast(proxyService.createProxy(interfaze, type, callbackUri, mappings));
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 }
 

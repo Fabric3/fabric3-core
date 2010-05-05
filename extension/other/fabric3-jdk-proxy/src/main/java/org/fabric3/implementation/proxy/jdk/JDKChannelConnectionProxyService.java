@@ -57,7 +57,7 @@ import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  * The default ChannelProxyService that uses JDK dynamic proxies.
@@ -72,7 +72,7 @@ public class JDKChannelConnectionProxyService implements ChannelProxyService {
     }
 
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        Map<Method, EventStream> mappings = createInterfaceToWireMapping(interfaze, connection);
+        Map<Method, EventStream> mappings = createInterfaceToStreamMapping(interfaze, connection);
         return new ChannelConnectionObjectFactory<T>(interfaze, this, mappings);
     }
 
@@ -82,21 +82,19 @@ public class JDKChannelConnectionProxyService implements ChannelProxyService {
         return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
     }
 
-    private Map<Method, EventStream> createInterfaceToWireMapping(Class<?> interfaze, ChannelConnection connection)
-            throws NoMethodForOperationException {
+    private Map<Method, EventStream> createInterfaceToStreamMapping(Class<?> interfaze, ChannelConnection connection) throws ProxyCreationException {
         List<EventStream> streams = connection.getEventStreams();
         Map<Method, EventStream> mappings = new HashMap<Method, EventStream>(streams.size());
         for (EventStream stream : streams) {
-            //PhysicalOperationDefinition operation = handler.getPhysicalOperation();
-//            try {
-                //Method method = findMethod(interfaze, operation);
-                Method method = interfaze.getMethods()[0];
+            PhysicalEventStreamDefinition definition = stream.getDefinition();
+            try {
+                Method method = findMethod(interfaze, definition);
                 mappings.put(method, stream);
-//            } catch (NoSuchMethodException e) {
-//                throw new NoMethodForOperationException(operation.getName());
-//            } catch (ClassNotFoundException e) {
-//                throw new ProxyCreationException(e);
-//            }
+            } catch (NoSuchMethodException e) {
+                throw new NoMethodForEventStreamException(definition.getName());
+            } catch (ClassNotFoundException e) {
+                throw new ProxyCreationException(e);
+            }
         }
         return mappings;
     }
@@ -104,18 +102,18 @@ public class JDKChannelConnectionProxyService implements ChannelProxyService {
     /**
      * Returns the matching method from the class for a given operation.
      *
-     * @param clazz     the class to introspect
-     * @param operation the operation to match
+     * @param clazz      the class to introspect
+     * @param definition the event stream to match
      * @return a matching method
      * @throws NoSuchMethodException  if a matching method is not found
      * @throws ClassNotFoundException if a parameter type specified in the operation is not found
      */
-    private Method findMethod(Class<?> clazz, PhysicalOperationDefinition operation) throws NoSuchMethodException, ClassNotFoundException {
-        String name = operation.getName();
-        List<String> params = operation.getSourceParameterTypes();
-        Class<?>[] types = new Class<?>[params.size()];
-        for (int i = 0; i < params.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), params.get(i));
+    private Method findMethod(Class<?> clazz, PhysicalEventStreamDefinition definition) throws NoSuchMethodException, ClassNotFoundException {
+        String name = definition.getName();
+        List<String> eventTypes = definition.getEventTypes();
+        Class<?>[] types = new Class<?>[eventTypes.size()];
+        for (int i = 0; i < eventTypes.size(); i++) {
+            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), eventTypes.get(i));
         }
         return clazz.getMethod(name, types);
     }

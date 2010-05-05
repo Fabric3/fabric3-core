@@ -55,6 +55,10 @@ public class KeyInstantiationException extends WiringException {
         super(message);
     }
 
+    public KeyInstantiationException(Throwable cause) {
+        super(cause);
+    }
+
     public KeyInstantiationException(String message, Throwable cause) {
         super(message, cause);
     }

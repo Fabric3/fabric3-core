@@ -51,6 +51,7 @@ import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.ProxyService;
 import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.Injector;
@@ -175,8 +176,12 @@ public class WebComponent<T> extends AbstractLifecycle implements AtomicComponen
         referenceFactories.put(name, factory);
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, InteractionType interactionType, Wire wire) {
-        return proxyService.createObjectFactory(interfaze, interactionType, wire, null);
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, InteractionType interactionType, Wire wire) throws ObjectCreationException {
+        try {
+            return proxyService.createObjectFactory(interfaze, interactionType, wire, null);
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 
     public QName getDeployable() {

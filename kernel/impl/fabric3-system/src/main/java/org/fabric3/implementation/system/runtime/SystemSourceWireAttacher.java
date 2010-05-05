@@ -48,9 +48,10 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -116,14 +117,17 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             if (uri != null) {
                 callbackUri = uri.toString();
             }
+            try {
+                ObjectFactory<?> factory = proxyService.createObjectFactory(type, source.getInteractionType(), wire, callbackUri);
 
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, source.getInteractionType(), wire, callbackUri);
-
-            if (source.isKeyed()) {
-                Object key = getKey(source, target);
-                component.setObjectFactory(injectable, factory, key);
-            } else {
-                component.setObjectFactory(injectable, factory);
+                if (source.isKeyed()) {
+                    Object key = getKey(source, target);
+                    component.setObjectFactory(injectable, factory, key);
+                } else {
+                    component.setObjectFactory(injectable, factory);
+                }
+            } catch (ProxyCreationException e) {
+                throw new WiringException(e);
             }
         }
     }

@@ -31,7 +31,7 @@ import org.fabric3.spi.wire.InvocationChain;
 public class JDKProxyServiceTestCase extends TestCase {
     private JDKProxyService proxyService;
 
-    public void testCastProxyToServiceReference() {
+    public void testCastProxyToServiceReference() throws Exception {
         Map<Method, InvocationChain> mapping = Collections.emptyMap();
         JDKInvocationHandler<Foo> handler = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
         Foo proxy = handler.getService();

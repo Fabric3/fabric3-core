@@ -55,9 +55,9 @@ import org.oasisopen.sca.ServiceReference;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
@@ -168,7 +168,7 @@ public class JDKProxyService implements ProxyService {
             } catch (NoSuchMethodException e) {
                 throw new NoMethodForOperationException(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new ProxyCreationException(e);
+                throw new NoMethodForOperationException(e);
             }
         }
         return chains;

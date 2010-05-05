@@ -45,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.ProxyService;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -142,12 +143,16 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
 
         InteractionType interactionType = sourceDefinition.getInteractionType();
-        ObjectFactory<?> factory = proxyService.createObjectFactory(type, interactionType, wire, callbackUri);
-        if (sourceDefinition.isKeyed()) {
-            Object key = getKey(sourceDefinition, targetDefinition);
-            source.setObjectFactory(injectable, factory, key);
-        } else {
-            source.setObjectFactory(injectable, factory);
+        try {
+            ObjectFactory<?> factory = proxyService.createObjectFactory(type, interactionType, wire, callbackUri);
+            if (sourceDefinition.isKeyed()) {
+                Object key = getKey(sourceDefinition, targetDefinition);
+                source.setObjectFactory(injectable, factory, key);
+            } else {
+                source.setObjectFactory(injectable, factory);
+            }
+        } catch (ProxyCreationException e) {
+            throw new KeyInstantiationException(e);
         }
     }
 
@@ -155,16 +160,20 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
                                  PhysicalTargetDefinition targetDefinition,
                                  JavaComponent<?> source,
                                  Injectable injectable,
-                                 Class<?> type) {
+                                 Class<?> type) throws KeyInstantiationException {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         ObjectFactory<?> factory = source.getObjectFactory(injectable);
-        if (factory == null) {
-            factory = proxyService.createCallbackObjectFactory(type, container, callbackUri, wire);
-        } else {
-            factory = proxyService.updateCallbackObjectFactory(factory, type, container, callbackUri, wire);
+        try {
+            if (factory == null) {
+                factory = proxyService.createCallbackObjectFactory(type, container, callbackUri, wire);
+            } else {
+                factory = proxyService.updateCallbackObjectFactory(factory, type, container, callbackUri, wire);
+            }
+            source.setObjectFactory(injectable, factory);
+        } catch (ProxyCreationException e) {
+            throw new KeyInstantiationException(e);
         }
-        source.setObjectFactory(injectable, factory);
     }
 
 }
