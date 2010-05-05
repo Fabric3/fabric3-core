@@ -50,7 +50,7 @@ import java.util.List;
 import org.fabric3.model.type.component.ConsumerDefinition;
 
 /**
- * Represents a consumer on an instantiated component in the domain.
+ * A consumer on an instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */

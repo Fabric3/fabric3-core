@@ -50,7 +50,7 @@ import java.util.List;
 import org.fabric3.model.type.component.ProducerDefinition;
 
 /**
- * Represents a producer on an instantiated component in the domain.
+ * A producer on an instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */

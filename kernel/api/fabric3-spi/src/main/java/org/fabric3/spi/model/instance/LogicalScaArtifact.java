@@ -49,7 +49,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 /**
- * Super class for all logical artifacts.
+ * Base class for all logical artifacts.
  *
  * @version $Rev$ $Date$
  */

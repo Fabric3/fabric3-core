@@ -48,7 +48,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * Represents a binding on an LogicalService.
+ * An instantiated binding.
  *
  * @version $Rev$ $Date$
  */

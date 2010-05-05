@@ -40,7 +40,7 @@ package org.fabric3.spi.model.instance;
 import org.fabric3.model.type.contract.Operation;
 
 /**
- * Represents an operation on a service, reference or resource of an instantiated component.
+ * An operation on a service, reference or resource of an instantiated component.
  *
  * @version $Rev$ $Date$
  */

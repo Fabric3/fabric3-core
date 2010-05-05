@@ -48,7 +48,7 @@ import java.net.URI;
 import org.fabric3.model.type.component.ServiceDefinition;
 
 /**
- * Represents an instantiated service in the domain.
+ * An instantiated service in the domain.
  *
  * @version $Rev$ $Date$
  */

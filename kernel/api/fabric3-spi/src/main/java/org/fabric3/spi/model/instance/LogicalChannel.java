@@ -49,7 +49,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.model.type.component.ChannelDefinition;
 
 /**
- * Represents an instantiated channel in the domain.
+ * An instantiated channel in the domain.
  *
  * @version $Rev$ $Date$
  */

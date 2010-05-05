@@ -52,7 +52,7 @@ import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ReferenceDefinition;
 
 /**
- * Represents a reference on an instantiated component in the domain.
+ * A reference on an instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */

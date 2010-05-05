@@ -46,8 +46,8 @@ package org.fabric3.spi.model.instance;
 import javax.xml.namespace.QName;
 
 /**
- * Represents a wire from a reference to a service in the domain. A wire always targets a service in the domain (as opposed to a service hosted
- * externally) and hence is expressed using the SCA URI of the target service. A wire is expressed by using the <code>target</code> attribute of a
+ * A wire from a reference to a service in the domain. A wire always targets a service in the domain (as opposed to a service hosted externally) and
+ * hence is expressed using the SCA URI of the target service. A wire is expressed by using the <code>target</code> attribute of a
  * <code>reference</code> element or using the <code>wire</code> element. Furthermore, a wire may be unbound or explicitly configured with a binding.
  * If the wire is unbound and crosses process boundaries, it will be bound by the runtime using the SCA binding.
  * <p/>

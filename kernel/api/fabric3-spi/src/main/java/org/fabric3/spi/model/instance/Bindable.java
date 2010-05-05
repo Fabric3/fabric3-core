@@ -51,15 +51,14 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
- * Super class for logical services and references.
+ * An artifact which can be bound to a remote transport.
  *
  * @version $Rev$ $Date$
  */
-public abstract class Bindable extends LogicalAttachPoint {
+public abstract class Bindable extends LogicalInvocable {
     private static final long serialVersionUID = 570403036597601956L;
     private List<LogicalBinding<?>> bindings;
     private List<LogicalBinding<?>> callbackBindings;
-    private ServiceContract serviceContract;
 
     /**
      * Initializes the URI and parent for the service or the reference.
@@ -72,7 +71,6 @@ public abstract class Bindable extends LogicalAttachPoint {
         super(uri, contract, parent);
         bindings = new ArrayList<LogicalBinding<?>>();
         callbackBindings = new ArrayList<LogicalBinding<?>>();
-        serviceContract = contract;
     }
 
     /**
@@ -80,7 +78,7 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @param bindings New set of bindings.
      */
-    public final void overrideBindings(List<LogicalBinding<?>> bindings) {
+    public void overrideBindings(List<LogicalBinding<?>> bindings) {
         this.bindings.clear();
         this.bindings.addAll(bindings);
     }
@@ -90,7 +88,7 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @param bindings New set of bindings.
      */
-    public final void overrideCallbackBindings(List<LogicalBinding<?>> bindings) {
+    public void overrideCallbackBindings(List<LogicalBinding<?>> bindings) {
         this.callbackBindings.clear();
         for (LogicalBinding<?> binding : bindings) {
             binding.setCallback(true);
@@ -103,7 +101,7 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @return The bindings available on the service or the reference.
      */
-    public final List<LogicalBinding<?>> getBindings() {
+    public List<LogicalBinding<?>> getBindings() {
         return bindings;
     }
 
@@ -129,7 +127,7 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @return The bindings available on the service or the reference.
      */
-    public final List<LogicalBinding<?>> getCallbackBindings() {
+    public List<LogicalBinding<?>> getCallbackBindings() {
         return callbackBindings;
     }
 
@@ -138,7 +136,7 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @param binding Binding to be added to the service or the reference.
      */
-    public final void addBinding(LogicalBinding<?> binding) {
+    public void addBinding(LogicalBinding<?> binding) {
         bindings.add(binding);
     }
 
@@ -156,28 +154,9 @@ public abstract class Bindable extends LogicalAttachPoint {
      *
      * @param binding Binding to be added to the service or the reference.
      */
-    public final void addCallbackBinding(LogicalBinding<?> binding) {
+    public void addCallbackBinding(LogicalBinding<?> binding) {
         binding.setCallback(true);
         callbackBindings.add(binding);
-    }
-
-    /**
-     * The effective service contract for this bindable. The effective contract may be set through promotion.
-     *
-     * @return the effective service contract for this bindable
-     */
-    public ServiceContract getServiceContract() {
-        return serviceContract;
-    }
-
-    /**
-     * Sets the effective service contract for this bindable.
-     *
-     * @param serviceContract the contract
-     */
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
-        createOperations(serviceContract);
     }
 
 

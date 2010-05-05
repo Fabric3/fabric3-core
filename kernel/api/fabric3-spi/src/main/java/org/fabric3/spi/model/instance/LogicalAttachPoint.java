@@ -38,34 +38,25 @@
 package org.fabric3.spi.model.instance;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents a contract-based attachment point on an instantiated component, specifically a service, reference, or resource.
+ * An addressable policy attachment point.
  *
  * @version $Rev$ $Date$
  */
 public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -5294444649296282992L;
-    protected List<LogicalOperation> operations;
-    protected List<LogicalOperation> callbackOperations;
     private URI uri;
 
     /**
      * Constructor.
      *
-     * @param uri      URI of the SCA artifact.
-     * @param contract the service contract
-     * @param parent   Parent of the SCA artifact.
+     * @param uri    URI of the SCA artifact.
+     * @param parent Parent of the SCA artifact.
      */
-    protected LogicalAttachPoint(URI uri, ServiceContract contract, LogicalComponent<?> parent) {
+    protected LogicalAttachPoint(URI uri, LogicalComponent<?> parent) {
         super(parent);
         this.uri = uri;
-        createOperations(contract);
     }
 
     /**
@@ -75,45 +66,6 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
      */
     public URI getUri() {
         return uri;
-    }
-
-    public List<LogicalOperation> getOperations() {
-        return operations;
-    }
-
-    public List<LogicalOperation> getCallbackOperations() {
-        return callbackOperations;
-    }
-
-    /**
-     * Used to replace operations during a copy.
-     *
-     * @param operations the new operations
-     */
-    void overrideOperations(List<LogicalOperation> operations) {
-        this.operations = operations;
-    }
-
-    /**
-     * Instantiates logical operations from a service contract
-     *
-     * @param contract the contract
-     */
-    protected final void createOperations(ServiceContract contract) {
-        operations = new ArrayList<LogicalOperation>();
-        callbackOperations = new ArrayList<LogicalOperation>();
-        if (contract != null) {
-            // null is a convenience allowed for testing so the logical model does not need to be fully created
-            for (Operation operation : contract.getOperations()) {
-                operations.add(new LogicalOperation(operation, this));
-            }
-            ServiceContract callbackContract = contract.getCallbackContract();
-            if (callbackContract != null) {
-                for (Operation operation : callbackContract.getOperations()) {
-                    callbackOperations.add(new LogicalOperation(operation, this));
-                }
-            }
-        }
     }
 
 }

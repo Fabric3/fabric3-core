@@ -54,7 +54,7 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 
 /**
- * Represents an instantiated component in the domain.
+ * An instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */
