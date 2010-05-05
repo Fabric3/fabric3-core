@@ -56,7 +56,7 @@ import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -68,20 +68,20 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * The default ProxyService implementation that uses JDK dynamic proxies.
+ * The default WireProxyService implementation that uses JDK dynamic proxies.
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JDKProxyService implements ProxyService {
+public class JDKWireProxyService implements WireProxyService {
     private ClassLoaderRegistry classLoaderRegistry;
     private ScopeRegistry scopeRegistry;
     private ScopeContainer conversationalContainer;
 
-    public JDKProxyService() {
+    public JDKWireProxyService() {
     }
 
     @Constructor
-    public JDKProxyService(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference ScopeRegistry scopeRegistry) {
+    public JDKWireProxyService(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference ScopeRegistry scopeRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
         this.scopeRegistry = scopeRegistry;
     }

@@ -52,7 +52,7 @@ import org.fabric3.container.web.spi.WebApplicationActivator;
 import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
@@ -79,7 +79,7 @@ public class WebComponent<T> extends AbstractLifecycle implements AtomicComponen
     private final WebApplicationActivator activator;
     // injection site name to <artifact name, injection site>
     private final Map<String, Map<String, InjectionSite>> siteMappings;
-    private final ProxyService proxyService;
+    private final WireProxyService proxyService;
     private final QName groupId;
     private final Map<String, ObjectFactory<?>> propertyFactories;
     private final Map<String, ObjectFactory<?>> referenceFactories;
@@ -95,7 +95,7 @@ public class WebComponent<T> extends AbstractLifecycle implements AtomicComponen
                         ClassLoader classLoader,
                         InjectorFactory injectorFactory,
                         WebApplicationActivator activator,
-                        ProxyService proxyService,
+                        WireProxyService proxyService,
                         Map<String, ObjectFactory<?>> propertyFactories,
                         Map<String, Map<String, InjectionSite>> injectorMappings) throws WebComponentCreationException {
         this.uri = uri;

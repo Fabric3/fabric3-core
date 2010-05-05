@@ -17,12 +17,12 @@
            name="ProxyServiceExtension"
            autowire="true">
 
-    <component name="ProxyService">
-        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKProxyService"/>
+    <component name="JDKWireProxyService">
+        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKWireProxyService"/>
     </component>
 
-    <component name="JDKChannelConnectionProxyService">
-        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKChannelConnectionProxyService"/>
+    <component name="JDKChannelProxyService">
+        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKChannelProxyService"/>
     </component>
 
 

@@ -61,7 +61,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 
-public interface ProxyService {
+public interface WireProxyService {
     /**
      * Create an ObjectFactory that provides proxies for the forward wire.
      *

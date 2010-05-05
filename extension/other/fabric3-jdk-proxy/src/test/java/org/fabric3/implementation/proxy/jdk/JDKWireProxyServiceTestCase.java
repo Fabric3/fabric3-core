@@ -28,8 +28,8 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * @version $Rev$ $Date$
  */
-public class JDKProxyServiceTestCase extends TestCase {
-    private JDKProxyService proxyService;
+public class JDKWireProxyServiceTestCase extends TestCase {
+    private JDKWireProxyService proxyService;
 
     public void testCastProxyToServiceReference() throws Exception {
         Map<Method, InvocationChain> mapping = Collections.emptyMap();
@@ -41,7 +41,7 @@ public class JDKProxyServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        proxyService = new JDKProxyService();
+        proxyService = new JDKWireProxyService();
     }
 
     public interface Foo {

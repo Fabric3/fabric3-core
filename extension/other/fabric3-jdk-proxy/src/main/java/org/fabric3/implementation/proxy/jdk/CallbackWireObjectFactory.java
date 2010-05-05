@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -57,7 +57,7 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
     private ScopeContainer container;
-    private ProxyService proxyService;
+    private WireProxyService proxyService;
     private Map<String, Map<Method, InvocationChain>> mappings;
     private Class<T> interfaze;
 
@@ -71,7 +71,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
      */
     public CallbackWireObjectFactory(Class<T> interfaze,
                                      ScopeContainer container,
-                                     ProxyService proxyService,
+                                     WireProxyService proxyService,
                                      Map<String, Map<Method, InvocationChain>> mappings) {
         this.interfaze = interfaze;
         this.container = container;

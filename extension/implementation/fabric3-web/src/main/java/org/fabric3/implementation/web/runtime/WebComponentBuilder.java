@@ -47,7 +47,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
@@ -60,9 +60,9 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinition, WebComponent> {
     private WebApplicationActivator activator;
     private InjectorFactory injectorFactory;
-    private ProxyService proxyService;
+    private WireProxyService proxyService;
 
-    public WebComponentBuilder(@Reference ProxyService proxyService,
+    public WebComponentBuilder(@Reference WireProxyService proxyService,
                                @Reference WebApplicationActivator activator,
                                @Reference InjectorFactory injectorFactory) {
         this.proxyService = proxyService;

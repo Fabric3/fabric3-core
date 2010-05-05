@@ -46,7 +46,7 @@ import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -71,10 +71,10 @@ import org.fabric3.spi.wire.Wire;
 public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaSourceDefinition> {
 
     private ComponentManager manager;
-    private ProxyService proxyService;
+    private WireProxyService proxyService;
 
     public JavaSourceWireAttacher(@Reference ComponentManager manager,
-                                  @Reference ProxyService proxyService,
+                                  @Reference WireProxyService proxyService,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference TransformerRegistry transformerRegistry) {
         super(transformerRegistry, classLoaderRegistry);

@@ -47,7 +47,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.model.physical.InteractionType;
@@ -62,7 +62,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
     private InteractionType type;
     private String callbackUri;
-    private ProxyService proxyService;
+    private WireProxyService proxyService;
     // the cache of proxy interface method to operation mappings
     private Map<Method, InvocationChain> mappings;
 
@@ -79,7 +79,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     public WireObjectFactory(Class<T> interfaze,
                              InteractionType type,
                              String callbackUri,
-                             ProxyService proxyService,
+                             WireProxyService proxyService,
                              Map<Method, InvocationChain> mappings) throws NoMethodForOperationException {
         this.interfaze = interfaze;
         this.type = type;

@@ -50,7 +50,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.ProxyService;
+import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -72,7 +72,7 @@ import org.fabric3.spi.wire.Wire;
 public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemSourceDefinition> {
 
     private final ComponentManager manager;
-    private ProxyService proxyService;
+    private WireProxyService proxyService;
 
     public SystemSourceWireAttacher(@Reference ComponentManager manager,
                                     @Reference TransformerRegistry transformerRegistry,
@@ -89,7 +89,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
      * @param proxyService the service used to create reference proxies
      */
     @Reference(required = false)
-    public void setProxyService(ProxyService proxyService) {
+    public void setProxyService(WireProxyService proxyService) {
         this.proxyService = proxyService;
     }
 

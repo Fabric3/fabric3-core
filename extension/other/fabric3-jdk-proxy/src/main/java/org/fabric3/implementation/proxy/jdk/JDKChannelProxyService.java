@@ -64,10 +64,10 @@ import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JDKChannelConnectionProxyService implements ChannelProxyService {
+public class JDKChannelProxyService implements ChannelProxyService {
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public JDKChannelConnectionProxyService(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JDKChannelProxyService(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
