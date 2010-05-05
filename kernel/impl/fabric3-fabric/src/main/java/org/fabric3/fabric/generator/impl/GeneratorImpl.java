@@ -146,7 +146,7 @@ public class GeneratorImpl implements Generator {
             if (command != null) {
                 deployment.addCommand(zone, command);
             }
-            ChannelConnectionCommand connectionCommand = channelGenerator.generateAttach(channel, incremental);
+            ChannelConnectionCommand connectionCommand = channelGenerator.generateAttachDetach(channel, incremental);
             if (connectionCommand != null) {
                 deployment.addCommand(zone, connectionCommand);
             }
@@ -171,10 +171,6 @@ public class GeneratorImpl implements Generator {
             CompensatableCommand command = channelGenerator.generateUnBuild(channel, incremental);
             if (command != null) {
                 deployment.addCommand(zone, command);
-            }
-            ChannelConnectionCommand connectionCommand = channelGenerator.generateDetach(channel);
-            if (connectionCommand != null) {
-                deployment.addCommand(zone, connectionCommand);
             }
         }
 

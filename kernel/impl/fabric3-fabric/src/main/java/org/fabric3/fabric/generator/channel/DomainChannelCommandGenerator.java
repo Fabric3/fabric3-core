@@ -71,22 +71,13 @@ public interface DomainChannelCommandGenerator {
     CompensatableCommand generateUnBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
 
     /**
-     * Generates attach commands for a channel bound to a transport.
+     * Generates attach and detach commands for a channel bound to a transport.
      *
      * @param channel     the channel
      * @param incremental true if an incremental deployment is being performed
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    ChannelConnectionCommand generateAttach(LogicalChannel channel, boolean incremental) throws GenerationException;
-
-    /**
-     * Generates detach commands for a channel bound to a transport.
-     *
-     * @param channel the channel
-     * @return the command
-     * @throws GenerationException if a generation error is encountered
-     */
-    ChannelConnectionCommand generateDetach(LogicalChannel channel) throws GenerationException;
+    ChannelConnectionCommand generateAttachDetach(LogicalChannel channel, boolean incremental) throws GenerationException;
 
 }

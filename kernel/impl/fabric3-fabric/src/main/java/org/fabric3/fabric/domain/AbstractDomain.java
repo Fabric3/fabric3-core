@@ -81,6 +81,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.CopyUtil;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -446,10 +447,9 @@ public abstract class AbstractDomain implements Domain {
                 // in single VM mode, recovery includes deployment
                 allocateAndDeploy(domain, plan);
             } else {
-                Collection<LogicalComponent<?>> components = domain.getComponents();
-                allocate(components, plan);
+                allocate(domain, plan);
                 // Select bindings
-                selectBinding(components);
+                selectBinding(domain);
                 collector.markAsProvisioned(domain);
             }
 
@@ -529,15 +529,14 @@ public abstract class AbstractDomain implements Domain {
      * @throws DeploymentException if an error is encountered during deployment
      */
     private void allocateAndDeploy(LogicalCompositeComponent domain, DeploymentPlan plan) throws DeploymentException {
-        Collection<LogicalComponent<?>> components = domain.getComponents();
         // Allocate the components to runtime nodes
         try {
-            allocate(components, plan);
+            allocate(domain, plan);
         } catch (AllocationException e) {
             throw new DeploymentException("Error deploying composite", e);
         }
         // Select bindings
-        selectBinding(components);
+        selectBinding(domain);
         try {
             // generate and provision any new components and new wires
             Deployment deployment = generator.generate(domain, true, isLocal());
@@ -556,15 +555,21 @@ public abstract class AbstractDomain implements Domain {
     /**
      * Delegates to the Allocator to determine which runtimes to deploy the given collection of components to.
      *
-     * @param components the components to allocate
-     * @param plan       the deployment plan
+     * @param domain the domain component
+     * @param plan   the deployment plan
      * @throws AllocationException if an allocation error occurs
      */
-    private void allocate(Collection<LogicalComponent<?>> components, DeploymentPlan plan) throws AllocationException {
+    private void allocate(LogicalCompositeComponent domain, DeploymentPlan plan) throws AllocationException {
         if (allocator == null) {
             // allocator is an optional extension
             return;
         }
+        for (LogicalChannel channel : domain.getChannels()) {
+            if (channel.getState() == LogicalState.NEW) {
+                allocator.allocate(channel, plan);
+            }
+        }
+        Collection<LogicalComponent<?>> components = domain.getComponents();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW) {
                 allocator.allocate(component, plan);
@@ -575,10 +580,11 @@ public abstract class AbstractDomain implements Domain {
     /**
      * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
      *
-     * @param components the set of components being deployed
+     * @param domain the domain component
      * @throws DeploymentException if an error occurs during binding selection
      */
-    private void selectBinding(Collection<LogicalComponent<?>> components) throws DeploymentException {
+    private void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
+        Collection<LogicalComponent<?>> components = domain.getComponents();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW) {
                 try {

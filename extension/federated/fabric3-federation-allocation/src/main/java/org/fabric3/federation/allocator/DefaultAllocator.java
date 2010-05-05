@@ -64,11 +64,24 @@ public class DefaultAllocator implements Allocator {
                     allocate(child, plan);
                 }
                 for (LogicalChannel channel : composite.getChannels()) {
-                    selectZone(channel, plan);
+                    allocate(channel, plan);
                 }
             }
             selectZone(component, plan);
         }
+    }
+
+    public void allocate(LogicalChannel channel, DeploymentPlan plan) throws AllocationException {
+        QName deployable = channel.getDeployable();
+        if (deployable == null) {
+            // programming error
+            throw new AssertionError("Deployable not found for " + channel.getUri());
+        }
+        String zoneName = plan.getDeployableMappings().get(deployable);
+        if (zoneName == null) {
+            throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
+        }
+        channel.setZone(zoneName);
     }
 
     /**
@@ -89,19 +102,6 @@ public class DefaultAllocator implements Allocator {
             throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
         }
         component.setZone(zoneName);
-    }
-
-    private void selectZone(LogicalChannel channel, DeploymentPlan plan) throws AllocationException {
-        QName deployable = channel.getDeployable();
-        if (deployable == null) {
-            // programming error
-            throw new AssertionError("Deployable not found for " + channel.getUri());
-        }
-        String zoneName = plan.getDeployableMappings().get(deployable);
-        if (zoneName == null) {
-            throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
-        }
-        channel.setZone(zoneName);
     }
 
 }

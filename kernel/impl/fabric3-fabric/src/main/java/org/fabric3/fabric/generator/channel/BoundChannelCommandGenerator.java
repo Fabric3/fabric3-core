@@ -43,23 +43,17 @@
  */
 package org.fabric3.fabric.generator.channel;
 
-import java.util.List;
-
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
-import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Generates commands to attach/detach a channel from a binding transport.
@@ -89,18 +83,7 @@ public class BoundChannelCommandGenerator extends AbstractChannelCommandGenerato
             if (!channel.isConcreteBound()) {
                 continue;
             }
-            List<PhysicalChannelConnectionDefinition> definitions = generateDefinitions(channel);
-            if (LogicalState.MARKED == component.getState()) {
-                for (PhysicalChannelConnectionDefinition definition : definitions) {
-                    DetachChannelConnectionCommand attachCommand = new DetachChannelConnectionCommand(definition);
-                    connectionCommand.add(attachCommand);
-                }
-            } else if (LogicalState.NEW == component.getState() || !incremental) {
-                for (PhysicalChannelConnectionDefinition definition : definitions) {
-                    AttachChannelConnectionCommand attachCommand = new AttachChannelConnectionCommand(definition);
-                    connectionCommand.add(attachCommand);
-                }
-            }
+            generateDefinitions(channel, connectionCommand, incremental);
         }
 
         if (connectionCommand.getAttachCommands().isEmpty() && connectionCommand.getDetachCommands().isEmpty()) {

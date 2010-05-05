@@ -96,6 +96,15 @@ public class LogicalConsumer extends Bindable {
     }
 
     /**
+     * Adds a configured source channel URIs.
+     *
+     * @param sources the source channel URIs
+     */
+    public void addSources(List<URI> sources) {
+        this.sources.addAll(sources);
+    }
+
+    /**
      * Adds a configured source channel URI.
      *
      * @param uri the source channel URI

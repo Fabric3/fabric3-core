@@ -59,6 +59,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -175,6 +176,7 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager, Log
         definition.setContributionUri(Names.BOOT_CONTRIBUTION);
         type.setAutowire(autowire);
         domain = new LogicalCompositeComponent(domainUri, definition, null);
+        domain.setState(LogicalState.PROVISIONED);
         domain.setAutowire(autowire);
     }
 

@@ -49,11 +49,12 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * Makes copies of a logical model graph.
+ * Copies a logical model graph.
  *
  * @version $Rev$ $Date$
  */
 public class CopyUtil {
+
     private CopyUtil() {
     }
 
@@ -120,6 +121,15 @@ public class CopyUtil {
         for (LogicalService service : composite.getServices()) {
             copy(service, copy, components, services);
         }
+        for (LogicalChannel channel : composite.getChannels()) {
+            copy(channel, copy);
+        }
+        for (LogicalConsumer consumer : composite.getConsumers()) {
+            copy(consumer, copy);
+        }
+        for (LogicalProducer producer : composite.getProducers()) {
+            copy(producer, copy);
+        }
         return copy;
     }
 
@@ -154,6 +164,12 @@ public class CopyUtil {
             }
             for (LogicalService service : component.getServices()) {
                 copy(service, copy, components, services);
+            }
+            for (LogicalConsumer consumer : component.getConsumers()) {
+                copy(consumer, copy);
+            }
+            for (LogicalProducer producer : component.getProducers()) {
+                copy(producer, copy);
             }
         }
         newParent.addComponent(copy);
@@ -204,6 +220,41 @@ public class CopyUtil {
         copy.addPolicySets(service.getPolicySets());
         copy(service, copy);
         parent.addService(copy);
+    }
+
+    private static void copy(LogicalChannel channel, LogicalCompositeComponent parent) {
+        URI uri = channel.getUri();
+        LogicalChannel copy = new LogicalChannel(uri, channel.getDefinition(), parent);
+        copy.setServiceContract(channel.getServiceContract());
+        copy(channel, copy);
+        copy.setDeployable(channel.getDeployable());
+        copy.addIntents(channel.getIntents());
+        copy.addPolicySets(channel.getPolicySets());
+        copy.setState(channel.getState());
+        copy.setZone(channel.getZone());
+        parent.addChannel(copy);
+    }
+
+    private static void copy(LogicalProducer producer, LogicalComponent parent) {
+        URI uri = producer.getUri();
+        LogicalProducer copy = new LogicalProducer(uri, producer.getDefinition(), parent);
+        copy.setServiceContract(producer.getServiceContract());
+        copy.addTargets(producer.getTargets());
+        copy(producer, copy);
+        copy.addIntents(producer.getIntents());
+        copy.addPolicySets(producer.getPolicySets());
+        parent.addProducer(copy);
+    }
+
+    private static void copy(LogicalConsumer consumer, LogicalComponent parent) {
+        URI uri = consumer.getUri();
+        LogicalConsumer copy = new LogicalConsumer(uri, consumer.getDefinition(), parent);
+        copy.setServiceContract(consumer.getServiceContract());
+        copy.addSources(consumer.getSources());
+        copy(consumer, copy);
+        copy.addIntents(consumer.getIntents());
+        copy.addPolicySets(consumer.getPolicySets());
+        parent.addConsumer(copy);
     }
 
     @SuppressWarnings({"unchecked"})

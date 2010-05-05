@@ -42,12 +42,12 @@ import java.net.URI;
 import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.component.DuplicateComponent;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
  * Default implementation of ChannelInstantiator.
@@ -69,6 +69,7 @@ public class ChannelInstantiatorImpl implements ChannelInstantiator {
                 LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, channel);
                 channel.addBinding(logicalBinding);
             }
+            channel.setDeployable(composite.getName());
             parent.addChannel(channel);
         }
     }

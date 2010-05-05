@@ -162,13 +162,13 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
         // setup forward bindings
         // derive the forward queue name from the service name
-        String forwardTopic = channel.getUri().toString();
-        JmsBindingDefinition producerDefinition = createTopicBindingDefinition(forwardTopic);
+        String topic = channel.getUri().toString();
+        JmsBindingDefinition producerDefinition = createTopicBindingDefinition(topic);
         LogicalBinding<JmsBindingDefinition> producerBinding = new LogicalBinding<JmsBindingDefinition>(producerDefinition, producer, deployable);
         producerBinding.setAssigned(true);
         producer.addBinding(producerBinding);
 
-        JmsBindingDefinition channelDefinition = createTopicBindingDefinition(forwardTopic);
+        JmsBindingDefinition channelDefinition = createTopicBindingDefinition(topic);
         LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<JmsBindingDefinition>(channelDefinition, channel, deployable);
         channelBinding.setAssigned(true);
         channel.addBinding(channelBinding);

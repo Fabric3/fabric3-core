@@ -44,7 +44,10 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -61,6 +64,9 @@ public class CopyUtilTestCase extends TestCase {
         LogicalService originalService = createService("#service", originalComponent);
         LogicalReference originalReference = createReference("#reference", originalComponent);
         LogicalWire originalWire = createWire(originalService, originalReference);
+        LogicalChannel originalChannel = createChannel("channel", originalChildComposite);
+        LogicalProducer originalProducer = createProducer("#producer", originalComponent);
+        LogicalConsumer originalConsumer = createConsumer("#consumer", originalComponent);
 
         LogicalCompositeComponent copy = CopyUtil.copy(originalParent);
 
@@ -70,9 +76,20 @@ public class CopyUtilTestCase extends TestCase {
         LogicalCompositeComponent childComposite = (LogicalCompositeComponent) copy.getComponent(originalChildComposite.getUri());
         assertNotSame(originalChildComposite, childComposite);
 
+        assertEquals(1, childComposite.getChannels().size());
+        LogicalChannel channel = childComposite.getChannel(originalChannel.getUri());
+        assertNotSame(originalChannel, channel);
+        assertEquals(1, channel.getBindings().size());
+        assertNotSame(originalChannel.getBindings().get(0), channel.getBindings().get(0));
+        assertEquals("zone1", channel.getZone());
+        assertEquals(LogicalState.PROVISIONED, channel.getState());
+
+
         assertEquals(1, childComposite.getComponents().size());
         LogicalComponent component = childComposite.getComponent(originalComponent.getUri());
         assertNotSame(originalComponent, component);
+        assertEquals(LogicalState.PROVISIONED, component.getState());
+        assertEquals("zone1", component.getZone());
 
         assertEquals(1, component.getServices().size());
         LogicalService service = component.getService("service");
@@ -84,6 +101,21 @@ public class CopyUtilTestCase extends TestCase {
         LogicalReference reference = component.getReference("reference");
         assertNotSame(originalReference, reference);
         assertNotSame(originalReference.getLeafReference(), reference.getLeafReference());
+
+        assertEquals(1, component.getProducers().size());
+        LogicalProducer producer = component.getProducer("producer");
+        assertNotSame(originalProducer, producer);
+        assertEquals(1, producer.getBindings().size());
+        assertEquals(1, producer.getTargets().size());
+        assertEquals(URI.create("target"), producer.getTargets().get(0));
+
+        assertEquals(1, component.getConsumers().size());
+        LogicalConsumer consumer = component.getConsumer("consumer");
+        assertNotSame(originalConsumer, consumer);
+        assertEquals(1, consumer.getBindings().size());
+        assertEquals(1, consumer.getSources().size());
+        assertEquals(URI.create("source"), consumer.getSources().get(0));
+
 
         List<LogicalWire> wires = childComposite.getWires(reference);
         assertEquals(1, wires.size());
@@ -126,6 +158,26 @@ public class CopyUtilTestCase extends TestCase {
         return reference;
     }
 
+    private LogicalProducer createProducer(String name, LogicalComponent parent) {
+        URI uri = URI.create(name);
+        ProducerDefinition definition = new ProducerDefinition(name);
+        LogicalProducer producer = new LogicalProducer(uri, definition, parent);
+        createBinding(producer);
+        producer.addTarget(URI.create("target"));
+        parent.addProducer(producer);
+        return producer;
+    }
+
+    private LogicalConsumer createConsumer(String name, LogicalComponent parent) {
+        URI uri = URI.create(name);
+        ConsumerDefinition definition = new ConsumerDefinition(name);
+        LogicalConsumer consumer = new LogicalConsumer(uri, definition, parent);
+        createBinding(consumer);
+        consumer.addSource(URI.create("source"));
+        parent.addConsumer(consumer);
+        return consumer;
+    }
+
     private LogicalBinding createBinding(Bindable parent) {
         MockBinding definition = new MockBinding();
         LogicalBinding<MockBinding> binding = new LogicalBinding<MockBinding>(definition, parent);
@@ -134,10 +186,24 @@ public class CopyUtilTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
+    private LogicalChannel createChannel(String name, LogicalCompositeComponent parent) {
+        URI uri = URI.create(name);
+        ChannelDefinition definition = new ChannelDefinition(name, URI.create("contribution"));
+        LogicalChannel channel = new LogicalChannel(uri, definition, parent);
+        channel.setState(LogicalState.PROVISIONED);
+        channel.setZone("zone1");
+        createBinding(channel);
+        parent.addChannel(channel);
+        return channel;
+    }
+
+    @SuppressWarnings({"unchecked"})
     private LogicalComponent createComponent(String name, LogicalCompositeComponent parent) {
         URI uri = URI.create(name);
         ComponentDefinition definition = new ComponentDefinition(name, null);
         LogicalComponent component = new LogicalComponent(uri, definition, parent);
+        component.setState(LogicalState.PROVISIONED);
+        component.setZone("zone1");
         parent.addComponent(component);
         return component;
     }

@@ -104,6 +104,15 @@ public class LogicalProducer extends Bindable {
         targets.add(uri);
     }
 
+    /**
+     * Adds a configured target channel URIs.
+     *
+     * @param targets the target channel URIs
+     */
+    public void addTargets(List<URI> targets) {
+        this.targets.addAll(targets);
+    }
+
     @Override
     public boolean equals(Object obj) {
 
@@ -124,6 +133,5 @@ public class LogicalProducer extends Bindable {
     public int hashCode() {
         return getUri().hashCode();
     }
-
 
 }

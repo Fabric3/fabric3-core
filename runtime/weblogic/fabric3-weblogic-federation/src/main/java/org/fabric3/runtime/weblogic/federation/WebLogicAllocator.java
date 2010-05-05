@@ -43,8 +43,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.plan.DeploymentPlan;
 
@@ -67,8 +67,12 @@ public class WebLogicAllocator implements Allocator {
         domainName = jmxHelper.getRuntimeJmxAttribute(String.class, "DomainConfiguration/Name");
     }
 
-    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
+    public void allocate(LogicalComponent<?> component, DeploymentPlan plan) {
         component.setZone(domainName);
+    }
+
+    public void allocate(LogicalChannel channel, DeploymentPlan plan) {
+        channel.setZone(domainName);
     }
 
 }

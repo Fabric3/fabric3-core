@@ -56,6 +56,7 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
+import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
  * @version $Rev$ $Date$
@@ -279,6 +280,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
             for (LogicalComponent<?> child : composite.getComponents()) {
                 setDeployable(child, deployable);
+            }
+            for (LogicalChannel channel : composite.getChannels()) {
+                channel.setDeployable(deployable);
             }
         }
         component.setDeployable(deployable);

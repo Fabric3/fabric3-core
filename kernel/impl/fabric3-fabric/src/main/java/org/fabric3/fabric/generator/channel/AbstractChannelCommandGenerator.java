@@ -50,6 +50,9 @@ import java.util.List;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
+import org.fabric3.fabric.command.AttachChannelConnectionCommand;
+import org.fabric3.fabric.command.ChannelConnectionCommand;
+import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
@@ -57,13 +60,15 @@ import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
- * Base implementation for generating {@link PhysicalChannelConnectionDefinition}s from logical channels.
+ * Base implementation for generating {@link AttachChannelConnectionCommand}s and {@link DetachChannelConnectionCommand}s for logical channel
+ * bindings.
  *
  * @version $Revision: 8833 $ $Date: 2010-04-08 13:27:22 +0200 (Thu, 08 Apr 2010) $
  */
@@ -76,13 +81,12 @@ public class AbstractChannelCommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected List<PhysicalChannelConnectionDefinition> generateDefinitions(LogicalChannel channel) throws GenerationException {
-        List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
+    protected void generateDefinitions(LogicalChannel channel, ChannelConnectionCommand connectionCommand, boolean incremental)
+            throws GenerationException {
         for (LogicalBinding<?> binding : channel.getBindings()) {
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
             PhysicalConnectionSourceDefinition source = bindingGenerator.generateConnectionSource(binding);
             PhysicalConnectionTargetDefinition target = new ChannelTargetDefinition(channel.getUri());
-            //bindingGenerator.generateConnectionTarget(binding);
 
             URI classLoaderUri = channel.getDefinition().getContributionUri();
             source.setClassLoaderId(classLoaderUri);
@@ -90,9 +94,15 @@ public class AbstractChannelCommandGenerator {
 
             List<PhysicalEventStreamDefinition> streams = generateStreams();
             PhysicalChannelConnectionDefinition definition = new PhysicalChannelConnectionDefinition(source, target, streams);
-            definitions.add(definition);
+
+            if (LogicalState.NEW == channel.getState() || !incremental || LogicalState.NEW == binding.getState()) {
+                AttachChannelConnectionCommand attachCommand = new AttachChannelConnectionCommand(definition);
+                connectionCommand.add(attachCommand);
+            } else if (LogicalState.MARKED == channel.getState() || !incremental || LogicalState.MARKED == binding.getState()) {
+                DetachChannelConnectionCommand attachCommand = new DetachChannelConnectionCommand(definition);
+                connectionCommand.add(attachCommand);
+            }
         }
-        return definitions;
     }
 
     private List<PhysicalEventStreamDefinition> generateStreams() {
