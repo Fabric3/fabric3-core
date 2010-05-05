@@ -84,7 +84,7 @@ public class AbstractChannelCommandGenerator {
             PhysicalConnectionTargetDefinition target = new ChannelTargetDefinition(channel.getUri());
             //bindingGenerator.generateConnectionTarget(binding);
 
-            URI classLoaderUri = channel.getParent().getDefinition().getContributionUri();
+            URI classLoaderUri = channel.getDefinition().getContributionUri();
             source.setClassLoaderId(classLoaderUri);
             target.setClassLoaderId(classLoaderUri);
 
