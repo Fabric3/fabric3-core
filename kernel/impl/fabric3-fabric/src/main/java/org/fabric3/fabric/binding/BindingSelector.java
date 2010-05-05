@@ -47,7 +47,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
  */
 public interface BindingSelector {
 
-
     /**
      * Selects and configures bindings for component wires.
      *

@@ -57,8 +57,10 @@ import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
@@ -107,6 +109,14 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, getType());
     }
 
+    public BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel) {
+        if (!enabled) {
+            return NO_MATCH;
+        }
+        // TODO handle must provide intents
+        return new BindingMatchResult(true, getType());
+    }
+
     public void bind(LogicalWire wire) throws BindingSelectionException {
         LogicalReference source = wire.getSource().getLeafReference();
         LogicalService target = wire.getTarget().getLeafService();
@@ -145,6 +155,24 @@ public class ActiveMQBindingProvider implements BindingProvider {
             callbackReferenceDefinition.setGeneratedTargetUri(createCallbackUri(source));
             callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(source));
         }
+    }
+
+    public void bind(LogicalProducer producer, LogicalChannel channel) {
+        QName deployable = producer.getParent().getDeployable();
+
+        // setup forward bindings
+        // derive the forward queue name from the service name
+        String forwardTopic = channel.getUri().toString();
+        JmsBindingDefinition producerDefinition = createTopicBindingDefinition(forwardTopic);
+        LogicalBinding<JmsBindingDefinition> producerBinding = new LogicalBinding<JmsBindingDefinition>(producerDefinition, producer, deployable);
+        producerBinding.setAssigned(true);
+        producer.addBinding(producerBinding);
+
+        JmsBindingDefinition channelDefinition = createTopicBindingDefinition(forwardTopic);
+        LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<JmsBindingDefinition>(channelDefinition, channel, deployable);
+        channelBinding.setAssigned(true);
+        channel.addBinding(channelBinding);
+
     }
 
     private JmsBindingDefinition createBindingDefinition(String queueName, boolean xa) {
@@ -187,6 +215,33 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return definition;
     }
 
+    private JmsBindingDefinition createTopicBindingDefinition(String topicName) {
+        JmsBindingMetadata metadata = new JmsBindingMetadata();
+        DestinationDefinition destinationDefinition = new DestinationDefinition();
+        destinationDefinition.setType(DestinationType.TOPIC);
+        destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
+        destinationDefinition.setName(topicName);
+        metadata.setDestination(destinationDefinition);
+
+        if (connectionFactory != null) {
+            // non-XA connection factory defined
+            ConnectionFactoryDefinition factoryDefinition = new ConnectionFactoryDefinition();
+            factoryDefinition.setName(connectionFactory);
+            factoryDefinition.setCreate(CreateOption.NEVER);
+            metadata.setConnectionFactory(factoryDefinition);
+        } else {
+            // non-XA, no connection factory defined
+            ConnectionFactoryDefinition factoryDefinition = new ConnectionFactoryDefinition();
+            factoryDefinition.setName(ActiveMQConnectionFactory.class.getName());
+            factoryDefinition.setCreate(CreateOption.ALWAYS);
+            metadata.setConnectionFactory(factoryDefinition);
+        }
+        JmsBindingDefinition definition = new JmsBindingDefinition(metadata);
+        definition.setJmsMetadata(metadata);
+        definition.setName("bindingSCAJMS");
+        return definition;
+    }
+
 
     public URI createCallbackUri(LogicalReference source) {
         LogicalComponent<?> component = source.getParent();
@@ -199,8 +254,8 @@ public class ActiveMQBindingProvider implements BindingProvider {
      * <p/>
      * TODO this should be refactored to normalize intents
      *
-     * @param service the service or reference
-     * @param callback    true if callback operations should be evaluated
+     * @param service  the service or reference
+     * @param callback true if callback operations should be evaluated
      * @return true if XA is required
      */
     private boolean isXA(LogicalService service, boolean callback) {

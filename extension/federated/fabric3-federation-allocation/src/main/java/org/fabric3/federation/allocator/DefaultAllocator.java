@@ -43,6 +43,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.plan.DeploymentPlan;
@@ -61,6 +62,9 @@ public class DefaultAllocator implements Allocator {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
                     allocate(child, plan);
+                }
+                for (LogicalChannel channel : composite.getChannels()) {
+                    selectZone(channel, plan);
                 }
             }
             selectZone(component, plan);
@@ -85,6 +89,19 @@ public class DefaultAllocator implements Allocator {
             throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
         }
         component.setZone(zoneName);
+    }
+
+    private void selectZone(LogicalChannel channel, DeploymentPlan plan) throws AllocationException {
+        QName deployable = channel.getDeployable();
+        if (deployable == null) {
+            // programming error
+            throw new AssertionError("Deployable not found for " + channel.getUri());
+        }
+        String zoneName = plan.getDeployableMappings().get(deployable);
+        if (zoneName == null) {
+            throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
+        }
+        channel.setZone(zoneName);
     }
 
 }

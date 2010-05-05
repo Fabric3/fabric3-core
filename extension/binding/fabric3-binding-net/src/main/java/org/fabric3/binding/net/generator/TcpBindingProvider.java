@@ -54,6 +54,8 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.federation.DomainTopologyService;
 
 /**
@@ -95,6 +97,11 @@ public class TcpBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, TCP_BINDING);
     }
 
+    public BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel) {
+        // does not support eventing
+        return NO_MATCH;
+    }
+
     public void bind(LogicalWire wire) throws BindingSelectionException {
         if (topologyService == null) {
             throw new BindingSelectionException("Domain manager not configured");
@@ -124,6 +131,9 @@ public class TcpBindingProvider implements BindingProvider {
         }
     }
 
+    public void bind(LogicalProducer producer, LogicalChannel channel) {
+        throw new UnsupportedOperationException();
+    }
 
     @SuppressWarnings("unchecked")
     private void configureReference(LogicalReference source, LogicalService target, String baseUrl) throws BindingSelectionException {

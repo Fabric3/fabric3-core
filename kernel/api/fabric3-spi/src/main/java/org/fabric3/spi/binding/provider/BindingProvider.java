@@ -39,6 +39,8 @@ package org.fabric3.spi.binding.provider;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
@@ -62,11 +64,29 @@ public interface BindingProvider {
     BindingMatchResult canBind(LogicalWire wire);
 
     /**
+     * Determines if this binding provider can be used as a remote transport from a producer to a channel.
+     *
+     * @param producer the producer
+     * @param channel  the channel
+     * @return if the binding provider can be used
+     */
+    BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel);
+
+    /**
      * Configures binding information for a wire.
      *
      * @param wire the wire
      * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
      */
     void bind(LogicalWire wire) throws BindingSelectionException;
+
+    /**
+     * Configures binding information to connect a producer to a channel over a remote transport.
+     *
+     * @param producer the producer
+     * @param channel  the channel
+     * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
+     */
+    void bind(LogicalProducer producer, LogicalChannel channel) throws BindingSelectionException;
 
 }
