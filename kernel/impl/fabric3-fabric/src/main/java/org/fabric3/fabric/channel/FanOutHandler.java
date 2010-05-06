@@ -38,72 +38,31 @@
 package org.fabric3.fabric.channel;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Asynchronously broadcasts a received event to a collection of handlers.
+ * Broadcasts a received event to a collection of event stream handlers.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
-public class FanOutHandler implements EventStreamHandler {
-    private WorkScheduler workScheduler;
-    private List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
-    private Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
+public interface FanOutHandler extends EventStreamHandler {
 
-    public FanOutHandler(WorkScheduler workScheduler) {
-        this.workScheduler = workScheduler;
-    }
+    /**
+     * Adds a connection containing the event streams.
+     *
+     * @param uri        the connection uri
+     * @param connection the connection
+     */
+    void addConnection(URI uri, ChannelConnection connection);
 
-    public synchronized void addConnection(URI uri, ChannelConnection connection) {
-        connections.add(connection);
-        index.put(uri, connection);
-    }
+    /**
+     * Removes a connection
+     *
+     * @param uri the connection uri
+     * @return the removed connection
+     */
+    ChannelConnection removeConnection(URI uri);
 
-    public synchronized ChannelConnection removeConnection(URI uri) {
-        ChannelConnection connection = index.remove(uri);
-        connections.remove(connection);
-        return connection;
-    }
-
-    public void handle(Object event) {
-        if (connections.isEmpty()) {
-            // no connections, skip scheduling work
-            return;
-        }
-        FanOutWork work = new FanOutWork(event);
-        workScheduler.scheduleWork(work);
-    }
-
-    public void setNext(EventStreamHandler next) {
-        throw new IllegalStateException("This handler must be the last one in the handler sequence");
-    }
-
-    public EventStreamHandler getNext() {
-        return null;
-    }
-
-    private class FanOutWork extends DefaultPausableWork {
-        private Object event;
-
-        private FanOutWork(Object event) {
-            this.event = event;
-        }
-
-        protected void execute() {
-            for (ChannelConnection connection : connections) {
-                for (EventStream stream : connection.getEventStreams()) {
-                    stream.getHeadHandler().handle(event);
-                }
-            }
-        }
-    }
 }

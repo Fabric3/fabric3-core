@@ -37,66 +37,22 @@
 */
 package org.fabric3.fabric.channel;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
- * The default Channel implementation.
+ * Synchronously broadcasts a received event to a collection of handlers.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
-public class ChannelImpl implements Channel {
-    private URI uri;
-    private QName deployable;
-    private EventStreamHandler headHandler;
-    private EventStreamHandler tailHandler;
-    private EventStreamHandler inHandler;
-    private FanOutHandler fanOutHandler;
+public class SyncFanOutHandler extends AbstractFanOutHandler {
 
-    public ChannelImpl(URI uri, QName deployable, FanOutHandler handler) {
-        this.uri = uri;
-        this.deployable = deployable;
-        inHandler = new PassThroughHandler();
-        fanOutHandler = handler;
-        inHandler.setNext(fanOutHandler);
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void addHandler(EventStreamHandler handler) {
-        if (headHandler == null) {
-            headHandler = handler;
-            inHandler.setNext(handler);
-        } else {
-            tailHandler.setNext(handler);
-        }
-        tailHandler = handler;
-        tailHandler.setNext(fanOutHandler);
-    }
-
-    public void attach(ChannelConnection connection) {
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.getTailHandler().setNext(inHandler);
+    public void handle(Object event) {
+        for (ChannelConnection connection : connections) {
+            for (EventStream stream : connection.getEventStreams()) {
+                stream.getHeadHandler().handle(event);
+            }
         }
     }
 
-    public void subscribe(URI uri, ChannelConnection connection) {
-        fanOutHandler.addConnection(uri, connection);
-    }
-
-    public ChannelConnection unsubscribe(URI uri) {
-        return fanOutHandler.removeConnection(uri);
-    }
 }

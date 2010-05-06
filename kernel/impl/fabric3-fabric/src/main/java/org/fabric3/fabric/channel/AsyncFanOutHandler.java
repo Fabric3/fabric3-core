@@ -37,66 +37,45 @@
 */
 package org.fabric3.fabric.channel;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.channel.Channel;
+import org.fabric3.host.work.DefaultPausableWork;
+import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
- * The default Channel implementation.
+ * Asynchronously broadcasts a received event to a collection of handlers.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelImpl implements Channel {
-    private URI uri;
-    private QName deployable;
-    private EventStreamHandler headHandler;
-    private EventStreamHandler tailHandler;
-    private EventStreamHandler inHandler;
-    private FanOutHandler fanOutHandler;
+public class AsyncFanOutHandler extends AbstractFanOutHandler {
+    private WorkScheduler workScheduler;
 
-    public ChannelImpl(URI uri, QName deployable, FanOutHandler handler) {
-        this.uri = uri;
-        this.deployable = deployable;
-        inHandler = new PassThroughHandler();
-        fanOutHandler = handler;
-        inHandler.setNext(fanOutHandler);
+    public AsyncFanOutHandler(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void addHandler(EventStreamHandler handler) {
-        if (headHandler == null) {
-            headHandler = handler;
-            inHandler.setNext(handler);
-        } else {
-            tailHandler.setNext(handler);
+    public void handle(Object event) {
+        if (connections.isEmpty()) {
+            // no connections, skip scheduling work
+            return;
         }
-        tailHandler = handler;
-        tailHandler.setNext(fanOutHandler);
+        FanOutWork work = new FanOutWork(event);
+        workScheduler.scheduleWork(work);
     }
 
-    public void attach(ChannelConnection connection) {
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.getTailHandler().setNext(inHandler);
+    private class FanOutWork extends DefaultPausableWork {
+        private Object event;
+
+        private FanOutWork(Object event) {
+            this.event = event;
         }
-    }
 
-    public void subscribe(URI uri, ChannelConnection connection) {
-        fanOutHandler.addConnection(uri, connection);
-    }
-
-    public ChannelConnection unsubscribe(URI uri) {
-        return fanOutHandler.removeConnection(uri);
+        protected void execute() {
+            for (ChannelConnection connection : connections) {
+                for (EventStream stream : connection.getEventStreams()) {
+                    stream.getHeadHandler().handle(event);
+                }
+            }
+        }
     }
 }

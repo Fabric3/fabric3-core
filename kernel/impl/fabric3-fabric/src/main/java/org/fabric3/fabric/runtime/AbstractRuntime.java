@@ -176,10 +176,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         return channelManager;
     }
 
-    public void setChannelManager(ChannelManager channelManager) {
-        this.channelManager = channelManager;
-    }
-
     public ScopeContainer getScopeContainer() {
         return scopeContainer;
     }

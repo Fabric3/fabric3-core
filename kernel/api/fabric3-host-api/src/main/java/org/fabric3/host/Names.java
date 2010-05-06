@@ -68,4 +68,8 @@ public interface Names {
 
     URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
 
+    String RUNTIME_DOMAIN_CHANNEL = "RuntimeDomainChannel";
+
+    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_DOMAIN_CHANNEL);
+
 }

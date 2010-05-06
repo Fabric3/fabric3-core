@@ -38,65 +38,41 @@
 package org.fabric3.fabric.channel;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
- * The default Channel implementation.
+ * Base FanOutHandler functionality.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
-public class ChannelImpl implements Channel {
-    private URI uri;
-    private QName deployable;
-    private EventStreamHandler headHandler;
-    private EventStreamHandler tailHandler;
-    private EventStreamHandler inHandler;
-    private FanOutHandler fanOutHandler;
+public abstract class AbstractFanOutHandler implements FanOutHandler {
+    protected List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
+    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
 
-    public ChannelImpl(URI uri, QName deployable, FanOutHandler handler) {
-        this.uri = uri;
-        this.deployable = deployable;
-        inHandler = new PassThroughHandler();
-        fanOutHandler = handler;
-        inHandler.setNext(fanOutHandler);
+    public synchronized void addConnection(URI uri, ChannelConnection connection) {
+        connections.add(connection);
+        index.put(uri, connection);
     }
 
-    public URI getUri() {
-        return uri;
+    public synchronized ChannelConnection removeConnection(URI uri) {
+        ChannelConnection connection = index.remove(uri);
+        connections.remove(connection);
+        return connection;
     }
 
-    public QName getDeployable() {
-        return deployable;
+
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
     }
 
-    public void addHandler(EventStreamHandler handler) {
-        if (headHandler == null) {
-            headHandler = handler;
-            inHandler.setNext(handler);
-        } else {
-            tailHandler.setNext(handler);
-        }
-        tailHandler = handler;
-        tailHandler.setNext(fanOutHandler);
+    public EventStreamHandler getNext() {
+        return null;
     }
 
-    public void attach(ChannelConnection connection) {
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.getTailHandler().setNext(inHandler);
-        }
-    }
-
-    public void subscribe(URI uri, ChannelConnection connection) {
-        fanOutHandler.addConnection(uri, connection);
-    }
-
-    public ChannelConnection unsubscribe(URI uri) {
-        return fanOutHandler.removeConnection(uri);
-    }
 }
