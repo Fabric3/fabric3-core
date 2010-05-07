@@ -21,9 +21,5 @@
         <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKWireProxyService"/>
     </component>
 
-    <component name="JDKChannelProxyService">
-        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKChannelProxyService"/>
-    </component>
-
 
 </composite>

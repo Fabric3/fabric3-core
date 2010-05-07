@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.pojo.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -72,13 +72,23 @@ public class JDKChannelProxyService implements ChannelProxyService {
     }
 
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        Map<Method, EventStream> mappings = createInterfaceToStreamMapping(interfaze, connection);
-        return new ChannelConnectionObjectFactory<T>(interfaze, this, mappings);
+        if (connection.getEventStreams().size() == 1) {
+            return new OptimizedChannelConnectionObjectFactory<T>(interfaze, this, connection.getEventStreams().get(0));
+        } else {
+            Map<Method, EventStream> mappings = createInterfaceToStreamMapping(interfaze, connection);
+            return new ChannelConnectionObjectFactory<T>(interfaze, this, mappings);
+        }
     }
 
     public <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException {
         ClassLoader loader = interfaze.getClassLoader();
         JDKEventHandler handler = new JDKEventHandler(mappings);
+        return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
+    }
+
+    public <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException {
+        ClassLoader loader = interfaze.getClassLoader();
+        OptimizedJDKEventHandler handler = new OptimizedJDKEventHandler(stream);
         return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
     }
 

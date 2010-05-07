@@ -193,6 +193,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               scopeRegistry,
                                                               componentManager,
                                                               logicalComponetManager,
+                                                              channelManager,
                                                               metaDataStore,
                                                               mbeanServer,
                                                               hostInfo);
@@ -330,7 +331,6 @@ public class DefaultBootstrapper implements Bootstrapper {
             throw new InitializationException(e);
         }
     }
-
 
     /**
      * Creates contributions for the host and boot classloaders. These contributions may be imported by extensions and user contributions.

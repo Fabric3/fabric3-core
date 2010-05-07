@@ -41,6 +41,8 @@ import org.fabric3.implementation.system.introspection.SystemImplementationLoade
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
+import org.fabric3.introspection.xml.common.ComponentConsumerLoader;
+import org.fabric3.introspection.xml.common.ComponentProducerLoader;
 import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
 import org.fabric3.introspection.xml.common.PropertyLoader;
@@ -98,6 +100,11 @@ public class BootstrapLoaderFactory {
         componentReferenceLoader.init();
         ComponentServiceLoader componentServiceLoader = new ComponentServiceLoader(registry, loaderHelper);
         componentServiceLoader.init();
+        ComponentConsumerLoader componentConsumerLoader = new ComponentConsumerLoader(registry);
+        componentConsumerLoader.init();
+        ComponentProducerLoader componentProducerLoader = new ComponentProducerLoader(registry);
+        componentProducerLoader.init();
+
         ComponentLoader componentLoader = new ComponentLoader(registry, loaderHelper);
         componentLoader.init();
         IncludeLoader includeLoader = new IncludeLoader(registry);

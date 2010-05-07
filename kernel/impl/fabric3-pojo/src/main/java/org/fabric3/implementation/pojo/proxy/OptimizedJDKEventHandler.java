@@ -41,65 +41,32 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.pojo.proxy;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.component.InstanceInvocationException;
 
 /**
- * Dispatches from a proxy to an {@link EventStream}.
+ * Dispatches from a proxy to a single {@link EventStream}.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
-public final class JDKEventHandler implements InvocationHandler {
-    private Map<Method, EventStream> streams;
-    private EventStream singleStream;
+public final class OptimizedJDKEventHandler extends AbstractJDKEventHandler {
+    private EventStream stream;
 
-    /**
-     * Constructor.
-     *
-     * @param streams the method to channel handler mappings
-     * @throws NoMethodForOperationException if an error occurs creating the proxy
-     */
-    public JDKEventHandler(Map<Method, EventStream> streams) throws NoMethodForOperationException {
-        this.streams = streams;
-    }
-
-    public JDKEventHandler(EventStream handler) throws NoMethodForOperationException {
-        this.singleStream = handler;
+    public OptimizedJDKEventHandler(EventStream stream) {
+        this.stream = stream;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        EventStream stream;
-        if (singleStream != null) {
-            stream = singleStream;
-        } else {
-            stream = streams.get(method);
-        }
-        if (stream == null) {
-            return handleProxyMethod(method);
+        if (args == null || Object.class.equals(method.getDeclaringClass())) {
+            // events have at least one arg
+            handleProxyMethod(method);
+            return null;
         }
         stream.getHeadHandler().handle(args);
         return null;
     }
 
-    private Object handleProxyMethod(Method method) throws InstanceInvocationException {
-        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
-            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class)
-                && "equals".equals(method.getName())) {
-            // TODO implement
-            throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass())
-                && "hashCode".equals(method.getName())) {
-            return hashCode();
-            // TODO beter hash algorithm
-        }
-        String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op, op);
-    }
 }

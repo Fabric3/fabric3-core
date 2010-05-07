@@ -44,6 +44,8 @@ import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
+import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -51,19 +53,20 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -132,11 +135,29 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        throw new UnsupportedOperationException();
+        SystemConnectionSourceDefinition definition = new SystemConnectionSourceDefinition();
+        URI uri = producer.getUri();
+        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
+        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        definition.setUri(uri);
+        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
+        definition.setInterfaceName(interfaceName);
+        return definition;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        SystemConnectionTargetDefinition definition = new SystemConnectionTargetDefinition();
+        LogicalComponent<? extends SystemImplementation> component = (LogicalComponent<? extends SystemImplementation>) consumer.getParent();
+        URI uri = component.getUri();
+        definition.setTargetUri(uri);
+        InjectingComponentType type = component.getDefinition().getImplementation().getComponentType();
+        Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
+        if (signature == null) {
+            // programming error
+            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
+        }
+        definition.setConsumerSignature(signature);
+        return definition;
     }
 
     public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {

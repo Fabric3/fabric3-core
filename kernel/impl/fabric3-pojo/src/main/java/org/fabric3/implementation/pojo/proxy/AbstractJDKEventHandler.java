@@ -41,53 +41,31 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.builder;
+package org.fabric3.implementation.pojo.proxy;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.component.InstanceInvocationException;
 
 /**
- * Creates proxies fronting event channel connections.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
+public abstract class AbstractJDKEventHandler implements InvocationHandler {
 
-public interface ChannelProxyService {
-
-    /**
-     * Creates a proxy factory.
-     *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
-     */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
-
-    /**
-     * Creates a proxy.
-     *
-     * @param interfaze the interface the proxy implements
-     * @param mappings  mappings from interface method to event streams contained in a channel connection
-     * @param <T>       the interface type
-     * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
-     */
-    <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
-
-    /**
-     * Creates an optimized proxy for an interface containing a single method which dispatches to an event stream.
-     *
-     * @param interfaze the interface the proxy implements
-     * @param stream    the event stream
-     * @param <T>       the interface type
-     * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
-     */
-    <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException;
+    protected Object handleProxyMethod(Method method) throws InstanceInvocationException {
+        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
+            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
+        } else if (method.getDeclaringClass().equals(Object.class)
+                && "equals".equals(method.getName())) {
+            // TODO implement
+            throw new UnsupportedOperationException();
+        } else if (Object.class.equals(method.getDeclaringClass())
+                && "hashCode".equals(method.getName())) {
+            return hashCode();
+            // TODO beter hash algorithm
+        }
+        String op = method.getName();
+        throw new InstanceInvocationException("Operation not configured: " + op, op);
+    }
 }

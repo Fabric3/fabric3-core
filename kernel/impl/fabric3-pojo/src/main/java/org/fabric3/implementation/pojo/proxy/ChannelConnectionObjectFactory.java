@@ -41,53 +41,47 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.builder;
+package org.fabric3.implementation.pojo.proxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.fabric3.implementation.pojo.builder.ChannelProxyService;
+import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 
 /**
- * Creates proxies fronting event channel connections.
+ * Creates a proxy for a channel connection that implements a specified interface.
  *
  * @version $Rev$ $Date$
  */
-
-public interface ChannelProxyService {
-
-    /**
-     * Creates a proxy factory.
-     *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
-     */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
+    private Class<T> interfaze;
+    private ChannelProxyService proxyService;
+    // the cache of proxy interface method to operation mappings
+    private Map<Method, EventStream> mappings;
 
     /**
-     * Creates a proxy.
+     * Constructor.
      *
-     * @param interfaze the interface the proxy implements
-     * @param mappings  mappings from interface method to event streams contained in a channel connection
-     * @param <T>       the interface type
-     * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
+     * @param interfaze    the interface the proxy implements
+     * @param proxyService the proxy creation service
+     * @param mappings     proxy method to channel handler mappings
      */
-    <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
+    public ChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, Map<Method, EventStream> mappings) {
+        this.interfaze = interfaze;
+        this.proxyService = proxyService;
+        this.mappings = mappings;
+    }
 
-    /**
-     * Creates an optimized proxy for an interface containing a single method which dispatches to an event stream.
-     *
-     * @param interfaze the interface the proxy implements
-     * @param stream    the event stream
-     * @param <T>       the interface type
-     * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
-     */
-    <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException;
+
+    public T getInstance() throws ObjectCreationException {
+        try {
+            return interfaze.cast(proxyService.createProxy(interfaze, mappings));
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
+    }
 }

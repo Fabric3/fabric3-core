@@ -50,11 +50,22 @@ import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.binding.BindingSelectorImpl;
+import org.fabric3.fabric.builder.ChannelConnector;
+import org.fabric3.fabric.builder.ChannelConnectorImpl;
+import org.fabric3.fabric.builder.Connector;
 import org.fabric3.fabric.builder.ConnectorImpl;
+import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
+import org.fabric3.fabric.builder.channel.ChannelSourceDefinition;
+import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
+import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
+import org.fabric3.fabric.channel.ChannelManager;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
+import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.AttachWireCommand;
+import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.BuildComponentCommand;
+import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.fabric.command.StartContextCommand;
@@ -64,16 +75,23 @@ import org.fabric3.fabric.domain.ContributionHelper;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.RuntimeDomain;
+import org.fabric3.fabric.executor.AttachChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
+import org.fabric3.fabric.executor.BuildChannelsCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
+import org.fabric3.fabric.executor.ChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
 import org.fabric3.fabric.executor.ConnectionCommandExecutor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.generator.channel.ConnectionGenerator;
+import org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl;
+import org.fabric3.fabric.generator.channel.ConsumerCommandGenerator;
 import org.fabric3.fabric.generator.channel.DomainChannelCommandGenerator;
 import org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl;
+import org.fabric3.fabric.generator.channel.ProducerCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl;
 import org.fabric3.fabric.generator.collator.ContributionCollator;
@@ -122,17 +140,23 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
+import org.fabric3.implementation.pojo.proxy.JDKChannelProxyService;
 import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
+import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
+import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;
 import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
+import org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
+import org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
@@ -145,7 +169,9 @@ import org.fabric3.jmx.control.JMXBindingGenerator;
 import org.fabric3.jmx.provision.JMXSourceDefinition;
 import org.fabric3.jmx.runtime.JMXWireAttacher;
 import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
@@ -161,6 +187,8 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.binding.JMXBinding;
@@ -191,6 +219,7 @@ public class BootstrapAssemblyFactory {
                                       ScopeRegistry scopeRegistry,
                                       ComponentManager componentManager,
                                       LogicalComponentManager logicalComponentManager,
+                                      ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
                                       MBeanServer mbServer,
                                       HostInfo info) throws InitializationException {
@@ -199,6 +228,7 @@ public class BootstrapAssemblyFactory {
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
+                                                                                channelManager,
                                                                                 mbServer,
                                                                                 info);
         DeployerMonitor monitor = monitorFactory.getMonitor(DeployerMonitor.class);
@@ -249,21 +279,64 @@ public class BootstrapAssemblyFactory {
                                                 atomicInstantiator,
                                                 wireInstantiator,
                                                 autowireInstantiator,
-                                                channelInstantiator, promotionNormalizer,
+                                                channelInstantiator,
+                                                promotionNormalizer,
                                                 autowireNormalizer,
                                                 promotionResolutionService);
     }
 
-    @SuppressWarnings({"unchecked"})
     private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorFactory monitorFactory,
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
+                                                                         ChannelManager channelManager,
                                                                          MBeanServer mbeanServer,
                                                                          HostInfo info) {
 
-        ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
+        DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
+        Connector connector = createConnnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorFactory, info);
+
+        CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
+        commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
+        BuildComponentCommandExecutor executor =
+                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry);
+        commandRegistry.register(BuildComponentCommand.class, executor);
+        commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
+        commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
+        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(commandRegistry));
+        commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
+        commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry));
+
+        ChannelConnector channelConnector = createChannelConnector(componentManager, channelManager, classLoaderRegistry);
+        commandRegistry.register(AttachChannelConnectionCommand.class, new AttachChannelConnectionCommandExecutor(commandRegistry, channelConnector));
+
+        return commandRegistry;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private static BuildComponentCommandExecutor createBuildComponentExecutor(ComponentManager componentManager,
+                                                                              ScopeRegistry scopeRegistry,
+                                                                              DefaultTransformerRegistry transformerRegistry,
+                                                                              ClassLoaderRegistry classLoaderRegistry) {
+        Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
+        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
+        IntrospectionHelper helper = new DefaultIntrospectionHelper();
+
+        ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
+        SystemComponentBuilder<?> builder = new SystemComponentBuilder<Object>(scopeRegistry,
+                                                                               factoryBuilder,
+                                                                               classLoaderRegistry,
+                                                                               propertyBuilder,
+                                                                               helper);
+
+        builders.put(SystemComponentDefinition.class, builder);
+        BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
+        executor.setBuilders(builders);
+        return executor;
+    }
+
+    private static DefaultTransformerRegistry createTransformerRegistry(ClassLoaderRegistry classLoaderRegistry) {
         DefaultTransformerRegistry transformerRegistry = new DefaultTransformerRegistry();
         List<SingleTypeTransformer<?, ?>> transformers = new ArrayList<SingleTypeTransformer<?, ?>>();
         transformers.add(new Property2StringTransformer());
@@ -274,9 +347,15 @@ public class BootstrapAssemblyFactory {
         transformers.add(new String2QNameTransformer());
         transformers.add(new String2IntegerTransformer());
         transformerRegistry.setTransformers(transformers);
+        return transformerRegistry;
+    }
 
-        IntrospectionHelper helper = new DefaultIntrospectionHelper();
-
+    private static Connector createConnnector(ComponentManager componentManager,
+                                              DefaultTransformerRegistry transformerRegistry,
+                                              ClassLoaderRegistry classLoaderRegistry,
+                                              MBeanServer mbeanServer,
+                                              MonitorFactory monitorFactory,
+                                              HostInfo info) {
         Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers =
                 new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
@@ -294,54 +373,47 @@ public class BootstrapAssemblyFactory {
         ConnectorImpl connector = new ConnectorImpl();
         connector.setSourceAttachers(sourceAttachers);
         connector.setTargetAttachers(targetAttachers);
+        return connector;
+    }
 
-        CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
+    private static ChannelConnector createChannelConnector(ComponentManager componentManager,
+                                                           ChannelManager channelManager,
+                                                           ClassLoaderRegistry classLoaderRegistry) {
+        Map<Class<? extends PhysicalConnectionSourceDefinition>,
+                SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceConnectionAttachers =
+                new HashMap<Class<? extends PhysicalConnectionSourceDefinition>,
+                        SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>>();
+        Map<Class<? extends PhysicalConnectionTargetDefinition>,
+                TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetConnectionAttachers =
+                new HashMap<Class<? extends PhysicalConnectionTargetDefinition>,
+                        TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>>();
 
-        commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
-
-        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
-
-        SystemComponentBuilder<?> builder = new SystemComponentBuilder<Object>(scopeRegistry,
-                                                                               factoryBuilder,
-                                                                               classLoaderRegistry,
-                                                                               propertyBuilder,
-                                                                               helper);
-        Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
-        builders.put(SystemComponentDefinition.class, builder);
-        BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
-        executor.setBuilders(builders);
-        commandRegistry.register(BuildComponentCommand.class, executor);
-        commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
-        commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
-        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(commandRegistry));
-
-        return commandRegistry;
+        ChannelSourceAttacher channelSourceAttacher = new ChannelSourceAttacher(channelManager);
+        ChannelProxyService proxyService = new JDKChannelProxyService(classLoaderRegistry);
+        sourceConnectionAttachers.put(ChannelSourceDefinition.class, channelSourceAttacher);
+        SystemSourceConnectionAttacher systemSourceAttacher = new SystemSourceConnectionAttacher(componentManager, proxyService, classLoaderRegistry);
+        sourceConnectionAttachers.put(SystemConnectionSourceDefinition.class, systemSourceAttacher);
+        ChannelTargetAttacher channelTargetAttacher = new ChannelTargetAttacher(channelManager);
+        targetConnectionAttachers.put(ChannelTargetDefinition.class, channelTargetAttacher);
+        SystemTargetConnectionAttacher systemTargetAttacher = new SystemTargetConnectionAttacher(componentManager, classLoaderRegistry);
+        targetConnectionAttachers.put(SystemConnectionTargetDefinition.class, systemTargetAttacher);
+        ChannelConnectorImpl channelConnector = new ChannelConnectorImpl();
+        channelConnector.setSourceAttachers(sourceConnectionAttachers);
+        channelConnector.setTargetAttachers(targetConnectionAttachers);
+        return channelConnector;
     }
 
     private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
-        OperationResolver operationResolver = new OperationResolverImpl();
-        PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
-        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
+        ClassLoaderCommandGenerator classLoaderGenerator = createClassLoaderGenerator();
+        List<CommandGenerator> commandGenerators = createCommandGenerators(resolver, matcher, generatorRegistry);
+        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl(generatorRegistry);
 
-        ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGeneratorImpl();
-        ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGeneratorImpl();
-        Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators =
-                new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
-        generators.put(JavaContributionWire.class, javaGenerator);
-        generators.put(LocationContributionWire.class, locationGenerator);
-        ClassLoaderCommandGenerator classLoaderGenerator = new ClassLoaderCommandGeneratorImpl(generators);
-
-        List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
-        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, 1));
-        commandGenerators.add(new WireCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new ResourceCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new StartComponentCommandGenerator(3));
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
+
         ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
-        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl(generatorRegistry);
+
         return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, channelGenerator, startContextGenerator, stopContextGenerator);
     }
 
@@ -356,6 +428,46 @@ public class BootstrapAssemblyFactory {
         registry.register(JMXBinding.class, new JMXBindingGenerator());
         registry.register(MonitorResource.class, new MonitorGenerator());
         return registry;
+    }
+
+    private static ClassLoaderCommandGenerator createClassLoaderGenerator() {
+        ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGeneratorImpl();
+        ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGeneratorImpl();
+        Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators =
+                new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
+        generators.put(JavaContributionWire.class, javaGenerator);
+        generators.put(LocationContributionWire.class, locationGenerator);
+
+        return new ClassLoaderCommandGeneratorImpl(generators);
+    }
+
+    private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver,
+                                                                  ContractMatcher matcher,
+                                                                  GeneratorRegistry generatorRegistry) {
+
+        List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
+
+        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, 1));
+
+        // command generators for wires
+        OperationResolver operationResolver = new OperationResolverImpl();
+        PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
+        WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
+        commandGenerators.add(new WireCommandGenerator(wireGenerator, 2));
+        commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
+        commandGenerators.add(new ResourceCommandGenerator(wireGenerator, 2));
+
+        // eventing command generators
+        ConnectionGenerator connectionGenerator = new ConnectionGeneratorImpl(generatorRegistry);
+        ConsumerCommandGenerator consumerCommandGenerator = new ConsumerCommandGenerator(connectionGenerator, 2);
+        commandGenerators.add(consumerCommandGenerator);
+        ProducerCommandGenerator producerCommandGenerator = new ProducerCommandGenerator(connectionGenerator, 2);
+        commandGenerators.add(producerCommandGenerator);
+
+        StartComponentCommandGenerator startGenerator = new StartComponentCommandGenerator(3);
+        commandGenerators.add(startGenerator);
+
+        return commandGenerators;
     }
 
 }

@@ -41,30 +41,37 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.pojo.proxy;
 
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import org.fabric3.spi.channel.EventStream;
 
 /**
- * Thrown when an event stream cannot be mapped to a method on an interface
+ * Dispatches from a proxy to an {@link EventStream}.
  *
  * @version $Rev$ $Date$
  */
-public class NoMethodForEventStreamException extends ProxyCreationException {
-    private static final long serialVersionUID = -5203755690182265124L;
+public final class JDKEventHandler extends AbstractJDKEventHandler {
+    private Map<Method, EventStream> streams;
 
-    public NoMethodForEventStreamException() {
+    /**
+     * Constructor.
+     *
+     * @param streams the method to channel handler mappings
+     */
+    public JDKEventHandler(Map<Method, EventStream> streams) {
+        this.streams = streams;
     }
 
-    public NoMethodForEventStreamException(String message) {
-        super(message);
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        EventStream stream = streams.get(method);
+        if (stream == null) {
+            return handleProxyMethod(method);
+        }
+        stream.getHeadHandler().handle(args);
+        return null;
     }
 
-    public NoMethodForEventStreamException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMethodForEventStreamException(Throwable cause) {
-        super(cause);
-    }
 }

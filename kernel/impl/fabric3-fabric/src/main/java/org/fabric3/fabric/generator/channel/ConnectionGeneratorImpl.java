@@ -155,7 +155,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             definition.addEventType(paramName);
         }
         return definition;
-
     }
 
     private List<PhysicalEventStreamDefinition> generate(LogicalConsumer consumer) {

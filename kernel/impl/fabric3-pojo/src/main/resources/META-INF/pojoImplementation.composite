@@ -18,6 +18,10 @@
            name="PojoComposite"
            autowire="true">
 
+    <component name="JDKChannelProxyService">
+        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.proxy.JDKChannelProxyService"/>
+    </component>
+
     <component name="ReflectiveInstanceFactoryBuilder" f3-core:key="org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition">
         <f3-impl:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder"/>
     </component>

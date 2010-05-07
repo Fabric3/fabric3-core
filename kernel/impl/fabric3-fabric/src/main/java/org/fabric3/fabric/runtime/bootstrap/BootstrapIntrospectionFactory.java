@@ -47,6 +47,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.fabric.monitor.MonitorProcessor;
@@ -58,6 +59,7 @@ import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristi
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
+import org.fabric3.introspection.java.annotation.ConsumerProcessor;
 import org.fabric3.introspection.java.annotation.DestroyProcessor;
 import org.fabric3.introspection.java.annotation.EagerInitProcessor;
 import org.fabric3.introspection.java.annotation.InitProcessor;
@@ -117,6 +119,7 @@ public class BootstrapIntrospectionFactory {
         // F3 annotations
         processors.put(Monitor.class, new MonitorProcessor<SystemImplementation>(helper, contractProcessor));
         processors.put(Producer.class, new ProducerProcessor<SystemImplementation>(contractProcessor, helper));
+        processors.put(Consumer.class, new ConsumerProcessor<SystemImplementation>(helper));
 
         ClassVisitor<SystemImplementation> classVisitor = new DefaultClassVisitor<SystemImplementation>(processors);
 

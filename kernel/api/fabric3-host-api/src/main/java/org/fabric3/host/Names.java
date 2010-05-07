@@ -70,6 +70,6 @@ public interface Names {
 
     String RUNTIME_DOMAIN_CHANNEL = "RuntimeDomainChannel";
 
-    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_DOMAIN_CHANNEL);
+    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_DOMAIN_CHANNEL);
 
 }
