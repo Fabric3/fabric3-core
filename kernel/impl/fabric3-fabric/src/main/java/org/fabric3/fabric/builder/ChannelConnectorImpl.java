@@ -41,9 +41,12 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.channel.FilterHandler;
 import org.fabric3.fabric.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.channel.EventStreamImpl;
 import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.channel.EventFilter;
+import org.fabric3.spi.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -51,6 +54,7 @@ import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
@@ -59,17 +63,26 @@ import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
  * @version $Rev$ $Date$
  */
 public class ChannelConnectorImpl implements ChannelConnector {
-    private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers;
-    private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers;
+    private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>>
+            sourceAttachers;
+    private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>>
+            targetAttachers;
+    private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
+            filterBuilders;
 
-    @Reference(required = false)
+    @Reference
     public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
         this.sourceAttachers = sourceAttachers;
     }
 
-    @Reference(required = false)
+    @Reference
     public void setTargetAttachers(Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers) {
         this.targetAttachers = targetAttachers;
+    }
+
+    @Reference
+    public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders) {
+        this.filterBuilders = filterBuilders;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -107,10 +120,17 @@ public class ChannelConnectorImpl implements ChannelConnector {
         targetAttacher.detach(source, target);
     }
 
-    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) {
+    @SuppressWarnings({"unchecked"})
+    private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws BuilderException {
         ChannelConnection connection = new ChannelConnectionImpl();
         for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
             EventStream stream = new EventStreamImpl(streamDefinition);
+            for (PhysicalEventFilterDefinition filterDefinition : streamDefinition.getFilters()) {
+                EventFilterBuilder filterBuilder = filterBuilders.get(filterDefinition.getClass());
+                EventFilter filter = filterBuilder.build(filterDefinition);
+                FilterHandler handler = new FilterHandler(filter);
+                stream.addHandler(handler);
+            }
             connection.addEventStream(stream);
         }
         return connection;

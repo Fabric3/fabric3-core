@@ -49,7 +49,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
+import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DetachChannelConnectionCommand;

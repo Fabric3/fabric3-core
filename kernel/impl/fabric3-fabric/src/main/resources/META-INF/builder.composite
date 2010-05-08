@@ -42,12 +42,16 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.transform.TransformerInterceptorFactoryImpl"/>
     </component>
 
-    <component name="ChannelSourceAttacher" f3-core:key="org.fabric3.fabric.builder.channel.ChannelSourceDefinition">
+    <component name="ChannelSourceAttacher" f3-core:key="org.fabric3.fabric.model.physical.ChannelSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.channel.ChannelSourceAttacher"/>
     </component>
 
-    <component name="ChannelTargetAttacher" f3-core:key="org.fabric3.fabric.builder.channel.ChannelTargetDefinition">
+    <component name="ChannelTargetAttacher" f3-core:key="org.fabric3.fabric.model.physical.ChannelTargetDefinition">
         <f3-impl:implementation.system class="org.fabric3.fabric.builder.channel.ChannelTargetAttacher"/>
+    </component>
+
+    <component name="TypeEventFilterBuilder" f3-core:key="org.fabric3.fabric.model.physical.TypeEventFilterDefinition">
+        <f3-impl:implementation.system class="org.fabric3.fabric.builder.channel.TypeEventFilterBuilder"/>
     </component>
 
 </composite>

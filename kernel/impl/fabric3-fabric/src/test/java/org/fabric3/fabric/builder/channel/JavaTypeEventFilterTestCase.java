@@ -37,50 +37,40 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import java.net.URI;
+import java.util.ArrayList;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import junit.framework.TestCase;
 
 /**
- * Attaches the target side of a channel connection to a channel.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
-    private ChannelManager channelManager;
+public class JavaTypeEventFilterTestCase  extends TestCase {
 
-    public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
+    public void testFilter() throws Exception  {
+        JavaTypeEventFilter filter = new JavaTypeEventFilter(String.class);
+        assertFalse(filter.filter(new Object[]{1}));
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.attach(connection);
+    public void testMultipleTypes() throws Exception  {
+        Class<?>[] types = new Class<?>[]{String.class, Integer.class};
+        JavaTypeEventFilter filter = new JavaTypeEventFilter(types);
+        assertTrue(filter.filter(new Object[]{1}));
+        assertTrue(filter.filter(new Object[]{"test"}));
+        assertFalse(filter.filter(new Object[]{new ArrayList()}));
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
-        // no-op since channel do not maintain references to incoming handlers
+    public void testInheritence() throws Exception  {
+        JavaTypeEventFilter filter = new JavaTypeEventFilter(Foo.class);
+        assertTrue(filter.filter(new Object[]{new Bar()}));
     }
 
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
-        }
-        return channel;
+    private class Foo {
+
+    }
+
+    private class Bar extends Foo {
+
     }
 
 }

@@ -55,9 +55,8 @@ import org.fabric3.fabric.builder.ChannelConnectorImpl;
 import org.fabric3.fabric.builder.Connector;
 import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
-import org.fabric3.fabric.builder.channel.ChannelSourceDefinition;
 import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
-import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
+import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
 import org.fabric3.fabric.channel.ChannelManager;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
@@ -130,6 +129,9 @@ import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
+import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
+import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
+import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.fabric.monitor.MonitorGenerator;
 import org.fabric3.fabric.monitor.MonitorResource;
 import org.fabric3.fabric.monitor.MonitorTargetDefinition;
@@ -168,6 +170,7 @@ import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.jmx.control.JMXBindingGenerator;
 import org.fabric3.jmx.provision.JMXSourceDefinition;
 import org.fabric3.jmx.runtime.JMXWireAttacher;
+import org.fabric3.spi.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -189,6 +192,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.binding.JMXBinding;
@@ -388,8 +392,13 @@ public class BootstrapAssemblyFactory {
                 new HashMap<Class<? extends PhysicalConnectionTargetDefinition>,
                         TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>>();
 
+        Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders =
+                new HashMap<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>();
+
         ChannelSourceAttacher channelSourceAttacher = new ChannelSourceAttacher(channelManager);
+
         ChannelProxyService proxyService = new JDKChannelProxyService(classLoaderRegistry);
+
         sourceConnectionAttachers.put(ChannelSourceDefinition.class, channelSourceAttacher);
         SystemSourceConnectionAttacher systemSourceAttacher = new SystemSourceConnectionAttacher(componentManager, proxyService, classLoaderRegistry);
         sourceConnectionAttachers.put(SystemConnectionSourceDefinition.class, systemSourceAttacher);
@@ -397,9 +406,14 @@ public class BootstrapAssemblyFactory {
         targetConnectionAttachers.put(ChannelTargetDefinition.class, channelTargetAttacher);
         SystemTargetConnectionAttacher systemTargetAttacher = new SystemTargetConnectionAttacher(componentManager, classLoaderRegistry);
         targetConnectionAttachers.put(SystemConnectionTargetDefinition.class, systemTargetAttacher);
+
+        TypeEventFilterBuilder filterBuilder = new TypeEventFilterBuilder();
+        filterBuilders.put(TypeEventFilterDefinition.class, filterBuilder);
+
         ChannelConnectorImpl channelConnector = new ChannelConnectorImpl();
         channelConnector.setSourceAttachers(sourceConnectionAttachers);
         channelConnector.setTargetAttachers(targetConnectionAttachers);
+        channelConnector.setFilterBuilders(filterBuilders);
         return channelConnector;
     }
 

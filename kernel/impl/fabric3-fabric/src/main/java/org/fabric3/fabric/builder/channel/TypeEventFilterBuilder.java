@@ -37,50 +37,32 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import java.net.URI;
+import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.channel.EventFilter;
+import org.fabric3.spi.builder.channel.EventFilterBuilder;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
- * Attaches the target side of a channel connection to a channel.
+ * Creates an event filter that filters based on Java types.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
-    private ChannelManager channelManager;
+public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilterDefinition> {
 
-    public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
-    }
-
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.attach(connection);
-    }
-
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
-        // no-op since channel do not maintain references to incoming handlers
-    }
-
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
+    public EventFilter build(TypeEventFilterDefinition definition) throws BuilderException {
+        List<DataType<?>> types = definition.getTypes();
+        int i = 0;
+        Class<?>[] classes = new Class<?>[types.size()];
+        for (DataType type : types) {
+            if (!(type instanceof JavaType)) {
+                throw new UnsupportedTypeException("Unsupported datatype: " + type);
+            }
+            classes[i] = type.getPhysical();
         }
-        return channel;
+        return new JavaTypeEventFilter(classes);
     }
-
 }

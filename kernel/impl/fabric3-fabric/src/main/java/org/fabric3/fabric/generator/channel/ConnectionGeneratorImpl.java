@@ -43,10 +43,11 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.builder.channel.ChannelSourceDefinition;
-import org.fabric3.fabric.builder.channel.ChannelTargetDefinition;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
+import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
+import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.DataType;
@@ -63,6 +64,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * @version $Rev$ $Date$
@@ -161,8 +163,20 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         // there is only one event strem from a channel to a consumer
         List<PhysicalEventStreamDefinition> streams = new ArrayList<PhysicalEventStreamDefinition>();
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
-        for (DataType<?> dataType : consumer.getDefinition().getTypes()) {
+        List<DataType<?>> types = consumer.getDefinition().getTypes();
+        boolean typed = false;
+        for (DataType<?> dataType : types) {
+            if (dataType instanceof JavaType) {
+                // for now only support Java contracts
+                if (!Object.class.equals(dataType.getLogical())) {
+                    typed = true;
+                }
+            }
             definition.addEventType(dataType.getPhysical().getName());
+        }
+        if (typed) {
+            TypeEventFilterDefinition typeFilter = new TypeEventFilterDefinition(types);
+            definition.addFilterDefinition(typeFilter);
         }
         streams.add(definition);
         return streams;

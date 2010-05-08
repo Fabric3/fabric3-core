@@ -35,52 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.spi.builder.channel;
 
-import java.net.URI;
-
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 
 /**
- * Attaches the target side of a channel connection to a channel.
+ * Creates an {@link EventFilter} from a {@link PhysicalEventFilterDefinition}.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
-    private ChannelManager channelManager;
+public interface EventFilterBuilder<PFD extends PhysicalEventFilterDefinition> {
 
-    public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
-    }
-
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.attach(connection);
-    }
-
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
-        // no-op since channel do not maintain references to incoming handlers
-    }
-
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
-        }
-        return channel;
-    }
+    /**
+     * Creates the filter.
+     *
+     * @param definition the filter definition.
+     * @return the filter
+     * @throws BuilderException if there is an error creating the filter
+     */
+    EventFilter build(PFD definition) throws BuilderException;
 
 }

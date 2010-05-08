@@ -37,50 +37,15 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import java.net.URI;
-
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
- * Attaches the target side of a channel connection to a channel.
- *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
-    private ChannelManager channelManager;
+public class UnsupportedTypeException extends BuilderException{
+    private static final long serialVersionUID = 3357845158275691387L;
 
-    public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
+    public UnsupportedTypeException(String message) {
+        super(message);
     }
-
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.attach(connection);
-    }
-
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
-        // no-op since channel do not maintain references to incoming handlers
-    }
-
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
-        }
-        return channel;
-    }
-
 }

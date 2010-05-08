@@ -35,52 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.fabric.channel;
 
-import java.net.URI;
-
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.builder.channel.EventFilter;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Attaches the target side of a channel connection to a channel.
+ * An {@link EventStreamHandler} that applies a filter to events.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {
-    private ChannelManager channelManager;
+public class FilterHandler implements EventStreamHandler {
+    private EventStreamHandler next;
+    private EventFilter filter;
 
-    public ChannelTargetAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
+    public FilterHandler(EventFilter filter) {
+        this.filter = filter;
     }
 
-    public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
-        channel.attach(connection);
-    }
-
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
-        // no-op since channel do not maintain references to incoming handlers
-    }
-
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
+    public void handle(Object event) {
+        if (filter.filter(event)) {
+            next.handle(event);
         }
-        return channel;
     }
 
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
 }

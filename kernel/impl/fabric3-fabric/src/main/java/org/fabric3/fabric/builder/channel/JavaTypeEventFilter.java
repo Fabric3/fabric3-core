@@ -37,19 +37,38 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import java.net.URI;
+import java.lang.reflect.Array;
 
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.builder.channel.EventFilter;
 
 /**
- * Metadata for attaching the source side of a channel connection to a channel.
+ * Filters events based on a set of Java types.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelSourceDefinition extends PhysicalConnectionSourceDefinition {
-    private static final long serialVersionUID = -345332613558717623L;
+public class JavaTypeEventFilter implements EventFilter {
+    private Class<?>[] types;
 
-    public ChannelSourceDefinition(URI uri) {
-        setUri(uri);
+    /**
+     * Constructor.
+     *
+     * @param types the types to filter on
+     */
+    public JavaTypeEventFilter(Class<?>... types) {
+        assert types != null;
+        this.types = types;
+    }
+
+    public boolean filter(Object object) {
+        if (!object.getClass().isArray()) {
+            throw new AssertionError("Java types must be passed as arrays: " + object.getClass());
+        }
+        Object param = Array.get(object, 0);
+        for (Class<?> type : types) {
+            if (type.isAssignableFrom(param.getClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

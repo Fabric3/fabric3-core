@@ -35,21 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.fabric.model.physical;
 
 import java.net.URI;
 
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Metadata for attaching the target side of a channel connection to a channel.
+ * Metadata for attaching the source side of a channel connection to a channel.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelTargetDefinition extends PhysicalConnectionTargetDefinition {
+public class ChannelSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -345332613558717623L;
 
-    public ChannelTargetDefinition(URI uri) {
-        setTargetUri(uri);
+    public ChannelSourceDefinition(URI uri) {
+        setUri(uri);
     }
 }

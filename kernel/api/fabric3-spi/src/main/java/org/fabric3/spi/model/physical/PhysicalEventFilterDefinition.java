@@ -44,75 +44,13 @@
 package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Metadata for an event stream that transmits events.
+ * Contains metadata for creating an event filter.
  *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Revision$ $Date$
  */
-public class PhysicalEventStreamDefinition implements Serializable {
-    private static final long serialVersionUID = 8684345140369447283L;
-    private String name;
-    private List<String> eventTypes = new ArrayList<String>();
-    private List<PhysicalEventFilterDefinition> filters = new ArrayList<PhysicalEventFilterDefinition>();
+public class PhysicalEventFilterDefinition implements Serializable {
+    private static final long serialVersionUID = 3580784686309686702L;
 
-    public PhysicalEventStreamDefinition(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets the name of the stream.
-     *
-     * @return stream name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of the stream.
-     *
-     * @param name stream name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns the fully qualified name of event types for this stream. The types are returned in order that they are passed to the stream.
-     *
-     * @return the stream parameter types.
-     */
-    public List<String> getEventTypes() {
-        return eventTypes;
-    }
-
-    /**
-     * Add the fully qualified name of the source event type to the operation.
-     *
-     * @param type the source event type to be added.
-     */
-    public void addEventType(String type) {
-        eventTypes.add(type);
-    }
-
-    /**
-     * Returns {@link PhysicalEventFilterDefinition}s for the stream.
-     *
-     * @return filter definitions for the stream
-     */
-    public List<PhysicalEventFilterDefinition> getFilters() {
-        return filters;
-    }
-
-    /**
-     * Adds a {@link PhysicalEventFilterDefinition}.
-     *
-     * @param definition the definition to add
-     */
-    public void addFilterDefinition(PhysicalEventFilterDefinition definition) {
-        filters.add(definition);
-    }
 }
