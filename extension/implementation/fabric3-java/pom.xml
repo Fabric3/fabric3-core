@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-java</artifactId>
-    <name>Fabric3 Java</name>
+    <name>Fabric3 Java Extension</name>
     <description>Fabric3 Java Component Implementation.</description>
     <packaging>jar</packaging>
 
