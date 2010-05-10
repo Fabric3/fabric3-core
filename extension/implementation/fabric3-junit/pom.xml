@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <artifactId>fabric3-junit</artifactId>
     <packaging>jar</packaging>
     <name>Fabric3 JUnit Extension</name>
-    <description>Fabric3 JUnit Extension.</description>
+    <description>Fabric3 JUnit Component Implementation.</description>
 
     <dependencies>
 
