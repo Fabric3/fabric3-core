@@ -35,39 +35,10 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.spring.model;
+package org.fabric3.implementation.spring.introspection;
 
 /**
- * A Spring bean configuration.
- *
  * @version $Rev$ $Date$
  */
-public class BeanDefinition {
-    private String name;
-    private String id;
-    private Class<?> beanClass;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Class<?> getBeanClass() {
-        return beanClass;
-    }
-
-    public void setBeanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
-    }
+public class TestBean {
 }

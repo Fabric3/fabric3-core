@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <sca:service name="TestService" type="java.lang.Object" target="MissingService"/>
-    <bean name="Service1"
-          class="org.fabric3.implementation.spring.introspection.Service1">
+    <sca:service name="TestService" type="org.fabric3.implementation.spring.introspection.TestBean" target="MissingService"/>
+
+    <bean name="Service1" class="org.fabric3.implementation.spring.introspection.TestBean">
         <property name="service" ref="Service2"/>
     </bean>
 </beans>

@@ -131,27 +131,6 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         }
     }
 
-    private void postProcess(SpringComponentType type, IntrospectionContext context) {
-        if (type.getServices().isEmpty() && type.getReferences().isEmpty() && type.getProperties().isEmpty()) {
-            processHueristics(type);
-            return;
-        }
-        // validate service targets
-        for (SpringService service : type.getSpringServices().values()) {
-            String target = service.getTarget();
-            if (!type.getBeansById().containsKey(target) && !type.getBeansByName().containsKey(target)) {
-                ServiceTargetNotFound failure = new ServiceTargetNotFound(service.getName(), target);
-                context.addError(failure);
-            }
-        }
-    }
-
-    private void processHueristics(SpringComponentType type) {
-        // TODO synthesize optional references
-        // TODO synthesize services
-        // TODO synthesize properties
-    }
-
     /**
      * Processes a Spring <code>bean</code> definition.
      *
@@ -168,10 +147,22 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
+        String classAttr = reader.getAttributeValue(null, "class");
+        Class<?> clazz = null;
+        if (classAttr != null) {
+            try {
+                clazz = context.getClassLoader().loadClass(classAttr);
+            } catch (ClassNotFoundException e) {
+                InvalidValue failure = new InvalidValue("Bean class not found: " + classAttr, reader, e);
+                context.addError(failure);
+            }
+        }
         BeanDefinition bean = new BeanDefinition();
         bean.setId(id);
         bean.setName(name);
+        bean.setBeanClass(clazz);
         type.add(bean);
+
         return true;
     }
 
@@ -203,21 +194,19 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         String typeAttr = reader.getAttributeValue(null, "type");
-        if (typeAttr == null) {
-            MissingAttribute failure = new MissingAttribute("A service type must be specified", reader);
-            context.addError(failure);
-            return false;
+        ServiceContract contract = null;
+        if (typeAttr != null) {
+            Class<?> interfaze;
+            try {
+                ClassLoader loader = context.getClassLoader();
+                interfaze = loader.loadClass(typeAttr);
+            } catch (ClassNotFoundException e) {
+                InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+                context.addError(failure);
+                return false;
+            }
+            contract = contractProcessor.introspect(interfaze, context);
         }
-        Class<?> interfaze;
-        try {
-            ClassLoader loader = context.getClassLoader();
-            interfaze = loader.loadClass(typeAttr);
-        } catch (ClassNotFoundException e) {
-            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
-            context.addError(failure);
-            return false;
-        }
-        ServiceContract contract = contractProcessor.introspect(interfaze, context);
         SpringService definition = new SpringService(name, contract, target);
         type.add(definition);
         return true;
@@ -291,5 +280,98 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         type.add(property);
         return true;
     }
+
+    /**
+     * Performs heuristic introspection and validation.
+     *
+     * @param type    the component type
+     * @param context the context for reporting errors
+     */
+    private void postProcess(SpringComponentType type, IntrospectionContext context) {
+        if (type.getServices().isEmpty() && type.getReferences().isEmpty() && type.getProperties().isEmpty()) {
+            processHueristics(type, context);
+            return;
+        }
+        // introspect service contracts for service elements that do not explicitly have a type element
+        postProcessServices(type, context);
+    }
+
+    /**
+     * Performs heuristic introspection.
+     *
+     * @param type    the component type
+     * @param context the context for reporting errors
+     */
+    private void processHueristics(SpringComponentType type, IntrospectionContext context) {
+        // TODO synthesize optional references
+        // TODO synthesize services
+        // TODO synthesize properties
+    }
+
+    /**
+     * Performs heuristic introspection and validation of services.
+     *
+     * @param type    the component type
+     * @param context the context for reporting errors
+     */
+    private void postProcessServices(SpringComponentType type, IntrospectionContext context) {
+        for (SpringService service : type.getSpringServices().values()) {
+            String target = service.getTarget();
+            BeanDefinition definition = type.getBeansById().get(target);
+            if (definition == null) {
+                definition = type.getBeansByName().get(target);
+            }
+            if (definition == null) {
+                ServiceTargetNotFound failure = new ServiceTargetNotFound(service.getName(), target);
+                context.addError(failure);
+                continue;
+            }
+            if (service.getServiceContract() == null) {
+                introspectContract(service, definition, context);
+            }
+        }
+    }
+
+    /**
+     * Introspects a service contract from a bean definition.
+     *
+     * @param service    the service
+     * @param definition the bean definition
+     * @param context    the context for reporting errors
+     */
+    private void introspectContract(SpringService service, BeanDefinition definition, IntrospectionContext context) {
+        Class<?> beanClass = definition.getBeanClass();
+        String serviceName = service.getName();
+        if (beanClass == null) {
+            UnknownServiceType failure = new UnknownServiceType(serviceName);
+            context.addError(failure);
+            return;
+        }
+        Class<?>[] interfaces = beanClass.getInterfaces();
+        if (interfaces.length == 0) {
+            // use the implementation class
+            ServiceContract contract = contractProcessor.introspect(beanClass, context);
+            service.setServiceContract(contract);
+        } else if (interfaces.length == 1) {
+            // default service
+            ServiceContract contract = contractProcessor.introspect(interfaces[0], context);
+            service.setServiceContract(contract);
+        } else {
+            // match on service name
+            ServiceContract contract = null;
+            for (Class<?> interfaze : interfaces) {
+                if (serviceName.equals(interfaze.getSimpleName())) {
+                    contract = contractProcessor.introspect(interfaze, context);
+                    service.setServiceContract(contract);
+                    break;
+                }
+            }
+            if (contract == null) {
+                UnknownServiceType failure = new UnknownServiceType(serviceName);
+                context.addError(failure);
+            }
+        }
+    }
+
 
 }

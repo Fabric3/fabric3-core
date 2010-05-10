@@ -61,7 +61,7 @@ public class SpringImplementationProcessorImplTestCase extends TestCase {
         SpringComponentType type = processor.introspect(source, context);
         assertFalse(context.hasErrors());
         assertEquals(2, type.getBeansByName().size());
-        assertEquals(1, type.getSpringServices().size());
+        assertEquals(2, type.getSpringServices().size());
         assertEquals(1, type.getReferences().size());
     }
 
@@ -81,6 +81,6 @@ public class SpringImplementationProcessorImplTestCase extends TestCase {
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class))).andReturn(null).anyTimes();
         EasyMock.replay(contractProcessor);
         MockXMLFactory xmlFactory = new MockXMLFactory();
-         processor = new SpringImplementationProcessorImpl(contractProcessor, xmlFactory);
+        processor = new SpringImplementationProcessorImpl(contractProcessor, xmlFactory);
     }
 }

@@ -33,7 +33,7 @@
                     <restriction base="string" />
                 </simpleType>
             </attribute>
-            <attribute name="type" use="required">
+            <attribute name="type" use="optional">
                 <simpleType>
                     <restriction base="string" />
                 </simpleType>
