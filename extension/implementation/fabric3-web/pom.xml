@@ -16,8 +16,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-web</artifactId>
-    <name>Fabric3 WebApp Component</name>
-    <description>Fabric3 Web Component Implementation.</description>
+    <name>Fabric3 Web Component Extension</name>
+    <description>Fabric3 web component implementation.</description>
     <packaging>jar</packaging>
 
     <dependencies>
