@@ -19,7 +19,7 @@ Public License. See the accompanying license file for details.
     <artifactId>fabric3-mock</artifactId>
     <packaging>jar</packaging>
     <name>Fabric3 Mock Extension</name>
-    <description>Fabric3 extension for mocking references.</description>
+    <description>Fabric3 mock component implementation.</description>
 
     <dependencies>
 
