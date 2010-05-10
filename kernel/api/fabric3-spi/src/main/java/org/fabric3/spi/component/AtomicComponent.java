@@ -43,8 +43,6 @@
  */
 package org.fabric3.spi.component;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.invocation.WorkContext;
@@ -56,12 +54,6 @@ import org.fabric3.spi.invocation.WorkContext;
  * @param <T> the type of the Java instance associated with this component
  */
 public interface AtomicComponent<T> extends Component {
-    /**
-     * Returns the QName of the deployable composite this component was deployed with.
-     *
-     * @return the group containing this component
-     */
-    QName getDeployable();
 
     /**
      * Returns true if component instances should be eagerly initialized.

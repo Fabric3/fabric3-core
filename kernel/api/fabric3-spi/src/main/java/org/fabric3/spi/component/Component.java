@@ -45,6 +45,8 @@ package org.fabric3.spi.component;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.fabric3.spi.Lifecycle;
 
 /**
@@ -53,6 +55,13 @@ import org.fabric3.spi.Lifecycle;
  * @version $$Rev$$ $$Date$$
  */
 public interface Component extends Lifecycle {
+
+    /**
+     * Returns the QName of the deployable composite this component was deployed with.
+     *
+     * @return the group containing this component
+     */
+    QName getDeployable();
 
     /**
      * Returns the component URI.
