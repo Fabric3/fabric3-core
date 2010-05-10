@@ -51,12 +51,13 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * Loads <implementation.java> in a composite.
+ * Loads a Java component implementation in a composite.
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaImplementationLoader implements TypeLoader<JavaImplementation> {
-
-    private final JavaImplementationProcessor implementationProcessor;
-    private final LoaderHelper loaderHelper;
+    private JavaImplementationProcessor implementationProcessor;
+    private LoaderHelper loaderHelper;
 
 
     public JavaImplementationLoader(@Reference JavaImplementationProcessor implementationProcessor, @Reference LoaderHelper loaderHelper) {
@@ -66,9 +67,6 @@ public class JavaImplementationLoader implements TypeLoader<JavaImplementation> 
 
 
     public JavaImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-
-        assert JavaImplementation.IMPLEMENTATION_JAVA.equals(reader.getName());
-
         validateAttributes(reader, introspectionContext);
         JavaImplementation implementation = new JavaImplementation();
         String implClass = reader.getAttributeValue(null, "class");
