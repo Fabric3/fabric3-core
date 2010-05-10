@@ -16,8 +16,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-timer</artifactId>
-    <name>Fabric3 Timer Implementation</name>
-    <description>Fabric3 Timer Implementation</description>
+    <name>Fabric3 Timer Extension</name>
+    <description>Fabric3 timer component implementation</description>
     <packaging>jar</packaging>
 
     <dependencies>
