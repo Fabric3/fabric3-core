@@ -36,6 +36,8 @@
             <module>fabric3-web</module>
             <module>fabric3-rs</module>
             <module>fabric3-timer</module>
+            <module>fabric3-spring-library</module>
+            <module>fabric3-spring</module>
             <module>fabric3-xquery</module>
 	</modules>
 </project>

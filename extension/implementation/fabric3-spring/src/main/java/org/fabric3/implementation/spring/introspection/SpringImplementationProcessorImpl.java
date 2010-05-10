@@ -1,0 +1,295 @@
+/*
+ * Fabric3
+ * Copyright (c) 2009 Metaform Systems
+ *
+ * Fabric3 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version, with the
+ * following exception:
+ *
+ * Linking this software statically or dynamically with other
+ * modules is making a combined work based on this software.
+ * Thus, the terms and conditions of the GNU General Public
+ * License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this software
+ * give you permission to link this software with independent
+ * modules to produce an executable, regardless of the license
+ * terms of these independent modules, and to copy and distribute
+ * the resulting executable under terms of your choice, provided
+ * that you also meet, for each linked independent module, the
+ * terms and conditions of the license of that module. An
+ * independent module is a module which is not derived from or
+ * based on this software. If you modify this software, you may
+ * extend this exception to your version of the software, but
+ * you are not obligated to do so. If you do not wish to do so,
+ * delete this exception statement from your version.
+ *
+ * Fabric3 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the
+ * GNU General Public License along with Fabric3.
+ * If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.fabric3.implementation.spring.introspection;
+
+import java.io.IOException;
+import java.io.InputStream;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.oasisopen.sca.Constants;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.host.stream.Source;
+import org.fabric3.implementation.spring.model.BeanDefinition;
+import org.fabric3.implementation.spring.model.SpringComponentType;
+import org.fabric3.implementation.spring.model.SpringService;
+import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.xml.XMLFactory;
+
+/**
+ * Default SpringImplementationProcessor implementation.
+ *
+ * @version $Rev$ $Date$
+ */
+public class SpringImplementationProcessorImpl implements SpringImplementationProcessor {
+    private static final String BEAN = "bean";
+    private static final QName SERVICE = new QName(Constants.SCA_NS, "service");
+    private static final QName REFERENCE = new QName(Constants.SCA_NS, "reference");
+    private static final QName PROPERTY = new QName(Constants.SCA_NS, "property");
+
+    private JavaContractProcessor contractProcessor;
+    private XMLFactory factory;
+
+    public SpringImplementationProcessorImpl(@Reference JavaContractProcessor contractProcessor, @Reference XMLFactory factory) {
+        this.contractProcessor = contractProcessor;
+        this.factory = factory;
+    }
+
+    public SpringComponentType introspect(Source source, IntrospectionContext context) throws XMLStreamException {
+        InputStream stream = null;
+        XMLStreamReader reader = null;
+        try {
+            SpringComponentType type = new SpringComponentType();
+            stream = source.openStream();
+            reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
+            while (true) {
+                switch (reader.next()) {
+                case START_ELEMENT:
+                    if (BEAN.equals(reader.getName().getLocalPart())) {
+                        if (!processBean(type, reader, context)) {
+                            return type;
+                        }
+                    } else if (SERVICE.equals(reader.getName())) {
+                        if (!processService(type, reader, context)) {
+                            return type;
+                        }
+                    } else if (REFERENCE.equals(reader.getName())) {
+                        if (!processReference(type, reader, context)) {
+                            return type;
+                        }
+                    } else if (PROPERTY.equals(reader.getName())) {
+                        if (!processProperty(type, reader, context)) {
+                            return type;
+                        }
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    postProcess(type, context);
+                    return type;
+                }
+            }
+
+        } catch (IOException e) {
+            throw new XMLStreamException(e);
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            try {
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (IOException e) {
+                // ignore
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void postProcess(SpringComponentType type, IntrospectionContext context) {
+        if (type.getServices().isEmpty() && type.getReferences().isEmpty() && type.getProperties().isEmpty()) {
+            processHueristics(type);
+            return;
+        }
+        // validate service targets
+        for (SpringService service : type.getSpringServices().values()) {
+            String target = service.getTarget();
+            if (!type.getBeansById().containsKey(target) && !type.getBeansByName().containsKey(target)) {
+                ServiceTargetNotFound failure = new ServiceTargetNotFound(service.getName(), target);
+                context.addError(failure);
+            }
+        }
+    }
+
+    private void processHueristics(SpringComponentType type) {
+        // TODO synthesize optional references
+        // TODO synthesize services
+        // TODO synthesize properties
+    }
+
+    /**
+     * Processes a Spring <code>bean</code> definition.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processBean(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        String id = reader.getAttributeValue(null, "id");
+        String name = reader.getAttributeValue(null, "name");
+        if (id == null && name == null) {
+            MissingAttribute failure = new MissingAttribute("A bean id or name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        BeanDefinition bean = new BeanDefinition();
+        bean.setId(id);
+        bean.setName(name);
+        type.add(bean);
+        return true;
+    }
+
+    /**
+     * Processes an SCA <code>service</code> element.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processService(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        // TODO This does not currently support policy declarations
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("A service name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        if (type.getServices().containsKey(name)) {
+            DuplicateService failure = new DuplicateService(name, reader);
+            context.addError(failure);
+            return false;
+        }
+        String target = reader.getAttributeValue(null, "target");
+        if (target == null) {
+            MissingAttribute failure = new MissingAttribute("A service target must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        String typeAttr = reader.getAttributeValue(null, "type");
+        if (typeAttr == null) {
+            MissingAttribute failure = new MissingAttribute("A service type must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        Class<?> interfaze;
+        try {
+            ClassLoader loader = context.getClassLoader();
+            interfaze = loader.loadClass(typeAttr);
+        } catch (ClassNotFoundException e) {
+            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+            context.addError(failure);
+            return false;
+        }
+        ServiceContract contract = contractProcessor.introspect(interfaze, context);
+        SpringService definition = new SpringService(name, contract, target);
+        type.add(definition);
+        return true;
+    }
+
+    /**
+     * Processes an SCA <code>reference</code> element.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processReference(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        // TODO This does not currently support policy declarations
+        // TODO This does not currently support the @default attribute
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("A reference name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        if (type.getReferences().containsKey(name)) {
+            DuplicateReference failure = new DuplicateReference(name, reader);
+            context.addError(failure);
+            return false;
+        }
+        String typeAttr = reader.getAttributeValue(null, "type");
+        if (typeAttr == null) {
+            MissingAttribute failure = new MissingAttribute("A service type must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        Class<?> interfaze;
+        try {
+            ClassLoader loader = context.getClassLoader();
+            interfaze = loader.loadClass(typeAttr);
+        } catch (ClassNotFoundException e) {
+            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+            context.addError(failure);
+            return false;
+        }
+        ServiceContract contract = contractProcessor.introspect(interfaze, context);
+        ReferenceDefinition definition = new ReferenceDefinition(name, contract);
+        type.add(definition);
+        return true;
+    }
+
+    /**
+     * Processes an SCA <code>property</code> element.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processProperty(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        // TODO handle types
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("A property name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        if (type.getProperties().containsKey(name)) {
+            DuplicateProperty failure = new DuplicateProperty(name, reader);
+            context.addError(failure);
+            return false;
+        }
+        Property property = new Property(name);
+        type.add(property);
+        return true;
+    }
+
+}

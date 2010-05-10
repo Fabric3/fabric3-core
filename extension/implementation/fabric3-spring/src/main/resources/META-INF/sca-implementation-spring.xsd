@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
+     OASIS trademark, IPR and other policies apply.  -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+   targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+   elementFormDefault="qualified">
+   
+   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
+
+   <!-- Spring Implementation -->
+   <element name="implementation.java" type="sca:SpringImplementation" 
+            substitutionGroup="sca:implementation"/>
+
+    <complexType name="SpringImplementation">
+      <complexContent>
+         <extension base="sca:Implementation">
+            <sequence>
+
+               <any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/>
+            </sequence>
+            <attribute name="class" type="NCName" use="required"/>
+         </extension>
+      </complexContent>
+   </complexType>
+
+
+    <element name="service">
+        <complexType>
+            <attribute name="name" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="type" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="target" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+
+
+    <element name="reference">
+        <complexType>
+            <attribute name="name" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="type" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="default" use="optional">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="property">
+        <complexType>
+            <attribute name="id" use="optional">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="name" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="type" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+
+
+</schema>
