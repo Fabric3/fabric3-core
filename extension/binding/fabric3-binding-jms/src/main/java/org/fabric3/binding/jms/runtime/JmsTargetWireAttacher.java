@@ -44,22 +44,22 @@
 package org.fabric3.binding.jms.runtime;
 
 import java.util.Hashtable;
-import java.util.Map;
+import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
-import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
-import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
+import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -101,7 +101,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         // resolve the connection factories and destinations for the wire
         resolveAdministeredObjects(target, wireConfiguration);
 
-        Map<String, PayloadType> payloadTypes = target.getPayloadTypes();
+        List<OperationPayloadTypes> types = target.getPayloadTypes();
         for (InvocationChain chain : wire.getInvocationChains()) {
             // setup operation-specific configuration and create an interceptor
             InterceptorConfiguration configuration = new InterceptorConfiguration(wireConfiguration);
@@ -109,8 +109,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             String operationName = op.getName();
             configuration.setOperationName(operationName);
             configuration.setOneWay(op.isOneWay());
-            PayloadType payloadType = payloadTypes.get(operationName);
-            configuration.setPayloadType(payloadType);
+            OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
+            configuration.setPayloadType(payloadTypes);
             Interceptor interceptor = new JmsInterceptor(configuration);
             chain.addInterceptor(interceptor);
         }
@@ -153,6 +153,16 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             throw new WiringException(e);
         }
 
+    }
+
+    private OperationPayloadTypes resolveOperation(String operationName, List<OperationPayloadTypes> payloadTypes) {
+        for (OperationPayloadTypes type : payloadTypes) {
+            if (type.getName().equals(operationName)) {
+                return type;
+            }
+        }
+        // programming error
+        throw new AssertionError("Error resolving operation: " + operationName);
     }
 
     /**

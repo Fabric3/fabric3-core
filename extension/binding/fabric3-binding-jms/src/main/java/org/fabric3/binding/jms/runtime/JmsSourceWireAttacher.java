@@ -47,7 +47,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -65,7 +64,7 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.spi.ObjectFactory;
@@ -206,18 +205,28 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         }
 
         JmsBindingMetadata metadata = source.getMetadata();
-        Map<String, PayloadType> payloadTypes = source.getPayloadTypes();
+        List<OperationPayloadTypes> types = source.getPayloadTypes();
         CorrelationScheme correlationScheme = metadata.getCorrelationScheme();
         List<InvocationChainHolder> chainHolders = new ArrayList<InvocationChainHolder>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition definition = chain.getPhysicalOperation();
-            PayloadType payloadType = payloadTypes.get(definition.getName());
+            OperationPayloadTypes payloadType = resolveOperation(definition.getName(), types);
             if (payloadType == null) {
                 throw new WiringException("Payload type not found for operation: " + definition.getName());
             }
             chainHolders.add(new InvocationChainHolder(chain, payloadType));
         }
         return new WireHolder(chainHolders, callbackUri, correlationScheme, trxType);
+    }
+
+    private OperationPayloadTypes resolveOperation(String operationName, List<OperationPayloadTypes> payloadTypes) {
+        for (OperationPayloadTypes type : payloadTypes) {
+            if (type.getName().equals(operationName)) {
+                return type;
+            }
+        }
+        // programming error
+        throw new AssertionError("Error resolving operation: " + operationName);
     }
 
     /**

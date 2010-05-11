@@ -44,7 +44,7 @@
 package org.fabric3.binding.jms.spi.provision;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
 
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
@@ -60,17 +60,17 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = -151189038434425132L;
     private JmsBindingMetadata metadata;
     private TransactionType transactionType;
-    private Map<String, PayloadType> payloadTypes;
+    private List<OperationPayloadTypes> payloadTypes;
 
     /**
      * Constructor.
      *
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message producer.
-     * @param payloadTypes    the JMS payload types keyed by operation name
+     * @param payloadTypes    the JMS payload types
      * @param transactionType the transaction type
      */
-    public JmsTargetDefinition(URI uri, JmsBindingMetadata metadata, Map<String, PayloadType> payloadTypes, TransactionType transactionType) {
+    public JmsTargetDefinition(URI uri, JmsBindingMetadata metadata, List<OperationPayloadTypes> payloadTypes, TransactionType transactionType) {
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
@@ -82,13 +82,13 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
      *
      * @param uri             the service URI
      * @param metadata        metadata used to create a JMS message producer.
-     * @param payloadTypes    the JMS payload types keyed by operation name
+     * @param payloadTypes    the JMS payload types
      * @param transactionType the transaction type
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
     public JmsTargetDefinition(URI uri,
                                JmsBindingMetadata metadata,
-                               Map<String, PayloadType> payloadTypes,
+                               List<OperationPayloadTypes> payloadTypes,
                                TransactionType transactionType,
                                DataType<?>... types) {
         super(types);
@@ -102,7 +102,7 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
         return metadata;
     }
 
-    public Map<String, PayloadType> getPayloadTypes() {
+    public List<OperationPayloadTypes> getPayloadTypes() {
         return payloadTypes;
     }
 

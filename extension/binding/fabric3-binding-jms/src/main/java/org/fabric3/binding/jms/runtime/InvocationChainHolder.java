@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.runtime;
 
-import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -47,19 +47,19 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public class InvocationChainHolder {
     private InvocationChain chain;
-    private PayloadType payloadType;
+    private OperationPayloadTypes payloadTypes;
 
-    public InvocationChainHolder(InvocationChain chain, PayloadType payloadType) {
+    public InvocationChainHolder(InvocationChain chain, OperationPayloadTypes payloadTypes) {
         this.chain = chain;
-        this.payloadType = payloadType;
+        this.payloadTypes = payloadTypes;
     }
 
     public InvocationChain getChain() {
         return chain;
     }
 
-    public PayloadType getPayloadType() {
-        return payloadType;
+    public OperationPayloadTypes getPayloadTypes() {
+        return payloadTypes;
     }
 
 }

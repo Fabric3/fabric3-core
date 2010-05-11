@@ -44,7 +44,7 @@
 package org.fabric3.binding.jms.spi.provision;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
 
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
@@ -60,7 +60,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -4274093421849649471L;
     private JmsBindingMetadata metadata;
     private TransactionType transactionType;
-    private Map<String, PayloadType> payloadTypes;
+    private List<OperationPayloadTypes> payloadTypes;
 
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
      */
-    public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata, Map<String, PayloadType> payloadTypes, TransactionType transactionType) {
+    public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata, List<OperationPayloadTypes> payloadTypes, TransactionType transactionType) {
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
@@ -87,7 +87,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
     public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata,
-                               Map<String, PayloadType> payloadTypes,
+                               List<OperationPayloadTypes> payloadTypes,
                                TransactionType transactionType,
                                DataType<?>... types) {
         super(types);
@@ -102,7 +102,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
         return metadata;
     }
 
-    public Map<String, PayloadType> getPayloadTypes() {
+    public List<OperationPayloadTypes> getPayloadTypes() {
         return payloadTypes;
     }
 

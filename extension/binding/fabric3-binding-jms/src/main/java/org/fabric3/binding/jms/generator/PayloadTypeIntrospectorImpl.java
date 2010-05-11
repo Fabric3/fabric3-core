@@ -44,11 +44,11 @@
 package org.fabric3.binding.jms.generator;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -68,26 +68,37 @@ import org.fabric3.model.type.contract.Operation;
  */
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
 
-    public PayloadType introspect(Operation operation) throws JmsGenerationException {
-        // TODO perform error checking, e.g. mixing of databindings
-
+    public OperationPayloadTypes introspect(Operation operation) throws JmsGenerationException {
         List<DataType<?>> inputTypes = operation.getInputTypes();
+        PayloadType inputType;
         if (inputTypes.size() == 1) {
             DataType<?> param = inputTypes.get(0);
-            Class<?> physical = param.getPhysical();
-            if (physical.isPrimitive()) {
-                return calculatePrimitivePayloadType(physical);
-            } else if (InputStream.class.isAssignableFrom(physical)) {
-                return PayloadType.STREAM;
-            } else if (String.class.isAssignableFrom(physical)) {
-                return PayloadType.TEXT;
-            } else if (Serializable.class.isAssignableFrom(physical)) {
-                return PayloadType.OBJECT;
-            } else if (physical.isAnnotationPresent(XmlRootElement.class) || physical.isAnnotationPresent(XmlType.class)) {
-                return PayloadType.XML;
-            }
+            inputType = introspectType(param);
+        } else {
+            // more than one parameter, use an object type message
+            inputType = PayloadType.OBJECT;
         }
-        // more than one parameter, use an object type message
+        PayloadType outputType = introspectType(operation.getOutputType());
+        if (outputType == PayloadType.XML) {
+            // if output is XML, send faults as XML as well. Otherwise, send them as objects
+            return new OperationPayloadTypes(operation.getName(), inputType, outputType, PayloadType.XML);
+        } else {
+            return new OperationPayloadTypes(operation.getName(), inputType, outputType, PayloadType.OBJECT);
+        }
+    }
+
+    private PayloadType introspectType(DataType<?> param) throws JmsGenerationException {
+
+        Class<?> physical = param.getPhysical();
+        if (physical.isPrimitive() && !Void.TYPE.equals(physical)) {
+            return calculatePrimitivePayloadType(physical);
+        } else if (InputStream.class.isAssignableFrom(physical)) {
+            return PayloadType.STREAM;
+        } else if (String.class.isAssignableFrom(physical)) {
+            return PayloadType.TEXT;
+        } else if (physical.isAnnotationPresent(XmlRootElement.class) || physical.isAnnotationPresent(XmlType.class)) {
+            return PayloadType.XML;
+        }
         return PayloadType.OBJECT;
     }
 

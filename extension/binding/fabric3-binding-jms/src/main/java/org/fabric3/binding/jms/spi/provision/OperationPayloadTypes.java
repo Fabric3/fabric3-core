@@ -41,25 +41,39 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.generator;
-
-import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.model.type.contract.Operation;
+package org.fabric3.binding.jms.spi.provision;
 
 /**
- * Introspects operation in parameters to determine the payload type.
+ * Defines message payload types for an operation.
  *
  * @version $Rev$ $Date$
  */
-public interface PayloadTypeIntrospector {
+public class OperationPayloadTypes {
+    private String name;
+    PayloadType inputType;
+    PayloadType outputType;
+    PayloadType faultType;
 
-    /**
-     * Performs the introspection.
-     *
-     * @param operation the operation to introspect
-     * @return the introspected JMS message types for input parameters, output type and faults
-     * @throws JmsGenerationException if an error occurs introspecting the operation
-     */
-    OperationPayloadTypes introspect(Operation operation) throws JmsGenerationException;
+    public OperationPayloadTypes(String name, PayloadType inputType, PayloadType outputType, PayloadType faultType) {
+        this.name = name;
+        this.inputType = inputType;
+        this.outputType = outputType;
+        this.faultType = faultType;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public PayloadType getInputType() {
+        return inputType;
+    }
+
+    public PayloadType getOutputType() {
+        return outputType;
+    }
+
+    public PayloadType getFaultType() {
+        return faultType;
+    }
 }

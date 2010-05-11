@@ -44,7 +44,7 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -53,13 +53,14 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -109,11 +110,11 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         validateResponseDestination(metadata, contract);
-        Map<String, PayloadType> payloadTypes = processPayloadTypes(contract);
+        List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
         URI uri = binding.getDefinition().getTargetUri();
         JmsSourceDefinition definition = null;
-        for (PayloadType payloadType : payloadTypes.values()) {
-            if (PayloadType.XML == payloadType) {
+        for (OperationPayloadTypes types : payloadTypes) {
+            if (PayloadType.XML == types.getInputType()) {
                 // set the source type to string XML
                 definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
                 break;
@@ -138,11 +139,11 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         validateResponseDestination(metadata, contract);
-        Map<String, PayloadType> payloadTypes = processPayloadTypes(contract);
+        List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
         JmsTargetDefinition definition = null;
-        for (PayloadType payloadType : payloadTypes.values()) {
-            if (PayloadType.XML == payloadType) {
+        for (OperationPayloadTypes types : payloadTypes) {
+            if (PayloadType.XML == types.getInputType()) {
                 definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
                 break;
             }
@@ -219,14 +220,14 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
      * Determines the the payload type to use based on the service contract.
      *
      * @param serviceContract the service contract
-     * @return the collection of payload types keyed by operation name
+     * @return the collection of payload types
      * @throws JmsGenerationException if an error occurs
      */
-    private Map<String, PayloadType> processPayloadTypes(ServiceContract serviceContract) throws JmsGenerationException {
-        Map<String, PayloadType> types = new HashMap<String, PayloadType>();
+    private List<OperationPayloadTypes> processPayloadTypes(ServiceContract serviceContract) throws JmsGenerationException {
+        List<OperationPayloadTypes> types = new ArrayList<OperationPayloadTypes>();
         for (Operation operation : serviceContract.getOperations()) {
-            PayloadType payloadType = introspector.introspect(operation);
-            types.put(operation.getName(), payloadType);
+            OperationPayloadTypes payloadType = introspector.introspect(operation);
+            types.add(payloadType);
         }
         return types;
     }

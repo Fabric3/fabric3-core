@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.runtime;
 
-import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 
 /**
  * Template for configuring a JmsInterceptor.
@@ -46,7 +46,7 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
  */
 public class InterceptorConfiguration {
     private String operationName;
-    private PayloadType payloadType;
+    private OperationPayloadTypes payloadTypes;
     private boolean oneWay;
     private WireConfiguration wireConfiguration;
 
@@ -66,12 +66,12 @@ public class InterceptorConfiguration {
         this.operationName = operationName;
     }
 
-    public PayloadType getPayloadType() {
-        return payloadType;
+    public OperationPayloadTypes getPayloadTypes() {
+        return payloadTypes;
     }
 
-    public void setPayloadType(PayloadType payloadType) {
-        this.payloadType = payloadType;
+    public void setPayloadType(OperationPayloadTypes payloadTypes) {
+        this.payloadTypes = payloadTypes;
     }
 
     public boolean isOneWay() {

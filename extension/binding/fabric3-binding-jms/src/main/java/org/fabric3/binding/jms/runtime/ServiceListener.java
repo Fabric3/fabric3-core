@@ -59,15 +59,16 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
+import org.fabric3.binding.jms.runtime.common.MessageHelper;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
-import org.fabric3.binding.jms.runtime.common.MessageHelper;
-import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.util.Base64;
@@ -118,31 +119,32 @@ public class ServiceListener implements MessageListener {
             String opName = request.getStringProperty(JmsConstants.OPERATION_HEADER);
             InvocationChainHolder holder = getInvocationChainHolder(opName);
             Interceptor interceptor = holder.getChain().getHeadInterceptor();
-            PayloadType payloadType = holder.getPayloadType();
             boolean oneWay = holder.getChain().getPhysicalOperation().isOneWay();
-            Object payload = MessageHelper.getPayload(request, payloadType);
+            OperationPayloadTypes payloadTypes = holder.getPayloadTypes();
+            PayloadType inputType = payloadTypes.getInputType();
+            Object payload = MessageHelper.getPayload(request, inputType);
 
-            switch (payloadType) {
+            switch (inputType) {
 
             case OBJECT:
                 if (payload != null && !payload.getClass().isArray()) {
                     payload = new Object[]{payload};
                 }
-                invoke(request, interceptor, payload, payloadType, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
                 break;
             case XML:
-                invoke(request, interceptor, payload, payloadType, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
                 break;
             case TEXT:
                 // non-encoded text
                 payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadType, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
                 break;
             case STREAM:
                 throw new UnsupportedOperationException();
             default:
                 payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadType, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
                 break;
             }
         } catch (JMSException e) {
@@ -159,12 +161,12 @@ public class ServiceListener implements MessageListener {
     private void invoke(Message request,
                         Interceptor interceptor,
                         Object payload,
-                        PayloadType payloadType,
+                        OperationPayloadTypes payloadTypes,
                         Destination responseDestination,
                         boolean oneWay,
                         TransactionType transactionType) throws JMSException, JmsBadMessageException {
         WorkContext workContext = createWorkContext(request, wireHolder.getCallbackUri());
-        if (PayloadType.XML == payloadType) {
+        if (PayloadType.XML == payloadTypes.getInputType()) {
             payload = new Object[]{payload};
         }
         org.fabric3.spi.invocation.Message inMessage = new MessageImpl(payload, false, workContext);
@@ -183,7 +185,13 @@ public class ServiceListener implements MessageListener {
                 responseSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             }
             Object responsePayload = outMessage.getBody();
-            Message response = createMessage(responsePayload, responseSession, payloadType);
+            PayloadType returnType;
+            if (outMessage.isFault()) {
+                returnType = payloadTypes.getFaultType();
+            } else {
+                returnType = payloadTypes.getOutputType();
+            }
+            Message response = createMessage(responsePayload, responseSession, returnType);
             sendResponse(request, responseSession, responseDestination, outMessage, response);
         } finally {
             if (responseSession != null) {
