@@ -43,12 +43,15 @@
  */
 package org.fabric3.binding.jms.spi.provision;
 
+import java.io.Serializable;
+
 /**
  * Defines message payload types for an operation.
  *
  * @version $Rev$ $Date$
  */
-public class OperationPayloadTypes {
+public class OperationPayloadTypes implements Serializable{
+    private static final long serialVersionUID = 6091935206595784071L;
     private String name;
     PayloadType inputType;
     PayloadType outputType;
