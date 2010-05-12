@@ -69,9 +69,9 @@ import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.MessageEncoder;
 import org.fabric3.spi.binding.format.ParameterEncoder;
 import org.fabric3.spi.binding.format.ResponseEncodeCallback;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -158,15 +158,18 @@ public class HttpRequestHandler extends SimpleChannelHandler {
         WorkContext workContext = message.getWorkContext();
         String callbackUri = wireHolder.getCallbackUri();
         CallFrame previous = workContext.peekCallFrame();
-        // Copy correlation and conversation information from incoming frame to new frame
-        // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
-        // bidirectional service
-        Serializable id = previous.getCorrelationId(Serializable.class);
-        ConversationContext conversationContext = previous.getConversationContext();
-        F3Conversation conversation = previous.getConversation();
-        CallFrame frame = new CallFrame(callbackUri, id, conversation, conversationContext);
-        workContext.addCallFrame(frame);
-
+        if (previous != null) {
+            // Copy correlation and conversation information from incoming frame to new frame
+            // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
+            // bidirectional service
+            Serializable id = previous.getCorrelationId(Serializable.class);
+            ConversationContext conversationContext = previous.getConversationContext();
+            F3Conversation conversation = previous.getConversation();
+            CallFrame frame = new CallFrame(callbackUri, id, conversation, conversationContext);
+            workContext.addCallFrame(frame);
+        } else {
+            workContext.addCallFrame(CallFrame.STATELESS_FRAME);
+        }
         ParameterEncoder parameterEncoder = wireHolder.getParameterEncoder();
         String operationName = request.getHeader(OPERATION_NAME);
 

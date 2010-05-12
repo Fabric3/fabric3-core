@@ -290,14 +290,18 @@ public class ServiceListener implements MessageListener {
             workContext.addCallFrames(stack);
             stream.close();
             CallFrame previous = workContext.peekCallFrame();
-            // Copy correlation and conversation information from incoming frame to new frame
-            // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
-            // bidirectional service
-            Serializable id = previous.getCorrelationId(Serializable.class);
-            ConversationContext context = previous.getConversationContext();
-            F3Conversation conversation = previous.getConversation();
-            CallFrame frame = new CallFrame(callbackUri, id, conversation, context);
-            stack.add(frame);
+            if (previous != null) {
+                // Copy correlation and conversation information from incoming frame to new frame
+                // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
+                // bidirectional service
+                Serializable id = previous.getCorrelationId(Serializable.class);
+                ConversationContext context = previous.getConversationContext();
+                F3Conversation conversation = previous.getConversation();
+                CallFrame frame = new CallFrame(callbackUri, id, conversation, context);
+                stack.add(frame);
+            } else {
+                workContext.addCallFrame(CallFrame.STATELESS_FRAME);
+            }
             return workContext;
         } catch (JMSException ex) {
             throw new JmsBadMessageException("Error deserializing callframe", ex);
