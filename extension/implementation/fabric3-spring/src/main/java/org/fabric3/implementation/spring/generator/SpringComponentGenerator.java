@@ -103,7 +103,7 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
 
         String target = springService.getTarget();
         String interfaceName = contract.getQualifiedInterfaceName();
-        URI uri = service.getParent().getUri();
+        URI uri = service.getUri();
         return new SpringTargetDefinition(target, interfaceName, uri);
     }
 

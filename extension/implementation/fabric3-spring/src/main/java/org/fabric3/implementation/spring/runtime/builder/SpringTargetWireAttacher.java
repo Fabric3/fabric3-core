@@ -54,11 +54,13 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches the target side of a wire to a Spring component.
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -98,7 +100,7 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTarget
     }
 
     private SpringComponent getComponent(SpringTargetDefinition definition) throws WiringException {
-        URI uri = definition.getUri();
+        URI uri = UriHelper.getDefragmentedName(definition.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(uri);
         if (component == null) {
             throw new WiringException("Target not found: " + uri);

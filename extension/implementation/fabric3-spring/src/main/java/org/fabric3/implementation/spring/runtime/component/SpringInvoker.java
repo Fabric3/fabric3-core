@@ -40,6 +40,8 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.osoa.sca.ServiceRuntimeException;
+
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -71,6 +73,9 @@ public class SpringInvoker implements Interceptor {
         try {
             if (beanProxy == null) {
                 beanProxy = component.getBean(beanName);
+                if (beanProxy == null) {
+                    throw new ServiceRuntimeException("Bean not found:" + beanName);
+                }
             }
             WorkContext workContext = msg.getWorkContext();
             oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
