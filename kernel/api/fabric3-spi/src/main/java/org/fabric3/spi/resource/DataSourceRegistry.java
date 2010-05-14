@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.resource;
 
+import java.util.Map;
 import javax.sql.DataSource;
 
 /**
@@ -51,6 +52,13 @@ public interface DataSourceRegistry {
      * @return Named datasource.
      */
     DataSource getDataSource(String name);
+
+    /**
+     * Returns all registered datasources.
+     *
+     * @return all registered datasources
+     */
+    Map<String, DataSource> getDataSources();
 
     /**
      * Registers a datasource by name.

@@ -55,6 +55,10 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
         return dataSources.get(name);
     }
 
+    public Map<String, DataSource> getDataSources() {
+        return dataSources;
+    }
+
     public void register(String name, DataSource dataSource) {
         dataSources.put(name, dataSource);
     }
