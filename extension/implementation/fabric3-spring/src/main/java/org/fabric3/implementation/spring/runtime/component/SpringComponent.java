@@ -50,7 +50,7 @@ import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.Component;
 
 /**
- * The runtime representation of a Spring component. A Spring component has and associated application context.
+ * The runtime representation of a Spring component. A Spring component has an associated application context that manages Spring beans.
  *
  * @version $Rev$ $Date$
  */
