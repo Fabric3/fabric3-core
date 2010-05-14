@@ -73,7 +73,6 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     public PersistenceContextParserImpl(@Reference DataSourceRegistry registry, @Reference XMLFactory xmlFactory) {
         this.registry = registry;
         factory = xmlFactory.newInputFactoryInstance();
-
     }
 
     public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {
