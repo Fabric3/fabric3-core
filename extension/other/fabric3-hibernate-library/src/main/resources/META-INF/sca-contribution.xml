@@ -14,14 +14,10 @@ Public License. See the accompanying license file for details.
               f3-core:extension="true"
               f3-core:required-capabilities="transaction"
               f3-core:capabilities="jpa hibernate"
-              f3-core:description="Hibernate JPA extension">
+              f3-core:description="Hibernate library extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="1.0.0"/>
-    <import.java package="org.hibernate.*" version="3.4.0.GA"/>
-    <import.java package="javassist.util.proxy" version="3.4.0.GA"/>
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
-    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.6"/>
-    <export.java package="org.fabric3.jpa.api" version="1.6"/>
-    <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateJpaExtension"/>
+    <export.java package="org.hibernate.*" version="3.4.0.GA"/>
+    <export.java package="javassist.util.proxy" version="3.4.0.GA"/>
 </contribution>

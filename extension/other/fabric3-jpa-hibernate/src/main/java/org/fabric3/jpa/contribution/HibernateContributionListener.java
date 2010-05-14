@@ -58,12 +58,15 @@ public class HibernateContributionListener implements ContributionServiceListene
     private JavaImport hibernateImport;
     private JavaImport javassistImport;
     private boolean noImplicitImport;
+    private JavaImport apiImport;
 
     public HibernateContributionListener() {
-        PackageInfo hibernateIinfo = new PackageInfo("org.hibernate.*");
-        hibernateImport = new JavaImport(hibernateIinfo);
+        PackageInfo hibernateInfo = new PackageInfo("org.hibernate.*");
+        hibernateImport = new JavaImport(hibernateInfo);
         PackageInfo javassistInfo = new PackageInfo("javassist.util.proxy");
         javassistImport = new JavaImport(javassistInfo);
+        PackageInfo apiInfo = new PackageInfo("org.fabric3.jpa.api");
+        apiImport = new JavaImport(apiInfo);
     }
 
     @Property(required = false)
@@ -103,6 +106,7 @@ public class HibernateContributionListener implements ContributionServiceListene
             if (!javassistImported) {
                 manifest.addImport(javassistImport);
             }
+            manifest.addImport(apiImport);
         }
     }
 
