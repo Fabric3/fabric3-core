@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -141,7 +142,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     }
 
     private PersistenceUnitInfo parsePersistenceUnit(XMLStreamReader reader, ClassLoader classLoader, URL rootUrl)
-            throws XMLStreamException, PersistenceUnitException {
+            throws XMLStreamException, PersistenceUnitException, MalformedURLException {
         String name = reader.getAttributeValue(null, "name");
         String trxAttr = reader.getAttributeValue(null, "transaction-type");
         PersistenceUnitTransactionType trxType = "JTA".equals(trxAttr) ? JTA : RESOURCE_LOCAL;
@@ -168,7 +169,11 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                 } else if ("properties".equals(reader.getName().getLocalPart())) {
                     parseProperties(info, reader);
                 } else if ("mapping-file".equals(reader.getName().getLocalPart())) {
+                    String file = reader.getElementText();
+                    info.addMappingFile(file);
                 } else if ("jar-file".equals(reader.getName().getLocalPart())) {
+                    URL file = new File(reader.getElementText()).toURI().toURL();
+                    info.addJarFileUrl(file);
                 } else if ("exclude-unlisted-classes".equals(reader.getName().getLocalPart())) {
                     boolean exclude = Boolean.parseBoolean(reader.getElementText());
                     info.setExcludeUnlistedClasses(exclude);
