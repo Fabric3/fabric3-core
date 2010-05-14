@@ -52,7 +52,7 @@ import org.osoa.sca.annotations.Reference;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import org.fabric3.host.Names;
-import static org.fabric3.implementation.spring.api.SpringConstants.EMF_BUILDER;
+import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
@@ -171,7 +171,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
             parent.getBeanFactory().registerSingleton(entry.getKey(), entry.getValue());
         }
         if (emfResolver != null) {
-            parent.getBeanFactory().registerSingleton(EMF_BUILDER, emfResolver);
+            parent.getBeanFactory().registerSingleton(EMF_RESOLVER, emfResolver);
         }
     }
 

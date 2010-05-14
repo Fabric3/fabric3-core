@@ -45,7 +45,7 @@ package org.fabric3.implementation.spring.api;
 public interface SpringConstants {
 
     /**
-     * The bean name of the EntityManagerFactory builder service.
+     * The bean name of the EntityManagerFactory resolver service.
      */
-    String EMF_BUILDER = "Fabric3EMFBuilder";
+    String EMF_RESOLVER = "Fabric3EMFResolver";
 }

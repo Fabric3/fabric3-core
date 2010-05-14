@@ -43,7 +43,7 @@ import javax.persistence.PersistenceException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
-import static org.fabric3.implementation.spring.api.SpringConstants.EMF_BUILDER;
+import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import org.fabric3.jpa.api.EmfResolver;
 import org.fabric3.jpa.api.EmfResolverException;
 
@@ -72,7 +72,7 @@ public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManager
         super.setBeanFactory(beanFactory);
         // Resolve the service responsible for building and caching EntityManagerFactory instances.
         // This is set in the parent application context owned by the Spring SCA component
-        this.resolver = (EmfResolver) beanFactory.getBean(EMF_BUILDER);
+        this.resolver = (EmfResolver) beanFactory.getBean(EMF_RESOLVER);
     }
 
     protected EntityManagerFactory createNativeEntityManagerFactory() throws PersistenceException {
