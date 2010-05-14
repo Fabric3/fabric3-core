@@ -35,28 +35,32 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.runtime.emf;
+
+import javax.persistence.EntityManagerFactory;
+
+import junit.framework.TestCase;
+
+import org.fabric3.jpa.api.EmfResolver;
+import org.fabric3.jpa.runtime.emf.DefaultEmfCache;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface PersistenceUnitScanner {
+public class CachingEmfBuilderTest extends TestCase {
 
-    /**
-     * Scans the classloader for the specified persistence unit and creates an immutable representation of the information present in the matching
-     * persistence.xml file.
-     *
-     * @param unitName    Persistence unit name.
-     * @param classLoader Classloader to scan.
-     * @return the persistence unit information.
-     */
-    F3PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader);
+    private EmfResolver emfResolver;
 
-    /**
-     * Called when a persistence unit is no longer needed.
-     *
-     * @param unitName the persistence unit name
-     */
-    void release(String unitName);
+    protected void setUp() throws Exception {
+        PersistenceContextParserImpl parser = null ;//= new ClasspathPersistenceUnitScanner();
+        DefaultEmfCache cache = new DefaultEmfCache();
+        emfResolver = new CachingEmfResolver(parser, cache);
+    }
+
+    public void testBuild() throws Exception {
+
+        EntityManagerFactory emf = emfResolver.resolve("test", getClass().getClassLoader());
+        assertNotNull(emf);
+    }
 
 }

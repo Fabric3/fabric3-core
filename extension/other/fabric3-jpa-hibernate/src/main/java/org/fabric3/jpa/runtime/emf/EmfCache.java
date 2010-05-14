@@ -35,38 +35,31 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.tx;
+package org.fabric3.jpa.runtime.emf;
 
-import java.util.Properties;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-
-import org.hibernate.HibernateException;
-import org.hibernate.transaction.TransactionManagerLookup;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import javax.persistence.EntityManagerFactory;
 
 /**
+ * A cache of EntityManagerFactory instances.
+ *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public final class F3TransactionManagerLookup implements TransactionManagerLookup {
-    private static TransactionManager TM;
+public interface EmfCache {
 
-    @Reference
-    public void setTransactionManager(TransactionManager transactionManager) {
-        F3TransactionManagerLookup.TM = transactionManager;
-    }
+    /**
+     * Returns the EntityManagerFactory for the given persistence unit name
+     *
+     * @param unitName the persistence unit name
+     * @return the EntityManagerFactory or null if one has not been created
+     */
+    EntityManagerFactory getEmf(String unitName);
 
-    public TransactionManager getTransactionManager(Properties properties) throws HibernateException {
-        return TM;
-    }
+    /**
+     * Caches an EntityManagerFactory.
+     *
+     * @param unitName the persistence unit name
+     * @param emf      the EntityManagerFactory to cache
+     */
+    void putEmf(String unitName, EntityManagerFactory emf);
 
-    public String getUserTransactionName() {
-        return null;
-    }
-
-    public Object getTransactionIdentifier(Transaction transaction) {
-        return transaction;
-    }
 }

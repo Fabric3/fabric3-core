@@ -35,36 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.runtime.emf;
 
+import java.util.List;
 import javax.persistence.spi.PersistenceUnitInfo;
 
-import junit.framework.TestCase;
-
-import org.fabric3.jpa.runtime.builder.JpaRuntimeException;
-
 /**
+ * Parses a persistence.xml file located at /META-INF/persistence.xml for a provided classloader.
+ *
  * @version $Rev$ $Date$
  */
-public class ClasspathPersistenceUnitScannerTestCase extends TestCase {
+public interface PersistenceContextParser {
 
-    private PersistenceUnitScanner scanner;
-
-    protected void setUp() throws Exception {
-        scanner = new ClasspathPersistenceUnitScanner();
-    }
-
-    public void testGetPersistenceUnitInfo() {
-        PersistenceUnitInfo info = scanner.getPersistenceUnitInfo("test", getClass().getClassLoader());
-        assertNotNull(info);
-    }
-
-    public void testGetNonExistentPersistenceUnitInfo() {
-        try {
-            scanner.getPersistenceUnitInfo("test1", getClass().getClassLoader());
-            fail("Expected Exception");
-        } catch (JpaRuntimeException ex) {
-        }
-    }
+    /**
+     * Parses the persistence.xml file.
+     *
+     * @param classLoader Classloader to scan.
+     * @return the persistence unit information.
+     * @throws PersistenceUnitException if an error reading the persistence unit is encountered
+     */
+    List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException;
 
 }

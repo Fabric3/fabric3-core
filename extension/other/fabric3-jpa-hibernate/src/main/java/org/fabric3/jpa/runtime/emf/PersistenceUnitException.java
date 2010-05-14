@@ -35,31 +35,22 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.runtime.emf;
 
-import javax.persistence.EntityManagerFactory;
-
-import junit.framework.TestCase;
-
-import org.fabric3.jpa.runtime.proxy.DefaultEmfCache;
+import org.fabric3.jpa.api.EmfResolverException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CachingEmfBuilderTest extends TestCase {
+public class PersistenceUnitException extends EmfResolverException {
+    private static final long serialVersionUID = 2897143398279023346L;
 
-    private EmfBuilder emfBuilder;
-
-    protected void setUp() throws Exception {
-        ClasspathPersistenceUnitScanner scanner = new ClasspathPersistenceUnitScanner();
-        DefaultEmfCache cache = new DefaultEmfCache();
-        emfBuilder = new CachingEmfBuilder(scanner, cache);
+    public PersistenceUnitException(Throwable cause) {
+        super(cause);
     }
 
-    public void testBuild() throws Exception {
-
-        EntityManagerFactory emf = emfBuilder.build("test", getClass().getClassLoader());
-        assertNotNull(emf);
+    public PersistenceUnitException(String message) {
+        super(message);
     }
 
 }

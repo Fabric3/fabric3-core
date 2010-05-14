@@ -43,8 +43,8 @@ import javax.persistence.EntityManagerFactory;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
-import org.fabric3.jpa.runtime.builder.EmfBuilder;
-import org.fabric3.jpa.runtime.builder.EmfBuilderException;
+import org.fabric3.jpa.api.EmfResolver;
+import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -59,17 +59,17 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitTargetDefinition> {
-    private EmfBuilder emfBuilder;
+    private EmfResolver emfResolver;
     private ClassLoaderRegistry registry;
 
     /**
      * Constructor.
      *
-     * @param emfBuilder EntityManagerFactory builder.
+     * @param emfResolver EntityManagerFactory builder.
      * @param registry   the classloader registry
      */
-    public PersistenceUnitWireAttacher(@Reference EmfBuilder emfBuilder, @Reference ClassLoaderRegistry registry) {
-        this.emfBuilder = emfBuilder;
+    public PersistenceUnitWireAttacher(@Reference EmfResolver emfResolver, @Reference ClassLoaderRegistry registry) {
+        this.emfResolver = emfResolver;
         this.registry = registry;
     }
 
@@ -89,9 +89,9 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
 
         try {
             Thread.currentThread().setContextClassLoader(appCl);
-            EntityManagerFactory entityManagerFactory = emfBuilder.build(unitName, appCl);
+            EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, appCl);
             return new SingletonObjectFactory<EntityManagerFactory>(entityManagerFactory);
-        } catch (EmfBuilderException e) {
+        } catch (EmfResolverException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);

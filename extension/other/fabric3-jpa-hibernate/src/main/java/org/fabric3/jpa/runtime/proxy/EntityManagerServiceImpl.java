@@ -54,6 +54,7 @@ import org.fabric3.spi.component.ConversationExpirationCallback;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.invocation.F3Conversation;
+import org.fabric3.jpa.runtime.emf.EmfCache;
 
 /**
  * Implementation that manages a cache of EntityManagers.

@@ -19,11 +19,11 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="DefaultEmfCache">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.proxy.DefaultEmfCache"/>
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEmfCache"/>
     </component>
 
     <component name="F3TransactionManagerLookup">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.tx.F3TransactionManagerLookup"/>
+        <f3-impl:implementation.system class="org.fabric3.jpa.api.F3TransactionManagerLookup"/>
     </component>
 
     <component name="HibernateContributionListener">
@@ -62,12 +62,12 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.jpa.runtime.SessionWireAttacher"/>
     </component>
 
-    <component name="ClasspathPersistenceUnitScanner">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.builder.ClasspathPersistenceUnitScanner"/>
+    <component name="PersistenceContextParser">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.PersistenceContextParserImpl"/>
     </component>
 
-    <component name="CachingEmfBuilder">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.builder.CachingEmfBuilder"/>
+    <component name="CachingEmfResolver">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEmfResolver"/>
         <property name="logLevel" source="$systemConfig//jpa/@logging"/>
     </component>
 

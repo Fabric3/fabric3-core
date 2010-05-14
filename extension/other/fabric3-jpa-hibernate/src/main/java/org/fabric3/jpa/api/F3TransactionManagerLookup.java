@@ -35,59 +35,40 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.proxy;
+package org.fabric3.jpa.api;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.EntityManagerFactory;
+import java.util.Properties;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Service;
-
-import org.fabric3.spi.builder.classloader.ClassLoaderListener;
+import org.hibernate.HibernateException;
+import org.hibernate.transaction.TransactionManagerLookup;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 /**
- * Creates and caches entity manager factories.
+ * Resolves a Fabric3 transaction manager for Hibernate.
  *
- * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
+ * @version $Rev$ $Date$
  */
-@Service(interfaces = {EmfCache.class, ClassLoaderListener.class})
-public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
-    private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
-    private Map<ClassLoader, Set<String>> classLoaderCache = new HashMap<ClassLoader, Set<String>>();
+@EagerInit
+public final class F3TransactionManagerLookup implements TransactionManagerLookup {
+    private static TransactionManager TM;
 
-    /**
-     * Closes the entity manager factories.
-     */
-    @Destroy
-    public void destroy() {
-        for (EntityManagerFactory emf : cache.values()) {
-            if (emf != null) {
-                emf.close();
-            }
-        }
+    @Reference
+    public void setTransactionManager(TransactionManager transactionManager) {
+        F3TransactionManagerLookup.TM = transactionManager;
     }
 
-    public void onBuild(ClassLoader loader) {
-        // no-op
+    public TransactionManager getTransactionManager(Properties properties) throws HibernateException {
+        return TM;
     }
 
-    public void onDestroy(ClassLoader loader) {
-        Set<String> names = classLoaderCache.remove(loader);
-        if (names != null) {
-            for (String name : names) {
-                cache.remove(name);
-            }
-        }
+    public String getUserTransactionName() {
+        return null;
     }
 
-    public EntityManagerFactory getEmf(String unitName) {
-        return cache.get(unitName);
+    public Object getTransactionIdentifier(Transaction transaction) {
+        return transaction;
     }
-
-    public void putEmf(String unitName, EntityManagerFactory emf) {
-        cache.put(unitName, emf);
-    }
-
 }

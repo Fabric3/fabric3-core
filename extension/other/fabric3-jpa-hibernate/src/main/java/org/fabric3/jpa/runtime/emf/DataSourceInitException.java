@@ -35,25 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.runtime.emf;
 
-import javax.persistence.EntityManagerFactory;
+import org.fabric3.jpa.api.EmfResolverException;
 
 /**
- * Build EntityManagerFactor instances.
- *
  * @version $Rev$ $Date$
  */
-public interface EmfBuilder {
+public class DataSourceInitException extends EmfResolverException {
+    private static final long serialVersionUID = -5344376508087234040L;
 
-    /**
-     * Builds the EntityManagerFactor.
-     *
-     * @param unitName    Persistence unit name.
-     * @param classLoader Classloader to load the persistence XML.
-     * @return Entity manager factory.
-     * @throws EmfBuilderException if an error occurs building the EMF
-     */
-    EntityManagerFactory build(String unitName, ClassLoader classLoader) throws EmfBuilderException;
+    public DataSourceInitException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
+    public DataSourceInitException(Throwable cause) {
+        super(cause);
+    }
 }

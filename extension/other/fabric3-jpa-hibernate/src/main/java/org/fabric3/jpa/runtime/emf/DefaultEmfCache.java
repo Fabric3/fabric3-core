@@ -35,22 +35,56 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.runtime.emf;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.EntityManagerFactory;
+
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Service;
+
+import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 
 /**
- * @version $Rev$ $Date$
+ * Creates and caches entity manager factories.
+ *
+ * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
  */
-public class JpaRuntimeException extends Fabric3RuntimeException {
-    private static final long serialVersionUID = 2897143398279023346L;
+@Service(interfaces = {EmfCache.class, ClassLoaderListener.class})
+public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
+    private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
+    private Map<ClassLoader, Set<String>> classLoaderCache = new HashMap<ClassLoader, Set<String>>();
 
-    public JpaRuntimeException(Throwable cause) {
-        super(cause);
+    @Destroy
+    public void destroy() {
+        for (EntityManagerFactory emf : cache.values()) {
+            if (emf != null) {
+                emf.close();
+            }
+        }
     }
 
-    public JpaRuntimeException(String message) {
-        super(message);
+    public void onBuild(ClassLoader loader) {
+        // no-op
+    }
+
+    public void onDestroy(ClassLoader loader) {
+        Set<String> names = classLoaderCache.remove(loader);
+        if (names != null) {
+            for (String name : names) {
+                cache.remove(name);
+            }
+        }
+    }
+
+    public EntityManagerFactory getEmf(String unitName) {
+        return cache.get(unitName);
+    }
+
+    public void putEmf(String unitName, EntityManagerFactory emf) {
+        cache.put(unitName, emf);
     }
 
 }

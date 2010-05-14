@@ -35,21 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.runtime.builder;
+package org.fabric3.jpa.api;
 
-import org.fabric3.jpa.runtime.builder.EmfBuilderException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DataSourceInitException extends EmfBuilderException {
-    private static final long serialVersionUID = -5344376508087234040L;
+public class EmfResolverException extends Fabric3Exception {
+    private static final long serialVersionUID = 8918152702982814428L;
 
-    public DataSourceInitException(String message, Throwable cause) {
+    public EmfResolverException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DataSourceInitException(Throwable cause) {
+    public EmfResolverException(String message) {
+        super(message);
+    }
+
+    public EmfResolverException(Throwable cause) {
         super(cause);
     }
 }

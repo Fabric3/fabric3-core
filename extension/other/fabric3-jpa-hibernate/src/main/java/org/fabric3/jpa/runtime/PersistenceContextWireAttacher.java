@@ -43,8 +43,8 @@ import javax.transaction.TransactionManager;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
-import org.fabric3.jpa.runtime.builder.EmfBuilder;
-import org.fabric3.jpa.runtime.builder.EmfBuilderException;
+import org.fabric3.jpa.api.EmfResolver;
+import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
@@ -61,7 +61,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextTargetDefinition> {
-    private EmfBuilder emfBuilder;
+    private EmfResolver emfResolver;
     private ClassLoaderRegistry registry;
     private TransactionManager tm;
     private EntityManagerService emService;
@@ -71,14 +71,14 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
      *
      * @param emService  the service for creating EntityManagers
      * @param tm         the transaction manager
-     * @param emfBuilder the EMF builder
+     * @param emfResolver the EMF builder
      * @param registry   the classloader registry
      */
     public PersistenceContextWireAttacher(@Reference EntityManagerService emService,
                                           @Reference TransactionManager tm,
-                                          @Reference EmfBuilder emfBuilder,
+                                          @Reference EmfResolver emfResolver,
                                           @Reference ClassLoaderRegistry registry) {
-        this.emfBuilder = emfBuilder;
+        this.emfResolver = emfResolver;
         this.registry = registry;
         this.emService = emService;
         this.tm = tm;
@@ -94,13 +94,13 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
             ClassLoader appCl = registry.getClassLoader(classLoaderId);
             Thread.currentThread().setContextClassLoader(appCl);
             // eagerly build the the EntityManagerFactory
-            emfBuilder.build(unitName, appCl);
+            emfResolver.resolve(unitName, appCl);
             if (definition.isMultiThreaded()) {
                 return new MultiThreadedEntityManagerProxyFactory(unitName, extended, emService, tm);
             } else {
                 return new StatefulEntityManagerProxyFactory(unitName, extended, emService, tm);
             }
-        } catch (EmfBuilderException e) {
+        } catch (EmfResolverException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
