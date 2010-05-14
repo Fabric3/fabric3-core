@@ -88,6 +88,41 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.springframework:spring-orm:3.0.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/springframework/spring-orm/3.0.2.RELEASE/spring-orm-3.0.2.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/springframework/spring-orm/3.0.2.RELEASE/spring-orm-3.0.2.RELEASE-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.springframework:spring-tx:3.0.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/springframework/spring-tx/3.0.2.RELEASE/spring-tx-3.0.2.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/springframework/spring-tx/3.0.2.RELEASE/spring-tx-3.0.2.RELEASE-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="javax.persistence:persistence-api:1.0">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

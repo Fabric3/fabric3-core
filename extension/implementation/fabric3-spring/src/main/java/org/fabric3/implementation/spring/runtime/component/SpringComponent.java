@@ -102,29 +102,41 @@ public class SpringComponent implements Component {
     }
 
     public void start() throws SpringComponentStartException {
-        applicationContext = new GenericXmlApplicationContext();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
-            // initialize the parent context
-            parent.refresh();
-            parent.start();
+            Thread.currentThread().setContextClassLoader(classLoader);
+            applicationContext = new GenericXmlApplicationContext();
+            try {
+                // initialize the parent context
+                parent.refresh();
+                parent.start();
 
-            // initialize the context associated with the component
-            applicationContext.setParent(parent);
-            applicationContext.setClassLoader(classLoader);
-            Resource resource = new UrlResource(source);
-            applicationContext.load(resource);
-            applicationContext.refresh();
-            applicationContext.start();
-        } catch (BeansException e) {
-            throw new SpringComponentStartException("Error starting component: " + getUri(), e);
+                // initialize the context associated with the component
+                applicationContext.setParent(parent);
+                applicationContext.setClassLoader(classLoader);
+                Resource resource = new UrlResource(source);
+                applicationContext.load(resource);
+                applicationContext.refresh();
+                applicationContext.start();
+            } catch (BeansException e) {
+                throw new SpringComponentStartException("Error starting component: " + getUri(), e);
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
         state = INITIALIZED;
     }
 
     public void stop() {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(classLoader);
+            applicationContext.stop();
+            parent.stop();
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
         state = STOPPED;
-        applicationContext.stop();
-        parent.stop();
     }
 
     public ClassLoader getClassLoader() {

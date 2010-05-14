@@ -47,6 +47,7 @@ import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringImplementation;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -72,6 +73,8 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
 
     public SpringImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
+        ClassLoader classLoader = context.getClassLoader();
+        updateClassLoader(classLoader);
         SpringImplementation implementation = new SpringImplementation();
         String locationAttr = reader.getAttributeValue(null, "location");
         if (locationAttr == null) {
@@ -85,7 +88,7 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
 
         LoaderUtil.skipToEndElement(reader);
 
-        Source source = new UrlSource(context.getClassLoader().getResource(locationAttr));
+        Source source = new UrlSource(classLoader.getResource(locationAttr));
         SpringComponentType type = processor.introspect(source, context);
         implementation.setComponentType(type);
         return implementation;
@@ -101,5 +104,23 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
         }
     }
 
+    /**
+     * Make Spring classes available to the contribution classloader. This is required since user classes may extend Spring class.
+     *
+     * @param classLoader the application classloader.
+     */
+    private void updateClassLoader(ClassLoader classLoader) {
+        if (!(classLoader instanceof MultiParentClassLoader)) {
+            return;
+        }
+        MultiParentClassLoader loader = (MultiParentClassLoader) classLoader;
+        ClassLoader springClassLoader = getClass().getClassLoader();
+        for (ClassLoader parent : loader.getParents()) {
+            if (parent == springClassLoader) {
+                return;
+            }
+        }
+        loader.addParent(springClassLoader);
+    }
 
 }

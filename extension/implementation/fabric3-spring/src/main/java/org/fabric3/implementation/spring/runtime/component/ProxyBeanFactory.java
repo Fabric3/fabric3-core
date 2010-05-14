@@ -80,7 +80,7 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
     public Object getBean(String name) throws BeansException {
         ObjectFactory factory = factories.get(name);
         if (factory == null) {
-            return null;
+            return super.getBean(name);
         }
         try {
             return factory.getInstance();
