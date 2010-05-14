@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+-->
+<assembly>
+
+    <id>bin</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <!-- include assembly files -->
+    <fileSets>
+        <fileSet>
+            <directory>src/main</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>        
+    <dependencySets>
+ 
+        <dependencySet>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <outputDirectory>/repository</outputDirectory>
+        </dependencySet>
+  </dependencySets>
+    
+</assembly>
+
