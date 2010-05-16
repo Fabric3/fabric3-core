@@ -121,7 +121,7 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
     private DeploymentUnit regenerate(String zoneId) throws DeploymentException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         try {
-            Deployment deployment = generator.generate(domain, false, false);
+            Deployment deployment = generator.generate(domain, false);
             return deployment.getDeploymentUnit(zoneId);
         } catch (GenerationException e) {
             throw new DeploymentException(e);
