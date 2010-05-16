@@ -60,6 +60,7 @@ import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.generator.DeploymentUnit;
 import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
@@ -81,8 +82,29 @@ public class LocalDeployer implements Deployer {
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
+        DeploymentUnit unit = deploymentPackage.getCurrentDeployment().getDeploymentUnit(LOCAL_ZONE);
+        List<CompensatableCommand> provisionCommands = unit.getProvisionCommands();
+        execute(provisionCommands);
+
         // ignore extension commands since extensions will already be loaded locally
-        List<CompensatableCommand> commands = deploymentPackage.getCurrentDeployment().getDeploymentUnit(LOCAL_ZONE).getCommands();
+        List<CompensatableCommand> commands = unit.getCommands();
+        execute(commands);
+        try {
+            if (scopeRegistry != null) {
+                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
+            }
+        } catch (InstanceLifecycleException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
+    /**
+     * Executes the commands, peforming a rollback on error.
+     *
+     * @param commands the commands
+     * @throws DeploymentException if a deployment error occurs
+     */
+    private void execute(List<CompensatableCommand> commands) throws DeploymentException {
         int marker = 0;
         for (Command command : commands) {
             try {
@@ -93,14 +115,6 @@ public class LocalDeployer implements Deployer {
                 throw new DeploymentException(e);
             }
         }
-        try {
-            if (scopeRegistry != null) {
-                scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
-            }
-        } catch (InstanceLifecycleException e) {
-            throw new DeploymentException(e);
-        }
-
     }
 
     /**

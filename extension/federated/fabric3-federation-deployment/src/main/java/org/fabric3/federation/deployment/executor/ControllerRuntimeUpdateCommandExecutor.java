@@ -40,7 +40,6 @@ package org.fabric3.federation.deployment.executor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -63,7 +62,6 @@ import org.fabric3.spi.generator.DeploymentUnit;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
@@ -103,11 +101,14 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
             // The full and current deployment will therefore be the same.
             DeploymentUnit unit = regenerate(zone);
 
+            List<CompensatableCommand> provisionCommands = unit.getProvisionCommands();
+            byte[] serializedProvisionCommands = serialize((Serializable) provisionCommands);
             List<CompensatableCommand> extensionCommands = unit.getExtensionCommands();
             byte[] serializedExtensionCommands = serialize((Serializable) extensionCommands);
             List<CompensatableCommand> commands = unit.getCommands();
             byte[] serializedCommands = serialize((Serializable) commands);
-            SerializedDeploymentUnit serializedUnit = new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+            SerializedDeploymentUnit serializedUnit =
+                    new SerializedDeploymentUnit(serializedProvisionCommands, serializedExtensionCommands, serializedCommands);
             DeploymentCommand deploymentCommand = new DeploymentCommand(zone, serializedUnit, serializedUnit);
             RuntimeUpdateResponse response = new RuntimeUpdateResponse(deploymentCommand);
             command.setResponse(response);
@@ -119,7 +120,6 @@ public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<R
 
     private DeploymentUnit regenerate(String zoneId) throws DeploymentException {
         LogicalCompositeComponent domain = lcm.getRootComponent();
-        Collection<LogicalComponent<?>> components = domain.getComponents();
         try {
             Deployment deployment = generator.generate(domain, false, false);
             return deployment.getDeploymentUnit(zoneId);

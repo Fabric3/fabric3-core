@@ -155,11 +155,14 @@ public class FederatedDeployer implements Deployer {
     }
 
     private SerializedDeploymentUnit createSerializedUnit(DeploymentUnit deploymentUnit) throws IOException {
+        List<CompensatableCommand> provisionCommands = deploymentUnit.getProvisionCommands();
+        byte[] serializedProvisionCommands = serializationService.serialize((Serializable) provisionCommands);
+
         List<CompensatableCommand> extensionCommands = deploymentUnit.getExtensionCommands();
         byte[] serializedExtensionCommands = serializationService.serialize((Serializable) extensionCommands);
         List<CompensatableCommand> commands = deploymentUnit.getCommands();
         byte[] serializedCommands = serializationService.serialize((Serializable) commands);
-        return new SerializedDeploymentUnit(serializedExtensionCommands, serializedCommands);
+        return new SerializedDeploymentUnit(serializedProvisionCommands, serializedExtensionCommands, serializedCommands);
     }
 
     private void notifyDeploy(DeploymentCommand command) throws DeploymentException {

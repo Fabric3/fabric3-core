@@ -85,7 +85,7 @@ public class GeneratorImpl implements Generator {
         }
     };
 
-    private final List<CommandGenerator> commandGenerators;
+    private List<CommandGenerator> commandGenerators;
     private ContributionCollator collator;
     private ClassLoaderCommandGenerator classLoaderCommandGenerator;
     private DomainChannelCommandGenerator channelGenerator;
@@ -199,7 +199,7 @@ public class GeneratorImpl implements Generator {
 
         Map<String, List<CompensatableCommand>> commandsPerZone = classLoaderCommandGenerator.generate(deployingContributions);
         for (Map.Entry<String, List<CompensatableCommand>> entry : commandsPerZone.entrySet()) {
-            deployment.addCommands(entry.getKey(), entry.getValue());
+            deployment.addProvisionCommands(entry.getKey(), entry.getValue());
         }
         return deployingContributions;
     }

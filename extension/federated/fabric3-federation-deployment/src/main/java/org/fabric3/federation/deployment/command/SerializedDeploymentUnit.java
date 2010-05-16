@@ -48,12 +48,18 @@ import org.fabric3.spi.generator.DeploymentUnit;
  */
 public class SerializedDeploymentUnit implements Serializable {
     private static final long serialVersionUID = 3319998193963424295L;
+    private byte[] provisionCommands;
     private byte[] extensionCommands;
     private byte[] commands;
 
-    public SerializedDeploymentUnit(byte[] extensionCommands, byte[] commands) {
+    public SerializedDeploymentUnit(byte[] provisionCommands, byte[] extensionCommands, byte[] commands) {
+        this.provisionCommands = provisionCommands;
         this.extensionCommands = extensionCommands;
         this.commands = commands;
+    }
+
+    public byte[] getProvisionCommands() {
+        return provisionCommands;
     }
 
     public byte[] getExtensionCommands() {

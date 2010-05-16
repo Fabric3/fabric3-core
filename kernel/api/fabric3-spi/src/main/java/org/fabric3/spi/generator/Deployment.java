@@ -71,6 +71,16 @@ public class Deployment {
         return id;
     }
 
+    public void addProvisionCommand(String zone, CompensatableCommand command) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addProvisionCommand(command);
+    }
+
+    public void addProvisionCommands(String zone, List<CompensatableCommand> commands) {
+        DeploymentUnit unit = getDeploymentUnit(zone);
+        unit.addProvisionCommands(commands);
+    }
+
     public void addExtensionCommand(String zone, CompensatableCommand command) {
         DeploymentUnit unit = getDeploymentUnit(zone);
         unit.addExtensionCommand(command);
