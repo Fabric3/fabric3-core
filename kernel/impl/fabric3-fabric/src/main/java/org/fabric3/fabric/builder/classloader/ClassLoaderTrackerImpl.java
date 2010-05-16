@@ -49,42 +49,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
  * Default implementation of ClassLoaderTracker.
- * <p/>
- * Note the MetaDataStore is used to determine if a contribution classloader must be tracked. If a contribution is registered in the store, it is
- * installed as an extension of the base runtime distribution and should only be uninstalled explicitly. Therefore, it does not need to be tracked.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class ClassLoaderTrackerImpl implements ClassLoaderTracker {
-    private MetaDataStore metaDataStore;
-
-    private Map<URI, AtomicInteger> counter = new ConcurrentHashMap<URI, AtomicInteger>();
-
-    public ClassLoaderTrackerImpl(@Reference MetaDataStore metaDataStore) {
-        this.metaDataStore = metaDataStore;
-    }
+    private Map<URI, AtomicInteger> counters = new ConcurrentHashMap<URI, AtomicInteger>();
 
     public boolean isReferenced(URI uri) {
-        return (metaDataStore.find(uri) != null) || (counter.get(uri) != null);
+        return counters.get(uri) != null;
     }
 
-    public void increment(URI uri) {
-        if (metaDataStore.find(uri) == null) {
-            AtomicInteger count = counter.get(uri);
-            if (count == null) {
-                count = new AtomicInteger(1);
-                counter.put(uri, count);
-            } else {
-                count.incrementAndGet();
-            }
+    public int increment(URI uri) {
+        AtomicInteger count = counters.get(uri);
+        if (count == null) {
+            count = new AtomicInteger(1);
+            counters.put(uri, count);
+            return count.get();
+        } else {
+            return count.incrementAndGet();
         }
     }
 
@@ -92,18 +80,16 @@ public class ClassLoaderTrackerImpl implements ClassLoaderTracker {
         if (classLoader instanceof MultiParentClassLoader) {
             MultiParentClassLoader cl = (MultiParentClassLoader) classLoader;
             URI uri = cl.getName();
-            if (metaDataStore.find(uri) == null) {
-                AtomicInteger count = counter.get(uri);
-                if (count == null) {
-                    // this is a programming error as target classloaders should have been built before this and the counter incremented
-                    throw new AssertionError("Target counter not found: " + uri);
-                } else {
-                    count.incrementAndGet();
-                }
-                for (ClassLoader parent : cl.getParents()) {
-                    if (parent != null) {
-                        incrementImported(parent);
-                    }
+            AtomicInteger count = counters.get(uri);
+            if (count == null) {
+                count = new AtomicInteger(1);
+                counters.put(uri, count);
+            } else {
+                count.incrementAndGet();
+            }
+            for (ClassLoader parent : cl.getParents()) {
+                if (parent != null) {
+                    incrementImported(parent);
                 }
             }
         } else {
@@ -114,10 +100,10 @@ public class ClassLoaderTrackerImpl implements ClassLoaderTracker {
         }
     }
 
-    public boolean decrement(ClassLoader classLoader) {
+    public int decrement(ClassLoader classLoader) {
         if (classLoader instanceof MultiParentClassLoader) {
             MultiParentClassLoader cl = (MultiParentClassLoader) classLoader;
-            boolean result = decrementCount(cl);
+            int result = decrementCount(cl);
             for (ClassLoader parent : cl.getParents()) {
                 decrement(parent);
             }
@@ -127,20 +113,21 @@ public class ClassLoaderTrackerImpl implements ClassLoaderTracker {
             if (parent != null) {
                 decrement(parent);
             }
-            return false;
+            return -1;
         }
     }
 
-    private boolean decrementCount(MultiParentClassLoader multiparent) {
-        URI uri = multiparent.getName();
-        AtomicInteger count = counter.get(uri);
+    private int decrementCount(MultiParentClassLoader classLoader) {
+        URI uri = classLoader.getName();
+        AtomicInteger count = counters.get(uri);
         if (count != null) {
-            if (count.decrementAndGet() == 0) {
-                counter.remove(uri);
-                return true;
+            int val = count.decrementAndGet();
+            if (val == 0) {
+                counters.remove(uri);
             }
+            return val;
         }
-        return false;
+        return 0;
     }
 
 

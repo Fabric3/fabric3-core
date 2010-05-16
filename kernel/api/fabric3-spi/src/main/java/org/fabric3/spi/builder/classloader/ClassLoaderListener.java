@@ -38,24 +38,28 @@
 package org.fabric3.spi.builder.classloader;
 
 /**
- * Implementations receive lifecycle callbacks when classloaders are provisioned and unprovisioned on participant nodes.
+ * Implementations receive callbacks when classloaders are provisioned and unprovisioned on participant nodes. Since classloaders correspond to
+ * contributions, implementations can use this to receive callbacks when a contribution is activated and deactivated during a deployment.
+ * <p/>
+ * In a single-VM environment, callbacks will be received when a deployment is made but the classloader will have been provisioned when the
+ * contribution was installed.
  *
  * @version $Rev$ $Date$
  */
 public interface ClassLoaderListener {
 
     /**
-     * Called when a classloader is provisioned.
+     * Called when a classloader is deployed.
      *
      * @param classLoader the classloader
      */
-    void onBuild(ClassLoader classLoader);
+    void onDeploy(ClassLoader classLoader);
 
     /**
-     * Called when a classloader is removed.
+     * Called when a classloader is undeployed.
      *
      * @param classLoader the classloader
      */
-    void onDestroy(ClassLoader classLoader);
+    void onUndeploy(ClassLoader classLoader);
 
 }

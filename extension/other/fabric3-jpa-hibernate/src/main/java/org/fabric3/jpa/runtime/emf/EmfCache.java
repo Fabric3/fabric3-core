@@ -37,6 +37,7 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.net.URI;
 import javax.persistence.EntityManagerFactory;
 
 /**
@@ -57,9 +58,10 @@ public interface EmfCache {
     /**
      * Caches an EntityManagerFactory.
      *
+     * @param uri      the URI of the contribution the persistece unit is defined in
      * @param unitName the persistence unit name
      * @param emf      the EntityManagerFactory to cache
      */
-    void putEmf(String unitName, EntityManagerFactory emf);
+    void putEmf(URI uri, String unitName, EntityManagerFactory emf);
 
 }

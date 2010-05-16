@@ -37,6 +37,7 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,9 +53,11 @@ import org.oasisopen.sca.annotation.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.Names;
 import org.fabric3.jpa.api.EmfResolver;
 import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * An {@link EmfResolver} implementation that caches EntityManagerFactory instances.
@@ -90,11 +93,18 @@ public class CachingEmfResolver implements EmfResolver {
         if (resolvedEmf != null) {
             return resolvedEmf;
         }
+
         Map<String, EntityManagerFactory> emfs = createEntityManagerFactories(classLoader);
+        URI key;
+        if (classLoader instanceof MultiParentClassLoader) {
+            key = ((MultiParentClassLoader) classLoader).getName();
+        } else {
+            key = Names.HOST_CONTRIBUTION;
+        }
         for (Map.Entry<String, EntityManagerFactory> entry : emfs.entrySet()) {
             String name = entry.getKey();
             EntityManagerFactory emf = entry.getValue();
-            cache.putEmf(name, emf);
+            cache.putEmf(key, name, emf);
             if (unitName.equals(name)) {
                 resolvedEmf = emf;
             }

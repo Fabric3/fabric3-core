@@ -202,7 +202,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
     }
 
     /**
-     * Creates classloader provision commands for a set of classloader definitions.
+     * Creates provision commands for a set of classloader definitions.
      *
      * @param definitionsPerZone the classloader definitions keyed by zone
      * @return the set of commands keyed by zone

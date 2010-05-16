@@ -42,10 +42,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
  * @version $Rev$ $Date$
@@ -53,7 +51,6 @@ import org.fabric3.spi.contribution.MetaDataStore;
 public class ClassLoaderTrackerImplTestCase extends TestCase {
     private static final URL[] EMPTY_URLS = new URL[0];
 
-    private MetaDataStore store;
     private ClassLoaderTrackerImpl tracker;
 
     public void testTransitiveTracking() throws Exception {
@@ -61,9 +58,6 @@ public class ClassLoaderTrackerImplTestCase extends TestCase {
         URI grandParent2Uri = URI.create("grandparent2");
         URI classLoader1Uri = URI.create("cl1");
         URI classLoader2Uri = URI.create("cl2");
-
-        EasyMock.expect(store.find(EasyMock.isA(URI.class))).andReturn(null).anyTimes();
-        EasyMock.replay(store);
 
         ClassLoader topLevel = new URLClassLoader(EMPTY_URLS);
         MultiParentClassLoader grandParent1 = new MultiParentClassLoader(grandParent1Uri, topLevel);
@@ -91,16 +85,16 @@ public class ClassLoaderTrackerImplTestCase extends TestCase {
         assertTrue(tracker.isReferenced(classLoader1Uri));
         assertTrue(tracker.isReferenced(classLoader2Uri));
 
-        assertTrue(tracker.decrement(classLoader1));
+        assertTrue(tracker.decrement(classLoader1) == 0);
         assertTrue(tracker.isReferenced(grandParent1Uri));
         assertTrue(tracker.isReferenced(grandParent2Uri));
 
-        assertTrue(tracker.decrement(classLoader2));
+        assertTrue(tracker.decrement(classLoader2) == 0);
         assertTrue(tracker.isReferenced(grandParent1Uri));
         assertTrue(tracker.isReferenced(grandParent2Uri));
 
-        assertTrue(tracker.decrement(grandParent1));
-        assertTrue(tracker.decrement(grandParent2));
+        assertTrue(tracker.decrement(grandParent1) == 0);
+        assertTrue(tracker.decrement(grandParent2) == 0);
     }
 
     public void testTransitiveTrackingUnloadGrandParents() throws Exception {
@@ -108,9 +102,6 @@ public class ClassLoaderTrackerImplTestCase extends TestCase {
         URI grandParent2Uri = URI.create("grandparent2");
         URI classLoader1Uri = URI.create("cl1");
         URI classLoader2Uri = URI.create("cl2");
-
-        EasyMock.expect(store.find(EasyMock.isA(URI.class))).andReturn(null).anyTimes();
-        EasyMock.replay(store);
 
         ClassLoader topLevel = new URLClassLoader(EMPTY_URLS);
         MultiParentClassLoader grandParent1 = new MultiParentClassLoader(grandParent1Uri, topLevel);
@@ -144,12 +135,12 @@ public class ClassLoaderTrackerImplTestCase extends TestCase {
         assertTrue(tracker.isReferenced(classLoader1Uri));
         assertTrue(tracker.isReferenced(classLoader2Uri));
 
-        assertTrue(tracker.decrement(classLoader1));
+        assertTrue(tracker.decrement(classLoader1) == 0);
 
         assertTrue(tracker.isReferenced(grandParent1Uri));
         assertTrue(tracker.isReferenced(grandParent2Uri));
 
-        assertTrue(tracker.decrement(classLoader2));
+        assertTrue(tracker.decrement(classLoader2) == 0);
 
         assertFalse(tracker.isReferenced(grandParent1Uri));
         assertFalse(tracker.isReferenced(grandParent2Uri));
@@ -159,7 +150,6 @@ public class ClassLoaderTrackerImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        store = EasyMock.createMock(MetaDataStore.class);
-        tracker = new ClassLoaderTrackerImpl(store);
+        tracker = new ClassLoaderTrackerImpl();
     }
 }

@@ -68,8 +68,9 @@ public interface ClassLoaderTracker {
      * Increments the use count for a contribution classloader.
      *
      * @param uri the contribution classloader id
+     * @return the count after it is incremented
      */
-    void increment(URI uri);
+    int increment(URI uri);
 
     /**
      * Increments the use count of all transitively imported classloaders starting with the given (parent) classloader.
@@ -82,8 +83,8 @@ public interface ClassLoaderTracker {
      * Decrements the in use count for a contribution classloader and all transitively imported contribution classloaders.
      *
      * @param classLoader the contribution classloader
-     * @return true if the contribution classloader may be released; otherwise false
+     * @return the count after it is decremented
      */
-    boolean decrement(ClassLoader classLoader);
+    int decrement(ClassLoader classLoader);
 
 }

@@ -355,7 +355,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
      * Returns the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be
      * used. Otherwise, if the persistence context is extended, the Session associated with the current conversation will be used.
      *
-     * @return the EntityManager
+     * @return the Session
      */
     private Session getSession() {
         if (extended) {

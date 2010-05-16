@@ -43,7 +43,7 @@ package org.fabric3.jpa.runtime.proxy;
 public interface HibernateProxy {
 
     /**
-     * Clear a cached EntityManager if the proxy implementation supports caching
+     * Clear a cached EntityManager if the proxy implementation supports caching.
      */
     void clearEntityManager();
 }

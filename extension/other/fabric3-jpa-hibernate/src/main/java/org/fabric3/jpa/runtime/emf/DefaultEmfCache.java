@@ -37,7 +37,9 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
@@ -45,7 +47,9 @@ import javax.persistence.EntityManagerFactory;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Service;
 
+import org.fabric3.host.Names;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Creates and caches entity manager factories.
@@ -55,10 +59,11 @@ import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 @Service(interfaces = {EmfCache.class, ClassLoaderListener.class})
 public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
     private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
-    private Map<ClassLoader, Set<String>> classLoaderCache = new HashMap<ClassLoader, Set<String>>();
+    private Map<URI, Set<String>> contributionCache = new HashMap<URI, Set<String>>();
 
     @Destroy
     public void destroy() {
+        // the runtime is being shutdown, close any open factories
         for (EntityManagerFactory emf : cache.values()) {
             if (emf != null) {
                 emf.close();
@@ -66,15 +71,22 @@ public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
         }
     }
 
-    public void onBuild(ClassLoader loader) {
+    public void onDeploy(ClassLoader loader) {
         // no-op
     }
 
-    public void onDestroy(ClassLoader loader) {
-        Set<String> names = classLoaderCache.remove(loader);
+    public void onUndeploy(ClassLoader classLoader) {
+        URI key;
+        if (classLoader instanceof MultiParentClassLoader) {
+            key = ((MultiParentClassLoader) classLoader).getName();
+        } else {
+            key = Names.BOOT_CONTRIBUTION;
+        }
+        Set<String> names = contributionCache.remove(key);
         if (names != null) {
             for (String name : names) {
-                cache.remove(name);
+                EntityManagerFactory emf = cache.remove(name);
+                emf.close();
             }
         }
     }
@@ -83,8 +95,14 @@ public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
         return cache.get(unitName);
     }
 
-    public void putEmf(String unitName, EntityManagerFactory emf) {
+    public void putEmf(URI uri, String unitName, EntityManagerFactory emf) {
         cache.put(unitName, emf);
+        Set<String> names = contributionCache.get(uri);
+        if (names == null) {
+            names = new HashSet<String>();
+            contributionCache.put(uri, names);
+        }
+        names.add(unitName);
     }
 
 }

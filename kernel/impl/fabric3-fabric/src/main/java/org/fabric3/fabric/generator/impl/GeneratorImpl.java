@@ -126,13 +126,7 @@ public class GeneratorImpl implements Generator {
         String id = UUID.randomUUID().toString();
         Deployment deployment = new Deployment(id);
 
-        Map<String, List<Contribution>> deployingContributions = null;
-
-        if (!local) {
-            // only generate classloader provision commands if the deployment is remote
-            deployingContributions = generateClassLoaders(deployment, sorted, incremental);
-        }
-
+        Map<String, List<Contribution>> deployingContributions = generateClassLoaders(deployment, sorted, incremental);
         // generate stop context information
         Map<String, List<CompensatableCommand>> stopCommands = stopContextCommandGenerator.generate(sorted);
         for (Map.Entry<String, List<CompensatableCommand>> entry : stopCommands.entrySet()) {
@@ -180,10 +174,8 @@ public class GeneratorImpl implements Generator {
             deployment.addCommands(entry.getKey(), entry.getValue());
         }
 
-        if (!local) {
-            // release classloaders for components being undeployed that are no longer referenced if the deployment is remote
-            generateReleaseClassLoaders(deployment, sorted, deployingContributions, incremental);
-        }
+        // release classloaders for components being undeployed that are no longer referenced if the deployment is remote
+        generateReleaseClassLoaders(deployment, sorted, deployingContributions, incremental);
         return deployment;
     }
 

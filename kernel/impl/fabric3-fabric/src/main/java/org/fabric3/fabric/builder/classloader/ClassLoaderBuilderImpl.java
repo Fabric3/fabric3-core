@@ -60,6 +60,7 @@ import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.ContributionResolver;
+import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
@@ -77,21 +78,24 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     private ClasspathProcessorRegistry classpathProcessorRegistry;
     private ContributionResolver resolver;
     private ClassLoaderTracker tracker;
-    private boolean classLoaderIsolation;
     private List<ClassLoaderListener> listeners;
+    private HostInfo info;
+    private MetaDataStore metaDataStore;
 
     public ClassLoaderBuilderImpl(@Reference ClassLoaderWireBuilder wireBuilder,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference ClasspathProcessorRegistry classpathProcessorRegistry,
                                   @Reference ContributionResolver resolver,
                                   @Reference ClassLoaderTracker tracker,
+                                  @Reference MetaDataStore metaDataStore,
                                   @Reference HostInfo info) {
         this.wireBuilder = wireBuilder;
         this.classLoaderRegistry = classLoaderRegistry;
         this.classpathProcessorRegistry = classpathProcessorRegistry;
         this.resolver = resolver;
         this.tracker = tracker;
-        classLoaderIsolation = info.supportsClassLoaderIsolation();
+        this.metaDataStore = metaDataStore;
+        this.info = info;
         this.listeners = Collections.emptyList();
     }
 
@@ -102,19 +106,57 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
 
     public void build(PhysicalClassLoaderDefinition definition) throws ClassLoaderBuilderException {
         URI uri = definition.getUri();
-        tracker.increment(uri);
+        int count = tracker.increment(uri);
         if (classLoaderRegistry.getClassLoader(uri) != null) {
-            /*
-             The classloader was already loaded. The classloader will already be created if: it is the boot classloader; the environment is
-             single-VM as classloaders are shared between the contribution and runtime infrastructure; two composites are deployed individually
-             from the same contribution.
-             */
+            // The classloader was already loaded. The classloader will already be created if: it is the boot classloader; the environment is
+            // single-VM as classloaders are shared between the contribution and runtime infrastructure; two composites are deployed individually
+            // from the same contribution.
+            for (PhysicalClassLoaderWireDefinition wireDefinition : definition.getWireDefinitions()) {
+                URI target = wireDefinition.getTargetClassLoader();
+                ClassLoader classLoader = classLoaderRegistry.getClassLoader(target);
+                tracker.incrementImported(classLoader);
+            }
+            notifyListenersBuild(uri, count);
             return;
         }
-        if (classLoaderIsolation) {
+        if (info.supportsClassLoaderIsolation()) {
             buildIsolatedClassLoaderEnvironment(definition);
         } else {
             buildCommonClassLoaderEnvironment(definition);
+        }
+        notifyListenersBuild(uri, count);
+    }
+
+    public void destroy(URI uri) throws ClassLoaderBuilderException {
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        int val = tracker.decrement(classLoader);
+        if (val == 0 && metaDataStore.find(uri) == null) {
+            // Note the MetaDataStore is used to determine if a contribution classloader must be tracked. If a contribution is registered in the
+            // store, it is installed as an extension of the base runtime distribution and should only be uninstalled explicitly.
+            try {
+                classLoaderRegistry.unregister(uri);
+                // release the previously resolved contribution
+                resolver.release(uri);
+            } catch (ResolutionException e) {
+                throw new ClassLoaderBuilderException("Error releasing artifact: " + uri.toString(), e);
+            }
+            for (ClassLoaderListener listener : listeners) {
+                listener.onUndeploy(classLoader);
+            }
+        } else if (val == 0) {
+            // single VM, do not remove the classloader since it is used by the installed contribution. Just notify listeners
+            for (ClassLoaderListener listener : listeners) {
+                listener.onUndeploy(classLoader);
+            }
+        }
+    }
+
+    private void notifyListenersBuild(URI uri, int count) {
+        if (count == 1) {
+            ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+            for (ClassLoaderListener listener : listeners) {
+                listener.onDeploy(classLoader);
+            }
         }
     }
 
@@ -144,26 +186,6 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
             tracker.incrementImported(classLoader);
         }
         classLoaderRegistry.register(uri, loader);
-        for (ClassLoaderListener listener : listeners) {
-            listener.onBuild(loader);
-        }
-    }
-
-    public void destroy(URI uri) throws ClassLoaderBuilderException {
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
-        boolean releasable = tracker.decrement(classLoader);
-        if (releasable) {
-            try {
-                classLoaderRegistry.unregister(uri);
-                // release the previously resolved contribution
-                resolver.release(uri);
-                for (ClassLoaderListener listener : listeners) {
-                    listener.onDestroy(classLoader);
-                }
-            } catch (ResolutionException e) {
-                throw new ClassLoaderBuilderException("Error releasing artifact: " + uri.toString(), e);
-            }
-        }
     }
 
     /**
