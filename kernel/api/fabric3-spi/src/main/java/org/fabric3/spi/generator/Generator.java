@@ -58,10 +58,9 @@ public interface Generator {
      * @param domain      the logical domain composite
      * @param incremental true if generation should be incremental, i.e. commands are generated only for new components and wires as opposed to all
      *                    components (new and existing ones)
-     * @param local       true if the deployment is local, i.e. it is to the same runtime
      * @return the deployment
      * @throws GenerationException If unable to generate the deployment
      */
-    Deployment generate(LogicalCompositeComponent domain, boolean incremental, boolean local) throws GenerationException;
+    Deployment generate(LogicalCompositeComponent domain, boolean incremental) throws GenerationException;
 
 }

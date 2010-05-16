@@ -245,11 +245,11 @@ public abstract class AbstractDomain implements Domain {
         }
         collector.markForCollection(deployable, domain);
         try {
-            Deployment deployment = generator.generate(domain, true, isLocal());
+            Deployment deployment = generator.generate(domain, true);
             collector.collect(domain);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false, isLocal());
+                fullDeployment = generator.generate(domain, false);
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             try {
@@ -539,11 +539,11 @@ public abstract class AbstractDomain implements Domain {
         selectBinding(domain);
         try {
             // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true, isLocal());
+            Deployment deployment = generator.generate(domain, true);
             collector.markAsProvisioned(domain);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false, isLocal());
+                fullDeployment = generator.generate(domain, false);
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
@@ -635,10 +635,10 @@ public abstract class AbstractDomain implements Domain {
         try {
             policyAttacher.attachPolicies(policySets, domain, true);
             // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true, isLocal());
+            Deployment deployment = generator.generate(domain, true);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false, isLocal());
+                fullDeployment = generator.generate(domain, false);
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
@@ -659,10 +659,10 @@ public abstract class AbstractDomain implements Domain {
         try {
             policyAttacher.detachPolicies(policySets, domain);
             // generate and provision any new components and new wires
-            Deployment deployment = generator.generate(domain, true, isLocal());
+            Deployment deployment = generator.generate(domain, true);
             Deployment fullDeployment = null;
             if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false, isLocal());
+                fullDeployment = generator.generate(domain, false);
             }
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);

@@ -119,7 +119,7 @@ public class GeneratorImpl implements Generator {
         this.extensionGenerator = extensionGenerator;
     }
 
-    public Deployment generate(LogicalCompositeComponent domain, boolean incremental, boolean local) throws GenerationException {
+    public Deployment generate(LogicalCompositeComponent domain, boolean incremental) throws GenerationException {
 
         List<LogicalComponent<?>> sorted = topologicalSort(domain);
 
