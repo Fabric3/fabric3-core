@@ -48,6 +48,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.InputStreamSource;
@@ -77,6 +78,26 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "       <http port='8181'/>" +
             "   </web.server>" +
             "</config>";
+
+    private static final String CONFIG_MONITOR =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                    "<runtime.monitor>" +
+                    "<configuration>" +
+                    "   <appender name='CUSTOM' class='org.fabric3.monitor.runtime.TestAppender'>" +
+                    "       <encoder><pattern>test-appender: %msg</pattern></encoder>" +
+                    "   </appender>" +
+                    "</configuration>" +
+                    "</runtime.monitor>";
+
+    public void testGetMonitorConfiguration() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_MONITOR.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        Element element = loader.getMonitorConfiguration(systemConfig);
+        assertEquals(1, element.getElementsByTagName("root").getLength());
+        assertEquals(1, element.getElementsByTagName("appender-ref").getLength());
+    }
 
     public void testParseDomainName() throws Exception {
         SystemConfigLoader loader = new SystemConfigLoader();

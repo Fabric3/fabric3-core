@@ -39,6 +39,7 @@ package org.fabric3.implementation.spring.runtime.component;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.BeansException;
@@ -63,6 +64,7 @@ public class SpringComponent implements Component {
     private int state = UNINITIALIZED;
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
+    private Level level = Level.INFO;
 
     /**
      * Constructor.
@@ -99,6 +101,18 @@ public class SpringComponent implements Component {
 
     public int getLifecycleState() {
         return state;
+    }
+
+    public String getName() {
+        return uri.toString();
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     public void start() throws SpringComponentStartException {

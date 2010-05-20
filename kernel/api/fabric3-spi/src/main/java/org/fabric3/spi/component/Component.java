@@ -44,9 +44,9 @@
 package org.fabric3.spi.component;
 
 import java.net.URI;
-
 import javax.xml.namespace.QName;
 
+import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.spi.Lifecycle;
 
 /**
@@ -54,7 +54,7 @@ import org.fabric3.spi.Lifecycle;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface Component extends Lifecycle {
+public interface Component extends Lifecycle, Monitorable {
 
     /**
      * Returns the QName of the deployable composite this component was deployed with.

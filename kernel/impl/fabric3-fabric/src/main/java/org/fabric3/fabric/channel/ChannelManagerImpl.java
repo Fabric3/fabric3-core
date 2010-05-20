@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelManager;
 
 /**
  * Default ChannelManager implementation.
@@ -52,6 +53,9 @@ public class ChannelManagerImpl implements ChannelManager {
     private Map<URI, Channel> channels = new ConcurrentHashMap<URI, Channel>();
 
     public Channel getChannel(URI uri) {
+        if (uri == null) {
+            throw new IllegalArgumentException("Channel URI was null");
+        }
         return channels.get(uri);
     }
 

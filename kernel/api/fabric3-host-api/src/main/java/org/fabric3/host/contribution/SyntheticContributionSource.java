@@ -58,7 +58,6 @@ public class SyntheticContributionSource implements ContributionSource {
         this.uri = uri;
         this.location = location;
         this.source = new UrlSource(location);
-
     }
 
     public String getContentType() {

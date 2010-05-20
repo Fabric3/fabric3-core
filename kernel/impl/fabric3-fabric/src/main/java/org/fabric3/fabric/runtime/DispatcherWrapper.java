@@ -35,37 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.monitor;
+package org.fabric3.fabric.runtime;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
+import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Formats monitor messages.
+ * Wraps a {@link MonitorEventDispatcher} to receive events from a channel.
  *
  * @version $Rev$ $Date$
  */
-public class GenericFormatter extends Formatter {
+public class DispatcherWrapper implements EventStreamHandler {
+    private MonitorEventDispatcher dispatcher;
 
-    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
-    public String format(LogRecord record) {
-        String message = formatMessage(record);
-        StringBuilder output = new StringBuilder().append(message);
-        Throwable throwable = record.getThrown();
-        if (throwable != null) {
-            try {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                throwable.printStackTrace(pw);
-                pw.close();
-                output.append(sw.toString());
-            } catch (Exception ex) {
-                // ignore
-            }
+    public DispatcherWrapper(MonitorEventDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+    public void handle(Object event) {
+        if (!(event instanceof MonitorEvent)) {
+            return;
         }
+        dispatcher.onEvent((MonitorEvent) event);
+    }
 
-        return output.toString();
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
+    }
+
+    public EventStreamHandler getNext() {
+        return null;
     }
 }

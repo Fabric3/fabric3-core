@@ -47,19 +47,23 @@ import java.io.File;
 import java.net.URI;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.ParseException;
+import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
-import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.Source;
+import org.fabric3.monitor.runtime.DefaultDispatcher;
 
 /**
  * Default BootstrapFactory implementation.
@@ -94,6 +98,15 @@ public class DefaultBootstrapService implements BootstrapService {
 
     public PortRange parseJmxPort(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseJmxPort(systemConfig);
+    }
+
+    public MonitorEventDispatcher createMonitorDispatcher(Document systemConfig) throws MonitorConfigurationException {
+        DefaultDispatcher dispatcher = new DefaultDispatcher();
+        Element element = systemConfigLoader.getMonitorConfiguration(systemConfig);
+        if (element != null) {
+            dispatcher.configure(element);
+        }
+        return dispatcher;
     }
 
     public ScanResult scanRepository(File directory) throws ScanException {

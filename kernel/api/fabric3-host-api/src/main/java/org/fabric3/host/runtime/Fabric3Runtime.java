@@ -39,12 +39,14 @@ package org.fabric3.host.runtime;
 
 import java.net.URI;
 
+import org.fabric3.host.monitor.Monitorable;
+
 /**
  * Represents a runtime in a domain.
  *
  * @version $Rev$ $Date$
  */
-public interface Fabric3Runtime {
+public interface Fabric3Runtime extends Monitorable {
 
     /**
      * Returns a system component providing the designated service.

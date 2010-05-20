@@ -43,6 +43,7 @@
         <stax.api.version>1.0</stax.api.version>
         <woodstox.version>3.2.9</woodstox.version>
         <jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
+        <logback.version>0.9.20</logback.version>
         <web.services.version>2.0-b24</web.services.version>
     </properties>
 

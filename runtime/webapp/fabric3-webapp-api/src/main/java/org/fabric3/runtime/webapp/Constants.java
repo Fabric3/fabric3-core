@@ -106,16 +106,6 @@ public final class Constants {
     public static final String OASIS_CONTEXT_ATTRIBUTE = "org.oasisopen.sca.ComponentContext";
 
     /**
-     * Name of the parameter that defines whether the work scheduler should pause on start.
-     */
-    public static final String PAUSE_ON_START_PARAM = "fabric3.work.scheduler.pauseOnStart";
-
-    /**
-     * The default pause on start value.
-     */
-    public static final String PAUSE_ON_START_DEFAULT = "false";
-
-    /**
      * Name of the parameter that defines the number of worker threads.
      */
     public static final String NUM_WORKERS_PARAM = "fabric3.work.scheduler.numWorkers";
@@ -129,21 +119,6 @@ public final class Constants {
      * Context attribute to which the Fabric3 runtime for this servlet context is stored.
      */
     public static final String RUNTIME_ATTRIBUTE = "fabric3.runtime";
-
-    /**
-     * Name of the parameter that defines the class to load to launch the runtime.
-     */
-    public static final String MONITOR_FACTORY_PARAM = "fabric3.monitorFactory";
-
-    /**
-     * Name of the default webapp runtime implementation.
-     */
-    public static final String MONITOR_FACTORY_DEFAULT = "org.fabric3.monitor.impl.JavaLoggingMonitorFactory";
-
-    /**
-     * Default monitor configuration file path found in the webapp.
-     */
-    public static final String MONITOR_CONFIG_PATH = "/WEB-INF/monitor.properties";
 
     private Constants() {
     }

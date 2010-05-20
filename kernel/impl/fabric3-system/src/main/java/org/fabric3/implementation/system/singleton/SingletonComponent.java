@@ -50,6 +50,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.ComponentContext;
@@ -80,6 +81,7 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
     private InstanceWrapper<T> wrapper;
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
+    private Level level = Level.INFO;
 
     public SingletonComponent(URI componentId, T instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
@@ -131,6 +133,18 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
 
     public ObjectFactory<T> createObjectFactory() {
         return new SingletonObjectFactory<T>(instance);
+    }
+
+    public String getName() {
+        return uri.toString();
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     public ComponentContext getComponentContext() {

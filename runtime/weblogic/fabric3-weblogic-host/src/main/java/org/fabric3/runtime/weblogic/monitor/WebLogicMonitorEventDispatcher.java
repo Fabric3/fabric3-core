@@ -41,55 +41,64 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.executor;
+package org.fabric3.runtime.weblogic.monitor;
 
-import java.net.URI;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Element;
+import weblogic.logging.LoggingHelper;
+import weblogic.logging.WLLevel;
 
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
-import org.fabric3.fabric.command.UnBuildChannelsCommand;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
- * Removes a set of channels defined in a composite on a runtime.
+ * A dispatcher that forwards events to the WebLogic logging service.
  *
- * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
+ * @version $Rev: 8394 $ $Date: 2009-12-12 11:20:05 +0100 (Sat, 12 Dec 2009) $
  */
-@EagerInit
-public class UnBuildChannelsCommandExecutor implements CommandExecutor<UnBuildChannelsCommand> {
-    private ChannelManager channelManager;
-    private CommandExecutorRegistry executorRegistry;
+public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
+    private Logger logger;
 
-    @Constructor
-    public UnBuildChannelsCommandExecutor(@Reference ChannelManager channelManager, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelManager = channelManager;
-        this.executorRegistry = executorRegistry;
+    public WebLogicMonitorEventDispatcher() {
+        logger = LoggingHelper.getServerLogger();
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(UnBuildChannelsCommand.class, this);
-    }
-
-    public void execute(UnBuildChannelsCommand command) throws ExecutionException {
-        try {
-            List<PhysicalChannelDefinition> definitions = command.getDefinitions();
-            for (PhysicalChannelDefinition definition : definitions) {
-                URI uri = definition.getUri();
-                channelManager.unregister(uri);
-            }
-        } catch (RegistrationException e) {
-            throw new ExecutionException(e.getMessage(), e);
+    public void onEvent(MonitorEvent event) {
+        Level level = event.getMonitorLevel();
+        if (level == null || !logger.isLoggable(level)) {
+            return;
         }
+
+        LogRecord logRecord = new LogRecord(level, event.getMessage());
+        // fixme this should be the application name
+        logRecord.setLoggerName("fabric3");
+        logRecord.setParameters(event.getData());
+        for (Object data : event.getData()) {
+            if (data instanceof Throwable) {
+                logRecord.setThrown((Throwable) data);
+                break;
+            }
+        }
+        if (Level.INFO == level) {
+            // convert INFO to notice so it is displayed by default
+            logRecord.setLevel(WLLevel.NOTICE);
+        }
+        logger.log(logRecord);
+    }
+
+    public void configure(Element element) {
+        // no-op
+    }
+
+    public void start() {
+        // no-op
+    }
+
+    public void stop() {
+        // no-op
     }
 
 }

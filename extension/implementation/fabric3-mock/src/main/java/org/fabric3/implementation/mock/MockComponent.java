@@ -38,6 +38,7 @@
 package org.fabric3.implementation.mock;
 
 import java.net.URI;
+import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.ComponentContext;
@@ -108,4 +109,15 @@ public class MockComponent<T> extends AbstractLifecycle implements AtomicCompone
         return null;
     }
 
+    public String getName() {
+        return componentId.toString();
+    }
+
+    public Level getLevel() {
+        return Level.INFO;
+    }
+
+    public void setLevel(Level level) {
+
+    }
 }

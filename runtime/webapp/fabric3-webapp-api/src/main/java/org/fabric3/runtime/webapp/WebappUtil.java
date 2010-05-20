@@ -46,10 +46,9 @@ package org.fabric3.runtime.webapp;
 import java.net.URL;
 import javax.management.MBeanServer;
 
-import org.fabric3.host.monitor.MonitorFactory;
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.stream.Source;
 
 /**
@@ -58,8 +57,6 @@ import org.fabric3.host.stream.Source;
 public interface WebappUtil {
 
     WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration configuration) throws Fabric3InitException;
-
-    MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException;
 
     RuntimeCoordinator getCoordinator(BootConfiguration configuration, ClassLoader bootClassLoader) throws Fabric3InitException;
 

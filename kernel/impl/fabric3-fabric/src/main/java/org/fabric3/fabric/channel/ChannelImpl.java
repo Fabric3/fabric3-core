@@ -86,6 +86,10 @@ public class ChannelImpl implements Channel {
         tailHandler.setNext(fanOutHandler);
     }
 
+    public void attach(EventStreamHandler handler) {
+        handler.setNext(inHandler);
+    }
+
     public void attach(ChannelConnection connection) {
         for (EventStream stream : connection.getEventStreams()) {
             stream.getTailHandler().setNext(inHandler);

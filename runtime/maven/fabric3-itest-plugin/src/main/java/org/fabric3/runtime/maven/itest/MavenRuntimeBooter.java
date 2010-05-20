@@ -49,7 +49,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.management.MBeanServer;
@@ -60,10 +59,9 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -87,7 +85,6 @@ public class MavenRuntimeBooter {
     private static final String DOMAIN = "fabric3://domain";
 
     // configuration elements
-    private Properties properties;
     private File outputDirectory;
     private String systemConfigDir;
     private String systemConfig;
@@ -102,7 +99,6 @@ public class MavenRuntimeBooter {
     private ExtensionHelper extensionHelper;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
-        properties = configuration.getProperties();
         outputDirectory = configuration.getOutputDirectory();
         systemConfigDir = configuration.getSystemConfigDir();
         systemConfig = configuration.getSystemConfig();
@@ -149,7 +145,6 @@ public class MavenRuntimeBooter {
     }
 
     private MavenRuntime createRuntime() throws MojoExecutionException {
-        MonitorFactory monitorFactory = new MavenMonitorFactory(log);
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
         if (tempDir.exists()) {
@@ -173,7 +168,8 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = agent.getMBeanServer();
 
-        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
+        MavenMonitorEventDispatcher dispatcher = new MavenMonitorEventDispatcher(log);
+        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }

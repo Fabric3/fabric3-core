@@ -41,55 +41,38 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.executor;
+package org.fabric3.host.monitor;
 
 import java.net.URI;
-import java.util.List;
-
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
-import org.fabric3.fabric.command.UnBuildChannelsCommand;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Removes a set of channels defined in a composite on a runtime.
+ * Creates monitor proxies that send {@link MonitorEvent}s to a channel.
  *
- * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
+ * @version $Rev: 7146 $ $Date: 2009-06-14 16:28:54 -0700 (Sun, 14 Jun 2009) $
  */
-@EagerInit
-public class UnBuildChannelsCommandExecutor implements CommandExecutor<UnBuildChannelsCommand> {
-    private ChannelManager channelManager;
-    private CommandExecutorRegistry executorRegistry;
+public interface MonitorProxyService {
 
-    @Constructor
-    public UnBuildChannelsCommandExecutor(@Reference ChannelManager channelManager, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelManager = channelManager;
-        this.executorRegistry = executorRegistry;
-    }
+    /**
+     * Create a proxy using the runtime as the event source.
+     *
+     * @param type       the proxy interface
+     * @param channelUri the destination channel
+     * @param <T>        the proxy type
+     * @return the proxy
+     * @throws MonitorCreationException if an error occurs creating the proxy
+     */
+    <T> T createMonitor(Class<T> type, URI channelUri) throws MonitorCreationException;
 
-    @Init
-    public void init() {
-        executorRegistry.register(UnBuildChannelsCommand.class, this);
-    }
-
-    public void execute(UnBuildChannelsCommand command) throws ExecutionException {
-        try {
-            List<PhysicalChannelDefinition> definitions = command.getDefinitions();
-            for (PhysicalChannelDefinition definition : definitions) {
-                URI uri = definition.getUri();
-                channelManager.unregister(uri);
-            }
-        } catch (RegistrationException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
+    /**
+     * Create a proxy using the given monitorable as the event source.
+     *
+     * @param type        the proxy interface
+     * @param monitorable the event source
+     * @param channelUri  the destination channel
+     * @param <T>         the proxy type
+     * @return the proxy
+     * @throws MonitorCreationException if an error occurs creating the proxy
+     */
+    <T> T createMonitor(Class<T> type, Monitorable monitorable, URI channelUri) throws MonitorCreationException;
 
 }

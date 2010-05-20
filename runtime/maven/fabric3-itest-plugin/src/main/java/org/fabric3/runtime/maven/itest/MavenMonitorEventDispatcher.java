@@ -41,18 +41,77 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.channel;
+package org.fabric3.runtime.maven.itest;
 
-import org.fabric3.host.Fabric3Exception;
+import java.util.logging.Level;
+
+import org.apache.maven.plugin.logging.Log;
+import org.w3c.dom.Element;
+
+import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
+ * Forwards monitor events to the Maven logger.
+ *
  * @version $Rev$ $Date$
  */
-public class RegistrationException extends Fabric3Exception {
-    private static final long serialVersionUID = -2331741137749158129L;
+public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
+    private Log log;
 
-    public RegistrationException(String message) {
-        super(message);
+    public MavenMonitorEventDispatcher(Log log) {
+        this.log = log;
+    }
+
+    public void onEvent(MonitorEvent event) {
+        Level level = event.getMonitorLevel();
+        String message = event.getMessage();
+        if (Level.SEVERE == level) {
+            if (log.isErrorEnabled()) {
+                Throwable e = null;
+                for (Object o : event.getData()) {
+                    if (o instanceof Throwable) {
+                        e = (Throwable) o;
+                    }
+                }
+                if (message != null) {
+                    log.error(message, e);
+                }
+                log.error(e);
+            }
+        } else if (Level.WARNING == level) {
+            if (log.isWarnEnabled()) {
+                log.warn(message);
+            }
+        } else if (Level.INFO == level) {
+            if (log.isInfoEnabled()) {
+                log.info(message);
+            }
+        } else if (Level.FINE == level) {
+            if (log.isDebugEnabled()) {
+                log.debug(message);
+            }
+        } else if (Level.FINER == level) {
+            if (log.isDebugEnabled()) {
+                log.debug(message);
+            }
+        } else if (Level.FINEST == level) {
+            if (log.isDebugEnabled()) {
+                log.debug(message);
+            }
+        }
+    }
+
+    public void configure(Element element) {
+        // no-op
+    }
+
+    public void start() {
+        // no-op
+    }
+
+    public void stop() {
+        // no-op
     }
 
 }

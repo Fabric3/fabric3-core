@@ -39,7 +39,7 @@ package org.fabric3.host.runtime;
 
 import javax.management.MBeanServer;
 
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.repository.Repository;
 
 /**
@@ -49,36 +49,36 @@ import org.fabric3.host.repository.Repository;
  */
 public class RuntimeConfiguration {
     private HostInfo hostInfo;
-    private MonitorFactory monitorFactory;
     private MBeanServer mBeanServer;
+    private MonitorEventDispatcher dispatcher;
     private Repository repository;
 
     /**
      * Constructor taking the minimal host dependencies to boot a runtime.
      *
-     * @param hostInfo        the host info instance
-     * @param monitorFactory  the monitor factory
-     * @param mBeanServer     the JMX MBean server
+     * @param hostInfo    the host info instance
+     * @param mBeanServer the JMX MBean server
+     * @param dispatcher  the dispatcher for handling runtime events
      */
-    public RuntimeConfiguration(HostInfo hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer) {
+    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, MonitorEventDispatcher dispatcher) {
         this.hostInfo = hostInfo;
-        this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
+        this.dispatcher = dispatcher;
     }
 
     /**
      * Constructor taking all configurable dependencies to boot a runtime.
      *
-     * @param hostInfo       the host info instance
-     * @param monitorFactory the monitor factory
-     * @param mBeanServer    the JMX MBean server
-     * @param repository     the artifact repository
+     * @param hostInfo    the host info instance
+     * @param mBeanServer the JMX MBean server
+     * @param repository  the artifact repository
+     * @param dispatcher  the dispatcher for handling runtime events
      */
-    public RuntimeConfiguration(HostInfo hostInfo, MonitorFactory monitorFactory, MBeanServer mBeanServer, Repository repository) {
+    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, Repository repository, MonitorEventDispatcher dispatcher) {
         this.hostInfo = hostInfo;
-        this.monitorFactory = monitorFactory;
         this.mBeanServer = mBeanServer;
         this.repository = repository;
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -91,21 +91,21 @@ public class RuntimeConfiguration {
     }
 
     /**
-     * Returns the monitor factory.
-     *
-     * @return the monitor factory
-     */
-    public MonitorFactory getMonitorFactory() {
-        return monitorFactory;
-    }
-
-    /**
      * Returns the MBeanServer.
      *
      * @return the MBeanServer
      */
     public MBeanServer getMBeanServer() {
         return mBeanServer;
+    }
+
+    /**
+     * Returns the dispatcher for handling monitor events
+     *
+     * @return the dispatcher for handling monitor events
+     */
+    public MonitorEventDispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -116,4 +116,5 @@ public class RuntimeConfiguration {
     public Repository getRepository() {
         return repository;
     }
+
 }

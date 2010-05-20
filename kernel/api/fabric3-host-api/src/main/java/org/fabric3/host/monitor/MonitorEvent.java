@@ -34,44 +34,65 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.host.monitor;
 
-import java.net.URI;
+import java.io.Serializable;
+import java.util.logging.Level;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Encapsulates monitor data that will be broadcast as an event.
  *
  * @version $Rev$ $Date$
  */
-public interface Names {
+public interface MonitorEvent extends Serializable {
 
-    String VERSION = "1.6";
+    /**
+     * Returns the runtime which originated the event.
+     *
+     * @return the runtime which originated the event
+     */
+    public String getRuntime();
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    /**
+     * Returns the name of the {@link Monitorable} which originated the event.
+     *
+     * @return the Monitorable name
+     */
+    public String getSource();
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    /**
+     * Returns the event level.
+     *
+     * @return the event level
+     */
+    public Level getMonitorLevel();
 
-    String RUNTIME_NAME = "fabric3://runtime";
+    /**
+     * Returns the time the event was created.
+     *
+     * @return the time the event was created
+     */
+    public long getTimeStamp();
 
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
+    /**
+     * Returns the name of the executing thread when the event was created.
+     *
+     * @return the name of the executing thread when the event was created
+     */
+    public String getThreadName();
 
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
+    /**
+     * Returns the event message.
+     *
+     * @return the event message
+     */
+    public String getMessage();
 
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String RUNTIME_DOMAIN_CHANNEL = "RuntimeDomainChannel";
-
-    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_DOMAIN_CHANNEL);
-
+    /**
+     * Returns any data (such as an exception) associated with the event.
+     *
+     * @return any data associated with the event
+     */
+    public Object[] getData();
 }

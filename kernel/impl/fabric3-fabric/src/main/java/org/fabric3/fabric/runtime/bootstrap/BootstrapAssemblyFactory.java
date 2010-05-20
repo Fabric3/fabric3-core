@@ -57,7 +57,7 @@ import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
-import org.fabric3.fabric.channel.ChannelManager;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
@@ -138,8 +138,10 @@ import org.fabric3.fabric.monitor.MonitorTargetDefinition;
 import org.fabric3.fabric.monitor.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
 import org.fabric3.fabric.policy.NullPolicyResolver;
+import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorCreationException;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
@@ -218,7 +220,7 @@ public class BootstrapAssemblyFactory {
     private BootstrapAssemblyFactory() {
     }
 
-    public static Domain createDomain(MonitorFactory monitorFactory,
+    public static Domain createDomain(MonitorProxyService monitorService,
                                       ClassLoaderRegistry classLoaderRegistry,
                                       ScopeRegistry scopeRegistry,
                                       ComponentManager componentManager,
@@ -228,14 +230,19 @@ public class BootstrapAssemblyFactory {
                                       MBeanServer mbServer,
                                       HostInfo info) throws InitializationException {
 
-        CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorFactory,
+        CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
                                                                                 channelManager,
                                                                                 mbServer,
                                                                                 info);
-        DeployerMonitor monitor = monitorFactory.getMonitor(DeployerMonitor.class);
+        DeployerMonitor monitor;
+        try {
+            monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
+        } catch (MonitorCreationException e) {
+            throw new InitializationException(e);
+        }
         LocalDeployer deployer = new LocalDeployer(commandRegistry, scopeRegistry, monitor);
 
         PolicyAttacher policyAttacher = new NullPolicyAttacher();
@@ -289,7 +296,7 @@ public class BootstrapAssemblyFactory {
                                                 promotionResolutionService);
     }
 
-    private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorFactory monitorFactory,
+    private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorProxyService monitorService,
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
@@ -299,7 +306,7 @@ public class BootstrapAssemblyFactory {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
-        Connector connector = createConnnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorFactory, info);
+        Connector connector = createConnnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorService, info);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
@@ -358,7 +365,7 @@ public class BootstrapAssemblyFactory {
                                               DefaultTransformerRegistry transformerRegistry,
                                               ClassLoaderRegistry classLoaderRegistry,
                                               MBeanServer mbeanServer,
-                                              MonitorFactory monitorFactory,
+                                              MonitorProxyService monitorService,
                                               HostInfo info) {
         Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers =
                 new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
@@ -372,7 +379,7 @@ public class BootstrapAssemblyFactory {
                 new ConcurrentHashMap<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>>();
         targetAttachers.put(SingletonTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
         targetAttachers.put(SystemTargetDefinition.class, new SystemTargetWireAttacher(componentManager, classLoaderRegistry));
-        targetAttachers.put(MonitorTargetDefinition.class, new MonitorWireAttacher(monitorFactory, classLoaderRegistry));
+        targetAttachers.put(MonitorTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
 
         ConnectorImpl connector = new ConnectorImpl();
         connector.setSourceAttachers(sourceAttachers);

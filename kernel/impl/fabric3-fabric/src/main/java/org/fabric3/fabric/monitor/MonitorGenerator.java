@@ -37,6 +37,8 @@
 */
 package org.fabric3.fabric.monitor;
 
+import java.net.URI;
+
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.generator.GenerationException;
@@ -52,9 +54,9 @@ public class MonitorGenerator implements ResourceGenerator<MonitorResource> {
 
     public MonitorTargetDefinition generateWireTarget(LogicalResource<MonitorResource> resource) throws GenerationException {
         LogicalComponent<?> component = resource.getParent();
-        MonitorTargetDefinition definition = new MonitorTargetDefinition();
-        definition.setMonitorType(resource.getResourceDefinition().getServiceContract().getQualifiedInterfaceName());
-        definition.setUri(component.getUri());
+        String type = resource.getResourceDefinition().getServiceContract().getQualifiedInterfaceName();
+        URI uri = component.getUri();
+        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, uri);
         definition.setOptimizable(true);
         return definition;
     }

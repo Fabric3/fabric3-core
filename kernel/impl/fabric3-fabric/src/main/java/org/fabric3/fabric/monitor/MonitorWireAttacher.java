@@ -39,29 +39,35 @@ package org.fabric3.fabric.monitor;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.Names;
+import org.fabric3.host.monitor.MonitorCreationException;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.wire.Wire;
 
 /**
  * TargetWireAttacher that handles monitor resources.
- * <p/>
- * This only support optimized resources.
  *
  * @version $Rev$ $Date$
  */
 public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefinition> {
-    private final MonitorFactory monitorFactory;
+    private final MonitorProxyService monitorService;
+    private ComponentManager componentManager;
     private final ClassLoaderRegistry classLoaderRegistry;
 
-    public MonitorWireAttacher(@Reference MonitorFactory monitorFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.monitorFactory = monitorFactory;
+    public MonitorWireAttacher(@Reference MonitorProxyService monitorService,
+                               @Reference ComponentManager componentManager,
+                               @Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.monitorService = monitorService;
+        this.componentManager = componentManager;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
@@ -75,11 +81,15 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefi
 
     public ObjectFactory<?> createObjectFactory(MonitorTargetDefinition target) throws WiringException {
         try {
-            Class<?> type = classLoaderRegistry.loadClass(target.getClassLoaderId(), target.getMonitorType());
-            Object monitor = monitorFactory.getMonitor(type, target.getUri());
+            ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+            Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
+            Component monitorable = componentManager.getComponent(target.getUri());
+            Object monitor = monitorService.createMonitor(type, monitorable, Names.RUNTIME_DOMAIN_CHANNEL_URI);
             return new SingletonObjectFactory<Object>(monitor);
         } catch (ClassNotFoundException e) {
-            throw new WireAttachException("Unable to load monitor class: " + target.getMonitorType(), target.getUri(), null, e);
+            throw new WireAttachException("Unable to load monitor class: " + target.getMonitorType(), e);
+        } catch (MonitorCreationException e) {
+            throw new WireAttachException("Unable to create monitor for class: " + target.getMonitorType(), e);
         }
     }
 }

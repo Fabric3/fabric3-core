@@ -34,44 +34,27 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.monitor.runtime;
 
-import java.net.URI;
+import java.io.ByteArrayOutputStream;
+
+import ch.qos.logback.core.OutputStreamAppender;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
- *
  * @version $Rev$ $Date$
  */
-public interface Names {
+public class TestAppender extends OutputStreamAppender {
+    private static ByteArrayOutputStream STREAM;
 
-    String VERSION = "1.6";
+    public static ByteArrayOutputStream getStream() {
+        return STREAM;
+    }
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
-
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
-
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String RUNTIME_DOMAIN_CHANNEL = "RuntimeDomainChannel";
-
-    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_DOMAIN_CHANNEL);
-
+    @Override
+    public void start() {
+        STREAM = new ByteArrayOutputStream();
+        setOutputStream(STREAM);
+        super.start();
+    }
 }

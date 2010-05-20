@@ -54,8 +54,9 @@ import org.w3c.dom.Document;
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -69,7 +70,7 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
-import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorFactory;
+import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
@@ -153,19 +154,16 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
-            // create the HostInfo, MonitorFactory, and runtime
+            // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            MonitorFactory monitorFactory = new WebLogicMonitorFactory();
-
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
+            WebLogicMonitorEventDispatcher dispatcher = new WebLogicMonitorEventDispatcher();
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
-
-            monitor = monitorFactory.getMonitor(ServerMonitor.class);
 
             Thread.currentThread().setContextClassLoader(hostLoader);
 
@@ -189,6 +187,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
+            MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, Names.RUNTIME_DOMAIN_CHANNEL_URI);
             monitor.started(runtimeMode.toString());
         } catch (RuntimeException e) {
             context.log("Error initializing Fabric3", e);

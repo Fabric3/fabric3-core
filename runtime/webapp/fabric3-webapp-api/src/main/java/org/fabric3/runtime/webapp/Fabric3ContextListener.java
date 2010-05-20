@@ -67,13 +67,16 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.host.Names;
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -116,7 +119,6 @@ public class Fabric3ContextListener implements ServletContextListener {
             if (scdl == null) {
                 throw new InitializationException("Web composite not found");
             }
-            MonitorFactory monitorFactory = utils.createMonitorFactory(webappClassLoader);
             MBeanServer mBeanServer = utils.createMBeanServer();
 
             File baseDir = new File(URLDecoder.decode(servletContext.getResource("/WEB-INF/lib/").getFile(), "UTF-8"));
@@ -125,14 +127,21 @@ public class Fabric3ContextListener implements ServletContextListener {
             URI domain = new URI(utils.getInitParameter(DOMAIN_PARAM, "fabric3://domain"));
             WebappHostInfo info = new WebappHostInfoImpl(servletContext, domain, baseDir, tempDir);
 
+            Source source = utils.getSystemConfig();
+            BootstrapService boostrapService = BootstrapFactory.getService(webappClassLoader);
+            Document systemCofig = boostrapService.loadSystemConfig(source);
 
-            runtime = createRuntime(webappClassLoader, info, monitorFactory, mBeanServer, utils);
-            monitor = monitorFactory.getMonitor(WebAppMonitor.class);
-            BootConfiguration configuration = createBootConfiguration(runtime, webappClassLoader, servletContext, utils);
+            MonitorEventDispatcher dispatcher = boostrapService.createMonitorDispatcher(systemCofig);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(info, mBeanServer, dispatcher);
+            runtime = utils.createRuntime(webappClassLoader, runtimeConfig);
+
+            BootConfiguration configuration = createBootConfiguration(runtime, systemCofig, webappClassLoader, servletContext, utils);
             coordinator = utils.getCoordinator(configuration, webappClassLoader);
 
             coordinator.start();
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
+            MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
+            monitor = monitorService.createMonitor(WebAppMonitor.class, Names.RUNTIME_DOMAIN_CHANNEL_URI);
             monitor.started();
             // deploy the application composite
             QName qName = new QName(compositeNamespace, compositeName);
@@ -159,19 +168,11 @@ public class Fabric3ContextListener implements ServletContextListener {
         }
     }
 
-    private WebappRuntime createRuntime(ClassLoader webappClassLoader,
-                                        WebappHostInfo info,
-                                        MonitorFactory factory,
-                                        MBeanServer mBeanServer,
-                                        WebappUtil utils) {
-        RuntimeConfiguration configuration = new RuntimeConfiguration(info, factory, mBeanServer);
-        return utils.createRuntime(webappClassLoader, configuration);
-    }
-
     /*
      * Creates the boot configuration.
      */
     private BootConfiguration createBootConfiguration(WebappRuntime runtime,
+                                                      Document systemConfig,
                                                       ClassLoader webappClassLoader,
                                                       ServletContext servletContext,
                                                       WebappUtil utils) throws InitializationException {
@@ -183,9 +184,7 @@ public class Fabric3ContextListener implements ServletContextListener {
         URL systemComposite = utils.getSystemScdl(webappClassLoader);
         configuration.setSystemCompositeUrl(systemComposite);
 
-        Source source = utils.getSystemConfig();
-        Document systemCofig = BootstrapFactory.getService(webappClassLoader).loadSystemConfig(source);
-        configuration.setSystemConfig(systemCofig);
+        configuration.setSystemConfig(systemConfig);
 
         Map<String, String> exportedPackages = new HashMap<String, String>();
         exportedPackages.put("org.fabric3.runtime.webapp", Names.VERSION);

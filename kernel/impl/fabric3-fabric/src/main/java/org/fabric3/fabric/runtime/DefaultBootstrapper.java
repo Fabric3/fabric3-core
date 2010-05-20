@@ -48,15 +48,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
-import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.channel.ChannelImpl;
-import org.fabric3.fabric.channel.ChannelManager;
-import org.fabric3.fabric.channel.RegistrationException;
-import org.fabric3.fabric.channel.SyncFanOutHandler;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootExports;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
@@ -69,11 +65,10 @@ import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
-import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.ComponentRegistration;
@@ -85,7 +80,6 @@ import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Composite;
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
@@ -122,7 +116,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private ComponentSynthesizer synthesizer;
 
     // runtime components - these are persistent and supplied by the runtime implementation
-    private MonitorFactory monitorFactory;
+    private MonitorProxyService monitorService;
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
@@ -165,7 +159,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public void bootRuntimeDomain() throws InitializationException {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
-        monitorFactory = runtimeServices.getMonitorFactory();
+        monitorService = runtimeServices.getMonitorservice();
         logicalComponetManager = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
         channelManager = runtimeServices.getChannelManager();
@@ -188,7 +182,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         // register components provided by the runtime itself so they may be wired to
         registerRuntimeComponents(registrations);
 
-        runtimeDomain = BootstrapAssemblyFactory.createDomain(monitorFactory,
+        runtimeDomain = BootstrapAssemblyFactory.createDomain(monitorService,
                                                               classLoaderRegistry,
                                                               scopeRegistry,
                                                               componentManager,
@@ -235,7 +229,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private <S, I extends S> void registerRuntimeComponents(List<ComponentRegistration> registrations) throws InitializationException {
 
         // services available through the outward facing Fabric3Runtime API
-        registerComponent("MonitorFactory", MonitorFactory.class, monitorFactory, true);
+        registerComponent("MonitorProxyService", MonitorProxyService.class, monitorService, true);
         Class<HostInfo> type = getHostInfoType(hostInfo);
         registerComponent("HostInfo", type, hostInfo, true);
         if (mbeanServer != null) {
@@ -313,23 +307,13 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     /**
      * Registers the runtime domain channel.
-     *
-     * @throws InitializationException if there is an error registering the channel
      */
-    private void registerRuntimeDomainChannel() throws InitializationException {
-        QName deployable = new QName(Namespaces.CORE, "boot");
-        SyncFanOutHandler handler = new SyncFanOutHandler();
-        Channel channel = new ChannelImpl(RUNTIME_DOMAIN_CHANNEL_URI, deployable, handler);
-        try {
-            ChannelDefinition definition = new ChannelDefinition(RUNTIME_DOMAIN_CHANNEL, BOOT_CONTRIBUTION);
-            LogicalCompositeComponent domain = logicalComponetManager.getRootComponent();
-            LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_DOMAIN_CHANNEL_URI, definition, domain);
-            logicalChannel.setState(LogicalState.PROVISIONED);
-            domain.addChannel(logicalChannel);
-            channelManager.register(channel);
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
+    private void registerRuntimeDomainChannel() {
+        ChannelDefinition definition = new ChannelDefinition(RUNTIME_DOMAIN_CHANNEL, BOOT_CONTRIBUTION);
+        LogicalCompositeComponent domain = logicalComponetManager.getRootComponent();
+        LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_DOMAIN_CHANNEL_URI, definition, domain);
+        logicalChannel.setState(LogicalState.PROVISIONED);
+        domain.addChannel(logicalChannel);
     }
 
     /**

@@ -68,6 +68,13 @@ public interface Channel {
     void addHandler(EventStreamHandler handler);
 
     /**
+     * Attach a single handler to the channel so that it can flow events.
+     *
+     * @param handler the handler to attach
+     */
+    public void attach(EventStreamHandler handler);
+
+    /**
      * Attach a connection to the channel so that it can flow events.
      *
      * @param connection the connection to attach

@@ -43,15 +43,13 @@
  */
 package org.fabric3.runtime.webapp;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.management.MBeanServer;
 import javax.servlet.ServletContext;
 
-import org.fabric3.host.monitor.MonitorFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -59,8 +57,6 @@ import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.jmx.agent.ManagementException;
-import static org.fabric3.runtime.webapp.Constants.MONITOR_FACTORY_DEFAULT;
-import static org.fabric3.runtime.webapp.Constants.MONITOR_FACTORY_PARAM;
 
 /**
  * @version $Rev$ $Date$
@@ -157,33 +153,6 @@ public class WebappUtilImpl implements WebappUtil {
         } catch (InvocationTargetException e) {
             throw new Fabric3InitException(e);
         } catch (NoSuchMethodException e) {
-            throw new Fabric3InitException(e);
-        }
-    }
-
-    /**
-     * Extension point for creating the monitor factory.
-     *
-     * @param bootClassLoader Classloader for loading the monitor factory class.
-     * @return Monitor factory instance.
-     * @throws Fabric3InitException If unable to initialize the monitor factory.
-     */
-    public MonitorFactory createMonitorFactory(ClassLoader bootClassLoader) throws Fabric3InitException {
-        try {
-            String monitorFactoryClass = getInitParameter(MONITOR_FACTORY_PARAM, MONITOR_FACTORY_DEFAULT);
-            MonitorFactory factory = (MonitorFactory) bootClassLoader.loadClass(monitorFactoryClass).newInstance();
-            URL configUrl = convertToURL(Constants.MONITOR_CONFIG_PATH, bootClassLoader);
-            if (configUrl != null) {
-                factory.readConfiguration(configUrl);
-            }
-            return factory;
-        } catch (InstantiationException e) {
-            throw new Fabric3InitException(e);
-        } catch (IllegalAccessException e) {
-            throw new Fabric3InitException(e);
-        } catch (ClassNotFoundException e) {
-            throw new Fabric3InitException("Monitor factory Implementation not found", e);
-        } catch (IOException e) {
             throw new Fabric3InitException(e);
         }
     }

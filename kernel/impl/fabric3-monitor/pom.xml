@@ -30,9 +30,14 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-host-api</artifactId>
+            <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+             <groupId>ch.qos.logback</groupId>
+             <artifactId>logback-classic</artifactId>
+             <version>${logback.version}</version>
+         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

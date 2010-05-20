@@ -49,11 +49,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A system annotation to inject a monitor.
+ * Used to inject a monitor. If a value is provided, the monitor will emit events to the channel specified by the value.
  *
  * @version $Rev$ $Date$
  */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Monitor {
+    String value() default "";
 }

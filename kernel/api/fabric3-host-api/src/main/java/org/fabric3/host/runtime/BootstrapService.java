@@ -48,6 +48,8 @@ import java.net.URI;
 
 import org.w3c.dom.Document;
 
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.stream.Source;
 
 /**
@@ -91,7 +93,6 @@ public interface BootstrapService {
      */
     URI parseDomainName(Document systemConfig) throws ParseException;
 
-
     /**
      * Returns the configured JMX port range. If not configured, the default range (1199) will be returned.
      *
@@ -100,6 +101,15 @@ public interface BootstrapService {
      * @throws ParseException if there is an error parsing the JMX port range
      */
     PortRange parseJmxPort(Document systemConfig) throws ParseException;
+
+    /**
+     * Creates a {@link MonitorEventDispatcher} for dispatching runtime events.
+     *
+     * @param systemConfig the runtime system configuration
+     * @return the dispatcher
+     * @throws MonitorConfigurationException if there is an error creating the dispatcher
+     */
+    MonitorEventDispatcher createMonitorDispatcher(Document systemConfig) throws MonitorConfigurationException;
 
     /**
      * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.

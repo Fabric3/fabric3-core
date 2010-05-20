@@ -54,7 +54,6 @@ import java.net.URLClassLoader;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorFactory;
 
 /**
  * Utility class for boostrap operations.
@@ -62,7 +61,6 @@ import org.fabric3.host.monitor.MonitorFactory;
  * @version $Revision$ $Date$
  */
 public final class BootstrapHelper {
-    private static final String DEFAULT_MONITOR_FACTORY = "org.fabric3.monitor.impl.JavaLoggingMonitorFactory";
 
     private BootstrapHelper() {
     }
@@ -168,19 +166,6 @@ public final class BootstrapHelper {
         File tempDir = getDirectory(baseDir, "tmp");
         File dataDir = getDirectory(baseDir, "data");
         return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, tempDir, dataDir);
-    }
-
-    public static MonitorFactory createDefaultMonitorFactory(ClassLoader classLoader) throws InitializationException {
-        try {
-            Class<?> monitorClass = Class.forName(DEFAULT_MONITOR_FACTORY, true, classLoader);
-            return (MonitorFactory) monitorClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new InitializationException(e);
-        } catch (IllegalAccessException e) {
-            throw new InitializationException(e);
-        } catch (InstantiationException e) {
-            throw new InitializationException(e);
-        }
     }
 
 }

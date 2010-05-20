@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
@@ -64,7 +65,7 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -78,7 +79,7 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.ant.api.TestRunner;
-import org.fabric3.runtime.ant.monitor.AntMonitorFactory;
+import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcher;
 
 /**
  * Launches a Fabric3 instance from the Ant runtime distribution.
@@ -158,17 +159,15 @@ public class Fabric3Task extends Task {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
-            // create the HostInfo, MonitorFactory, and runtime
+            // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
-
-            MonitorFactory monitorFactory = new AntMonitorFactory(this);
-
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
+            AntMonitorEventDispatcher dispatcher = new AntMonitorEventDispatcher(this);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
 
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -192,6 +191,36 @@ public class Fabric3Task extends Task {
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
+            dispatcher.onEvent(new MonitorEvent(){
+                public String getRuntime() {
+                    return null;
+                }
+
+                public String getSource() {
+                    return null;
+                }
+
+                public Level getMonitorLevel() {
+                    return Level.SEVERE;
+                }
+
+                public long getTimeStamp() {
+                    return 0;
+                }
+
+                public String getThreadName() {
+                    return null;
+                }
+
+                public String getMessage() {
+                    return null;
+                }
+
+                public Object[] getData() {
+                    return new Object[]{new RuntimeException("test")};
+                }
+            }
+            );
         } catch (Exception e) {
             throw new BuildException(e);
         }

@@ -44,7 +44,6 @@
 package org.fabric3.runtime.tomcat;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,8 +58,11 @@ import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
 import org.w3c.dom.Document;
 
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -123,22 +125,21 @@ public class Fabric3Listener implements LifecycleListener {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
-            // create the HostInfo, MonitorFactory, and runtime
+            // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
-
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mBeanServer);
+            // create and configure the monitor dispatcher
+            MonitorEventDispatcher dispatcher = bootstrapService.createMonitorDispatcher(systemConfig);
+
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
-
-            monitor = monitorFactory.getMonitor(ServerMonitor.class);
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
@@ -166,6 +167,8 @@ public class Fabric3Listener implements LifecycleListener {
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
+            MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
             monitor.started(RuntimeMode.VM.toString());
         } catch (Exception e) {
             if (monitor != null) {
@@ -186,15 +189,6 @@ public class Fabric3Listener implements LifecycleListener {
             monitor.runError(ex);
             throw new Fabric3ListenerException(ex);
         }
-    }
-
-    private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {
-        MonitorFactory monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
-        File logConfigFile = new File(configDir, "monitor.properties");
-        if (logConfigFile.exists()) {
-            monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
-        }
-        return monitorFactory;
     }
 
 

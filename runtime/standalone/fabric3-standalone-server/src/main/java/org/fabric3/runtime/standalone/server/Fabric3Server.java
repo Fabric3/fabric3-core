@@ -44,7 +44,6 @@
 package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
@@ -56,15 +55,17 @@ import org.w3c.dom.Document;
 import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Fabric3Exception;
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorFactory;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.runtime.RuntimeConfiguration;
@@ -135,10 +136,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
-            // create the HostInfo, MonitorFactory, and runtime
+            // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
-
-            MonitorFactory monitorFactory = createMonitorFactory(configDir, bootLoader);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -148,11 +147,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
             RmiAgent agent = new RmiAgent(range.getMinimum(), range.getMaximum());
             MBeanServer mbServer = agent.getMBeanServer();
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, monitorFactory, mbServer);
+            // create and configure the monitor dispatcher
+            MonitorEventDispatcher dispatcher = bootstrapService.createMonitorDispatcher(systemConfig);
+
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, dispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
-
-            monitor = monitorFactory.getMonitor(ServerMonitor.class);
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
@@ -178,7 +178,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
             agent.start();
             // create the shutdown daemon
             latch = new CountDownLatch(1);
+
+            MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
             monitor.started(runtimeMode.toString(), agent.getAssignedPort());
+
             try {
                 latch.await();
                 monitor.stopped();
@@ -222,16 +226,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             }
         }
         return runtimeMode;
-    }
-
-    private MonitorFactory createMonitorFactory(File configDir, ClassLoader bootLoader) throws InitializationException, IOException {
-        MonitorFactory monitorFactory = BootstrapHelper.createDefaultMonitorFactory(bootLoader);
-
-        File logConfigFile = new File(configDir, "monitor.properties");
-        if (logConfigFile.exists()) {
-            monitorFactory.readConfiguration(logConfigFile.toURI().toURL());
-        }
-        return monitorFactory;
     }
 
     private void handleStartException(Exception ex) throws Fabric3ServerException {

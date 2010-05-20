@@ -34,44 +34,49 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
+*/
+package org.fabric3.monitor.runtime;
 
-import java.net.URI;
+import java.io.ByteArrayInputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
- *
  * @version $Rev$ $Date$
  */
-public interface Names {
+public class DefaultDispatcherTestCase extends TestCase {
+    private static final String CONFIG =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><configuration>" +
+                    "   <appender name='CUSTOM' class='org.fabric3.monitor.runtime.TestAppender'>" +
+                    "       <encoder><pattern>test-appender: %msg</pattern></encoder>" +
+                    "   </appender>" +
+                    "   <root level='debug'>" +
+                    "       <appender-ref ref='CUSTOM'/>" +
+                    "   </root>" +
+                    "</configuration>";
 
-    String VERSION = "1.6";
+    private DocumentBuilder builder;
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
+    public void testConfiguration() throws Exception {
+        DefaultDispatcher dispatcher = new DefaultDispatcher();
+        Document doc = builder.parse(new ByteArrayInputStream(CONFIG.getBytes()));
+        Element element = doc.getDocumentElement();
+        dispatcher.configure(element);
+        dispatcher.start();
+        dispatcher.onEvent(new MonitorEventImpl("foo", "foo", java.util.logging.Level.SEVERE, 0, "foo", "this is a test"));
+        assertEquals("test-appender: this is a test", TestAppender.getStream().toString());
+        dispatcher.stop();
+    }
 
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        builder = factory.newDocumentBuilder();
 
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String RUNTIME_DOMAIN_CHANNEL = "RuntimeDomainChannel";
-
-    URI RUNTIME_DOMAIN_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_DOMAIN_CHANNEL);
-
+    }
 }

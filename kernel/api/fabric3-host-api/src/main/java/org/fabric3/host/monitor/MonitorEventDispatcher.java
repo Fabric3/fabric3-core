@@ -35,23 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.host.monitor;
 
-import java.net.URI;
-
-import org.fabric3.spi.channel.Channel;
+import org.w3c.dom.Element;
 
 /**
- * Manages channels on a runtime.
+ * Dispatches a {@link MonitorEvent} to a subsystem such as logging or management infrastructure.
  *
  * @version $Rev$ $Date$
  */
-public interface ChannelManager {
+public interface MonitorEventDispatcher {
 
-    Channel getChannel(URI uri);
+    /**
+     * Configures the dispatcher.
+     *
+     * @param element dispatcher-specific configuration
+     * @throws MonitorConfigurationException if a configuration error is encountered
+     */
+    void configure(Element element) throws MonitorConfigurationException;
 
-    void register(Channel channel) throws RegistrationException;
+    /**
+     * Starts the dispatcher.
+     */
+    void start();
 
-    void unregister(URI uri) throws RegistrationException;
+    /**
+     * Stops the dispatcher. Allows resources to be closed.
+     */
+    void stop();
+
+    /**
+     * Callback when an event is received on a channel.
+     *
+     * @param event the event
+     */
+    void onEvent(MonitorEvent event);
 
 }

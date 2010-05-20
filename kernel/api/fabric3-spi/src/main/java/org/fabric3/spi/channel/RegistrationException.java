@@ -41,42 +41,18 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host.monitor;
+package org.fabric3.spi.channel;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * A MonitorFactory creates implementations of components' monitor interfaces that interface with a its monitoring scheme. For example, a
- * implementation may create versions that emit appropriate logging events or which send notifications to a management API.
- *
  * @version $Rev$ $Date$
  */
-public interface MonitorFactory {
-    /**
-     * Return a monitor for a monitor interface.
-     *
-     * @param monitorInterface the monitoring interface
-     * @return an implementation of the monitoring interface; will not be null
-     */
-    <T> T getMonitor(Class<T> monitorInterface);
+public class RegistrationException extends Fabric3Exception {
+    private static final long serialVersionUID = -2331741137749158129L;
 
-    /**
-     * Return a monitor for a component's monitor interface.
-     *
-     * @param monitorInterface the component's monitoring interface
-     * @param componentId      the specific component to monitor
-     * @return an implementation of the monitoring interface; will not be null
-     */
-    <T> T getMonitor(Class<T> monitorInterface, URI componentId);
-
-    /**
-     * Reads monitor congfiguration from an external source.
-     *
-     * @param url the configuration URL
-     * @throws IOException if the configuration cannot be read
-     */
-    void readConfiguration(URL url) throws IOException;
+    public RegistrationException(String message) {
+        super(message);
+    }
 
 }

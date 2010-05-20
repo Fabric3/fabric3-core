@@ -101,6 +101,7 @@
     <orderEntry type="module" module-name="fabric3-util" />
     <orderEntry type="module" module-name="fabric3-contribution" />
     <orderEntry type="module" module-name="fabric3-introspection-xml" />
+    <orderEntry type="module" module-name="fabric3-monitor" />
   </component>
 </module>
 

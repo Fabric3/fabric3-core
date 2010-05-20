@@ -49,17 +49,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.Source;
@@ -73,6 +77,7 @@ import org.fabric3.host.stream.UrlSource;
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
     private static final int DEFAULT_JMX_PORT = 1199;
+    private static final String RUNTIME_MONITOR = "runtime.monitor";
     private DocumentLoader loader;
 
     public SystemConfigLoader() {
@@ -164,9 +169,13 @@ public class SystemConfigLoader {
                 } catch (URISyntaxException e) {
                     throw new ParseException("Invalid domain name specified in system configuration", e);
                 }
+            }  else {
+                return DEFAULT_DOMAIN;
             }
+        } else if (nodes.getLength() == 0) {
+            return DEFAULT_DOMAIN;
         }
-        return DEFAULT_DOMAIN;
+        throw new ParseException("Invalid system configuation: more than one <runtime> element specified");
     }
 
     /**
@@ -200,8 +209,58 @@ public class SystemConfigLoader {
                 }
                 return new PortRange(minPort, maxPort);
             }
+        } else if (nodes.getLength() == 0) {
+            return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
         }
-        return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
+        throw new ParseException("Invalid system configuation: more than one <runtime> element specified");
+    }
+
+    /**
+     * Returns the monitor configuration. If not set, null will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the monitor configuration
+     * @throws MonitorConfigurationException if there is an error parsing the monitor configuration
+     */
+    public Element getMonitorConfiguration(Document systemConfig) throws MonitorConfigurationException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName(RUNTIME_MONITOR);
+        if (nodes.getLength() == 1) {
+            Element monitorElement = (Element) nodes.item(0);
+            NodeList configurationElements = monitorElement.getElementsByTagName("configuration");
+            if (configurationElements.getLength() != 1) {
+                throw new MonitorConfigurationException("Invalid system configuation: Only one monitor <configuration> element must be specified");
+            } else {
+                Element element = (Element) configurationElements.item(0);
+                addAppenderReferences(systemConfig, element);
+                return element;
+            }
+        } else if (nodes.getLength() == 0) {
+            return null;
+        }
+        throw new MonitorConfigurationException("Invalid system configuation: more than one <monitor> element specified");
+    }
+
+    private void addAppenderReferences(Document systemConfig, Element element) {
+        NodeList elements = element.getElementsByTagName("appender");
+        List<Element> added = new ArrayList<Element>();
+        for (int i = 0; i < elements.getLength(); i++) {
+            Node node = elements.item(i);
+            Node nameAttribute = node.getAttributes().getNamedItem("name");
+            if (nameAttribute != null) {
+                String name = nameAttribute.getNodeValue();
+                Element reference = systemConfig.createElement("appender-ref");
+                reference.setAttribute("ref", name);
+                added.add(reference);
+            }
+        }
+        if (!added.isEmpty()) {
+            Element root = systemConfig.createElement("root");
+            element.appendChild(root);
+            for (Element reference : added) {
+                root.appendChild(reference);
+            }
+        }
     }
 
     private int parsePortNumber(String portVal) {

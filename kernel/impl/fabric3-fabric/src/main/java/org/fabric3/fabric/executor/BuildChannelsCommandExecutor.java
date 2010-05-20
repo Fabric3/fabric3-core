@@ -54,9 +54,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.channel.AsyncFanOutHandler;
 import org.fabric3.fabric.channel.ChannelImpl;
-import org.fabric3.fabric.channel.ChannelManager;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.channel.FanOutHandler;
-import org.fabric3.fabric.channel.RegistrationException;
+import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.channel.Channel;

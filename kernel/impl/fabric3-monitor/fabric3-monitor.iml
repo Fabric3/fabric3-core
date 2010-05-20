@@ -66,6 +66,40 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module-library">
+      <library name="ch.qos.logback:logback-classic:0.9.20">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/ch/qos/logback/logback-classic/0.9.20/logback-classic-0.9.20.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$M2_REPO$/ch/qos/logback/logback-classic/0.9.20/logback-classic-0.9.20-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ch.qos.logback:logback-core:0.9.20">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/ch/qos/logback/logback-core/0.9.20/logback-core-0.9.20.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$M2_REPO$/ch/qos/logback/logback-core/0.9.20/logback-core-0.9.20-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.slf4j:slf4j-api:1.5.11">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.5.11/slf4j-api-1.5.11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.5.11/slf4j-api-1.5.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="fabric3-spi" />
   </component>
 </module>
 

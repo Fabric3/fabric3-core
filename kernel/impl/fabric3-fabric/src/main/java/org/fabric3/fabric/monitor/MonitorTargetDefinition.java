@@ -45,8 +45,14 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  * @version $Rev$ $Date$
  */
 public class MonitorTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = 9010394726444606704L;
     private URI classLoaderId;
     private String monitorType;
+
+    public MonitorTargetDefinition(String monitorType, URI uri) {
+        this.monitorType = monitorType;
+        setUri(uri);
+    }
 
     public URI getClassLoaderId() {
         return classLoaderId;
@@ -60,7 +66,4 @@ public class MonitorTargetDefinition extends PhysicalTargetDefinition {
         return monitorType;
     }
 
-    public void setMonitorType(String monitorType) {
-        this.monitorType = monitorType;
-    }
 }
