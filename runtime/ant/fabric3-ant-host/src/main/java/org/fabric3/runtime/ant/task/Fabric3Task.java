@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
@@ -65,7 +64,6 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -191,36 +189,6 @@ public class Fabric3Task extends Task {
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
-            dispatcher.onEvent(new MonitorEvent(){
-                public String getRuntime() {
-                    return null;
-                }
-
-                public String getSource() {
-                    return null;
-                }
-
-                public Level getMonitorLevel() {
-                    return Level.SEVERE;
-                }
-
-                public long getTimeStamp() {
-                    return 0;
-                }
-
-                public String getThreadName() {
-                    return null;
-                }
-
-                public String getMessage() {
-                    return null;
-                }
-
-                public Object[] getData() {
-                    return new Object[]{new RuntimeException("test")};
-                }
-            }
-            );
         } catch (Exception e) {
             throw new BuildException(e);
         }
