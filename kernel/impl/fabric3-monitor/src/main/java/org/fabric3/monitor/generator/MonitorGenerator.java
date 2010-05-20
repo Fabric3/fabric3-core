@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.monitor;
+package org.fabric3.monitor.generator;
 
 import java.net.URI;
 
@@ -45,6 +45,8 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.monitor.model.MonitorResource;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
 
 /**
  * @version $Rev$ $Date$

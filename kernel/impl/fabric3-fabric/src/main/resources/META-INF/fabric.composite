@@ -32,8 +32,6 @@
 
     <include name="HostServicesComposite" scdlResource="META-INF/services.composite"/>
 
-    <include name="MonitorComposite" scdlResource="META-INF/monitor.composite"/>
-
     <include name="BindingComposite" scdlResource="META-INF/binding.composite"/>
 
     <include name="ContractComposite" scdlResource="META-INF/contract.composite"/>

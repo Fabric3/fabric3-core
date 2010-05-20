@@ -50,7 +50,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.api.annotation.Producer;
-import org.fabric3.fabric.monitor.MonitorProcessor;
+import org.fabric3.monitor.introspection.MonitorProcessor;
 import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
 import org.fabric3.implementation.system.introspection.SystemHeuristic;
 import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;

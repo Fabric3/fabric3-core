@@ -17,14 +17,14 @@
            autowire="true">
 
     <component name="MonitorProcessor" f3-core:key="org.fabric3.api.annotation.Monitor">
-        <f3-impl:implementation.system class="org.fabric3.fabric.monitor.MonitorProcessor"/>
+        <f3-impl:implementation.system class="org.fabric3.monitor.introspection.MonitorProcessor"/>
     </component>
 
-    <component name="MonitorWireGenerator" f3-core:key="org.fabric3.fabric.monitor.MonitorResource">
-        <f3-impl:implementation.system class="org.fabric3.fabric.monitor.MonitorGenerator"/>
+    <component name="MonitorWireGenerator" f3-core:key="org.fabric3.monitor.model.MonitorResource">
+        <f3-impl:implementation.system class="org.fabric3.monitor.generator.MonitorGenerator"/>
     </component>
 
-    <component name="MonitorWireAttacher" f3-core:key="org.fabric3.fabric.monitor.MonitorTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.fabric.monitor.MonitorWireAttacher"/>
+    <component name="MonitorWireAttacher" f3-core:key="org.fabric3.monitor.provision.MonitorTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.monitor.runtime.MonitorWireAttacher"/>
     </component>
 </composite>

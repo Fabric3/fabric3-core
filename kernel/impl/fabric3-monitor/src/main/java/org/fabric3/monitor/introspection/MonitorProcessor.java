@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.monitor;
+package org.fabric3.monitor.introspection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -62,6 +62,7 @@ import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.monitor.model.MonitorResource;
 
 /**
  * @version $Rev$ $Date$

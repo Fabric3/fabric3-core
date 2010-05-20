@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.monitor;
+package org.fabric3.monitor.runtime;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -52,6 +52,7 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.wire.Wire;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
 
 /**
  * TargetWireAttacher that handles monitor resources.

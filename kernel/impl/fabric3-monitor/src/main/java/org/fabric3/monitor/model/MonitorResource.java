@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.monitor;
+package org.fabric3.monitor.model;
 
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;

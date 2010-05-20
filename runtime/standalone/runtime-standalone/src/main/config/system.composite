@@ -36,6 +36,8 @@
 
     <include name="SingletonImplementationComposite" scdlResource="META-INF/singletonImplementation.composite"/>
 
+    <include name="MonitorComposite" scdlResource="META-INF/monitor.composite"/>
+
     <include name="JMXComposite" scdlResource="META-INF/jmx.composite"/>
 
     <include name="TransformComposite" scdlResource="META-INF/transform.composite"/>
