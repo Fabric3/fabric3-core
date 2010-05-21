@@ -39,6 +39,7 @@ package org.fabric3.fabric.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.fabric3.spi.command.CompensatableCommand;
 
@@ -49,6 +50,7 @@ import org.fabric3.spi.command.CompensatableCommand;
  */
 public class ChannelConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 8746788639966402901L;
+
     private List<AttachChannelConnectionCommand> attachCommands;
     private List<DetachChannelConnectionCommand> detachCommands;
 
@@ -58,7 +60,24 @@ public class ChannelConnectionCommand implements CompensatableCommand {
     }
 
     public CompensatableCommand getCompensatingCommand() {
-        return null;
+        ChannelConnectionCommand compensating = new ChannelConnectionCommand();
+        if (!attachCommands.isEmpty()){
+            ListIterator<AttachChannelConnectionCommand> iter = attachCommands.listIterator(attachCommands.size()-1);
+            while(iter.hasPrevious()){
+                AttachChannelConnectionCommand command = iter.previous();
+                DetachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
+                compensating.add(compensatingCommand);
+            }
+        }
+        if (!detachCommands.isEmpty()){
+            ListIterator<DetachChannelConnectionCommand> iter = detachCommands.listIterator(detachCommands.size()-1);
+            while(iter.hasPrevious()){
+                DetachChannelConnectionCommand command = iter.previous();
+                AttachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
+                compensating.add(compensatingCommand);
+            }
+        }
+        return compensating;
     }
 
     public List<AttachChannelConnectionCommand> getAttachCommands() {

@@ -54,7 +54,7 @@ public class DetachChannelConnectionCommand implements CompensatableCommand {
         this.definition = definition;
     }
 
-    public CompensatableCommand getCompensatingCommand() {
+    public AttachChannelConnectionCommand getCompensatingCommand() {
         return new AttachChannelConnectionCommand(definition);
     }
 
