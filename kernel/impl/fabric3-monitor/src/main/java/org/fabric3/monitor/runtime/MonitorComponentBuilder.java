@@ -35,40 +35,43 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.provision;
+package org.fabric3.monitor.runtime;
 
 import java.net.URI;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Element;
+
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
+import org.fabric3.monitor.provision.MonitorComponentDefinition;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.component.ComponentBuilder;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MonitorTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 9010394726444606704L;
-    private URI classLoaderId;
-    private String monitorType;
-    private URI monitorable;
+@EagerInit
+public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponentDefinition, MonitorComponent> {
+    private MonitorEventDispatcherFactory factory;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
-        this.monitorType = monitorType;
-        this.monitorable = monitorable;
-        setUri(uri);
+    public MonitorComponentBuilder(@Reference MonitorEventDispatcherFactory factory) {
+        this.factory = factory;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
+    public MonitorComponent build(MonitorComponentDefinition definition) throws BuilderException {
+        URI uri = definition.getComponentUri();
+        QName deployable = definition.getDeployable();
+        Element configuration = definition.getConfiguration();
+        try {
+            MonitorEventDispatcher dispatcher = factory.createInstance(configuration);
+            return new MonitorComponent(uri, deployable, dispatcher);
+        } catch (MonitorConfigurationException e) {
+            throw new MonitorComponentBuildException(e);
+        }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-    public String getMonitorType() {
-        return monitorType;
-    }
-
-    public URI getMonitorable() {
-        return monitorable;
     }
 }

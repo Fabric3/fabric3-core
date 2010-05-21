@@ -46,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +60,11 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapService;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -127,6 +130,15 @@ public class MavenRuntimeBooter {
             List<ContributionSource> contributions = extensionHelper.processExtensions(extensions);
 
             BootConfiguration configuration = new BootConfiguration();
+
+            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            MavenMonitorEventDispatcherFactory factory = new MavenMonitorEventDispatcherFactory(log);
+            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
+                                                                           MonitorEventDispatcherFactory.class,
+                                                                           factory, true);
+            registrations.add(registration);
+            configuration.addRegistrations(registrations);
+
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostClassLoader);
             configuration.setBootClassLoader(bootClassLoader);

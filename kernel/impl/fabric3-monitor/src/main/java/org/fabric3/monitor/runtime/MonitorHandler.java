@@ -93,18 +93,28 @@ public class MonitorHandler implements InvocationHandler {
         currentMessage = format(currentMessage, args);
         long time = System.currentTimeMillis();
         MonitorEvent event = new MonitorEventImpl(runtime, source, currentLevel, time, thread, currentMessage, args);
-        streamHandler.handle(event);
+        // events are passed as arrays
+        Object[] param = new Object[]{event};
+        streamHandler.handle(param);
         return null;
     }
 
     /**
-     * Formats the monitor message by substituting placeholders with proxy parameters.
+     * Formats the monitor message by substituting placeholders with proxy parameters. If the message is null, the string values of the parameter
+     * values will be concatenated.
      *
      * @param message the message
      * @param args    the monitor parameters
      * @return the formatted message
      */
     private String format(String message, Object[] args) {
+        if (message == null) {
+            StringBuilder builder = new StringBuilder();
+            for (Object arg : args) {
+                builder.append(arg).append(" ");
+            }
+            return builder.toString();
+        }
         if (args != null && args.length != 0) {
             if (message.indexOf("{0") >= 0 || message.indexOf("{1") >= 0 || message.indexOf("{2") >= 0 || message.indexOf("{3") >= 0) {
                 return MessageFormat.format(message, args);

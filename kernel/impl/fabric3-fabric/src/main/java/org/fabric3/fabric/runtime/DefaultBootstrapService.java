@@ -63,7 +63,7 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.stream.Source;
-import org.fabric3.monitor.runtime.DefaultDispatcher;
+import org.fabric3.monitor.runtime.LogbackDispatcher;
 
 /**
  * Default BootstrapFactory implementation.
@@ -101,7 +101,7 @@ public class DefaultBootstrapService implements BootstrapService {
     }
 
     public MonitorEventDispatcher createMonitorDispatcher(Document systemConfig) throws MonitorConfigurationException {
-        DefaultDispatcher dispatcher = new DefaultDispatcher();
+        LogbackDispatcher dispatcher = new LogbackDispatcher();
         Element element = systemConfigLoader.getMonitorConfiguration(systemConfig);
         if (element != null) {
             dispatcher.configure(element);

@@ -40,7 +40,9 @@ package org.fabric3.runtime.weblogic.boot;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
 import javax.naming.InitialContext;
@@ -56,11 +58,13 @@ import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
@@ -71,6 +75,7 @@ import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
+import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcherFactory;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
@@ -174,6 +179,15 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
 
             BootConfiguration configuration = new BootConfiguration();
+
+            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            WebLogicMonitorEventDispatcherFactory factory = new WebLogicMonitorEventDispatcherFactory();
+            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
+                                                                           MonitorEventDispatcherFactory.class,
+                                                                           factory, true);
+            registrations.add(registration);
+            configuration.addRegistrations(registrations);
+
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);

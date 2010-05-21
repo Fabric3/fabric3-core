@@ -34,54 +34,18 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.monitor.model;
+*/
+package org.fabric3.fabric.generator.channel;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import javax.xml.namespace.QName;
+
+import org.fabric3.host.Namespaces;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MonitorResource extends ResourceDefinition {
-    private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
+public interface ChannelIntents {
 
-    /**
-     * Constructor that uses the default channel.
-     *
-     * @param name     the resource name
-     * @param contract the service contract required of the resource
-     */
-    public MonitorResource(String name, ServiceContract contract) {
-        super(name, contract, false);
-    }
+    QName SYNC_INTENT = new QName(Namespaces.CORE, "synchronous");
 
-    /**
-     * Constructor.
-     *
-     * @param name        the resource name
-     * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
-     */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
-        super(name, contract, false);
-        this.channelName = channelName;
-    }
-
-
-    /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
-     *
-     * @return the target channel to send monitor events or null
-     */
-    public String getChannelName() {
-        return channelName;
-    }
 }

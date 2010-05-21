@@ -54,12 +54,13 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.channel.AsyncFanOutHandler;
 import org.fabric3.fabric.channel.ChannelImpl;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.channel.FanOutHandler;
-import org.fabric3.spi.channel.RegistrationException;
+import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -96,7 +97,12 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
             for (PhysicalChannelDefinition definition : definitions) {
                 URI uri = definition.getUri();
                 QName deployable = definition.getDeployable();
-                FanOutHandler handler = new AsyncFanOutHandler(workScheduler);
+                FanOutHandler handler;
+                if (definition.isSynchronous()) {
+                    handler = new SyncFanOutHandler();
+                } else {
+                    handler = new AsyncFanOutHandler(workScheduler);
+                }
                 Channel channel = new ChannelImpl(uri, deployable, handler);
                 channelManager.register(channel);
             }

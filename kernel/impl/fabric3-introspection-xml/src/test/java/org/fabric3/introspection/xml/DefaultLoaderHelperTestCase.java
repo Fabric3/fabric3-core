@@ -93,6 +93,20 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         }
     }
 
+    public void testTransform() throws Exception {
+        String xml = "<root><one><two>value</two></one></root>";
+        XMLStreamReader reader = createReader(xml);
+        Document value = helper.transform(reader);
+        reader.close();
+        Node root = value.getDocumentElement();
+        assertEquals("root", root.getNodeName());
+        Element one = (Element) value.getElementsByTagName("one").item(0);
+        assertEquals("one", one.getNodeName());
+        Element two = (Element) one.getChildNodes().item(0);
+        assertEquals("two", two.getNodeName());
+        assertEquals("value", two.getTextContent());
+    }
+
     public void testLoadSimpleValue() throws Exception {
         String xml = "<property name='test'>value</property>";
         XMLStreamReader reader = createReader(xml);

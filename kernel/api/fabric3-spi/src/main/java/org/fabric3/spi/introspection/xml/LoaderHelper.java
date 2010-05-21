@@ -134,7 +134,7 @@ public interface LoaderHelper {
     Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException;
 
     /**
-     * Constructs a QName from the given name. If a namespace prefix is not specified in the name, the namespace context is used
+     * Constructs a QName from the given name. If a namespace prefix is not specified in the name, the namespace context is used.
      *
      * @param name   the name to parse
      * @param reader the XML stream reader
@@ -154,11 +154,20 @@ public interface LoaderHelper {
     List<URI> parseListOfUris(XMLStreamReader reader, String attribute) throws URISyntaxException;
 
     /**
-     * Determines if the first multiplicity setting can narrow the second
+     * Determines if the first multiplicity setting can narrow the second.
      *
      * @param first  multiplicity setting
      * @param second multiplicity setting
      * @return true if the first can narrow the second
      */
     boolean canNarrow(Multiplicity first, Multiplicity second);
+
+    /**
+     * Transforms the XML element to a DOM representation.
+     *
+     * @param reader the XML stream reader
+     * @return the DOM
+     * @throws XMLStreamException if a conversion exception is encountered
+     */
+    Document transform(XMLStreamReader reader) throws XMLStreamException;
 }

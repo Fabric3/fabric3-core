@@ -35,36 +35,28 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.runtime;
+package org.fabric3.runtime.maven.itest;
 
-import org.fabric3.host.monitor.MonitorEvent;
+import org.apache.maven.plugin.logging.Log;
+import org.w3c.dom.Element;
+
+import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 
 /**
- * Wraps a {@link MonitorEventDispatcher} to receive events from a channel.
+ * Creates {@link MonitorEventDispatcher} instances which dispatch to the Maven logging infrastrucure.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9016 $ $Date: 2010-05-20 14:28:14 +0200 (Thu, 20 May 2010) $
  */
-public class DispatcherWrapper implements EventStreamHandler {
-    private MonitorEventDispatcher dispatcher;
+public class MavenMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
+    private MavenMonitorEventDispatcher dispatcher;
 
-    public DispatcherWrapper(MonitorEventDispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public MavenMonitorEventDispatcherFactory(Log log) {
+        dispatcher = new MavenMonitorEventDispatcher(log);
     }
 
-    public void handle(Object event) {
-        if (!(event instanceof MonitorEvent)) {
-            return;
-        }
-        dispatcher.onEvent((MonitorEvent) event);
-    }
-
-    public void setNext(EventStreamHandler next) {
-        throw new IllegalStateException("This handler must be the last one in the handler sequence");
-    }
-
-    public EventStreamHandler getNext() {
-        return null;
+    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
+        return dispatcher;
     }
 }

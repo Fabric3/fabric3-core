@@ -41,6 +41,8 @@
 
     <include name="MonitorComposite" scdlResource="META-INF/monitor.composite"/>
 
+    <include name="MonitorDispatcherComposite" scdlResource="META-INF/dispatcher.composite"/>
+    
     <include name="TransformComposite" scdlResource="META-INF/transform.composite"/>
 
     <component name="FSArtifactCache">

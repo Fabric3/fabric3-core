@@ -95,13 +95,17 @@ public class JDKMonitorProxyService implements MonitorProxyService {
             LogLevels level = LogLevels.getAnnotatedLogLevel(method);
             Level translated = translateLogLevel(level);
             String key = type.getName() + "#" + method.getName();
-            String message = key;
+            String message = null;
             if (bundle != null) {
                 try {
                     message = bundle.getString(key);
                 } catch (MissingResourceException e) {
                     // no resource, ignore
                 }
+            }
+            if (message == null && method.getParameterTypes().length == 0) {
+                // if there are no params, set the message to the key
+                message = key;
             }
             levels.put(method.getName(), new DispatchInfo(translated, message));
         }

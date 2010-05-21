@@ -39,36 +39,15 @@ package org.fabric3.monitor.provision;
 
 import java.net.URI;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MonitorTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 9010394726444606704L;
-    private URI classLoaderId;
-    private String monitorType;
-    private URI monitorable;
+public class MonitorConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
+    private static final long serialVersionUID = 16881673877261866L;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
-        this.monitorType = monitorType;
-        this.monitorable = monitorable;
-        setUri(uri);
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-    public String getMonitorType() {
-        return monitorType;
-    }
-
-    public URI getMonitorable() {
-        return monitorable;
+    public MonitorConnectionTargetDefinition(URI uri) {
+        setTargetUri(uri);
     }
 }

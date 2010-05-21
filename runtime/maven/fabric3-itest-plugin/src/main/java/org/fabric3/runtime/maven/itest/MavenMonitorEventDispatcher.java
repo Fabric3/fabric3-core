@@ -76,8 +76,9 @@ public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
                 }
                 if (message != null) {
                     log.error(message, e);
+                } else {
+                    log.error(e);
                 }
-                log.error(e);
             }
         } else if (Level.WARNING == level) {
             if (log.isWarnEnabled()) {

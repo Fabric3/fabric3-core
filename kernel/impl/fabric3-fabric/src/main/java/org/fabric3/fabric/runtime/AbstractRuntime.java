@@ -95,6 +95,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.monitor.DispatcherWrapper;
 
 /**
  * @version $Rev$ $Date$

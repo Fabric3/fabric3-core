@@ -45,19 +45,20 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.annotation.Annotation;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.Management;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
-import org.fabric3.api.annotation.Management;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Processes the @Service annotation on a component implementaiton class.
@@ -69,6 +70,12 @@ public class ServiceProcessor<I extends Implementation<? extends InjectingCompon
     private OperationPolicyIntrospector policyIntrospector;
     private PolicyAnnotationProcessor policyProcessor;
 
+    public ServiceProcessor(JavaContractProcessor contractProcessor) {
+        super(Service.class);
+        this.contractProcessor = contractProcessor;
+    }
+
+    @Constructor
     public ServiceProcessor(@Reference JavaContractProcessor contractProcessor, @Reference OperationPolicyIntrospector policyIntrospector) {
         super(Service.class);
         this.contractProcessor = contractProcessor;

@@ -34,54 +34,25 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.monitor.model;
+*/
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+package org.fabric3.host.monitor;
+
+import org.w3c.dom.Element;
 
 /**
+ * Creates {@link MonitorEventDispatcher}s for a host.
+ *
  * @version $Rev$ $Date$
  */
-public class MonitorResource extends ResourceDefinition {
-    private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
+public interface MonitorEventDispatcherFactory {
 
     /**
-     * Constructor that uses the default channel.
+     * Create a {@link MonitorEventDispatcher} instance.
      *
-     * @param name     the resource name
-     * @param contract the service contract required of the resource
+     * @param configuration the dispatcher configuration
+     * @return the instance.
+     * @throws MonitorConfigurationException if configuration error is encountered
      */
-    public MonitorResource(String name, ServiceContract contract) {
-        super(name, contract, false);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param name        the resource name
-     * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
-     */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
-        super(name, contract, false);
-        this.channelName = channelName;
-    }
-
-
-    /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
-     *
-     * @return the target channel to send monitor events or null
-     */
-    public String getChannelName() {
-        return channelName;
-    }
+    MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException;
 }

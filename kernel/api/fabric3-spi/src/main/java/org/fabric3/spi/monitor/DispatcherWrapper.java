@@ -34,54 +34,40 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.monitor.model;
+*/
+package org.fabric3.spi.monitor;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import java.lang.reflect.Array;
+
+import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
+ * Wraps a {@link MonitorEventDispatcher} to receive events from a channel.
+ *
  * @version $Rev$ $Date$
  */
-public class MonitorResource extends ResourceDefinition {
-    private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
+public class DispatcherWrapper implements EventStreamHandler {
+    private MonitorEventDispatcher dispatcher;
 
-    /**
-     * Constructor that uses the default channel.
-     *
-     * @param name     the resource name
-     * @param contract the service contract required of the resource
-     */
-    public MonitorResource(String name, ServiceContract contract) {
-        super(name, contract, false);
+    public DispatcherWrapper(MonitorEventDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param name        the resource name
-     * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
-     */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
-        super(name, contract, false);
-        this.channelName = channelName;
+    public void handle(Object param) {
+        Object event = Array.get(param, 0);
+        if (!(event instanceof MonitorEvent)) {
+            return;
+        }
+        dispatcher.onEvent((MonitorEvent) event);
     }
 
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
+    }
 
-    /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
-     *
-     * @return the target channel to send monitor events or null
-     */
-    public String getChannelName() {
-        return channelName;
+    public EventStreamHandler getNext() {
+        return null;
     }
 }

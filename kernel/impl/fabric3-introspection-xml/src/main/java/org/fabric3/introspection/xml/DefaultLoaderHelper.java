@@ -50,10 +50,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamConstants;
 import static javax.xml.stream.XMLStreamConstants.CDATA;
 import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.COMMENT;
@@ -65,7 +67,6 @@ import static javax.xml.stream.XMLStreamConstants.SPACE;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.XMLConstants;
 
 import org.oasisopen.sca.Constants;
 import org.w3c.dom.Document;
@@ -92,7 +93,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
  * @version $Rev$ $Date$
  */
 public class DefaultLoaderHelper implements LoaderHelper {
-    private final DocumentBuilderFactory documentBuilderFactory;
+    private DocumentBuilderFactory documentBuilderFactory;
 
     public DefaultLoaderHelper() {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -170,13 +171,11 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
         int index = target.lastIndexOf('/');
         if (index == -1) {
-            URI newUri = new URI(target);
-            return newUri;
+            return new URI(target);
         } else {
             String uri = target.substring(0, index);
             String fragment = target.substring(index + 1);
-            URI newUri = new URI(uri + '#' + fragment);
-            return newUri;
+            return new URI(uri + '#' + fragment);
         }
     }
 
@@ -326,6 +325,56 @@ public class DefaultLoaderHelper implements LoaderHelper {
         return document;
     }
 
+
+    public Document transform(XMLStreamReader reader) throws XMLStreamException {
+
+        if (reader.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            throw new XMLStreamException("The stream needs to be at the start of an element");
+        }
+
+        DocumentBuilder builder = getDocumentBuilder();
+        Document document = builder.newDocument();
+
+        QName rootName = reader.getName();
+        Element root = createElement(reader, document, rootName);
+
+        document.appendChild(root);
+
+        while (true) {
+
+            int next = reader.next();
+            switch (next) {
+            case START_ELEMENT:
+
+                QName childName = new QName(reader.getNamespaceURI(), reader.getLocalName());
+                Element child = createElement(reader, document, childName);
+
+                root.appendChild(child);
+                root = child;
+
+                break;
+
+            case CHARACTERS:
+            case CDATA:
+                Text text = document.createTextNode(reader.getText());
+                root.appendChild(text);
+                break;
+            case END_ELEMENT:
+                if (rootName.equals(reader.getName())) {
+                    return document;
+                }
+                root = (Element) root.getParentNode();
+            case ENTITY_REFERENCE:
+            case COMMENT:
+            case SPACE:
+            case PROCESSING_INSTRUCTION:
+            case DTD:
+                break;
+            }
+        }
+
+    }
+
     private void populateNamespaces(XMLStreamReader reader, Element element) {
         for (int i = 0; i < reader.getNamespaceCount(); i++) {
             String prefix = reader.getNamespacePrefix(i);
@@ -334,5 +383,50 @@ public class DefaultLoaderHelper implements LoaderHelper {
             element.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, uri);
         }
     }
+
+    private DocumentBuilder getDocumentBuilder() throws XMLStreamException {
+        try {
+            return documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new XMLStreamException(e);
+        }
+    }
+
+    /*
+     * Creates the element and populates the namespace declarations and attributes.
+     */
+    private Element createElement(XMLStreamReader reader, Document document, QName rootName) {
+
+        Element root = document.createElementNS(rootName.getNamespaceURI(), rootName.getLocalPart());
+
+        // Handle namespace declarations
+        for (int i = 0; i < reader.getNamespaceCount(); i++) {
+
+            String prefix = reader.getNamespacePrefix(i);
+            String uri = reader.getNamespaceURI(i);
+
+            prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
+
+            root.setAttribute(prefix, uri);
+
+        }
+
+        // Handle attributes
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+
+            String attributeNs = reader.getAttributeNamespace(i);
+            String localName = reader.getAttributeLocalName(i);
+            String value = reader.getAttributeValue(i);
+            String attributePrefix = reader.getAttributePrefix(i);
+            String qualifiedName = attributePrefix == null ? localName : attributePrefix + ":" + localName;
+
+            root.setAttributeNS(attributeNs, qualifiedName, value);
+
+        }
+
+        return root;
+
+    }
+
 
 }

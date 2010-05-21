@@ -37,38 +37,22 @@
 */
 package org.fabric3.monitor.provision;
 
-import java.net.URI;
+import org.w3c.dom.Element;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 9019 $ $Date: 2010-05-20 17:00:08 +0200 (Thu, 20 May 2010) $
  */
-public class MonitorTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 9010394726444606704L;
-    private URI classLoaderId;
-    private String monitorType;
-    private URI monitorable;
+public class MonitorComponentDefinition extends PhysicalComponentDefinition {
+    private static final long serialVersionUID = -7935226940527783798L;
+    private Element configuration;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
-        this.monitorType = monitorType;
-        this.monitorable = monitorable;
-        setUri(uri);
+    public MonitorComponentDefinition(Element configuration) {
+        this.configuration = configuration;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-    public String getMonitorType() {
-        return monitorType;
-    }
-
-    public URI getMonitorable() {
-        return monitorable;
+    public Element getConfiguration() {
+        return configuration;
     }
 }

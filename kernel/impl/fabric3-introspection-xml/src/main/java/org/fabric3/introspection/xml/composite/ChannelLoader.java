@@ -82,6 +82,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     static {
         ATTRIBUTES.put("name", "name");
+        ATTRIBUTES.put("requires", "name");
     }
 
     private LoaderHelper loaderHelper;
@@ -103,7 +104,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         URI uri = context.getContributionUri();
         ChannelDefinition definition = new ChannelDefinition(name, uri);
 
-//        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         while (true) {
             switch (reader.next()) {

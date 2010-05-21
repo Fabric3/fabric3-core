@@ -10,6 +10,7 @@
  licensed under the Apache 2.0 license.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3-core="urn:fabric3.org:core"
            xmlns:f3-impl="urn:fabric3.org:implementation"
            targetNamespace="urn:maven:org.codehaus.fabric3:boot"
@@ -20,11 +21,29 @@
         <f3-impl:implementation.system class="org.fabric3.monitor.introspection.MonitorProcessor"/>
     </component>
 
-    <component name="MonitorWireGenerator" f3-core:key="org.fabric3.monitor.model.MonitorResource">
-        <f3-impl:implementation.system class="org.fabric3.monitor.generator.MonitorGenerator"/>
+    <component name="MonitorImplementationLoader" f3-core:key="sca:implementation.monitor">
+        <f3-impl:implementation.system class="org.fabric3.monitor.introspection.MonitorImplementationLoader"/>
+    </component>
+
+    <component name="MonitorGenerator" f3-core:key="org.fabric3.monitor.model.MonitorResource">
+        <f3-impl:implementation.system class="org.fabric3.monitor.generator.MonitorResourceGenerator"/>
+    </component>
+
+    <component name="MonitorComponentGenerator" f3-core:key="org.fabric3.monitor.model.MonitorImplementation">
+        <f3-impl:implementation.system class="org.fabric3.monitor.generator.MonitorComponentGenerator"/>
     </component>
 
     <component name="MonitorWireAttacher" f3-core:key="org.fabric3.monitor.provision.MonitorTargetDefinition">
         <f3-impl:implementation.system class="org.fabric3.monitor.runtime.MonitorWireAttacher"/>
     </component>
+
+    <component name="MonitorTargetConnectionAttacher" f3-core:key="org.fabric3.monitor.provision.MonitorConnectionTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.monitor.runtime.MonitorTargetConnectionAttacher"/>
+    </component>
+
+    <component name="MonitorComponentBuilder" f3-core:key="org.fabric3.monitor.provision.MonitorComponentDefinition">
+        <f3-impl:implementation.system class="org.fabric3.monitor.runtime.MonitorComponentBuilder"/>
+    </component>
+
+
 </composite>

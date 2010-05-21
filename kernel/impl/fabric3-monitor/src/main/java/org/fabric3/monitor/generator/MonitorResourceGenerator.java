@@ -41,24 +41,33 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.host.Names;
+import org.fabric3.monitor.model.MonitorResource;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.monitor.model.MonitorResource;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class MonitorGenerator implements ResourceGenerator<MonitorResource> {
+public class MonitorResourceGenerator implements ResourceGenerator<MonitorResource> {
 
     public MonitorTargetDefinition generateWireTarget(LogicalResource<MonitorResource> resource) throws GenerationException {
         LogicalComponent<?> component = resource.getParent();
         String type = resource.getResourceDefinition().getServiceContract().getQualifiedInterfaceName();
-        URI uri = component.getUri();
-        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, uri);
+        URI monitorable = component.getUri();
+        String channelName = resource.getResourceDefinition().getChannelName();
+        URI channelUri;
+        if (channelName == null) {
+            channelUri = Names.RUNTIME_DOMAIN_CHANNEL_URI;
+        } else {
+            URI compositeUri = component.getParent().getUri();
+            channelUri = URI.create(compositeUri.toString() + "/" + channelName);
+        }
+        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, monitorable, channelUri);
         definition.setOptimizable(true);
         return definition;
     }

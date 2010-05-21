@@ -35,40 +35,42 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.provision;
+package org.fabric3.monitor.runtime;
 
 import java.net.URI;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.monitor.provision.MonitorConnectionTargetDefinition;
+import org.fabric3.spi.builder.component.ConnectionAttachException;
+import org.fabric3.spi.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
+ * TargetWireAttacher that handles monitor resources.
+ *
  * @version $Rev$ $Date$
  */
-public class MonitorTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 9010394726444606704L;
-    private URI classLoaderId;
-    private String monitorType;
-    private URI monitorable;
+public class MonitorTargetConnectionAttacher implements TargetConnectionAttacher<MonitorConnectionTargetDefinition> {
+    private ComponentManager manager;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
-        this.monitorType = monitorType;
-        this.monitorable = monitorable;
-        setUri(uri);
+    public MonitorTargetConnectionAttacher(@Reference ComponentManager manager) {
+        this.manager = manager;
     }
 
-    public URI getClassLoaderId() {
-        return classLoaderId;
+    public void attach(PhysicalConnectionSourceDefinition source, MonitorConnectionTargetDefinition target, ChannelConnection connection)
+            throws ConnectionAttachException {
+        URI targetUri = target.getTargetUri();
+        MonitorComponent component = (MonitorComponent) manager.getComponent(targetUri);
+        if (component == null) {
+            throw new ConnectionAttachException("Target component not found: " + targetUri);
+        }
+        component.attach(connection);
     }
 
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
-    }
-
-    public String getMonitorType() {
-        return monitorType;
-    }
-
-    public URI getMonitorable() {
-        return monitorable;
+    public void detach(PhysicalConnectionSourceDefinition source, MonitorConnectionTargetDefinition target) throws ConnectionAttachException {
+        // no-op
     }
 }

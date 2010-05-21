@@ -46,11 +46,11 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.annotation.Monitor;
 import org.fabric3.api.annotation.Producer;
-import org.fabric3.monitor.introspection.MonitorProcessor;
 import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
 import org.fabric3.implementation.system.introspection.SystemHeuristic;
 import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
@@ -68,10 +68,13 @@ import org.fabric3.introspection.java.annotation.OASISEagerInitProcessor;
 import org.fabric3.introspection.java.annotation.OASISInitProcessor;
 import org.fabric3.introspection.java.annotation.OASISPropertyProcessor;
 import org.fabric3.introspection.java.annotation.OASISReferenceProcessor;
+import org.fabric3.introspection.java.annotation.OASISServiceProcessor;
 import org.fabric3.introspection.java.annotation.ProducerProcessor;
 import org.fabric3.introspection.java.annotation.PropertyProcessor;
 import org.fabric3.introspection.java.annotation.ReferenceProcessor;
+import org.fabric3.introspection.java.annotation.ServiceProcessor;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
+import org.fabric3.monitor.introspection.MonitorProcessor;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
@@ -105,6 +108,7 @@ public class BootstrapIntrospectionFactory {
         // no constructor processor is needed as that is handled by heuristics
         processors.put(Property.class, new PropertyProcessor<SystemImplementation>(helper));
         processors.put(Reference.class, new ReferenceProcessor<SystemImplementation>(contractProcessor, helper));
+        processors.put(Service.class, new ServiceProcessor<SystemImplementation>(contractProcessor));
         processors.put(EagerInit.class, new EagerInitProcessor<SystemImplementation>());
         processors.put(Init.class, new InitProcessor<SystemImplementation>());
         processors.put(Destroy.class, new DestroyProcessor<SystemImplementation>());
@@ -112,6 +116,7 @@ public class BootstrapIntrospectionFactory {
         // OASIS annotations
         processors.put(org.oasisopen.sca.annotation.Property.class, new OASISPropertyProcessor<SystemImplementation>(helper));
         processors.put(org.oasisopen.sca.annotation.Reference.class, new OASISReferenceProcessor<SystemImplementation>(contractProcessor, helper));
+        processors.put(org.oasisopen.sca.annotation.Service.class, new OASISServiceProcessor<SystemImplementation>(contractProcessor));
         processors.put(org.oasisopen.sca.annotation.EagerInit.class, new OASISEagerInitProcessor<SystemImplementation>());
         processors.put(org.oasisopen.sca.annotation.Init.class, new OASISInitProcessor<SystemImplementation>());
         processors.put(org.oasisopen.sca.annotation.Destroy.class, new OASISDestroyProcessor<SystemImplementation>());

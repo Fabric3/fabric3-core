@@ -132,7 +132,7 @@ import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.monitor.generator.MonitorGenerator;
+import org.fabric3.monitor.generator.MonitorResourceGenerator;
 import org.fabric3.monitor.model.MonitorResource;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
@@ -447,7 +447,7 @@ public class BootstrapAssemblyFactory {
         registry.register(SystemImplementation.class, systemComponentGenerator);
         registry.register(SingletonImplementation.class, singletonComponentGenerator);
         registry.register(JMXBinding.class, new JMXBindingGenerator());
-        registry.register(MonitorResource.class, new MonitorGenerator());
+        registry.register(MonitorResource.class, new MonitorResourceGenerator());
         return registry;
     }
 

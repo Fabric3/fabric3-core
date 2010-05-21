@@ -35,25 +35,45 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.provision;
+package org.fabric3.monitor.runtime;
 
 import java.net.URI;
+import java.util.logging.Level;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.component.Component;
+import org.fabric3.spi.monitor.DispatcherWrapper;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 9019 $ $Date: 2010-05-20 17:00:08 +0200 (Thu, 20 May 2010) $
  */
-public class MonitorTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 9010394726444606704L;
+public class MonitorComponent implements Component {
+    private URI uri;
+    private QName deployable;
     private URI classLoaderId;
-    private String monitorType;
-    private URI monitorable;
+    private int state = UNINITIALIZED;
+    private Level level;
+    private MonitorEventDispatcher dispatcher;
+    private EventStreamHandler handler;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
-        this.monitorType = monitorType;
-        this.monitorable = monitorable;
-        setUri(uri);
+    public MonitorComponent(URI uri, QName deployable, MonitorEventDispatcher dispatcher) {
+        this.uri = uri;
+        this.deployable = deployable;
+        this.dispatcher = dispatcher;
+        handler = new DispatcherWrapper(dispatcher);
+    }
+
+    public QName getDeployable() {
+        return deployable;
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public URI getClassLoaderId() {
@@ -64,11 +84,35 @@ public class MonitorTargetDefinition extends PhysicalTargetDefinition {
         this.classLoaderId = classLoaderId;
     }
 
-    public String getMonitorType() {
-        return monitorType;
+    public int getLifecycleState() {
+        return state;
     }
 
-    public URI getMonitorable() {
-        return monitorable;
+    public String getName() {
+        return uri.toString();
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public void start() throws Fabric3RuntimeException {
+        dispatcher.start();
+        state = INITIALIZED;
+    }
+
+    public void stop() throws Fabric3RuntimeException {
+        dispatcher.stop();
+        state = STOPPED;
+    }
+
+    public void attach(ChannelConnection connection) {
+        for (EventStream stream : connection.getEventStreams()) {
+            stream.addHandler(handler);
+        }
     }
 }

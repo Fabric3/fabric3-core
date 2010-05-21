@@ -35,4 +35,8 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.ds.DataSourceResolver"/>
     </component>
 
+    <component name="WebLogicMonitorEventDispatcher">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher"/>
+    </component>
+
 </composite>

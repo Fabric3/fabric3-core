@@ -39,9 +39,9 @@ package org.fabric3.monitor.runtime;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.Names;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -52,7 +52,6 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.wire.Wire;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
 
 /**
  * TargetWireAttacher that handles monitor resources.
@@ -84,8 +83,8 @@ public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefi
         try {
             ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
             Class<?> type = classLoaderRegistry.loadClass(loader, target.getMonitorType());
-            Component monitorable = componentManager.getComponent(target.getUri());
-            Object monitor = monitorService.createMonitor(type, monitorable, Names.RUNTIME_DOMAIN_CHANNEL_URI);
+            Component monitorable = componentManager.getComponent(target.getMonitorable());
+            Object monitor = monitorService.createMonitor(type, monitorable, target.getUri());
             return new SingletonObjectFactory<Object>(monitor);
         } catch (ClassNotFoundException e) {
             throw new WireAttachException("Unable to load monitor class: " + target.getMonitorType(), e);

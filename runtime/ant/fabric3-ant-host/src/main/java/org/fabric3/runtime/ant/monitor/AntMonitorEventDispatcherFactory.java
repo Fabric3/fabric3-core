@@ -34,54 +34,29 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.monitor.model;
+*/
+package org.fabric3.runtime.ant.monitor;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.apache.tools.ant.Task;
+import org.w3c.dom.Element;
+
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 
 /**
- * @version $Rev$ $Date$
+ * Creates {@link MonitorEventDispatcher} instances which dispatch to Logback.
+ *
+ * @version $Rev: 9016 $ $Date: 2010-05-20 14:28:14 +0200 (Thu, 20 May 2010) $
  */
-public class MonitorResource extends ResourceDefinition {
-    private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
+public class AntMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
+    private AntMonitorEventDispatcher dispatcher;
 
-    /**
-     * Constructor that uses the default channel.
-     *
-     * @param name     the resource name
-     * @param contract the service contract required of the resource
-     */
-    public MonitorResource(String name, ServiceContract contract) {
-        super(name, contract, false);
+    public AntMonitorEventDispatcherFactory(Task task) {
+        dispatcher = new AntMonitorEventDispatcher(task);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param name        the resource name
-     * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
-     */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
-        super(name, contract, false);
-        this.channelName = channelName;
-    }
-
-
-    /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
-     *
-     * @return the target channel to send monitor events or null
-     */
-    public String getChannelName() {
-        return channelName;
+    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
+        return dispatcher;
     }
 }

@@ -94,7 +94,8 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
     private List<PhysicalChannelDefinition> createBuildDefinitions(LogicalChannel channel, boolean incremental) {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         if (channel.getState() == LogicalState.NEW || !incremental) {
-            PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable());
+            boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+            PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
             definitions.add(definition);
         }
         return definitions;
@@ -104,7 +105,8 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
     private List<PhysicalChannelDefinition> createUnBuildDefinitions(LogicalChannel channel) {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         if (channel.getState() == LogicalState.MARKED) {
-            PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable());
+            boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+            PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
             definitions.add(definition);
         }
         return definitions;

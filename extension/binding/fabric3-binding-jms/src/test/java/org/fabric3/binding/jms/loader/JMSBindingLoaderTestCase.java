@@ -114,6 +114,10 @@ public class JMSBindingLoaderTestCase extends TestCase {
                 return false;
             }
 
+            public Document transform(XMLStreamReader reader) throws XMLStreamException {
+                return null;
+            }
+
         };
         JmsBindingLoader loader = new JmsBindingLoader(loaderHelper);
         InputStream inputStream = JmsBindingLoader.class.getResourceAsStream("JMSBindingLoaderTest.xml");

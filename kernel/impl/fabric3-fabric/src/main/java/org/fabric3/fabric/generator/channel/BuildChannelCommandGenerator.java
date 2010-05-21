@@ -60,6 +60,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
  */
 @EagerInit
 public class BuildChannelCommandGenerator implements CommandGenerator {
+
     private int order;
 
     public BuildChannelCommandGenerator(@Property(name = "order") int order) {
@@ -86,7 +87,8 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
-                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable());
+                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
                 definitions.add(definition);
             }
         }

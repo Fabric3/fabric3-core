@@ -86,7 +86,8 @@ public class UnBuildChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.MARKED) {
-                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable());
+                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
                 definitions.add(definition);
             }
         }

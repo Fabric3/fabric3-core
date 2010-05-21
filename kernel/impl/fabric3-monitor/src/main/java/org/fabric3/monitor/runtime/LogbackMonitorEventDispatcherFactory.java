@@ -37,46 +37,22 @@
 */
 package org.fabric3.monitor.runtime;
 
-import java.io.ByteArrayInputStream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
+
 /**
+ * Creates {@link MonitorEventDispatcher} instances which dispatch to Logback.
+ *
  * @version $Rev$ $Date$
  */
-public class DefaultDispatcherTestCase extends TestCase {
-    private static final String CONFIG =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><configuration>" +
-                    "   <appender name='CUSTOM' class='org.fabric3.monitor.runtime.TestAppender'>" +
-                    "       <encoder><pattern>test-appender: %msg</pattern></encoder>" +
-                    "   </appender>" +
-                    "   <root level='debug'>" +
-                    "       <appender-ref ref='CUSTOM'/>" +
-                    "   </root>" +
-                    "</configuration>";
+public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
 
-    private DocumentBuilder builder;
-
-    public void testConfiguration() throws Exception {
-        DefaultDispatcher dispatcher = new DefaultDispatcher();
-        Document doc = builder.parse(new ByteArrayInputStream(CONFIG.getBytes()));
-        Element element = doc.getDocumentElement();
-        dispatcher.configure(element);
-        dispatcher.start();
-        dispatcher.onEvent(new MonitorEventImpl("foo", "foo", java.util.logging.Level.SEVERE, 0, "foo", "this is a test"));
-        assertEquals("test-appender: this is a test", TestAppender.getStream().toString());
-        dispatcher.stop();
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        builder = factory.newDocumentBuilder();
-
+    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
+        LogbackDispatcher dispatcher = new LogbackDispatcher();
+        dispatcher.configure(configuration);
+        return dispatcher;
     }
 }

@@ -43,45 +43,38 @@
  */
 package org.fabric3.monitor.model;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import javax.xml.namespace.QName;
+
+import org.w3c.dom.Element;
+
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.Implementation;
 
 /**
+ * A component implementation type that listens on a channel as a consumer and dispatches to a host-provided logging or management framework.
+ *
  * @version $Rev$ $Date$
  */
-public class MonitorResource extends ResourceDefinition {
-    private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
-
-    /**
-     * Constructor that uses the default channel.
-     *
-     * @param name     the resource name
-     * @param contract the service contract required of the resource
-     */
-    public MonitorResource(String name, ServiceContract contract) {
-        super(name, contract, false);
-    }
+public class MonitorImplementation extends Implementation<ComponentType> {
+    private static final long serialVersionUID = 3139588435544226827L;
+    private Element configuration;
 
     /**
      * Constructor.
      *
-     * @param name        the resource name
-     * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
+     * @param type          the component type
+     * @param configuration the logging configuration.
      */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
-        super(name, contract, false);
-        this.channelName = channelName;
+    public MonitorImplementation(ComponentType type, Element configuration) {
+        setComponentType(type);
+        this.configuration = configuration;
     }
 
+    public QName getType() {
+        return null;
+    }
 
-    /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
-     *
-     * @return the target channel to send monitor events or null
-     */
-    public String getChannelName() {
-        return channelName;
+    public Element getConfiguration() {
+        return configuration;
     }
 }

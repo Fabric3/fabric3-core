@@ -58,6 +58,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
@@ -68,6 +69,7 @@ import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
@@ -78,6 +80,7 @@ import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.ant.api.TestRunner;
 import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcher;
+import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcherFactory;
 
 /**
  * Launches a Fabric3 instance from the Ant runtime distribution.
@@ -177,6 +180,15 @@ public class Fabric3Task extends Task {
             ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
 
             BootConfiguration configuration = new BootConfiguration();
+
+            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            AntMonitorEventDispatcherFactory factory = new AntMonitorEventDispatcherFactory(this);
+            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
+                                                                           MonitorEventDispatcherFactory.class,
+                                                                           factory, true);
+            registrations.add(registration);
+            configuration.addRegistrations(registrations);
+
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
