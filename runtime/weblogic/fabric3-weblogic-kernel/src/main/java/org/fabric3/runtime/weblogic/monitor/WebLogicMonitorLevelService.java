@@ -42,6 +42,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.cm.ComponentManager;
@@ -62,6 +64,13 @@ public class WebLogicMonitorLevelService implements MonitorLevelService {
 
     public void setComponentLevel(URI uri, Level level) {
         List<Component> components = manager.getComponentsInHierarchy(uri);
+        for (Component component : components) {
+            component.setLevel(level);
+        }
+    }
+
+    public void setDeployableLevel(QName deployable, Level level) {
+        List<Component> components = manager.getDeployedComponents(deployable);
         for (Component component : components) {
             component.setLevel(level);
         }

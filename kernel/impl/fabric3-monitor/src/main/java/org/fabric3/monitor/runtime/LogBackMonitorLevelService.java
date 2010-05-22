@@ -41,9 +41,11 @@ package org.fabric3.monitor.runtime;
 import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.slf4j.Logger;
 
@@ -57,18 +59,32 @@ import org.fabric3.spi.monitor.MonitorLevelService;
 @EagerInit
 public class LogBackMonitorLevelService implements MonitorLevelService {
     private ComponentManager manager;
+    private Level defaultLevel = Level.WARNING;
 
     public LogBackMonitorLevelService(@Reference ComponentManager manager) {
         this.manager = manager;
     }
 
+    @Property
+    public void setDefaultLevel(String defaultLevel) {
+        this.defaultLevel = Level.parse(defaultLevel);
+    }
+
     @Init
     public void init() {
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.WARN);
+        ch.qos.logback.classic.Level level = LevelConverter.getLogbackLevel(defaultLevel);
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(level);
     }
 
     public void setComponentLevel(URI uri, Level level) {
         List<Component> components = manager.getComponentsInHierarchy(uri);
+        for (Component component : components) {
+            component.setLevel(level);
+        }
+    }
+
+    public void setDeployableLevel(QName deployable, Level level) {
+        List<Component> components = manager.getDeployedComponents(deployable);
         for (Component component : components) {
             component.setLevel(level);
         }
