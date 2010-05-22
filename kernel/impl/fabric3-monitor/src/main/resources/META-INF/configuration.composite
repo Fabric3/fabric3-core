@@ -16,7 +16,7 @@
            name="MonitorConfiguratonComposite"
            autowire="true">
 
-    <component name="LogBackMonitorLevelService">
+    <component name="MonitorService">
         <f3-impl:implementation.system class="org.fabric3.monitor.runtime.LogBackMonitorLevelService"/>
         <property name="defaultLevel" source="$systemConfig//runtime/@monitor.level"/>
     </component>

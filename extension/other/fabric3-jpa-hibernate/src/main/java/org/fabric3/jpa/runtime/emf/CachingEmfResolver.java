@@ -87,7 +87,7 @@ public class CachingEmfResolver implements EmfResolver {
     @Init
     public void init() {
         // Hibernate default level is INFO which is verbose. Only log warnings by default
-        levelService.setProviderLevel("org.hibernate", logLevel);
+        levelService.setProviderLevel("org.hibernate", logLevel.toString());
     }
 
     public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws EmfResolverException {

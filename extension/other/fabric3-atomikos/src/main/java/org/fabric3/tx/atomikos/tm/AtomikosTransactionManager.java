@@ -101,8 +101,8 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
 
     @Init
     public void init() throws IOException {
-        levelService.setProviderLevel("com.atomikos", logLevel);
-        levelService.setProviderLevel("atomikos", logLevel);
+        levelService.setProviderLevel("com.atomikos", logLevel.toString());
+        levelService.setProviderLevel("atomikos", logLevel.toString());
         eventService.subscribe(RuntimeRecover.class, this);
         // turn off transactions.properties search by the transaction manager since these will be supplied directly
         System.setProperty(ATOMIKOS_NO_FILE, "true");

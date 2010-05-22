@@ -41,7 +41,6 @@ package org.fabric3.runtime.weblogic.monitor;
 import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
@@ -62,21 +61,23 @@ public class WebLogicMonitorLevelService implements MonitorLevelService {
         this.manager = manager;
     }
 
-    public void setComponentLevel(URI uri, Level level) {
-        List<Component> components = manager.getComponentsInHierarchy(uri);
+    public void setComponentLevel(String uri, String level) {
+        Level parsed = Level.parse(level);
+        List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
         for (Component component : components) {
-            component.setLevel(level);
+            component.setLevel(parsed);
         }
     }
 
-    public void setDeployableLevel(QName deployable, Level level) {
-        List<Component> components = manager.getDeployedComponents(deployable);
+    public void setDeployableLevel(String deployable, String level) {
+        Level parsed = Level.parse(level);
+        List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
-            component.setLevel(level);
+            component.setLevel(parsed);
         }
     }
 
-    public void setProviderLevel(String key, Level level) {
+    public void setProviderLevel(String key, String level) {
         // no-op - not supported
     }
 

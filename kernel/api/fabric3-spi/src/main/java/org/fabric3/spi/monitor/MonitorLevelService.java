@@ -37,10 +37,6 @@
 */
 package org.fabric3.spi.monitor;
 
-import java.net.URI;
-import java.util.logging.Level;
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.annotation.Management;
 import org.fabric3.host.monitor.Monitorable;
 
@@ -60,7 +56,7 @@ public interface MonitorLevelService {
      * @param uri   the component URI
      * @param level the monitoring level to set
      */
-    void setComponentLevel(URI uri, Level level);
+    void setComponentLevel(String uri, String level);
 
     /**
      * Sets the monitoring level for components provisioned from the given deployable composite.
@@ -68,7 +64,7 @@ public interface MonitorLevelService {
      * @param deployable the deployable composite qualified name
      * @param level      the monitoring level to set
      */
-    void setDeployableLevel(QName deployable, Level level);
+    void setDeployableLevel(String deployable, String level);
 
     /**
      * Sets the log level on the underlying provider.
@@ -76,6 +72,6 @@ public interface MonitorLevelService {
      * @param key   the log key
      * @param level the level
      */
-    void setProviderLevel(String key, Level level);
+    void setProviderLevel(String key, String level);
 
 }

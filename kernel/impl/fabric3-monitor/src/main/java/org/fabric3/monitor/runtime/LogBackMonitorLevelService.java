@@ -76,22 +76,25 @@ public class LogBackMonitorLevelService implements MonitorLevelService {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(level);
     }
 
-    public void setComponentLevel(URI uri, Level level) {
-        List<Component> components = manager.getComponentsInHierarchy(uri);
+    public void setComponentLevel(String uri, String level) {
+        Level parsed = Level.parse(level);
+        List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
         for (Component component : components) {
-            component.setLevel(level);
+            component.setLevel(parsed);
         }
     }
 
-    public void setDeployableLevel(QName deployable, Level level) {
-        List<Component> components = manager.getDeployedComponents(deployable);
+    public void setDeployableLevel(String deployable, String level) {
+        Level parsed = Level.parse(level);
+        List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
-            component.setLevel(level);
+            component.setLevel(parsed);
         }
     }
 
-    public void setProviderLevel(String key, Level level) {
-        ch.qos.logback.classic.Level logBackLevel = LevelConverter.getLogbackLevel(level);
+    public void setProviderLevel(String key, String level) {
+        Level parsed = Level.parse(level);
+        ch.qos.logback.classic.Level logBackLevel = LevelConverter.getLogbackLevel(parsed);
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(key)).setLevel(logBackLevel);
 
     }

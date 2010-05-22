@@ -111,7 +111,7 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // ActiveMQ default level is INFO which is verbose. Only log warnings by default
-        levelService.setProviderLevel("org.apache.activemq", logLevel);
+        levelService.setProviderLevel("org.apache.activemq", logLevel.toString());
         broker = new BrokerService();
         // TODO enable JMX via the F3 JMX agent
         // JMX must be turned off prior to configuring connections to avoid conflicts with the F3 JMX agent.
