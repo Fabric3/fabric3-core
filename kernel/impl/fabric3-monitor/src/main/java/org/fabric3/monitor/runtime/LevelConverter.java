@@ -34,85 +34,41 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.runtime.maven.itest;
+*/
+package org.fabric3.monitor.runtime;
 
 import java.util.logging.Level;
 
-import org.apache.maven.plugin.logging.Log;
-import org.w3c.dom.Element;
-
-import org.fabric3.host.monitor.MonitorEvent;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
-
 /**
- * Forwards monitor events to the Maven logger.
+ * Converts levels from the standard Fabric3 representation to Logback.
  *
  * @version $Rev$ $Date$
  */
-public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
-    private Log log;
+public class LevelConverter {
 
-    public MavenMonitorEventDispatcher(Log log) {
-        this.log = log;   
+    private LevelConverter() {
     }
 
-    public void onEvent(MonitorEvent event) {
-        Level level = event.getMonitorLevel();
-        String message = event.getMessage();
-        if (Level.SEVERE == level) {
-            if (log.isErrorEnabled()) {
-                Throwable e = null;
-                for (Object o : event.getData()) {
-                    if (o instanceof Throwable) {
-                        e = (Throwable) o;
-                    }
-                }
-                if (message != null) {
-                    log.error(message, e);
-                } else {
-                    log.error(e);
-                }
-            }
-        } else if (Level.WARNING == level) {
-            if (log.isWarnEnabled()) {
-                log.warn(message);
-            }
-        } else if (Level.INFO == level) {
-            if (log.isInfoEnabled()) {
-                log.info(message);
-            }
+    public static ch.qos.logback.classic.Level getLogbackLevel(Level level) {
+        if (Level.ALL == level) {
+            return ch.qos.logback.classic.Level.ALL;
+        } else if (Level.CONFIG == level) {
+            return ch.qos.logback.classic.Level.DEBUG;
         } else if (Level.FINE == level) {
-            if (log.isDebugEnabled()) {
-                log.debug(message);
-            }
+            return ch.qos.logback.classic.Level.DEBUG;
         } else if (Level.FINER == level) {
-            if (log.isDebugEnabled()) {
-                log.debug(message);
-            }
+            return ch.qos.logback.classic.Level.DEBUG;
         } else if (Level.FINEST == level) {
-            if (log.isDebugEnabled()) {
-                log.debug(message);
-            }
+            return ch.qos.logback.classic.Level.TRACE;
+        } else if (Level.INFO == level) {
+            return ch.qos.logback.classic.Level.INFO;
+        } else if (Level.OFF == level) {
+            return ch.qos.logback.classic.Level.OFF;
+        } else if (Level.SEVERE == level) {
+            return ch.qos.logback.classic.Level.ERROR;
+        } else if (Level.WARNING == level) {
+            return ch.qos.logback.classic.Level.WARN;
         }
+        throw new AssertionError("Unknown log level: " + level);
     }
-
-    public void configure(Element element) {
-        // no-op
-    }
-
-    public void start() {
-        // no-op
-    }
-
-    public void stop() {
-        // no-op
-    }
-
 }

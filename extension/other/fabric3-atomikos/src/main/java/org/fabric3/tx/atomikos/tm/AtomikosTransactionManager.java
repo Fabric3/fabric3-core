@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -63,6 +64,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeRecover;
+import org.fabric3.spi.monitor.MonitorLevelService;
 
 /**
  * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicity by Atomikos.
@@ -78,18 +80,29 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     private static final String FACTORY_VALUE = "com.atomikos.icatch.standalone.UserTransactionServiceFactory";
 
     private EventService eventService;
+    private MonitorLevelService levelService;
     private HostInfo info;
     private TransactionManagerImp tm;
     private UserTransactionService uts;
     private Properties properties = new Properties();
+    private Level logLevel = Level.WARNING;
 
-    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info) {
+    public AtomikosTransactionManager(@Reference EventService eventService, @Reference MonitorLevelService levelService, @Reference HostInfo info) {
         this.eventService = eventService;
+        this.levelService = levelService;
         this.info = info;
     }
 
+    @Property(required = false)
+    public void setLogLevel(String logLevel) {
+        this.logLevel = Level.parse(logLevel);
+    }
+
+
     @Init
     public void init() throws IOException {
+        levelService.setProviderLevel("com.atomikos", logLevel);
+        levelService.setProviderLevel("atomikos", logLevel);
         eventService.subscribe(RuntimeRecover.class, this);
         // turn off transactions.properties search by the transaction manager since these will be supplied directly
         System.setProperty(ATOMIKOS_NO_FILE, "true");

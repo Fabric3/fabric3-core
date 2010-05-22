@@ -42,19 +42,18 @@ import javax.persistence.EntityManagerFactory;
 import junit.framework.TestCase;
 
 import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.runtime.emf.DefaultEmfCache;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CachingEmfBuilderTest extends TestCase {
+public class CachingEmfResolverTest extends TestCase {
 
     private EmfResolver emfResolver;
 
     protected void setUp() throws Exception {
-        PersistenceContextParserImpl parser = null ;//= new ClasspathPersistenceUnitScanner();
+        PersistenceContextParserImpl parser = null;
         DefaultEmfCache cache = new DefaultEmfCache();
-        emfResolver = new CachingEmfResolver(parser, cache);
+        emfResolver = new CachingEmfResolver(parser, cache, null);
     }
 
     public void testBuild() throws Exception {

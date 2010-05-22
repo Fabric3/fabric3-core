@@ -39,4 +39,8 @@ Copyright (C) 2009 Metaform Systems
         <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher"/>
     </component>
 
+    <component name="LogBackMonitorLevelService">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.monitor.WebLogicMonitorLevelService"/>
+    </component>
+
 </composite>

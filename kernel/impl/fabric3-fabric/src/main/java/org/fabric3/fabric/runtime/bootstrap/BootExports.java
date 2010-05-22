@@ -55,7 +55,7 @@ public final class BootExports {
 
         Map<String, String> bootMap = new HashMap<String, String>();
 
-        // Fabric3 classes
+        // Fabric3 packages
         bootMap.put("org.fabric3.spi.*", Names.VERSION);
         bootMap.put("org.fabric3.util.*", Names.VERSION);
         bootMap.put("org.fabric3.host.*", Names.VERSION);
@@ -63,6 +63,10 @@ public final class BootExports {
         bootMap.put("org.fabric3.model.*", Names.VERSION);
         bootMap.put("org.fabric3.implementation.pojo.*", Names.VERSION);
         BOOT_EXPORTS = Collections.unmodifiableMap(bootMap);
+
+        // Third-party packages
+        bootMap.put("org.slf4j.*", "1.5.0");
+        
     }
 
     private BootExports() {

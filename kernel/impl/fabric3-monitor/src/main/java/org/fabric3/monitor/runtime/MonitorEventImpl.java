@@ -85,30 +85,9 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
         this.threadName = threadName;
         this.message = message;
         this.data = data;
-        setLogbackLevel(level);
+        logbackLevel = LevelConverter.getLogbackLevel(level);
     }
 
-    private void setLogbackLevel(Level level) {
-        if (Level.ALL == level) {
-            logbackLevel = ch.qos.logback.classic.Level.ALL;
-        } else if (Level.CONFIG == level) {
-            logbackLevel = ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINE == level) {
-            logbackLevel = ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINER == level) {
-            logbackLevel = ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINEST == level) {
-            logbackLevel = ch.qos.logback.classic.Level.TRACE;
-        } else if (Level.INFO == level) {
-            logbackLevel = ch.qos.logback.classic.Level.INFO;
-        } else if (Level.OFF == level) {
-            logbackLevel = ch.qos.logback.classic.Level.OFF;
-        } else if (Level.SEVERE == level) {
-            logbackLevel = ch.qos.logback.classic.Level.ERROR;
-        } else if (Level.WARNING == level) {
-            logbackLevel = ch.qos.logback.classic.Level.WARN;
-        }
-    }
 
     /**
      * Returns the runtime which originated the event.

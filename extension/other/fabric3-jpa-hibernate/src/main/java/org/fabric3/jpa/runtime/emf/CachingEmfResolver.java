@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
@@ -58,6 +57,7 @@ import org.fabric3.jpa.api.EmfResolver;
 import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.monitor.MonitorLevelService;
 
 /**
  * An {@link EmfResolver} implementation that caches EntityManagerFactory instances.
@@ -69,6 +69,7 @@ public class CachingEmfResolver implements EmfResolver {
 
     private PersistenceContextParser parser;
     private EmfCache cache;
+    private MonitorLevelService levelService;
 
     private Level logLevel = Level.WARNING;
 
@@ -77,15 +78,16 @@ public class CachingEmfResolver implements EmfResolver {
         this.logLevel = Level.parse(logLevel);
     }
 
-    public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache) {
+    public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache, @Reference MonitorLevelService levelService) {
         this.parser = parser;
         this.cache = cache;
+        this.levelService = levelService;
     }
 
     @Init
     public void init() {
         // Hibernate default level is INFO which is verbose. Only log warnings by default
-        Logger.getLogger("org.hibernate").setLevel(logLevel);
+        levelService.setProviderLevel("org.hibernate", logLevel);
     }
 
     public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws EmfResolverException {
