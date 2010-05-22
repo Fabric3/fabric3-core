@@ -93,5 +93,5 @@ public interface ComponentManager {
      * @param uri a URI representing the hierarchy
      * @return the list of component URIs
      */
-    List<URI> getComponentsInHierarchy(URI uri);
+    List<Component> getComponentsInHierarchy(URI uri);
 }

@@ -123,10 +123,14 @@ public class ComponentManagerImplTestCase extends TestCase {
         manager.register(c1);
         manager.register(c2);
         manager.register(c3);
-        List<URI> uris = manager.getComponentsInHierarchy(URI.create("sca://fabric"));
+        List<Component> uris = manager.getComponentsInHierarchy(URI.create("sca://fabric"));
         assertEquals(2, uris.size());
-        assertTrue(uris.contains(uri1));
-        assertTrue(uris.contains(uri2));
+        assertTrue(uris.contains(c1));
+        assertTrue(uris.contains(c2));
+        uris = manager.getComponentsInHierarchy(URI.create("sca://fabric/component1"));
+        assertEquals(1, uris.size());
+        assertTrue(uris.contains(c1));
+
     }
 
     protected void setUp() throws Exception {

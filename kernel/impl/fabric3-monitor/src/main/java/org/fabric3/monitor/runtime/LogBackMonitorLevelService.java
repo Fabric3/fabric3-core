@@ -38,12 +38,17 @@
 package org.fabric3.monitor.runtime;
 
 
+import java.net.URI;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
 import org.slf4j.Logger;
 
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.monitor.MonitorLevelService;
 
 /**
@@ -51,10 +56,22 @@ import org.fabric3.spi.monitor.MonitorLevelService;
  */
 @EagerInit
 public class LogBackMonitorLevelService implements MonitorLevelService {
+    private ComponentManager manager;
+
+    public LogBackMonitorLevelService(@Reference ComponentManager manager) {
+        this.manager = manager;
+    }
 
     @Init
     public void init() {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.WARN);
+    }
+
+    public void setComponentLevel(URI uri, Level level) {
+        List<Component> components = manager.getComponentsInHierarchy(uri);
+        for (Component component : components) {
+            component.setLevel(level);
+        }
     }
 
     public void setProviderLevel(String key, Level level) {

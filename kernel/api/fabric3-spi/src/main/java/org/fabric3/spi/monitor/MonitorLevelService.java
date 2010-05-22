@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.monitor;
 
+import java.net.URI;
 import java.util.logging.Level;
 
 import org.fabric3.host.monitor.Monitorable;
@@ -49,6 +50,14 @@ import org.fabric3.host.monitor.Monitorable;
  * @version $Rev$ $Date$
  */
 public interface MonitorLevelService {
+
+    /**
+     * Sets the monitoring level for components under the given hierarchical URI.
+     *
+     * @param uri   the component URI
+     * @param level the monitoring level to set
+     */
+    void setComponentLevel(URI uri, Level level);
 
     /**
      * Sets the log level on the underlying provider.

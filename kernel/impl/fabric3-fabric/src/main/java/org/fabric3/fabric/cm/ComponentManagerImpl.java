@@ -88,13 +88,13 @@ public class ComponentManagerImpl implements ComponentManager {
         return new ArrayList<Component>(components.values());
     }
 
-    public List<URI> getComponentsInHierarchy(URI uri) {
+    public List<Component> getComponentsInHierarchy(URI uri) {
         String strigified = uri.toString();
-        List<URI> uris = new ArrayList<URI>();
+        List<Component> uris = new ArrayList<Component>();
         for (Component component : components.values()) {
             URI componentUri = component.getUri();
             if (componentUri.toString().startsWith(strigified)) {
-                uris.add(componentUri);
+                uris.add(component);
             }
         }
         return uris;

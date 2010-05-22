@@ -38,8 +38,14 @@
 package org.fabric3.runtime.weblogic.monitor;
 
 
+import java.net.URI;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.monitor.MonitorLevelService;
 
 /**
@@ -48,6 +54,18 @@ import org.fabric3.spi.monitor.MonitorLevelService;
  * @version $Rev$ $Date$
  */
 public class WebLogicMonitorLevelService implements MonitorLevelService {
+    private ComponentManager manager;
+
+    public WebLogicMonitorLevelService(@Reference ComponentManager manager) {
+        this.manager = manager;
+    }
+
+    public void setComponentLevel(URI uri, Level level) {
+        List<Component> components = manager.getComponentsInHierarchy(uri);
+        for (Component component : components) {
+            component.setLevel(level);
+        }
+    }
 
     public void setProviderLevel(String key, Level level) {
         // no-op - not supported
