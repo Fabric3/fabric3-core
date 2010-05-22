@@ -53,10 +53,10 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
-import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
  * @version $Rev$ $Date$
@@ -174,8 +174,18 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         }
 
         // instantiate channels
-        channelInstantiator.instantiateChannels(composite, domain, context);
+        if (synthetic) {
+            for (Include include : composite.getIncludes().values()) {
+                // If it is a synthetic composite, included composites are the deployables.
+                // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
+                // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
+                Composite included = include.getIncluded();
+                channelInstantiator.instantiateChannels(included, domain, context);
+            }
+        } else {
+            channelInstantiator.instantiateChannels(composite, domain, context);
 
+        }
         return newComponents;
     }
 
