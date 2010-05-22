@@ -45,6 +45,7 @@ package org.fabric3.spi.cm;
 
 import java.net.URI;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.fabric3.spi.component.Component;
 
@@ -88,10 +89,19 @@ public interface ComponentManager {
     List<Component> getComponents();
 
     /**
-     * Returns a list of component URIs in the given hierarchy, e.g a domain or composite within a domain.
+     * Returns a list of components in the given structural URI.
      *
      * @param uri a URI representing the hierarchy
-     * @return the list of component URIs
+     * @return the components
      */
     List<Component> getComponentsInHierarchy(URI uri);
+
+    /**
+     * Returns a list of components provisioned by the given deployable composite. The list is transitive and includes components in contained in
+     * child composites.
+     *
+     * @param deployable the composite
+     * @return the components.
+     */
+    List<Component> getDeployedComponents(QName deployable);
 }

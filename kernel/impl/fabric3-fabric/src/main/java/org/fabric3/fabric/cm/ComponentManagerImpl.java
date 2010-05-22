@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.xml.namespace.QName;
 
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
@@ -59,7 +60,7 @@ import org.fabric3.spi.component.Component;
  * @version $Rev$ $Date$
  */
 public class ComponentManagerImpl implements ComponentManager {
-    private final Map<URI, Component> components;
+    private Map<URI, Component> components;
 
     public ComponentManagerImpl() {
         components = new ConcurrentHashMap<URI, Component>();
@@ -67,9 +68,6 @@ public class ComponentManagerImpl implements ComponentManager {
 
     public synchronized void register(Component component) throws RegistrationException {
         URI uri = component.getUri();
-
-        assert uri != null;
-        assert !uri.toString().endsWith("/");
         if (components.containsKey(uri)) {
             throw new DuplicateComponentException("A component is already registered for: " + uri.toString());
         }
@@ -89,14 +87,24 @@ public class ComponentManagerImpl implements ComponentManager {
     }
 
     public List<Component> getComponentsInHierarchy(URI uri) {
-        String strigified = uri.toString();
-        List<Component> uris = new ArrayList<Component>();
+        String stringified = uri.toString();
+        List<Component> hierarchy = new ArrayList<Component>();
         for (Component component : components.values()) {
             URI componentUri = component.getUri();
-            if (componentUri.toString().startsWith(strigified)) {
-                uris.add(component);
+            if (componentUri.toString().startsWith(stringified)) {
+                hierarchy.add(component);
             }
         }
-        return uris;
+        return hierarchy;
+    }
+
+    public List<Component> getDeployedComponents(QName deployable) {
+        List<Component> deployed = new ArrayList<Component>();
+        for (Component component : components.values()) {
+            if (deployable.equals(component.getDeployable())) {
+                deployed.add(component);
+            }
+        }
+        return deployed;
     }
 }
