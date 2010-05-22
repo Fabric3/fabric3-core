@@ -55,7 +55,7 @@ import org.fabric3.spi.cm.RegistrationException;
 import org.fabric3.spi.component.Component;
 
 /**
- * Default implementation of the component manager
+ * Default implementation of the component manager.
  *
  * @version $Rev$ $Date$
  */
