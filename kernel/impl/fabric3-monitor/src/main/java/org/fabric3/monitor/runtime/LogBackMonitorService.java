@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.weblogic.monitor;
+package org.fabric3.monitor.runtime;
 
 
 import java.net.URI;
@@ -43,22 +43,37 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.slf4j.Logger;
 
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
-import org.fabric3.spi.monitor.MonitorLevelService;
+import org.fabric3.spi.monitor.MonitorService;
 
 /**
- * No-op implementation of MonitorLevelService.
- *
  * @version $Rev$ $Date$
  */
-public class WebLogicMonitorLevelService implements MonitorLevelService {
+@EagerInit
+public class LogBackMonitorService implements MonitorService {
     private ComponentManager manager;
+    private Level defaultLevel = Level.WARNING;
 
-    public WebLogicMonitorLevelService(@Reference ComponentManager manager) {
+    public LogBackMonitorService(@Reference ComponentManager manager) {
         this.manager = manager;
+    }
+
+    @Property
+    public void setDefaultLevel(String defaultLevel) {
+        this.defaultLevel = Level.parse(defaultLevel);
+    }
+
+    @Init
+    public void init() {
+        ch.qos.logback.classic.Level level = LevelConverter.getLogbackLevel(defaultLevel);
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(level);
     }
 
     public void setComponentLevel(String uri, String level) {
@@ -78,7 +93,10 @@ public class WebLogicMonitorLevelService implements MonitorLevelService {
     }
 
     public void setProviderLevel(String key, String level) {
-        // no-op - not supported
+        Level parsed = Level.parse(level);
+        ch.qos.logback.classic.Level logBackLevel = LevelConverter.getLogbackLevel(parsed);
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(key)).setLevel(logBackLevel);
+
     }
 
 }

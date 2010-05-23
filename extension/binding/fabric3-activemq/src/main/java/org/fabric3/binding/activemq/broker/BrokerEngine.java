@@ -58,7 +58,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.activemq.ActiveMQConstants;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.monitor.MonitorLevelService;
+import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * Creates an embedded ActiveMQ broker.
@@ -77,10 +77,10 @@ public class BrokerEngine {
     private File dataDir;
     private BrokerConfiguration brokerConfiguration;
     private Level logLevel = Level.WARNING;
-    private MonitorLevelService levelService;
+    private MonitorService monitorService;
 
-    public BrokerEngine(@Reference MonitorLevelService levelService, @Reference HostInfo info) {
-        this.levelService = levelService;
+    public BrokerEngine(@Reference MonitorService monitorService, @Reference HostInfo info) {
+        this.monitorService = monitorService;
         tempDir = new File(info.getTempDir(), "activemq");
         // sets the directory where persistent messages are written
         File baseDataDir = info.getDataDir();
@@ -111,7 +111,7 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // ActiveMQ default level is INFO which is verbose. Only log warnings by default
-        levelService.setProviderLevel("org.apache.activemq", logLevel.toString());
+        monitorService.setProviderLevel("org.apache.activemq", logLevel.toString());
         broker = new BrokerService();
         // TODO enable JMX via the F3 JMX agent
         // JMX must be turned off prior to configuring connections to avoid conflicts with the F3 JMX agent.

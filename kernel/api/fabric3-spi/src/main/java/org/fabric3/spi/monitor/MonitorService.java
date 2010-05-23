@@ -38,17 +38,14 @@
 package org.fabric3.spi.monitor;
 
 import org.fabric3.api.annotation.Management;
-import org.fabric3.host.monitor.Monitorable;
 
 /**
- * Sets the log level for a {@link Monitorable} or for an underlying runtime logging provider.
- * <p/>
- * Used by extensions to configure third-party library log levels
+ * Manages and exposes configuration for the runtime monitor implementation.
  *
  * @version $Rev$ $Date$
  */
 @Management
-public interface MonitorLevelService {
+public interface MonitorService {
 
     /**
      * Sets the monitoring level for components under the given hierarchical URI.

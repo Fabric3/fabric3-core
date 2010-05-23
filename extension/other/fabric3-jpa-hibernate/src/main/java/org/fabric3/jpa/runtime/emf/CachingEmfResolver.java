@@ -57,7 +57,7 @@ import org.fabric3.jpa.api.EmfResolver;
 import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.monitor.MonitorLevelService;
+import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * An {@link EmfResolver} implementation that caches EntityManagerFactory instances.
@@ -69,7 +69,7 @@ public class CachingEmfResolver implements EmfResolver {
 
     private PersistenceContextParser parser;
     private EmfCache cache;
-    private MonitorLevelService levelService;
+    private MonitorService monitorService;
 
     private Level logLevel = Level.WARNING;
 
@@ -78,16 +78,16 @@ public class CachingEmfResolver implements EmfResolver {
         this.logLevel = Level.parse(logLevel);
     }
 
-    public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache, @Reference MonitorLevelService levelService) {
+    public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache, @Reference MonitorService monitorService) {
         this.parser = parser;
         this.cache = cache;
-        this.levelService = levelService;
+        this.monitorService = monitorService;
     }
 
     @Init
     public void init() {
         // Hibernate default level is INFO which is verbose. Only log warnings by default
-        levelService.setProviderLevel("org.hibernate", logLevel.toString());
+        monitorService.setProviderLevel("org.hibernate", logLevel.toString());
     }
 
     public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws EmfResolverException {

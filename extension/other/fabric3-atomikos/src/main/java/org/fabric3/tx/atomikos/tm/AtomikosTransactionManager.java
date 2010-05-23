@@ -64,7 +64,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeRecover;
-import org.fabric3.spi.monitor.MonitorLevelService;
+import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicity by Atomikos.
@@ -80,16 +80,16 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     private static final String FACTORY_VALUE = "com.atomikos.icatch.standalone.UserTransactionServiceFactory";
 
     private EventService eventService;
-    private MonitorLevelService levelService;
+    private MonitorService monitorService;
     private HostInfo info;
     private TransactionManagerImp tm;
     private UserTransactionService uts;
     private Properties properties = new Properties();
     private Level logLevel = Level.WARNING;
 
-    public AtomikosTransactionManager(@Reference EventService eventService, @Reference MonitorLevelService levelService, @Reference HostInfo info) {
+    public AtomikosTransactionManager(@Reference EventService eventService, @Reference MonitorService monitorService, @Reference HostInfo info) {
         this.eventService = eventService;
-        this.levelService = levelService;
+        this.monitorService = monitorService;
         this.info = info;
     }
 
@@ -101,8 +101,8 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
 
     @Init
     public void init() throws IOException {
-        levelService.setProviderLevel("com.atomikos", logLevel.toString());
-        levelService.setProviderLevel("atomikos", logLevel.toString());
+        monitorService.setProviderLevel("com.atomikos", logLevel.toString());
+        monitorService.setProviderLevel("atomikos", logLevel.toString());
         eventService.subscribe(RuntimeRecover.class, this);
         // turn off transactions.properties search by the transaction manager since these will be supplied directly
         System.setProperty(ATOMIKOS_NO_FILE, "true");
