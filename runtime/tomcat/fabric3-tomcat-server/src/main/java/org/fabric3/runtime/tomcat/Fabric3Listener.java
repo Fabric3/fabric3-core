@@ -59,7 +59,7 @@ import org.apache.catalina.mbeans.MBeanUtils;
 import org.w3c.dom.Document;
 
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -76,6 +76,8 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
 import org.fabric3.host.util.FileHelper;
 
 /**
@@ -134,10 +136,11 @@ public class Fabric3Listener implements LifecycleListener {
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            // create and configure the monitor dispatcher
-            MonitorEventDispatcher dispatcher = bootstrapService.createMonitorDispatcher(systemConfig);
+            // create and configure the monitor dispatchers
+            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig);
+            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig);
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -168,7 +171,7 @@ public class Fabric3Listener implements LifecycleListener {
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
             monitor.started(RuntimeMode.VM.toString());
         } catch (Exception e) {
             if (monitor != null) {

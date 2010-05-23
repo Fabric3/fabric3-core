@@ -81,6 +81,8 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
 import org.fabric3.host.stream.Source;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_DEFAULT;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_PARAM;
@@ -128,20 +130,22 @@ public class Fabric3ContextListener implements ServletContextListener {
             WebappHostInfo info = new WebappHostInfoImpl(servletContext, domain, baseDir, tempDir);
 
             Source source = utils.getSystemConfig();
-            BootstrapService boostrapService = BootstrapFactory.getService(webappClassLoader);
-            Document systemCofig = boostrapService.loadSystemConfig(source);
+            BootstrapService bootstrapService = BootstrapFactory.getService(webappClassLoader);
+            Document systemConfig = bootstrapService.loadSystemConfig(source);
 
-            MonitorEventDispatcher dispatcher = boostrapService.createMonitorDispatcher(systemCofig);
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(info, mBeanServer, dispatcher);
+            // create and configure the monitor dispatchers
+            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig);
+            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(info, mBeanServer, runtimeDispatcher, appDispatcher);
             runtime = utils.createRuntime(webappClassLoader, runtimeConfig);
 
-            BootConfiguration configuration = createBootConfiguration(runtime, systemCofig, webappClassLoader, servletContext, utils);
+            BootConfiguration configuration = createBootConfiguration(runtime, systemConfig, webappClassLoader, servletContext, utils);
             coordinator = utils.getCoordinator(configuration, webappClassLoader);
 
             coordinator.start();
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(WebAppMonitor.class, Names.RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(WebAppMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
             monitor.started();
             // deploy the application composite
             QName qName = new QName(compositeNamespace, compositeName);

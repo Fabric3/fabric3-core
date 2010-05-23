@@ -167,8 +167,9 @@ public class Fabric3Task extends Task {
 
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 
-            AntMonitorEventDispatcher dispatcher = new AntMonitorEventDispatcher(this);
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
+            AntMonitorEventDispatcher runtimeDispatcher = new AntMonitorEventDispatcher(this);
+            AntMonitorEventDispatcher appDispatcher = new AntMonitorEventDispatcher(this);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
 
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 

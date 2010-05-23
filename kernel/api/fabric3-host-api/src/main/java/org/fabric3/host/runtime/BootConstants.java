@@ -34,48 +34,18 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host;
-
-import java.net.URI;
+*/
+package org.fabric3.host.runtime;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Bootstrap constants.
  *
  * @version $Rev$ $Date$
  */
-public interface Names {
+public interface BootConstants {
 
-    String VERSION = "1.6";
+    String RUNTIME_MONITOR = "runtime.monitor";
 
-    URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
-
-    URI HOST_CONTRIBUTION = URI.create("fabric3-host");
-
-    String RUNTIME_NAME = "fabric3://runtime";
-
-    URI RUNTIME_URI = URI.create(RUNTIME_NAME);
-
-    URI APPLICATION_DOMAIN_URI = URI.create(RUNTIME_NAME + "/ApplicationDomain");
-
-    URI CONTRIBUTION_SERVICE_URI = URI.create(RUNTIME_NAME + "/ContributionService");
-
-    URI MONITOR_FACTORY_URI = URI.create(RUNTIME_NAME + "/MonitorProxyService");
-
-    URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
-
-    String RUNTIME_MONITOR_CHANNEL = "RuntimeMonitorChannel";
-
-    String APPLICATION_MONITOR_CHANNEL = "ApplicationMonitorChannel";
-
-    URI RUNTIME_MONITOR_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_MONITOR_CHANNEL);
-
-    URI APPLICATION_MONITOR_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + APPLICATION_MONITOR_CHANNEL);
+    String APP_MONITOR = "application.monitor";
 
 }

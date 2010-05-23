@@ -180,8 +180,9 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = agent.getMBeanServer();
 
-        MavenMonitorEventDispatcher dispatcher = new MavenMonitorEventDispatcher(log);
-        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
+        MavenMonitorEventDispatcher runtimeDispatcher = new MavenMonitorEventDispatcher(log);
+        MavenMonitorEventDispatcher appDispatcher = new MavenMonitorEventDispatcher(log);
+        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }

@@ -56,11 +56,13 @@ import org.fabric3.api.annotation.logging.Info;
 import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.host.Fabric3Exception;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
@@ -147,10 +149,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
             RmiAgent agent = new RmiAgent(range.getMinimum(), range.getMaximum());
             MBeanServer mbServer = agent.getMBeanServer();
 
-            // create and configure the monitor dispatcher
-            MonitorEventDispatcher dispatcher = bootstrapService.createMonitorDispatcher(systemConfig);
+            // create and configure the monitor dispatchers
+            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig);
+            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig);
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, dispatcher);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, runtimeDispatcher, appDispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -180,7 +183,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             latch = new CountDownLatch(1);
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
             monitor.started(runtimeMode.toString(), agent.getAssignedPort());
 
             try {

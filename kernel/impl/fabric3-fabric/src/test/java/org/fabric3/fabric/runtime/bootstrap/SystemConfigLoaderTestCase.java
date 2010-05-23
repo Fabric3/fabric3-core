@@ -59,6 +59,7 @@ import org.fabric3.host.stream.InputStreamSource;
  * @version $Revision$ $Date$
  */
 public class SystemConfigLoaderTestCase extends TestCase {
+
     private static final String CONFIG = "<config>" +
             "<runtime domain='mydomain' jmxPort='1111'/>" +
             "   <web.server>" +
@@ -94,7 +95,7 @@ public class SystemConfigLoaderTestCase extends TestCase {
         ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_MONITOR.getBytes());
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
-        Element element = loader.getMonitorConfiguration(systemConfig);
+        Element element = loader.getMonitorConfiguration("runtime.monitor", systemConfig);
         assertEquals(1, element.getElementsByTagName("root").getLength());
         assertEquals(1, element.getElementsByTagName("appender-ref").getLength());
     }

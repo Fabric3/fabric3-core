@@ -62,7 +62,12 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
         String channelName = resource.getResourceDefinition().getChannelName();
         URI channelUri;
         if (channelName == null) {
-            channelUri = Names.RUNTIME_DOMAIN_CHANNEL_URI;
+            // if the component is in the system domain, connect to the runtime channel; otherwise, connect to the app channel
+            if (component.getUri().toString().startsWith(Names.RUNTIME_NAME)) {
+                channelUri = Names.RUNTIME_MONITOR_CHANNEL_URI;
+            } else {
+                channelUri = Names.APPLICATION_MONITOR_CHANNEL_URI;
+            }
         } else {
             URI compositeUri = component.getParent().getUri();
             channelUri = URI.create(compositeUri.toString() + "/" + channelName);

@@ -165,8 +165,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            WebLogicMonitorEventDispatcher dispatcher = new WebLogicMonitorEventDispatcher();
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, dispatcher);
+            WebLogicMonitorEventDispatcher runtimeDispatcher = new WebLogicMonitorEventDispatcher();
+            WebLogicMonitorEventDispatcher appDispatcher = new WebLogicMonitorEventDispatcher();
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -202,7 +203,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             coordinator.start();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, Names.RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
             monitor.started(runtimeMode.toString());
         } catch (RuntimeException e) {
             context.log("Error initializing Fabric3", e);

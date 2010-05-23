@@ -100,9 +100,9 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseJmxPort(systemConfig);
     }
 
-    public MonitorEventDispatcher createMonitorDispatcher(Document systemConfig) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException {
         LogbackDispatcher dispatcher = new LogbackDispatcher();
-        Element element = systemConfigLoader.getMonitorConfiguration(systemConfig);
+        Element element = systemConfigLoader.getMonitorConfiguration(elementName, systemConfig);
         if (element != null) {
             dispatcher.configure(element);
         }

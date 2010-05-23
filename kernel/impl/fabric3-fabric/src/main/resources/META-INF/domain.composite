@@ -53,5 +53,4 @@
     <wire source="ApplicationDomain/policyRegistry" target="PolicyRegistry"/>
     <wire source="RuntimeDomain/policyRegistry" target="PolicyRegistry"/>
 
-
 </composite>

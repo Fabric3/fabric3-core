@@ -138,7 +138,7 @@ import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
 import org.fabric3.fabric.policy.NullPolicyResolver;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -239,7 +239,7 @@ public class BootstrapAssemblyFactory {
                                                                                 info);
         DeployerMonitor monitor;
         try {
-            monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
         } catch (MonitorCreationException e) {
             throw new InitializationException(e);
         }

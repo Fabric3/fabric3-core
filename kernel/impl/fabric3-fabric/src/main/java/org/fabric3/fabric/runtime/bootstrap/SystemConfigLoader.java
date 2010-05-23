@@ -77,7 +77,6 @@ import org.fabric3.host.stream.UrlSource;
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
     private static final int DEFAULT_JMX_PORT = 1199;
-    private static final String RUNTIME_MONITOR = "runtime.monitor";
     private DocumentLoader loader;
 
     public SystemConfigLoader() {
@@ -169,7 +168,7 @@ public class SystemConfigLoader {
                 } catch (URISyntaxException e) {
                     throw new ParseException("Invalid domain name specified in system configuration", e);
                 }
-            }  else {
+            } else {
                 return DEFAULT_DOMAIN;
             }
         } else if (nodes.getLength() == 0) {
@@ -218,13 +217,14 @@ public class SystemConfigLoader {
     /**
      * Returns the monitor configuration. If not set, null will be returned.
      *
+     * @param elementName  the element name of the monitor configuration
      * @param systemConfig the system configuration
      * @return the monitor configuration
      * @throws MonitorConfigurationException if there is an error parsing the monitor configuration
      */
-    public Element getMonitorConfiguration(Document systemConfig) throws MonitorConfigurationException {
+    public Element getMonitorConfiguration(String elementName, Document systemConfig) throws MonitorConfigurationException {
         Element root = systemConfig.getDocumentElement();
-        NodeList nodes = root.getElementsByTagName(RUNTIME_MONITOR);
+        NodeList nodes = root.getElementsByTagName(elementName);
         if (nodes.getLength() == 1) {
             Element monitorElement = (Element) nodes.item(0);
             NodeList configurationElements = monitorElement.getElementsByTagName("configuration");

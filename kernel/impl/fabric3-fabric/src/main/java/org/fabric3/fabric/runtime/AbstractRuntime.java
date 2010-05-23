@@ -64,7 +64,7 @@ import org.fabric3.fabric.component.scope.ScopeRegistryImpl;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.Names;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
@@ -111,14 +111,16 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
     private MBeanServer mbServer;
-    private MonitorEventDispatcher dispatcher;
+    private MonitorEventDispatcher runtimeDispatcher;
+    private MonitorEventDispatcher appDispatcher;
     private Repository repository;
     private Level level = Level.INFO;
 
     protected AbstractRuntime(RuntimeConfiguration configuration) {
         hostInfo = configuration.getHostInfo();
         mbServer = configuration.getMBeanServer();
-        dispatcher = configuration.getDispatcher();
+        runtimeDispatcher = configuration.getRuntimeDispatcher();
+        appDispatcher = configuration.getAppDispatcher();
         repository = configuration.getRepository();
     }
 
@@ -150,16 +152,21 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         logicalComponentManager = new LogicalComponentManagerImpl();
         componentManager = new ComponentManagerImpl();
         channelManager = new ChannelManagerImpl();
+
+        // register runtime and app channels
         QName deployable = new QName(Namespaces.CORE, "boot");
-        dispatcher.start();
-        registerChannel(deployable);
+        runtimeDispatcher.start();
+        registerChannel(RUNTIME_MONITOR_CHANNEL_URI, deployable, runtimeDispatcher);
+        appDispatcher.start();
+        registerChannel(Names.APPLICATION_MONITOR_CHANNEL_URI, deployable, appDispatcher);
+
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         ProcessorRegistry processorRegistry = new ProcessorRegistryImpl();
         metaDataStore = new MetaDataStoreImpl(processorRegistry);
         monitorService = new JDKMonitorProxyService(this, channelManager);
         ScopeContainerMonitor monitor;
         try {
-            monitor = monitorService.createMonitor(ScopeContainerMonitor.class, Names.RUNTIME_DOMAIN_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ScopeContainerMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
         } catch (MonitorCreationException e) {
             throw new InitializationException(e);
         }
@@ -173,14 +180,14 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         }
     }
 
-    private void registerChannel(QName deployable) throws InitializationException {
+    private void registerChannel(URI name, QName deployable, MonitorEventDispatcher dispatcher) throws InitializationException {
         SyncFanOutHandler handler = new SyncFanOutHandler();
-        Channel channel = new ChannelImpl(RUNTIME_DOMAIN_CHANNEL_URI, deployable, handler);
+        Channel channel = new ChannelImpl(name, deployable, handler);
         ChannelConnection connection = new ChannelConnectionImpl();
         EventStream stream = new EventStreamImpl(new PhysicalEventStreamDefinition("dispatcher"));
         stream.addHandler(new DispatcherWrapper(dispatcher));
         connection.addEventStream(stream);
-        channel.subscribe(URI.create("Fabric3RuntimeDispatcher"), connection);
+        channel.subscribe(URI.create("Fabric3Dispatcher"), connection);
         try {
             channelManager.register(channel);
         } catch (
@@ -198,7 +205,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         } catch (RepositoryException e) {
             throw new ShutdownException(e);
         }
-        dispatcher.stop();
+        runtimeDispatcher.stop();
     }
 
     public <I> I getComponent(Class<I> service, URI uri) {

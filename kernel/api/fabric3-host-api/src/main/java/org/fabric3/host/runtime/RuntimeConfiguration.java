@@ -50,35 +50,47 @@ import org.fabric3.host.repository.Repository;
 public class RuntimeConfiguration {
     private HostInfo hostInfo;
     private MBeanServer mBeanServer;
-    private MonitorEventDispatcher dispatcher;
+    private MonitorEventDispatcher runtimeDispatcher;
+    private MonitorEventDispatcher appDispatcher;
     private Repository repository;
 
     /**
      * Constructor taking the minimal host dependencies to boot a runtime.
      *
-     * @param hostInfo    the host info instance
-     * @param mBeanServer the JMX MBean server
-     * @param dispatcher  the dispatcher for handling runtime events
+     * @param hostInfo          the host info instance
+     * @param mBeanServer       the JMX MBean server
+     * @param runtimeDispatcher the dispatcher for handling runtime events
+     * @param appDispatcher     the dispatcher for handling application events
      */
-    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, MonitorEventDispatcher dispatcher) {
+    public RuntimeConfiguration(HostInfo hostInfo,
+                                MBeanServer mBeanServer,
+                                MonitorEventDispatcher runtimeDispatcher,
+                                MonitorEventDispatcher appDispatcher) {
         this.hostInfo = hostInfo;
         this.mBeanServer = mBeanServer;
-        this.dispatcher = dispatcher;
+        this.runtimeDispatcher = runtimeDispatcher;
+        this.appDispatcher = appDispatcher;
     }
 
     /**
      * Constructor taking all configurable dependencies to boot a runtime.
      *
-     * @param hostInfo    the host info instance
-     * @param mBeanServer the JMX MBean server
-     * @param repository  the artifact repository
-     * @param dispatcher  the dispatcher for handling runtime events
+     * @param hostInfo          the host info instance
+     * @param mBeanServer       the JMX MBean server
+     * @param runtimeDispatcher the dispatcher for handling runtime events
+     * @param appDispatcher     the dispatcher for handling application events
+     * @param repository        the artifact repository
      */
-    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, Repository repository, MonitorEventDispatcher dispatcher) {
+    public RuntimeConfiguration(HostInfo hostInfo,
+                                MBeanServer mBeanServer,
+                                MonitorEventDispatcher runtimeDispatcher,
+                                MonitorEventDispatcher appDispatcher,
+                                Repository repository) {
         this.hostInfo = hostInfo;
         this.mBeanServer = mBeanServer;
+        this.runtimeDispatcher = runtimeDispatcher;
+        this.appDispatcher = appDispatcher;
         this.repository = repository;
-        this.dispatcher = dispatcher;
     }
 
     /**
@@ -100,12 +112,21 @@ public class RuntimeConfiguration {
     }
 
     /**
-     * Returns the dispatcher for handling monitor events
+     * Returns the dispatcher for handling runtime monitor events
      *
-     * @return the dispatcher for handling monitor events
+     * @return the dispatcher for handling runtime monitor events
      */
-    public MonitorEventDispatcher getDispatcher() {
-        return dispatcher;
+    public MonitorEventDispatcher getRuntimeDispatcher() {
+        return runtimeDispatcher;
+    }
+
+    /**
+     * Returns the dispatcher for handling application monitor events
+     *
+     * @return the dispatcher for handling application monitor events
+     */
+    public MonitorEventDispatcher getAppDispatcher() {
+        return appDispatcher;
     }
 
     /**

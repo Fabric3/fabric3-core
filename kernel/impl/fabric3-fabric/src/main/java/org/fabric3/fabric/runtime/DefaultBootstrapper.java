@@ -63,8 +63,8 @@ import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_CHANNEL_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
@@ -306,12 +306,12 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Registers the runtime domain channel.
+     * Registers the runtime domain channels.
      */
     private void registerRuntimeDomainChannel() {
-        ChannelDefinition definition = new ChannelDefinition(RUNTIME_DOMAIN_CHANNEL, BOOT_CONTRIBUTION);
+        ChannelDefinition definition = new ChannelDefinition(RUNTIME_MONITOR_CHANNEL, BOOT_CONTRIBUTION);
         LogicalCompositeComponent domain = logicalComponetManager.getRootComponent();
-        LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_DOMAIN_CHANNEL_URI, definition, domain);
+        LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_MONITOR_CHANNEL_URI, definition, domain);
         logicalChannel.setState(LogicalState.PROVISIONED);
         domain.addChannel(logicalChannel);
     }
