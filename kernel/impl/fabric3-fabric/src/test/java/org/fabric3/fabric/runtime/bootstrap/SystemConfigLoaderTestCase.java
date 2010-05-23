@@ -96,7 +96,7 @@ public class SystemConfigLoaderTestCase extends TestCase {
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
         Element element = loader.getMonitorConfiguration("runtime.monitor", systemConfig);
-        assertEquals(1, element.getElementsByTagName("root").getLength());
+        assertEquals(1, element.getElementsByTagName("logger").getLength());
         assertEquals(1, element.getElementsByTagName("appender-ref").getLength());
     }
 

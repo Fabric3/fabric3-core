@@ -50,8 +50,8 @@ import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
  */
 public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
 
-    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
-        LogbackDispatcher dispatcher = new LogbackDispatcher();
+    public MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException {
+        LogbackDispatcher dispatcher = new LogbackDispatcher(name);
         dispatcher.configure(configuration);
         return dispatcher;
     }

@@ -75,9 +75,13 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     private LoggerContext context;
     private Logger logger;
 
-    public LogbackDispatcher() {
+    static {
+       ((LoggerContext)LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
+    }
+    
+    public LogbackDispatcher(String name) {
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        logger = context.getLogger("ROOT");
+        logger = context.getLogger(name);
     }
 
     public void configure(Element element) throws MonitorConfigurationException {

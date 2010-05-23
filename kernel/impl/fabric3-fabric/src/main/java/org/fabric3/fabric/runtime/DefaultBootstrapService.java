@@ -101,7 +101,7 @@ public class DefaultBootstrapService implements BootstrapService {
     }
 
     public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException {
-        LogbackDispatcher dispatcher = new LogbackDispatcher();
+        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName);
         Element element = systemConfigLoader.getMonitorConfiguration(elementName, systemConfig);
         if (element != null) {
             dispatcher.configure(element);

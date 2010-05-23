@@ -62,7 +62,7 @@ public class LogbackDispatcherTestCase extends TestCase {
     private DocumentBuilder builder;
 
     public void testConfiguration() throws Exception {
-        LogbackDispatcher dispatcher = new LogbackDispatcher();
+        LogbackDispatcher dispatcher = new LogbackDispatcher("root");
         Document doc = builder.parse(new ByteArrayInputStream(CONFIG.getBytes()));
         Element element = doc.getDocumentElement();
         dispatcher.configure(element);

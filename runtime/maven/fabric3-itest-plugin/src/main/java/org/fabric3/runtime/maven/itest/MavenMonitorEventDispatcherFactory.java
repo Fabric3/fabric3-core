@@ -56,7 +56,7 @@ public class MavenMonitorEventDispatcherFactory implements MonitorEventDispatche
         dispatcher = new MavenMonitorEventDispatcher(log);
     }
 
-    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException {
         return dispatcher;
     }
 }

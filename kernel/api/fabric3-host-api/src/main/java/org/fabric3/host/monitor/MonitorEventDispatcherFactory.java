@@ -50,9 +50,10 @@ public interface MonitorEventDispatcherFactory {
     /**
      * Create a {@link MonitorEventDispatcher} instance.
      *
+     * @param name          the logger name
      * @param configuration the dispatcher configuration
      * @return the instance.
      * @throws MonitorConfigurationException if configuration error is encountered
      */
-    MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException;
+    MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException;
 }

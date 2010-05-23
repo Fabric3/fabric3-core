@@ -56,7 +56,7 @@ public class AntMonitorEventDispatcherFactory implements MonitorEventDispatcherF
         dispatcher = new AntMonitorEventDispatcher(task);
     }
 
-    public MonitorEventDispatcher createInstance(Element configuration) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException {
         return dispatcher;
     }
 }

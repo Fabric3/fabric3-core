@@ -232,7 +232,7 @@ public class SystemConfigLoader {
                 throw new MonitorConfigurationException("Invalid system configuation: Only one monitor <configuration> element must be specified");
             } else {
                 Element element = (Element) configurationElements.item(0);
-                addAppenderReferences(systemConfig, element);
+                addAppenderReferences(systemConfig, elementName, element);
                 return element;
             }
         } else if (nodes.getLength() == 0) {
@@ -241,7 +241,14 @@ public class SystemConfigLoader {
         throw new MonitorConfigurationException("Invalid system configuation: more than one <monitor> element specified");
     }
 
-    private void addAppenderReferences(Document systemConfig, Element element) {
+    /**
+     * Adds appender references to the monitor configuration
+     *
+     * @param systemConfig the system configuration
+     * @param loggerName   the logger name
+     * @param element      the configuration element
+     */
+    private void addAppenderReferences(Document systemConfig, String loggerName, Element element) {
         NodeList elements = element.getElementsByTagName("appender");
         List<Element> added = new ArrayList<Element>();
         for (int i = 0; i < elements.getLength(); i++) {
@@ -255,7 +262,8 @@ public class SystemConfigLoader {
             }
         }
         if (!added.isEmpty()) {
-            Element root = systemConfig.createElement("root");
+            Element root = systemConfig.createElement("logger");
+            root.setAttribute("name", loggerName);
             element.appendChild(root);
             for (Element reference : added) {
                 root.appendChild(reference);
