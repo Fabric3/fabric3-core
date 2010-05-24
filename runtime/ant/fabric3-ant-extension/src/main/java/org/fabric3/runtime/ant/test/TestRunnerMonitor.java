@@ -37,8 +37,7 @@
 */
 package org.fabric3.runtime.ant.test;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * @version $Rev$ $Date$
@@ -54,7 +53,7 @@ public interface TestRunnerMonitor {
     @Info
     void passed(String name, long time);
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void failed(String name, Throwable e);
 
     @Info

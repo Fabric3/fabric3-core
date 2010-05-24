@@ -50,11 +50,11 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.ComponentContext;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -81,7 +81,7 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
     private InstanceWrapper<T> wrapper;
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
-    private Level level = Level.INFO;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     public SingletonComponent(URI componentId, T instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
@@ -139,11 +139,11 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
         return uri.toString();
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

@@ -35,60 +35,22 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.logging;
+package org.fabric3.api.annotation.monitor;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import static java.lang.annotation.ElementType.METHOD;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
+
 
 /**
- * Defines logging levels recognised by the {@link LogLevel} annotation. The log levels supported by the logging implementation underlying any given
- * monitor factory implementation may not match the levels defined here and so monitor factories may be required to carry out a mapping between
- * levels
+ * Denotes warning monitoring event.
+ *
+ * @version $Rev$ $Date$
  */
-public enum LogLevels {
-
-    SEVERE,
-
-    WARNING,
-
-    INFO,
-
-    CONFIG,
-
-    FINE,
-
-    FINER,
-
-    FINEST;
-
-    /**
-     * Encapsulates the logic used to read monitor method log level annotations. Argument <code>Method</code> instances should be annotated with a
-     * {@link LogLevel} directly or with one of the level annotations which have a {@link LogLevel} meta-annotation.
-     *
-     * @param method monitor method
-     * @return the annotated <code>LogLevels</code> value
-     */
-    public static LogLevels getAnnotatedLogLevel(Method method) {
-        LogLevels level = null;
-
-        LogLevel annotation = method.getAnnotation(LogLevel.class);
-        if (annotation != null) {
-            level = annotation.value();
-        }
-
-        if (level == null) {
-            for (Annotation methodAnnotation : method.getDeclaredAnnotations()) {
-                Class<? extends Annotation> annotationType = methodAnnotation.annotationType();
-
-                LogLevel logLevel = annotationType.getAnnotation(LogLevel.class);
-                if (logLevel != null) {
-                    level = logLevel.value();
-                    break;
-                }
-            }
-        }
-
-        return level;
-    }
+@MonitorEventType(MonitorLevel.WARNING)
+@Target({METHOD})
+@Retention(RUNTIME)
+public @interface Warning {
 
 }

@@ -53,6 +53,7 @@ import weblogic.logging.WLLevel;
 
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * A dispatcher that forwards events to the WebLogic logging service.
@@ -67,12 +68,13 @@ public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
     }
 
     public void onEvent(MonitorEvent event) {
-        Level level = event.getMonitorLevel();
-        if (level == null || !logger.isLoggable(level)) {
+        MonitorLevel level = event.getMonitorLevel();
+        Level jdkLevel = convert(level);
+        if (level == null || !logger.isLoggable(jdkLevel)) {
             return;
         }
 
-        LogRecord logRecord = new LogRecord(level, event.getMessage());
+        LogRecord logRecord = new LogRecord(jdkLevel, event.getMessage());
         // fixme this should be the application name
         logRecord.setLoggerName("fabric3");
         logRecord.setParameters(event.getData());
@@ -82,7 +84,7 @@ public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
                 break;
             }
         }
-        if (Level.INFO == level) {
+        if (MonitorLevel.INFO == level) {
             // convert INFO to notice so it is displayed by default
             logRecord.setLevel(WLLevel.NOTICE);
         }
@@ -99,6 +101,21 @@ public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
 
     public void stop() {
         // no-op
+    }
+
+    private Level convert(MonitorLevel level) {
+        if (MonitorLevel.ERROR == level) {
+            return Level.SEVERE;
+        } else if (MonitorLevel.WARNING == level) {
+            return Level.WARNING;
+        } else if (MonitorLevel.INFO == level) {
+            return Level.INFO;
+        } else if (MonitorLevel.DEBUG == level) {
+            return Level.FINE;
+        } else if (MonitorLevel.TRACE == level) {
+            return Level.FINEST;
+        }
+        return Level.FINEST;
     }
 
 }

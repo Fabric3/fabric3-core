@@ -37,14 +37,14 @@
 */
 package org.fabric3.runtime.tomcat;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Error;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ServerMonitor {
-    @Severe
+    @Error
     void runError(Exception e);
 
     @Info

@@ -37,7 +37,7 @@
 */
 package org.fabric3.host.monitor;
 
-import java.util.logging.Level;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Implementations emit monitor events.
@@ -58,13 +58,13 @@ public interface Monitorable {
      *
      * @return the current level used to control event output for this monitorable
      */
-    Level getLevel();
+    MonitorLevel getLevel();
 
     /**
      * Sets the current level used to control event output for this monitorable.
      *
      * @param level the current level used to control event output for this monitorable
      */
-    void setLevel(Level level);
+    void setLevel(MonitorLevel level);
 
 }

@@ -37,16 +37,16 @@
 */
 package org.fabric3.recovery.domain;
 
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface FSDomainReplayMonitor {
 
-    @Severe
+    @Error
     void error(Throwable e);
 
-    @Severe
+    @Error
     void errorMessage(String e);
 }

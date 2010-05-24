@@ -39,8 +39,7 @@ package org.fabric3.binding.ws.metro;
 
 import java.net.URL;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Monitor for communications events.
@@ -58,7 +57,7 @@ public interface MetroBindingMonitor {
     @Info
     void wsdlSkipped(URL location);
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(Throwable e);
 
 

@@ -37,13 +37,11 @@
 */
 package org.fabric3.async.runtime;
 
-import org.fabric3.api.annotation.logging.Severe;
-
 /**
  * @version $Rev$ $Date$
  */
 public interface NonBlockingMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void onError(Throwable e);
 }

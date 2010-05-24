@@ -39,7 +39,7 @@ package org.fabric3.binding.ftp.runtime;
 
 import java.net.InetAddress;
 
-import org.fabric3.api.annotation.logging.Fine;
+import org.fabric3.api.annotation.monitor.Debug;
 
 /**
  * Receives callbacks for FTP invocations from a client.
@@ -48,15 +48,15 @@ import org.fabric3.api.annotation.logging.Fine;
  */
 public interface FtpInterceptorMonitor {
 
-    @Fine
+    @Debug
     void onCommand(String command);
 
-    @Fine
+    @Debug
     void onResponse(String response);
 
-    @Fine
+    @Debug
     void onConnect(InetAddress hostAddress, int port);
 
-    @Fine
+    @Debug
     void onAuthenticate();
 }

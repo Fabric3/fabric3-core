@@ -35,17 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.logging;
+package org.fabric3.api.annotation.monitor;
 
 import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
-
-@LogLevel(LogLevels.WARNING)
+/**
+ * Denotes a debug monitoring event.
+ *
+ * @version $Rev$ $Date$
+ */
+@MonitorEventType(MonitorLevel.DEBUG)
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface Warning {
+public @interface Debug {
 
 }

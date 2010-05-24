@@ -37,7 +37,7 @@
 */
 package org.fabric3.container.web.jetty;
 
-import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.monitor.Info;
 
 /**
  * Receives events related to web application activation and deactivation.

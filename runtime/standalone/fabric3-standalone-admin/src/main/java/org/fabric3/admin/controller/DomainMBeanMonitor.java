@@ -37,14 +37,12 @@
 */
 package org.fabric3.admin.controller;
 
-import org.fabric3.api.annotation.logging.Severe;
-
 /**
  * @version $Rev$ $Date$
  */
 public interface DomainMBeanMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(String message, Exception e);
 
 }

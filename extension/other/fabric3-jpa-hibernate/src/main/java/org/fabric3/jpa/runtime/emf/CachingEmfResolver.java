@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
@@ -52,6 +51,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.Names;
 import org.fabric3.jpa.api.EmfResolver;
 import org.fabric3.jpa.api.EmfResolverException;
@@ -71,11 +71,11 @@ public class CachingEmfResolver implements EmfResolver {
     private EmfCache cache;
     private MonitorService monitorService;
 
-    private Level logLevel = Level.WARNING;
+    private MonitorLevel logLevel = MonitorLevel.WARNING;
 
     @Property(required = false)
-    public void setLogLevel(String logLevel) {
-        this.logLevel = Level.parse(logLevel);
+    public void setMonitorLevel(String logLevel) {
+        this.logLevel = MonitorLevel.valueOf(logLevel);
     }
 
     public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache, @Reference MonitorService monitorService) {

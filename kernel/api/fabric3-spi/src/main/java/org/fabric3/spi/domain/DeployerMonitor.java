@@ -43,8 +43,8 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Debug;
 
 /**
  * Event monitor for the Deployer.
@@ -53,19 +53,19 @@ import org.fabric3.api.annotation.logging.Severe;
  */
 public interface DeployerMonitor {
 
-    @Fine
+    @Debug
     void deploy(String zone);
 
-    @Fine
+    @Debug
     void commit(String zone);
 
-    @Fine
+    @Debug
     void rollback(String zone);
 
-    @Severe
+    @Error
     void deploymentError(String runtime, Throwable e);
 
-    @Severe
+    @Error
     void rollbackError(String message, Throwable e);
 
 }

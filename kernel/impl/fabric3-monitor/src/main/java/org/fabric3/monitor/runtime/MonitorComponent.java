@@ -38,9 +38,9 @@
 package org.fabric3.monitor.runtime;
 
 import java.net.URI;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -57,7 +57,7 @@ public class MonitorComponent implements Component {
     private QName deployable;
     private URI classLoaderId;
     private int state = UNINITIALIZED;
-    private Level level;
+    private MonitorLevel level;
     private MonitorEventDispatcher dispatcher;
     private EventStreamHandler handler;
 
@@ -92,11 +92,11 @@ public class MonitorComponent implements Component {
         return uri.toString();
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

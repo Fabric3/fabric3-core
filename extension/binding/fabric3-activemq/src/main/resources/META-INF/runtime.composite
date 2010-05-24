@@ -26,7 +26,7 @@
         <f3-impl:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
         <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
         <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
-        <property name="logLevel" source="$systemConfig//jms/activemq/@logging"/>
+        <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
     </component>
 
     <component name="ConnectionFactoryParser">

@@ -37,29 +37,29 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Error;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface MessageContainerMonitor {
 
-    @Severe
+    @Error
     void errorMessage(String message);
 
-    @Severe
+    @Error
     void error(String message, Throwable e);
 
-    @Fine
+    @Debug
     void increaseReceivers(int count);
 
-    @Fine
+    @Debug
     void decreaseReceivers(int count);
 
-    @Fine
+    @Debug
     void debugError(String message, Throwable e);
 
-    @Fine
+    @Debug
     void reject(Exception e);
 }

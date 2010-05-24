@@ -43,11 +43,10 @@
  */
 package org.fabric3.runtime.maven.itest;
 
-import java.util.logging.Level;
-
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Element;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 
@@ -64,9 +63,9 @@ public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
     }
 
     public void onEvent(MonitorEvent event) {
-        Level level = event.getMonitorLevel();
+        MonitorLevel level = event.getMonitorLevel();
         String message = event.getMessage();
-        if (Level.SEVERE == level) {
+        if (MonitorLevel.ERROR == level) {
             if (log.isErrorEnabled()) {
                 Throwable e = null;
                 for (Object o : event.getData()) {
@@ -80,23 +79,19 @@ public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
                     log.error(e);
                 }
             }
-        } else if (Level.WARNING == level) {
+        } else if (MonitorLevel.WARNING == level) {
             if (log.isWarnEnabled()) {
                 log.warn(message);
             }
-        } else if (Level.INFO == level) {
+        } else if (MonitorLevel.INFO == level) {
             if (log.isInfoEnabled()) {
                 log.info(message);
             }
-        } else if (Level.FINE == level) {
+        } else if (MonitorLevel.DEBUG == level) {
             if (log.isDebugEnabled()) {
                 log.debug(message);
             }
-        } else if (Level.FINER == level) {
-            if (log.isDebugEnabled()) {
-                log.debug(message);
-            }
-        } else if (Level.FINEST == level) {
+        } else if (MonitorLevel.TRACE == level) {
             if (log.isDebugEnabled()) {
                 log.debug(message);
             }

@@ -37,42 +37,41 @@
 */
 package org.fabric3.federation.jgroups;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface TopologyServiceMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(String message, Throwable t);
 
     @Info
     void joiningDomain(String runtimeName);
 
-    @Fine
+    @Debug
     void handleMessage(String runtimeName);
 
-    @Fine
+    @Debug
     void receiveMessage(String runtimeName);
 
-    @Fine
+    @Debug
     void updating(String s);
 
-    @Fine
+    @Debug
     void updated();
 
-    @Fine
+    @Debug
     void updateDeferred();
 
-    @Fine
+    @Debug
     void runtimeRemoved(String runtimeName);
 
-    @Fine
+    @Debug
     void metadataUpdateRequest(String runtimeName);
 
-    @Fine
+    @Debug
     void broadcastAvailability();
 }

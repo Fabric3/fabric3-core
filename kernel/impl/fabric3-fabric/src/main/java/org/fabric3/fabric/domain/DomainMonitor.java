@@ -39,7 +39,7 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.annotation.logging.Info;
+import org.fabric3.api.annotation.monitor.Info;
 
 /**
  * @version $Rev$ $Date$

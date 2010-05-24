@@ -43,8 +43,7 @@
  */
 package org.fabric3.contribution;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Receives callback events from the ContributionService
@@ -53,7 +52,7 @@ import org.fabric3.api.annotation.logging.Severe;
  */
 public interface ContributionServiceMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(String message, Throwable e);
 
     @Info

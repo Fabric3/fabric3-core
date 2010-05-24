@@ -35,38 +35,64 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.tx;
+package org.fabric3.api.annotation.monitor;
 
-import org.fabric3.api.annotation.monitor.Debug;
-import org.fabric3.api.annotation.monitor.Warning;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
- * @version $Rev$ $Date$
+ * Defines monitor levels recognized by the {@link MonitorEventType} annotation.
  */
-public interface TxMonitor {
+public enum MonitorLevel {
 
-    @Debug
-    void started(int hashCode);
+    ERROR(4),
 
-    @Debug
-    void committed(int hashCode);
+    WARNING(3),
 
-    @Debug
-    void suspended(int hashCode);
+    INFO(2),
 
-    @Warning
-    void rolledback(int hashCode);
+    DEBUG(1),
 
-    @Debug
-    void resumed(int hashCode);
+    TRACE(0);
 
-    @Debug
-    void markedForRollback(int hashCode);
+    MonitorLevel(int value) {
+        this.value = value;
+    }
 
-    @Debug
-    void interceptorInitialized(TxAction txAction);
+    private int value;
 
-    @Debug
-    void joined(int hashCode);
+    public int intValue() {
+        return value;
+    }
+
+    /**
+     * Encapsulates the logic used to read monitor method level annotations. Argument <code>Method</code> instances should be annotated with a {@link
+     * MonitorEventType} directly or with one of the level annotations which have a {@link MonitorEventType} meta-annotation.
+     *
+     * @param method monitor method
+     * @return the annotated <code>LogLevels</code> value
+     */
+    public static MonitorLevel getAnnotatedLogLevel(Method method) {
+        MonitorLevel level = null;
+
+        MonitorEventType annotation = method.getAnnotation(MonitorEventType.class);
+        if (annotation != null) {
+            level = annotation.value();
+        }
+
+        if (level == null) {
+            for (Annotation methodAnnotation : method.getDeclaredAnnotations()) {
+                Class<? extends Annotation> annotationType = methodAnnotation.annotationType();
+
+                MonitorEventType monitorEventType = annotationType.getAnnotation(MonitorEventType.class);
+                if (monitorEventType != null) {
+                    level = monitorEventType.value();
+                    break;
+                }
+            }
+        }
+
+        return level;
+    }
 
 }

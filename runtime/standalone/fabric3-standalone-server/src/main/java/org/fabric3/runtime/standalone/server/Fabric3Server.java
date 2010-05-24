@@ -52,8 +52,7 @@ import javax.management.ObjectName;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 import org.fabric3.host.Fabric3Exception;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
@@ -242,7 +241,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     public interface ServerMonitor {
-        @Severe
+        @org.fabric3.api.annotation.monitor.Error
         void runError(Exception e);
 
         @Info

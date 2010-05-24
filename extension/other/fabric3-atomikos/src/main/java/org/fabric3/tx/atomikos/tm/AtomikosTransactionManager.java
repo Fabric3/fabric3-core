@@ -41,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -60,6 +59,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -85,7 +85,7 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     private TransactionManagerImp tm;
     private UserTransactionService uts;
     private Properties properties = new Properties();
-    private Level logLevel = Level.WARNING;
+    private MonitorLevel logLevel = MonitorLevel.WARNING;
 
     public AtomikosTransactionManager(@Reference EventService eventService, @Reference MonitorService monitorService, @Reference HostInfo info) {
         this.eventService = eventService;
@@ -94,8 +94,8 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     }
 
     @Property(required = false)
-    public void setLogLevel(String logLevel) {
-        this.logLevel = Level.parse(logLevel);
+    public void setMonitorLevel(String logLevel) {
+        this.logLevel = MonitorLevel.valueOf(logLevel);
     }
 
 

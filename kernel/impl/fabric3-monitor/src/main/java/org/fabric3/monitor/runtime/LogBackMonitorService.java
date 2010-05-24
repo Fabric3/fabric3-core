@@ -40,7 +40,6 @@ package org.fabric3.monitor.runtime;
 
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -49,6 +48,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.slf4j.Logger;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.monitor.MonitorService;
@@ -59,7 +59,7 @@ import org.fabric3.spi.monitor.MonitorService;
 @EagerInit
 public class LogBackMonitorService implements MonitorService {
     private ComponentManager manager;
-    private Level defaultLevel = Level.WARNING;
+    private MonitorLevel defaultLevel = MonitorLevel.WARNING;
 
     public LogBackMonitorService(@Reference ComponentManager manager) {
         this.manager = manager;
@@ -67,7 +67,7 @@ public class LogBackMonitorService implements MonitorService {
 
     @Property
     public void setDefaultLevel(String defaultLevel) {
-        this.defaultLevel = Level.parse(defaultLevel);
+        this.defaultLevel = MonitorLevel.valueOf(defaultLevel);
     }
 
     @Init
@@ -77,7 +77,7 @@ public class LogBackMonitorService implements MonitorService {
     }
 
     public void setComponentLevel(String uri, String level) {
-        Level parsed = Level.parse(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
         for (Component component : components) {
             component.setLevel(parsed);
@@ -85,7 +85,7 @@ public class LogBackMonitorService implements MonitorService {
     }
 
     public void setDeployableLevel(String deployable, String level) {
-        Level parsed = Level.parse(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
             component.setLevel(parsed);
@@ -93,7 +93,7 @@ public class LogBackMonitorService implements MonitorService {
     }
 
     public void setProviderLevel(String key, String level) {
-        Level parsed = Level.parse(level);
+        MonitorLevel parsed = MonitorLevel.valueOf(level);
         ch.qos.logback.classic.Level logBackLevel = LevelConverter.getLogbackLevel(parsed);
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(key)).setLevel(logBackLevel);
 

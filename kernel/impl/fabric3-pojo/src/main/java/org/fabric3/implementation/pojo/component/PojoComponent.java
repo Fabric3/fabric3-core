@@ -44,9 +44,9 @@
 package org.fabric3.implementation.pojo.component;
 
 import java.net.URI;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
@@ -75,7 +75,7 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
     private final long maxAge;
     private InstanceFactory<T> instanceFactory;
     private URI classLoaderId;
-    private Level level = Level.INFO;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     public PojoComponent(URI componentId,
                          InstanceFactoryProvider<T> provider,
@@ -113,11 +113,11 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
         return uri.toString();
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

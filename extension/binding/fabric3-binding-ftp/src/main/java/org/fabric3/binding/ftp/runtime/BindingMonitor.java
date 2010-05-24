@@ -37,14 +37,12 @@
 */
 package org.fabric3.binding.ftp.runtime;
 
-import org.fabric3.api.annotation.logging.Severe;
-
 /**
  * @version $Rev$ $Date$
  */
 public interface BindingMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void fileProcessingError(String servicePath, Throwable t);
 
 }

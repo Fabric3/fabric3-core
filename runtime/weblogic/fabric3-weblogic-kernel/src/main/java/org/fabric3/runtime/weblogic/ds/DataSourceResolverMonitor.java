@@ -37,25 +37,23 @@
 */
 package org.fabric3.runtime.weblogic.ds;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Severe;
-import org.fabric3.api.annotation.logging.Warning;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface DataSourceResolverMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(Exception e);
     
     @Warning
     void dataSourceNotFound(String name);
 
-    @Fine
+    @Debug
     void registerDatasource(String name);
 
-    @Fine
+    @Debug
     void removeDatasource(String name);
 
 }

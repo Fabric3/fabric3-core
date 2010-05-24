@@ -37,8 +37,8 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Receives federation callback events.
@@ -47,10 +47,10 @@ import org.fabric3.api.annotation.logging.Severe;
  */
 public interface WebLogicTopologyMonitor {
 
-    @Severe
+    @Error
     void error(Throwable error);
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void errorMessage(String message, Throwable error);
 
     @Info

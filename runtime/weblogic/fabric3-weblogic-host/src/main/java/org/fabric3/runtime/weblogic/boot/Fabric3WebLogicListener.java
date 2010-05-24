@@ -53,8 +53,7 @@ import javax.servlet.ServletContextListener;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.RuntimeMode;
@@ -250,7 +249,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     public interface ServerMonitor {
-        @Severe
+        @org.fabric3.api.annotation.monitor.Error
         void runError(Exception e);
 
         @Info

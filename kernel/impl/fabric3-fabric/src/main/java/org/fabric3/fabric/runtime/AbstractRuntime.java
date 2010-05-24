@@ -45,10 +45,10 @@ package org.fabric3.fabric.runtime;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
 import javax.management.MBeanServer;
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.contribution.MetaDataStoreImpl;
 import org.fabric3.contribution.ProcessorRegistryImpl;
 import org.fabric3.fabric.channel.ChannelConnectionImpl;
@@ -114,7 +114,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private MonitorEventDispatcher runtimeDispatcher;
     private MonitorEventDispatcher appDispatcher;
     private Repository repository;
-    private Level level = Level.INFO;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     protected AbstractRuntime(RuntimeConfiguration configuration) {
         hostInfo = configuration.getHostInfo();
@@ -140,11 +140,11 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         return Names.RUNTIME_NAME;
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

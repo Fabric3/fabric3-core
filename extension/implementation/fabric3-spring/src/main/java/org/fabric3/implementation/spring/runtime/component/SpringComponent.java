@@ -39,7 +39,6 @@ package org.fabric3.implementation.spring.runtime.component;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.BeansException;
@@ -47,6 +46,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.Component;
 
@@ -64,7 +64,7 @@ public class SpringComponent implements Component {
     private int state = UNINITIALIZED;
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
-    private Level level = Level.INFO;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     /**
      * Constructor.
@@ -107,11 +107,11 @@ public class SpringComponent implements Component {
         return uri.toString();
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

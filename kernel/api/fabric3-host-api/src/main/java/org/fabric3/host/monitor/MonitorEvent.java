@@ -38,7 +38,8 @@
 package org.fabric3.host.monitor;
 
 import java.io.Serializable;
-import java.util.logging.Level;
+
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Encapsulates monitor data that will be broadcast as an event.
@@ -66,7 +67,7 @@ public interface MonitorEvent extends Serializable {
      *
      * @return the event level
      */
-    public Level getMonitorLevel();
+    public MonitorLevel getMonitorLevel();
 
     /**
      * Returns the time the event was created.

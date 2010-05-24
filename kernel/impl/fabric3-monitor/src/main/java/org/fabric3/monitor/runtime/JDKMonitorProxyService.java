@@ -45,9 +45,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
-import org.fabric3.api.annotation.logging.LogLevels;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.monitor.Monitorable;
@@ -67,7 +66,7 @@ import org.fabric3.spi.channel.PassThroughHandler;
 public class JDKMonitorProxyService implements MonitorProxyService {
     private ChannelManager channelManager;
     private Monitorable defaultMonitorable;
-    private Level defaultLevel = Level.FINEST;
+    private MonitorLevel defaultLevel = MonitorLevel.TRACE;
 
     public JDKMonitorProxyService(Monitorable monitorable, ChannelManager channelManager) {
         this.defaultMonitorable = monitorable;
@@ -92,8 +91,7 @@ public class JDKMonitorProxyService implements MonitorProxyService {
 
         Map<String, DispatchInfo> levels = new HashMap<String, DispatchInfo>();
         for (Method method : type.getMethods()) {
-            LogLevels level = LogLevels.getAnnotatedLogLevel(method);
-            Level translated = translateLogLevel(level);
+            MonitorLevel level = MonitorLevel.getAnnotatedLogLevel(method);
             String key = type.getName() + "#" + method.getName();
             String message = null;
             if (bundle != null) {
@@ -107,28 +105,11 @@ public class JDKMonitorProxyService implements MonitorProxyService {
                 // if there are no params, set the message to the key
                 message = key;
             }
-            levels.put(method.getName(), new DispatchInfo(translated, message));
+            levels.put(method.getName(), new DispatchInfo(level, message));
         }
 
         MonitorHandler handler = new MonitorHandler(monitorable, streamHandler, levels);
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
-    }
-
-    private Level translateLogLevel(LogLevels level) {
-        Level result;
-        if (level == null) {
-            result = defaultLevel;
-        } else {
-            try {
-                //Because the LogLevels' values are based on the Level's logging levels,
-                //no translation is required, just a pass-through mapping
-                result = Level.parse(level.toString());
-            } catch (IllegalArgumentException e) {
-                //TODO: Add error reporting for unsupported log level
-                result = defaultLevel;
-            }
-        }
-        return result;
     }
 
     private <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName, ClassLoader loader) {

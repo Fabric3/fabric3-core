@@ -45,8 +45,8 @@ package org.fabric3.runtime.webapp;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Info;
 
 
 /**
@@ -63,13 +63,13 @@ public interface WebAppMonitor {
     @Info
     void compositeDeployed(QName qName);
 
-    @Severe
+    @Error
     void runError(Throwable e);
 
-    @Severe
+    @Error
     void contributionErrors(String s);
 
-    @Severe
+    @Error
     void deploymentErrors(String s);
 
 }

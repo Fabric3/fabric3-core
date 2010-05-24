@@ -38,7 +38,6 @@
 package org.fabric3.monitor.runtime;
 
 import java.util.Map;
-import java.util.logging.Level;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -46,6 +45,7 @@ import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import org.slf4j.Marker;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.Monitorable;
 
@@ -58,7 +58,7 @@ import org.fabric3.host.monitor.Monitorable;
  */
 public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
     private static final long serialVersionUID = 6943460067960488899L;
-    private Level level;
+    private MonitorLevel level;
     private ch.qos.logback.classic.Level logbackLevel;
     private String runtime;
     private String source;
@@ -77,7 +77,7 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
      * @param data       any data (such as an exception) associated with the event. If this event will be broadcast outside the runtime VM, the data
      *                   should implement Serializable.
      */
-    public MonitorEventImpl(String runtime, String source, Level level, long timeStamp, String threadName, String message, Object... data) {
+    public MonitorEventImpl(String runtime, String source, MonitorLevel level, long timeStamp, String threadName, String message, Object... data) {
         this.runtime = runtime;
         this.source = source;
         this.level = level;
@@ -113,7 +113,7 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
      *
      * @return the event level
      */
-    public Level getMonitorLevel() {
+    public MonitorLevel getMonitorLevel() {
         return level;
     }
 

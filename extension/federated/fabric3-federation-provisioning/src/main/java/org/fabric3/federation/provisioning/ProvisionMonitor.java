@@ -39,10 +39,8 @@ package org.fabric3.federation.provisioning;
 
 import java.net.URL;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Warning;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.*;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthorizationException;
 
@@ -51,16 +49,16 @@ import org.fabric3.spi.security.AuthorizationException;
  */
 public interface ProvisionMonitor {
 
-    @Severe
+    @Error
     void httpsNotEnabled();
 
-    @Severe
+    @Error
     void errorMessage(String message);
 
-    @Severe
+    @Error
     void error(String message, Throwable e);
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(String s);
 
     @Warning
@@ -75,7 +73,7 @@ public interface ProvisionMonitor {
     @Info
     void badAuthorization(AuthorizationException e);
 
-    @Fine
+    @Debug
     void resolving(URL url);
 
 }

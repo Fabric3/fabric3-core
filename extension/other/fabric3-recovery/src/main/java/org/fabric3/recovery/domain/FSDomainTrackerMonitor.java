@@ -37,10 +37,8 @@
 */
 package org.fabric3.recovery.domain;
 
-import org.fabric3.api.annotation.logging.Severe;
-
 public interface FSDomainTrackerMonitor {
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(Throwable e);
 }

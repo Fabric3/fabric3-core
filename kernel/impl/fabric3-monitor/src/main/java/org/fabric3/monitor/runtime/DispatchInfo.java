@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.runtime;
 
-import java.util.logging.Level;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Dispatch information for a monitor interface operation.
@@ -45,15 +45,15 @@ import java.util.logging.Level;
  * @version $Rev$ $Date$
  */
 public class DispatchInfo {
-    private Level level;
+    private MonitorLevel level;
     private String message;
 
-    public DispatchInfo(Level level, String message) {
+    public DispatchInfo(MonitorLevel level, String message) {
         this.level = level;
         this.message = message;
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 

@@ -37,7 +37,10 @@
 */
 package org.fabric3.monitor.runtime;
 
-import java.util.logging.Level;
+import ch.qos.logback.classic.Level;
+
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+
 
 /**
  * Converts levels from the standard Fabric3 representation to Logback.
@@ -49,25 +52,17 @@ public class LevelConverter {
     private LevelConverter() {
     }
 
-    public static ch.qos.logback.classic.Level getLogbackLevel(Level level) {
-        if (Level.ALL == level) {
-            return ch.qos.logback.classic.Level.ALL;
-        } else if (Level.CONFIG == level) {
-            return ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINE == level) {
-            return ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINER == level) {
-            return ch.qos.logback.classic.Level.DEBUG;
-        } else if (Level.FINEST == level) {
-            return ch.qos.logback.classic.Level.TRACE;
-        } else if (Level.INFO == level) {
-            return ch.qos.logback.classic.Level.INFO;
-        } else if (Level.OFF == level) {
-            return ch.qos.logback.classic.Level.OFF;
-        } else if (Level.SEVERE == level) {
-            return ch.qos.logback.classic.Level.ERROR;
-        } else if (Level.WARNING == level) {
-            return ch.qos.logback.classic.Level.WARN;
+    public static ch.qos.logback.classic.Level getLogbackLevel(MonitorLevel level) {
+        if (MonitorLevel.ERROR == level) {
+            return Level.ERROR;
+        } else if (MonitorLevel.WARNING == level) {
+            return Level.WARN;
+        } else if (MonitorLevel.INFO == level) {
+            return Level.INFO;
+        } else if (MonitorLevel.DEBUG == level) {
+            return Level.DEBUG;
+        } else if (MonitorLevel.TRACE == level) {
+            return Level.TRACE;
         }
         throw new AssertionError("Unknown log level: " + level);
     }

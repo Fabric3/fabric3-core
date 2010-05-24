@@ -38,11 +38,11 @@
 package org.fabric3.implementation.mock;
 
 import java.net.URI;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.ComponentContext;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -113,11 +113,11 @@ public class MockComponent<T> extends AbstractLifecycle implements AtomicCompone
         return componentId.toString();
     }
 
-    public Level getLevel() {
-        return Level.INFO;
+    public MonitorLevel getLevel() {
+        return MonitorLevel.INFO;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
 
     }
 }

@@ -45,12 +45,12 @@ package org.fabric3.runtime.ant.monitor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.logging.Level;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.w3c.dom.Element;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 
@@ -68,19 +68,17 @@ public class AntMonitorEventDispatcher implements MonitorEventDispatcher {
 
     public void onEvent(MonitorEvent event) {
         int antLevel = Project.MSG_DEBUG;
-        Level level = event.getMonitorLevel();
+        MonitorLevel level = event.getMonitorLevel();
         String message = event.getMessage();
-        if (Level.SEVERE == level) {
+        if (MonitorLevel.ERROR == level) {
             antLevel = Project.MSG_ERR;
-        } else if (Level.WARNING == level) {
+        } else if (MonitorLevel.WARNING == level) {
             antLevel = Project.MSG_WARN;
-        } else if (Level.INFO == level) {
+        } else if (MonitorLevel.INFO == level) {
             antLevel = Project.MSG_INFO;
-        } else if (Level.FINE == level) {
+        } else if (MonitorLevel.DEBUG == level) {
             antLevel = Project.MSG_DEBUG;
-        } else if (Level.FINER == level) {
-            antLevel = Project.MSG_VERBOSE;
-        } else if (Level.FINEST == level) {
+        } else if (MonitorLevel.TRACE == level) {
             antLevel = Project.MSG_VERBOSE;
         }
         Throwable e = null;

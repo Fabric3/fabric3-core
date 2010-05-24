@@ -43,10 +43,7 @@
  */
 package org.fabric3.transport.jetty.impl;
 
-import org.fabric3.api.annotation.logging.Fine;
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
-import org.fabric3.api.annotation.logging.Warning;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * The monitoring interfaces used by the Jetty system service
@@ -70,7 +67,7 @@ public interface TransportMonitor {
     @Warning
     void warn(String msg, Object... args);
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void exception(String msg, Throwable args);
 
     /**
@@ -79,7 +76,7 @@ public interface TransportMonitor {
      * @param msg  the debug message
      * @param args arguments
      */
-    @Fine
+    @Debug
     void debug(String msg, Object... args);
 
 }

@@ -41,13 +41,13 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.ServiceReference;
 import org.osoa.sca.ComponentContext;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
@@ -88,7 +88,7 @@ public class WebComponent<T> extends AbstractLifecycle implements AtomicComponen
     private ComponentContext context;
     private OASISWebComponentContext oasisContext;
     private String contextUrl;
-    private Level level = Level.INFO;
+    private MonitorLevel level = MonitorLevel.INFO;
 
     public WebComponent(URI uri,
                         String contextUrl,
@@ -129,11 +129,11 @@ public class WebComponent<T> extends AbstractLifecycle implements AtomicComponen
         return uri.toString();
     }
 
-    public Level getLevel() {
+    public MonitorLevel getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 

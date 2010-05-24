@@ -38,17 +38,17 @@
 
 package org.fabric3.binding.jms.runtime;
 
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.Error;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ListenerMonitor {
 
-    @Severe
+    @Error
     public void error(String message, Throwable e);
 
-    @Severe
+    @Error
     public void errorMessage(String message);
 
 }

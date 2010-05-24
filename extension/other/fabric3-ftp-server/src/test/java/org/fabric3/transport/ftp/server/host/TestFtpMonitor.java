@@ -37,7 +37,6 @@
 */
 package org.fabric3.transport.ftp.server.host;
 
-import org.fabric3.api.annotation.logging.Severe;
 import org.fabric3.transport.ftp.server.monitor.FtpMonitor;
 
 /**
@@ -62,7 +61,7 @@ public class TestFtpMonitor implements FtpMonitor {
         System.err.println("No registered FTPLet:" + resource);
     }
 
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     public void connectionTimedOut(String user) {
         System.err.println("Connection timeout: " + user);
     }

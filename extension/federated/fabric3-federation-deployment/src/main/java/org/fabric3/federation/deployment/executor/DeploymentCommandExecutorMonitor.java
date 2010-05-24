@@ -37,8 +37,7 @@
 */
 package org.fabric3.federation.deployment.executor;
 
-import org.fabric3.api.annotation.logging.Info;
-import org.fabric3.api.annotation.logging.Severe;
+import org.fabric3.api.annotation.monitor.*;
 
 /**
  * @version $Rev$ $Date$
@@ -62,7 +61,7 @@ public interface DeploymentCommandExecutorMonitor {
      *
      * @param e the error
      */
-    @Severe
+    @org.fabric3.api.annotation.monitor.Error
     void error(Throwable e);
 
 }

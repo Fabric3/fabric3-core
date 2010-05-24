@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
-import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -55,6 +54,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.binding.activemq.ActiveMQConstants;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
@@ -76,7 +76,7 @@ public class BrokerEngine {
     private int minPort = 61616;
     private File dataDir;
     private BrokerConfiguration brokerConfiguration;
-    private Level logLevel = Level.WARNING;
+    private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MonitorService monitorService;
 
     public BrokerEngine(@Reference MonitorService monitorService, @Reference HostInfo info) {
@@ -88,8 +88,8 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
-    public void setLogLevel(String logLevel) {
-        this.logLevel = Level.parse(logLevel);
+    public void setMonitorLevel(String monitorLevel) {
+        this.monitorLevel = MonitorLevel.valueOf(monitorLevel);
     }
 
     @Property(required = false)
@@ -111,7 +111,7 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // ActiveMQ default level is INFO which is verbose. Only log warnings by default
-        monitorService.setProviderLevel("org.apache.activemq", logLevel.toString());
+        monitorService.setProviderLevel("org.apache.activemq", monitorLevel.toString());
         broker = new BrokerService();
         // TODO enable JMX via the F3 JMX agent
         // JMX must be turned off prior to configuring connections to avoid conflicts with the F3 JMX agent.

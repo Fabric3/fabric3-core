@@ -41,8 +41,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.logging.Level;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.spi.channel.EventStreamHandler;
@@ -57,7 +57,7 @@ public class MonitorHandler implements InvocationHandler {
     private String runtime;
     private String source;
     private EventStreamHandler streamHandler;
-    private Level level;
+    private MonitorLevel level;
     private String message;
     private Map<String, DispatchInfo> infos;
 
@@ -75,7 +75,7 @@ public class MonitorHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Level currentLevel;
+        MonitorLevel currentLevel;
         String currentMessage;
         if (level != null) {
             currentLevel = level;
