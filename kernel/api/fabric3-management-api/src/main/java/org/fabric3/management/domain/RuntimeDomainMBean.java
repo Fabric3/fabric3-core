@@ -39,7 +39,7 @@ package org.fabric3.management.domain;
 
 import java.net.URI;
 
-import org.fabric3.api.annotation.Management;
+import org.fabric3.api.annotation.management.Management;
 
 /**
  * MBean for invoking runtime domain operations.

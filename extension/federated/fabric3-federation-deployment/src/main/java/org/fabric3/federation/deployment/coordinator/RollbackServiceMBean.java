@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.api.annotation.Management;
+import org.fabric3.api.annotation.management.Management;
 
 /**
  * MBean interface for the RollbackService.

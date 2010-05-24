@@ -37,7 +37,7 @@
 */
 package org.fabric3.management;
 
-import org.fabric3.api.annotation.Management;
+import org.fabric3.api.annotation.management.Management;
 
 /**
  * Management interface for the work scheduler.

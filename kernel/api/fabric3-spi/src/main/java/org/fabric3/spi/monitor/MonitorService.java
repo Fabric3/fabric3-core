@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.monitor;
 
-import org.fabric3.api.annotation.Management;
+import org.fabric3.api.annotation.management.Management;
 
 /**
  * Manages and exposes configuration for the runtime monitor implementation.

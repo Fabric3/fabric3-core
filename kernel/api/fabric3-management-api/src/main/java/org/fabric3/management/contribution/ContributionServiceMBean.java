@@ -40,7 +40,7 @@ package org.fabric3.management.contribution;
 import java.net.URI;
 import java.util.Set;
 
-import org.fabric3.api.annotation.Management;
+import org.fabric3.api.annotation.management.Management;
 
 /**
  * MBean for managing contributions.

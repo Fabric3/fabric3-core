@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation;
+package org.fabric3.api.annotation.persistence;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
