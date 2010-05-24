@@ -51,7 +51,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionInUseException;

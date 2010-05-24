@@ -44,7 +44,7 @@ import org.apache.mina.common.IoHandler;
 import org.apache.mina.common.IoSession;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.transport.ftp.server.monitor.FtpMonitor;
 import org.fabric3.transport.ftp.server.protocol.DefaultRequest;
 import org.fabric3.transport.ftp.server.protocol.DefaultResponse;

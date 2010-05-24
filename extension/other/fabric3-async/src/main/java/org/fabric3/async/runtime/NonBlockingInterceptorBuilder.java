@@ -39,7 +39,7 @@ package org.fabric3.async.runtime;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.builder.BuilderException;

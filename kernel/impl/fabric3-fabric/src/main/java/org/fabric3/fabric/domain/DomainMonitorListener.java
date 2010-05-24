@@ -39,7 +39,7 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.domain.DomainListener;
 
 /**

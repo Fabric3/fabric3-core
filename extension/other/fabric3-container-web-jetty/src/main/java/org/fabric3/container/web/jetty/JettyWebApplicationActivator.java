@@ -52,7 +52,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.container.web.spi.InjectingSessionListener;

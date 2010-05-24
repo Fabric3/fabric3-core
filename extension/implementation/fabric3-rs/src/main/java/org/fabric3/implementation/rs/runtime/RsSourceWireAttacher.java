@@ -49,7 +49,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.implementation.rs.provision.RsSourceDefinition;
 import org.fabric3.implementation.rs.runtime.rs.RsWebApplication;
 import org.fabric3.spi.ObjectFactory;

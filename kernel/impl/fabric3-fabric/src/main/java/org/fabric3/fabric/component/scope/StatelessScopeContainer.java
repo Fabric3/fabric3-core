@@ -46,7 +46,7 @@ package org.fabric3.fabric.component.scope;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.component.AtomicComponent;

@@ -54,7 +54,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBEAN;
 import org.fabric3.spi.resource.DataSourceRegistry;
 

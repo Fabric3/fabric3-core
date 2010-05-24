@@ -52,7 +52,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.spi.FederatedDeployerListener;

@@ -43,7 +43,7 @@ import java.net.URLDecoder;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSourceDefinition;
 import org.fabric3.transport.ftp.spi.FtpLetContainer;
 import org.fabric3.spi.ObjectFactory;

@@ -55,7 +55,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;

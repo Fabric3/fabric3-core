@@ -60,7 +60,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;

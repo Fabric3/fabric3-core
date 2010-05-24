@@ -47,11 +47,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.net.URI;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.monitor.model.MonitorResource;

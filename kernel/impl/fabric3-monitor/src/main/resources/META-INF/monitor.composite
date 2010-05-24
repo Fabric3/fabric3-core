@@ -17,7 +17,7 @@
            name="MonitorComposite"
            autowire="true">
 
-    <component name="MonitorProcessor" f3-core:key="org.fabric3.api.annotation.Monitor">
+    <component name="MonitorProcessor" f3-core:key="org.fabric3.api.annotation.monitor.Monitor">
         <f3-impl:implementation.system class="org.fabric3.monitor.introspection.MonitorProcessor"/>
     </component>
 

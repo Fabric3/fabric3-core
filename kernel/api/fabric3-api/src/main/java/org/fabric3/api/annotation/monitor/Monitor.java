@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.api.annotation;
+package org.fabric3.api.annotation.monitor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

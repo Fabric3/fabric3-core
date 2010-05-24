@@ -52,7 +52,7 @@ import commonj.work.WorkManager;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.work.PausableWork;
 import org.fabric3.host.work.WorkScheduler;
 

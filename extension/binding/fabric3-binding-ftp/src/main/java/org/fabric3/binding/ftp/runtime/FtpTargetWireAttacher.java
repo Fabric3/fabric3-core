@@ -47,7 +47,7 @@ import java.util.List;
 import org.apache.commons.net.SocketFactory;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.binding.ftp.provision.FtpTargetDefinition;
 import org.fabric3.spi.ObjectFactory;

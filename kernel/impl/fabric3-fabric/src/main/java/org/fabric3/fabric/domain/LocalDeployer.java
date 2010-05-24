@@ -48,7 +48,7 @@ import java.util.ListIterator;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;

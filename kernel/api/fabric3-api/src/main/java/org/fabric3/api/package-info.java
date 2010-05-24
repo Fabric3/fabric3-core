@@ -40,7 +40,7 @@
  *
  * To use this framework, application code should define a component-specific interface
  * defining the monitoring events that it wishes to send and mark a field, setter or
- * constructor with the {@link org.fabric3.api.annotation.Monitor @Monitor} annotation.
+ * constructor with the {@link Monitor @Monitor} annotation.
  * The framework will inject a implementation of the monitoring interface that dispatches
  * events to the underlying infrastructure.
  *
@@ -78,3 +78,5 @@
  * <h1></h1> 
  */
 package org.fabric3.api;
+
+import org.fabric3.api.annotation.monitor.Monitor;

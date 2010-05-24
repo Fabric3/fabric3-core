@@ -64,7 +64,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.Contribution;

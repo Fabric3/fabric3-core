@@ -42,7 +42,7 @@ import java.io.InputStream;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.transport.ftp.api.FtpLet;
 import org.fabric3.transport.ftp.server.data.DataConnection;
 import org.fabric3.transport.ftp.server.monitor.FtpMonitor;

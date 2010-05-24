@@ -53,7 +53,7 @@ import javax.jms.JMSException;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.runtime.host.JmsHost;
 import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;

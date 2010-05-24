@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServlet;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.host.ServletHost;

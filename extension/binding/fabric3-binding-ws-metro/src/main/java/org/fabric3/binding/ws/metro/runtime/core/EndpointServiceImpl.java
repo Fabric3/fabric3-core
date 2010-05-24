@@ -41,7 +41,7 @@ import com.sun.xml.wss.SecurityEnvironment;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.Monitor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.host.ServletHost;

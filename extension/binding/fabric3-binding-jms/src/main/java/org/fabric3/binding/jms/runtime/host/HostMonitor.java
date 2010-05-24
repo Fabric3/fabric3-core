@@ -40,7 +40,7 @@ package org.fabric3.binding.jms.runtime.host;
 
 import java.net.URI;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
 
 /**
  * Monitor for the JmsHost.
@@ -68,5 +68,5 @@ public interface HostMonitor {
     @Info
     void unRegisterListener(URI uri);
 
-    
+
 }
