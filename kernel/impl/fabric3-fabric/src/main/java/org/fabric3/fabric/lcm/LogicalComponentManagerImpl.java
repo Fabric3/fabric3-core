@@ -38,7 +38,6 @@
 package org.fabric3.fabric.lcm;
 
 import java.net.URI;
-import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
@@ -135,10 +134,6 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager, Log
             }
         }
         return currentComponent;
-    }
-
-    public Collection<LogicalComponent<?>> getComponents() {
-        return domain.getComponents();
     }
 
     public LogicalCompositeComponent getRootComponent() {

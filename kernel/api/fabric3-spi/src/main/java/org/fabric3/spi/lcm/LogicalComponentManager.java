@@ -38,7 +38,6 @@
 package org.fabric3.spi.lcm;
 
 import java.net.URI;
-import java.util.Collection;
 
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -72,13 +71,5 @@ public interface LogicalComponentManager {
      * @return the component uniquely identified by an id, or null
      */
     LogicalComponent<?> getComponent(URI uri);
-
-    /**
-     * Gets the top level logical components in the domain (the immediate children of the domain component).
-     *
-     * @return the top level components in the domain
-     */
-    Collection<LogicalComponent<?>> getComponents();
-
 
 }
