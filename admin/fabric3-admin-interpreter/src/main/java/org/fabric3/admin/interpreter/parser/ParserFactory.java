@@ -42,6 +42,7 @@ import java.util.Map;
 
 import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.CommandParser;
+import org.fabric3.admin.interpreter.Interpreter;
 import org.fabric3.admin.interpreter.Settings;
 
 /**
@@ -55,7 +56,7 @@ public class ParserFactory {
     /**
      * Initializes the command parsers
      */
-    public static Map<String, CommandParser> createParsers(DomainController controller, Settings settings) {
+    public static Map<String, CommandParser> createParsers(DomainController controller, Interpreter interpreter, Settings settings) {
         Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
         AuthCommandParser authenticateParser = new AuthCommandParser(controller);
         parsers.put("au", authenticateParser);
@@ -85,6 +86,10 @@ public class ParserFactory {
         ProfileCommandParser profileCommandParser = new ProfileCommandParser(controller);
         parsers.put("profile", profileCommandParser);
         parsers.put("pf", profileCommandParser);
+        RunCommandParser runCommandParser = new RunCommandParser(interpreter);
+        parsers.put("run", runCommandParser);
+        parsers.put("r", runCommandParser);
+
         return parsers;
     }
 

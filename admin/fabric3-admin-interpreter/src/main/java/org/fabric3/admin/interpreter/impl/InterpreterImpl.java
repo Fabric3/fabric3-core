@@ -74,7 +74,8 @@ public class InterpreterImpl implements Interpreter {
             + "   status (st) \n"
             + "   undeploy (ude) \n"
             + "   uninstall (uin) \n"
-            + "   use \n";
+            + "   use \n"
+            + "   run (r) \n";
 
     private DomainController controller;
     private Settings settings;
@@ -87,7 +88,7 @@ public class InterpreterImpl implements Interpreter {
     public InterpreterImpl(DomainController controller, Settings settings) {
         this.controller = controller;
         this.settings = settings;
-        parsers = ParserFactory.createParsers(controller, settings);
+        parsers = ParserFactory.createParsers(controller, this, settings);
         setDefaultConfiguration();
     }
 
