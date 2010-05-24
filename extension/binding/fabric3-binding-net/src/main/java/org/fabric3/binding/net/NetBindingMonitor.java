@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.net;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
@@ -68,10 +68,10 @@ public interface NetBindingMonitor {
     @Info
     void tcpEndpointRemoved(String ipAddress, int tcpPort, String path);
 
-    @Error
+    @Severe
     void error(Throwable e);
 
-    @Error
+    @Severe
     void errorMessage(String msg);
 
 }

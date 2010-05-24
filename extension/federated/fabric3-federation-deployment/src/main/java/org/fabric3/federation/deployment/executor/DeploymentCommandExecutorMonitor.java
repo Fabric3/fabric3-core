@@ -61,7 +61,7 @@ public interface DeploymentCommandExecutorMonitor {
      *
      * @param e the error
      */
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(Throwable e);
 
 }

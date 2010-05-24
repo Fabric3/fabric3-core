@@ -41,6 +41,7 @@ package org.fabric3.binding.jms.runtime.host;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitor for the JmsHost.
@@ -49,7 +50,7 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface HostMonitor {
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(String message, Throwable e);
 
     /**

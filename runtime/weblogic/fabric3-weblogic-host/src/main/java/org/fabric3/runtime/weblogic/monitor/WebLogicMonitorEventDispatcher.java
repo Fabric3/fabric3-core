@@ -104,7 +104,7 @@ public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
     }
 
     private Level convert(MonitorLevel level) {
-        if (MonitorLevel.ERROR == level) {
+        if (MonitorLevel.SEVERE == level) {
             return Level.SEVERE;
         } else if (MonitorLevel.WARNING == level) {
             return Level.WARNING;

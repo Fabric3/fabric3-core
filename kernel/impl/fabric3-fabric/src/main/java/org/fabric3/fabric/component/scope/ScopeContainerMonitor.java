@@ -45,7 +45,7 @@ package org.fabric3.fabric.component.scope;
 
 import java.net.URI;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.spi.component.InstanceDestructionException;
 
 /**
@@ -55,10 +55,10 @@ import org.fabric3.spi.component.InstanceDestructionException;
  */
 public interface ScopeContainerMonitor {
 
-    @Error
+    @Severe
     void eagerInitializationError(URI componentId, Exception e);
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void destructionError(InstanceDestructionException e);
 
 }

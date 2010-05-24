@@ -52,7 +52,7 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface ContributionServiceMonitor {
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(String message, Throwable e);
 
     @Info

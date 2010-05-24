@@ -37,7 +37,7 @@
 */
 package org.fabric3.transport.ftp.server.monitor;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.*;
 
 /**
@@ -71,7 +71,7 @@ public interface FtpMonitor {
      * @param throwable Exception that occured.
      * @param user      User whose command caused the exception.
      */
-    @Error
+    @Severe
     void onException(Throwable throwable, String user);
 
     /**
@@ -79,7 +79,7 @@ public interface FtpMonitor {
      *
      * @param user User whose command caused the exception.
      */
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void uploadError(String user);
 
     /**
@@ -87,7 +87,7 @@ public interface FtpMonitor {
      *
      * @param resource the resource address.
      */
-    @Error
+    @Severe
     void noFtpLetRegistered(String resource);
 
     /**
@@ -95,7 +95,7 @@ public interface FtpMonitor {
      *
      * @param user the user.
      */
-    @Error
+    @Severe
     void connectionTimedOut(String user);
 
 }

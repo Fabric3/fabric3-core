@@ -241,7 +241,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     public interface ServerMonitor {
-        @org.fabric3.api.annotation.monitor.Error
+        @Severe
         void runError(Exception e);
 
         @Info

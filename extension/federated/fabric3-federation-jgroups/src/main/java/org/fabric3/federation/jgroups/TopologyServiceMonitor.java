@@ -45,7 +45,7 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface TopologyServiceMonitor {
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(String message, Throwable t);
 
     @Info

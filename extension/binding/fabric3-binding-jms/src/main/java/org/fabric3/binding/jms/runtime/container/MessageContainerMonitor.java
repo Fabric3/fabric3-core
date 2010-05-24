@@ -38,17 +38,17 @@
 package org.fabric3.binding.jms.runtime.container;
 
 import org.fabric3.api.annotation.monitor.Debug;
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface MessageContainerMonitor {
 
-    @Error
+    @Severe
     void errorMessage(String message);
 
-    @Error
+    @Severe
     void error(String message, Throwable e);
 
     @Debug

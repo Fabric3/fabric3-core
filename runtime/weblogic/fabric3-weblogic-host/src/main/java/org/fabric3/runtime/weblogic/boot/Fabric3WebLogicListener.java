@@ -249,7 +249,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     public interface ServerMonitor {
-        @org.fabric3.api.annotation.monitor.Error
+        @Severe
         void runError(Exception e);
 
         @Info

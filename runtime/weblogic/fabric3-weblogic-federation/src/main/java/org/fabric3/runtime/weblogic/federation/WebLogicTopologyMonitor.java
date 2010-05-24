@@ -37,7 +37,7 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.*;
 
 /**
@@ -47,10 +47,10 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface WebLogicTopologyMonitor {
 
-    @Error
+    @Severe
     void error(Throwable error);
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void errorMessage(String message, Throwable error);
 
     @Info

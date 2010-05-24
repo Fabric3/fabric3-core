@@ -64,7 +64,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
@@ -470,7 +470,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
     }
 
     public interface MojoMonitor {
-        @Error
+        @Severe
         void runError(Exception e);
     }
 

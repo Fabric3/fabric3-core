@@ -69,7 +69,7 @@ public class LogbackDispatcherTestCase extends TestCase {
         Element element = doc.getDocumentElement();
         dispatcher.configure(element);
         dispatcher.start();
-        dispatcher.onEvent(new MonitorEventImpl("foo", "foo", MonitorLevel.ERROR, 0, "foo", "this is a test"));
+        dispatcher.onEvent(new MonitorEventImpl("foo", "foo", MonitorLevel.SEVERE, 0, "foo", "this is a test"));
         assertEquals("test-appender: this is a test", TestAppender.getStream().toString());
         dispatcher.stop();
     }

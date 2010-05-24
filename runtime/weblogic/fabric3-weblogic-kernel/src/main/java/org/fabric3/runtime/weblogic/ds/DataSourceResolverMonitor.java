@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface DataSourceResolverMonitor {
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(Exception e);
     
     @Warning

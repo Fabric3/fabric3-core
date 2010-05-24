@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution.scanner.impl;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.*;
 
 /**
@@ -84,7 +84,7 @@ public interface ScannerMonitor {
      *
      * @param e the error
      */
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(Throwable e);
 
     /**
@@ -93,7 +93,7 @@ public interface ScannerMonitor {
      * @param filename the file being removed
      * @param e        the error
      */
-    @Error
+    @Severe
     void removalError(String filename, Throwable e);
 
     /**
@@ -101,7 +101,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Error
+    @Severe
     void contributionErrors(String description);
 
     /**
@@ -109,7 +109,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Error
+    @Severe
     void deploymentErrors(String description);
 
 }

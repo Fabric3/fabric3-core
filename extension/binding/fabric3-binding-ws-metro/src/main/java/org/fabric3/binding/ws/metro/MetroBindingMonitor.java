@@ -57,7 +57,7 @@ public interface MetroBindingMonitor {
     @Info
     void wsdlSkipped(URL location);
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void error(Throwable e);
 
 

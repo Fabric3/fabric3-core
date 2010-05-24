@@ -65,7 +65,7 @@ public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
     public void onEvent(MonitorEvent event) {
         MonitorLevel level = event.getMonitorLevel();
         String message = event.getMessage();
-        if (MonitorLevel.ERROR == level) {
+        if (MonitorLevel.SEVERE == level) {
             if (log.isErrorEnabled()) {
                 Throwable e = null;
                 for (Object o : event.getData()) {

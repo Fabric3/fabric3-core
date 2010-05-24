@@ -43,6 +43,8 @@
  */
 package org.fabric3.binding.jms.runtime;
 
+import org.fabric3.api.annotation.monitor.Severe;
+
 
 /**
  * Monitor interface for JmsHost.
@@ -56,7 +58,7 @@ public interface JmsMonitor {
      *
      * @param e the reported exception
      */
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void jmsListenerError(Throwable e);
 
 

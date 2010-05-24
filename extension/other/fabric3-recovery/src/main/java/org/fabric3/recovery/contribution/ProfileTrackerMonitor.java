@@ -37,13 +37,13 @@
 */
 package org.fabric3.recovery.contribution;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ProfileTrackerMonitor {
 
-    @Error
+    @Severe
     void error(Exception e);
 }

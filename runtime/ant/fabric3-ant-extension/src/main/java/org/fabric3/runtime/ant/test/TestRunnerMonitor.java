@@ -53,7 +53,7 @@ public interface TestRunnerMonitor {
     @Info
     void passed(String name, long time);
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void failed(String name, Throwable e);
 
     @Info

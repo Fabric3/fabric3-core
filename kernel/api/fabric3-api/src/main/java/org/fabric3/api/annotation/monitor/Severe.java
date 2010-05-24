@@ -47,9 +47,9 @@ import java.lang.annotation.Target;
  *
  * @version $Rev$ $Date$
  */
-@MonitorEventType(MonitorLevel.ERROR)
+@MonitorEventType(MonitorLevel.SEVERE)
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface Error {
+public @interface Severe {
 
 }

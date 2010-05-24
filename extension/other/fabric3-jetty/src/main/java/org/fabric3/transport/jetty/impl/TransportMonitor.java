@@ -67,7 +67,7 @@ public interface TransportMonitor {
     @Warning
     void warn(String msg, Object... args);
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void exception(String msg, Throwable args);
 
     /**

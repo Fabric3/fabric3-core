@@ -45,7 +45,7 @@ import java.lang.reflect.Method;
  */
 public enum MonitorLevel {
 
-    ERROR(4),
+    SEVERE(4),
 
     WARNING(3),
 

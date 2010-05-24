@@ -53,7 +53,7 @@ public class LevelConverter {
     }
 
     public static ch.qos.logback.classic.Level getLogbackLevel(MonitorLevel level) {
-        if (MonitorLevel.ERROR == level) {
+        if (MonitorLevel.SEVERE == level) {
             return Level.ERROR;
         } else if (MonitorLevel.WARNING == level) {
             return Level.WARN;

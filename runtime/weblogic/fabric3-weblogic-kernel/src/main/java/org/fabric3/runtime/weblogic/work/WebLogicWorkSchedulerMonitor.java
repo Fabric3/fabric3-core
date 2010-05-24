@@ -37,11 +37,13 @@
 */
 package org.fabric3.runtime.weblogic.work;
 
+import org.fabric3.api.annotation.monitor.Severe;
+
 /**
  * @version $Rev$ $Date$
  */
 public interface WebLogicWorkSchedulerMonitor {
 
-    @org.fabric3.api.annotation.monitor.Error
+    @Severe
     void scheduleError(Throwable e);
 }

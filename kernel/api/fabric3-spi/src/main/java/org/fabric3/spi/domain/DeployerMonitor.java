@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.api.annotation.monitor.Error;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Debug;
 
 /**
@@ -62,10 +62,10 @@ public interface DeployerMonitor {
     @Debug
     void rollback(String zone);
 
-    @Error
+    @Severe
     void deploymentError(String runtime, Throwable e);
 
-    @Error
+    @Severe
     void rollbackError(String message, Throwable e);
 
 }

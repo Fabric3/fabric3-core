@@ -70,7 +70,7 @@ public class AntMonitorEventDispatcher implements MonitorEventDispatcher {
         int antLevel = Project.MSG_DEBUG;
         MonitorLevel level = event.getMonitorLevel();
         String message = event.getMessage();
-        if (MonitorLevel.ERROR == level) {
+        if (MonitorLevel.SEVERE == level) {
             antLevel = Project.MSG_ERR;
         } else if (MonitorLevel.WARNING == level) {
             antLevel = Project.MSG_WARN;
