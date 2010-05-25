@@ -96,7 +96,7 @@ public class WebappHostInfoImpl implements WebappHostInfo {
     }
 
     public File getRepositoryDirectory() {
-        return null;
+        return baseDir;
     }
 
     public RuntimeMode getRuntimeMode() {

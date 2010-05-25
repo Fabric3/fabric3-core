@@ -77,13 +77,13 @@ public class RepositoryImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        File repository = new File("repository");
+        FileHelper.forceMkdir(new File(repository, "cache"));
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getBaseDir()).andReturn(null).atLeastOnce();
+        EasyMock.expect(info.getRepositoryDirectory()).andReturn(repository).atLeastOnce();
         EasyMock.expect(info.getTempDir()).andReturn(null).atLeastOnce();
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();
         EasyMock.replay(info);
-        File repository = new File("repository");
-        FileHelper.forceMkdir(new File(repository, "cache"));
         this.repository = new RepositoryImpl(info);
     }
 

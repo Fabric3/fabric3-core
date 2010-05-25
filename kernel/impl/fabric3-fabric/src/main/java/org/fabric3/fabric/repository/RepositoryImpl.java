@@ -65,13 +65,12 @@ public class RepositoryImpl implements Repository {
     /**
      * Constructor.
      *
-     * @param hostInfo the host info for the runtime
+     * @param info the host info for the runtime
      * @throws IOException if an error occurs initializing the repository
      */
-    public RepositoryImpl(HostInfo hostInfo) throws IOException {
+    public RepositoryImpl(HostInfo info) throws IOException {
         archiveUriToUrl = new ConcurrentHashMap<URI, URL>();
-        File baseDir = hostInfo.getBaseDir();
-        repositoryDir = new File(baseDir, "repository");
+        repositoryDir = info.getRepositoryDirectory();
     }
 
     public void init() throws RepositoryException {
