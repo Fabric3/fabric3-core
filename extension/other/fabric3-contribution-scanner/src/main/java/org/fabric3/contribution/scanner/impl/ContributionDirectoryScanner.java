@@ -121,7 +121,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         this.contributionService = contributionService;
         this.domain = domain;
         this.eventService = eventService;
-        path = new File(hostInfo.getBaseDir(), "deploy");
+        path = hostInfo.getDeployDirectory();
         this.monitor = monitor;
     }
 

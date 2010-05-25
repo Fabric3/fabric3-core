@@ -90,6 +90,10 @@ public class MavenHostInfoImpl implements MavenHostInfo {
         return null;
     }
 
+    public File getDeployDirectory() {
+        return null;
+    }
+
     public boolean supportsClassLoaderIsolation() {
         return true;
     }

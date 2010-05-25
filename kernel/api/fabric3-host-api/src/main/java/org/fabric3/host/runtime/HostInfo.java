@@ -115,6 +115,13 @@ public interface HostInfo {
     File getRepositoryDirectory();
 
     /**
+     * Returns the runtime deploy directory.
+     *
+     * @return the runtime deploy directory or null if the runtime does not support file system-based deployment
+     */
+    File getDeployDirectory();
+
+    /**
      * True if the host environment supports classloader isolation.
      *
      * @return true if the host environment supports classloader isolation

@@ -62,6 +62,7 @@ public class DefaultHostInfo implements HostInfo {
     private final File configDirectory;
     private final File tempDirectory;
     private File dataDirectory;
+    private File deployDirectory;
 
     /**
      * Constructor.
@@ -74,6 +75,7 @@ public class DefaultHostInfo implements HostInfo {
      * @param modeConfigDir       directory containing the standalone boot mode configuration
      * @param tempDirectory       the directory for writing temporary files
      * @param dataDirectory       the directory for writing persistent data that survives restarts
+     * @param deployDirectory     the directory for file system-based deployments
      */
     public DefaultHostInfo(RuntimeMode runtimeMode,
                            URI domain,
@@ -82,7 +84,8 @@ public class DefaultHostInfo implements HostInfo {
                            File configDir,
                            File modeConfigDir,
                            File tempDirectory,
-                           File dataDirectory) {
+                           File dataDirectory,
+                           File deployDirectory) {
         this.runtimeMode = runtimeMode;
         this.domain = domain;
         this.baseDir = baseDir;
@@ -91,6 +94,7 @@ public class DefaultHostInfo implements HostInfo {
         this.modeConfigDirectory = modeConfigDir;
         this.tempDirectory = tempDirectory;
         this.dataDirectory = dataDirectory;
+        this.deployDirectory = deployDirectory;
     }
 
     public RuntimeMode getRuntimeMode() {
@@ -123,6 +127,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public File getConfigDirectory() {
         return configDirectory;
+    }
+
+    public File getDeployDirectory() {
+        return deployDirectory;
     }
 
     public File getModeConfigDirectory() {

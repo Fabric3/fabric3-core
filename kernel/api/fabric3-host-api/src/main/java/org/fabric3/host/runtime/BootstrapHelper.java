@@ -165,7 +165,8 @@ public final class BootstrapHelper {
         File repositoryDir = getDirectory(baseDir, "repository");
         File tempDir = getDirectory(baseDir, "tmp");
         File dataDir = getDirectory(baseDir, "data");
-        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, tempDir, dataDir);
+        File deployDirectory = getDirectory(baseDir, "deploy");
+        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, tempDir, dataDir, deployDirectory);
     }
 
 }

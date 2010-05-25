@@ -99,6 +99,10 @@ public class WebappHostInfoImpl implements WebappHostInfo {
         return baseDir;
     }
 
+    public File getDeployDirectory() {
+        return null;
+    }
+
     public RuntimeMode getRuntimeMode() {
         return RuntimeMode.VM;
     }
