@@ -218,7 +218,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3ServerException, IOException {
-        File rootRuntimeDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+        File rootRuntimeDir;
+        if (params.directory != null) {
+            rootRuntimeDir = params.directory;
+        } else {
+            rootRuntimeDir = new File(installDirectory, "runtimes");
+        }
         File runtimeDir = new File(rootRuntimeDir, params.name);
         if (!runtimeDir.exists()) {
             if (params.clone != null) {
