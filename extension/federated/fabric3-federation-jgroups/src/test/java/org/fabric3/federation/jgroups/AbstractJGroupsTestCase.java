@@ -72,7 +72,6 @@ public class AbstractJGroupsTestCase extends TestCase {
 
     protected JGroupsZoneTopologyService createAndJoin(String name, String zoneName) throws ChannelException {
         JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
-        service.setRuntimeId(name);
         service.setZoneName(zoneName);
         service.setSynchronize(false);
         service.init();

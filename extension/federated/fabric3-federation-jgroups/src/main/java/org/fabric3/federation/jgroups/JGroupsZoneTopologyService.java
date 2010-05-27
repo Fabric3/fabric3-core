@@ -247,7 +247,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     protected String getRuntimeName() {
-        return domainName + ":participant:" + zoneName + ":" + runtimeId;
+        return domainName + ":participant:" + zoneName + ":" + info.getRuntimeId();
     }
 
     private Response send(Address address, Command command, long timeout) throws MessageException {

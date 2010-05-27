@@ -107,7 +107,6 @@ public class RuntimeSyncTestCase extends AbstractJGroupsTestCase {
         TopologyServiceMonitor monitor = EasyMock.createNiceMock(TopologyServiceMonitor.class);
         EasyMock.replay(monitor);
         JGroupsZoneTopologyService service = new JGroupsZoneTopologyService(info, executorRegistry, eventService, executor, helper, monitor);
-        service.setRuntimeId(name);
         service.init();
         joinDomain(service);
         return service;

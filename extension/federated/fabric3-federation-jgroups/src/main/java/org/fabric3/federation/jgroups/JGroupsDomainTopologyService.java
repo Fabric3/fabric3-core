@@ -260,7 +260,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     protected String getRuntimeName() {
-        return domainName + ":controller:" + runtimeId;
+        return domainName + ":controller:" + info.getRuntimeId();
     }
 
     /**

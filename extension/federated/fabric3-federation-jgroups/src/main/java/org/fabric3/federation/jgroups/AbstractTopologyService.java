@@ -37,7 +37,6 @@
 */
 package org.fabric3.federation.jgroups;
 
-import java.util.UUID;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Channel;
@@ -55,8 +54,8 @@ import org.osoa.sca.annotations.Property;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -73,7 +72,6 @@ import org.fabric3.spi.federation.RemoteSystemException;
  */
 public abstract class AbstractTopologyService {
     protected String runtimeName;
-    protected String runtimeId;
     protected String domainName;
 
     protected HostInfo info;
@@ -110,11 +108,6 @@ public abstract class AbstractTopologyService {
     }
 
     @Property(required = false)
-    public void setRuntimeId(String runtimeId) {
-        this.runtimeId = runtimeId;
-    }
-
-    @Property(required = false)
     public void setPrintlocalAddress(boolean printlocalAddress) {
         this.printlocalAddress = printlocalAddress;
     }
@@ -137,9 +130,6 @@ public abstract class AbstractTopologyService {
         }
         LogFactory.getLog(JChannel.class).setLevel(logLevel);
         domainName = info.getDomain().getAuthority();
-        if (runtimeId == null) {
-            runtimeId = UUID.randomUUID().toString();
-        }
         runtimeName = getRuntimeName();
 
         // setup runtime notifications
