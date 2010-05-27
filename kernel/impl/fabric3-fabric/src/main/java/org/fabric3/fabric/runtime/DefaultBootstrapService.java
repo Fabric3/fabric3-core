@@ -64,6 +64,7 @@ import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.monitor.runtime.LogbackDispatcher;
 
 /**
@@ -95,6 +96,10 @@ public class DefaultBootstrapService implements BootstrapService {
 
     public URI parseDomainName(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseDomainName(systemConfig);
+    }
+
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseRuntimeMode(systemConfig);
     }
 
     public PortRange parseJmxPort(Document systemConfig) throws ParseException {

@@ -63,6 +63,7 @@ import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.PortRange;
@@ -178,6 +179,28 @@ public class SystemConfigLoader {
     }
 
     /**
+     * Returns the configured runtime mode. If not configured, {@link RuntimeMode#VM} will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the domain name
+     * @throws ParseException if there is an error parsing the domain name
+     */
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("runtime");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String name = node.getAttribute("mode");
+            if ("controller".equalsIgnoreCase(name)) {
+                return RuntimeMode.CONTROLLER;
+            } else if ("participant".equalsIgnoreCase(name)) {
+                return RuntimeMode.PARTICIPANT;
+            }
+        }
+        return RuntimeMode.VM;
+    }
+
+    /**
      * Returns the configured JMX port range. If not configured, the default range (1199) will be returned.
      *
      * @param systemConfig the system configuration
@@ -207,6 +230,8 @@ public class SystemConfigLoader {
                     throw new ParseException("Invalid JMX port specified in system configuration: " + ports);
                 }
                 return new PortRange(minPort, maxPort);
+            } else {
+                return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
             }
         } else if (nodes.getLength() == 0) {
             return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);

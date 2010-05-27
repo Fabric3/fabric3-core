@@ -50,6 +50,7 @@ import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.PortRange;
 import org.fabric3.host.stream.InputStreamSource;
 
@@ -61,7 +62,7 @@ import org.fabric3.host.stream.InputStreamSource;
 public class SystemConfigLoaderTestCase extends TestCase {
 
     private static final String CONFIG = "<config>" +
-            "<runtime domain='mydomain' jmxPort='1111'/>" +
+            "<runtime domain='mydomain' mode='controller' jmxPort='1111'/>" +
             "   <web.server>" +
             "       <http port='8181'/>" +
             "   </web.server>" +
@@ -108,6 +109,14 @@ public class SystemConfigLoaderTestCase extends TestCase {
         URI uri = loader.parseDomainName(systemConfig);
         URI result = URI.create("fabric3://mydomain");
         assertEquals(result, uri);
+    }
+
+    public void testParseRuntimeMode() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        assertEquals(RuntimeMode.CONTROLLER, loader.parseRuntimeMode(systemConfig));
     }
 
     public void testParseDefaultDomainName() throws Exception {

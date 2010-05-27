@@ -115,7 +115,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
      */
     public void start(Params params) throws Fabric3ServerException {
         try {
-            RuntimeMode mode = params.mode;
             //  calculate config directories based on the mode the runtime is booted in
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
             File extensionsDir = new File(installDirectory, "extensions");
@@ -137,6 +136,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
+
+            RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
 
             // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(params.name, mode, domainName, runtimeDir, configDir, extensionsDir);
@@ -225,7 +226,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 File configDir = BootstrapHelper.getDirectory(templateDir, "config");
                 if (!configDir.exists()) {
                     throw new Fabric3ServerException("Unable to create runtime directory: " + runtimeDir);
-                }                
+                }
                 BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
             } else {
                 throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
@@ -253,34 +254,24 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 params.directory = new File(arg.substring(4));
             } else if (arg.startsWith("clone:")) {
                 params.clone = arg.substring(6);
+            } else if (!arg.contains(":")) {
+                // assume this is the runtime name
+                params.name = arg;
             } else {
-                params.mode = getRuntimeMode(arg);
+                throw new IllegalArgumentException("Unknown argument: " + arg);
             }
         }
         if (params.name == null) {
-            // default to the mode name
-            params.name = params.mode.toString().toLowerCase();
+            // default to VM
+            params.name = "vm";
         }
         return params;
-    }
-
-    private static RuntimeMode getRuntimeMode(String arg) {
-        RuntimeMode runtimeMode = RuntimeMode.VM;
-        if ("controller".equals(arg)) {
-            runtimeMode = RuntimeMode.CONTROLLER;
-        } else if ("participant".equals(arg)) {
-            runtimeMode = RuntimeMode.PARTICIPANT;
-        } else if (!"vm".equals(arg)) {
-            throw new IllegalArgumentException("Invalid runtime mode: " + arg + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
-        }
-        return runtimeMode;
     }
 
     private static class Params {
         String name;
         File directory;
         String clone;
-        RuntimeMode mode = RuntimeMode.VM;
     }
 
 

@@ -51,6 +51,7 @@ import org.w3c.dom.Document;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.RuntimeMode;
 
 /**
  * Provides operations to bootstrap a runtime.
@@ -93,6 +94,15 @@ public interface BootstrapService {
      */
     URI parseDomainName(Document systemConfig) throws ParseException;
 
+    /**
+     * Returns the configured runtime mode. If not configured, {@link RuntimeMode#VM} will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the domain name
+     * @throws ParseException if there is an error parsing the domain name
+     */
+    public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException;
+    
     /**
      * Returns the configured JMX port range. If not configured, the default range (1199) will be returned.
      *
