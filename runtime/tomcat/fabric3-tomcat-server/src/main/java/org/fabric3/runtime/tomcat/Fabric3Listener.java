@@ -64,6 +64,8 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
@@ -76,8 +78,6 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
 import org.fabric3.host.util.FileHelper;
 
 /**
@@ -108,12 +108,10 @@ public class Fabric3Listener implements LifecycleListener {
             File installDirectory = new File(BootstrapHelper.getInstallDirectory(getClass()), "fabric3");
             File extensionsDir = new File(installDirectory, "extensions");
 
-            //  calculate config directories based on the mode the runtime is booted in
-            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
-            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
-            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
-            // only support single VM mode
-            File modeDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
+            //  calculate config directories based on the mode the runtime is booted in - currently only VM mode is supported
+            File rootRuntimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File runtimeDir = BootstrapHelper.getDirectory(rootRuntimesDir, "vm");
+            File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
 
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
@@ -127,12 +125,12 @@ public class Fabric3Listener implements LifecycleListener {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, defaultRuntimeDir, configDir, modeDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo("vm", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -148,7 +146,7 @@ public class Fabric3Listener implements LifecycleListener {
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 

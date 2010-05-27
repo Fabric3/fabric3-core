@@ -44,7 +44,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.management.JMException;
 import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
@@ -53,7 +55,8 @@ import javax.servlet.ServletContextListener;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Names;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.RuntimeMode;
@@ -72,6 +75,7 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
+import org.fabric3.runtime.weblogic.api.Constants;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcherFactory;
@@ -136,11 +140,23 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             //  calculate config directories based on the mode the runtime is booted in
-            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
-            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
-            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+            String runtimeId;
+            String runtimeDirName;
+            if (RuntimeMode.CONTROLLER == runtimeMode) {
+                runtimeId = "controller";
+                runtimeDirName = runtimeId;
+            } else if (RuntimeMode.PARTICIPANT == runtimeMode) {
+                runtimeId = getRuntimeId(mBeanServer);
+                runtimeDirName = "participant";
+            } else {
+                runtimeId = getRuntimeId(mBeanServer);
+                runtimeDirName = "vm";
+            }
+            File rootRuntimeDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File runtimeDir = new File(rootRuntimeDir, runtimeDirName);
 
-            File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
+            File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
+
             File extensionsDir = new File(installDirectory, "extensions");
 
             // create the classloaders for booting the runtime
@@ -158,12 +174,12 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, defaultRuntimeDir, configDir, modeConfigDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeId, runtimeMode, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -178,7 +194,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             Map<String, String> exportedPackages = getExportedPackages();
 
-            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
@@ -250,6 +266,15 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     private MBeanServer getMBeanServer() throws NamingException {
         InitialContext ctx = new InitialContext();
         return (MBeanServer) ctx.lookup("java:comp/env/jmx/runtime");
+    }
+
+    public String getRuntimeId(MBeanServer mbServer) throws JMException {
+        Object current = Constants.WLS_RUNTIME_SERVICE_MBEAN;
+        String[] path = {"ServerRuntime", "Name"};
+        for (String token : path) {
+            current = mbServer.getAttribute((ObjectName) current, token);
+        }
+        return (String) current;
     }
 
     public interface ServerMonitor {

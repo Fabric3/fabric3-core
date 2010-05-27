@@ -140,11 +140,10 @@ public class Fabric3Task extends Task {
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Task.class);
 
             //  calculate config directories based on the mode the runtime is booted in
-            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
-            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
-            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+            File rootRuntimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File runtimeDir = BootstrapHelper.getDirectory(rootRuntimesDir, "vm");
+            File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
 
-            File modeDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
             File extensionsDir = new File(installDirectory, "extensions");
 
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
@@ -160,12 +159,12 @@ public class Fabric3Task extends Task {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, defaultRuntimeDir, configDir, modeDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo("ant", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir);
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
@@ -180,7 +179,7 @@ public class Fabric3Task extends Task {
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
 
-            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 

@@ -53,7 +53,6 @@ import org.fabric3.host.RuntimeMode;
  * @version $Rev$ $Date$
  */
 public class WebappHostInfoImpl implements WebappHostInfo {
-
     private final ServletContext servletContext;
     private final URI domain;
     private final File baseDir;
@@ -64,6 +63,10 @@ public class WebappHostInfoImpl implements WebappHostInfo {
         this.domain = domain;
         this.baseDir = baseDir;
         this.tempDirectory = tempDirectory;
+    }
+
+    public String getRuntimeId() {
+        return "webapp";
     }
 
     public ServletContext getServletContext() {
@@ -88,10 +91,6 @@ public class WebappHostInfoImpl implements WebappHostInfo {
     }
 
     public File getConfigDirectory() {
-        return null;
-    }
-
-    public File getModeConfigDirectory() {
         return null;
     }
 

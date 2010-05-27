@@ -65,6 +65,10 @@ public class MavenHostInfoImpl implements MavenHostInfo {
         this.tempDir = tempDir;
     }
 
+    public String getRuntimeId() {
+        return "maven";
+    }
+
     public File getBaseDir() {
         return null;
     }
@@ -79,10 +83,6 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     }
 
     public File getConfigDirectory() {
-        return null;
-    }
-
-    public File getModeConfigDirectory() {
         return null;
     }
 

@@ -122,7 +122,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             File runtimeDir = getRuntimeDirectory(params, installDirectory);
 
             File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
-            File modeConfigDir = BootstrapHelper.getDirectory(configDir, mode.toString().toLowerCase());
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
@@ -135,12 +134,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(mode, domainName, runtimeDir, configDir, modeConfigDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(params.name, mode, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -158,7 +157,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
+            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
@@ -176,8 +175,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             coordinator.start();
 
             // register the runtime with the MBean server
-            ObjectName name = new ObjectName(RUNTIME_MBEAN);
-            mbServer.registerMBean(this, name);
+            ObjectName objectName = new ObjectName(RUNTIME_MBEAN);
+            mbServer.registerMBean(this, objectName);
 
             agent.start();
             // create the shutdown daemon
@@ -222,11 +221,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
         File runtimeDir = new File(rootRuntimeDir, params.name);
         if (!runtimeDir.exists()) {
             if (params.clone != null) {
-                File defaultRuntimeDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
-                File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+                File templateDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
+                File configDir = BootstrapHelper.getDirectory(templateDir, "config");
                 if (!configDir.exists()) {
                     throw new Fabric3ServerException("Unable to create runtime directory: " + runtimeDir);
-                }
+                }                
                 BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
             } else {
                 throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
@@ -258,6 +257,10 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 params.mode = getRuntimeMode(arg);
             }
         }
+        if (params.name == null) {
+            // default to the mode name
+            params.name = params.mode.toString().toLowerCase();
+        }
         return params;
     }
 
@@ -274,7 +277,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     private static class Params {
-        String name = "default";
+        String name;
         File directory;
         String clone;
         RuntimeMode mode = RuntimeMode.VM;

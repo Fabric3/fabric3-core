@@ -169,6 +169,8 @@ public final class BootstrapHelper {
      * @throws IOException if the runtime directory cannot be created
      */
     public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) throws IOException {
+        FileHelper.copyDirectory(sourceConfigDir, targetDir);
+
         File targetConfigDir = new File(targetDir, "config");
         FileHelper.forceMkdir(targetConfigDir);
         FileHelper.copyDirectory(sourceConfigDir, targetConfigDir);
@@ -184,20 +186,20 @@ public final class BootstrapHelper {
     /**
      * Creates the HostInfo for a runtime.
      *
-     * @param runtimeMode    the runtime boot mode
-     * @param domainName     the name of the domain the runtime is part of
-     * @param runtimeDir the base directory containing non-sharable, read-write runtime artifacts
-     * @param configDir      the root configuration directory
-     * @param modeDir        the mode configuration directory
-     * @param extensionsDir  the sharable extensions directory
+     * @param runtimeId     the runtime id
+     * @param runtimeMode   the runtime boot mode
+     * @param domainName    the name of the domain the runtime is part of
+     * @param runtimeDir    the base directory containing non-sharable, read-write runtime artifacts
+     * @param configDir     the root configuration directory
+     * @param extensionsDir the sharable extensions directory      @return the host info
      * @return the host info
      * @throws IOException if there is an error accessing a host info directory
      */
-    public static HostInfo createHostInfo(RuntimeMode runtimeMode,
+    public static HostInfo createHostInfo(String runtimeId,
+                                          RuntimeMode runtimeMode,
                                           URI domainName,
                                           File runtimeDir,
                                           File configDir,
-                                          File modeDir,
                                           File extensionsDir) throws IOException {
         File repositoryDir = getDirectory(runtimeDir, "repository");
         File userRepositoryDir = new File(repositoryDir, "user");
@@ -205,14 +207,14 @@ public final class BootstrapHelper {
         File tempDir = getDirectory(runtimeDir, "tmp");
         File dataDir = getDirectory(runtimeDir, "data");
         File deployDir = new File(runtimeDir, "deploy");
-        return new DefaultHostInfo(runtimeMode,
+        return new DefaultHostInfo(runtimeId,
+                                   runtimeMode,
                                    domainName,
                                    runtimeDir,
                                    userRepositoryDir,
                                    extensionsDir,
                                    runtimeRepositoryDir,
                                    configDir,
-                                   modeDir,
                                    tempDir,
                                    dataDir,
                                    deployDir);

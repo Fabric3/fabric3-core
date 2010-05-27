@@ -54,10 +54,10 @@ import org.fabric3.host.RuntimeMode;
  * @version $Rev$ $Date$
  */
 public class DefaultHostInfo implements HostInfo {
+    private String runtimeId;
     private final RuntimeMode runtimeMode;
     private final URI domain;
     private final File baseDir;
-    private File modeConfigDirectory;
     private final File userDirectory;
     private File sharedDirectory;
     private File runtimeDirectory;
@@ -69,6 +69,7 @@ public class DefaultHostInfo implements HostInfo {
     /**
      * Constructor.
      *
+     * @param runtimeId        the runtime id
      * @param runtimeMode      the mode the runtime is started in
      * @param domain           the SCA domain this runtime belongs to
      * @param baseDir          directory containing the standalone installation
@@ -76,22 +77,22 @@ public class DefaultHostInfo implements HostInfo {
      * @param sharedDirectory  the shared extensions repository directory
      * @param runtimeDirectory the private extensions repository directory
      * @param configDir        directory containing the standalone configuration
-     * @param modeConfigDir    directory containing the standalone boot mode configuration
      * @param tempDirectory    the directory for writing temporary files
      * @param dataDirectory    the directory for writing persistent data that survives restarts
      * @param deployDirectory  the directory for file system-based deployments
      */
-    public DefaultHostInfo(RuntimeMode runtimeMode,
+    public DefaultHostInfo(String runtimeId,
+                           RuntimeMode runtimeMode,
                            URI domain,
                            File baseDir,
                            File userDirectory,
                            File sharedDirectory,
                            File runtimeDirectory,
                            File configDir,
-                           File modeConfigDir,
                            File tempDirectory,
                            File dataDirectory,
                            File deployDirectory) {
+        this.runtimeId = runtimeId;
         this.runtimeMode = runtimeMode;
         this.domain = domain;
         this.baseDir = baseDir;
@@ -99,10 +100,13 @@ public class DefaultHostInfo implements HostInfo {
         this.sharedDirectory = sharedDirectory;
         this.runtimeDirectory = runtimeDirectory;
         this.configDirectory = configDir;
-        this.modeConfigDirectory = modeConfigDir;
         this.tempDirectory = tempDirectory;
         this.dataDirectory = dataDirectory;
         this.deployDirectory = deployDirectory;
+    }
+
+    public String getRuntimeId() {
+        return runtimeId;
     }
 
     public RuntimeMode getRuntimeMode() {
@@ -149,7 +153,4 @@ public class DefaultHostInfo implements HostInfo {
         return deployDirectory;
     }
 
-    public File getModeConfigDirectory() {
-        return modeConfigDirectory;
-    }
 }

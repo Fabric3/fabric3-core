@@ -58,6 +58,13 @@ import org.fabric3.host.RuntimeMode;
 public interface HostInfo {
 
     /**
+     * Returns the unique id associated with this runtime. Ids survive restarts.
+     *
+     * @return the unique runtime id
+     */
+    String getRuntimeId();
+
+    /**
      * Returns the mode the runtime is booted in.
      *
      * @return the mode the runtime is booted in
@@ -100,14 +107,6 @@ public interface HostInfo {
     File getConfigDirectory();
 
     /**
-     * Returns the directory containing this runtime's boot-mode specific configuration.
-     *
-     * @return the directory containing this runtime's boot-mode specific configuration or null if the runtime does not support external
-     *         configuration
-     */
-    File getModeConfigDirectory();
-
-    /**
      * Returns the user repository directory.
      *
      * @return the user repository directory or null if the runtime provisions extensions from an external source
@@ -122,7 +121,7 @@ public interface HostInfo {
     File getRuntimeRepositoryDirectory();
 
     /**
-     * Returns the shared runtime extensions directory
+     * Returns the shared runtime extensions directory.
      *
      * @return the shared runtime extensions directory
      */
