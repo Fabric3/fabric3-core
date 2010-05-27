@@ -553,7 +553,8 @@ public class ContributionServiceImpl implements ContributionService {
             InputStream stream = null;
             try {
                 stream = contributionSource.getSource().openStream();
-                locationUrl = getRepository().store(contributionUri, stream);
+                boolean extension = contributionSource.isExtension();
+                locationUrl = getRepository().store(contributionUri, stream, extension);
                 source = new UrlSource(locationUrl);
             } catch (IOException e) {
                 throw new StoreException(e);

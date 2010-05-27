@@ -69,7 +69,7 @@ public class ExtensionHelper {
         for (URL extensionUrl : urls) {
             // it's ok to assume archives are uniquely named since most server environments have a single deploy directory
             URI uri = URI.create(new File(extensionUrl.getFile()).getName());
-            ContributionSource source = new FileContributionSource(uri, extensionUrl, -1);
+            ContributionSource source = new FileContributionSource(uri, extensionUrl, -1, true);
             sources.add(source);
         }
         return sources;

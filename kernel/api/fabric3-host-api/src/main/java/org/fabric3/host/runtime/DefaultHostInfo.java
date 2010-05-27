@@ -58,7 +58,9 @@ public class DefaultHostInfo implements HostInfo {
     private final URI domain;
     private final File baseDir;
     private File modeConfigDirectory;
-    private final File repositoryDirectory;
+    private final File userDirectory;
+    private File sharedDirectory;
+    private File runtimeDirectory;
     private final File configDirectory;
     private final File tempDirectory;
     private File dataDirectory;
@@ -67,20 +69,24 @@ public class DefaultHostInfo implements HostInfo {
     /**
      * Constructor.
      *
-     * @param runtimeMode         the mode the runtime is started in
-     * @param domain              the SCA domain this runtime belongs to
-     * @param baseDir             directory containing the standalone installation
-     * @param repositoryDirectory directory containing the standalone repository
-     * @param configDir           directory containing the standalone configuration
-     * @param modeConfigDir       directory containing the standalone boot mode configuration
-     * @param tempDirectory       the directory for writing temporary files
-     * @param dataDirectory       the directory for writing persistent data that survives restarts
-     * @param deployDirectory     the directory for file system-based deployments
+     * @param runtimeMode      the mode the runtime is started in
+     * @param domain           the SCA domain this runtime belongs to
+     * @param baseDir          directory containing the standalone installation
+     * @param userDirectory    user repository directory
+     * @param sharedDirectory  the shared extensions repository directory
+     * @param runtimeDirectory the private extensions repository directory
+     * @param configDir        directory containing the standalone configuration
+     * @param modeConfigDir    directory containing the standalone boot mode configuration
+     * @param tempDirectory    the directory for writing temporary files
+     * @param dataDirectory    the directory for writing persistent data that survives restarts
+     * @param deployDirectory  the directory for file system-based deployments
      */
     public DefaultHostInfo(RuntimeMode runtimeMode,
                            URI domain,
                            File baseDir,
-                           File repositoryDirectory,
+                           File userDirectory,
+                           File sharedDirectory,
+                           File runtimeDirectory,
                            File configDir,
                            File modeConfigDir,
                            File tempDirectory,
@@ -89,7 +95,9 @@ public class DefaultHostInfo implements HostInfo {
         this.runtimeMode = runtimeMode;
         this.domain = domain;
         this.baseDir = baseDir;
-        this.repositoryDirectory = repositoryDirectory;
+        this.userDirectory = userDirectory;
+        this.sharedDirectory = sharedDirectory;
+        this.runtimeDirectory = runtimeDirectory;
         this.configDirectory = configDir;
         this.modeConfigDirectory = modeConfigDir;
         this.tempDirectory = tempDirectory;
@@ -121,8 +129,16 @@ public class DefaultHostInfo implements HostInfo {
         return true;
     }
 
-    public File getRepositoryDirectory() {
-        return repositoryDirectory;
+    public File getUserRepositoryDirectory() {
+        return userDirectory;
+    }
+
+    public File getRuntimeRepositoryDirectory() {
+        return runtimeDirectory;
+    }
+
+    public File getExtensionsRepositoryDirectory() {
+        return sharedDirectory;
     }
 
     public File getConfigDirectory() {

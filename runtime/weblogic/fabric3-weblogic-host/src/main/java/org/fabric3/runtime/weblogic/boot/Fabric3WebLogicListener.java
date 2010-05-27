@@ -136,8 +136,12 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             //  calculate config directories based on the mode the runtime is booted in
-            File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
+            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
+            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+
             File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
+            File extensionsDir = new File(installDirectory, "extensions");
 
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
@@ -159,7 +163,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, defaultRuntimeDir, configDir, modeConfigDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -176,7 +180,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
 

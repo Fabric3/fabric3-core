@@ -101,7 +101,7 @@
                 <include>org.codehaus.fabric3:fabric3-web</include>
                 <include>org.codehaus.fabric3.standalone:fabric3-standalone-admin</include>
             </includes>
-            <outputDirectory>fabric3/repository</outputDirectory>
+            <outputDirectory>fabric3/extensions</outputDirectory>
         </dependencySet>
 
     </dependencySets>

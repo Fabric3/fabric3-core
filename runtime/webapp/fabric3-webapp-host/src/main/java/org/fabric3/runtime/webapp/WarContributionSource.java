@@ -54,22 +54,27 @@ public class WarContributionSource implements ContributionSource {
 
     private static final String CONTENT_TYPE = "application/vnd.fabric3.war";
 
-    private URI contributionUri;
+    private URI uri;
     private URL url;
     private long timestamp;
+    private boolean extension;
 
-    public WarContributionSource(URI contributionUri) throws MalformedURLException {
-        this.contributionUri = contributionUri;
+    public WarContributionSource(URI uri) throws MalformedURLException {
+        this.uri = uri;
         this.url = new File("/").toURI().toURL();
         timestamp = System.currentTimeMillis();
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public boolean persist() {
         return false;
     }
 
-    public URI getUri() {
-        return contributionUri;
+    public boolean isExtension() {
+        return extension;
     }
 
     public Source getSource() {

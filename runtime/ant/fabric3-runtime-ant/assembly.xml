@@ -100,7 +100,7 @@
                 <include>org.codehaus.fabric3:fabric3-test-spi</include>
                  <include>org.codehaus.fabric3:fabric3-ant-extension</include>
               </includes>
-            <outputDirectory>repository</outputDirectory>
+            <outputDirectory>extensions</outputDirectory>
         </dependencySet>
 
     </dependencySets>

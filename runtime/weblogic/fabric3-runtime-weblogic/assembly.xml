@@ -94,7 +94,7 @@
                 <include>org.objectweb.asm:com.springsource.org.objectweb.asm</include>
 
             </includes>
-            <outputDirectory>fabric3/repository</outputDirectory>
+            <outputDirectory>fabric3/extensions</outputDirectory>
         </dependencySet>
 
         <!-- copy modules that must be placed in the WebLogic server classpath -->

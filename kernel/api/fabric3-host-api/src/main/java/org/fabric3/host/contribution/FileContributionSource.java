@@ -54,25 +54,31 @@ public class FileContributionSource implements ContributionSource {
     private Source source;
     private long timestamp;
     private String contentType;
+    private boolean extension;
 
-    public FileContributionSource(URI uri, URL location, long timestamp) {
-        this(uri, location, timestamp, null);
+    public FileContributionSource(URI uri, URL location, long timestamp, boolean extension) {
+        this(uri, location, timestamp, null, extension);
     }
 
-    public FileContributionSource(URI uri, URL location, long timestamp, String contentType) {
+    public FileContributionSource(URI uri, URL location, long timestamp, String contentType, boolean extension) {
         this.uri = uri;
         this.location = location;
         this.timestamp = timestamp;
         this.contentType = contentType;
+        this.extension = extension;
         this.source = new UrlSource(location);
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public boolean persist() {
         return false;
     }
 
-    public URI getUri() {
-        return uri;
+    public boolean isExtension() {
+        return extension;
     }
 
     public Source getSource() {

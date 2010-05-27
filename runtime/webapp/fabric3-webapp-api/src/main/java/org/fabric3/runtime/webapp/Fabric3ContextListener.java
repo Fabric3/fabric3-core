@@ -237,7 +237,7 @@ public class Fabric3ContextListener implements ServletContextListener {
             List<ContributionSource> sources = new ArrayList<ContributionSource>();
             for (URL location : files) {
                 URI uri = URI.create(location.getPath());
-                ContributionSource source = new FileContributionSource(uri, location, -1);
+                ContributionSource source = new FileContributionSource(uri, location, -1, true);
                 sources.add(source);
 
             }

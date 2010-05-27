@@ -56,7 +56,7 @@ public class RepositoryImplTestCase extends TestCase {
     public void testStoreAndFind() throws Exception {
         URI uri = URI.create("test-resource");
         InputStream archiveStream = new ByteArrayInputStream("test".getBytes());
-        repository.store(uri, archiveStream);
+        repository.store(uri, archiveStream, false);
         URL contributionURL = repository.find(uri);
         assertNotNull(contributionURL);
     }
@@ -64,7 +64,7 @@ public class RepositoryImplTestCase extends TestCase {
     public void testList() throws Exception {
         URI archiveUri = URI.create("test-resource");
         InputStream archiveStream = new ByteArrayInputStream("test".getBytes());
-        repository.store(archiveUri, archiveStream);
+        repository.store(archiveUri, archiveStream, false);
         boolean found = false;
         for (URI uri : repository.list()) {
             if (uri.equals(archiveUri)) {
@@ -78,9 +78,18 @@ public class RepositoryImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         File repository = new File("repository");
+        File runtimeDir = new File(repository, "runtime");
+        File sharedDir = new File(repository, "shared");
+        File userDir = new File(repository, "user");
+
         FileHelper.forceMkdir(new File(repository, "cache"));
+        FileHelper.forceMkdir(runtimeDir);
+        FileHelper.forceMkdir(sharedDir);
+        FileHelper.forceMkdir(userDir);
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRepositoryDirectory()).andReturn(repository).atLeastOnce();
+        EasyMock.expect(info.getRuntimeRepositoryDirectory()).andReturn(runtimeDir).atLeastOnce();
+        EasyMock.expect(info.getExtensionsRepositoryDirectory()).andReturn(sharedDir).atLeastOnce();
+        EasyMock.expect(info.getUserRepositoryDirectory()).andReturn(userDir).atLeastOnce();
         EasyMock.expect(info.getTempDir()).andReturn(null).atLeastOnce();
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();
         EasyMock.replay(info);

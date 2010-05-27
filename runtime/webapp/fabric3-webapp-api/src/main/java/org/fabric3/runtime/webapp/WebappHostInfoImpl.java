@@ -95,8 +95,16 @@ public class WebappHostInfoImpl implements WebappHostInfo {
         return null;
     }
 
-    public File getRepositoryDirectory() {
+    public File getUserRepositoryDirectory() {
         return baseDir;
+    }
+
+    public File getRuntimeRepositoryDirectory() {
+        return null;
+    }
+
+    public File getExtensionsRepositoryDirectory() {
+        return null;
     }
 
     public File getDeployDirectory() {

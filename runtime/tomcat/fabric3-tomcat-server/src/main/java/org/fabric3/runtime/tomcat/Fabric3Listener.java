@@ -106,10 +106,14 @@ public class Fabric3Listener implements LifecycleListener {
         try {
             // This class is loaded in <tomcat install>/lib. The Fabric3 runtime is installed at <tomcat install>/fabric3
             File installDirectory = new File(BootstrapHelper.getInstallDirectory(getClass()), "fabric3");
+            File extensionsDir = new File(installDirectory, "extensions");
+
             //  calculate config directories based on the mode the runtime is booted in
-            File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
+            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
+            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
             // only support single VM mode
-            File modeConfigDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
+            File modeDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
 
             // create the classloaders for booting the runtime
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
@@ -123,12 +127,12 @@ public class Fabric3Listener implements LifecycleListener {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(modeDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, defaultRuntimeDir, configDir, modeDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -146,7 +150,7 @@ public class Fabric3Listener implements LifecycleListener {
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             Service service = server.findService("Catalina");
             if (service == null) {

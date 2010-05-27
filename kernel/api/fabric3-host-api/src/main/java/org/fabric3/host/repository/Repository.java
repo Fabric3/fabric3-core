@@ -52,10 +52,11 @@ public interface Repository {
      *
      * @param uri    The artifact URI
      * @param stream the artifact contents
+     * @param extension true if the artifact is a runtime extension
      * @return a URL for the persisted artifact
      * @throws RepositoryException if an error occurs storing the artifact
      */
-    URL store(URI uri, InputStream stream) throws RepositoryException;
+    URL store(URI uri, InputStream stream, boolean extension) throws RepositoryException;
 
     /**
      * Returns true if the artifact exists.

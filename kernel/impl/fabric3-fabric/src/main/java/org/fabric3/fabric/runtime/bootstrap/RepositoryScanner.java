@@ -39,28 +39,16 @@ package org.fabric3.fabric.runtime.bootstrap;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.SyntheticContributionSource;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
 
@@ -70,150 +58,50 @@ import org.fabric3.host.runtime.ScanResult;
  * @version $Rev$ $Date$
  */
 public class RepositoryScanner {
-    private static final String MANIFEST_PATH = "META-INF/sca-contribution.xml";
-    DocumentBuilderFactory documentBuilderFactory;
-
-    public RepositoryScanner() {
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-    }
 
     /**
      * Scans a repository directory for contributions.
      *
-     * @param directory the directory
+     * @param info the host info
      * @return the contributions grouped by user and extension contributions
      * @throws ScanException if there is an error scanning teh directory
      */
-    public ScanResult scan(File directory) throws ScanException {
+    public ScanResult scan(HostInfo info) throws ScanException {
+        List<ContributionSource> extensionSources = scan(info.getExtensionsRepositoryDirectory(), true);
+        List<ContributionSource> runtimeSources = scan(info.getRuntimeRepositoryDirectory(), true);
+        extensionSources.addAll(runtimeSources);
+        List<ContributionSource> userSource = scan(info.getUserRepositoryDirectory(), false);
+        return new ScanResult(extensionSources, userSource);
+    }
+
+    public List<ContributionSource> scan(File directory, boolean extension) throws ScanException {
 
         File[] files = directory.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
                 // skip directories and files beginning with '.'
-                return !pathname.isDirectory() && !pathname.getName().startsWith(".");
+                return !pathname.getName().startsWith(".");
             }
         });
-        ScanResult result = new ScanResult();
-        Map<URL, ContributionSource> toScan = new HashMap<URL, ContributionSource>();
+        List<ContributionSource> sources = new ArrayList<ContributionSource>();
         for (File file : files) {
             try {
-                URI uri = URI.create(file.getName());
                 URL location = file.toURI().toURL();
-                ContributionSource source = new FileContributionSource(uri, location, -1);
-                if (!file.getName().endsWith(".jar")) {
-                    // if the file is not a JAR, it must be a user contribution
-                    result.addUserContribution(source);
+                ContributionSource source;
+                if (file.isDirectory()) {
+                    // create synthetic contributions from directories contained in the repository
+                    URI uri = URI.create("f3-" + file.getName());
+                    source = new SyntheticContributionSource(uri, location, extension);
+
                 } else {
-                    toScan.put(location, source);
+                    URI uri = URI.create(file.getName());
+                    source = new FileContributionSource(uri, location, -1, extension);
                 }
+                sources.add(source);
             } catch (MalformedURLException e) {
                 throw new ScanException("Error loading contribution:" + file.getName(), e);
             }
         }
-
-
-        URL[] urls = toScan.keySet().toArray(new URL[toScan.size()]);
-        URLClassLoader urlClassLoader = new URLClassLoader(urls);
-        Enumeration<URL> scannedManifests;
-        try {
-            scannedManifests = urlClassLoader.getResources(MANIFEST_PATH);
-        } catch (IOException e) {
-            throw new ScanException("Error scanning repository", e);
-        }
-
-        Set<URL> manifests = new HashSet<URL>();
-
-        while (scannedManifests.hasMoreElements()) {
-            URL manifestUrl = scannedManifests.nextElement();
-            URL contributionUrl = getContributionUrl(manifestUrl);
-            boolean extension = isExtension(manifestUrl);
-            if (extension) {
-                result.addExtensionContribution(toScan.get(contributionUrl));
-            } else {
-                result.addUserContribution(toScan.get(contributionUrl));
-            }
-            manifests.add(contributionUrl);
-        }
-
-        // Make another pass and categorize all contributions without an SCA manifest as extensions. This is safe as they cannot contain deployable
-        // components and hence only contain sharable artifacts.
-        for (Map.Entry<URL, ContributionSource> entry : toScan.entrySet()) {
-            if (!manifests.contains(entry.getKey())) {
-                result.addExtensionContribution(entry.getValue());
-            }
-        }
-
-        // create synthetic contributions from directories contained in /repository
-        for (File file : directory.listFiles()) {
-            if (file.isDirectory()) {
-                try {
-                    URI uri = URI.create("f3-" + file.getName());
-                    URL location = file.toURI().toURL();
-                    ContributionSource source = new SyntheticContributionSource(uri, location);
-                    result.addExtensionContribution(source);
-                } catch (MalformedURLException e) {
-                    throw new ScanException(e);
-                }
-            }
-        }
-        return result;
-
-
+        return sources;
     }
-
-    /**
-     * Checks whether a contribution containing the manifest is an extension.
-     *
-     * @param manifestUrl the URL of the contribution manifest
-     * @return true if the contribution is an extension
-     * @throws ScanException if there is an error scanning the manifest
-     */
-    private boolean isExtension(URL manifestUrl) throws ScanException {
-        try {
-            DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-
-            InputStream stream = manifestUrl.openStream();
-            Document document = db.parse(stream);
-            stream.close();
-
-            String extension = document.getDocumentElement().getAttributeNS(Namespaces.CORE, "extension");
-            return extension != null && !"".equals(extension.trim());
-        } catch (IOException e) {
-            throw new ScanException(e);
-        } catch (ParserConfigurationException e) {
-            throw new ScanException(e);
-        } catch (SAXException e) {
-            throw new ScanException(e);
-        }
-    }
-
-    /**
-     * Computes the contribution URL from the manifest URL.
-     *
-     * @param manifestUrl the manifest URL
-     * @return the contribution URL
-     * @throws ScanException if there is an error computing the URL
-     */
-    private URL getContributionUrl(URL manifestUrl) throws ScanException {
-
-        String externalForm = manifestUrl.toExternalForm();
-        String protocol = manifestUrl.getProtocol();
-        String url;
-
-        if ("jar".equals(protocol)) {
-            url = externalForm.substring(0, externalForm.indexOf("!/" + MANIFEST_PATH));
-            // Strip the jar protocol
-            url = url.substring(4);
-        } else {
-            url = externalForm.substring(0, externalForm.indexOf(MANIFEST_PATH));
-        }
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new ScanException(e);
-        }
-
-    }
-
 
 }

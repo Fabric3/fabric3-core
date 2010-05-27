@@ -58,13 +58,13 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
@@ -140,8 +140,12 @@ public class Fabric3Task extends Task {
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Task.class);
 
             //  calculate config directories based on the mode the runtime is booted in
-            File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
-            File modeConfigDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
+            File runtimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+            File defaultRuntimeDir = BootstrapHelper.getDirectory(runtimesDir, "default");
+            File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+
+            File modeDir = BootstrapHelper.getDirectory(configDir, RuntimeMode.VM.toString().toLowerCase());
+            File extensionsDir = new File(installDirectory, "extensions");
 
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
@@ -156,12 +160,12 @@ public class Fabric3Task extends Task {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            Document systemConfig = bootstrapService.loadSystemConfig(modeConfigDir);
+            Document systemConfig = bootstrapService.loadSystemConfig(modeDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, installDirectory, configDir, modeConfigDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(RuntimeMode.VM, domainName, defaultRuntimeDir, configDir, modeDir, extensionsDir);
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
@@ -178,7 +182,7 @@ public class Fabric3Task extends Task {
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
 
@@ -260,7 +264,7 @@ public class Fabric3Task extends Task {
             URI uri = URI.create(contributionFile.getName());
             URL url = contributionFile.toURI().toURL();
             long timestamp = System.currentTimeMillis();
-            return new FileContributionSource(uri, url, timestamp);
+            return new FileContributionSource(uri, url, timestamp, false);
         } catch (MalformedURLException e) {
             throw new BuildException(e);
         }

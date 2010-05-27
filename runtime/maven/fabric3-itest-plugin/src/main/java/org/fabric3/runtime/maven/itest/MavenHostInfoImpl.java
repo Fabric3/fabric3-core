@@ -86,7 +86,15 @@ public class MavenHostInfoImpl implements MavenHostInfo {
         return null;
     }
 
-    public File getRepositoryDirectory() {
+    public File getUserRepositoryDirectory() {
+        return null;
+    }
+
+    public File getRuntimeRepositoryDirectory() {
+        return null;
+    }
+
+    public File getExtensionsRepositoryDirectory() {
         return null;
     }
 

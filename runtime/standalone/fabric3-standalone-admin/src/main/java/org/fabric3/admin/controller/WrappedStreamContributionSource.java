@@ -55,20 +55,26 @@ import org.fabric3.host.stream.InputStreamSource;
 public class WrappedStreamContributionSource implements ContributionSource {
     private URI uri;
     private InputStreamSource source;
+    private boolean extension;
 
-    public WrappedStreamContributionSource(URI uri, InputStream stream) {
+    public WrappedStreamContributionSource(URI uri, InputStream stream, boolean extension) {
         this.uri = uri;
+        this.extension = extension;
         StreamWrapper wrapper = new StreamWrapper(stream);
         this.source = new InputStreamSource(uri.toString(), wrapper);
 
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public boolean persist() {
         return true;
     }
 
-    public URI getUri() {
-        return uri;
+    public boolean isExtension() {
+        return extension;
     }
 
     public Source getSource() {

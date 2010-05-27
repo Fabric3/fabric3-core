@@ -51,12 +51,9 @@ public class ScanResult {
     private List<ContributionSource> extensionContributions = new ArrayList<ContributionSource>();
     private List<ContributionSource> userContributions = new ArrayList<ContributionSource>();
 
-    public void addExtensionContribution(ContributionSource source) {
-        extensionContributions.add(source);
-    }
-
-    public void addUserContribution(ContributionSource source) {
-        userContributions.add(source);
+    public ScanResult(List<ContributionSource> extensionContributions, List<ContributionSource> userContributions) {
+        this.extensionContributions = extensionContributions;
+        this.userContributions = userContributions;
     }
 
     public List<ContributionSource> getExtensionContributions() {

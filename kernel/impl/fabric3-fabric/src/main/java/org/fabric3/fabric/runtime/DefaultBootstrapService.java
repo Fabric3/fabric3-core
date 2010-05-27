@@ -62,6 +62,7 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.stream.Source;
 import org.fabric3.monitor.runtime.LogbackDispatcher;
 
@@ -109,8 +110,8 @@ public class DefaultBootstrapService implements BootstrapService {
         return dispatcher;
     }
 
-    public ScanResult scanRepository(File directory) throws ScanException {
-        return scanner.scan(directory);
+    public ScanResult scanRepository(HostInfo info) throws ScanException {
+        return scanner.scan(info);
     }
 
     public Fabric3Runtime createDefaultRuntime(RuntimeConfiguration configuration) {

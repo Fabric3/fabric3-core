@@ -64,12 +64,16 @@ public class ModuleContributionSource implements ContributionSource {
         this.source = new UrlSource(url);
     }
 
+    public URI getUri() {
+        return uri;
+    }
+
     public boolean persist() {
         return false;
     }
 
-    public URI getUri() {
-        return uri;
+    public boolean isExtension() {
+        return false;
     }
 
     public Source getSource() {

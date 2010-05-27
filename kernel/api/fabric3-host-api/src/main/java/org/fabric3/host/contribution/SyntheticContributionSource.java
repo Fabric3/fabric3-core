@@ -52,12 +52,18 @@ public class SyntheticContributionSource implements ContributionSource {
     private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";
     private URI uri;
     private URL location;
+    private boolean extension;
     private Source source;
 
-    public SyntheticContributionSource(URI uri, URL location) {
+    public SyntheticContributionSource(URI uri, URL location, boolean extension) {
         this.uri = uri;
         this.location = location;
+        this.extension = extension;
         this.source = new UrlSource(location);
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public String getContentType() {
@@ -68,8 +74,8 @@ public class SyntheticContributionSource implements ContributionSource {
         return false;
     }
 
-    public URI getUri() {
-        return uri;
+    public boolean isExtension() {
+        return extension;
     }
 
     public URL getLocation() {

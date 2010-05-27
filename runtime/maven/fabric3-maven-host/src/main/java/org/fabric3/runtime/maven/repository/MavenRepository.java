@@ -74,7 +74,7 @@ public class MavenRepository implements Repository {
     public void shutdown() throws RepositoryException {
     }
 
-    public URL store(URI uri, InputStream stream) throws RepositoryException {
+    public URL store(URI uri, InputStream stream, boolean extension) throws RepositoryException {
         return find(uri);
     }
 

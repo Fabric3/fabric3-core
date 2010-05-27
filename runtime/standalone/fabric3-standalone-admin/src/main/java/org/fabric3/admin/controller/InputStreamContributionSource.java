@@ -53,18 +53,23 @@ import org.fabric3.host.stream.InputStreamSource;
 public class InputStreamContributionSource implements ContributionSource {
     private URI uri;
     private Source source;
+    private boolean extension;
 
     public InputStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
         this.source = new InputStreamSource(uri.toString(), stream);
     }
 
+    public URI getUri() {
+        return uri;
+    }
+
     public boolean persist() {
         return true;
     }
 
-    public URI getUri() {
-        return uri;
+    public boolean isExtension() {
+        return extension;
     }
 
     public Source getSource() {

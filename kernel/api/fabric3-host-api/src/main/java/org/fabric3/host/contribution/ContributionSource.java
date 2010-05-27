@@ -50,6 +50,13 @@ import org.fabric3.host.stream.Source;
 public interface ContributionSource {
 
     /**
+     * Returns the identifier for this contribution.
+     *
+     * @return the identifier for this contribution
+     */
+    URI getUri();
+
+    /**
      * Returns true if the source should be persisted.
      *
      * @return true if the source should be persisted
@@ -57,11 +64,11 @@ public interface ContributionSource {
     boolean persist();
 
     /**
-     * Returns the identifier for this contribution.
+     * Returns true if the contribution is an extension.
      *
-     * @return the identifier for this contribution
+     * @return true if the contribution is an extension.
      */
-    URI getUri();
+    boolean isExtension();
 
     /**
      * Returns a {@link Source} for reading the contents of the contribution.

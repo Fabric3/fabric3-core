@@ -150,7 +150,7 @@ public class ProfileServlet extends HttpServlet {
                     URI contributionUri = new URI(tokens[1]);
                     if (!contributionService.exists(contributionUri)) {
                         // the contribution does not exist, otherwise skip it
-                        ContributionSource contributionSource = new WrappedStreamContributionSource(contributionUri, jarStream);
+                        ContributionSource contributionSource = new WrappedStreamContributionSource(contributionUri, jarStream, true);
                         contributionService.store(contributionSource);
                     }
                     contributionUris.add(contributionUri);

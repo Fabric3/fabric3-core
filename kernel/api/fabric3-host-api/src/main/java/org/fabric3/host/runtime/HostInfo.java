@@ -108,11 +108,25 @@ public interface HostInfo {
     File getModeConfigDirectory();
 
     /**
-     * Returns the runtime repository directory.
+     * Returns the user repository directory.
      *
-     * @return the runtime repository directory or null if the runtime provisions extensions from an external source
+     * @return the user repository directory or null if the runtime provisions extensions from an external source
      */
-    File getRepositoryDirectory();
+    File getUserRepositoryDirectory();
+
+    /**
+     * Returns the private runtime repository directory.
+     *
+     * @return the private runtime repository directory or null if the runtime provisions extensions from an external source
+     */
+    File getRuntimeRepositoryDirectory();
+
+    /**
+     * Returns the shared runtime extensions directory
+     *
+     * @return the shared runtime extensions directory
+     */
+    File getExtensionsRepositoryDirectory();
 
     /**
      * Returns the runtime deploy directory.

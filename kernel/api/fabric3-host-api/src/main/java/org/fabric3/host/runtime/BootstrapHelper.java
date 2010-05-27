@@ -54,6 +54,7 @@ import java.net.URLClassLoader;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * Utility class for boostrap operations.
@@ -160,13 +161,61 @@ public final class BootstrapHelper {
         return new URLClassLoader(urls, parent);
     }
 
-    public static HostInfo createHostInfo(RuntimeMode runtimeMode, URI domainName, File baseDir, File configDir, File modeDir)
-            throws InitializationException, IOException {
-        File repositoryDir = getDirectory(baseDir, "repository");
-        File tempDir = getDirectory(baseDir, "tmp");
-        File dataDir = getDirectory(baseDir, "data");
-        File deployDirectory = getDirectory(baseDir, "deploy");
-        return new DefaultHostInfo(runtimeMode, domainName, baseDir, repositoryDir, configDir, modeDir, tempDir, dataDir, deployDirectory);
+    /**
+     * Creates a new read-write runtime directory
+     *
+     * @param sourceConfigDir the configuration directory to use as a template
+     * @param targetDir       the target runtime directory
+     * @throws IOException if the runtime directory cannot be created
+     */
+    public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) throws IOException {
+        File targetConfigDir = new File(targetDir, "config");
+        FileHelper.forceMkdir(targetConfigDir);
+        FileHelper.copyDirectory(sourceConfigDir, targetConfigDir);
+        FileHelper.forceMkdir(new File(targetDir, "data"));
+        FileHelper.forceMkdir(new File(targetDir, "deploy"));
+        File repository = new File(targetDir, "repository");
+        FileHelper.forceMkdir(repository);
+        FileHelper.forceMkdir(new File(repository, "runtime"));
+        FileHelper.forceMkdir(new File(repository, "user"));
+        FileHelper.forceMkdir(new File(targetDir, "tmp"));
+    }
+
+    /**
+     * Creates the HostInfo for a runtime.
+     *
+     * @param runtimeMode    the runtime boot mode
+     * @param domainName     the name of the domain the runtime is part of
+     * @param runtimeDir the base directory containing non-sharable, read-write runtime artifacts
+     * @param configDir      the root configuration directory
+     * @param modeDir        the mode configuration directory
+     * @param extensionsDir  the sharable extensions directory
+     * @return the host info
+     * @throws IOException if there is an error accessing a host info directory
+     */
+    public static HostInfo createHostInfo(RuntimeMode runtimeMode,
+                                          URI domainName,
+                                          File runtimeDir,
+                                          File configDir,
+                                          File modeDir,
+                                          File extensionsDir) throws IOException {
+        File repositoryDir = getDirectory(runtimeDir, "repository");
+        File userRepositoryDir = new File(repositoryDir, "user");
+        File runtimeRepositoryDir = new File(repositoryDir, "runtime");
+        File tempDir = getDirectory(runtimeDir, "tmp");
+        File dataDir = getDirectory(runtimeDir, "data");
+        File deployDir = new File(runtimeDir, "deploy");
+        return new DefaultHostInfo(runtimeMode,
+                                   domainName,
+                                   runtimeDir,
+                                   userRepositoryDir,
+                                   extensionsDir,
+                                   runtimeRepositoryDir,
+                                   configDir,
+                                   modeDir,
+                                   tempDir,
+                                   dataDir,
+                                   deployDir);
     }
 
 }

@@ -44,6 +44,7 @@
 package org.fabric3.runtime.standalone.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
@@ -52,7 +53,8 @@ import javax.management.ObjectName;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Fabric3Exception;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
@@ -99,32 +101,32 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * @throws Fabric3Exception if there is a catostrophic problem starting the runtime
      */
     public static void main(String[] args) throws Fabric3Exception {
-
-        RuntimeMode runtimeMode = getRuntimeMode(args);
-
+        Params params = parse(args);
         Fabric3Server server = new Fabric3Server();
-        server.start(runtimeMode);
+        server.start(params);
         System.exit(0);
     }
 
     /**
      * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
      *
-     * @param runtimeMode the mode to start the runtime in
+     * @param params the runtime parameters
      * @throws Fabric3ServerException if catostrophic exception was encountered leaving the runtime in an unstable state
      */
-    public void start(RuntimeMode runtimeMode) throws Fabric3ServerException {
+    public void start(Params params) throws Fabric3ServerException {
         try {
+            RuntimeMode mode = params.mode;
             //  calculate config directories based on the mode the runtime is booted in
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
-            File configDir = BootstrapHelper.getDirectory(installDirectory, "config");
-            File modeConfigDir = BootstrapHelper.getDirectory(configDir, runtimeMode.toString().toLowerCase());
+            File extensionsDir = new File(installDirectory, "extensions");
+            File runtimeDir = getRuntimeDirectory(params, installDirectory);
 
-            // create the classloaders for booting the runtime
+            File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
+            File modeConfigDir = BootstrapHelper.getDirectory(configDir, mode.toString().toLowerCase());
             File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
-
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
+            // create the classloaders for booting the runtime
             ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
             ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
@@ -138,7 +140,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeMode, domainName, installDirectory, configDir, modeConfigDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(mode, domainName, runtimeDir, configDir, modeConfigDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -158,7 +160,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             URL systemComposite = new File(configDir, "system.composite").toURI().toURL();
 
-            ScanResult result = bootstrapService.scanRepository(hostInfo.getRepositoryDirectory());
+            ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
@@ -183,7 +185,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(runtimeMode.toString(), agent.getAssignedPort());
+            monitor.started(mode.toString(), agent.getAssignedPort());
 
             try {
                 latch.await();
@@ -215,19 +217,22 @@ public class Fabric3Server implements Fabric3ServerMBean {
         }
     }
 
-    private static RuntimeMode getRuntimeMode(String[] args) {
-        RuntimeMode runtimeMode = RuntimeMode.VM;
-        if (args.length > 0) {
-            if ("controller".equals(args[0])) {
-                runtimeMode = RuntimeMode.CONTROLLER;
-            } else if ("participant".equals(args[0])) {
-                runtimeMode = RuntimeMode.PARTICIPANT;
-            } else if (!"vm".equals(args[0])) {
-                throw new IllegalArgumentException("Invalid runtime mode: " + args[0]
-                        + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+    private File getRuntimeDirectory(Params params, File installDirectory) throws Fabric3ServerException, IOException {
+        File rootRuntimeDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
+        File runtimeDir = new File(rootRuntimeDir, params.name);
+        if (!runtimeDir.exists()) {
+            if (params.clone != null) {
+                File defaultRuntimeDir = BootstrapHelper.getDirectory(rootRuntimeDir, params.clone);
+                File configDir = BootstrapHelper.getDirectory(defaultRuntimeDir, "config");
+                if (!configDir.exists()) {
+                    throw new Fabric3ServerException("Unable to create runtime directory: " + runtimeDir);
+                }
+                BootstrapHelper.cloneRuntimeImage(configDir, runtimeDir);
+            } else {
+                throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
             }
         }
-        return runtimeMode;
+        return runtimeDir;
     }
 
     private void handleStartException(Exception ex) throws Fabric3ServerException {
@@ -239,6 +244,42 @@ public class Fabric3Server implements Fabric3ServerMBean {
             throw new Fabric3ServerException(ex);
         }
     }
+
+    private static Params parse(String[] args) {
+        Params params = new Params();
+        for (String arg : args) {
+            if (arg.startsWith("name:")) {
+                params.name = arg.substring(5);
+            } else if (arg.startsWith("dir:")) {
+                params.directory = new File(arg.substring(4));
+            } else if (arg.startsWith("clone:")) {
+                params.clone = arg.substring(6);
+            } else {
+                params.mode = getRuntimeMode(arg);
+            }
+        }
+        return params;
+    }
+
+    private static RuntimeMode getRuntimeMode(String arg) {
+        RuntimeMode runtimeMode = RuntimeMode.VM;
+        if ("controller".equals(arg)) {
+            runtimeMode = RuntimeMode.CONTROLLER;
+        } else if ("participant".equals(arg)) {
+            runtimeMode = RuntimeMode.PARTICIPANT;
+        } else if (!"vm".equals(arg)) {
+            throw new IllegalArgumentException("Invalid runtime mode: " + arg + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+        }
+        return runtimeMode;
+    }
+
+    private static class Params {
+        String name = "default";
+        File directory;
+        String clone;
+        RuntimeMode mode = RuntimeMode.VM;
+    }
+
 
     public interface ServerMonitor {
         @Severe

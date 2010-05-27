@@ -54,13 +54,16 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.FileHelper;
 
 /**
- * The default implementation of a Repository that persists artifacts to the file system.
+ * The default implementation of a Repository that persists artifacts to the file system. Extensions will be persisted to the runtime repository
+ * directory (where they will not be shared by runtime instances). User contributions will be persisted to the user repository directory.
  *
  * @version $Rev$ $Date$
  */
 public class RepositoryImpl implements Repository {
     private Map<URI, URL> archiveUriToUrl;
-    private File repositoryDir;
+    private File runtimeDirectory;
+    private File userDirectory;
+    private File sharedDirectory;
 
     /**
      * Constructor.
@@ -70,16 +73,24 @@ public class RepositoryImpl implements Repository {
      */
     public RepositoryImpl(HostInfo info) throws IOException {
         archiveUriToUrl = new ConcurrentHashMap<URI, URL>();
-        repositoryDir = info.getRepositoryDirectory();
+        runtimeDirectory = info.getRuntimeRepositoryDirectory();
+        sharedDirectory = info.getExtensionsRepositoryDirectory();
+        userDirectory = info.getUserRepositoryDirectory();
     }
 
     public void init() throws RepositoryException {
-        if (!repositoryDir.exists() || !repositoryDir.isDirectory()) {
+        if (runtimeDirectory == null || !runtimeDirectory.exists() || !runtimeDirectory.isDirectory()) {
             return;
         }
         // load artifacts
         try {
-            for (File file : repositoryDir.listFiles()) {
+            for (File file : sharedDirectory.listFiles()) {
+                archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
+            }
+            for (File file : runtimeDirectory.listFiles()) {
+                archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
+            }
+            for (File file : userDirectory.listFiles()) {
                 archiveUriToUrl.put(mapToUri(file), file.toURI().toURL());
             }
         } catch (MalformedURLException e) {
@@ -91,12 +102,14 @@ public class RepositoryImpl implements Repository {
 
     }
 
-    public URL store(URI uri, InputStream stream) throws RepositoryException {
+    public URL store(URI uri, InputStream stream, boolean extension) throws RepositoryException {
         try {
-            if (!repositoryDir.exists() || !repositoryDir.isDirectory() || !repositoryDir.canRead()) {
-                throw new IOException("The repository location is not a directory: " + repositoryDir);
+            File location;
+            if (extension) {
+                location = mapToFile(runtimeDirectory, uri);
+            } else {
+                location = mapToFile(userDirectory, uri);
             }
-            File location = mapToFile(repositoryDir, uri);
             FileHelper.write(stream, location);
             URL locationUrl = location.toURI().toURL();
             archiveUriToUrl.put(uri, locationUrl);
@@ -117,7 +130,11 @@ public class RepositoryImpl implements Repository {
 
     public void remove(URI uri) throws RepositoryException {
         try {
-            File location = mapToFile(repositoryDir, uri);
+            File location = mapToFile(userDirectory, uri);
+            if (!location.exists()) {
+                // not a user contribution
+                location = mapToFile(runtimeDirectory, uri);
+            }
             archiveUriToUrl.remove(uri);
             location.delete();
         } catch (IOException e) {

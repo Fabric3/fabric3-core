@@ -115,11 +115,11 @@ public interface BootstrapService {
     /**
      * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
      *
-     * @param directory the repository directory
+     * @param info the host info
      * @return the result
      * @throws ScanException if an error occurs during the scan operation
      */
-    ScanResult scanRepository(File directory) throws ScanException;
+    ScanResult scanRepository(HostInfo info) throws ScanException;
 
     /**
      * Instantiates a default runtime implementation.
