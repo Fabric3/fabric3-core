@@ -33,7 +33,7 @@
                 <include>org.codehaus.fabric3:fabric3-contribution-war</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner-war</include>
              </includes>
-            <outputDirectory>/repository</outputDirectory>
+            <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
 
     </dependencySets>

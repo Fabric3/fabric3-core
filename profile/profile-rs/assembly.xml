@@ -30,7 +30,7 @@
                 <include>org.codehaus.fabric3:fabric3-rs</include>
                 <include>javax.ws.rs:com.springsource.javax.ws.rs</include>
              </includes>
-            <outputDirectory>/repository</outputDirectory>
+            <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
   </dependencySets>
     

@@ -37,7 +37,7 @@ Public License. See the accompanying license file for details.
                 <include>javax.resource:com.springsource.javax.resource</include>
                 <include>javax.jms:com.springsource.javax.jms</include>
              </includes>
-            <outputDirectory>/repository</outputDirectory>
+            <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
   </dependencySets>
     

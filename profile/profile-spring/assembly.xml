@@ -27,7 +27,7 @@ Public License. See the accompanying license file for details.
  
         <dependencySet>
             <useTransitiveDependencies>false</useTransitiveDependencies>
-            <outputDirectory>/repository</outputDirectory>
+            <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
   </dependencySets>
     

@@ -35,7 +35,7 @@ Public License. See the accompanying license file for details.
                 <include>javax.persistence:com.springsource.javax.persistence</include>
                 <include>javax.jms:com.springsource.javax.jms</include>
              </includes>
-            <outputDirectory>/repository</outputDirectory>
+            <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
   </dependencySets>
     
