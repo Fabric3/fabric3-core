@@ -62,7 +62,7 @@ import org.fabric3.host.contribution.StoreException;
  */
 public class ProfileServlet extends HttpServlet {
     private static final long serialVersionUID = -8286023912719635905L;
-    private static final String REPOSITORY = "repository";
+    private static final String EXTENSIONS = "extensions";
     private ContributionService contributionService;
     private ContributionServiceMBeanMonitor monitor;
 
@@ -146,7 +146,7 @@ public class ProfileServlet extends HttpServlet {
                     continue;
                 }
                 String[] tokens = entry.getName().split("/");
-                if (tokens.length == 2 && REPOSITORY.equals(tokens[0])) {
+                if (tokens.length == 2 && EXTENSIONS.equals(tokens[0])) {
                     URI contributionUri = new URI(tokens[1]);
                     if (!contributionService.exists(contributionUri)) {
                         // the contribution does not exist, otherwise skip it
