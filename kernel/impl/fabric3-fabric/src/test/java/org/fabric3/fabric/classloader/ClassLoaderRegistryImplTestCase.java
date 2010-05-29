@@ -43,11 +43,6 @@
  */
 package org.fabric3.fabric.classloader;
 
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -58,16 +53,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 public class ClassLoaderRegistryImplTestCase extends TestCase {
     private ClassLoaderRegistry registry = new ClassLoaderRegistryImpl();
 
-    public void testResolveParentUris() throws Exception {
-        URL[] urls = new URL[0];
-        ClassLoader parent = new URLClassLoader(urls, null);
-        ClassLoader loader = new URLClassLoader(urls, parent);
-        URI parentId = URI.create("parent");
-        registry.register(parentId, parent);
-        URI loaderId = URI.create("loader");
-        registry.register(loaderId, loader);
-        List<URI> parents = registry.resolveParentUris(loader);
-        assertEquals(1, parents.size());
-        assertEquals(parentId, parents.get(0));
+    public void testLoadPrimitive() throws Exception {
+        assertEquals(Integer.TYPE, registry.loadClass(getClass().getClassLoader(), Integer.TYPE.getName()));
     }
 }

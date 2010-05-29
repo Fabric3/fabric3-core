@@ -44,15 +44,12 @@
 package org.fabric3.fabric.classloader;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.DuplicateClassLoaderException;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Implementation of a registry for classloaders.
@@ -109,35 +106,4 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
         return clazz;
     }
 
-    public List<URI> resolveParentUris(ClassLoader cl) {
-        if (cl instanceof MultiParentClassLoader) {
-            MultiParentClassLoader loader = (MultiParentClassLoader) cl;
-            List<ClassLoader> parents = loader.getParents();
-            List<URI> uris = new ArrayList<URI>(parents.size());
-            for (ClassLoader parent : parents) {
-                URI resolved = resolveUri(parent);
-                if (resolved != null) {
-                    uris.add(resolved);
-                }
-            }
-            return uris;
-        } else {
-            List<URI> uris = new ArrayList<URI>();
-            ClassLoader parent = cl.getParent();
-            URI resolved = resolveUri(parent);
-            if (resolved != null) {
-                uris.add(resolved);
-            }
-            return uris;
-        }
-    }
-
-    private URI resolveUri(ClassLoader cl) {
-        for (Map.Entry<URI, ClassLoader> entry : registry.entrySet()) {
-            if (entry.getValue().equals(cl)) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
 }

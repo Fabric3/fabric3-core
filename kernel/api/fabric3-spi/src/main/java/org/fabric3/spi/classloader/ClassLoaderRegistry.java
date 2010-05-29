@@ -44,7 +44,6 @@
 package org.fabric3.spi.classloader;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -104,7 +103,5 @@ public interface ClassLoaderRegistry {
      * @throws ClassNotFoundException if the class could not be found by that classloader
      */
     Class<?> loadClass(ClassLoader cl, String className) throws ClassNotFoundException;
-
-    List<URI> resolveParentUris(ClassLoader cl);
 
 }

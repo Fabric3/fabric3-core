@@ -248,7 +248,7 @@ public final class PackageInfo {
      * @return true if this import package matches the specified export package
      */
     public boolean matches(PackageInfo exportPackage) {
-        // match psackage names
+        // match package names
         int i = 0;
         if (packageNames.length < exportPackage.packageNames.length && !"*".equals(packageNames[packageNames.length - 1])) {
             return false;

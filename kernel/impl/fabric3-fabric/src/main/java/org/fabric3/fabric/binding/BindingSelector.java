@@ -41,7 +41,7 @@ import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Implementations are responsible for selecting and configuring binding information for wires originating from component.
+ * Responsible for selecting and configuring binding information for wires and producers originating from component.
  *
  * @version $Rev$ $Date$
  */

@@ -57,7 +57,7 @@ import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
  */
 public class ConfigurableBindingSelectionStrategy implements BindingSelectionStrategy {
     private Map<QName, Integer> bindingOrder;
-    private BindingProviderComparator COMPARATOR = new BindingProviderComparator();
+    private BindingProviderComparator comparator = new BindingProviderComparator();
 
     @Property
     public void setScaBindingOrder(List<QName> order) {
@@ -72,7 +72,7 @@ public class ConfigurableBindingSelectionStrategy implements BindingSelectionStr
         if (bindingOrder == null || providers.isEmpty()) {
             return;
         }
-        Collections.sort(providers, COMPARATOR);
+        Collections.sort(providers, comparator);
     }
 
 
