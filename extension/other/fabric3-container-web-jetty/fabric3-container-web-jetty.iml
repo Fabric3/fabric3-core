@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+<module MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -79,19 +79,26 @@
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-spi" />
     <orderEntry type="module" module-name="fabric3-api" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
     <orderEntry type="module" module-name="fabric3-host-api" />
     <orderEntry type="module" module-name="fabric3-model" />
     <orderEntry type="module" module-name="fabric3-management-api" />
     <orderEntry type="module" module-name="fabric3-container-web-spi" />
     <orderEntry type="module" module-name="fabric3-jetty" />
-    <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.mortbay.jetty:jsp-2.1:6.1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jdt:core:3.1.1" level="project" />
-    <orderEntry type="library" name="Maven: ant:ant:1.6.5" level="project" />
-    <orderEntry type="library" name="Maven: stax:stax-api:1.0" level="project" />
+    <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-container-web-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-jetty" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:jetty:6.1.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:jetty-util:6.1.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:jsp-2.1:6.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.jdt:core:3.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: ant:ant:1.6.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
   </component>
 </module>
 

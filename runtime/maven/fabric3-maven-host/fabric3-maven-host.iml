@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+<module MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -12,6 +12,21 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="fabric3-maven-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-host-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-model" exported="" />
+    <orderEntry type="module" module-name="fabric3-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-management-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-fabric" exported="" />
+    <orderEntry type="module" module-name="fabric3-spi" exported="" />
+    <orderEntry type="module" module-name="fabric3-monitor" exported="" />
+    <orderEntry type="module" module-name="fabric3-pojo" exported="" />
+    <orderEntry type="module" module-name="fabric3-transform" exported="" />
+    <orderEntry type="module" module-name="fabric3-system" exported="" />
+    <orderEntry type="module" module-name="fabric3-jmx" exported="" />
+    <orderEntry type="module" module-name="fabric3-contribution" exported="" />
+    <orderEntry type="module" module-name="fabric3-util" exported="" />
+    <orderEntry type="module" module-name="fabric3-policy" exported="" />
     <orderEntry type="module" module-name="fabric3-maven-api" exported="" />
     <orderEntry type="module" module-name="fabric3-host-api" exported="" />
     <orderEntry type="module" module-name="fabric3-model" exported="" />
@@ -43,10 +58,10 @@
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-model:2.0.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.plexus:plexus-container-default:1.0-alpha-9" level="project" />
     <orderEntry type="library" exported="" name="Maven: classworlds:classworlds:1.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.maven.wagon:wagon-file:1.0-alpha-7" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.apache.maven.wagon:wagon-file:1.0-alpha-7" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven.wagon:wagon-provider-api:1.0-alpha-6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-plugin-parameter-documenter:2.0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.maven.wagon:wagon-http-lightweight:1.0-alpha-6" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.apache.maven.wagon:wagon-http-lightweight:1.0-alpha-6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven.reporting:maven-reporting-api:2.0.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven.doxia:doxia-sink-api:1.0-alpha-7" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-profile:2.0.4" level="project" />
@@ -58,14 +73,14 @@
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-plugin-registry:2.0.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-cli:commons-cli:1.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-plugin-api:2.0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.maven.wagon:wagon-ssh-external:1.0-alpha-6" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.apache.maven.wagon:wagon-ssh-external:1.0-alpha-6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-plugin-descriptor:2.0.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.plexus:plexus-interactivity-api:1.0-alpha-4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.maven:maven-monitor:2.0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.maven.wagon:wagon-ssh:1.0-alpha-7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.jcraft:jsch:0.1.24" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:3.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.easymock:easymock:2.2" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.apache.maven.wagon:wagon-ssh:1.0-alpha-7" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: com.jcraft:jsch:0.1.24" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
   </component>
 </module>
 
