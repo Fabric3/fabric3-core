@@ -149,17 +149,11 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
     }
 
     public void joinContext(WorkContext workContext) throws GroupInitializationException {
-        QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
-        synchronized (destroyQueues) {
-            if (!destroyQueues.containsKey(contextId)) {
-                destroyQueues.put(contextId, new ArrayList<InstanceWrapper<?>>());
-            }
-        }
+        // no-op
     }
 
     public void joinContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
-        // scope does not support expiration policies
-        joinContext(workContext);
+        // no-op
     }
 
     public void stopContext(WorkContext workContext) {
