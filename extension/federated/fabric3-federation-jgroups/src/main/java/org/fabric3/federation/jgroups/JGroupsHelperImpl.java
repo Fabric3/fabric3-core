@@ -43,7 +43,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jgroups.Address;
 import org.jgroups.View;
@@ -67,6 +69,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
 
     // domain:controller:id
     // domain:participant:zone:id
+
     public Address getController(View view) {
         for (Address address : view.getMembers()) {
             String name = UUID.get(address);
@@ -170,5 +173,45 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         } catch (IOException e) {
             throw new MessageException(e);
         }
+    }
+
+    public Set<Address> getNewRuntimes(View oldView, View newView) {
+        Set<Address> newRuntimes = new HashSet<Address>(newView.getMembers());
+        if (oldView != null) {
+            newRuntimes.removeAll(oldView.getMembers());
+        }
+        return newRuntimes;
+    }
+
+    /**
+     * Returns the set of new zone leaders that came online from the previous view
+     *
+     * @param oldView the old view
+     * @param newView the new view
+     * @return the new zones
+     */
+    public Set<Address> getNewZoneLeaders(View oldView, View newView) {
+        Set<Address> newZoneLeaders = new HashSet<Address>();
+        for (Address address : newView.getMembers()) {
+            if (oldView == null) {
+                String zone = getZoneName(address);
+                if (zone != null && address.equals(getZoneLeader(zone, newView))) {
+                    newZoneLeaders.add(address);
+                }
+            } else if (!oldView.getMembers().contains(address)) {
+                String zone = getZoneName(address);
+                if (zone != null && address.equals(getZoneLeader(zone, newView))) {
+                    newZoneLeaders.add(address);
+                }
+            } else {
+                String zone = getZoneName(address);
+                Address oldLeader = getZoneLeader(zone, oldView);
+                Address newLeader = getZoneLeader(zone, newView);
+                if (!newLeader.equals(oldLeader)) {
+                    newZoneLeaders.add(address);
+                }
+            }
+        }
+        return newZoneLeaders;
     }
 }

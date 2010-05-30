@@ -39,6 +39,7 @@ package org.fabric3.federation.jgroups;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import org.jgroups.Address;
 import org.jgroups.View;
@@ -104,7 +105,6 @@ public interface JGroupsHelper {
      */
     Object deserialize(byte[] payload) throws MessageException;
 
-
     /**
      * Serializes an object.
      *
@@ -114,4 +114,21 @@ public interface JGroupsHelper {
      */
     byte[] serialize(Serializable object) throws MessageException;
 
+    /**
+     * Calculates the set of new runtimes from the two views.
+     *
+     * @param oldView the old view
+     * @param newView the new view
+     * @return the set of new runtimes
+     */
+    Set<Address> getNewRuntimes(View oldView, View newView);
+
+    /**
+     * Calculates the set of new zone leaders from the two views.
+     *
+     * @param oldView the old view
+     * @param newView the new view
+     * @return the set of new leaders
+     */
+    Set<Address> getNewZoneLeaders(View oldView, View newView);
 }

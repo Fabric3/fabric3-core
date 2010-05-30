@@ -40,6 +40,7 @@ package org.fabric3.federation.jgroups;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -82,6 +83,7 @@ import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageTimeoutException;
 import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.RuntimeInstance;
+import org.fabric3.spi.federation.TopologyListener;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
@@ -95,6 +97,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
     private View previousView;
+    private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
     private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
 
     public JGroupsDomainTopologyService(@Reference HostInfo info,
@@ -104,6 +107,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                                         @Reference JGroupsHelper helper,
                                         @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
+    }
+
+    @Reference(required = false)
+    public void setTopologyListeners(List<TopologyListener> topologyListeners) {
+        this.topologyListeners = topologyListeners;
     }
 
     @Init
@@ -284,29 +292,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return zones;
     }
 
-    /**
-     * Returns the list of new zones that came online from the previous view
-     *
-     * @param newView the new view
-     * @return the new zones
-     */
-    private List<Address> getNewZoneLeaders(View newView) {
-        final List<Address> newZoneLeaders = new ArrayList<Address>();
-        for (Address address : newView.getMembers()) {
-            if (previousView == null) {
-                String zone = helper.getZoneName(address);
-                if (zone != null && address.equals(helper.getZoneLeader(zone, newView))) {
-                    newZoneLeaders.add(address);
-                }
-            } else if (!previousView.getMembers().contains(address)) {
-                String zone = helper.getZoneName(address);
-                if (zone != null && address.equals(helper.getZoneLeader(zone, newView))) {
-                    newZoneLeaders.add(address);
-                }
-            }
-        }
-        return newZoneLeaders;
-    }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
 
@@ -350,11 +335,12 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
         public void viewAccepted(View newView) {
             // Send a ZoneMetadataUpdateCommand to any new zone leaders. Note that this must be done in a separate thread.
-            final List<Address> newZoneLeaders = getNewZoneLeaders(newView);
-            if (newZoneLeaders.isEmpty()) {
+            final Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
+            final Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
+            previousView = newView;
+            if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
                 return;
             }
-            previousView = newView;
             executor.execute(new Runnable() {
 
                 public void run() {
@@ -366,6 +352,12 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                             Response value = sendSynchronous(name, command, defaultTimeout);
                             ZoneMetadataResponse response = (ZoneMetadataResponse) value;
                             transportMetadata.put(response.getZone(), response.getMetadata());
+                        }
+                        for (Address address : newRuntimes) {
+                            String name = UUID.get(address);
+                            for (TopologyListener listener : topologyListeners) {
+                                listener.onJoin(name);
+                            }
                         }
                     } catch (MessageException e) {
                         monitor.error("Error requesting zone metadata", e);
@@ -381,7 +373,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             if (name == null) {
                 return;
             }
-            monitor.runtimeRemoved(UUID.get(suspected));
+            String runtimeName = UUID.get(suspected);
+            monitor.runtimeRemoved(runtimeName);
             // Member is suspected. If it is a zone leader, remove the metadata from the cache
             View view = domainChannel.getView();
             if (view == null) {
@@ -389,6 +382,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             }
             if (suspected.equals(helper.getZoneLeader(name, view))) {
                 transportMetadata.remove(name);
+            }
+            for (TopologyListener listener : topologyListeners) {
+                listener.onLeave(runtimeName);
             }
 
         }

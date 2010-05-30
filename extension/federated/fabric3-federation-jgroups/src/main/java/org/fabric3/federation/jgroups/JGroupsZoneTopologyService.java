@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Executor;
 
@@ -74,8 +75,8 @@ import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -85,6 +86,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.ControllerNotFoundException;
 import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
@@ -103,6 +105,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private MessageDispatcher domainDispatcher;
     private boolean synchronize = true;
     private final Object viewLock = new Object();
+    private View previousView;
+    private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
 
     private int state = NOT_UPDATED;
 
@@ -118,6 +122,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     @Property(required = false)
     public void setZoneName(String zoneName) {
         this.zoneName = zoneName;
+    }
+
+    @Reference(required = false)
+    public void setTopologyListeners(List<TopologyListener> topologyListeners) {
+        this.topologyListeners = topologyListeners;
     }
 
     /**
@@ -407,14 +416,38 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     private class ZoneMemberListener implements MembershipListener {
-        public void viewAccepted(View new_view) {
+        public void viewAccepted(View newView) {
             synchronized (viewLock) {
-                viewLock.notifyAll();
+                try {
+                    Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
+                    Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
+                    previousView = newView;
+                    if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
+                        return;
+                    }
+                    for (Address address : newRuntimes) {
+                        String name = UUID.get(address);
+                        for (TopologyListener listener : topologyListeners) {
+                            listener.onJoin(name);
+                        }
+                    }
+                    for (Address address : newZoneLeaders) {
+                        String name = UUID.get(address);
+                        for (TopologyListener listener : topologyListeners) {
+                            listener.onElectedLeader(name);
+                        }
+                    }
+                } finally {
+                    viewLock.notifyAll();
+                }
             }
         }
 
-        public void suspect(Address suspected_mbr) {
-            // no-op
+        public void suspect(Address suspected) {
+            String runtimeName = UUID.get(suspected);
+            for (TopologyListener listener : topologyListeners) {
+                listener.onLeave(runtimeName);
+            }
         }
 
         public void block() {
