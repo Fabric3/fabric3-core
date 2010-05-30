@@ -134,10 +134,6 @@ public class InvokerInterceptor<T> implements Interceptor {
         return null;
     }
 
-    public boolean isOptimizable() {
-        return true;
-    }
-
     public Message invoke(Message msg) {
         WorkContext workContext = msg.getWorkContext();
         InstanceWrapper<T> wrapper;
