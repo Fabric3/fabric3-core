@@ -434,7 +434,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
                     for (Address address : newZoneLeaders) {
                         String name = UUID.get(address);
                         for (TopologyListener listener : topologyListeners) {
-                            listener.onElectedLeader(name);
+                            listener.onLeaderElected(name);
                         }
                     }
                 } finally {

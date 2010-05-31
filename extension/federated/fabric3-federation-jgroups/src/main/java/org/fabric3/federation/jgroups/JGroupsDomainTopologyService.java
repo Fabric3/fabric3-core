@@ -69,8 +69,8 @@ import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -352,6 +352,9 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                             Response value = sendSynchronous(name, command, defaultTimeout);
                             ZoneMetadataResponse response = (ZoneMetadataResponse) value;
                             transportMetadata.put(response.getZone(), response.getMetadata());
+                            for (TopologyListener listener : topologyListeners) {
+                                listener.onLeaderElected(name);
+                            }
                         }
                         for (Address address : newRuntimes) {
                             String name = UUID.get(address);

@@ -205,6 +205,9 @@ public class JGroupsHelperImpl implements JGroupsHelper {
                 }
             } else {
                 String zone = getZoneName(address);
+                if (zone == null) {
+                    continue;
+                }
                 Address oldLeader = getZoneLeader(zone, oldView);
                 Address newLeader = getZoneLeader(zone, newView);
                 if (!newLeader.equals(oldLeader)) {

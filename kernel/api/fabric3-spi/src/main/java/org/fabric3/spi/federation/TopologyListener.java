@@ -63,6 +63,6 @@ public interface TopologyListener {
      *
      * @param name the runtime name
      */
-    void onElectedLeader(String name);
+    void onLeaderElected(String name);
 
 }
