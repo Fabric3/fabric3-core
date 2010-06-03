@@ -119,7 +119,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         for (ServiceDefinition service : componentType.getServices().values()) {
             if (service.isManagement()) {
                 String scope = componentType.getScope();
-                if (!Scope.COMPOSITE.getScope().equals(scope)) {
+                if (!Scope.getScope(scope).isSingleton()) {
                     ServiceContract contract = service.getServiceContract();
                     IllegalManagementInterface warning = new IllegalManagementInterface(contract.getInterfaceName(), implClass.getName());
                     context.addWarning(warning);

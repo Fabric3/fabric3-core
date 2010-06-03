@@ -34,11 +34,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-spi" />
-    <orderEntry type="module" module-name="fabric3-api" />
-    <orderEntry type="module" module-name="fabric3-host-api" />
-    <orderEntry type="module" module-name="fabric3-model" />
-    <orderEntry type="module" module-name="fabric3-management-api" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.jackson:jackson-core-asl:0.9.9-4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.jackson:jackson-mapper-asl:0.9.9-4" level="project" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />

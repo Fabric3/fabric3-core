@@ -96,11 +96,4 @@ public class Fabric3DispatchingServlet extends HttpServlet {
         servlets.put(path, servlet);
     }
 
-    public boolean isMappingRegistered(String mapping) {
-        return servlets.containsKey(mapping);
-    }
-
-    public Servlet unregisterMapping(String path) {
-        return servlets.remove(path);
-    }
 }

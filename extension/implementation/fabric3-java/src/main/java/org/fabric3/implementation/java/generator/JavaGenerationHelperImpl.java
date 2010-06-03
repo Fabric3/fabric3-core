@@ -207,7 +207,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         JavaImplementation implementation = componentDefinition.getImplementation();
         InjectingComponentType componentType = implementation.getComponentType();
         String scope = componentType.getScope();
-        definition.setOptimizable("COMPOSITE".equals(scope));
+        definition.setOptimizable(Scope.getScope(scope).isSingleton());
     }
 
     /**

@@ -69,11 +69,11 @@ import org.fabric3.spi.invocation.WorkContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
-    private final Scope<?> scope;
+    private final Scope scope;
     protected final ScopeContainerMonitor monitor;
     private ScopeRegistry scopeRegistry;
 
-    public AbstractScopeContainer(Scope<?> scope, ScopeContainerMonitor monitor) {
+    public AbstractScopeContainer(Scope scope, ScopeContainerMonitor monitor) {
         this.scope = scope;
         this.monitor = monitor;
     }
@@ -111,7 +111,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         throw new UnsupportedOperationException();
     }
 
-    public Scope<?> getScope() {
+    public Scope getScope() {
         return scope;
     }
 
@@ -151,7 +151,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
 
     /**
      * Shut down an ordered list of instances. The list passed to this method is treated as a live, mutable list so any instances added to this list
-     * as shutdown is occuring will also be shut down.
+     * as shutdown is occurring will also be shut down.
      *
      * @param instances   the list of instances to shutdown
      * @param workContext the current work context

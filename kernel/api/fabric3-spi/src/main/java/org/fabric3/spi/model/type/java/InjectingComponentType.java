@@ -117,16 +117,6 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Returns the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
-     * initialized.
-     *
-     * @return the default initialization level
-     */
-    public int getInitLevel() {
-        return initLevel;
-    }
-
-    /**
      * Sets the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
      * initialized.
      *

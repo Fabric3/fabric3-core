@@ -75,8 +75,7 @@ public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
         return (InstanceWrapper<T>) context.get(component);
     }
 
-    public <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper)
-            throws StoreException {
+    public <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) throws StoreException {
         Map<AtomicComponent<?>, InstanceWrapper<?>> context = contexts.get(contextId);
         assert context != null;
         context.put(component, wrapper);

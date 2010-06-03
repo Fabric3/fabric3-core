@@ -65,7 +65,7 @@ public interface ScopeContainer extends Lifecycle {
      *
      * @return the Scope that this container supports
      */
-    Scope<?> getScope();
+    Scope getScope();
 
     /**
      * Registers a component with the scope.

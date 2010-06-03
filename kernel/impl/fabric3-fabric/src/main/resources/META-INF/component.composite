@@ -17,6 +17,10 @@
            name="ComponentComposite"
            autowire="true">
 
+    <component name="DomainScopeContainer">
+        <f3-impl:implementation.system class="org.fabric3.fabric.component.scope.DomainScopeContainer"/>
+    </component>
+
     <component name="StatelessScopeContainer">
         <f3-impl:implementation.system class="org.fabric3.fabric.component.scope.StatelessScopeContainer"/>
     </component>

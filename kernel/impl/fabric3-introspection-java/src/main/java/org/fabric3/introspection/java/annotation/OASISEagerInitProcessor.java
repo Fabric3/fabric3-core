@@ -78,7 +78,9 @@ public class OASISEagerInitProcessor<I extends Implementation<? extends Injectin
             return true;
         }
         Scope scope = type.getAnnotation(Scope.class);
-        if (scope == null || !org.fabric3.model.type.component.Scope.COMPOSITE.getScope().equals(scope.value())) {
+        if (scope == null
+                || (!org.fabric3.model.type.component.Scope.COMPOSITE.getScope().equals(scope.value())
+                && !org.fabric3.model.type.component.Scope.DOMAIN.getScope().equals(scope.value()))) {
             EagerInitNotSupported warning = new EagerInitNotSupported(type);
             context.addWarning(warning);
             return false;

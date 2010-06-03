@@ -37,17 +37,20 @@
 */
 package org.fabric3.api.annotation.scope;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import org.osoa.sca.annotations.Scope;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
- * Provides named <code>String</code> constants representing component scopes.
+ * Annotation used to indicate that decorated component implementations have domain scope
  */
-public interface Scopes {
-
-    String STATELESS = "STATELESS";
-
-    String COMPOSITE = "COMPOSITE";
-
-    String CONVERSATION = "CONVERSATION";
-
-    String DOMAIN = "DOMAIN";
+@Target(TYPE)
+@Retention(RUNTIME)
+@Scope(Scopes.COMPOSITE)
+public @interface Domain {
 
 }

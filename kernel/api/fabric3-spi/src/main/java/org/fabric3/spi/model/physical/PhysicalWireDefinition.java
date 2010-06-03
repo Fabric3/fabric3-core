@@ -137,30 +137,12 @@ public class PhysicalWireDefinition implements Serializable {
     }
 
     /**
-     * Sets the physical definition for the source side of the wire.
-     *
-     * @param source the physical definition for the source side of the wire
-     */
-    public void setSource(PhysicalSourceDefinition source) {
-        this.source = source;
-    }
-
-    /**
      * Returns the physical definition for the target side of the wire.
      *
      * @return the physical definition for the target side of the wire
      */
     public PhysicalTargetDefinition getTarget() {
         return target;
-    }
-
-    /**
-     * Sets the physical definition for the target side of the wire.
-     *
-     * @param target the physical definition for the target side of the wire
-     */
-    public void setTarget(PhysicalTargetDefinition target) {
-        this.target = target;
     }
 
 }

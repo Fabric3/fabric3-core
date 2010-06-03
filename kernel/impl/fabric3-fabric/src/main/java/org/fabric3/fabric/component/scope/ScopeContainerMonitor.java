@@ -56,6 +56,9 @@ import org.fabric3.spi.component.InstanceDestructionException;
 public interface ScopeContainerMonitor {
 
     @Severe
+    void error(Exception e);
+
+    @Severe
     void eagerInitializationError(URI componentId, Exception e);
 
     @Severe

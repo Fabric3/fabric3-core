@@ -68,18 +68,20 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 @EagerInit
 public class StartContextCommandExecutor implements CommandExecutor<StartContextCommand> {
-    private ScopeContainer container;
+    private ScopeContainer compositeScopeContainer;
+    private ScopeContainer domainScopeContainer;
     private CommandExecutorRegistry commandExecutorRegistry;
 
     @Constructor
-    public StartContextCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry,
-                                       @Reference ScopeRegistry scopeRegistry) {
-        this.commandExecutorRegistry = commandExecutorRegistry;
-        this.container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+    public StartContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+        this.commandExecutorRegistry = executorRegistry;
+        this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
     }
 
     public StartContextCommandExecutor(ScopeRegistry scopeRegistry) {
-        this.container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
     }
 
     @Init
@@ -93,7 +95,11 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
         CallFrame frame = new CallFrame(deployable);
         workContext.addCallFrame(frame);
         try {
-            container.startContext(workContext);
+            compositeScopeContainer.startContext(workContext);
+            if (domainScopeContainer != null) {
+                // domain scope not available during bootstrap
+                domainScopeContainer.startContext(workContext);
+            }
         } catch (GroupInitializationException e) {
             throw new ExecutionException("Error executing command", e);
         }

@@ -16,7 +16,7 @@ public class IllegalManagementInterface extends ValidationFailure {
 
     public String getMessage() {
         return "Implementation class " + implClass + " implements the management interface " + interfaze
-                + " but it is not COMPOSITE scope. Management will not be enabled";
+                + " but instance management is not supported for its scope. Management will not be enabled";
     }
 
 }

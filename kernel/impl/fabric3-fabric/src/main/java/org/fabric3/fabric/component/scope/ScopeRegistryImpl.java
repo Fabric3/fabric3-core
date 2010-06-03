@@ -67,12 +67,11 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         scopes.remove(container.getScope().getScope());
     }
 
-    public ScopeContainer getScopeContainer(Scope<?> scope) {
+    public ScopeContainer getScopeContainer(Scope scope) {
         return scopes.get(scope.getScope());
     }
 
-
-    public Scope<?> getScope(String scopeName) {
+    public Scope getScope(String scopeName) {
         ScopeContainer container = scopes.get(scopeName);
         return container == null ? null : container.getScope();
     }

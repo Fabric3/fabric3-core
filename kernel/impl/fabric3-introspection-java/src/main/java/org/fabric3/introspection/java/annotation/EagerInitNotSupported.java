@@ -57,7 +57,7 @@ public class EagerInitNotSupported extends ValidationFailure {
     }
 
     public String getMessage() {
-        return clazz.getName() + " is annotated with @EagerInit on a non-composite scope implementation. " +
-                "Eager initialization is only supported on composite scope implementations.";
+        return "@EagerInit is used on an incorrect scope in " + clazz.getName()
+                + " . Eager initialization is only supported on domain and composite scope implementations.";
     }
 }

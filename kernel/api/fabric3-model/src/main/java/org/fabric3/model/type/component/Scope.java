@@ -43,39 +43,47 @@
  */
 package org.fabric3.model.type.component;
 
-import javax.xml.namespace.QName;
-
-import org.osoa.sca.Conversation;
-
 import org.fabric3.model.type.ModelObject;
 
 /**
  * Defines the component implementation instance lifecycle.
  *
  * @version $Rev$ $Date$
- * @param <T> the type of identifier used to identify instances of this scope
  */
-public class Scope<T> extends ModelObject {
+public class Scope extends ModelObject {
     private static final long serialVersionUID = -5300929173662672089L;
-    public static final Scope<Object> STATELESS = new Scope<Object>("STATELESS", Object.class);
-    public static final Scope<Conversation> CONVERSATION = new Scope<Conversation>("CONVERSATION", Conversation.class);
-    public static final Scope<QName> COMPOSITE = new Scope<QName>("COMPOSITE", QName.class);
+    public static final Scope STATELESS = new Scope("STATELESS", false);
+    public static final Scope CONVERSATION = new Scope("CONVERSATION", false);
+    public static final Scope COMPOSITE = new Scope("COMPOSITE", true);
+    public static final Scope DOMAIN = new Scope("DOMAIN", true);
 
-    private final Class<T> identifierType;
     private final String scope;
+    private final boolean singleton;
 
-    public Scope(String scope, Class<T> identifierType) {
-        assert scope != null && identifierType != null;
+    public Scope(String scope, boolean singleton) {
+        this.singleton = singleton;
         this.scope = scope.toUpperCase().intern();
-        this.identifierType = identifierType;
+    }
+
+    public static Scope getScope(String name) {
+        if (STATELESS.getScope().equals(name)) {
+            return STATELESS;
+        } else if (COMPOSITE.getScope().equals(name)) {
+            return COMPOSITE;
+        } else if (CONVERSATION.getScope().equals(name)) {
+            return CONVERSATION;
+        } else if (DOMAIN.getScope().equals(name)) {
+            return DOMAIN;
+        }
+        throw new IllegalArgumentException("Unknown scope: " + name);
     }
 
     public String getScope() {
         return scope;
     }
 
-    public Class<T> getIdentifierType() {
-        return identifierType;
+    public boolean isSingleton() {
+        return singleton;
     }
 
     @SuppressWarnings({"StringEquality"})

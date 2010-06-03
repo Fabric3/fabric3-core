@@ -46,12 +46,14 @@ package org.fabric3.introspection.java.annotation;
 import org.osoa.sca.annotations.Scope;
 
 import org.fabric3.model.type.component.Implementation;
-import static org.fabric3.model.type.component.Scope.COMPOSITE;
-import static org.fabric3.model.type.component.Scope.CONVERSATION;
-import static org.fabric3.model.type.component.Scope.STATELESS;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+
+import static org.fabric3.model.type.component.Scope.COMPOSITE;
+import static org.fabric3.model.type.component.Scope.CONVERSATION;
+import static org.fabric3.model.type.component.Scope.DOMAIN;
+import static org.fabric3.model.type.component.Scope.STATELESS;
 
 /**
  * @version $Rev$ $Date$
@@ -66,7 +68,8 @@ public class ScopeProcessor<I extends Implementation<? extends InjectingComponen
         String scopeName = annotation.value();
         if (!COMPOSITE.getScope().equals(scopeName)
                 && !CONVERSATION.getScope().equals(scopeName)
-                && !STATELESS.getScope().equals(scopeName)) {
+                && !STATELESS.getScope().equals(scopeName)
+                && !DOMAIN.getScope().equals(scopeName)) {
             InvalidScope failure = new InvalidScope(type, scopeName);
             context.addError(failure);
             return;

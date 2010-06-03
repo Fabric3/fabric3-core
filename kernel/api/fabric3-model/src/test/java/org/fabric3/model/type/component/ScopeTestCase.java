@@ -43,8 +43,6 @@
  */
 package org.fabric3.model.type.component;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 /**
@@ -53,8 +51,8 @@ import junit.framework.TestCase;
 public class ScopeTestCase extends TestCase {
     public void testEquality() {
         assertEquals(Scope.COMPOSITE, Scope.COMPOSITE);
-        assertEquals(Scope.COMPOSITE, new Scope<QName>("COMPOSITE", QName.class));
-        Scope<?> scope = Scope.COMPOSITE;
+        assertEquals(Scope.COMPOSITE, new Scope("COMPOSITE", true));
+        Scope scope = Scope.COMPOSITE;
         assertFalse(scope.equals(Scope.STATELESS));
     }
 }
