@@ -361,14 +361,12 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             } catch (ValidationException e) {
                 // print out the validation errors
                 monitor.contributionErrors(e.getMessage());
-                // FIXME for now, just error all additions
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
             } catch (AssemblyException e) {
                 // print out the deployment errors
                 monitor.deploymentErrors(e.getMessage());
-                // FIXME for now, just error all additions
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
@@ -381,15 +379,22 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     errorCache.put(cached.getName(), cached);
                 }
                 monitor.error(e);
+            } catch (NoClassDefFoundError e) {
+                for (FileSystemResource cached : addedResources) {
+                    errorCache.put(cached.getName(), cached);
+                }
+                // don't re-throw the error since the contribution can be safely ignored
             } catch (Error e) {
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
+                // re-throw the exception as the runtime may be in an unstable state
                 throw e;
             } catch (RuntimeException e) {
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
+                // re-throw the exception as the runtime may be in an unstable state
                 throw e;
             }
         }
