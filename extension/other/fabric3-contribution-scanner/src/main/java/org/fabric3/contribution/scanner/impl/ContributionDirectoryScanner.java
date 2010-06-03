@@ -86,12 +86,12 @@ import org.fabric3.spi.event.RuntimeStart;
  * activated. Updated components will trigger re-activation of previously deployed components. Removal will remove the contribution from the domain
  * and de-activate any associated deployed components.
  * <p/>
- * The scanner watches the deployment directory at a fixed-delay interval. Files are tracked as a {@link FileSystemResource}, which provides a
- * consistent metadata view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval,
- * removed files are determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also
- * determined by comparing the current directory state with that of the previous pass. Detected changes and additions are cached for the following
- * interval. Detected changes and additions from the previous interval are then checked using a checksum to see if they have changed again. If so,
- * they remain cached. If they have not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
+ * The scanner watches the deployment directory at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a consistent
+ * metadata view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files
+ * are determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by
+ * comparing the current directory state with that of the previous pass. Detected changes and additions are cached for the following interval.
+ * Detected changes and additions from the previous interval are then compared using a checksum to see if they have changed again. If so, they remain
+ * cached. If they have not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
  */
 @Service(VoidService.class)
 @EagerInit
@@ -171,8 +171,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             processIgnored();
         } catch (RuntimeException e) {
             monitor.error(e);
+        } catch (Error e) {
+            monitor.error(e);
+            throw e;
         }
-
     }
 
     private synchronized void recover(File[] files) {
@@ -371,26 +373,25 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     errorCache.put(cached.getName(), cached);
                 }
             } catch (ContributionException e) {
-                // FIXME for now, just error all additions
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
-                monitor.error(e);
             } catch (DeploymentException e) {
-                // FIXME for now, just error all additions
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
                 monitor.error(e);
+            } catch (Error e) {
+                for (FileSystemResource cached : addedResources) {
+                    errorCache.put(cached.getName(), cached);
+                }
+                throw e;
             } catch (RuntimeException e) {
-                // FIXME for now, just error all additions
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
-                monitor.error(e);
                 throw e;
             }
-
         }
     }
 
