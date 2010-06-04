@@ -89,15 +89,8 @@ import org.fabric3.transport.jetty.JettyService;
 public class JettyServiceImpl implements JettyService {
 
     private static final String ROOT = "/";
-    private static final int ERROR = 0;
-    private static final int UNINITIALIZED = 0;
-    private static final int STARTING = 1;
-    private static final int STARTED = 2;
-    private static final int STOPPING = 3;
-    private static final int STOPPED = 4;
 
     private final Object joinLock = new Object();
-    private int state = UNINITIALIZED;
     private boolean enableHttps;
     private int minHttpPort = 8080;
     private int maxHttpPort = -1;
@@ -194,7 +187,6 @@ public class JettyServiceImpl implements JettyService {
     @Init
     public void init() throws JettyInitializationException {
         try {
-            state = STARTING;
             server = new Server();
             initializeThreadPool();
             initializeConnector();
@@ -206,21 +198,17 @@ public class JettyServiceImpl implements JettyService {
                 monitor.startHttpsListener(selectedHttps);
             }
             server.start();
-            state = STARTED;
         } catch (Exception e) {
-            state = ERROR;
             throw new JettyInitializationException("Error starting Jetty service", e);
         }
     }
 
     @Destroy
     public void destroy() throws Exception {
-        state = STOPPING;
         synchronized (joinLock) {
             joinLock.notifyAll();
         }
         server.stop();
-        state = STOPPED;
     }
 
     public int getHttpPort() {
@@ -445,33 +433,6 @@ public class JettyServiceImpl implements JettyService {
             return false;
         }
 
-        public void start() throws Exception {
-
-        }
-
-        public void stop() throws Exception {
-
-        }
-
-        public boolean isRunning() {
-            return state == STARTING || state == STARTED;
-        }
-
-        public boolean isStarted() {
-            return state == STARTED;
-        }
-
-        public boolean isStarting() {
-            return state == STARTING;
-        }
-
-        public boolean isStopping() {
-            return state == STOPPING;
-        }
-
-        public boolean isFailed() {
-            return state == ERROR;
-        }
     }
 
     /**
@@ -483,9 +444,6 @@ public class JettyServiceImpl implements JettyService {
 
         public Fabric3Work(Runnable job) {
             this.job = job;
-        }
-
-        public void release() {
         }
 
         public void execute() {
