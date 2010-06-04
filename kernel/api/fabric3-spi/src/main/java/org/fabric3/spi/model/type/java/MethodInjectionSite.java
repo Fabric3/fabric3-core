@@ -54,13 +54,11 @@ public class MethodInjectionSite extends InjectionSite {
     private static final long serialVersionUID = -2222837362065034249L;
     private Signature signature;
     private int param;
-    private int modifiers;
 
     public MethodInjectionSite(Method method, int param) {
         super(method.getParameterTypes()[param].getName());
         this.signature = new Signature(method);
         this.param = param;
-        this.modifiers = method.getModifiers();
     }
 
     /**
@@ -81,15 +79,6 @@ public class MethodInjectionSite extends InjectionSite {
      */
     public int getParam() {
         return param;
-    }
-
-    /**
-     * Returns the field modifiers.
-     *
-     * @return the field modifiers
-     */
-    public int getModifiers() {
-        return modifiers;
     }
 
     public String toString() {

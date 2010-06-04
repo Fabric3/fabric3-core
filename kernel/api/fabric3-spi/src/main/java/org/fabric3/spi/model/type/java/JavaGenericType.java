@@ -74,7 +74,7 @@ public class JavaGenericType extends JavaType<JavaTypeInfo> {
         }
 
         if (other instanceof JavaClass) {
-            boolean bound = false;  // unbound paramters are equivalent to non-generic types
+            boolean bound = false;  // unbound parameters are equivalent to non-generic types
             for (JavaTypeInfo info : getLogical().getParameterTypesInfos()) {
                 if (!Object.class.equals(info.getRawType())) {
                     bound = true;

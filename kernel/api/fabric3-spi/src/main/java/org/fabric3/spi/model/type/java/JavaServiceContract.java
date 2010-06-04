@@ -60,7 +60,7 @@ public class JavaServiceContract extends ServiceContract {
 
     private static final long serialVersionUID = -7360275776965712638L;
     // NOTE: this class cannot reference the actual Java class it represents as contract comparison may be performed
-    // accross classloaders. This class may also be deserialized as part of a domain assembly in a context where the
+    // across classloaders. This class may also be deserialized as part of a domain assembly in a context where the
     // Java class may not be present on the classpath.
     private String interfaceClass;
     private List<String> interfaces;
@@ -86,11 +86,6 @@ public class JavaServiceContract extends ServiceContract {
     public String getQualifiedInterfaceName() {
         return getInterfaceClass();
     }
-
-    public void setInterfaceClass(Class<?> interfaceClass) {
-        introspectInterface(interfaceClass);
-    }
-
 
     /**
      * Returns the fully qualified class name used to represent the service contract.

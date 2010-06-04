@@ -53,11 +53,9 @@ import java.lang.reflect.Field;
 public class FieldInjectionSite extends InjectionSite {
     private static final long serialVersionUID = -6502983302874808563L;
     private String name;
-    int modifiers;
 
     public FieldInjectionSite(Field field) {
         super(field.getType().getName());
-        this.modifiers = field.getModifiers();
         name = field.getName();
     }
 
@@ -68,15 +66,6 @@ public class FieldInjectionSite extends InjectionSite {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the field modifiers.
-     *
-     * @return the field modifiers
-     */
-    public int getModifiers() {
-        return modifiers;
     }
 
     public String toString() {

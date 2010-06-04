@@ -204,23 +204,6 @@ public class Signature extends ModelObject {
         return parameterTypes;
     }
 
-    /**
-     * Sets a list of class names for the method parameters.
-     *
-     * @param parameterTypes a list of class names for the method parameters
-     */
-    public void setParameterTypes(List<String> parameterTypes) {
-        this.parameterTypes = parameterTypes;
-    }
-
-    public boolean isConstructor() {
-        return isConstructor;
-    }
-
-    public void setConstructor(boolean constructor) {
-        isConstructor = constructor;
-    }
-
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(name);

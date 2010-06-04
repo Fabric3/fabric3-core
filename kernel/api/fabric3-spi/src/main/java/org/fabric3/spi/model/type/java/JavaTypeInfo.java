@@ -102,18 +102,6 @@ public class JavaTypeInfo extends ModelObject {
         return parameterTypeInfos;
     }
 
-    /**
-     * Adds a JavaTypeInfo.
-     *
-     * @param info the JavaTypeInfo
-     */
-    public void addParmeterTypeInfo(JavaTypeInfo info) {
-        if (parameterTypeInfos == null) {
-            throw new IllegalArgumentException("Attempt to add generic type information to a non-generic type");
-        }
-        parameterTypeInfos.add(info);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
