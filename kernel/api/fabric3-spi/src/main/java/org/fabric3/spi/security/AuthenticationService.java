@@ -51,7 +51,7 @@ public interface AuthenticationService {
      *
      * @param token the authentication token
      * @return the authenticated subject
-     * @throws AuthenticationException if the authentication attempt was unsucessful. The exception will wrap an underlying cause typically thrown by
+     * @throws AuthenticationException if the authentication attempt was unsuccessful. The exception will wrap an underlying cause typically thrown by
      *                                 the security provider.
      */
     SecuritySubject authenticate(AuthenticationToken<?, ?> token) throws AuthenticationException;
