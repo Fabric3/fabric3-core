@@ -95,12 +95,12 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
         policySets.add(policySet);
     }
 
-    public void removePolicySet(QName policySet) {
-        policySets.remove(policySet);
-    }
-
     public void addPolicySets(Set<QName> policySets) {
         this.policySets.addAll(policySets);
+    }
+
+    public void removePolicySet(QName policySet) {
+        policySets.remove(policySet);
     }
 
 }

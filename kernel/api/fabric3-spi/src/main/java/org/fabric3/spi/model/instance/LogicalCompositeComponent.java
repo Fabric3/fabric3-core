@@ -110,15 +110,6 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     }
 
     /**
-     * Remove all wires for the originating reference.
-     *
-     * @param logicalReference the reference
-     */
-    public void removeWires(LogicalReference logicalReference) {
-        wires.remove(logicalReference);
-    }
-
-    /**
      * Gets the resolved targets sourced by the specified logical reference.
      *
      * @param logicalReference Logical reference that sources the wire.
@@ -148,15 +139,6 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      */
     public Collection<LogicalComponent<?>> getComponents() {
         return components.values();
-    }
-
-    /**
-     * Remove the child component based on the URI
-     *
-     * @param uri the component URI
-     */
-    public void removeComponent(URI uri) {
-        components.remove(uri);
     }
 
     /**

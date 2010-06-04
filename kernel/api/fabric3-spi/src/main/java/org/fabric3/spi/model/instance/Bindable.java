@@ -84,19 +84,6 @@ public abstract class Bindable extends LogicalInvocable {
     }
 
     /**
-     * Overrides all the current callback bindings for the service or reference.
-     *
-     * @param bindings New set of bindings.
-     */
-    public void overrideCallbackBindings(List<LogicalBinding<?>> bindings) {
-        this.callbackBindings.clear();
-        for (LogicalBinding<?> binding : bindings) {
-            binding.setCallback(true);
-        }
-        this.callbackBindings.addAll(bindings);
-    }
-
-    /**
      * Returns all the bindings on the service or the reference.
      *
      * @return The bindings available on the service or the reference.
@@ -138,15 +125,6 @@ public abstract class Bindable extends LogicalInvocable {
      */
     public void addBinding(LogicalBinding<?> binding) {
         bindings.add(binding);
-    }
-
-    /**
-     * Adds a collection of bindings.
-     *
-     * @param bindings the bindings
-     */
-    public void addBindings(List<LogicalBinding<?>> bindings) {
-        bindings.addAll(bindings);
     }
 
     /**
