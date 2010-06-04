@@ -45,7 +45,7 @@ public interface DataSourceFactory {
     /**
      * Creates and registers a datasource.
      *
-     * @param configuration the datasource configuraion
+     * @param configuration the datasource configuration
      * @throws DataSourceCreationException if an error is encountered registering a datasource
      */
     void create(DataSourceConfiguration configuration) throws DataSourceCreationException;
