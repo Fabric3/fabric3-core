@@ -79,7 +79,6 @@ import org.fabric3.spi.model.type.java.JavaTypeInfo;
  * @version $Rev$ $Date$
  */
 public class JavaContractProcessorImpl implements JavaContractProcessor {
-    public static final String IDL_INPUT = "idl:input";
     public static final QName ONEWAY_INTENT = new QName(Constants.SCA_NS, "oneWay");
 
     private final IntrospectionHelper helper;
