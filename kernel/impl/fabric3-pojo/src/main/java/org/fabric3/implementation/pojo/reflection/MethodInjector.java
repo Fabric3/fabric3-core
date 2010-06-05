@@ -52,11 +52,11 @@ import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 
 /**
- * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} using a given method
+ * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} using a given method.
  *
  * @version $Rev$ $Date$
  */
-public class MethodInjector<T> implements Injector<T> {
+public class MethodInjector implements Injector<Object> {
     private final Method method;
     private ObjectFactory<?> objectFactory;
 
@@ -68,10 +68,10 @@ public class MethodInjector<T> implements Injector<T> {
         this.objectFactory = objectFactory;
     }
 
-    public void inject(T instance) throws ObjectCreationException {
+    public void inject(Object instance) throws ObjectCreationException {
         Object target;
         if (objectFactory == null) {
-            // this can happen if a value is removed such as a reference being unwired
+            // this can happen if a value is removed such as a reference being un-wired
             target = null;
         } else {
             target = objectFactory.getInstance();

@@ -46,11 +46,11 @@ package org.fabric3.implementation.pojo.instancefactory;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 
 /**
- * Interface for building instance factory providers.
+ * Creates instance factory providers.
  *
  * @version $Revision$ $Date$
  */
-public interface InstanceFactoryBuilder<T> {
+public interface InstanceFactoryBuilder {
 
     /**
      * Builds an instance factory provider from a definition.
@@ -61,5 +61,5 @@ public interface InstanceFactoryBuilder<T> {
      * @throws InstanceFactoryBuilderException
      *          if there was a problem with the definition
      */
-    InstanceFactoryProvider<T> build(InstanceFactoryDefinition definition, ClassLoader classLoader) throws InstanceFactoryBuilderException;
+    InstanceFactoryProvider build(InstanceFactoryDefinition definition, ClassLoader classLoader) throws InstanceFactoryBuilderException;
 }

@@ -71,14 +71,14 @@ public interface ScopeContainer {
      *
      * @param component the component to register
      */
-    void register(AtomicComponent<?> component);
+    void register(AtomicComponent component);
 
     /**
      * Unregisters a component with the scope.
      *
      * @param component the component to unregister
      */
-    void unregister(AtomicComponent<?> component);
+    void unregister(AtomicComponent component);
 
     /**
      * Registers a callback object to receive notification when a conversation has expired.
@@ -143,7 +143,7 @@ public interface ScopeContainer {
      * @param workContext the work context in which to initialize the components
      * @throws GroupInitializationException if one or more components threw an exception during initialization
      */
-    void initializeComponents(List<AtomicComponent<?>> components, WorkContext workContext) throws GroupInitializationException;
+    void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException;
 
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
@@ -154,8 +154,7 @@ public interface ScopeContainer {
      * @throws InstanceLifecycleException if there was a problem instantiating the target instance
      * @throws ConversationEndedException if the instance is conversational and the associated has ended or expired
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext)
-            throws InstanceLifecycleException, ConversationEndedException;
+    InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException, ConversationEndedException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).
@@ -165,7 +164,7 @@ public interface ScopeContainer {
      * @param wrapper     the wrapper for the target instance being returned
      * @throws InstanceDestructionException if there was a problem returning the target instance
      */
-    <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper) throws InstanceDestructionException;
+    void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) throws InstanceDestructionException;
 
     /**
      * Callback received when component reference wire(s) are updated. Instances will be injected with updated wires when {@link #reinject()} is
@@ -174,7 +173,7 @@ public interface ScopeContainer {
      * @param component     the component being updated
      * @param referenceName the reference name
      */
-    void updated(AtomicComponent<?> component, String referenceName);
+    void updated(AtomicComponent component, String referenceName);
 
     /**
      * Callback received when a wire from a 0..1 or 1..1 reference or all wires from a multiplicity reference have been removed. The instance will be
@@ -183,7 +182,7 @@ public interface ScopeContainer {
      * @param component     component with active instances, whose references need to be updated
      * @param referenceName the reference name
      */
-    void removed(AtomicComponent<?> component, String referenceName);
+    void removed(AtomicComponent component, String referenceName);
 
     /**
      * Reinjects all live instances with updated wires

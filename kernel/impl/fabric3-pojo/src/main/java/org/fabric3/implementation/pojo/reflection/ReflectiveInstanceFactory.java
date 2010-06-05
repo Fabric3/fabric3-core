@@ -43,32 +43,32 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
-import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
+import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.Injector;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.model.type.java.Injectable;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
-    private final ObjectFactory<T> constructor;
+public class ReflectiveInstanceFactory implements InstanceFactory {
+    private final ObjectFactory<?> constructor;
     private Injectable[] injectables;
-    private final Injector<T>[] injectors;
-    private final EventInvoker<T> initInvoker;
-    private final EventInvoker<T> destroyInvoker;
+    private final Injector<Object>[] injectors;
+    private final EventInvoker initInvoker;
+    private final EventInvoker destroyInvoker;
     private final ClassLoader cl;
     private final boolean reinjectable;
 
-    public ReflectiveInstanceFactory(ObjectFactory<T> constructor,
+    public ReflectiveInstanceFactory(ObjectFactory<?> constructor,
                                      Injectable[] injectables,
-                                     Injector<T>[] injectors,
-                                     EventInvoker<T> initInvoker,
-                                     EventInvoker<T> destroyInvoker,
+                                     Injector<Object>[] injectors,
+                                     EventInvoker initInvoker,
+                                     EventInvoker destroyInvoker,
                                      boolean reinjectable,
                                      ClassLoader cl) {
         this.constructor = constructor;
@@ -80,19 +80,19 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
         this.cl = cl;
     }
 
-    public InstanceWrapper<T> newInstance(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper newInstance(WorkContext workContext) throws ObjectCreationException {
         // push the work context onto the thread when calling the user object
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
         WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
-            T instance = constructor.getInstance();
+            Object instance = constructor.getInstance();
             if (injectors != null) {
-                for (Injector<T> injector : injectors) {
+                for (Injector<Object> injector : injectors) {
                     injector.inject(instance);
                 }
             }
-            return new ReflectiveInstanceWrapper<T>(instance, reinjectable, cl, initInvoker, destroyInvoker, injectables, injectors);
+            return new ReflectiveInstanceWrapper(instance, reinjectable, cl, initInvoker, destroyInvoker, injectables, injectors);
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldContext);
             Thread.currentThread().setContextClassLoader(oldCl);

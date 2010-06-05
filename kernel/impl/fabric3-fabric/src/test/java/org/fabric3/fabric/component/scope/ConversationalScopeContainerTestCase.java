@@ -63,8 +63,8 @@ public class ConversationalScopeContainerTestCase extends TestCase {
     private InstanceWrapperStore<F3Conversation> store;
     private F3Conversation conversation;
     private WorkContext workContext;
-    private AtomicComponent<Object> component;
-    private InstanceWrapper<Object> wrapper;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
 
     public void testStoreIsNotifiedOfContextStartStop() throws Exception {
         store.startContext(conversation);

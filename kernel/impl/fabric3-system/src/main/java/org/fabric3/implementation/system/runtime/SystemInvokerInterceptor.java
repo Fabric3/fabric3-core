@@ -60,13 +60,13 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 /**
  * @version $Rev$ $Date$
  */
-public class SystemInvokerInterceptor<T> implements Interceptor {
+public class SystemInvokerInterceptor implements Interceptor {
 
     private final Method operation;
     private final ScopeContainer scopeContainer;
-    private final AtomicComponent<T> component;
+    private final AtomicComponent component;
 
-    public SystemInvokerInterceptor(Method operation, ScopeContainer scopeContainer, AtomicComponent<T> component) {
+    public SystemInvokerInterceptor(Method operation, ScopeContainer scopeContainer, AtomicComponent component) {
         this.operation = operation;
         this.scopeContainer = scopeContainer;
         this.component = component;
@@ -83,7 +83,7 @@ public class SystemInvokerInterceptor<T> implements Interceptor {
     public Message invoke(Message msg) {
         Object body = msg.getBody();
         WorkContext workContext = msg.getWorkContext();
-        InstanceWrapper<T> wrapper;
+        InstanceWrapper wrapper;
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
         } catch (InstanceLifecycleException e) {

@@ -52,10 +52,10 @@ import org.osoa.sca.ServiceReference;
  * @version $Rev$ $Date$
  */
 public class PojoComponentContext implements ComponentContext {
-    private final PojoComponent<?> component;
+    private final PojoComponent component;
     private final PojoRequestContext requestContext;
 
-    public PojoComponentContext(PojoComponent<?> component, PojoRequestContext requestContext) {
+    public PojoComponentContext(PojoComponent component, PojoRequestContext requestContext) {
         this.component = component;
         this.requestContext = requestContext;
     }

@@ -51,11 +51,10 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class MethodEventInvokerTestCase extends TestCase {
-    private Method privateMethod;
     private Method exceptionMethod;
 
     public void testException() {
-        MethodEventInvoker<MethodEventInvokerTestCase.Foo> injector = new MethodEventInvoker<Foo>(exceptionMethod);
+        MethodEventInvoker injector = new MethodEventInvoker(exceptionMethod);
         try {
             injector.invokeEvent(new Foo());
             fail();
@@ -66,7 +65,6 @@ public class MethodEventInvokerTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        privateMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("hidden");
         exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
 
     }

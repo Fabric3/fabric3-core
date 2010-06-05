@@ -80,7 +80,7 @@ public interface InstanceWrapperStore<KEY> {
      * @return the wrapped instance associated with the context or null
      * @throws InstanceLifecycleException if there was problem returning the instance
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) throws InstanceLifecycleException;
+    InstanceWrapper getWrapper(AtomicComponent component, KEY contextId) throws InstanceLifecycleException;
 
     /**
      * Associated an instance of the supplied component with the supplied context.
@@ -90,5 +90,5 @@ public interface InstanceWrapperStore<KEY> {
      * @param wrapper   the wrapped instance
      * @throws InstanceLifecycleException if there was a problem storing the instance
      */
-    <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) throws InstanceLifecycleException;
+    void putWrapper(AtomicComponent component, KEY contextId, InstanceWrapper wrapper) throws InstanceLifecycleException;
 }

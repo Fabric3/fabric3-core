@@ -50,13 +50,13 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * @version $Rev$ $Date$
  */
-public class MockComponent<T> implements AtomicComponent<T> {
+public class MockComponent implements AtomicComponent {
 
     private final URI componentId;
-    private final ObjectFactory<T> objectFactory;
+    private final ObjectFactory<Object> objectFactory;
     private URI classLoaderId;
 
-    public MockComponent(URI componentId, ObjectFactory<T> objectFactory) {
+    public MockComponent(URI componentId, ObjectFactory<Object> objectFactory) {
         this.componentId = componentId;
         this.objectFactory = objectFactory;
     }
@@ -74,11 +74,11 @@ public class MockComponent<T> implements AtomicComponent<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public ObjectFactory<T> createObjectFactory() {
+    public ObjectFactory<Object> createObjectFactory() {
         return objectFactory;
     }
 
-    public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
         return null;
     }
 

@@ -51,11 +51,11 @@ import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.Injector;
 
 /**
- * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} on a given field
+ * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} on a given field.
  *
  * @version $Rev$ $Date$
  */
-public class FieldInjector<T> implements Injector<T> {
+public class FieldInjector implements Injector<Object> {
     private final Field field;
 
     private ObjectFactory<?> objectFactory;
@@ -74,9 +74,9 @@ public class FieldInjector<T> implements Injector<T> {
     }
 
     /**
-     * Inject a new value on the given isntance
+     * Inject a new value on the given instance
      */
-    public void inject(T instance) throws ObjectCreationException {
+    public void inject(Object instance) throws ObjectCreationException {
         try {
             Object target;
             if (objectFactory == null) {

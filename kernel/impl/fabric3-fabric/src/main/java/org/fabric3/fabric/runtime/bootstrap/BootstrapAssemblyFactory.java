@@ -335,7 +335,7 @@ public class BootstrapAssemblyFactory {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
-        SystemComponentBuilder<?> builder = new SystemComponentBuilder<Object>(scopeRegistry,
+        SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                                factoryBuilder,
                                                                                classLoaderRegistry,
                                                                                propertyBuilder,

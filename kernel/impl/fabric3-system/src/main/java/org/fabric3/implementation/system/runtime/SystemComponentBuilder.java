@@ -66,12 +66,12 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class SystemComponentBuilder<T> extends PojoComponentBuilder<T, SystemComponentDefinition, SystemComponent<T>> {
+public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponentDefinition, SystemComponent> {
     private ScopeRegistry scopeRegistry;
-    private InstanceFactoryBuilder<T> factoryBuilder;
+    private InstanceFactoryBuilder factoryBuilder;
 
     public SystemComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                  @Reference InstanceFactoryBuilder<T> factoryBuilder,
+                                  @Reference InstanceFactoryBuilder factoryBuilder,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                   @Reference IntrospectionHelper helper) {
@@ -80,7 +80,7 @@ public class SystemComponentBuilder<T> extends PojoComponentBuilder<T, SystemCom
         this.factoryBuilder = factoryBuilder;
     }
 
-    public SystemComponent<T> build(SystemComponentDefinition definition) throws BuilderException {
+    public SystemComponent build(SystemComponentDefinition definition) throws BuilderException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -90,11 +90,11 @@ public class SystemComponentBuilder<T> extends PojoComponentBuilder<T, SystemCom
 
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
-        InstanceFactoryProvider<T> provider = factoryBuilder.build(factoryDefinition, classLoader);
+        InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
 
         boolean eager = definition.isEagerInit();
-        return new SystemComponent<T>(uri, provider, scopeContainer, deployable, eager, -1, -1);
+        return new SystemComponent(uri, provider, scopeContainer, deployable, eager, -1, -1);
     }
 }

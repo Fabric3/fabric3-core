@@ -54,7 +54,7 @@ import org.fabric3.timer.spi.TimerService;
  *
  * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
-public class TimerComponent<T> extends JavaComponent<T> {
+public class TimerComponent extends JavaComponent {
     private TriggerData data;
     private TimerService timerService;
     private ScheduledFuture<?> future;
@@ -73,7 +73,7 @@ public class TimerComponent<T> extends JavaComponent<T> {
      * @param timerService            the timer service
      */
     public TimerComponent(URI componentId,
-                          InstanceFactoryProvider<T> instanceFactoryProvider,
+                          InstanceFactoryProvider instanceFactoryProvider,
                           ScopeContainer scopeContainer,
                           QName deployable,
                           boolean eager,
@@ -95,7 +95,7 @@ public class TimerComponent<T> extends JavaComponent<T> {
 
     public void start() throws ComponentException {
         super.start();
-        TimerComponentInvoker<T> invoker = new TimerComponentInvoker<T>(this);
+        TimerComponentInvoker invoker = new TimerComponentInvoker(this);
         switch (data.getType()) {
         case CRON:
             try {

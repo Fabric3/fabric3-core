@@ -99,7 +99,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         }
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
-        SystemComponent<?> component = (SystemComponent) manager.getComponent(sourceName);
+        SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
 
         Class<?> type;
@@ -138,14 +138,14 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
 
     public void detachObjectFactory(SystemSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
-        SystemComponent<?> component = (SystemComponent) manager.getComponent(sourceName);
+        SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
 
     public void attachObjectFactory(SystemSourceDefinition source, ObjectFactory<?> factory, PhysicalTargetDefinition target) throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
-        SystemComponent<?> component = (SystemComponent<?>) manager.getComponent(sourceId);
+        SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();
         if (source.isKeyed()) {
             Object key = getKey(source, target);

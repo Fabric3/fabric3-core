@@ -65,7 +65,7 @@ public class FieldInjectorTestCase extends TestCase {
         EasyMock.expect(objectFactory.getInstance()).andReturn(value);
         EasyMock.replay(objectFactory);
 
-        FieldInjector<Foo> injector = new FieldInjector<Foo>(protectedField, objectFactory);
+        FieldInjector injector = new FieldInjector(protectedField, objectFactory);
         injector.inject(foo);
         assertEquals(value, foo.hidden);
     }
@@ -73,7 +73,7 @@ public class FieldInjectorTestCase extends TestCase {
     public void testReinjectionOfNullValue() throws Exception {
         EasyMock.replay(objectFactory);
 
-        FieldInjector<Foo> injector = new FieldInjector<Foo>(fooField, objectFactory);
+        FieldInjector injector = new FieldInjector(fooField, objectFactory);
         injector.clearObjectFactory();
         injector.inject(foo);
         assertNull(foo.foo);

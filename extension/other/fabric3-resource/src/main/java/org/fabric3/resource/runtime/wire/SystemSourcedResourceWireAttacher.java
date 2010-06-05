@@ -73,7 +73,7 @@ public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<Sys
 
     public ObjectFactory<?> createObjectFactory(SystemSourcedTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        AtomicComponent<?> targetComponent = (AtomicComponent<?>) manager.getComponent(targetId);
+        AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
         if (targetComponent == null) {
             throw new ResourceNotFoundException("Resource not found: " + targetId);
         }

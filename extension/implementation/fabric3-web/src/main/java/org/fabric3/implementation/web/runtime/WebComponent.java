@@ -72,7 +72,7 @@ import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEX
  *
  * @version $Rev$ $Date$
  */
-public class WebComponent<T> implements AtomicComponent<T> {
+public class WebComponent implements AtomicComponent {
 
     private final URI uri;
     private URI classLoaderId;
@@ -219,11 +219,11 @@ public class WebComponent<T> implements AtomicComponent<T> {
         return 0;
     }
 
-    public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<T> createObjectFactory() {
+    public ObjectFactory<Object> createObjectFactory() {
         throw new UnsupportedOperationException();
     }
 

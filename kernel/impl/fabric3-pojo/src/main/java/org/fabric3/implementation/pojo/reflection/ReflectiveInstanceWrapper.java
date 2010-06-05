@@ -59,24 +59,24 @@ import org.fabric3.spi.model.type.java.Injectable;
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
-    private final T instance;
+public class ReflectiveInstanceWrapper implements InstanceWrapper {
+    private final Object instance;
     private boolean reinjectable;
     private final ClassLoader cl;
-    private final EventInvoker<T> initInvoker;
-    private final EventInvoker<T> destroyInvoker;
+    private final EventInvoker initInvoker;
+    private final EventInvoker destroyInvoker;
     private boolean started;
     private final Injectable[] attributes;
-    private final Injector<T>[] injectors;
-    private final Set<Injector<T>> updatedInjectors;
+    private final Injector<Object>[] injectors;
+    private final Set<Injector<Object>> updatedInjectors;
 
-    public ReflectiveInstanceWrapper(T instance,
+    public ReflectiveInstanceWrapper(Object instance,
                                      boolean reinjectable,
                                      ClassLoader cl,
-                                     EventInvoker<T> initInvoker,
-                                     EventInvoker<T> destroyInvoker,
+                                     EventInvoker initInvoker,
+                                     EventInvoker destroyInvoker,
                                      Injectable[] attributes,
-                                     Injector<T>[] injectors) {
+                                     Injector<Object>[] injectors) {
         this.instance = instance;
         this.reinjectable = reinjectable;
         this.cl = cl;
@@ -86,13 +86,13 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         this.started = false;
         this.injectors = injectors;
         if (reinjectable) {
-            this.updatedInjectors = new HashSet<Injector<T>>();
+            this.updatedInjectors = new HashSet<Injector<Object>>();
         } else {
             this.updatedInjectors = null;
         }
     }
 
-    public T getInstance() {
+    public Object getInstance() {
         assert started;
         return instance;
     }
@@ -148,7 +148,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
         try {
-            for (Injector<T> injector : updatedInjectors) {
+            for (Injector<Object> injector : updatedInjectors) {
                 injector.inject(instance);
             }
             updatedInjectors.clear();
@@ -164,7 +164,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         for (int i = 0; i < attributes.length; i++) {
             Injectable attribute = attributes[i];
             if (attribute.getName().equals(referenceName)) {
-                Injector<T> injector = injectors[i];
+                Injector<Object> injector = injectors[i];
                 if (instance != null) {
                     updatedInjectors.add(injector);
                 }
@@ -179,7 +179,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         for (int i = 0; i < attributes.length; i++) {
             Injectable attribute = attributes[i];
             if (attribute.getName().equals(referenceName)) {
-                Injector<T> injector = injectors[i];
+                Injector<Object> injector = injectors[i];
                 injector.clearObjectFactory();
                 if (instance != null) {
                     updatedInjectors.add(injector);

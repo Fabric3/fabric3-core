@@ -56,9 +56,9 @@ import org.fabric3.spi.ObjectCreationException;
  * @version $Rev$ $Date$
  */
 public class WebComponentContext implements ComponentContext {
-    private final WebComponent<?> component;
+    private final WebComponent component;
 
-    public WebComponentContext(WebComponent<?> component) {
+    public WebComponentContext(WebComponent component) {
         this.component = component;
     }
 

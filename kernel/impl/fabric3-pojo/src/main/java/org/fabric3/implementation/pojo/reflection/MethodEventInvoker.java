@@ -51,11 +51,11 @@ import java.lang.reflect.Method;
  *
  * @version $Rev$ $Date$
  */
-public class MethodEventInvoker<T> implements EventInvoker<T> {
+public class MethodEventInvoker implements EventInvoker {
     private final Method method;
 
     /**
-     * Intantiates an  invoker for the given method
+     * Instantiates an invoker for the given method
      *
      * @param method the method to invoke on
      */
@@ -65,7 +65,7 @@ public class MethodEventInvoker<T> implements EventInvoker<T> {
         this.method.setAccessible(true);
     }
 
-    public void invokeEvent(T instance) throws ObjectCallbackException {
+    public void invokeEvent(Object instance) throws ObjectCallbackException {
         try {
             method.invoke(instance);
         } catch (IllegalArgumentException e) {

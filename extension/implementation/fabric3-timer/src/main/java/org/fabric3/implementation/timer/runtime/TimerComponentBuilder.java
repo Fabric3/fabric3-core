@@ -61,14 +61,14 @@ import org.fabric3.timer.spi.TimerService;
  * @version $Rev: 7712 $ $Date: 2009-09-29 00:57:34 +0200 (Tue, 29 Sep 2009) $
  */
 @EagerInit
-public class TimerComponentBuilder<T> extends PojoComponentBuilder<T, TimerComponentDefinition, TimerComponent<?>> {
+public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> {
     private ScopeRegistry scopeRegistry;
-    private InstanceFactoryBuilder<T> factoryBuilder;
+    private InstanceFactoryBuilder factoryBuilder;
     private TimerService nonTrxTimerService;
     private TimerService trxTimerService;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                 @Reference InstanceFactoryBuilder<T> factoryBuilder,
+                                 @Reference InstanceFactoryBuilder factoryBuilder,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                  @Reference(name = "nonTrxTimerService") TimerService nonTrxTimerService,
@@ -81,7 +81,7 @@ public class TimerComponentBuilder<T> extends PojoComponentBuilder<T, TimerCompo
         this.trxTimerService = trxTimerService;
     }
 
-    public TimerComponent<T> build(TimerComponentDefinition definition) throws BuilderException {
+    public TimerComponent build(TimerComponentDefinition definition) throws BuilderException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -93,7 +93,7 @@ public class TimerComponentBuilder<T> extends PojoComponentBuilder<T, TimerCompo
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
 
-        InstanceFactoryProvider<T> provider = factoryBuilder.build(factoryDefinition, classLoader);
+        InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
         TriggerData data = definition.getTriggerData();
@@ -106,15 +106,15 @@ public class TimerComponentBuilder<T> extends PojoComponentBuilder<T, TimerCompo
         long idleTime = definition.getMaxIdleTime();
         long maxAge = definition.getMaxAge();
         boolean eager = definition.isEagerInit();
-        TimerComponent<T> component = new TimerComponent<T>(uri,
-                                                            provider,
-                                                            scopeContainer,
-                                                            deployable,
-                                                            eager,
-                                                            idleTime,
-                                                            maxAge,
-                                                            data,
-                                                            timerService);
+        TimerComponent component = new TimerComponent(uri,
+                                                      provider,
+                                                      scopeContainer,
+                                                      deployable,
+                                                      eager,
+                                                      idleTime,
+                                                      maxAge,
+                                                      data,
+                                                      timerService);
 
         buildContexts(component, provider);
         return component;

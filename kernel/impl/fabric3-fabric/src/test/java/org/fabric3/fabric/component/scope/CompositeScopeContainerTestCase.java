@@ -58,12 +58,12 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class CompositeScopeContainerTestCase<T> extends TestCase {
+public class CompositeScopeContainerTestCase extends TestCase {
     protected IMocksControl control;
     protected CompositeScopeContainer scopeContainer;
     protected QName deployable;
-    protected AtomicComponent<T> component;
-    protected InstanceWrapper<T> wrapper;
+    protected AtomicComponent component;
+    protected InstanceWrapper wrapper;
     private WorkContext workContext;
 
     public void testCorrectScope() {
@@ -85,7 +85,6 @@ public class CompositeScopeContainerTestCase<T> extends TestCase {
         control.verify();
     }
 
-    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         deployable = new QName("deployable");

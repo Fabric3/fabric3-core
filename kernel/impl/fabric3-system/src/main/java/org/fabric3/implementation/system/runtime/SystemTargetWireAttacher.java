@@ -81,7 +81,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
 
     public void attach(PhysicalSourceDefinition source, SystemTargetDefinition target, Wire wire) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        SystemComponent<?> targetComponent = (SystemComponent<?>) manager.getComponent(targetId);
+        SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
         ScopeContainer scopeContainer = targetComponent.getScopeContainer();
         Class<?> implementationClass = targetComponent.getImplementationClass();
@@ -111,7 +111,8 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
                 throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
             }
 
-            chain.addInterceptor(createInterceptor(method, targetComponent, scopeContainer));
+            SystemInvokerInterceptor interceptor = new SystemInvokerInterceptor(method, scopeContainer, targetComponent);
+            chain.addInterceptor(interceptor);
         }
     }
 
@@ -119,13 +120,9 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
         throw new AssertionError();
     }
 
-    <T> SystemInvokerInterceptor<T> createInterceptor(Method method, SystemComponent<T> component, ScopeContainer scopeContainer) {
-        return new SystemInvokerInterceptor<T>(method, scopeContainer, component);
-    }
-
     public ObjectFactory<?> createObjectFactory(SystemTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        SystemComponent<?> targetComponent = (SystemComponent<?>) manager.getComponent(targetId);
+        SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();
     }
 }

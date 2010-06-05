@@ -74,13 +74,13 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
             throws ConnectionAttachException {
         URI targetUri = target.getTargetUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
-        JavaComponent<?> component = (JavaComponent) manager.getComponent(targetName);
+        JavaComponent component = (JavaComponent) manager.getComponent(targetName);
         if (component == null) {
             throw new ConnectionAttachException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Method method = loadMethod(target, component);
-        InvokerEventStreamHandler handler = createHandler(component, loader, method);
+        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, component.getScopeContainer(), loader);
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);
         }
@@ -90,20 +90,16 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         // no-op
     }
 
-    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent<?> component) throws ConnectionAttachException {
+    private Method loadMethod(JavaConnectionTargetDefinition target, JavaComponent component) throws ConnectionAttachException {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
-           return signature.getMethod(implementationClass);
+            return signature.getMethod(implementationClass);
         } catch (ClassNotFoundException e) {
             throw new ConnectionAttachException(e);
         } catch (NoSuchMethodException e) {
             throw new ConnectionAttachException(e);
         }
-    }
-
-    private <T> InvokerEventStreamHandler createHandler(JavaComponent<T> component, ClassLoader loader, Method method) {
-        return new InvokerEventStreamHandler<T>(method, component,component.getScopeContainer(), loader);
     }
 
 }

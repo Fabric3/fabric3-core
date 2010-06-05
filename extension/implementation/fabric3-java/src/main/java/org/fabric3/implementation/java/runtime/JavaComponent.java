@@ -48,9 +48,8 @@ import org.fabric3.spi.component.ScopeContainer;
  * The runtime instantiation of a Java component implementation.
  *
  * @version $Revision$ $Date$
- * @param <T> the implementation class for the defined component
  */
-public class JavaComponent<T> extends PojoComponent<T> {
+public class JavaComponent extends PojoComponent {
 
     /**
      * Constructor for a Java Component.
@@ -64,7 +63,7 @@ public class JavaComponent<T> extends PojoComponent<T> {
      * @param maxAge                  the time after which instances of this component can be expired
      */
     public JavaComponent(URI componentId,
-                         InstanceFactoryProvider<T> instanceFactoryProvider,
+                         InstanceFactoryProvider instanceFactoryProvider,
                          ScopeContainer scopeContainer,
                          QName deployable,
                          boolean eager,

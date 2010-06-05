@@ -115,7 +115,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ComponentRegistrationException {
         try {
             LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
-            AtomicComponent<I> physical = createPhysicalComponent(logical, instance);
+            AtomicComponent physical = createPhysicalComponent(logical, instance);
             componentManager.register(physical);
             scopeContainer.register(physical);
         } catch (RegistrationException e) {
@@ -185,11 +185,11 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         }
     }
 
-    private <I> AtomicComponent<I> createPhysicalComponent(LogicalComponent<?> logicalComponent, I instance) {
+    private <I> AtomicComponent createPhysicalComponent(LogicalComponent<?> logicalComponent, I instance) {
         URI uri = logicalComponent.getUri();
         InjectingComponentType type = (InjectingComponentType) logicalComponent.getDefinition().getComponentType();
         type.getInjectionSites();
-        SingletonComponent<I> component = new SingletonComponent<I>(uri, instance, type.getInjectionSites());
+        SingletonComponent component = new SingletonComponent(uri, instance, type.getInjectionSites());
         component.setClassLoaderId(BOOT_CONTRIBUTION);
         return component;
     }

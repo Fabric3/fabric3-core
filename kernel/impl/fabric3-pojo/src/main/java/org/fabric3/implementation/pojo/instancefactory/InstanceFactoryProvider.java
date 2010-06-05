@@ -51,13 +51,13 @@ import org.fabric3.spi.ObjectFactory;
 /**
  * @version $Rev$ $Date$
  */
-public interface InstanceFactoryProvider<T> {
+public interface InstanceFactoryProvider {
     /**
      * Return the implementation class.
      *
      * @return the implementation class.
      */
-    Class<T> getImplementationClass();
+    Class<?> getImplementationClass();
 
     /**
      * Sets an object factory for an injection site.
@@ -112,5 +112,5 @@ public interface InstanceFactoryProvider<T> {
      *
      * @return a new instance factory
      */
-    InstanceFactory<T> createFactory();
+    InstanceFactory createFactory();
 }

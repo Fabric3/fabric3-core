@@ -51,14 +51,14 @@ import org.fabric3.spi.invocation.WorkContext;
  *
  * @version $Rev$ $Date$
  */
-public interface InstanceWrapper<T> {
+public interface InstanceWrapper {
 
     /**
      * Returns the instance managed by this wrapper.
      *
      * @return the instance managed by this wrapper.
      */
-    T getInstance();
+    Object getInstance();
 
     /**
      * Returns true if the instance is started.

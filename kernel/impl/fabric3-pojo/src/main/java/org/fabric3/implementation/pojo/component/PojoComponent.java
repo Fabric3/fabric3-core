@@ -63,22 +63,21 @@ import org.fabric3.spi.model.type.java.Injectable;
  * Base class for Component implementations based on Java objects.
  *
  * @version $Rev$ $Date$
- * @param <T> the implementation class
  */
-public abstract class PojoComponent<T> implements AtomicComponent<T> {
+public abstract class PojoComponent implements AtomicComponent {
     private final URI uri;
-    private final InstanceFactoryProvider<T> provider;
+    private final InstanceFactoryProvider provider;
     private final ScopeContainer scopeContainer;
     private final QName deployable;
     private final boolean eager;
     private final long maxIdleTime;
     private final long maxAge;
-    private InstanceFactory<T> instanceFactory;
+    private InstanceFactory instanceFactory;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
 
     public PojoComponent(URI componentId,
-                         InstanceFactoryProvider<T> provider,
+                         InstanceFactoryProvider provider,
                          ScopeContainer scopeContainer,
                          QName deployable,
                          boolean eager,
@@ -142,12 +141,12 @@ public abstract class PojoComponent<T> implements AtomicComponent<T> {
         return maxAge;
     }
 
-    public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
         return getInstanceFactory().newInstance(workContext);
     }
 
     @SuppressWarnings({"unchecked"})
-    public ObjectFactory<T> createObjectFactory() {
+    public ObjectFactory<Object> createObjectFactory() {
         return new ComponentObjectFactory(this, scopeContainer);
     }
 
@@ -155,7 +154,7 @@ public abstract class PojoComponent<T> implements AtomicComponent<T> {
         return scopeContainer;
     }
 
-    public Class<T> getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return provider.getImplementationClass();
     }
 
@@ -201,7 +200,7 @@ public abstract class PojoComponent<T> implements AtomicComponent<T> {
         return "[" + uri.toString() + "] in state [" + super.toString() + ']';
     }
 
-    private InstanceFactory<T> getInstanceFactory() {
+    private InstanceFactory getInstanceFactory() {
         if (instanceFactory == null) {
             instanceFactory = provider.createFactory();
         }

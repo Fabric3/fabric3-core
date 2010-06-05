@@ -53,7 +53,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class MockComponentBuilder<T> implements ComponentBuilder<MockComponentDefinition, MockComponent<T>> {
+public class MockComponentBuilder implements ComponentBuilder<MockComponentDefinition, MockComponent> {
     private ClassLoaderRegistry classLoaderRegistry;
     private IMocksControl control;
 
@@ -62,8 +62,7 @@ public class MockComponentBuilder<T> implements ComponentBuilder<MockComponentDe
         this.control = control;
     }
 
-    public MockComponent<T> build(MockComponentDefinition componentDefinition) throws BuilderException {
-
+    public MockComponent build(MockComponentDefinition componentDefinition) throws BuilderException {
         List<String> interfaces = componentDefinition.getInterfaces();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(componentDefinition.getClassLoaderId());
 
@@ -76,10 +75,8 @@ public class MockComponentBuilder<T> implements ComponentBuilder<MockComponentDe
             }
         }
 
-        ObjectFactory<T> objectFactory = new MockObjectFactory<T>(mockedInterfaces, classLoader, control);
-
-        return new MockComponent<T>(componentDefinition.getComponentUri(), objectFactory);
-
+        ObjectFactory<Object> objectFactory = new MockObjectFactory<Object>(mockedInterfaces, classLoader, control);
+        return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
     }
 
 }

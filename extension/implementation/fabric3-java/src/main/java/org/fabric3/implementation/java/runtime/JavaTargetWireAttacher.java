@@ -52,7 +52,6 @@ import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -82,7 +81,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         if (component == null) {
             throw new WireAttachException("Target not found: " + targetName);
         }
-        JavaComponent<?> target = (JavaComponent<?>) component;
+        JavaComponent target = (JavaComponent) component;
 
         ScopeContainer scopeContainer = target.getScopeContainer();
         Class<?> implementationClass = target.getImplementationClass();
@@ -98,16 +97,16 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
                 // callbacks do not expire the client (i.e. the callback target); they expire the forward implementation instance
                 endsConversation = false;
             }
-            InvokerInterceptor<?> interceptor;
+            InvokerInterceptor interceptor;
             if (sourceDefinition instanceof PojoSourceDefinition &&
                     targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
-                interceptor = createInterceptor(method, callback, endsConversation, target, scopeContainer);
+                interceptor = new InvokerInterceptor(method, callback, endsConversation, target, scopeContainer);
             } else {
                 // If the source and target classloaders are not equal, configure the interceptor to set the TCCL to the target classloader
                 // when dispatching to a target instance. This guarantees when application code executes, it does so with the TCCL set to the
                 // target component's classloader.
-                interceptor = createInterceptor(method, callback, endsConversation, target, scopeContainer, loader);
+                interceptor = new InvokerInterceptor(method, callback, endsConversation, target, scopeContainer, loader);
             }
             chain.addInterceptor(interceptor);
         }
@@ -119,25 +118,8 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
 
     public ObjectFactory<?> createObjectFactory(JavaTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        JavaComponent<?> targetComponent = (JavaComponent<?>) manager.getComponent(targetId);
+        JavaComponent targetComponent = (JavaComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();
-    }
-
-    private <T> InvokerInterceptor<T> createInterceptor(Method method,
-                                                        boolean callback,
-                                                        boolean endsConvesation,
-                                                        AtomicComponent<T> component,
-                                                        ScopeContainer scopeContainer,
-                                                        ClassLoader loader) {
-        return new InvokerInterceptor<T>(method, callback, endsConvesation, component, scopeContainer, loader);
-    }
-
-    private <T> InvokerInterceptor<T> createInterceptor(Method method,
-                                                        boolean callback,
-                                                        boolean endsConvesation,
-                                                        AtomicComponent<T> component,
-                                                        ScopeContainer scopeContainer) {
-        return new InvokerInterceptor<T>(method, callback, endsConvesation, component, scopeContainer);
     }
 
 }

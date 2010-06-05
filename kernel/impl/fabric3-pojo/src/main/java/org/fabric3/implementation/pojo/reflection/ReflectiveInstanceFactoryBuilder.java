@@ -67,7 +67,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  * @version $Date$ $Revision$
  */
 @EagerInit
-public class ReflectiveInstanceFactoryBuilder<T> implements InstanceFactoryBuilder<T> {
+public class ReflectiveInstanceFactoryBuilder implements InstanceFactoryBuilder {
     private ClassLoaderRegistry classLoaderRegistry;
 
     public ReflectiveInstanceFactoryBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
@@ -75,12 +75,12 @@ public class ReflectiveInstanceFactoryBuilder<T> implements InstanceFactoryBuild
     }
 
     @SuppressWarnings("unchecked")
-    public ReflectiveInstanceFactoryProvider<T> build(InstanceFactoryDefinition definition, ClassLoader cl) throws InstanceFactoryBuilderException {
+    public ReflectiveInstanceFactoryProvider build(InstanceFactoryDefinition definition, ClassLoader cl) throws InstanceFactoryBuilderException {
 
         try {
             String className = definition.getImplementationClass();
-            Class<T> implClass = (Class<T>) classLoaderRegistry.loadClass(cl, className);
-            Constructor<T> ctr = getConstructor(implClass, definition.getConstructor());
+            Class<?> implClass = classLoaderRegistry.loadClass(cl, className);
+            Constructor<?> ctr = getConstructor(implClass, definition.getConstructor());
 
             Map<InjectionSite, Injectable> injectionSites = definition.getConstruction();
             Injectable[] cdiSources = new Injectable[ctr.getParameterTypes().length];
@@ -104,7 +104,7 @@ public class ReflectiveInstanceFactoryBuilder<T> implements InstanceFactoryBuild
             List<Injectable> construction = Arrays.asList(cdiSources);
             boolean reinjectable = definition.isReinjectable();
 
-            return new ReflectiveInstanceFactoryProvider<T>(ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
+            return new ReflectiveInstanceFactoryProvider(ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
         } catch (ClassNotFoundException ex) {
             throw new InstanceFactoryBuilderException(ex);
         } catch (NoSuchMethodException ex) {

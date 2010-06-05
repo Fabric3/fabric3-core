@@ -85,9 +85,9 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super.stop();
     }
 
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
+    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
         try {
-            InstanceWrapper<T> wrapper = component.createInstanceWrapper(workContext);
+            InstanceWrapper wrapper = component.createInstanceWrapper(workContext);
             wrapper.start(workContext);
             return wrapper;
         } catch (ObjectCreationException e) {
@@ -95,8 +95,7 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper)
-            throws InstanceDestructionException {
+    public void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) throws InstanceDestructionException {
         wrapper.stop(workContext);
     }
 
@@ -119,10 +118,10 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
     public void stopContext(WorkContext workContext) {
     }
 
-    public void updated(AtomicComponent<?> component, String referenceName) {
+    public void updated(AtomicComponent component, String referenceName) {
     }
 
-    public void removed(AtomicComponent<?> component, String referenceName) {
+    public void removed(AtomicComponent component, String referenceName) {
 
     }
 

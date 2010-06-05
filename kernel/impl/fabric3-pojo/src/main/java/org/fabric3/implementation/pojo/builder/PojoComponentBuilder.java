@@ -63,7 +63,6 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.Component;
-import org.fabric3.spi.expression.ExpressionExpander;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
@@ -79,9 +78,8 @@ import org.fabric3.spi.util.ParamTypes;
  *
  * @version $Rev$ $Date$
  */
-public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
+public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
     protected ClassLoaderRegistry classLoaderRegistry;
-    protected ExpressionExpander expander;
     protected IntrospectionHelper helper;
     private PropertyObjectFactoryBuilder propertyBuilder;
 
@@ -91,7 +89,7 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
         this.helper = helper;
     }
 
-    protected void createPropertyFactories(PCD definition, InstanceFactoryProvider<T> provider) throws BuilderException {
+    protected void createPropertyFactories(PCD definition, InstanceFactoryProvider provider) throws BuilderException {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
 
         TypeMapping typeMapping = new TypeMapping();
@@ -112,7 +110,7 @@ public abstract class PojoComponentBuilder<T, PCD extends PojoComponentDefinitio
         }
     }
 
-    protected void buildContexts(PojoComponent component, InstanceFactoryProvider<T> provider) {
+    protected void buildContexts(PojoComponent component, InstanceFactoryProvider provider) {
         PojoRequestContext requestContext = new PojoRequestContext();
         SingletonObjectFactory<PojoRequestContext> requestObjectFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
         provider.setObjectFactory(Injectable.REQUEST_CONTEXT, requestObjectFactory);

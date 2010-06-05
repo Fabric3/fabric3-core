@@ -55,9 +55,9 @@ import org.fabric3.spi.component.ScopeContainer;
  *
  * @version $Rev$ $Date$
  */
-public class SystemComponent<T> extends PojoComponent<T> {
+public class SystemComponent extends PojoComponent {
     public SystemComponent(URI componentId,
-                           InstanceFactoryProvider<T> provider,
+                           InstanceFactoryProvider provider,
                            ScopeContainer scopeContainer,
                            QName deployable,
                            boolean eager,

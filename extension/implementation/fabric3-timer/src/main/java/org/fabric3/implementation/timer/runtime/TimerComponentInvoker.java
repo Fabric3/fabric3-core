@@ -51,11 +51,11 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  *
  * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
  */
-public class TimerComponentInvoker<T> implements Runnable {
-    private TimerComponent<T> component;
+public class TimerComponentInvoker implements Runnable {
+    private TimerComponent component;
     private ScopeContainer scopeContainer;
 
-    public TimerComponentInvoker(TimerComponent<T> component) {
+    public TimerComponentInvoker(TimerComponent component) {
         this.component = component;
         this.scopeContainer = component.getScopeContainer();
     }
@@ -65,7 +65,7 @@ public class TimerComponentInvoker<T> implements Runnable {
         WorkContext workContext = new WorkContext();
         CallFrame frame = new CallFrame();
         workContext.addCallFrame(frame);
-        InstanceWrapper<T> wrapper;
+        InstanceWrapper wrapper;
         try {
             // TODO handle conversations
             //startOrJoinContext(workContext);

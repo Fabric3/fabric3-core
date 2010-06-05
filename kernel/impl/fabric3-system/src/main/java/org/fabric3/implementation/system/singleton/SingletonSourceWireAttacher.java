@@ -64,7 +64,7 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class SingletonSourceWireAttacher implements SourceWireAttacher<SingletonSourceDefinition> {
-    private final ComponentManager manager;
+    private ComponentManager manager;
 
     public SingletonSourceWireAttacher(@Reference ComponentManager manager) {
         this.manager = manager;
@@ -85,7 +85,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     public void attachObjectFactory(SingletonSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
             throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
-        SingletonComponent<?> sourceComponent = (SingletonComponent<?>) manager.getComponent(sourceId);
+        SingletonComponent sourceComponent = (SingletonComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();
         // Add the object factory for the target to be reinjected.
         // The Injectable identifies the injection site (a field or method) on the singleton instance.

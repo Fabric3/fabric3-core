@@ -134,7 +134,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     @Override
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
+    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
         if (topologyService != null && !activated) {
             throw new InstanceLifecycleException("Component instance not active: " + component.getUri());
         }

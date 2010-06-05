@@ -54,16 +54,16 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentObjectFactory<T> implements ObjectFactory<T> {
-    private final AtomicComponent<T> component;
+public class ComponentObjectFactory implements ObjectFactory<Object> {
+    private final AtomicComponent component;
     private final ScopeContainer scopeContainer;
 
-    public ComponentObjectFactory(AtomicComponent<T> component, ScopeContainer scopeContainer) {
+    public ComponentObjectFactory(AtomicComponent component, ScopeContainer scopeContainer) {
         this.component = component;
         this.scopeContainer = scopeContainer;
     }
 
-    public T getInstance() throws ObjectCreationException {
+    public Object getInstance() throws ObjectCreationException {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         try {
             return scopeContainer.getWrapper(component, workContext).getInstance();

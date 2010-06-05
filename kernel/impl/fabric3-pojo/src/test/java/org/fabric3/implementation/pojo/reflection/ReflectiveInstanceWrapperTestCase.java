@@ -55,14 +55,14 @@ import org.fabric3.spi.invocation.WorkContext;
  * @version $Rev$ $Date$
  */
 public class ReflectiveInstanceWrapperTestCase extends TestCase {
-    private ReflectiveInstanceWrapper<Object> wrapper;
+    private ReflectiveInstanceWrapper wrapper;
     private Object instance;
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
+    private EventInvoker initInvoker;
+    private EventInvoker destroyInvoker;
     private ClassLoader cl;
 
     public void testWithNoCallbacks() {
-        wrapper = new ReflectiveInstanceWrapper<Object>(instance, false, cl, null, null, null, null);
+        wrapper = new ReflectiveInstanceWrapper(instance, false, cl, null, null, null, null);
         WorkContext workContext = new WorkContext();
         try {
             wrapper.start(workContext);
@@ -79,7 +79,7 @@ public class ReflectiveInstanceWrapperTestCase extends TestCase {
     public void testWithStartCallback() throws ObjectCallbackException {
         initInvoker.invokeEvent(instance);
         EasyMock.replay(initInvoker);
-        wrapper = new ReflectiveInstanceWrapper<Object>(instance, false, cl, initInvoker, null, null, null);
+        wrapper = new ReflectiveInstanceWrapper(instance, false, cl, initInvoker, null, null, null);
         try {
             WorkContext workContext = new WorkContext();
             wrapper.start(workContext);
@@ -92,7 +92,7 @@ public class ReflectiveInstanceWrapperTestCase extends TestCase {
     public void testWithStopCallback() throws ObjectCallbackException {
         destroyInvoker.invokeEvent(instance);
         EasyMock.replay(destroyInvoker);
-        wrapper = new ReflectiveInstanceWrapper<Object>(instance, false, cl, null, destroyInvoker, null, null);
+        wrapper = new ReflectiveInstanceWrapper(instance, false, cl, null, destroyInvoker, null, null);
         try {
             WorkContext workContext = new WorkContext();
             wrapper.start(workContext);

@@ -71,19 +71,19 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SingletonComponent<T> implements AtomicComponent<T> {
+public class SingletonComponent implements AtomicComponent {
     private final URI uri;
-    private T instance;
+    private Object instance;
     private Map<Member, Injectable> sites;
-    private InstanceWrapper<T> wrapper;
+    private InstanceWrapper wrapper;
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
 
-    public SingletonComponent(URI componentId, T instance, Map<InjectionSite, Injectable> mappings) {
+    public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
         this.instance = instance;
-        this.wrapper = new SingletonWrapper<T>(instance);
+        this.wrapper = new SingletonWrapper(instance);
         this.reinjectionMappings = new HashMap<ObjectFactory, Injectable>();
         initializeInjectionSites(instance, mappings);
     }
@@ -128,12 +128,12 @@ public class SingletonComponent<T> implements AtomicComponent<T> {
         return -1;
     }
 
-    public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
         return wrapper;
     }
 
-    public ObjectFactory<T> createObjectFactory() {
-        return new SingletonObjectFactory<T>(instance);
+    public ObjectFactory<Object> createObjectFactory() {
+        return new SingletonObjectFactory<Object>(instance);
     }
 
     public String getName() {
@@ -168,7 +168,7 @@ public class SingletonComponent<T> implements AtomicComponent<T> {
      * @param instance the instance this component wraps
      * @param mappings the mappings of injection sites
      */
-    private void initializeInjectionSites(T instance, Map<InjectionSite, Injectable> mappings) {
+    private void initializeInjectionSites(Object instance, Map<InjectionSite, Injectable> mappings) {
         this.sites = new HashMap<Member, Injectable>();
         for (Map.Entry<InjectionSite, Injectable> entry : mappings.entrySet()) {
             InjectionSite site = entry.getKey();
@@ -211,15 +211,15 @@ public class SingletonComponent<T> implements AtomicComponent<T> {
         throw new NoSuchFieldException(name);
     }
 
-    private class SingletonWrapper<T> implements InstanceWrapper<T> {
+    private class SingletonWrapper implements InstanceWrapper {
 
-        private final T instance;
+        private final Object instance;
 
-        private SingletonWrapper(T instance) {
+        private SingletonWrapper(Object instance) {
             this.instance = instance;
         }
 
-        public T getInstance() {
+        public Object getInstance() {
             return instance;
         }
 

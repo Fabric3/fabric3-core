@@ -73,24 +73,24 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProvider<T> {
+public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvider {
     private static final ObjectFactory<?> NULL_FACTORY = new ObjectFactory<Object>() {
         public Object getInstance() {
             return null;
         }
     };
 
-    private final Class<T> implementationClass;
-    private final Constructor<T> constructor;
+    private final Class<?> implementationClass;
+    private final Constructor<?> constructor;
     private final List<Injectable> cdiSources;
     private final Map<InjectionSite, Injectable> postConstruction;
-    private final EventInvoker<T> initInvoker;
-    private final EventInvoker<T> destroyInvoker;
+    private final EventInvoker initInvoker;
+    private final EventInvoker destroyInvoker;
     private final Map<Injectable, ObjectFactory<?>> factories = new HashMap<Injectable, ObjectFactory<?>>();
     private final ClassLoader cl;
     private final boolean reinjectable;
 
-    public ReflectiveInstanceFactoryProvider(Constructor<T> constructor,
+    public ReflectiveInstanceFactoryProvider(Constructor<?> constructor,
                                              List<Injectable> cdiSources,
                                              Map<InjectionSite, Injectable> postConstruction,
                                              Method initMethod,
@@ -101,8 +101,8 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         this.constructor = constructor;
         this.cdiSources = cdiSources;
         this.postConstruction = postConstruction;
-        this.initInvoker = initMethod == null ? null : new MethodEventInvoker<T>(initMethod);
-        this.destroyInvoker = destroyMethod == null ? null : new MethodEventInvoker<T>(destroyMethod);
+        this.initInvoker = initMethod == null ? null : new MethodEventInvoker(initMethod);
+        this.destroyInvoker = destroyMethod == null ? null : new MethodEventInvoker(destroyMethod);
         this.reinjectable = reinjectable;
         this.cl = cl;
 
@@ -156,7 +156,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         } else if (site instanceof ConstructorInjectionSite) {
             try {
                 ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
-                Constructor<T> method = methodSite.getSignature().getConstructor(implementationClass);
+                Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
                 return method.getParameterTypes()[methodSite.getParam()];
             } catch (ClassNotFoundException e) {
                 throw new AssertionError(e);
@@ -194,7 +194,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         } else if (site instanceof ConstructorInjectionSite) {
             try {
                 ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
-                Constructor<T> method = methodSite.getSignature().getConstructor(implementationClass);
+                Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
                 return method.getGenericParameterTypes()[methodSite.getParam()];
             } catch (ClassNotFoundException e) {
                 throw new AssertionError(e);
@@ -206,19 +206,19 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
         }
     }
 
-    public Class<T> getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return implementationClass;
     }
 
     @SuppressWarnings({"unchecked"})
-    public InstanceFactory<T> createFactory() {
-        ObjectFactory<T> factory = new ReflectiveObjectFactory<T>(constructor, getConstructorParameterFactories(cdiSources));
-        Map<Injectable, Injector<T>> mappings = createInjectorMappings();
+    public InstanceFactory createFactory() {
+        ObjectFactory<?> factory = new ReflectiveObjectFactory(constructor, getConstructorParameterFactories(cdiSources));
+        Map<Injectable, Injector<Object>> mappings = createInjectorMappings();
 
         Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
-        Injector<T>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
+        Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
 
-        return new ReflectiveInstanceFactory<T>(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
+        return new ReflectiveInstanceFactory(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
     }
 
     /**
@@ -246,8 +246,8 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
      *
      * @return a map of injectors keyed by InjectableAttribute.
      */
-    protected Map<Injectable, Injector<T>> createInjectorMappings() {
-        Map<Injectable, Injector<T>> injectors = new LinkedHashMap<Injectable, Injector<T>>(postConstruction.size());
+    protected Map<Injectable, Injector<Object>> createInjectorMappings() {
+        Map<Injectable, Injector<Object>> injectors = new LinkedHashMap<Injectable, Injector<Object>>(postConstruction.size());
         for (Map.Entry<InjectionSite, Injectable> entry : postConstruction.entrySet()) {
             InjectionSite site = entry.getKey();
             Injectable attribute = entry.getValue();
@@ -264,7 +264,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
                     try {
                         FieldInjectionSite fieldSite = (FieldInjectionSite) site;
                         Field field = getField(fieldSite.getName());
-                        injectors.put(attribute, new FieldInjector<T>(field, factory));
+                        injectors.put(attribute, new FieldInjector(field, factory));
                     } catch (NoSuchFieldException e) {
                         throw new AssertionError(e);
                     }
@@ -272,7 +272,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
                     try {
                         MethodInjectionSite methodSite = (MethodInjectionSite) site;
                         Method method = methodSite.getSignature().getMethod(implementationClass);
-                        injectors.put(attribute, new MethodInjector<T>(method, factory));
+                        injectors.put(attribute, new MethodInjector(method, factory));
                     } catch (ClassNotFoundException e) {
                         throw new AssertionError(e);
                     } catch (NoSuchMethodException e) {
@@ -322,6 +322,7 @@ public class ReflectiveInstanceFactoryProvider<T> implements InstanceFactoryProv
     }
 
     // FIXME this is a hack until can replace getMemberType/getGenericType as they assume a single injection site
+
     private InjectionSite findInjectionSite(Injectable attribute) {
         // try constructor
         for (int i = 0; i < cdiSources.size(); i++) {

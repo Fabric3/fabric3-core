@@ -57,11 +57,11 @@ import org.fabric3.spi.invocation.WorkContext;
  *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContainerTestCase<T> extends TestCase {
+public class StatelessScopeContainerTestCase extends TestCase {
     private StatelessScopeContainer scopeContainer;
     private IMocksControl control;
-    private AtomicComponent<T> component;
-    private InstanceWrapper<T> wrapper;
+    private AtomicComponent component;
+    private InstanceWrapper wrapper;
     private WorkContext workContext;
 
     public void testCorrectScope() {
@@ -70,7 +70,7 @@ public class StatelessScopeContainerTestCase<T> extends TestCase {
 
     public void testInstanceCreation() throws Exception {
         @SuppressWarnings("unchecked")
-        InstanceWrapper<T> wrapper2 = control.createMock(InstanceWrapper.class);
+        InstanceWrapper wrapper2 = control.createMock(InstanceWrapper.class);
 
         EasyMock.expect(component.createInstanceWrapper(workContext)).andReturn(wrapper);
         wrapper.start(workContext);

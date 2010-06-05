@@ -44,11 +44,11 @@
 package org.fabric3.implementation.pojo.reflection;
 
 /**
- * Performs an invocation on an instance
+ * Performs an invocation on an instance.
  *
  * @version $Rev$ $Date$
  */
-public interface EventInvoker<T> {
+public interface EventInvoker {
 
     /**
      * Performs the invocation on a given instance.
@@ -56,5 +56,5 @@ public interface EventInvoker<T> {
      * @param instance the instance to invoke
      * @throws ObjectCallbackException if the invocation causes an error
      */
-    void invokeEvent(T instance) throws ObjectCallbackException;
+    void invokeEvent(Object instance) throws ObjectCallbackException;
 }

@@ -56,30 +56,30 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
+import org.fabric3.spi.Injector;
+import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.component.InstanceInitializationException;
+import org.fabric3.spi.component.InstanceLifecycleException;
+import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.component.InstanceInitializationException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
-    private Constructor<Foo> argConstructor;
+    private Constructor<?> argConstructor;
     private List<Injectable> ctrNames;
     private Map<InjectionSite, Injectable> sites;
     private ObjectFactory intFactory;
     private ObjectFactory stringFactory;
-    private ReflectiveInstanceFactoryProvider<Foo> provider;
+    private ReflectiveInstanceFactoryProvider provider;
     private Field intField;
     private Field stringField;
     private Method intSetter;
@@ -96,13 +96,13 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     public void testConstructorArgs() {
         ctrNames.add(intProperty);
         ctrNames.add(stringProperty);
-        provider = new ReflectiveInstanceFactoryProvider<Foo>(argConstructor,
-                                                              ctrNames,
-                                                              sites,
-                                                              null,
-                                                              null,
-                                                              false,
-                                                              Foo.class.getClassLoader());
+        provider = new ReflectiveInstanceFactoryProvider(argConstructor,
+                                                         ctrNames,
+                                                         sites,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         Foo.class.getClassLoader());
         provider.setObjectFactory(intProperty, intFactory);
         provider.setObjectFactory(stringProperty, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorParameterFactories(ctrNames);
@@ -114,11 +114,11 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     public void testFieldInjectors() throws ObjectCreationException {
         sites.put(new FieldInjectionSite(intField), intProperty);
         sites.put(new FieldInjectionSite(stringField), stringProperty);
-        Collection<Injector<Foo>> injectors = provider.createInjectorMappings().values();
+        Collection<Injector<Object>> injectors = provider.createInjectorMappings().values();
         assertEquals(2, injectors.size());
 
         Foo foo = new Foo();
-        for (Injector<Foo> injector : injectors) {
+        for (Injector<Object> injector : injectors) {
             assertTrue(injector instanceof FieldInjector);
             injector.inject(foo);
         }
@@ -130,11 +130,11 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     public void testMethodInjectors() throws ObjectCreationException {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
-        Collection<Injector<Foo>> injectors = provider.createInjectorMappings().values();
+        Collection<Injector<Object>> injectors = provider.createInjectorMappings().values();
         assertEquals(2, injectors.size());
 
         Foo foo = new Foo();
-        for (Injector<Foo> injector : injectors) {
+        for (Injector<Object> injector : injectors) {
             assertTrue(injector instanceof MethodInjector);
             injector.inject(foo);
         }
@@ -146,15 +146,15 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
     public void testFactory() throws ObjectCreationException, InstanceLifecycleException {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
-        InstanceFactory<Foo> instanceFactory = provider.createFactory();
-        InstanceWrapper<Foo> instanceWrapper = instanceFactory.newInstance(null);
+        InstanceFactory instanceFactory = provider.createFactory();
+        InstanceWrapper instanceWrapper = instanceFactory.newInstance(null);
         try {
             WorkContext workContext = new WorkContext();
             instanceWrapper.start(workContext);
         } catch (InstanceInitializationException e) {
             fail();
         }
-        Foo foo = instanceWrapper.getInstance();
+        Foo foo = (Foo) instanceWrapper.getInstance();
         EasyMock.verify(intFactory, stringFactory);
         assertEquals(34, foo.intField);
         assertEquals("Hello", foo.stringField);
@@ -171,13 +171,13 @@ public class ReflectiveInstanceFactoryProviderTestCase extends TestCase {
         stringSetter = Foo.class.getMethod("setStringField", String.class);
         ctrNames = new ArrayList<Injectable>();
         sites = new HashMap<InjectionSite, Injectable>();
-        provider = new ReflectiveInstanceFactoryProvider<Foo>(noArgConstructor,
-                                                              ctrNames,
-                                                              sites,
-                                                              null,
-                                                              null,
-                                                              false,
-                                                              Foo.class.getClassLoader());
+        provider = new ReflectiveInstanceFactoryProvider(noArgConstructor,
+                                                         ctrNames,
+                                                         sites,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         Foo.class.getClassLoader());
         intFactory = EasyMock.createMock(ObjectFactory.class);
         stringFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(intFactory.getInstance()).andReturn(34);

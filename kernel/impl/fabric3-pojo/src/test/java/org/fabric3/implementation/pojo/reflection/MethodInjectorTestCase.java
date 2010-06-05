@@ -56,14 +56,13 @@ import org.fabric3.spi.ObjectFactory;
  */
 public class MethodInjectorTestCase extends TestCase {
     private Method fooMethod;
-    private Method privateMethod;
     private Method exceptionMethod;
     private ObjectFactory objectFactory;
 
     public void testIllegalArgument() throws Exception {
         EasyMock.expect(objectFactory.getInstance()).andReturn(new Object());
         EasyMock.replay(objectFactory);
-        MethodInjector<Foo> injector = new MethodInjector<Foo>(fooMethod, objectFactory);
+        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
         try {
             injector.inject(new Foo());
             fail();
@@ -75,7 +74,7 @@ public class MethodInjectorTestCase extends TestCase {
     public void testException() throws Exception {
         EasyMock.expect(objectFactory.getInstance()).andReturn("foo");
         EasyMock.replay(objectFactory);
-        MethodInjector<Foo> injector = new MethodInjector<Foo>(exceptionMethod, objectFactory);
+        MethodInjector injector = new MethodInjector(exceptionMethod, objectFactory);
         try {
             injector.inject(new Foo());
             fail();
@@ -86,7 +85,7 @@ public class MethodInjectorTestCase extends TestCase {
 
     public void testReinjectionOfNullValue() throws Exception {
         EasyMock.replay(objectFactory);
-        MethodInjector<Foo> injector = new MethodInjector<Foo>(fooMethod, objectFactory);
+        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
         try {
             injector.clearObjectFactory();
             Foo foo = new Foo();
@@ -101,7 +100,6 @@ public class MethodInjectorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         fooMethod = Foo.class.getMethod("setFoo", String.class);
-        privateMethod = Foo.class.getDeclaredMethod("hidden", String.class);
         exceptionMethod = Foo.class.getDeclaredMethod("exception", String.class);
         objectFactory = EasyMock.createMock(ObjectFactory.class);
     }

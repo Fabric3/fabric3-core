@@ -51,6 +51,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
@@ -74,13 +75,14 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
             throws ConnectionAttachException {
         URI targetUri = target.getTargetUri();
         URI targetName = UriHelper.getDefragmentedName(targetUri);
-        SystemComponent<?> component = (SystemComponent) manager.getComponent(targetName);
+        SystemComponent component = (SystemComponent) manager.getComponent(targetName);
         if (component == null) {
             throw new ConnectionAttachException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Method method = loadMethod(target, component);
-        InvokerEventStreamHandler handler = createHandler(component, loader, method);
+        ScopeContainer scopeContainer = component.getScopeContainer();
+        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, scopeContainer, loader);
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);
         }
@@ -90,7 +92,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         // no-op
     }
 
-    private Method loadMethod(SystemConnectionTargetDefinition target, SystemComponent<?> component) throws ConnectionAttachException {
+    private Method loadMethod(SystemConnectionTargetDefinition target, SystemComponent component) throws ConnectionAttachException {
         Signature signature = target.getConsumerSignature();
         Class<?> implementationClass = component.getImplementationClass();
         try {
@@ -100,10 +102,6 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         } catch (NoSuchMethodException e) {
             throw new ConnectionAttachException(e);
         }
-    }
-
-    private <T> InvokerEventStreamHandler createHandler(SystemComponent<T> component, ClassLoader loader, Method method) {
-        return new InvokerEventStreamHandler<T>(method, component, component.getScopeContainer(), loader);
     }
 
 }

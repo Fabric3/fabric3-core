@@ -78,7 +78,7 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
             throws ConnectionAttachException {
         URI sourceUri = source.getSourceUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
-        SystemComponent<?> component = (SystemComponent) manager.getComponent(sourceName);
+        SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         if (component == null) {
             throw new ConnectionAttachException("Source component not found: " + sourceName);
         }
@@ -100,7 +100,7 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
 
     public void detach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         URI sourceName = UriHelper.getDefragmentedName(source.getSourceUri());
-        SystemComponent<?> component = (SystemComponent) manager.getComponent(sourceName);
+        SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }

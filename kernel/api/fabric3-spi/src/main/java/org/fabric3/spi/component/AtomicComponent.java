@@ -51,9 +51,8 @@ import org.fabric3.spi.invocation.WorkContext;
  * The runtime instantiation of an SCA atomic, or leaf-type, component
  *
  * @version $Rev$ $Date$
- * @param <T> the type of the Java instance associated with this component
  */
-public interface AtomicComponent<T> extends Component {
+public interface AtomicComponent extends Component {
 
     /**
      * Returns true if component instances should be eagerly initialized.
@@ -84,13 +83,13 @@ public interface AtomicComponent<T> extends Component {
      * @return a wrapper for a new implementation instance
      * @throws ObjectCreationException if there was a problem instantiating the implementation
      */
-    InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException;
+    InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException;
 
     /**
      * Create an ObjectFactory that returns an instance of this AtomicComponent.
      *
      * @return an ObjectFactory that returns an instance of this AtomicComponent
      */
-    ObjectFactory<T> createObjectFactory();
+    ObjectFactory<Object> createObjectFactory();
 
 }

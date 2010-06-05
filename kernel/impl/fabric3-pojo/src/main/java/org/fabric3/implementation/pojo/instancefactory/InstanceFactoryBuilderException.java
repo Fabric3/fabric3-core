@@ -53,10 +53,6 @@ import org.fabric3.spi.builder.BuilderException;
 public class InstanceFactoryBuilderException extends BuilderException {
     private static final long serialVersionUID = -2582100608101918880L;
 
-    public InstanceFactoryBuilderException(String message) {
-        super(message);
-    }
-
     public InstanceFactoryBuilderException(String message, String identifier) {
         super(message, identifier);
     }
@@ -65,7 +61,4 @@ public class InstanceFactoryBuilderException extends BuilderException {
         super(cause);
     }
 
-    public InstanceFactoryBuilderException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
 }

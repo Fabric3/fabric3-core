@@ -93,7 +93,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     private long delay = 600;  // reap every 600 seconds
 
     // the queue of instanceWrappers to destroy, in the order that their instances were created
-    private final Map<F3Conversation, List<InstanceWrapper<?>>> destroyQueues = new ConcurrentHashMap<F3Conversation, List<InstanceWrapper<?>>>();
+    private final Map<F3Conversation, List<InstanceWrapper>> destroyQueues = new ConcurrentHashMap<F3Conversation, List<InstanceWrapper>>();
 
 
     public ConversationalScopeContainer(@Monitor ScopeContainerMonitor monitor,
@@ -148,7 +148,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         F3Conversation conversation = workContext.peekCallFrame().getConversation();
         assert conversation != null;
         store.startContext(conversation);
-        destroyQueues.put(conversation, new ArrayList<InstanceWrapper<?>>());
+        destroyQueues.put(conversation, new ArrayList<InstanceWrapper>());
         if (policy != null) {
             expirationPolicies.put(conversation, policy);
         }
@@ -162,7 +162,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         F3Conversation conversation = workContext.peekCallFrame().getConversation();
         assert conversation != null;
         if (!destroyQueues.containsKey(conversation)) {
-            destroyQueues.put(conversation, new ArrayList<InstanceWrapper<?>>());
+            destroyQueues.put(conversation, new ArrayList<InstanceWrapper>());
             if (policy != null) {
                 expirationPolicies.put(conversation, policy);
             }
@@ -178,7 +178,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     }
 
     private void stopContext(F3Conversation conversation, WorkContext workContext) throws InstanceLifecycleException {
-        List<InstanceWrapper<?>> list = destroyQueues.remove(conversation);
+        List<InstanceWrapper> list = destroyQueues.remove(conversation);
         if (list == null) {
             throw new IllegalStateException("Conversation does not exist: " + conversation);
         }
@@ -186,7 +186,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         store.stopContext(conversation);
     }
 
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
+    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
         CallFrame frame = workContext.peekCallFrame();
         F3Conversation conversation = frame.getConversation();
         assert conversation != null;
@@ -198,7 +198,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         ConversationContext context = frame.getConversationContext();
         // if the context is new or propagates a conversation and the target instance has not been created, create it
         boolean create = (context == ConversationContext.NEW || context == ConversationContext.PROPAGATE);
-        InstanceWrapper<T> wrapper = getWrapper(component, workContext, conversation, create);
+        InstanceWrapper wrapper = getWrapper(component, workContext, conversation, create);
         if (wrapper == null) {
             // conversation has either been ended or timed out, throw an exception
             throw new ConversationEndedException("Conversation ended");
@@ -209,15 +209,15 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     public void reinject() {
     }
 
-    public void updated(AtomicComponent<?> component, String referenceName) {
+    public void updated(AtomicComponent component, String referenceName) {
 
     }
 
-    public void removed(AtomicComponent<?> component, String referenceName) {
+    public void removed(AtomicComponent component, String referenceName) {
 
     }
 
-    public <T> void returnWrapper(AtomicComponent<T> component, WorkContext workContext, InstanceWrapper<T> wrapper) {
+    public void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) {
     }
 
 
@@ -268,9 +268,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
      * @return an instance wrapper or null if not found an create is set to false
      * @throws InstanceLifecycleException if an error occurs returning the wrapper
      */
-    private <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext, F3Conversation conversation, boolean create)
+    private InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext, F3Conversation conversation, boolean create)
             throws InstanceLifecycleException {
-        InstanceWrapper<T> wrapper = store.getWrapper(component, conversation);
+        InstanceWrapper wrapper = store.getWrapper(component, conversation);
         if (wrapper == null && create) {
             try {
                 wrapper = component.createInstanceWrapper(workContext);
@@ -279,7 +279,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
             }
             wrapper.start(workContext);
             store.putWrapper(component, conversation, wrapper);
-            List<InstanceWrapper<?>> queue = destroyQueues.get(conversation);
+            List<InstanceWrapper> queue = destroyQueues.get(conversation);
             if (queue == null) {
                 throw new IllegalStateException("Instance context not found for : " + component.getUri());
             }

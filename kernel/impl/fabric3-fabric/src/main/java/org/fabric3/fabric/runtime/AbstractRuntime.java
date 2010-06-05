@@ -212,7 +212,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         if (RuntimeServices.class.equals(service)) {
             return service.cast(this);
         }
-        AtomicComponent<?> component = (AtomicComponent<?>) componentManager.getComponent(uri);
+        AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
         if (component == null) {
             return null;
         }
@@ -220,7 +220,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         WorkContext workContext = new WorkContext();
         WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
-            InstanceWrapper<?> wrapper = scopeContainer.getWrapper(component, workContext);
+            InstanceWrapper wrapper = scopeContainer.getWrapper(component, workContext);
             return service.cast(wrapper.getInstance());
         } catch (InstanceLifecycleException e) {
             // this is an error with the runtime and not something that is recoverable

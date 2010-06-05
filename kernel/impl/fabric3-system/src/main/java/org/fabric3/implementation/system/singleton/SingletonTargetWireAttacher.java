@@ -72,7 +72,7 @@ public class SingletonTargetWireAttacher implements TargetWireAttacher<Singleton
 
     public ObjectFactory<?> createObjectFactory(SingletonTargetDefinition target) throws WiringException {
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        SingletonComponent<?> targetComponent = (SingletonComponent<?>) manager.getComponent(targetId);
+        SingletonComponent targetComponent = (SingletonComponent) manager.getComponent(targetId);
         return targetComponent.createObjectFactory();
     }
 }

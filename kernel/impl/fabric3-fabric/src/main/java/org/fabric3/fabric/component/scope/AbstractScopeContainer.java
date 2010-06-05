@@ -96,19 +96,19 @@ public abstract class AbstractScopeContainer implements ScopeContainer {
         return scope;
     }
 
-    public void register(AtomicComponent<?> component) {
+    public void register(AtomicComponent component) {
     }
 
-    public void unregister(AtomicComponent<?> component) {
+    public void unregister(AtomicComponent component) {
     }
 
     public void registerCallback(F3Conversation conversation, ConversationExpirationCallback callback) {
         throw new UnsupportedOperationException();
     }
 
-    public void initializeComponents(List<AtomicComponent<?>> components, WorkContext workContext) throws GroupInitializationException {
+    public void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException {
         List<Exception> causes = null;
-        for (AtomicComponent<?> component : components) {
+        for (AtomicComponent component : components) {
             try {
                 getWrapper(component, workContext);
             } catch (Exception e) {
@@ -135,9 +135,10 @@ public abstract class AbstractScopeContainer implements ScopeContainer {
      * @param instances   the list of instances to shutdown
      * @param workContext the current work context
      */
-    protected void destroyInstances(List<InstanceWrapper<?>> instances, WorkContext workContext) {
+    @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
+    protected void destroyInstances(List<InstanceWrapper> instances, WorkContext workContext) {
         while (true) {
-            InstanceWrapper<?> toDestroy;
+            InstanceWrapper toDestroy;
             synchronized (instances) {
                 if (instances.size() == 0) {
                     return;

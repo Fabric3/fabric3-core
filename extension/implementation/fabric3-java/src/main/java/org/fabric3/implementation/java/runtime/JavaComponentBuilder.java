@@ -49,7 +49,6 @@ import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
@@ -60,15 +59,14 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
  * Builds a JavaComponent from a physical definition.
  *
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the defined component
  */
 @EagerInit
-public class JavaComponentBuilder<T> extends PojoComponentBuilder<T, JavaComponentDefinition, JavaComponent<T>> {
+public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefinition, JavaComponent> {
     private ScopeRegistry scopeRegistry;
-    private InstanceFactoryBuilder<T> factoryBuilder;
+    private InstanceFactoryBuilder factoryBuilder;
 
     public JavaComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                @Reference InstanceFactoryBuilder<T> factoryBuilder,
+                                @Reference InstanceFactoryBuilder factoryBuilder,
                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                 @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                 @Reference IntrospectionHelper helper) {
@@ -77,7 +75,7 @@ public class JavaComponentBuilder<T> extends PojoComponentBuilder<T, JavaCompone
         this.factoryBuilder = factoryBuilder;
     }
 
-    public JavaComponent<T> build(JavaComponentDefinition definition) throws BuilderException {
+    public JavaComponent build(JavaComponentDefinition definition) throws BuilderException {
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
@@ -89,7 +87,7 @@ public class JavaComponentBuilder<T> extends PojoComponentBuilder<T, JavaCompone
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
 
-        InstanceFactoryProvider<T> provider = factoryBuilder.build(factoryDefinition, classLoader);
+        InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
 
@@ -97,7 +95,7 @@ public class JavaComponentBuilder<T> extends PojoComponentBuilder<T, JavaCompone
         long age = definition.getMaxAge();
         boolean eager = definition.isEagerInit();
 
-        JavaComponent<T> component = new JavaComponent<T>(uri, provider, scopeContainer, deployable, eager, idleTime, age);
+        JavaComponent component = new JavaComponent(uri, provider, scopeContainer, deployable, eager, idleTime, age);
 
         buildContexts(component, provider);
 

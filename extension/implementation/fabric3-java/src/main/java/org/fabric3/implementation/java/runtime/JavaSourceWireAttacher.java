@@ -85,7 +85,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     public void attach(JavaSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition, Wire wire) throws WiringException {
         URI sourceUri = sourceDefinition.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceDefinition.getUri());
-        JavaComponent<?> source = (JavaComponent) manager.getComponent(sourceName);
+        JavaComponent source = (JavaComponent) manager.getComponent(sourceName);
         if (source == null) {
             throw new WiringException("Source callback not found: " + sourceName);
         }
@@ -111,7 +111,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
 
     public void detachObjectFactory(JavaSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());
-        JavaComponent<?> component = (JavaComponent) manager.getComponent(sourceName);
+        JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
@@ -119,7 +119,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     public void attachObjectFactory(JavaSourceDefinition sourceDefinition, ObjectFactory<?> factory, PhysicalTargetDefinition targetDefinition)
             throws WiringException {
         URI sourceId = UriHelper.getDefragmentedName(sourceDefinition.getUri());
-        JavaComponent<?> sourceComponent = (JavaComponent<?>) manager.getComponent(sourceId);
+        JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();
 
         if (sourceDefinition.isKeyed()) {
@@ -133,7 +133,7 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
     private void processReference(Wire wire,
                                   JavaSourceDefinition sourceDefinition,
                                   PhysicalTargetDefinition targetDefinition,
-                                  JavaComponent<?> source,
+                                  JavaComponent source,
                                   Injectable injectable,
                                   Class<?> type) throws KeyInstantiationException {
         String callbackUri = null;
@@ -156,11 +156,8 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         }
     }
 
-    private void processCallback(Wire wire,
-                                 PhysicalTargetDefinition targetDefinition,
-                                 JavaComponent<?> source,
-                                 Injectable injectable,
-                                 Class<?> type) throws KeyInstantiationException {
+    private void processCallback(Wire wire, PhysicalTargetDefinition targetDefinition, JavaComponent source, Injectable injectable, Class<?> type)
+            throws KeyInstantiationException {
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         ObjectFactory<?> factory = source.getObjectFactory(injectable);

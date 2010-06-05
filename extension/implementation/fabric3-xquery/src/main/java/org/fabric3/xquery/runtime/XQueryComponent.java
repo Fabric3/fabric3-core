@@ -54,7 +54,7 @@ import org.fabric3.spi.wire.Wire;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class XQueryComponent<T> implements AtomicComponent<T> {
+public abstract class XQueryComponent implements AtomicComponent {
 
     protected final URI uri;
     protected URI classLoaderId;
@@ -107,11 +107,11 @@ public abstract class XQueryComponent<T> implements AtomicComponent<T> {
         return 0;
     }
 
-    public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
+    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<T> createObjectFactory() {
+    public ObjectFactory<Object> createObjectFactory() {
         throw new UnsupportedOperationException();
     }
 

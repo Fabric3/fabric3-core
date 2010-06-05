@@ -62,11 +62,10 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  * Responsible for dispatching an event to a Java-based component implementation instance.
  *
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the component being invoked
  */
-public class InvokerEventStreamHandler<T> implements EventStreamHandler {
+public class InvokerEventStreamHandler implements EventStreamHandler {
     private Method operation;
-    private AtomicComponent<T> component;
+    private AtomicComponent component;
     private ScopeContainer scopeContainer;
     private ClassLoader targetTCCLClassLoader;
 
@@ -79,7 +78,7 @@ public class InvokerEventStreamHandler<T> implements EventStreamHandler {
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
     public InvokerEventStreamHandler(Method operation,
-                                     AtomicComponent<T> component,
+                                     AtomicComponent component,
                                      ScopeContainer scopeContainer,
                                      ClassLoader targetTCCLClassLoader) {
         this.operation = operation;
@@ -99,7 +98,7 @@ public class InvokerEventStreamHandler<T> implements EventStreamHandler {
 
     public void handle(Object event) {
         WorkContext workContext = new WorkContext();
-        InstanceWrapper<T> wrapper;
+        InstanceWrapper wrapper;
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
         } catch (ConversationEndedException e) {

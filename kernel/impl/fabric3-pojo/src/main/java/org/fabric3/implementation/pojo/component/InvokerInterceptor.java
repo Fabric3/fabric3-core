@@ -67,11 +67,10 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  * Responsible for dispatching an invocation to a Java-based component implementation instance.
  *
  * @version $Rev$ $Date$
- * @param <T> the implementation class for the component being invoked
  */
-public class InvokerInterceptor<T> implements Interceptor {
+public class InvokerInterceptor implements Interceptor {
     private Method operation;
-    private AtomicComponent<T> component;
+    private AtomicComponent component;
     private ScopeContainer scopeContainer;
     private ClassLoader targetTCCLClassLoader;
     private boolean callback;
@@ -90,7 +89,7 @@ public class InvokerInterceptor<T> implements Interceptor {
     public InvokerInterceptor(Method operation,
                               boolean callback,
                               boolean endConversation,
-                              AtomicComponent<T> component,
+                              AtomicComponent component,
                               ScopeContainer scopeContainer) {
         this.operation = operation;
         this.callback = callback;
@@ -113,7 +112,7 @@ public class InvokerInterceptor<T> implements Interceptor {
     public InvokerInterceptor(Method operation,
                               boolean callback,
                               boolean endConversation,
-                              AtomicComponent<T> component,
+                              AtomicComponent component,
                               ScopeContainer scopeContainer,
                               ClassLoader targetTCCLClassLoader) {
         this.operation = operation;
@@ -135,7 +134,7 @@ public class InvokerInterceptor<T> implements Interceptor {
 
     public Message invoke(Message msg) {
         WorkContext workContext = msg.getWorkContext();
-        InstanceWrapper<T> wrapper;
+        InstanceWrapper wrapper;
         try {
             startOrJoinContext(workContext);
             wrapper = scopeContainer.getWrapper(component, workContext);

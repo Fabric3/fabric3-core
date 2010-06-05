@@ -56,11 +56,10 @@ import org.fabric3.spi.component.InstanceWrapper;
  * @version $Rev$ $Date$
  */
 public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
-    private final Map<KEY, Map<AtomicComponent<?>, InstanceWrapper<?>>> contexts =
-            new ConcurrentHashMap<KEY, Map<AtomicComponent<?>, InstanceWrapper<?>>>();
+    private final Map<KEY, Map<AtomicComponent, InstanceWrapper>> contexts = new ConcurrentHashMap<KEY, Map<AtomicComponent, InstanceWrapper>>();
 
     public void startContext(KEY contextId) throws InstanceLifecycleException {
-        contexts.put(contextId, new ConcurrentHashMap<AtomicComponent<?>, InstanceWrapper<?>>());
+        contexts.put(contextId, new ConcurrentHashMap<AtomicComponent, InstanceWrapper>());
     }
 
     public void stopContext(KEY contextId) throws InstanceLifecycleException {
@@ -68,16 +67,16 @@ public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) {
-        Map<AtomicComponent<?>, InstanceWrapper<?>> context = contexts.get(contextId);
+    public InstanceWrapper getWrapper(AtomicComponent component, KEY contextId) {
+        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
         if (context == null) {
             return null;
         }
-        return (InstanceWrapper<T>) context.get(component);
+        return context.get(component);
     }
 
-    public <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) {
-        Map<AtomicComponent<?>, InstanceWrapper<?>> context = contexts.get(contextId);
+    public void putWrapper(AtomicComponent component, KEY contextId, InstanceWrapper wrapper) {
+        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
         context.put(component, wrapper);
     }
 }
