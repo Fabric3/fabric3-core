@@ -145,7 +145,7 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
         assert headInterceptor != null;
 
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        CallFrame frame = initalizeCallFrame(workContext);
+        CallFrame frame = initializeCallFrame(workContext);
         Message msg = new MessageImpl();
         msg.setBody(args);
         msg.setWorkContext(workContext);
@@ -202,7 +202,7 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
      * @param workContext the current work context
      * @return a CallFrame for the invocation or null if none is required.
      */
-    private CallFrame initalizeCallFrame(WorkContext workContext) {
+    private CallFrame initializeCallFrame(WorkContext workContext) {
         CallFrame frame = null;
         if (InteractionType.CONVERSATIONAL == type && conversation == null) {
             conversation = new ConversationImpl(createConversationID(), scopeContainer);

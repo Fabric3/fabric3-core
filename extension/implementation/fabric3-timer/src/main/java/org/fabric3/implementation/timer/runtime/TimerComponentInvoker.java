@@ -37,8 +37,8 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
@@ -70,7 +70,7 @@ public class TimerComponentInvoker<T> implements Runnable {
             // TODO handle conversations
             //startOrJoinContext(workContext);
             wrapper = scopeContainer.getWrapper(component, workContext);
-        } catch (ComponentException e) {
+        } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 

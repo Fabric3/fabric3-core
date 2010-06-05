@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 
 /**
@@ -58,11 +59,11 @@ public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
     private final Map<KEY, Map<AtomicComponent<?>, InstanceWrapper<?>>> contexts =
             new ConcurrentHashMap<KEY, Map<AtomicComponent<?>, InstanceWrapper<?>>>();
 
-    public void startContext(KEY contextId) throws StoreException {
+    public void startContext(KEY contextId) throws InstanceLifecycleException {
         contexts.put(contextId, new ConcurrentHashMap<AtomicComponent<?>, InstanceWrapper<?>>());
     }
 
-    public void stopContext(KEY contextId) throws StoreException {
+    public void stopContext(KEY contextId) throws InstanceLifecycleException {
         contexts.remove(contextId);
     }
 

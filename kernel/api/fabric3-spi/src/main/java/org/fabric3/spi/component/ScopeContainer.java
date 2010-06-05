@@ -136,13 +136,6 @@ public interface ScopeContainer {
     void stopContext(WorkContext workContext) throws ComponentException;
 
     /**
-     * Stops all active contexts.
-     *
-     * @param workContext the current work context
-     */
-    void stopAllContexts(WorkContext workContext);
-
-    /**
      * Initialise an ordered list of components. The list is traversed in order and the getWrapper() method called for each to associate an instance
      * with the supplied context.
      *
@@ -158,10 +151,11 @@ public interface ScopeContainer {
      * @param component   the component
      * @param workContext the work context in which the instance should be obtained
      * @return the wrapper for the target instance
-     * @throws ComponentException         if there was a problem instantiating the target instance
+     * @throws InstanceLifecycleException if there was a problem instantiating the target instance
      * @throws ConversationEndedException if the instance is conversational and the associated has ended or expired
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws ComponentException, ConversationEndedException;
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext)
+            throws InstanceLifecycleException, ConversationEndedException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).

@@ -56,21 +56,8 @@ public abstract class InstanceException extends ComponentException {
     }
 
 
-    public InstanceException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public InstanceException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-
-    public InstanceException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public InstanceException(Throwable cause) {
-        super(cause);
     }
 
 }

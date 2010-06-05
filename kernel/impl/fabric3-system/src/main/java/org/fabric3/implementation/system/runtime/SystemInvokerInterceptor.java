@@ -47,8 +47,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.Message;
@@ -86,7 +86,7 @@ public class SystemInvokerInterceptor<T> implements Interceptor {
         InstanceWrapper<T> wrapper;
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
-        } catch (ComponentException e) {
+        } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 

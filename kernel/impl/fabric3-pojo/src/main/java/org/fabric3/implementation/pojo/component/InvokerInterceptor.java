@@ -52,6 +52,7 @@ import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ExpirationPolicy;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
@@ -141,7 +142,7 @@ public class InvokerInterceptor<T> implements Interceptor {
         } catch (ConversationEndedException e) {
             msg.setBodyWithFault(e);
             return msg;
-        } catch (ComponentException e) {
+        } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 

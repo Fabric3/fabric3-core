@@ -44,6 +44,7 @@
 package org.fabric3.fabric.component.scope;
 
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 
 /**
@@ -58,17 +59,17 @@ public interface InstanceWrapperStore<KEY> {
      * Notification to the store that a scope context is being started. This must be called before any instances are associated with the context
      *
      * @param contextId the id of the context
-     * @throws StoreException if there was a problem initializing the context
+     * @throws InstanceLifecycleException if there was a problem initializing the context
      */
-    void startContext(KEY contextId) throws StoreException;
+    void startContext(KEY contextId) throws InstanceLifecycleException;
 
     /**
      * Notification to the store that a scope context is ending.
      *
      * @param contextId the id of the context
-     * @throws StoreException if there was a problem shutting the context down
+     * @throws InstanceLifecycleException if there was a problem shutting the context down
      */
-    void stopContext(KEY contextId) throws StoreException;
+    void stopContext(KEY contextId) throws InstanceLifecycleException;
 
     /**
      * Get the instance of the supplied component that is associated with the supplied context. Returns null if there is no instance currently
@@ -77,9 +78,9 @@ public interface InstanceWrapperStore<KEY> {
      * @param component the component whose instance should be returned
      * @param contextId the context whose instance should be returned
      * @return the wrapped instance associated with the context or null
-     * @throws StoreException if there was problem returning the instance
+     * @throws InstanceLifecycleException if there was problem returning the instance
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) throws StoreException;
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) throws InstanceLifecycleException;
 
     /**
      * Associated an instance of the supplied component with the supplied context.
@@ -87,7 +88,7 @@ public interface InstanceWrapperStore<KEY> {
      * @param component the component whose instance is being stored
      * @param contextId the context with which the instance is associated
      * @param wrapper   the wrapped instance
-     * @throws StoreException if there was a problem storing the instance
+     * @throws InstanceLifecycleException if there was a problem storing the instance
      */
-    <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) throws StoreException;
+    <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) throws InstanceLifecycleException;
 }

@@ -92,10 +92,6 @@ public abstract class AbstractScopeContainer implements ScopeContainer {
         }
     }
 
-    public void stopAllContexts(WorkContext workContext) {
-        throw new UnsupportedOperationException();
-    }
-
     public Scope getScope() {
         return scope;
     }

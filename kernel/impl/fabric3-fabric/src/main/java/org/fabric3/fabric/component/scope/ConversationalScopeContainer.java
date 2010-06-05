@@ -69,6 +69,7 @@ import org.fabric3.spi.component.ConversationExpirationCallback;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceInitializationException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
@@ -176,7 +177,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         notifyExpirationCallbacks(conversation);
     }
 
-    private void stopContext(F3Conversation conversation, WorkContext workContext) throws StoreException {
+    private void stopContext(F3Conversation conversation, WorkContext workContext) throws InstanceLifecycleException {
         List<InstanceWrapper<?>> list = destroyQueues.remove(conversation);
         if (list == null) {
             throw new IllegalStateException("Conversation does not exist: " + conversation);
@@ -185,7 +186,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         store.stopContext(conversation);
     }
 
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws ComponentException {
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
         CallFrame frame = workContext.peekCallFrame();
         F3Conversation conversation = frame.getConversation();
         assert conversation != null;
@@ -247,7 +248,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
                     workContext.addCallFrame(frame);
                     try {
                         stopContext(conversation, workContext);
-                    } catch (StoreException e) {
+                    } catch (InstanceLifecycleException e) {
                         monitor.error(e);
                     }
                     notifyExpirationCallbacks(conversation);
@@ -265,10 +266,10 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
      * @param conversation the conversation key for the component implementation instance
      * @param create       true if an instance should be created
      * @return an instance wrapper or null if not found an create is set to false
-     * @throws ComponentException if an error occurs returning the wrapper
+     * @throws InstanceLifecycleException if an error occurs returning the wrapper
      */
     private <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext, F3Conversation conversation, boolean create)
-            throws ComponentException {
+            throws InstanceLifecycleException {
         InstanceWrapper<T> wrapper = store.getWrapper(component, conversation);
         if (wrapper == null && create) {
             try {

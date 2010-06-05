@@ -165,19 +165,6 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void stopAllContexts(WorkContext workContext) {
-        synchronized (destroyQueues) {
-            // Shutdown all instances by traversing the deployable composites in reverse order they were deployed and interating instances within
-            // each composite in the reverse order they were instantiated. This guarantees dependencies are disposed after the dependent instance.
-            List<List<InstanceWrapper<?>>> queues = new ArrayList<List<InstanceWrapper<?>>>(destroyQueues.values());
-            ListIterator<List<InstanceWrapper<?>>> iter = queues.listIterator(queues.size());
-            while (iter.hasPrevious()) {
-                List<InstanceWrapper<?>> queue = iter.previous();
-                destroyInstances(queue, workContext);
-            }
-        }
-    }
-
     @Destroy
     public synchronized void stop() {
         super.stop();
@@ -271,6 +258,19 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
+    public void stopAllContexts(WorkContext workContext) {
+        synchronized (destroyQueues) {
+            // Shutdown all instances by traversing the deployable composites in reverse order they were deployed and interating instances within
+            // each composite in the reverse order they were instantiated. This guarantees dependencies are disposed after the dependent instance.
+            List<List<InstanceWrapper<?>>> queues = new ArrayList<List<InstanceWrapper<?>>>(destroyQueues.values());
+            ListIterator<List<InstanceWrapper<?>>> iter = queues.listIterator(queues.size());
+            while (iter.hasPrevious()) {
+                List<InstanceWrapper<?>> queue = iter.previous();
+                destroyInstances(queue, workContext);
+            }
+        }
+    }
+
     private void eagerInitialize(WorkContext workContext, QName contextId) throws GroupInitializationException {
         // get and clone initialization queue
         List<AtomicComponent<?>> initQueue;
@@ -294,10 +294,10 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             return true;
         }
 
-        public void start(WorkContext workContext) throws InstanceInitializationException {
+        public void start(WorkContext workContext) {
         }
 
-        public void stop(WorkContext workContext) throws InstanceDestructionException {
+        public void stop(WorkContext workContext) {
         }
 
         public void reinject() {

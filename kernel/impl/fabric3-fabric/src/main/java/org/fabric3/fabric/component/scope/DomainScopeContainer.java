@@ -133,13 +133,6 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stopContext(workContext);
     }
 
-    public void stopAllContexts(WorkContext workContext) {
-        synchronized (deferredContexts) {
-            deferredContexts.clear();
-        }
-        super.stopAllContexts(workContext);
-    }
-
     @Override
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
         if (topologyService != null && !activated) {
@@ -179,5 +172,11 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
 
     }
 
+    public void stopAllContexts(WorkContext workContext) {
+        synchronized (deferredContexts) {
+            deferredContexts.clear();
+        }
+        super.stopAllContexts(workContext);
+    }
 
 }

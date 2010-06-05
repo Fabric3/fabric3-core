@@ -50,7 +50,7 @@ import java.util.List;
 /**
  * @version $Rev$ $Date$
  */
-public class GroupInitializationException extends ComponentException {
+public class GroupInitializationException extends InstanceLifecycleException {
     private static final long serialVersionUID = 2049226987838195489L;
     private final List<Exception> causes;
 

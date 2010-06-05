@@ -84,7 +84,7 @@ import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.ComponentException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -222,7 +222,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         try {
             InstanceWrapper<?> wrapper = scopeContainer.getWrapper(component, workContext);
             return service.cast(wrapper.getInstance());
-        } catch (ComponentException e) {
+        } catch (InstanceLifecycleException e) {
             // this is an error with the runtime and not something that is recoverable
             throw new AssertionError(e);
         } finally {
