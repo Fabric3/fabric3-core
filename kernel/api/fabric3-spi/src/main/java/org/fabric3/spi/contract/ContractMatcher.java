@@ -40,7 +40,7 @@ package org.fabric3.spi.contract;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Dermines if two <code>ServiceContract</code>s or compatible for wiring. Specifically, tests whether the target contract can be converted to the
+ * Determines if two <code>ServiceContract</code>s or compatible for wiring. Specifically, tests whether the target contract can be converted to the
  * source contract type. Some interface languages, such as Java, allow for inheritance. In these cases, compatibility will include checking if a
  * widening conversion is possible from the target contract to source contract.
  * <p/>
