@@ -37,12 +37,12 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.spi.component.ComponentException;
 
 /**
  * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
  */
-public class TimerComponentInitException extends Fabric3RuntimeException {
+public class TimerComponentInitException extends ComponentException {
     private static final long serialVersionUID = -2271902394308088059L;
 
     public TimerComponentInitException(Throwable cause) {

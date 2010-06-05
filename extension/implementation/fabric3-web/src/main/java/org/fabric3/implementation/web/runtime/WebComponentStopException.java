@@ -37,23 +37,16 @@
 */
 package org.fabric3.implementation.web.runtime;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.spi.component.ComponentException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WebComponentStopException extends Fabric3RuntimeException {
+public class WebComponentStopException extends ComponentException {
     private static final long serialVersionUID = -8027164653964721953L;
-
-    public WebComponentStopException(String message) {
-        super(message);
-    }
 
     public WebComponentStopException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public WebComponentStopException(Throwable cause) {
-        super(cause);
-    }
 }

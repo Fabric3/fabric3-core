@@ -57,6 +57,7 @@ import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.InteractionType;
@@ -99,7 +100,7 @@ public class WebComponent<T> implements AtomicComponent<T> {
                         WebApplicationActivator activator,
                         WireProxyService proxyService,
                         Map<String, ObjectFactory<?>> propertyFactories,
-                        Map<String, Map<String, InjectionSite>> injectorMappings) throws WebComponentCreationException {
+                        Map<String, Map<String, InjectionSite>> injectorMappings) {
         this.uri = uri;
         this.contextUrl = contextUrl;
         this.archiveUri = archiveUri;
@@ -137,7 +138,7 @@ public class WebComponent<T> implements AtomicComponent<T> {
         this.level = level;
     }
 
-    public void start() {
+    public void start() throws ComponentException {
         try {
             Map<String, List<Injector<?>>> injectors = new HashMap<String, List<Injector<?>>>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
@@ -163,7 +164,7 @@ public class WebComponent<T> implements AtomicComponent<T> {
 
     }
 
-    public void stop() {
+    public void stop() throws ComponentException {
         try {
             activator.deactivate(archiveUri);
         } catch (WebApplicationActivationException e) {

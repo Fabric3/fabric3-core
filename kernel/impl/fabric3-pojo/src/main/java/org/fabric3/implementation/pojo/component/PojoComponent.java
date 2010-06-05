@@ -53,6 +53,7 @@ import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
@@ -92,11 +93,11 @@ public abstract class PojoComponent<T> implements AtomicComponent<T> {
         this.maxAge = maxAge;
     }
 
-    public void start() {
+    public void start() throws ComponentException {
         scopeContainer.register(this);
     }
 
-    public void stop() {
+    public void stop() throws ComponentException {
         instanceFactory = null;
         scopeContainer.unregister(this);
     }

@@ -37,19 +37,19 @@
 */
 package org.fabric3.implementation.web.runtime;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InjectionCreationException extends BuilderException {
+public class InjectionCreationException extends Fabric3Exception {
     private static final long serialVersionUID = 3550562261724468883L;
-
-    public InjectionCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
     public InjectionCreationException(String message) {
         super(message);
+    }
+
+    public InjectionCreationException(Throwable cause) {
+        super(cause);
     }
 }

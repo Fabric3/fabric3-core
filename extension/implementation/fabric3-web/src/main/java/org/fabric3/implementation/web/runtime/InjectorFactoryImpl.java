@@ -43,9 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.implementation.pojo.reflection.FieldInjector;
 import org.fabric3.implementation.pojo.reflection.MethodInjector;
+import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -53,7 +53,7 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
- * Default implementaiton of the InjectorFactory.
+ * Default implementation of the InjectorFactory.
  *
  * @version $Rev$ $Date$
  */
@@ -93,23 +93,25 @@ public class InjectorFactoryImpl implements InjectorFactory {
         }
     }
 
-    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader) {
+    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader)
+            throws InjectionCreationException {
         try {
             return new MethodInjector(getMethod(site, artifactName, classLoader), factory);
         } catch (ClassNotFoundException e) {
-            throw new WebComponentStartException(e);
+            throw new InjectionCreationException(e);
         } catch (NoSuchMethodException e) {
-            throw new WebComponentStartException(e);
+            throw new InjectionCreationException(e);
         }
     }
 
-    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader) {
+    private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader)
+            throws InjectionCreationException {
         try {
             return new FieldInjector(getField(site, artifactName, classLoader), factory);
         } catch (NoSuchFieldException e) {
-            throw new WebComponentStartException(e);
+            throw new InjectionCreationException(e);
         } catch (ClassNotFoundException e) {
-            throw new WebComponentStartException(e);
+            throw new InjectionCreationException(e);
         }
     }
 

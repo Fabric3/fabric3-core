@@ -44,6 +44,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.implementation.timer.provision.TriggerData;
 import org.fabric3.timer.spi.TimerService;
@@ -92,7 +93,7 @@ public class TimerComponent<T> extends JavaComponent<T> {
         this.timerService = timerService;
     }
 
-    public void start() {
+    public void start() throws ComponentException {
         super.start();
         TimerComponentInvoker<T> invoker = new TimerComponentInvoker<T>(this);
         switch (data.getType()) {
@@ -116,7 +117,7 @@ public class TimerComponent<T> extends JavaComponent<T> {
         }
     }
 
-    public void stop() {
+    public void stop() throws ComponentException {
         super.stop();
         if (future != null && !future.isCancelled() && !future.isDone()) {
             future.cancel(true);
