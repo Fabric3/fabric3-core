@@ -64,7 +64,7 @@ public interface Collector {
     void markForCollection(QName deployable, LogicalCompositeComponent composite);
 
     /**
-     * Recursively collects marked components by removing from the given composite.
+     * Recursively collects marked components by removing them from the given composite.
      *
      * @param composite the composite to collect marked components from
      */
