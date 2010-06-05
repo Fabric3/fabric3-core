@@ -63,9 +63,9 @@ public abstract class AbstractJDKEventHandler implements InvocationHandler {
         } else if (Object.class.equals(method.getDeclaringClass())
                 && "hashCode".equals(method.getName())) {
             return hashCode();
-            // TODO beter hash algorithm
+            // TODO better hash algorithm
         }
         String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op, op);
+        throw new InstanceInvocationException("Operation not configured: " + op);
     }
 }

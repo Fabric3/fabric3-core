@@ -124,7 +124,7 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
             // TODO beter hash algorithm
         }
         String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op, op);
+        throw new InstanceInvocationException("Operation not configured: " + op);
     }
 
 }

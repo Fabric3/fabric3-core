@@ -50,7 +50,6 @@ import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.implementation.timer.provision.TriggerData;
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
@@ -89,8 +88,7 @@ public class TimerComponentBuilder<T> extends PojoComponentBuilder<T, TimerCompo
 
         // get the scope container for this component
         String scopeName = definition.getScope();
-        Scope scope = scopeRegistry.getScope(scopeName);
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();

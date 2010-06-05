@@ -53,6 +53,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -87,6 +88,10 @@ public class StartComponentCommandExecutor implements CommandExecutor<StartCompo
     public void execute(StartComponentCommand command) throws ExecutionException {
         URI uri = command.getUri();
         Component component = componentManager.getComponent(uri);
-        component.start();
+        try {
+            component.start();
+        } catch (ComponentException e) {
+            throw new ExecutionException(e);
+        }
     }
 }

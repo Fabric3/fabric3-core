@@ -47,20 +47,17 @@ package org.fabric3.fabric.component.scope;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ConversationExpirationCallback;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -68,7 +65,7 @@ import org.fabric3.spi.invocation.WorkContext;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
+public abstract class AbstractScopeContainer implements ScopeContainer {
     private final Scope scope;
     protected final ScopeContainerMonitor monitor;
     private ScopeRegistry scopeRegistry;
@@ -83,25 +80,13 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         this.scopeRegistry = scopeRegistry;
     }
 
-    @Init
     public synchronized void start() {
-        int lifecycleState = getLifecycleState();
-        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
-        }
         if (scopeRegistry != null) {
             scopeRegistry.register(this);
         }
-        setLifecycleState(RUNNING);
     }
 
-    @Destroy
     public synchronized void stop() {
-        int lifecycleState = getLifecycleState();
-        if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
-        }
-        setLifecycleState(STOPPED);
         if (scopeRegistry != null) {
             scopeRegistry.unregister(this);
         }
@@ -116,11 +101,9 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void register(AtomicComponent<?> component) {
-        checkInit();
     }
 
     public void unregister(AtomicComponent<?> component) {
-        checkInit();
     }
 
     public void registerCallback(F3Conversation conversation, ConversationExpirationCallback callback) {
@@ -174,10 +157,5 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         }
     }
 
-    private void checkInit() {
-        if (getLifecycleState() != RUNNING) {
-            throw new IllegalStateException("Scope container not running [" + getLifecycleState() + "]");
-        }
-    }
 
 }

@@ -55,10 +55,6 @@ public class InstanceInitializationException extends InstanceLifecycleException 
         super(message);
     }
 
-    public InstanceInitializationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
     public InstanceInitializationException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -43,6 +43,8 @@ import javax.xml.stream.XMLOutputFactory;
 /**
  * Provides instances of XMLInputFactory and XMLOutputFactory. This service provides classloading semantics and works around a bug in the JDK StAX
  * parser API (StAX 1.0) which returns an XMLInputFactory for XMLOutputFactory.newInstance(String,ClassLoader).
+ *
+ * @version $Rev$ $Date$
  */
 
 public interface XMLFactory {

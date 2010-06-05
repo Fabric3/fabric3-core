@@ -98,12 +98,12 @@ public final class XMLFactoryImpl implements XMLFactory {
         try {
             Class clazz = cl.loadClass(factoryName);
             return (XMLInputFactory) clazz.newInstance();
-        } catch (InstantiationException ie) {
-            throw new XMLFactoryInstantiationException("Error instantiating factory", factoryName, ie);
-        } catch (IllegalAccessException iae) {
-            throw new XMLFactoryInstantiationException("Error instantiating factory", factoryName, iae);
-        } catch (ClassNotFoundException cnfe) {
-            throw new XMLFactoryInstantiationException("Error loading factory", factoryName, cnfe);
+        } catch (InstantiationException e) {
+            throw new XMLFactoryInstantiationException("Error instantiating factory: " + factoryName, e);
+        } catch (IllegalAccessException e) {
+            throw new XMLFactoryInstantiationException("Error instantiating factory: " + factoryName, e);
+        } catch (ClassNotFoundException e) {
+            throw new XMLFactoryInstantiationException("Error loading factory: " + factoryName, e);
         }
     }
 
@@ -112,12 +112,12 @@ public final class XMLFactoryImpl implements XMLFactory {
         try {
             Class clazz = cl.loadClass(factoryName);
             return (XMLOutputFactory) clazz.newInstance();
-        } catch (InstantiationException ie) {
-            throw new XMLFactoryInstantiationException("Error instantiating factory", factoryName, ie);
-        } catch (IllegalAccessException iae) {
-            throw new XMLFactoryInstantiationException("Error instantiating factory", factoryName, iae);
-        } catch (ClassNotFoundException cnfe) {
-            throw new XMLFactoryInstantiationException("Error loading factory", factoryName, cnfe);
+        } catch (InstantiationException e) {
+            throw new XMLFactoryInstantiationException("Error instantiating factory: " + factoryName, e);
+        } catch (IllegalAccessException e) {
+            throw new XMLFactoryInstantiationException("Error instantiating factory: " + factoryName, e);
+        } catch (ClassNotFoundException e) {
+            throw new XMLFactoryInstantiationException("Error loading factory: " + factoryName, e);
         }
     }
 

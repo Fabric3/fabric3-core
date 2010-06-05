@@ -38,17 +38,16 @@
 package org.fabric3.federation.jgroups;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.DuplicateClassLoaderException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MockClassLoaderRegistry implements ClassLoaderRegistry{
-    public void register(URI id, ClassLoader classLoader) throws DuplicateClassLoaderException {
+public class MockClassLoaderRegistry implements ClassLoaderRegistry {
+    public void register(URI id, ClassLoader classLoader) {
 
     }
 

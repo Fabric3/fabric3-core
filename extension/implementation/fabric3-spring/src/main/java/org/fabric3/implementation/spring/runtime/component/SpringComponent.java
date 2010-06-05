@@ -61,7 +61,6 @@ public class SpringComponent implements Component {
     private URL source;
     private ClassLoader classLoader;
     private URI classLoaderId;
-    private int state = UNINITIALIZED;
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -99,10 +98,6 @@ public class SpringComponent implements Component {
         this.classLoaderId = id;
     }
 
-    public int getLifecycleState() {
-        return state;
-    }
-
     public String getName() {
         return uri.toString();
     }
@@ -138,7 +133,6 @@ public class SpringComponent implements Component {
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
-        state = INITIALIZED;
     }
 
     public void stop() {
@@ -150,7 +144,6 @@ public class SpringComponent implements Component {
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
-        state = STOPPED;
     }
 
     public ClassLoader getClassLoader() {

@@ -67,7 +67,7 @@ public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) throws StoreException {
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, KEY contextId) {
         Map<AtomicComponent<?>, InstanceWrapper<?>> context = contexts.get(contextId);
         if (context == null) {
             return null;
@@ -75,9 +75,8 @@ public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
         return (InstanceWrapper<T>) context.get(component);
     }
 
-    public <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) throws StoreException {
+    public <T> void putWrapper(AtomicComponent<T> component, KEY contextId, InstanceWrapper<T> wrapper) {
         Map<AtomicComponent<?>, InstanceWrapper<?>> context = contexts.get(contextId);
-        assert context != null;
         context.put(component, wrapper);
     }
 }

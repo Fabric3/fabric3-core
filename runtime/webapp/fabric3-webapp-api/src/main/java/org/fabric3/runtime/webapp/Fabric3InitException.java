@@ -57,18 +57,6 @@ public class Fabric3InitException extends Fabric3RuntimeException {
         super(string);
     }
 
-    public Fabric3InitException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public Fabric3InitException(String string, Throwable throwable) {
-        super(string, throwable);
-    }
-
-    public Fabric3InitException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
     public Fabric3InitException(Throwable throwable) {
         super(throwable);
     }

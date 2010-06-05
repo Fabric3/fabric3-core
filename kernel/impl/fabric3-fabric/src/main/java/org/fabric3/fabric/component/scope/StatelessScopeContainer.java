@@ -43,7 +43,9 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -53,6 +55,7 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
@@ -71,13 +74,24 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super(Scope.STATELESS, monitor);
     }
 
+    @Override
+    @Init
+    public void start() {
+        super.start();
+    }
+
+    @Destroy
+    public void stop() {
+        super.stop();
+    }
+
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
         try {
             InstanceWrapper<T> wrapper = component.createInstanceWrapper(workContext);
             wrapper.start(workContext);
             return wrapper;
         } catch (ObjectCreationException e) {
-            throw new InstanceLifecycleException(e.getMessage(), component.getUri().toString(), e);
+            throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
         }
     }
 

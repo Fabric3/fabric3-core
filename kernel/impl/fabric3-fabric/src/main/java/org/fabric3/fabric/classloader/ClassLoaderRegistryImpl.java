@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.DuplicateClassLoaderException;
 
 /**
  * Implementation of a registry for classloaders.
@@ -72,10 +71,9 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
         PRIMITIVES.put("void", Void.TYPE);
     }
 
-    public synchronized void register(URI id, ClassLoader classLoader) throws DuplicateClassLoaderException {
+    public synchronized void register(URI id, ClassLoader classLoader) {
         if (registry.containsKey(id)) {
-            String identifier = id.toString();
-            throw new DuplicateClassLoaderException("Duplicate class loader: " + identifier, identifier);
+            throw new AssertionError("Duplicate class loader: " + id);
         }
         registry.put(id, classLoader);
     }
@@ -91,7 +89,6 @@ public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
     public Map<URI, ClassLoader> getClassLoaders() {
         return registry;
     }
-
 
     public Class<?> loadClass(URI classLoaderId, String className) throws ClassNotFoundException {
         ClassLoader cl = getClassLoader(classLoaderId);

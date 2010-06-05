@@ -57,15 +57,14 @@ public interface ClassLoaderRegistry {
      *
      * @param id          a unique id for the classloader
      * @param classLoader the classloader to register
-     * @throws DuplicateClassLoaderException if there is already a classloader registered with the same id
      */
-    void register(URI id, ClassLoader classLoader) throws DuplicateClassLoaderException;
+    void register(URI id, ClassLoader classLoader);
 
     /**
      * Unregister the specified classloader from the system.
      *
      * @param id the id for the classloader
-     * @return the classloader that was registed with the id, or null if none
+     * @return the classloader that was registered with the id, or null if none
      */
     ClassLoader unregister(URI id);
 

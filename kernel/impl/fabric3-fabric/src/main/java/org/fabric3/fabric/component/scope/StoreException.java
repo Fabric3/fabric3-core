@@ -43,31 +43,20 @@
  */
 package org.fabric3.fabric.component.scope;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.spi.component.ComponentException;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class StoreException extends Fabric3RuntimeException {
+public abstract class StoreException extends ComponentException {
     private static final long serialVersionUID = 3587233858463631351L;
-
-    protected StoreException() {
-    }
 
     protected StoreException(String message) {
         super(message);
     }
 
-    protected StoreException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     protected StoreException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    protected StoreException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
     }
 
     protected StoreException(Throwable cause) {

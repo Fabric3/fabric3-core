@@ -51,6 +51,7 @@ import org.easymock.classextension.EasyMock;
 
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
@@ -154,7 +155,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         InstanceLifecycleException ex = new InstanceLifecycleException(null);
         try {
             EasyMock.expect(scopeContainer.getWrapper(component, workContext)).andThrow(ex);
-        } catch (InstanceLifecycleException e) {
+        } catch (ComponentException e) {
             throw new AssertionError();
         }
         control.replay();

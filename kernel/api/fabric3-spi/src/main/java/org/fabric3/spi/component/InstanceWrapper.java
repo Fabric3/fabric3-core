@@ -71,8 +71,7 @@ public interface InstanceWrapper<T> {
      * Starts the instance,issuing an initialization callback if the instance is configured to receive one.
      *
      * @param context the current work context
-     * @throws InstanceInitializationException
-     *          if an error occured starting the instance
+     * @throws InstanceInitializationException if an error occurred starting the instance
      */
     void start(WorkContext context) throws InstanceInitializationException;
 

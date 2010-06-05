@@ -40,10 +40,7 @@ package org.fabric3.implementation.mock;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.ComponentContext;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
@@ -53,7 +50,7 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * @version $Rev$ $Date$
  */
-public class MockComponent<T> extends AbstractLifecycle implements AtomicComponent<T> {
+public class MockComponent<T> implements AtomicComponent<T> {
 
     private final URI componentId;
     private final ObjectFactory<T> objectFactory;
@@ -85,12 +82,16 @@ public class MockComponent<T> extends AbstractLifecycle implements AtomicCompone
         return null;
     }
 
-    public QName getDeployable() {
-        return null;
+    public void start() {
+
     }
 
-    public int getInitLevel() {
-        return 0;
+    public void stop() {
+
+    }
+
+    public QName getDeployable() {
+        return null;
     }
 
     public long getMaxAge() {
@@ -103,10 +104,6 @@ public class MockComponent<T> extends AbstractLifecycle implements AtomicCompone
 
     public boolean isEagerInit() {
         return false;
-    }
-
-    public ComponentContext getComponentContext() {
-        return null;
     }
 
     public String getName() {

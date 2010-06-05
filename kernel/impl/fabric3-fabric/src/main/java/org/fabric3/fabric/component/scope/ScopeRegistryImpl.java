@@ -51,7 +51,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 
 /**
- * The default implementation of a scope registry
+ * The default implementation of a scope registry.
  *
  * @version $Rev$ $Date$
  */
@@ -71,8 +71,7 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         return scopes.get(scope.getScope());
     }
 
-    public Scope getScope(String scopeName) {
-        ScopeContainer container = scopes.get(scopeName);
-        return container == null ? null : container.getScope();
+    public ScopeContainer getScopeContainer(String scopeName) {
+        return scopes.get(scopeName);
     }
 }

@@ -52,6 +52,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -100,7 +101,7 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
                 // domain scope not available during bootstrap
                 domainScopeContainer.startContext(workContext);
             }
-        } catch (GroupInitializationException e) {
+        } catch (ComponentException e) {
             throw new ExecutionException("Error executing command", e);
         }
     }

@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -55,7 +54,7 @@ import org.fabric3.spi.wire.Wire;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class XQueryComponent<T> extends AbstractLifecycle implements AtomicComponent<T> {
+public abstract class XQueryComponent<T> implements AtomicComponent<T> {
 
     protected final URI uri;
     protected URI classLoaderId;
@@ -98,10 +97,6 @@ public abstract class XQueryComponent<T> extends AbstractLifecycle implements At
 
     public boolean isEagerInit() {
         return false;
-    }
-
-    public int getInitLevel() {
-        return 0;
     }
 
     public long getMaxIdleTime() {

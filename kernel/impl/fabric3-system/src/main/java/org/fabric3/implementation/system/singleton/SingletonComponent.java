@@ -52,10 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.ComponentContext;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
@@ -74,7 +71,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SingletonComponent<T> extends AbstractLifecycle implements AtomicComponent<T> {
+public class SingletonComponent<T> implements AtomicComponent<T> {
     private final URI uri;
     private T instance;
     private Map<Member, Injectable> sites;
@@ -107,16 +104,20 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
         return uri;
     }
 
+    public void start() {
+
+    }
+
+    public void stop() {
+
+    }
+
     public QName getDeployable() {
         return null;
     }
 
     public boolean isEagerInit() {
         return false;
-    }
-
-    public int getInitLevel() {
-        return 0;
     }
 
     public long getMaxIdleTime() {
@@ -145,11 +146,6 @@ public class SingletonComponent<T> extends AbstractLifecycle implements AtomicCo
 
     public void setLevel(MonitorLevel level) {
         this.level = level;
-    }
-
-    public ComponentContext getComponentContext() {
-        // singleton components do not provide a component context
-        return null;
     }
 
     /**

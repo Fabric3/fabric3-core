@@ -46,6 +46,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.command.StopComponentCommand;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -77,7 +78,11 @@ public class StopComponentCommandExecutor implements CommandExecutor<StopCompone
         if (component == null) {
             throw new ExecutionException("Component not found:" + uri);
         }
-        component.stop();
+        try {
+            component.stop();
+        } catch (ComponentException e) {
+            throw new ExecutionException(e);
+        }
     }
 }
 

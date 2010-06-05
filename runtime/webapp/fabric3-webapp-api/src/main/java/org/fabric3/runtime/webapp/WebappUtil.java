@@ -56,13 +56,13 @@ import org.fabric3.host.stream.Source;
  */
 public interface WebappUtil {
 
-    WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration configuration) throws Fabric3InitException;
+    WebappRuntime createRuntime(ClassLoader bootClassLoader, RuntimeConfiguration configuration) throws InvalidResourcePathException;
 
-    RuntimeCoordinator getCoordinator(BootConfiguration configuration, ClassLoader bootClassLoader) throws Fabric3InitException;
+    RuntimeCoordinator getCoordinator(BootConfiguration configuration, ClassLoader bootClassLoader) throws InvalidResourcePathException;
 
-    URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
+    URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePathException;
 
-    Source getSystemConfig() throws InvalidResourcePath;
+    Source getSystemConfig() throws InvalidResourcePathException;
 
     /**
      * Return a init parameter from the servlet context or provide a default.

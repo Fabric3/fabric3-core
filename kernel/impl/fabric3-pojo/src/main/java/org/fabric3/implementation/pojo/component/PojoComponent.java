@@ -50,7 +50,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
@@ -65,7 +64,7 @@ import org.fabric3.spi.model.type.java.Injectable;
  * @version $Rev$ $Date$
  * @param <T> the implementation class
  */
-public abstract class PojoComponent<T> extends AbstractLifecycle implements AtomicComponent<T> {
+public abstract class PojoComponent<T> implements AtomicComponent<T> {
     private final URI uri;
     private final InstanceFactoryProvider<T> provider;
     private final ScopeContainer scopeContainer;
@@ -91,6 +90,15 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
         this.eager = eager;
         this.maxIdleTime = maxIdleTime;
         this.maxAge = maxAge;
+    }
+
+    public void start() {
+        scopeContainer.register(this);
+    }
+
+    public void stop() {
+        instanceFactory = null;
+        scopeContainer.unregister(this);
     }
 
     public URI getUri() {
@@ -131,17 +139,6 @@ public abstract class PojoComponent<T> extends AbstractLifecycle implements Atom
 
     public long getMaxAge() {
         return maxAge;
-    }
-
-    public void start() {
-        super.start();
-        scopeContainer.register(this);
-    }
-
-    public void stop() {
-        instanceFactory = null;
-        scopeContainer.unregister(this);
-        super.stop();
     }
 
     public InstanceWrapper<T> createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {

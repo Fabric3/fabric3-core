@@ -48,12 +48,10 @@ import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
 
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.spi.component.GroupInitializationException;
-import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -68,7 +66,7 @@ public class ConversationalScopeContainerTestCase extends TestCase {
     private AtomicComponent<Object> component;
     private InstanceWrapper<Object> wrapper;
 
-    public void testStoreIsNotifiedOfContextStartStop() throws GroupInitializationException {
+    public void testStoreIsNotifiedOfContextStartStop() throws Exception {
         store.startContext(conversation);
         store.stopContext(conversation);
         control.replay();
@@ -90,7 +88,7 @@ public class ConversationalScopeContainerTestCase extends TestCase {
         control.verify();
     }
 
-    public void testWrapperReturnedIfFound() throws InstanceLifecycleException {
+    public void testWrapperReturnedIfFound() throws Exception {
         EasyMock.expect(store.getWrapper(component, conversation)).andReturn(wrapper);
         control.replay();
         assertSame(wrapper, container.getWrapper(component, workContext));

@@ -64,10 +64,11 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ConversationExpirationCallback;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
-import org.fabric3.spi.component.InstanceLifecycleException;
+import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
@@ -138,11 +139,11 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void startContext(WorkContext workContext) throws GroupInitializationException {
+    public void startContext(WorkContext workContext) throws ComponentException {
         startContext(workContext, null);
     }
 
-    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
+    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException {
         F3Conversation conversation = workContext.peekCallFrame().getConversation();
         assert conversation != null;
         store.startContext(conversation);
@@ -156,7 +157,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         joinContext(workContext, null);
     }
 
-    public void joinContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
+    public void joinContext(WorkContext workContext, ExpirationPolicy policy) {
         F3Conversation conversation = workContext.peekCallFrame().getConversation();
         assert conversation != null;
         if (!destroyQueues.containsKey(conversation)) {
@@ -167,7 +168,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void stopContext(WorkContext workContext) {
+    public void stopContext(WorkContext workContext) throws ComponentException {
         F3Conversation conversation = workContext.peekCallFrame().getConversation();
         assert conversation != null;
         stopContext(conversation, workContext);
@@ -175,17 +176,16 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         notifyExpirationCallbacks(conversation);
     }
 
-    private void stopContext(F3Conversation conversation, WorkContext workContext) {
+    private void stopContext(F3Conversation conversation, WorkContext workContext) throws StoreException {
         List<InstanceWrapper<?>> list = destroyQueues.remove(conversation);
         if (list == null) {
             throw new IllegalStateException("Conversation does not exist: " + conversation);
         }
         destroyInstances(list, workContext);
-
         store.stopContext(conversation);
     }
 
-    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
+    public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws ComponentException {
         CallFrame frame = workContext.peekCallFrame();
         F3Conversation conversation = frame.getConversation();
         assert conversation != null;
@@ -245,7 +245,11 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
                     WorkContext workContext = new WorkContext();
                     CallFrame frame = new CallFrame(null, conversation, conversation, null);
                     workContext.addCallFrame(frame);
-                    stopContext(conversation, workContext);
+                    try {
+                        stopContext(conversation, workContext);
+                    } catch (StoreException e) {
+                        monitor.error(e);
+                    }
                     notifyExpirationCallbacks(conversation);
                 }
             }
@@ -261,24 +265,22 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
      * @param conversation the conversation key for the component implementation instance
      * @param create       true if an instance should be created
      * @return an instance wrapper or null if not found an create is set to false
-     * @throws org.fabric3.spi.component.InstanceLifecycleException
-     *          if an error occurs returning the wrapper
+     * @throws ComponentException if an error occurs returning the wrapper
      */
     private <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext, F3Conversation conversation, boolean create)
-            throws InstanceLifecycleException {
-        assert conversation != null;
+            throws ComponentException {
         InstanceWrapper<T> wrapper = store.getWrapper(component, conversation);
         if (wrapper == null && create) {
             try {
                 wrapper = component.createInstanceWrapper(workContext);
             } catch (ObjectCreationException e) {
-                throw new InstanceLifecycleException(e.getMessage(), component.getUri().toString(), e);
+                throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
             }
             wrapper.start(workContext);
             store.putWrapper(component, conversation, wrapper);
             List<InstanceWrapper<?>> queue = destroyQueues.get(conversation);
             if (queue == null) {
-                throw new IllegalStateException("Instance context not found");
+                throw new IllegalStateException("Instance context not found for : " + component.getUri());
             }
             queue.add(wrapper);
         }

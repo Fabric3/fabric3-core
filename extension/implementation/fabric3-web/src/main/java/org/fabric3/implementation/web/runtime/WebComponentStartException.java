@@ -45,10 +45,6 @@ import org.fabric3.host.Fabric3RuntimeException;
 public class WebComponentStartException extends Fabric3RuntimeException {
     private static final long serialVersionUID = 4561241524721587772L;
 
-    public WebComponentStartException(String message) {
-        super(message);
-    }
-
     public WebComponentStartException(String message, Throwable cause) {
         super(message, cause);
     }

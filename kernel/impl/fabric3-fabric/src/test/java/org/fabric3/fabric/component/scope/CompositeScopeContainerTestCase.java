@@ -52,7 +52,6 @@ import org.easymock.classextension.EasyMock;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
@@ -61,7 +60,7 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 public class CompositeScopeContainerTestCase<T> extends TestCase {
     protected IMocksControl control;
-    protected ScopeContainer scopeContainer;
+    protected CompositeScopeContainer scopeContainer;
     protected QName deployable;
     protected AtomicComponent<T> component;
     protected InstanceWrapper<T> wrapper;

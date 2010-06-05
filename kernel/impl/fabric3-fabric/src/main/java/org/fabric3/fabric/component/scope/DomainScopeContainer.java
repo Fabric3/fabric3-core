@@ -47,7 +47,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -94,6 +96,20 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         }
     }
 
+    @Override
+    @Init
+    public void start() {
+        super.start();
+    }
+
+    @Destroy
+    public synchronized void stop() {
+        synchronized (deferredContexts) {
+            deferredContexts.clear();
+        }
+        super.stop();
+    }
+
     public void startContext(WorkContext workContext) throws GroupInitializationException {
         QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
         if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && topologyService == null) {
@@ -124,13 +140,6 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stopAllContexts(workContext);
     }
 
-    public synchronized void stop() {
-        synchronized (deferredContexts) {
-            deferredContexts.clear();
-        }
-        super.stop();
-    }
-
     @Override
     public <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws InstanceLifecycleException {
         if (topologyService != null && !activated) {
@@ -140,11 +149,11 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     public void onJoin(String name) {
-
+        // no-op
     }
 
     public void onLeave(String name) {
-
+        // no-op
     }
 
     public void onLeaderElected(String name) {

@@ -48,17 +48,16 @@ import java.util.List;
 import org.osoa.sca.ConversationEndedException;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.Lifecycle;
 import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 
 /**
- * Manages the lifecycle and visibility of instances associated with an {@link AtomicComponent}.
+ * Manages the lifecycle and visibility component implementations instances.
  *
  * @version $Rev$ $Date$
  */
-public interface ScopeContainer extends Lifecycle {
+public interface ScopeContainer {
 
     /**
      * Returns the Scope that this container supports.
@@ -93,9 +92,9 @@ public interface ScopeContainer extends Lifecycle {
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
      * @param workContext the current WorkContext
-     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
+     * @throws ComponentException if an exception starting the context was encountered
      */
-    void startContext(WorkContext workContext) throws GroupInitializationException;
+    void startContext(WorkContext workContext) throws ComponentException;
 
     /**
      * Start a new context which expires according to the given ExpirationPolicy. The context will remain active until it is explicitly stopped or it
@@ -105,7 +104,7 @@ public interface ScopeContainer extends Lifecycle {
      * @param policy      determines when the context expires
      * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException;
+    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException;
 
     /**
      * Joins an existing context. Since a scope context may exist accross multiple JVMs (for example, when conversational context is propagated), this
@@ -115,7 +114,7 @@ public interface ScopeContainer extends Lifecycle {
      * @param workContext the current WorkContext
      * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void joinContext(WorkContext workContext) throws GroupInitializationException;
+    void joinContext(WorkContext workContext) throws ComponentException;
 
     /**
      * Joins an existing context. Since a scope context may exist accross multiple JVMs (for example, when conversational context is propagated), this
@@ -126,14 +125,15 @@ public interface ScopeContainer extends Lifecycle {
      * @param policy      determines when the local context expires
      * @throws GroupInitializationException if an exception was thrown by any eagerInit component
      */
-    void joinContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException;
+    void joinContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException;
 
     /**
      * Stop the context associated with the current work context.
      *
      * @param workContext the current WorkContext
+     * @throws ComponentException if there is an error stopping the context
      */
-    void stopContext(WorkContext workContext);
+    void stopContext(WorkContext workContext) throws ComponentException;
 
     /**
      * Stops all active contexts.
@@ -158,11 +158,10 @@ public interface ScopeContainer extends Lifecycle {
      * @param component   the component
      * @param workContext the work context in which the instance should be obtained
      * @return the wrapper for the target instance
-     * @throws InstanceLifecycleException if there was a problem instantiating the target instance
+     * @throws ComponentException         if there was a problem instantiating the target instance
      * @throws ConversationEndedException if the instance is conversational and the associated has ended or expired
      */
-    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext)
-            throws InstanceLifecycleException, ConversationEndedException;
+    <T> InstanceWrapper<T> getWrapper(AtomicComponent<T> component, WorkContext workContext) throws ComponentException, ConversationEndedException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).

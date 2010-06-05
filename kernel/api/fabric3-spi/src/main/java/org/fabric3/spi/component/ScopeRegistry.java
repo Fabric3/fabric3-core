@@ -51,13 +51,6 @@ import org.fabric3.model.type.component.Scope;
  * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {
-    /**
-     * Return the scope for a given name.
-     *
-     * @param scopeName the name of the scope
-     * @return the scope for the supplied name or null if that scope is not registered
-     */
-    Scope getScope(String scopeName);
 
     /**
      * Returns the scope container for the given scope or null if one not found.
@@ -66,6 +59,14 @@ public interface ScopeRegistry {
      * @return the scope container for the given scope or null if one not found
      */
     ScopeContainer getScopeContainer(Scope scope);
+
+    /**
+     * Returns the scope container for the given scope name or null if one not found.
+     *
+     * @param scopeName the scope name
+     * @return the scope container for the given scope or null if one not found
+     */
+    ScopeContainer getScopeContainer(String scopeName);
 
     /**
      * Register a scope container with this registry.

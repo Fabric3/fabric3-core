@@ -55,15 +55,8 @@ public class InstanceInvocationException extends InstanceException {
         super(message);
     }
 
-    public InstanceInvocationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public InstanceInvocationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InstanceInvocationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
 }

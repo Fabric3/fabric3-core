@@ -40,16 +40,12 @@ package org.fabric3.spi.xml;
 import org.fabric3.host.Fabric3RuntimeException;
 
 /**
- * Denotes an unrecoverable error creating an XMLInputFactory or XMLOutputFactory
+ * Denotes an unrecoverable error creating an XMLInputFactory or XMLOutputFactory.
  *
  * @version $Rev$ $Date$
  */
 public class XMLFactoryInstantiationException extends Fabric3RuntimeException {
     private static final long serialVersionUID = -846195639643885514L;
-
-    public XMLFactoryInstantiationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
 
     public XMLFactoryInstantiationException(String message, Throwable cause) {
         super(message, cause);

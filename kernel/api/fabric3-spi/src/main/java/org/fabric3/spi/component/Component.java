@@ -47,14 +47,13 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.spi.Lifecycle;
 
 /**
  * The runtime instantiation of an SCA component
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface Component extends Lifecycle, Monitorable {
+public interface Component extends Monitorable {
 
     /**
      * Returns the QName of the deployable composite this component was deployed with.
@@ -83,5 +82,19 @@ public interface Component extends Lifecycle, Monitorable {
      * @param classLoaderId the classloader the component is associated with.
      */
     void setClassLoaderId(URI classLoaderId);
+
+    /**
+     * Starts the component;
+     *
+     * @throws ComponentException if an error occurs starting the component
+     */
+    void start() throws ComponentException;
+
+    /**
+     * Stops the component.
+     *
+     * @throws ComponentException if an error occurs stopping the component
+     */
+    void stop() throws ComponentException;
 
 }

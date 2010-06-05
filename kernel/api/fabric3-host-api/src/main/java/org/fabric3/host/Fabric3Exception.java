@@ -59,7 +59,7 @@ public abstract class Fabric3Exception extends Exception {
      *
      * @see Exception
      */
-    public Fabric3Exception() {
+    protected Fabric3Exception() {
         super();
         this.identifier = null;
     }

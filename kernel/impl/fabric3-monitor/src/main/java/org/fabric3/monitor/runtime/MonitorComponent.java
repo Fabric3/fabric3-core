@@ -56,7 +56,6 @@ public class MonitorComponent implements Component {
     private URI uri;
     private QName deployable;
     private URI classLoaderId;
-    private int state = UNINITIALIZED;
     private MonitorLevel level;
     private MonitorEventDispatcher dispatcher;
     private EventStreamHandler handler;
@@ -84,10 +83,6 @@ public class MonitorComponent implements Component {
         this.classLoaderId = classLoaderId;
     }
 
-    public int getLifecycleState() {
-        return state;
-    }
-
     public String getName() {
         return uri.toString();
     }
@@ -100,14 +95,12 @@ public class MonitorComponent implements Component {
         this.level = level;
     }
 
-    public void start() throws Fabric3RuntimeException {
+    public void start() {
         dispatcher.start();
-        state = INITIALIZED;
     }
 
-    public void stop() throws Fabric3RuntimeException {
+    public void stop() {
         dispatcher.stop();
-        state = STOPPED;
     }
 
     public void attach(ChannelConnection connection) {

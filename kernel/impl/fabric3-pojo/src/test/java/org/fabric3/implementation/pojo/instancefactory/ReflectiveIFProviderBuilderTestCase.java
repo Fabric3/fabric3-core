@@ -52,6 +52,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -59,10 +62,6 @@ import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
-import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.DuplicateClassLoaderException;
 
 /**
  * @version $Date$ $Revision$
@@ -155,7 +154,7 @@ public class ReflectiveIFProviderBuilderTestCase extends TestCase {
 
     private class MockClassLoaderRegistry implements ClassLoaderRegistry {
 
-        public void register(URI id, ClassLoader classLoader) throws DuplicateClassLoaderException {
+        public void register(URI id, ClassLoader classLoader) {
 
         }
 

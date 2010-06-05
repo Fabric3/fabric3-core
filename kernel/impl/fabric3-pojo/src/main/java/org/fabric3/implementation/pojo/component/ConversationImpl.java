@@ -37,9 +37,12 @@
 */
 package org.fabric3.implementation.pojo.component;
 
-import org.fabric3.spi.invocation.F3Conversation;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
@@ -78,7 +81,11 @@ public class ConversationImpl implements F3Conversation {
             // This may not be the case if end() is called from a client component intending to end the conversation with a reference target
             CallFrame frame = new CallFrame(null, null, this, null);
             workContext.addCallFrame(frame);
-            scopeContainer.stopContext(workContext);
+            try {
+                scopeContainer.stopContext(workContext);
+            } catch (ComponentException e) {
+                throw new ServiceRuntimeException(e);
+            }
         } finally {
             workContext.popCallFrame();
         }

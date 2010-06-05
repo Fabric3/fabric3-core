@@ -50,8 +50,8 @@ import org.osoa.sca.ConversationEndedException;
 
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
@@ -105,7 +105,7 @@ public class InvokerEventStreamHandler<T> implements EventStreamHandler {
         } catch (ConversationEndedException e) {
             // this should not happen
             throw new AssertionError(e);
-        } catch (InstanceLifecycleException e) {
+        } catch (ComponentException e) {
             throw new InvocationRuntimeException(e);
         }
 

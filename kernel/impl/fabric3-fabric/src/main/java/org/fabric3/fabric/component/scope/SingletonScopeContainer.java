@@ -53,6 +53,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.Destroy;
+
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.ObjectCreationException;
@@ -176,6 +178,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
+    @Destroy
     public synchronized void stop() {
         super.stop();
         synchronized (destroyQueues) {
@@ -207,8 +210,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     // wait on the instantiation
                     latch.await();
                 } catch (InterruptedException e) {
-                    String uri = component.getUri().toString();
-                    throw new InstanceLifecycleException("Error initializing: " + uri, uri, e);
+                    throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
                 }
                 // an instance wrapper is now available as the instantiation has completed
                 return (InstanceWrapper<T>) instanceWrappers.get(component);
@@ -240,8 +242,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             latch.countDown();
             return wrapper;
         } catch (ObjectCreationException e) {
-            String uri = component.getUri().toString();
-            throw new InstanceLifecycleException("Error initializing: " + uri, uri, e);
+            throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
         } finally {
             pending.remove(component);
         }

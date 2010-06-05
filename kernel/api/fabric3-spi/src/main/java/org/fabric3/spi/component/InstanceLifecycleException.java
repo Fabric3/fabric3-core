@@ -55,15 +55,8 @@ public class InstanceLifecycleException extends InstanceException {
         super(message);
     }
 
-    public InstanceLifecycleException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public InstanceLifecycleException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InstanceLifecycleException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
 }

@@ -50,11 +50,8 @@ import org.osoa.sca.ComponentContext;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
-import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.spi.AbstractLifecycle;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
@@ -66,12 +63,15 @@ import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.wire.Wire;
 
+import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
+import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
+
 /**
- * A component whose implementation is a web applicaiton.
+ * A component whose implementation is a web application.
  *
  * @version $Rev$ $Date$
  */
-public class WebComponent<T> extends AbstractLifecycle implements AtomicComponent<T> {
+public class WebComponent<T> implements AtomicComponent<T> {
 
     private final URI uri;
     private URI classLoaderId;

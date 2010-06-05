@@ -92,20 +92,20 @@ public class WebappUtilImpl implements WebappUtil {
         }
     }
 
-    public URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath {
+    public URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePathException {
         try {
             return convertToURL(SYSETM_COMPOSITE, bootClassLoader);
         } catch (MalformedURLException e) {
-            throw new InvalidResourcePath("Webapp system composite", SYSETM_COMPOSITE, e);
+            throw new InvalidResourcePathException("Webapp system composite", e);
         }
     }
 
-    public Source getSystemConfig() throws InvalidResourcePath {
+    public Source getSystemConfig() throws InvalidResourcePathException {
         try {
             URL url = servletContext.getResource(SYSTEM_CONFIG);
             return new UrlSource(url);
         } catch (MalformedURLException e) {
-            throw new InvalidResourcePath("Webapp system composite", SYSETM_COMPOSITE, e);
+            throw new InvalidResourcePathException("Webapp system composite", e);
         }
     }
 

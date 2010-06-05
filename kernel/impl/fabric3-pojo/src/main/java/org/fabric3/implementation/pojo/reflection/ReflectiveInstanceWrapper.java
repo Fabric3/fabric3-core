@@ -46,15 +46,15 @@ package org.fabric3.implementation.pojo.reflection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.Injector;
+import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.model.type.java.Injectable;
 
 /**
  * @version $Rev$ $Date$
@@ -153,7 +153,7 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
             }
             updatedInjectors.clear();
         } catch (ObjectCreationException ex) {
-            throw new InstanceLifecycleException("Unable to inject", ex);
+            throw new InstanceLifecycleException("Unable to reinject references", ex);
         }
     }
 

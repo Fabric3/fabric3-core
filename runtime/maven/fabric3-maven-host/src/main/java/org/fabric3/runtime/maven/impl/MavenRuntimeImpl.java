@@ -65,6 +65,7 @@ import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven.repository.MavenRepository;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
@@ -97,7 +98,7 @@ public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
         workContext.addCallFrame(frame);
         try {
             getScopeContainer().startContext(workContext);
-        } catch (GroupInitializationException e) {
+        } catch (ComponentException e) {
             throw new ContextStartException(e);
         }
     }

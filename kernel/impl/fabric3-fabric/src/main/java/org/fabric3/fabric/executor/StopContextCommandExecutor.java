@@ -45,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.StopContextCommand;
 import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
@@ -60,19 +61,17 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 @EagerInit
 public class StopContextCommandExecutor implements CommandExecutor<StopContextCommand> {
-
     private ScopeContainer container;
-    private CommandExecutorRegistry commandExecutorRegistry;
+    private CommandExecutorRegistry executorRegistry;
 
-
-    public StopContextCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry, @Reference ScopeRegistry scopeRegistry) {
-        this.commandExecutorRegistry = commandExecutorRegistry;
+    public StopContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+        this.executorRegistry = executorRegistry;
         this.container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
     }
 
     @Init
     public void init() {
-        commandExecutorRegistry.register(StopContextCommand.class, this);
+        executorRegistry.register(StopContextCommand.class, this);
     }
 
     public void execute(StopContextCommand command) throws ExecutionException {
@@ -80,7 +79,11 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
         WorkContext workContext = new WorkContext();
         CallFrame frame = new CallFrame(deployable);
         workContext.addCallFrame(frame);
-        container.stopContext(workContext);
+        try {
+            container.stopContext(workContext);
+        } catch (ComponentException e) {
+            throw new ExecutionException(e);
+        }
     }
 
 }
