@@ -44,7 +44,8 @@
 package org.fabric3.host;
 
 /**
- * The root unchecked exception for the fabric3 runtime.
+ * The root unchecked exception for the Fabric3 runtime. Unchecked exceptions should only be thrown when the runtime cannot be expected to recover
+ * from an exception and would be placed in an unstable state or when a third-party API does not accommodate throwing a checked exception.
  *
  * @version $Rev$ $Date$
  */
