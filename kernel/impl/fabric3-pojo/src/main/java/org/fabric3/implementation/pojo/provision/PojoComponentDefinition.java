@@ -54,6 +54,8 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
     private static final long serialVersionUID = 297672484973345029L;
 
     private InstanceFactoryDefinition providerDefinition;
+    private String scope;
+    private boolean eager;
 
     /**
      * Gets the instance factory provider definition.
@@ -72,5 +74,43 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
     public void setProviderDefinition(InstanceFactoryDefinition providerDefinition) {
         this.providerDefinition = providerDefinition;
     }
+
+    /**
+     * Gets the component scope.
+     *
+     * @return the component scope.
+     */
+    public String getScope() {
+        return scope;
+    }
+
+    /**
+     * Sets the component scope.
+     *
+     * @param scope the component scope.
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+
+    /**
+     * Returns true if the component should be eager initialized.
+     *
+     * @return true if the component should be eager initialized
+     */
+    public boolean isEagerInit() {
+        return eager;
+    }
+
+    /**
+     * Sets if the component should be eager initialized.
+     *
+     * @param eager true if the component should be eager initialized
+     */
+    public void setEagerInit(boolean eager) {
+        this.eager = eager;
+    }
+
 
 }

@@ -58,11 +58,7 @@ public abstract class PhysicalComponentDefinition implements Serializable {
     private static final long serialVersionUID = -4354673356182365263L;
 
     private URI uri;
-    private String scope;
     private QName deployable;
-    private long maxIdleTime;
-    private long maxAge;
-    private boolean eager;
     private URI classLoaderId;
     private List<PhysicalPropertyDefinition> propertyDefinitions = new ArrayList<PhysicalPropertyDefinition>();
 
@@ -118,79 +114,6 @@ public abstract class PhysicalComponentDefinition implements Serializable {
      */
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;
-    }
-
-
-    /**
-     * Gets the component scope.
-     *
-     * @return the component scope.
-     */
-    public String getScope() {
-        return scope;
-    }
-
-    /**
-     * Sets the component scope.
-     *
-     * @param scope the component scope.
-     */
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    /**
-     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @param maxIdleTime the idle time
-     */
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @param maxAge the maximum age
-     */
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    /**
-     * Returns true if the component should be eager initialized.
-     *
-     * @return true if the component should be eager initialized
-     */
-    public boolean isEagerInit() {
-        return eager;
-    }
-
-    /**
-     * Sets if the component should be eager initialized.
-     *
-     * @param eager true if the component should be eager initialized
-     */
-    public void setEagerInit(boolean eager) {
-        this.eager = eager;
     }
 
     /**

@@ -103,19 +103,8 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         } else {
             timerService = nonTrxTimerService;
         }
-        long idleTime = definition.getMaxIdleTime();
-        long maxAge = definition.getMaxAge();
         boolean eager = definition.isEagerInit();
-        TimerComponent component = new TimerComponent(uri,
-                                                      provider,
-                                                      scopeContainer,
-                                                      deployable,
-                                                      eager,
-                                                      idleTime,
-                                                      maxAge,
-                                                      data,
-                                                      timerService);
-
+        TimerComponent component = new TimerComponent(uri, provider, scopeContainer, deployable, eager, data, timerService);
         buildContexts(component, provider);
         return component;
     }

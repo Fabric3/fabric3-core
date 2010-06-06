@@ -65,7 +65,6 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         ImplementationMock implementationMock = component.getDefinition().getImplementation();
         InjectingComponentType componentType = implementationMock.getComponentType();
         componentDefinition.setInterfaces(implementationMock.getMockedInterfaces());
-        componentDefinition.setScope(componentType.getScope());
         return componentDefinition;
     }
 

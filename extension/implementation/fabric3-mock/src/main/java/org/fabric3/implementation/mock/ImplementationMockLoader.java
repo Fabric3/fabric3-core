@@ -51,11 +51,11 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * Loads implementation.mock from the scdl. The XML fragment is expeced to look like,
- * <p/>
- * <implementation.mock> org.fabric3.mock.Foo org.fabric3.mock.Bar org.fabric3.mock.Baz </implementation.mock>
- * <p/>
- * The implementation.mock element is expected to have a delimitted list of fully qualified named of the interfaces that need to be mocked.
+ * Loads implementation.mock from a composite. The XML fragment is expected to look like:
+ * <pre>
+ *  <implementation.mock> org.fabric3.mock.Foo org.fabric3.mock.Bar org.fabric3.mock.Baz </implementation.mock>
+ * <pre/>
+ * The implementation.mock element is expected to have a delimited list of fully qualified named of the interfaces that need to be mocked.
  *
  * @version $Rev$ $Date$
  */

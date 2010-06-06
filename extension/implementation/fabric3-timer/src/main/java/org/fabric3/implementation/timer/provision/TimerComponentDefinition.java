@@ -44,7 +44,6 @@ import org.fabric3.implementation.java.provision.JavaComponentDefinition;
  */
 public class TimerComponentDefinition extends JavaComponentDefinition {
     private static final long serialVersionUID = -4795264376334780345L;
-    public static final long UNSPECIFIED = -1;
     private boolean transactional;
     private TriggerData triggerData;
 

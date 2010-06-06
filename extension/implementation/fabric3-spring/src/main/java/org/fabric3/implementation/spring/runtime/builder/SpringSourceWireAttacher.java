@@ -110,7 +110,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
     public void detach(SpringSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         SpringComponent component = getComponent(source);
         String referenceName = source.getReferenceName();
-        component.dettach(referenceName);
+        component.detach(referenceName);
     }
 
     public void detachObjectFactory(SpringSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {

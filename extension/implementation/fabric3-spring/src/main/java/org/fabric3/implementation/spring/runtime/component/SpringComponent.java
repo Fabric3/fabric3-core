@@ -166,7 +166,7 @@ public class SpringComponent implements Component {
      *
      * @param name the reference or producer name
      */
-    public void dettach(String name) {
+    public void detach(String name) {
         parent.remove(name);
     }
 

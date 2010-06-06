@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.provision;
 
-import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.type.java.Injectable;
 
 /**
  * @version $Rev$ $Date$
@@ -77,16 +77,16 @@ public class PojoSourceDefinition extends PhysicalSourceDefinition {
     /**
      * Returns the Injectable this wire applies to.
      *
-     * @return the the injectible this wire applies to
+     * @return the the injectable this wire applies to
      */
     public Injectable getInjectable() {
         return injectable;
     }
 
     /**
-     * Sets the Injectable for this wire appies to.
+     * Sets the Injectable for this wire applies to.
      *
-     * @param injectable the injectible this wire applies to
+     * @param injectable the injectable this wire applies to
      */
     public void setInjectable(Injectable injectable) {
         this.injectable = injectable;

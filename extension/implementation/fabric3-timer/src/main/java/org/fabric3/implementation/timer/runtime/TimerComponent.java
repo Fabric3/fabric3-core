@@ -44,9 +44,9 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.timer.provision.TriggerData;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.implementation.timer.provision.TriggerData;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -62,33 +62,22 @@ public class TimerComponent extends JavaComponent {
     /**
      * Constructor for a timer component.
      *
-     * @param componentId             the component's uri
-     * @param instanceFactoryProvider the provider for the instance factory
-     * @param scopeContainer          the container for the component's implementation scope
-     * @param deployable              the deployable composite this component is deployed with Ê
-     * @param eager                   true if the component should be eager initialized
-     * @param maxIdleTime             the time after which idle instances of this component can be expired
-     * @param maxAge                  the time after which instances of this component can be expired
-     * @param data                    timer fire data
-     * @param timerService            the timer service
+     * @param componentId     the component's uri
+     * @param factoryProvider the provider for the instance factory
+     * @param scopeContainer  the container for the component's implementation scope
+     * @param deployable      the deployable composite this component is deployed with Ê
+     * @param eager           true if the component should be eager initialized
+     * @param data            timer fire data
+     * @param timerService    the timer service
      */
     public TimerComponent(URI componentId,
-                          InstanceFactoryProvider instanceFactoryProvider,
+                          InstanceFactoryProvider factoryProvider,
                           ScopeContainer scopeContainer,
                           QName deployable,
                           boolean eager,
-                          long maxIdleTime,
-                          long maxAge,
                           TriggerData data,
                           TimerService timerService) {
-        super(componentId,
-              instanceFactoryProvider,
-              scopeContainer,
-              deployable,
-              eager,
-              maxIdleTime,
-              maxAge
-        );
+        super(componentId, factoryProvider, scopeContainer, deployable, eager, -1, -1);
         this.data = data;
         this.timerService = timerService;
     }
