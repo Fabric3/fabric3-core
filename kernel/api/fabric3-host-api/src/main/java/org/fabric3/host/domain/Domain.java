@@ -63,7 +63,7 @@ public interface Domain {
      * Include a deployable composite in the domain using the specified DeploymentPlan.
      *
      * @param deployable the name of the deployable composite to include
-     * @param plan       the deploymant plan name
+     * @param plan       the deployment plan name
      * @throws DeploymentException if an error is encountered during inclusion
      */
     void include(QName deployable, String plan) throws DeploymentException;
