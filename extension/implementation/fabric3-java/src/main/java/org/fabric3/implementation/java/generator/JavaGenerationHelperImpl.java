@@ -175,7 +175,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         }
         if (name == null) {
             String interfaze = serviceContract.getQualifiedInterfaceName();
-            throw new CallbackSiteNotFound("Callback injection site not found for type: " + interfaze, interfaze);
+            throw new CallbackSiteNotFoundException("Callback injection site not found for type: " + interfaze, interfaze);
         }
 
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);

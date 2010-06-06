@@ -40,14 +40,14 @@ package org.fabric3.implementation.java.generator;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Thrown when a injection sire cannot be found for a callback.
+ * Thrown when a injection site cannot be found for a callback.
  *
  * @version $Rev$ $Date$
  */
-public class CallbackSiteNotFound extends GenerationException {
+public class CallbackSiteNotFoundException extends GenerationException {
     private static final long serialVersionUID = 6734181652978179903L;
 
-    public CallbackSiteNotFound(String message, String identifier) {
+    public CallbackSiteNotFoundException(String message, String identifier) {
         super(message, identifier);
     }
 }
