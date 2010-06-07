@@ -107,7 +107,7 @@ public interface ScopeContainer {
     public void startContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException;
 
     /**
-     * Joins an existing context. Since a scope context may exist accross multiple JVMs (for example, when conversational context is propagated), this
+     * Joins an existing context. Since a scope context may exist across multiple JVMs (for example, when conversational context is propagated), this
      * operation may result in the creation of a local context associated with the distributed scope context. When the scope context is contained in a
      * single JVM, a new context will not need to be created.
      *
@@ -117,7 +117,7 @@ public interface ScopeContainer {
     void joinContext(WorkContext workContext) throws ComponentException;
 
     /**
-     * Joins an existing context. Since a scope context may exist accross multiple JVMs (for example, when conversational context is propagated), this
+     * Joins an existing context. Since a scope context may exist across multiple JVMs (for example, when conversational context is propagated), this
      * operation may result in the creation of a local context associated with the distributed scope context. This variant of joinContext sets an
      * expiration policy for local contexts, if one needs to be created.
      *
@@ -136,7 +136,7 @@ public interface ScopeContainer {
     void stopContext(WorkContext workContext) throws ComponentException;
 
     /**
-     * Initialise an ordered list of components. The list is traversed in order and the getWrapper() method called for each to associate an instance
+     * Initialize an ordered list of components. The list is traversed in order and the getWrapper() method called for each to associate an instance
      * with the supplied context.
      *
      * @param components  the components to be initialized
