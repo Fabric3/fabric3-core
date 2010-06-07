@@ -132,7 +132,7 @@ public class MetroServlet extends WSServlet {
 
     public void registerService(EndpointConfiguration configuration) {
         if (delegate == null) {
-            // servlet has not be initalized, delay service registration
+            // servlet has not be initialized, delay service registration
             configurations.add(configuration);
             return;
         }
