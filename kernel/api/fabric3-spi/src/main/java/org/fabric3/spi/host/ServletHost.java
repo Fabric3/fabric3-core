@@ -72,7 +72,7 @@ public interface ServletHost {
     /**
      * Returns the default servlet context associated with the host.
      * <p/>
-     * NOTE: Remove when the webapp runtime is decomissioned
+     * NOTE: Remove when the webapp runtime is decommissioned
      *
      * @return the default servlet context associated with the host
      */
