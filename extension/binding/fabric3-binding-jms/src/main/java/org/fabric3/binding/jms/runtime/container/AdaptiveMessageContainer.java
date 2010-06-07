@@ -497,7 +497,7 @@ public class AdaptiveMessageContainer {
     /**
      * Stops the container from processing messages.
      *
-     * @throws JMSException if an error ocurrs during stop
+     * @throws JMSException if an error occurs during stop
      */
     public void stop() throws JMSException {
         synchronized (syncMonitor) {
@@ -952,7 +952,7 @@ public class AdaptiveMessageContainer {
                     if (nonPausedReceivers < 1) {
                         monitor.errorMessage("All receivers are paused, possibly as a result of rejected work.");
                     } else if (nonPausedReceivers < getMinReceivers()) {
-                        monitor.errorMessage("The number is below the minumum threshold, possibly as a result of rejected work.");
+                        monitor.errorMessage("The number is below the minimum threshold, possibly as a result of rejected work.");
                     }
                 }
             }
@@ -1064,7 +1064,7 @@ public class AdaptiveMessageContainer {
          * Waits to receive a message and invokes the listener.
          *
          * @return true if a message was received
-         * @throws JMSException if an exception occured during the receive
+         * @throws JMSException if an exception occurred during the receive
          */
         private boolean receive() throws JMSException {
             Connection connectionToUse = null;
