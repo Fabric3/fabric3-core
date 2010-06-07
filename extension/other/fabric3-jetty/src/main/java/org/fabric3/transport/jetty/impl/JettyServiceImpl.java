@@ -73,11 +73,13 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.work.DefaultPausableWork;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.security.KeyStoreManager;
+import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
 
 /**
@@ -86,7 +88,8 @@ import org.fabric3.transport.jetty.JettyService;
  * @version $$Rev$$ $$Date$$
  */
 @EagerInit
-public class JettyServiceImpl implements JettyService {
+@Service(interfaces = {JettyService.class, Transport.class})
+public class JettyServiceImpl implements JettyService, Transport {
 
     private static final String ROOT = "/";
 
@@ -107,6 +110,8 @@ public class JettyServiceImpl implements JettyService {
     private Server server;
     private ServletHandler servletHandler;
     private ContextHandlerCollection rootHandler;
+    private SelectChannelConnector httpConnector;
+    private SslSocketConnector sslConnector;
 
     static {
         // hack to replace the static Jetty logger
@@ -211,6 +216,40 @@ public class JettyServiceImpl implements JettyService {
         server.stop();
     }
 
+    public void suspend() {
+        if (httpConnector != null && httpConnector.isRunning()) {
+            try {
+                httpConnector.stop();
+            } catch (Exception e) {
+                monitor.exception("Error suspending HTTP connector", e);
+            }
+        }
+        if (sslConnector != null && sslConnector.isRunning()) {
+            try {
+                sslConnector.stop();
+            } catch (Exception e) {
+                monitor.exception("Error suspending SSL connector", e);
+            }
+        }
+    }
+
+    public void resume() {
+        if (httpConnector != null && httpConnector.isStopped()) {
+            try {
+                httpConnector.start();
+            } catch (Exception e) {
+                monitor.exception("Error resuming HTTP connector", e);
+            }
+        }
+        if (sslConnector != null && sslConnector.isStopped()) {
+            try {
+                sslConnector.start();
+            } catch (Exception e) {
+                monitor.exception("Error resuming SSL connector", e);
+            }
+        }
+    }
+
     public int getHttpPort() {
         return selectedHttp;
     }
@@ -295,7 +334,7 @@ public class JettyServiceImpl implements JettyService {
         selectHttpsPort();
 
         if (enableHttps) {
-            if (keyStoreManager == null){
+            if (keyStoreManager == null) {
                 throw new JettyInitializationException("Key store manager not found - a security extension must be installed");
             }
             // setup HTTP and HTTPS
@@ -304,9 +343,9 @@ public class JettyServiceImpl implements JettyService {
             String truststore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
             String trustPassword = keyStoreManager.getTrustStorePassword();
             String certPassword = keyStoreManager.getCertPassword();
-            Connector httpConnector = new SelectChannelConnector();
+            httpConnector = new SelectChannelConnector();
             httpConnector.setPort(selectedHttp);
-            SslSocketConnector sslConnector = new SslSocketConnector();
+            sslConnector = new SslSocketConnector();
             sslConnector.setPort(selectedHttps);
             sslConnector.setKeystore(keystore);
             sslConnector.setKeyPassword(keyPassword);
@@ -316,10 +355,10 @@ public class JettyServiceImpl implements JettyService {
             server.setConnectors(new Connector[]{httpConnector, sslConnector});
         } else {
             // setup HTTP
-            SelectChannelConnector selectConnector = new SelectChannelConnector();
-            selectConnector.setPort(selectedHttp);
-            selectConnector.setSoLingerTime(-1);
-            server.setConnectors(new Connector[]{selectConnector});
+            httpConnector = new SelectChannelConnector();
+            httpConnector.setPort(selectedHttp);
+            httpConnector.setSoLingerTime(-1);
+            server.setConnectors(new Connector[]{httpConnector});
         }
     }
 

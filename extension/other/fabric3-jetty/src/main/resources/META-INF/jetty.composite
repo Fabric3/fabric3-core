@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
            name="JettyExtension">
 
     <!-- Jetty service -->
-    <component name="JettyService">
+    <component name="JettyService" f3-core:key="http">
         <f3-impl:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
         <property name="httpPort" source="$systemConfig//web.server/http/@port"/>
         <property name="enableHttps" source="$systemConfig//web.server/https/@enabled"/>
