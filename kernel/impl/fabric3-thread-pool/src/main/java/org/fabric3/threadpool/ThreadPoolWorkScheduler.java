@@ -87,7 +87,7 @@ public class ThreadPoolWorkScheduler extends AbstractExecutorService implements 
     /**
      * Indicates whether to start this in a paused state.
      *
-     * @param pauseOnStart True if we want to start this in a pased state.
+     * @param pauseOnStart True if we want to start this in a paused state.
      */
     @Property
     public void setPauseOnStart(boolean pauseOnStart) {

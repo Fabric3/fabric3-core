@@ -34,32 +34,24 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.runtime;
-
-import org.fabric3.api.annotation.monitor.Severe;
-
+*/
+package org.fabric3.spi.transport;
 
 /**
- * Monitor interface for JmsHost.
+ * Manages a runtime transport such as HTTP.
  *
  * @version $Rev$ $Date$
  */
-public interface JmsMonitor {
+public interface Transport {
 
     /**
-     * Callback when an error is raised handling a message.
-     *
-     * @param e the reported exception
+     * Suspends receiving requests from the transport.
      */
-    @Severe
-    void jmsListenerError(Throwable e);
+    void suspend();
 
+    /**
+     * Resumes receiving requests from the transport.
+     */
+    void resume();
 
 }

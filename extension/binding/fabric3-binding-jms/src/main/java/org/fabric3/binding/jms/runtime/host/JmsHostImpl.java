@@ -55,13 +55,14 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.transport.Transport;
 
 /**
  * JmsHost implementation that registers JMS MessageListeners with an AdaptiveMessageContainer to receive messages and dispatch them to a service
@@ -70,8 +71,8 @@ import org.fabric3.spi.event.RuntimeStart;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Service(JmsHost.class)
-public class JmsHostImpl implements JmsHost, Fabric3EventListener<RuntimeStart> {
+@Service(interfaces = {JmsHost.class, Transport.class})
+public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<RuntimeStart> {
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
     private EventService eventService;
@@ -108,6 +109,35 @@ public class JmsHostImpl implements JmsHost, Fabric3EventListener<RuntimeStart> 
         started = false;
     }
 
+    public void suspend() {
+        if (!started) {
+            return;
+        }
+        for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
+            try {
+                entry.getValue().stop();
+            } catch (JMSException e) {
+                monitor.error("Error stopping service listener: " + entry.getKey(), e);
+            }
+        }
+        started = false;
+    }
+
+    public void resume() {
+        if (started) {
+            return;
+        }
+        for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
+            try {
+                entry.getValue().start();
+            } catch (JMSException e) {
+                monitor.error("Error starting service listener: " + entry.getKey(), e);
+            }
+        }
+        started = false;
+        started = true;
+    }
+
     public void onEvent(RuntimeStart event) {
         // start receiving messages after the runtime has started
         for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
@@ -115,8 +145,7 @@ public class JmsHostImpl implements JmsHost, Fabric3EventListener<RuntimeStart> 
                 entry.getValue().initialize();
                 monitor.registerListener(entry.getKey());
             } catch (JMSException e) {
-                // TODO This should send an asynchronous notify
-                monitor.error("Error starting service listener for " + entry.getKey(), e);
+                monitor.error("Error starting service listener: " + entry.getKey(), e);
             }
         }
         started = true;

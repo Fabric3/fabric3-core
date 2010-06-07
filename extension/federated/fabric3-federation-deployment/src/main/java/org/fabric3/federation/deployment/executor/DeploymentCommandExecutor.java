@@ -126,8 +126,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
             DeploymentResponse response = new DeploymentResponse();
             command.setResponse(response);
         } catch (InterruptedException e) {
-            DeploymentErrorResponse response = new DeploymentErrorResponse(e);
-            command.setResponse(response);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -148,7 +147,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                     return;
                 }
 
-                monitor.processing(); 
+                monitor.processing();
 
                 // Execute the provision extension commands first before deserializing the others deployment commands.
                 // Provision and extension commands resolve required artifacts, setup classloaders and initialize extensions.
@@ -173,7 +172,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                 }
                 cacheDeployment(command);
             } catch (InterruptedException e) {
-                monitor.error(e);
+                Thread.currentThread().interrupt();
             }
         }
 

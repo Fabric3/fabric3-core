@@ -16,7 +16,7 @@ licensed under the Apache 2.0 license.
            targetNamespace="urn:fabric3.org:binding"
            name="JmsRuntimeExtension">
 
-    <component name="JmsHost">
+    <component name="JmsHost" f3-core:key="jms">
         <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.host.JmsHostImpl"/>
     </component>
 

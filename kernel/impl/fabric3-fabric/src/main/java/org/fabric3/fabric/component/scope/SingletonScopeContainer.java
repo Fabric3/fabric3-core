@@ -196,6 +196,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     // wait on the instantiation
                     latch.await();
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
                 }
                 // an instance wrapper is now available as the instantiation has completed
