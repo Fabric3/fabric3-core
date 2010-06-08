@@ -58,16 +58,13 @@ public class BrokerParser {
 
     public BrokerConfiguration parse(XMLStreamReader reader) throws XMLStreamException, InvalidConfigurationException {
         reader.nextTag();
-        BrokerConfiguration configuration = null;
+        BrokerConfiguration configuration = new BrokerConfiguration();
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
                 if ("broker".equals(reader.getName().getLocalPart())) {
                     String name = reader.getAttributeValue(null, "name");
-                    if (name == null) {
-                        raiseInvalidConfiguration("Broker name must be specified", reader);
-                    }
-                    configuration = new BrokerConfiguration();
+                    configuration.setName(name);
                 } else if ("networkConnectors".equals(reader.getName().getLocalPart())) {
                     parseNetworkConnectors(reader, configuration);
                 } else if ("transportConnectors".equals(reader.getName().getLocalPart())) {
@@ -78,6 +75,9 @@ public class BrokerParser {
 
                 break;
             case XMLStreamConstants.END_DOCUMENT:
+                if (configuration.getName() == null) {
+                    raiseInvalidConfiguration("Broker name must be specified", reader);
+                }
                 return configuration;
             }
         }
@@ -160,7 +160,7 @@ public class BrokerParser {
                     URI uri = null;
                     String uriString = reader.getAttributeValue(null, "uri");
                     if (uriString == null) {
-                        raiseInvalidConfiguration("Network contransportnector uri not specified", reader);
+                        raiseInvalidConfiguration("Network transport connector uri not specified", reader);
                     }
                     try {
                         uri = new URI(uriString);

@@ -44,6 +44,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -60,6 +62,15 @@ public class BrokerParserTestCase extends TestCase {
             "        <transportConnector name='xmpp' uri='xmpp://localhost:61222'/>" +
             "    </transportConnectors>" +
             "</broker></value></foo>";
+
+    private static final String NO_BROKER_NAME = "<foo><value><broker>\n" +
+            "                               <networkConnectors>\n" +
+            "                                   <networkConnector uri='multicast://default'/>\n" +
+            "                               </networkConnectors>\n" +
+            "                               <transportConnectors>\n" +
+            "                                   <transportConnector name='openwire' uri='tcp://localhost:61616'/>\n" +
+            "                               </transportConnectors>\n" +
+            "                           </broker></value></foo>";
     private BrokerParser parser = new BrokerParser();
 
     public void testParse() throws Exception {
@@ -73,6 +84,18 @@ public class BrokerParserTestCase extends TestCase {
         assertEquals("tcp://localhost:61616", connectorConfig.getUri().toString());
         assertEquals("multicast://default", connectorConfig.getDiscoveryUri().toString());
         assertEquals(4, configuration.getTransportConnectorConfigs().size());
+    }
+
+    public void testNoBrokerName() throws Exception {
+        InputStream stream = new ByteArrayInputStream(NO_BROKER_NAME.getBytes());
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+        reader.nextTag();
+        try {
+            BrokerConfiguration configuration = parser.parse(reader);
+            fail();
+        } catch (InvalidConfigurationException e) {
+            // expected
+        }
     }
 
 }
