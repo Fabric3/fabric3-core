@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.host.work.DefaultPausableWork;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
@@ -52,7 +51,7 @@ import org.fabric3.spi.wire.Interceptor;
  *
  * @version $Rev$ $Date$
  */
-public class AsyncRequest extends DefaultPausableWork {
+public class AsyncRequest implements Runnable {
     private final Interceptor next;
     private final Message message;
     private SecuritySubject subject;
@@ -74,7 +73,7 @@ public class AsyncRequest extends DefaultPausableWork {
         this.monitor = monitor;
     }
 
-    public void execute() {
+    public void run() {
         WorkContext newWorkContext = new WorkContext();
         if (stack != null) {
             newWorkContext.addCallFrames(stack);

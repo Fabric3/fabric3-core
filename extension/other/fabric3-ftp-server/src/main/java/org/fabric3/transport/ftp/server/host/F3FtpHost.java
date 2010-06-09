@@ -40,6 +40,7 @@ package org.fabric3.transport.ftp.server.host;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.mina.common.IdleStatus;
 import org.apache.mina.common.IoHandler;
@@ -56,7 +57,6 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.work.WorkScheduler;
 
 /**
  * F3 implementation of the in-process FTP host.
@@ -66,7 +66,7 @@ import org.fabric3.host.work.WorkScheduler;
 @EagerInit
 public class F3FtpHost implements FtpHost {
     private FtpHostMonitor monitor;
-    private WorkScheduler workScheduler;
+    private ExecutorService executorService;
     private int commandPort = 2000;
     private SocketAcceptor acceptor;
     private IoHandler ftpHandler;
@@ -90,7 +90,7 @@ public class F3FtpHost implements FtpHost {
         acceptor = new NioSocketAcceptor();
         SocketSessionConfig config = acceptor.getSessionConfig();
         config.setIdleTime(IdleStatus.BOTH_IDLE, idleTimeout);
-        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(workScheduler));
+        acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(executorService));
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(codecFactory));
         acceptor.setHandler(ftpHandler);
         acceptor.bind(socketAddress);
@@ -139,11 +139,11 @@ public class F3FtpHost implements FtpHost {
     /**
      * Sets the work scheduler for task execution.
      *
-     * @param workScheduler the scheduler
+     * @param executorService the scheduler
      */
     @Reference
-    public void setWorkScheduler(WorkScheduler workScheduler) {
-        this.workScheduler = workScheduler;
+    public void setWorkScheduler(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     /**

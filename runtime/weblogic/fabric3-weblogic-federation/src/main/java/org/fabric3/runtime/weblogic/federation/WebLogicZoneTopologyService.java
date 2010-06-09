@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.management.JMException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -58,14 +59,11 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
-import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
-import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -73,8 +71,10 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.command.Response;
 import org.fabric3.spi.federation.ZoneTopologyService;
+
+import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
+import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
 /**
  * Provides domain communication for a participant runtime using the WebLogic clustered JNDI tree.
@@ -86,7 +86,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private static final String JNDI_FACTORY = "weblogic.jndi.WLInitialContextFactory";
 
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private WebLogicTopologyMonitor monitor;
     private EventService eventService;
     private SerializationService serializationService;
@@ -103,18 +103,18 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     public WebLogicZoneTopologyService(@Reference EventService eventService,
                                        @Reference SerializationService serializationService,
                                        @Reference CommandExecutorRegistry executorRegistry,
-                                       @Reference WorkScheduler scheduler,
+                                       @Reference ExecutorService executorService,
                                        @Reference JmxHelper jmxHelper,
                                        @Monitor WebLogicTopologyMonitor monitor) {
         this.eventService = eventService;
         this.serializationService = serializationService;
         this.executorRegistry = executorRegistry;
         this.jmxHelper = jmxHelper;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.monitor = monitor;
     }
 
-    @Property (required = false)
+    @Property(required = false)
     public void setAdminServerUrl(String adminServerUrl) {
         this.adminServerUrl = adminServerUrl;
     }
@@ -289,7 +289,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             if (!result) {
                 monitor.adminServerUnavailable();
                 // admin server is not available, schedule work to retry periodically
-                scheduler.scheduleWork(new Work());
+                executorService.execute(new Work());
                 return;
             }
             update();
@@ -301,9 +301,9 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
      * required as WebLogic remote JNDI contexts do not implement EventContext to receive callbacks when a JNDI object changes (such as a controller
      * channel becoming available).
      */
-    private class Work extends DefaultPausableWork {
+    private class Work implements Runnable {
 
-        protected void execute() {
+        public void run() {
             while (true) {
                 if (initJndiContexts() && update()) {
                     return;

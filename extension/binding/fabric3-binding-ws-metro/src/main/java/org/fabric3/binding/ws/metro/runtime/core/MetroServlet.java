@@ -45,8 +45,9 @@ package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -66,8 +67,6 @@ import com.sun.xml.ws.transport.http.servlet.WSServlet;
 import com.sun.xml.ws.transport.http.servlet.WSServletDelegate;
 import com.sun.xml.wss.SecurityEnvironment;
 
-import org.fabric3.host.work.WorkScheduler;
-
 /**
  * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code>
  * method.
@@ -78,7 +77,7 @@ public class MetroServlet extends WSServlet {
     private static final long serialVersionUID = -2581439830158433922L;
     private static final String MEX_SUFFIX = "/mex";
 
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private SecurityEnvironment securityEnvironment;
 
     private List<EndpointConfiguration> configurations = new ArrayList<EndpointConfiguration>();
@@ -90,11 +89,11 @@ public class MetroServlet extends WSServlet {
     /**
      * Constructor
      *
-     * @param scheduler           the work scheduler for dispatching invocations
+     * @param executorService     the executor service for dispatching invocations
      * @param securityEnvironment the Fabric3 implementation of the Metro SecurityEnvironemnt SPI
      */
-    public MetroServlet(WorkScheduler scheduler, SecurityEnvironment securityEnvironment) {
-        this.scheduler = scheduler;
+    public MetroServlet(ExecutorService executorService, SecurityEnvironment securityEnvironment) {
+        this.executorService = executorService;
         this.securityEnvironment = securityEnvironment;
     }
 
@@ -181,7 +180,7 @@ public class MetroServlet extends WSServlet {
                                                          metadata,
                                                          null,
                                                          true);
-            wsEndpoint.setExecutor(scheduler);
+            wsEndpoint.setExecutor(executorService);
             ServletAdapter adapter = servletAdapterFactory.createAdapter(servicePath, servicePath, wsEndpoint);
             delegate.registerServletAdapter(adapter, F3Provider.class.getClassLoader());
 
@@ -203,7 +202,7 @@ public class MetroServlet extends WSServlet {
             // case where the endpoint is undeployed before it has been activated
             for (Iterator<EndpointConfiguration> it = configurations.iterator(); it.hasNext();) {
                 EndpointConfiguration configuration = it.next();
-                if (configuration.getServicePath().equals(path)){
+                if (configuration.getServicePath().equals(path)) {
                     it.remove();
                     return;
                 }

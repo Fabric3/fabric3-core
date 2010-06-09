@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
            autowire="true"
            xmlns:f3-binding="urn:org.fabric3:binding">
 
-    <component name="TransportService">
+    <component name="NETTransportService">
         <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.impl.TransportServiceImpl"/>
         <!-- set optional configuration from the system configuration domain property -->
         <property name="connectTimeout" source="$systemConfig//net.binding/@connectTimeout"/>

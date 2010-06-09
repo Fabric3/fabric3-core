@@ -40,8 +40,10 @@ package org.fabric3.federation.deployment.executor;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.oasisopen.sca.annotation.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -57,8 +59,6 @@ import org.fabric3.federation.deployment.coordinator.DeploymentCache;
 import org.fabric3.federation.deployment.coordinator.RollbackException;
 import org.fabric3.federation.deployment.coordinator.RollbackService;
 import org.fabric3.host.Fabric3Exception;
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
@@ -84,7 +84,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     private DeploymentCache cache;
     private SerializationService serializationService;
     private RollbackService rollbackService;
-    private WorkScheduler workScheduler;
+    private ExecutorService executorService;
     private DeploymentCommandExecutorMonitor monitor;
     private ScopeRegistry scopeRegistry;
     private BlockingQueue<DeploymentCommand> deploymentQueue;
@@ -95,13 +95,13 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                                      @Reference DeploymentCache cache,
                                      @Reference SerializationService serializationService,
                                      @Reference RollbackService rollbackService,
-                                     @Reference WorkScheduler workScheduler,
+                                     @Reference ExecutorService executorService,
                                      @Monitor DeploymentCommandExecutorMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.cache = cache;
         this.serializationService = serializationService;
         this.rollbackService = rollbackService;
-        this.workScheduler = workScheduler;
+        this.executorService = executorService;
         this.monitor = monitor;
         this.scopeRegistry = scopeRegistry;
         this.deploymentQueue = new LinkedBlockingDeque<DeploymentCommand>();
@@ -110,7 +110,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     @Init
     public void init() {
         messagePump = new MessagePump();
-        workScheduler.scheduleWork(messagePump);
+        executorService.execute(messagePump);
         executorRegistry.register(DeploymentCommand.class, this);
     }
 
@@ -131,15 +131,18 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
     }
 
     /**
-     * Asynchronously dequeues and processes deployment commands in the order they were received by the runtime.
+     * Asynchronously de-queues and processes deployment commands in the order they were received by the runtime.
      */
-    private class MessagePump extends DefaultPausableWork {
+    private class MessagePump implements Runnable {
+        private AtomicBoolean active = new AtomicBoolean(true);
 
-        private MessagePump() {
-            super(true);
+        public void run() {
+            while (active.get()) {
+                doRun();
+            }
         }
 
-        protected void execute() {
+        public void doRun() {
             try {
                 DeploymentCommand command = deploymentQueue.poll(1000, TimeUnit.MILLISECONDS);
                 if (command == null) {
@@ -172,8 +175,13 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                 }
                 cacheDeployment(command);
             } catch (InterruptedException e) {
+                active.set(false);
                 Thread.currentThread().interrupt();
             }
+        }
+
+        private void stop() {
+            active.set(false);
         }
 
         @SuppressWarnings({"unchecked"})

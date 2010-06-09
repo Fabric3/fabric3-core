@@ -6,8 +6,6 @@ Copyright (C) 2009 Metaform Systems
 Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 
-
-
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3-core="urn:fabric3.org:core"
@@ -15,11 +13,13 @@ Public License. See the accompanying license file for details.
            targetNamespace="urn:maven:org.codehaus.fabric3:boot"
            name="ThreadPoolComposite">
 
-    <!--Fabric3 Thread Pool -->
-    <component name="ThreadPool">
-        <f3-impl:implementation.system class="org.fabric3.threadpool.ThreadPoolWorkScheduler"/>
-        <property name="size" source="$systemConfig//thread.pool/@size"/>
-        <property name="pauseOnStart" source="$systemConfig//thread.pool/@pauseOnStart"/>
+    <component name="RuntimeThreadPoolExecutor">
+        <f3-impl:implementation.system class="org.fabric3.threadpool.RuntimeThreadPoolExecutor"/>
+        <property name="maximumSize" source="$systemConfig//thread.pool/@size"/>
+        <property name="coreSize" source="$systemConfig//thread.pool/@coreSize"/>
+        <property name="queueSize" source="$systemConfig//thread.pool/@queueSize"/>
+        <property name="stallThreshold" source="$systemConfig//thread.pool/@stallThreshold"/>
+        <property name="stallCheckPeriod" source="$systemConfig//thread.pool/@stallCheckPeriod"/>
     </component>
 
 </composite>

@@ -45,6 +45,7 @@ package org.fabric3.fabric.executor;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
@@ -57,7 +58,6 @@ import org.fabric3.fabric.channel.ChannelImpl;
 import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.RegistrationException;
@@ -74,15 +74,15 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 @EagerInit
 public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChannelsCommand> {
     private ChannelManager channelManager;
-    private WorkScheduler workScheduler;
+    private ExecutorService executorService;
     private CommandExecutorRegistry executorRegistry;
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
-                                        @Reference WorkScheduler workScheduler,
+                                        @Reference ExecutorService executorService,
                                         @Reference CommandExecutorRegistry executorRegistry) {
         this.channelManager = channelManager;
-        this.workScheduler = workScheduler;
+        this.executorService = executorService;
         this.executorRegistry = executorRegistry;
     }
 
@@ -101,7 +101,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
                 if (definition.isSynchronous()) {
                     handler = new SyncFanOutHandler();
                 } else {
-                    handler = new AsyncFanOutHandler(workScheduler);
+                    handler = new AsyncFanOutHandler(executorService);
                 }
                 Channel channel = new ChannelImpl(uri, deployable, handler);
                 channelManager.register(channel);

@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -61,20 +62,18 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
+import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
-import org.fabric3.binding.jms.runtime.common.JmsHelper;
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.PausableWork;
-import org.fabric3.host.work.WorkScheduler;
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
  * on different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
  * <p/>
- * Note this implmentation supports dispatching messages as part of a JTA transaction or non-transactionally.
+ * Note this implementation supports dispatching messages as part of a JTA transaction or non-transactionally.
  *
  * @version $Rev$ $Date$
  */
@@ -118,9 +117,9 @@ public class AdaptiveMessageContainer {
     private Object recoveryMarker = new Object();
 
     private Set<MessageReceiver> receivers = new HashSet<MessageReceiver>();
-    private List<PausableWork> pausedWork = new LinkedList<PausableWork>();
+    private List<Runnable> pausedWork = new LinkedList<Runnable>();
 
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private TransactionManager tm;
 
     private MessageContainerMonitor monitor;
@@ -131,17 +130,17 @@ public class AdaptiveMessageContainer {
      * @param destination       the destination
      * @param listener          the message listener
      * @param connectionFactory the connection factory to use for creating JMS resources
-     * @param scheduler         the work scheduler to schedule message receivers
+     * @param executorService   the work scheduler to schedule message receivers
      * @param tm                the JTA transaction manager for transacted messaging
      * @param monitor           the monitor for reporting events and errors
      */
     public AdaptiveMessageContainer(Destination destination,
                                     MessageListener listener,
                                     ConnectionFactory connectionFactory,
-                                    WorkScheduler scheduler,
+                                    ExecutorService executorService,
                                     TransactionManager tm,
                                     MessageContainerMonitor monitor) {
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.destination = destination;
         this.messageListener = listener;
         this.durableSubscriptionName = listener.getClass().getName();
@@ -224,7 +223,7 @@ public class AdaptiveMessageContainer {
 
     /**
      * Sets the maximum threshold for the number of receivers to create for a destination. The default is one. Note the number of receivers for a
-     * topic should gnenerally be one.
+     * topic should generally be one.
      *
      * @param max the maximum threshold for the number of receivers to create for a destination
      */
@@ -527,10 +526,7 @@ public class AdaptiveMessageContainer {
         }
         try {
             synchronized (syncMonitor) {
-                // stop the receivers, waiting for active ones to finish processing
-                for (MessageReceiver receiver : receivers) {
-                    receiver.stop();
-                }
+                // wait for active receivers to finish processing
                 while (activeReceiverCount > 0) {
                     syncMonitor.wait();
                 }
@@ -727,20 +723,20 @@ public class AdaptiveMessageContainer {
      * Attempt to reschedule the given work. This is done immediately if the container is running, or deferred until restart. If the container is
      * shutdown, scheduling will not be performed.
      *
-     * @param work the work to reschedule
+     * @param runnable the work to reschedule
      * @return true if the work has been rescheduled
      */
-    private boolean rescheduleWork(PausableWork work) {
+    private boolean rescheduleWork(Runnable runnable) {
         if (isRunning()) {
             try {
-                scheduler.scheduleWork(work);
+                executorService.execute(runnable);
             } catch (RuntimeException e) {
                 monitor.reject(e);
-                pausedWork.add(work);
+                pausedWork.add(runnable);
             }
             return true;
         } else if (initialized) {
-            this.pausedWork.add(work);
+            this.pausedWork.add(runnable);
             return true;
         } else {
             return false;
@@ -753,10 +749,10 @@ public class AdaptiveMessageContainer {
     private void resumePausedWork() {
         synchronized (syncMonitor) {
             if (!pausedWork.isEmpty()) {
-                for (Iterator<PausableWork> it = pausedWork.iterator(); it.hasNext();) {
-                    PausableWork work = it.next();
+                for (Iterator<Runnable> it = pausedWork.iterator(); it.hasNext();) {
+                    Runnable runnable = it.next();
                     try {
-                        scheduler.execute(work);
+                        executorService.execute(runnable);
                         it.remove();
                     }
                     catch (RuntimeException e) {
@@ -887,7 +883,7 @@ public class AdaptiveMessageContainer {
     /**
      * Listens for messages from a destination and dispatches them to a message listener, managing transaction semantics and recovery if necessary.
      */
-    private class MessageReceiver extends DefaultPausableWork {
+    private class MessageReceiver implements Runnable {
         private Session session;
         private MessageConsumer consumer;
         private Object previousRecoveryMarker;
@@ -899,7 +895,7 @@ public class AdaptiveMessageContainer {
             return idle;
         }
 
-        public void execute() {
+        public void run() {
             synchronized (syncMonitor) {
                 activeReceiverCount++;
                 syncMonitor.notifyAll();

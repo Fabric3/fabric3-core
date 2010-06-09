@@ -42,6 +42,7 @@ import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
 
@@ -55,7 +56,6 @@ import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
@@ -73,16 +73,16 @@ import org.fabric3.spi.wire.Wire;
 public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdlTargetDefinition> {
     private FeatureResolver resolver;
     private SecurityEnvironment securityEnvironment;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private ArtifactCache cache;
 
     public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
                                        @Reference SecurityEnvironment securityEnvironment,
-                                       @Reference WorkScheduler scheduler,
+                                       @Reference ExecutorService executorService,
                                        @Reference ArtifactCache cache) {
         this.resolver = resolver;
         this.securityEnvironment = securityEnvironment;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.cache = cache;
     }
 
@@ -107,7 +107,7 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
                                                                                  wsdlLocation,
                                                                                  null,
                                                                                  features,
-                                                                                 scheduler,
+                                                                                 executorService,
                                                                                  securityEnvironment);
 
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();

@@ -40,6 +40,7 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.ws.Dispatch;
@@ -51,7 +52,6 @@ import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.wss.SecurityEnvironment;
 
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 
@@ -65,7 +65,7 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
     private QName portName;
     private WebServiceFeature[] features;
     private File wsitConfiguration;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private SecurityEnvironment securityEnvironment;
     private Dispatch<Source> dispatch;
     private URL wsdlLocation;
@@ -77,21 +77,21 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
      * @param wsdlLocation        the WSDL defining the target service contract
      * @param wsitConfiguration   WSIT policy configuration for the proxy, or null if policy is not configured
      * @param features            web services features to enable on the generated proxy
-     * @param scheduler           the work schedule used for dispatching invocations
+     * @param executorService     the executor service used for dispatching invocations
      * @param securityEnvironment the Metro host runtime security SPI implementation
      */
     public MetroDispatchObjectFactory(ReferenceEndpointDefinition endpointDefinition,
                                       URL wsdlLocation,
                                       File wsitConfiguration,
                                       WebServiceFeature[] features,
-                                      WorkScheduler scheduler,
+                                      ExecutorService executorService,
                                       SecurityEnvironment securityEnvironment) {
         this.wsdlLocation = wsdlLocation;
         this.serviceName = endpointDefinition.getServiceName();
         this.portName = endpointDefinition.getPortName();
         this.features = features;
         this.wsitConfiguration = wsitConfiguration;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.securityEnvironment = securityEnvironment;
     }
 
@@ -126,7 +126,7 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
             params.setContainer(container);
             service = WSService.create(wsdlLocation, serviceName, params);
             // use the kernel scheduler for dispatching
-            service.setExecutor(scheduler);
+            service.setExecutor(executorService);
             return service.createDispatch(portName, Source.class, Service.Mode.PAYLOAD, features);
         } catch (InaccessibleWSDLException e) {
             throw new ObjectCreationException(e);

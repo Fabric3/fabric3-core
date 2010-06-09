@@ -40,6 +40,7 @@ package org.fabric3.binding.net.runtime.impl;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -61,7 +62,6 @@ import org.fabric3.binding.net.runtime.tcp.TcpPipelineFactory;
 import org.fabric3.binding.net.runtime.tcp.TcpRequestHandler;
 import org.fabric3.binding.net.runtime.TransportService;
 import org.fabric3.binding.net.runtime.WireHolder;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.binding.format.MessageEncoder;
 import org.fabric3.spi.builder.WiringException;
 
@@ -69,7 +69,7 @@ import org.fabric3.spi.builder.WiringException;
  * @version $Rev$ $Date$
  */
 public class TransportServiceImpl implements TransportService {
-    private final WorkScheduler scheduler;
+    private final ExecutorService executorService;
     private NetBindingMonitor monitor;
     private Map<String, MessageEncoder> messageFormatters = new HashMap<String, MessageEncoder>();
 
@@ -91,8 +91,8 @@ public class TransportServiceImpl implements TransportService {
     private HttpRequestHandler httpRequestHandler;
     private TcpRequestHandler tcpRequestHandler;
 
-    public TransportServiceImpl(@Reference WorkScheduler scheduler, @Monitor NetBindingMonitor monitor) {
-        this.scheduler = scheduler;
+    public TransportServiceImpl(@Reference ExecutorService executorService, @Monitor NetBindingMonitor monitor) {
+        this.executorService = executorService;
         this.monitor = monitor;
     }
 
@@ -143,7 +143,7 @@ public class TransportServiceImpl implements TransportService {
 
     @Init
     public void init() {
-        factory = new NioServerSocketChannelFactory(scheduler, scheduler);
+        factory = new NioServerSocketChannelFactory(executorService, executorService);
         timer = new HashedWheelTimer();
     }
 
@@ -156,7 +156,7 @@ public class TransportServiceImpl implements TransportService {
             if (!future.isSuccess()) {
                 monitor.error(future.getCause());
             }
-            // Don't release resources as it waits for the core threadpool to cease operations
+            // Don't release resources as it waits for the core thread pool to cease operations
             // factory.releaseExternalResources();
         }
         if (tcpChannel != null) {

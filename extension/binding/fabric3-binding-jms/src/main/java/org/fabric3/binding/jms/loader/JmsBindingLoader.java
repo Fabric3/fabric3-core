@@ -49,14 +49,13 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.AdministeredObjectDefinition;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
@@ -71,13 +70,16 @@ import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 
 /**
@@ -361,7 +363,17 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     private DestinationDefinition loadDestination(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         DestinationDefinition destination = new DestinationDefinition();
-        destination.setName(reader.getAttributeValue(null, "jndiName"));
+        String jndiName = reader.getAttributeValue(null, "jndiName");
+        if (jndiName != null) {
+            destination.setName(jndiName);
+        } else {
+            // support name attribute as well
+            String name = reader.getAttributeValue(null, "name");
+            if (name == null) {
+                MissingAttribute error = new MissingAttribute("Destination must have either a jndiName or name attribute set", reader);
+                context.addError(error);
+            }
+        }
         parseCreate(reader, context, destination);
         String type = reader.getAttributeValue(null, "type");
         if (type != null) {

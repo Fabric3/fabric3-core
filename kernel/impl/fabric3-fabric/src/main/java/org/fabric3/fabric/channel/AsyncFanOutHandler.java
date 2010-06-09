@@ -37,8 +37,8 @@
 */
 package org.fabric3.fabric.channel;
 
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
+import java.util.concurrent.ExecutorService;
+
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 
@@ -48,10 +48,10 @@ import org.fabric3.spi.channel.EventStream;
  * @version $Rev$ $Date$
  */
 public class AsyncFanOutHandler extends AbstractFanOutHandler {
-    private WorkScheduler workScheduler;
+    private ExecutorService executorService;
 
-    public AsyncFanOutHandler(WorkScheduler workScheduler) {
-        this.workScheduler = workScheduler;
+    public AsyncFanOutHandler(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     public void handle(Object event) {
@@ -60,17 +60,17 @@ public class AsyncFanOutHandler extends AbstractFanOutHandler {
             return;
         }
         FanOutWork work = new FanOutWork(event);
-        workScheduler.scheduleWork(work);
+        executorService.execute(work);
     }
 
-    private class FanOutWork extends DefaultPausableWork {
+    private class FanOutWork implements Runnable {
         private Object event;
 
         private FanOutWork(Object event) {
             this.event = event;
         }
 
-        protected void execute() {
+        public void run() {
             for (ChannelConnection connection : connections) {
                 for (EventStream stream : connection.getEventStreams()) {
                     stream.getHeadHandler().handle(event);

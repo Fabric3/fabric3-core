@@ -37,13 +37,14 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import java.util.concurrent.ExecutorService;
+
 import com.sun.xml.wss.SecurityEnvironment;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.host.ServletHost;
 
 /**
@@ -51,25 +52,25 @@ import org.fabric3.spi.host.ServletHost;
  */
 public class EndpointServiceImpl implements EndpointService {
     private SecurityEnvironment securityEnvironment;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private ServletHost servletHost;
     private MetroBindingMonitor monitor;
 
     private MetroServlet metroServlet;
 
     public EndpointServiceImpl(@Reference SecurityEnvironment securityEnvironment,
-                               @Reference WorkScheduler scheduler,
+                               @Reference ExecutorService executorService,
                                @Reference ServletHost servletHost,
                                @Monitor MetroBindingMonitor monitor) {
         this.securityEnvironment = securityEnvironment;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.monitor = monitor;
         this.servletHost = servletHost;
     }
 
     @Init
     public void init() {
-        metroServlet = new MetroServlet(scheduler, securityEnvironment);
+        metroServlet = new MetroServlet(executorService, securityEnvironment);
     }
 
     public void registerService(EndpointConfiguration configuration) throws EndpointException {

@@ -37,19 +37,13 @@
 */
 package org.fabric3.timer.quartz;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import junit.framework.TestCase;
-
-import org.fabric3.host.work.PausableWork;
-import org.fabric3.host.work.WorkScheduler;
 
 /**
  * @version $Rev$ $Date$
@@ -65,10 +59,10 @@ public class QuartzTimerServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        // TODO mock transaction manager
-        WorkScheduler workScheduler = new WorkScheduler() {
-            public <T extends PausableWork> void scheduleWork(T work) {
-                work.run();
+        ExecutorService executorService = new AbstractExecutorService() {
+
+            public void execute(Runnable command) {
+                command.run();
             }
 
             public void shutdown() {
@@ -90,41 +84,8 @@ public class QuartzTimerServiceTestCase extends TestCase {
             public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
                 return false;
             }
-
-            public <T> Future<T> submit(Callable<T> task) {
-                return null;
-            }
-
-            public <T> Future<T> submit(Runnable task, T result) {
-                return null;
-            }
-
-            public Future<?> submit(Runnable task) {
-                return null;
-            }
-
-            public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables) throws InterruptedException {
-                return null;
-            }
-
-            public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit) throws InterruptedException {
-                return null;
-            }
-
-            public <T> T invokeAny(Collection<? extends Callable<T>> callables) throws InterruptedException, ExecutionException {
-                return null;
-            }
-
-            public <T> T invokeAny(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit)
-                    throws InterruptedException, ExecutionException, TimeoutException {
-                return null;
-            }
-
-            public void execute(Runnable command) {
-
-            }
         };
-        timerService = new QuartzTimerService(workScheduler, null);
+        timerService = new QuartzTimerService(executorService, null);
         timerService.setTransactional(false);
         timerService.init();
     }

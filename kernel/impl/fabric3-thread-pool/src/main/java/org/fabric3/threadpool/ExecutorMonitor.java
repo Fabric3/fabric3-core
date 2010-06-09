@@ -35,32 +35,16 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management;
+package org.fabric3.threadpool;
 
-import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
- * Management interface for the work scheduler.
+ * @version $Rev$ $Date$
  */
-@Management
-public interface WorkSchedulerMBean {
+public interface ExecutorMonitor {
 
-    enum Status {
-        STARTED, PAUSED
-    }
-
-    void setPoolSize(int poolSize);
-
-    int getPoolSize();
-
-    int getActiveCount();
-
-    void pause();
-
-    void stop();
-
-    void start();
-
-    Status getStatus();
+    @Warning
+    void stalledThread(String threadName, long elapsedTime, String trace);
 
 }

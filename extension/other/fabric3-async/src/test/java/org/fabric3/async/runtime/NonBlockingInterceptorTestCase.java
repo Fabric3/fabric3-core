@@ -37,11 +37,12 @@
 */
 package org.fabric3.async.runtime;
 
+import java.util.concurrent.ExecutorService;
+
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -54,13 +55,13 @@ import org.fabric3.spi.wire.Interceptor;
 public class NonBlockingInterceptorTestCase extends TestCase {
     private Interceptor next;
     private NonBlockingInterceptor interceptor;
-    private WorkScheduler workScheduler;
+    private ExecutorService executorService;
     private WorkContext workContext;
 
     public void testInvoke() throws Exception {
         final Message message = new MessageImpl();
         message.setWorkContext(workContext);
-        workScheduler.scheduleWork(EasyMock.isA(AsyncRequest.class));
+        executorService.execute(EasyMock.isA(AsyncRequest.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 AsyncRequest request =
@@ -73,8 +74,8 @@ public class NonBlockingInterceptorTestCase extends TestCase {
                 return null;
             }
         });
-        EasyMock.replay(workScheduler);
-        assertSame(NonBlockingInterceptor.RESPONSE, interceptor.invoke(message));
+        EasyMock.replay(executorService);
+        assertNotNull(interceptor.invoke(message));
 
     }
 
@@ -88,12 +89,12 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         CallFrame frame = new CallFrame();
         workContext.addCallFrame(frame);
 
-        workScheduler = EasyMock.createMock(WorkScheduler.class);
+        executorService = EasyMock.createMock(ExecutorService.class);
         next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         EasyMock.replay(next);
         NonBlockingMonitor monitor = EasyMock.createNiceMock(NonBlockingMonitor.class);
-        interceptor = new NonBlockingInterceptor(workScheduler, monitor);
+        interceptor = new NonBlockingInterceptor(executorService, monitor);
         interceptor.setNext(next);
     }
 }

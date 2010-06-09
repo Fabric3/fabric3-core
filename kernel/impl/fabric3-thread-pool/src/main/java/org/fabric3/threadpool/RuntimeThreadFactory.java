@@ -35,34 +35,36 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.async.runtime;
+package org.fabric3.threadpool;
 
-import java.util.concurrent.ExecutorService;
-
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.wire.Interceptor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Creates a non-blocking interceptor
+ * Factory that returns named threads.
  *
  * @version $Rev$ $Date$
  */
-public class NonBlockingInterceptorBuilder implements InterceptorBuilder<NonBlockingInterceptorDefinition> {
-    private ExecutorService executorService;
-    private NonBlockingMonitor monitor;
+public class RuntimeThreadFactory implements ThreadFactory {
+    private AtomicInteger number = new AtomicInteger(1);
+    private ThreadGroup group;
+    private String prefix;
 
-    public NonBlockingInterceptorBuilder(@Reference ExecutorService executorService, @Monitor NonBlockingMonitor monitor) {
-        this.executorService = executorService;
-        this.monitor = monitor;
+    public RuntimeThreadFactory() {
+        SecurityManager s = System.getSecurityManager();
+        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        prefix = "pooled:";
     }
 
-    public Interceptor build(NonBlockingInterceptorDefinition definition) throws BuilderException {
-        return new NonBlockingInterceptor(executorService, monitor);
+    public Thread newThread(Runnable r) {
+        Thread thread = new Thread(group, r, prefix + number.getAndIncrement(), 0);
+        if (thread.isDaemon()) {
+            thread.setDaemon(false);
+        }
+        if (thread.getPriority() != Thread.NORM_PRIORITY) {
+            thread.setPriority(Thread.NORM_PRIORITY);
+        }
+        return thread;
     }
-
 }
+

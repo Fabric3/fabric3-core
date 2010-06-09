@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
@@ -71,8 +72,6 @@ import org.quartz.spi.JobFactory;
 import org.quartz.spi.JobStore;
 import org.quartz.spi.ThreadPool;
 
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -83,7 +82,7 @@ import org.fabric3.timer.spi.TimerService;
 public class QuartzTimerService extends AbstractExecutorService implements TimerService {
     public static final String GROUP = "default";
 
-    private final WorkScheduler workScheduler;
+    private final ExecutorService executorService;
     private TransactionManager tm;
     private RunnableJobFactory jobFactory;
     private Scheduler scheduler;
@@ -92,8 +91,8 @@ public class QuartzTimerService extends AbstractExecutorService implements Timer
     private String schedulerName = "Fabric3Scheduler";
     private long counter;
 
-    public QuartzTimerService(@Reference WorkScheduler workScheduler, @Reference TransactionManager tm) {
-        this.workScheduler = workScheduler;
+    public QuartzTimerService(@Reference ExecutorService executorService, @Reference TransactionManager tm) {
+        this.executorService = executorService;
         this.tm = tm;
     }
 
@@ -211,12 +210,8 @@ public class QuartzTimerService extends AbstractExecutorService implements Timer
 
     }
 
-    public void execute(final Runnable runnable) {
-        workScheduler.scheduleWork(new DefaultPausableWork() {
-            public void execute() {
-                runnable.run();
-            }
-        });
+    public void execute(Runnable runnable) {
+        executorService.execute(runnable);
     }
 
     private Scheduler createScheduler(String name, String id, JobStore store, ThreadPool pool, JobRunShellFactory shellFactory, JobFactory jobFactory)
@@ -268,11 +263,7 @@ public class QuartzTimerService extends AbstractExecutorService implements Timer
     private class F3ThreadPool implements ThreadPool {
 
         public boolean runInThread(final Runnable runnable) {
-            workScheduler.scheduleWork(new DefaultPausableWork() {
-                public void execute() {
-                    runnable.run();
-                }
-            });
+            executorService.execute(runnable);
             return true;
         }
 

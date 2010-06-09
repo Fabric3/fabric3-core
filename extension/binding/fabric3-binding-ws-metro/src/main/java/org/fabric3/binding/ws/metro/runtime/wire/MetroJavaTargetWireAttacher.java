@@ -46,6 +46,7 @@ import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.ws.WebServiceFeature;
@@ -60,7 +61,6 @@ import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
@@ -84,7 +84,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
     private WireAttacherHelper wireAttacherHelper;
     private ArtifactCache artifactCache;
     private SecurityEnvironment securityEnvironment;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
 
 
@@ -93,14 +93,14 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
-                                       @Reference WorkScheduler scheduler,
+                                       @Reference ExecutorService executorService,
                                        @Reference XMLFactory xmlFactory) {
         this.registry = registry;
         this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
         this.artifactCache = artifactCache;
         this.securityEnvironment = securityEnvironment;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.xmlInputFactory = xmlFactory.newInputFactoryInstance();
     }
 
@@ -145,7 +145,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                                                                             generatedWsdl,
                                                                             seiClass,
                                                                             features,
-                                                                            scheduler,
+                                                                            executorService,
                                                                             securityEnvironment,
                                                                             xmlInputFactory);
 

@@ -41,9 +41,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
@@ -55,15 +55,14 @@ import org.fabric3.spi.wire.Interceptor;
  * @version $$Rev$$ $$Date$$
  */
 public class NonBlockingInterceptor implements Interceptor {
+    private static final Message RESPONSE = new ImmutableMessage();
 
-    protected static final Message RESPONSE = new ImmutableMessage();
-
-    private final WorkScheduler workScheduler;
+    private final ExecutorService executorService;
     private NonBlockingMonitor monitor;
     private Interceptor next;
 
-    public NonBlockingInterceptor(WorkScheduler workScheduler, NonBlockingMonitor monitor) {
-        this.workScheduler = workScheduler;
+    public NonBlockingInterceptor(ExecutorService executorService, NonBlockingMonitor monitor) {
+        this.executorService = executorService;
         this.monitor = monitor;
     }
 
@@ -84,7 +83,7 @@ public class NonBlockingInterceptor implements Interceptor {
         }
         SecuritySubject subject = workContext.getSubject();
         AsyncRequest request = new AsyncRequest(next, msg, subject, newStack, newHeaders, monitor);
-        workScheduler.scheduleWork(request);
+        executorService.execute(request);
         return RESPONSE;
     }
 
@@ -96,14 +95,11 @@ public class NonBlockingInterceptor implements Interceptor {
         this.next = next;
     }
 
-    public boolean isOptimizable() {
-        return false;
-    }
-
     /**
      * A dummy message passed back on an invocation
      */
     private static class ImmutableMessage implements Message {
+        private static final long serialVersionUID = 3052431365744865746L;
 
         public Object getBody() {
             return null;

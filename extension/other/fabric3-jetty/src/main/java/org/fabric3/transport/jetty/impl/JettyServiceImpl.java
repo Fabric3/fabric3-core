@@ -48,6 +48,7 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -76,8 +77,6 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
@@ -105,7 +104,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private boolean sendServerVersion;
     private KeyStoreManager keyStoreManager;
     private TransportMonitor monitor;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private boolean debug;
     private Server server;
     private ServletHandler servletHandler;
@@ -119,8 +118,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Constructor
-    public JettyServiceImpl(@Reference WorkScheduler scheduler, @Monitor TransportMonitor monitor) {
-        this.scheduler = scheduler;
+    public JettyServiceImpl(@Reference ExecutorService executorService, @Monitor TransportMonitor monitor) {
+        this.executorService = executorService;
         this.monitor = monitor;
         // Jetty uses a static logger, so jam in the monitor into a static reference
         Logger logger = Log.getLogger(null);
@@ -409,7 +408,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     private void initializeThreadPool() {
-        if (scheduler == null) {
+        if (executorService == null) {
             BoundedThreadPool threadPool = new BoundedThreadPool();
             threadPool.setMaxThreads(100);
             server.setThreadPool(threadPool);
@@ -444,12 +443,12 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     /**
-     * An integration wrapper to enable use of a {@link WorkScheduler} with Jetty
+     * An integration wrapper to enable use of a {@link ExecutorService} with Jetty
      */
     private class Fabric3ThreadPool implements ThreadPool {
 
-        public boolean dispatch(Runnable job) {
-            scheduler.scheduleWork(new Fabric3Work(job));
+        public boolean dispatch(Runnable work) {
+            executorService.execute(work);
             return true;
         }
 
@@ -472,22 +471,6 @@ public class JettyServiceImpl implements JettyService, Transport {
             return false;
         }
 
-    }
-
-    /**
-     * A unit of work dispatched to the runtime work scheduler
-     */
-    private class Fabric3Work extends DefaultPausableWork {
-
-        Runnable job;
-
-        public Fabric3Work(Runnable job) {
-            this.job = job;
-        }
-
-        public void execute() {
-            job.run();
-        }
     }
 
 }

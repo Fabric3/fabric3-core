@@ -56,17 +56,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import org.easymock.IAnswer;
+
+import org.fabric3.transport.jetty.impl.JettyServiceImpl;
+import org.fabric3.transport.jetty.impl.TransportMonitor;
+
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
-import org.easymock.IAnswer;
-
-import org.fabric3.host.work.DefaultPausableWork;
-import org.fabric3.host.work.WorkScheduler;
-import org.fabric3.transport.jetty.impl.JettyServiceImpl;
-import org.fabric3.transport.jetty.impl.TransportMonitor;
 
 /**
  * @version $Rev$ $Date$
@@ -87,7 +86,7 @@ public class JettyServiceImplTestCase extends TestCase {
     private static final int HTTP_PORT = 8585;
 
     private TransportMonitor monitor;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private ExecutorService executor = Executors.newCachedThreadPool();
     private JettyServiceImpl service;
 
@@ -181,8 +180,8 @@ public class JettyServiceImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         monitor = createMock(TransportMonitor.class);
-        scheduler = createMock(WorkScheduler.class);
-        scheduler.scheduleWork(isA(DefaultPausableWork.class));
+        executorService = createMock(ExecutorService.class);
+        executorService.execute(isA(Runnable.class));
 
         expectLastCall().andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
@@ -191,7 +190,7 @@ public class JettyServiceImplTestCase extends TestCase {
                 return null;
             }
         });
-        replay(scheduler);
+        replay(executorService);
         service = new JettyServiceImpl(monitor);
 
     }

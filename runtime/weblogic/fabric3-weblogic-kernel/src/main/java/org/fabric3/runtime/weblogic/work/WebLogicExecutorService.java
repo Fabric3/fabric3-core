@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -53,8 +54,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.work.PausableWork;
-import org.fabric3.host.work.WorkScheduler;
 
 /**
  * Delegates to a WebLogic <code>WorkManager</code>.
@@ -66,11 +65,11 @@ import org.fabric3.host.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class WebLogicWorkScheduler implements WorkScheduler {
+public class WebLogicExecutorService implements ExecutorService {
     private WebLogicWorkSchedulerMonitor monitor;
     private WorkManager workManager;
 
-    public WebLogicWorkScheduler(@Monitor WebLogicWorkSchedulerMonitor monitor) {
+    public WebLogicExecutorService(@Monitor WebLogicWorkSchedulerMonitor monitor) {
         this.monitor = monitor;
     }
 
@@ -80,9 +79,9 @@ public class WebLogicWorkScheduler implements WorkScheduler {
         workManager = WorkManagerFactory.getDefault();
     }
 
-    public <T extends PausableWork> void scheduleWork(T work) {
+    public void execute(Runnable command) {
         try {
-            workManager.schedule(new CommonJWorkWrapper(work));
+            workManager.schedule(new CommonJWorkWrapper(command));
         } catch (WorkException e) {
             monitor.scheduleError(e);
         }
@@ -137,26 +136,22 @@ public class WebLogicWorkScheduler implements WorkScheduler {
         throw new UnsupportedOperationException();
     }
 
-    public void execute(Runnable command) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Wrapper for work requests to be processed by a WebLogic WorkManager.
      */
     private class CommonJWorkWrapper implements Work {
-        private PausableWork work;
+        private Runnable work;
 
-        private CommonJWorkWrapper(PausableWork work) {
+        private CommonJWorkWrapper(Runnable work) {
             this.work = work;
         }
 
         public void release() {
-            work.stop();
+
         }
 
         public boolean isDaemon() {
-            return work.isDaemon();
+            return false;
         }
 
         public void run() {

@@ -19,8 +19,8 @@ Copyright (C) 2009 Metaform Systems
            name="WeblogicExtensionComposite"
            autowire="true">
 
-    <component name="WebLogicWorkScheduler">
-        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.work.WebLogicWorkScheduler"/>
+    <component name="WebLogicExecutorService">
+        <f3-impl:implementation.system class="org.fabric3.runtime.weblogic.work.WebLogicExecutorService"/>
     </component>
 
     <component name="ServletRequestDispatcher">

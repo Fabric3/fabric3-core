@@ -41,6 +41,7 @@ package org.fabric3.binding.jms.runtime.host;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -58,7 +59,6 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
@@ -76,18 +76,18 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
     private EventService eventService;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private TransactionManager tm;
     private MessageContainerMonitor containerMonitor;
     private HostMonitor monitor;
 
     public JmsHostImpl(@Reference EventService eventService,
-                       @Reference WorkScheduler scheduler,
+                       @Reference ExecutorService executorService,
                        @Reference TransactionManager tm,
                        @Monitor MessageContainerMonitor containerMonitor,
                        @Monitor HostMonitor monitor) {
         this.eventService = eventService;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.tm = tm;
         this.containerMonitor = containerMonitor;
         this.monitor = monitor;
@@ -161,7 +161,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
         URI serviceUri = configuration.getUri();
-        AdaptiveMessageContainer container = new AdaptiveMessageContainer(destination, listener, factory, scheduler, tm, containerMonitor);
+        AdaptiveMessageContainer container = new AdaptiveMessageContainer(destination, listener, factory, executorService, tm, containerMonitor);
         if (TransactionType.GLOBAL == type) {
             container.setTransactionType(TransactionType.GLOBAL);
             container.setAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);

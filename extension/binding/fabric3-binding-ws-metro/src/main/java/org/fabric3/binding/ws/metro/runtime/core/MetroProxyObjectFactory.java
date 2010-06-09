@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -65,7 +66,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.host.work.WorkScheduler;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -88,7 +88,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
     private Class<?> seiClass;
     private WebServiceFeature[] features;
     private URL wsitConfiguration;
-    private WorkScheduler scheduler;
+    private ExecutorService executorService;
     private SecurityEnvironment securityEnvironment;
     private XMLInputFactory xmlInputFactory;
     private Object proxy;
@@ -102,7 +102,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
      * @param wsitConfiguration   WSIT policy configuration for the proxy, or null if policy is not configured
      * @param seiClass            the target SEI
      * @param features            web services features to enable on the generated proxy
-     * @param scheduler           the work schedule used for dispatching invocations
+     * @param executorService     the executor service used for dispatching invocations
      * @param securityEnvironment the Metro host runtime security SPI implementation
      * @param xmlInputFactory     the StAX XML factory to use for WSDL parsing
      */
@@ -111,7 +111,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
                                    URL wsitConfiguration,
                                    Class<?> seiClass,
                                    WebServiceFeature[] features,
-                                   WorkScheduler scheduler,
+                                   ExecutorService executorService,
                                    SecurityEnvironment securityEnvironment,
                                    XMLInputFactory xmlInputFactory) {
         this.serviceName = endpointDefinition.getServiceName();
@@ -123,7 +123,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
         this.seiClass = seiClass;
         this.features = features;
         this.wsitConfiguration = wsitConfiguration;
-        this.scheduler = scheduler;
+        this.executorService = executorService;
         this.securityEnvironment = securityEnvironment;
         this.xmlInputFactory = xmlInputFactory;
     }
@@ -179,7 +179,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
                 service = getWsdlServiceName(e, params);
             }
             // use the kernel scheduler for dispatching
-            service.setExecutor(scheduler);
+            service.setExecutor(executorService);
             service.getPorts();
             return service.getPort(portName, seiClass, features);
         } catch (InaccessibleWSDLException e) {
