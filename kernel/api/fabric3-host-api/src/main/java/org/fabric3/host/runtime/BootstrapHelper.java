@@ -169,8 +169,6 @@ public final class BootstrapHelper {
      * @throws IOException if the runtime directory cannot be created
      */
     public static void cloneRuntimeImage(File sourceConfigDir, File targetDir) throws IOException {
-        FileHelper.copyDirectory(sourceConfigDir, targetDir);
-
         File targetConfigDir = new File(targetDir, "config");
         FileHelper.forceMkdir(targetConfigDir);
         FileHelper.copyDirectory(sourceConfigDir, targetConfigDir);
