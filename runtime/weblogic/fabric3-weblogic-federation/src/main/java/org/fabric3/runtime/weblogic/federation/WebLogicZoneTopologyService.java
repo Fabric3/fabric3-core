@@ -71,6 +71,7 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
@@ -137,6 +138,14 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         runtimeChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
     }
 
+
+    public void register(TopologyListener listener) {
+
+    }
+
+    public void deregister(TopologyListener listener) {
+
+    }
 
     public boolean isZoneLeader() {
         return false;

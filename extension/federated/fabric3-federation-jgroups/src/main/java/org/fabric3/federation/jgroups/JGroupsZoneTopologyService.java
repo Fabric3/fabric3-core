@@ -125,8 +125,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     @Reference(required = false)
-    public void setTopologyListeners(List<TopologyListener> topologyListeners) {
-        this.topologyListeners = topologyListeners;
+    public void setTopologyListeners(List<TopologyListener> listeners) {
+        this.topologyListeners.addAll(listeners);
     }
 
     /**
@@ -163,6 +163,14 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         Fabric3RequestHandler requestHandler = new Fabric3RequestHandler();
         ZoneMemberListener memberListener = new ZoneMemberListener();
         domainDispatcher = new MessageDispatcher(domainChannel, messageListener, memberListener, requestHandler);
+    }
+
+    public void register(TopologyListener listener) {
+        topologyListeners.add(listener);
+    }
+
+    public void deregister(TopologyListener listener) {
+        topologyListeners.remove(listener);
     }
 
     public boolean isZoneLeader() {

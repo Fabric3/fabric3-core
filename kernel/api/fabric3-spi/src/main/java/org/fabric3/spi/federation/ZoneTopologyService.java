@@ -40,8 +40,8 @@ package org.fabric3.spi.federation;
 import java.util.List;
 
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
  * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and
@@ -51,6 +51,20 @@ import org.fabric3.spi.command.Response;
  * @version $Rev$ $Date$
  */
 public interface ZoneTopologyService {
+
+    /**
+     * Registers a transient {@link TopologyListener}.
+     *
+     * @param listener the listener
+     */
+    public void register(TopologyListener listener);
+
+    /**
+     * De-registers a transient {@link TopologyListener}.
+     *
+     * @param listener the listener
+     */
+    public void deregister(TopologyListener listener);
 
     /**
      * Returns true if the current runtime is the zone leader.
