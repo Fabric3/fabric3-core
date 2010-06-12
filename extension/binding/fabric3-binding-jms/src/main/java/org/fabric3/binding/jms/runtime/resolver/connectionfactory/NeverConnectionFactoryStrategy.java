@@ -100,11 +100,11 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
             }
             return manager.register(name, factory, Collections.<String, String>emptyMap());
         } catch (NameNotFoundException e) {
-            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
+            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
+            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         } catch (NamingException e) {
-            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
+            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }
     }
 

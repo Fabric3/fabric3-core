@@ -86,20 +86,6 @@ public class JmsHelper {
     }
 
     /**
-     * Closes the message producer quietly, ignoring exceptions.
-     *
-     * @param producer the message producer to be closed.
-     */
-    public static void closeQuietly(MessageProducer producer) {
-        try {
-            if (producer != null) {
-                producer.close();
-            }
-        } catch (JMSException ignore) {
-        }
-    }
-
-    /**
      * Closes the message consumer quietly, ignoring exceptions
      *
      * @param consumer the message consumer to be closed.

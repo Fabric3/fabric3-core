@@ -59,16 +59,6 @@ public abstract class PropertyAwareObject extends ModelObject {
     private Map<String, String> properties = null;
 
     /**
-     * Sets the properties used to create the administered object.
-     *
-     * @param properties used to create the administered object.
-     */
-    public void setProperties(Map<String, String> properties) {
-        ensurePropertiesNotNull();
-        this.properties.putAll(properties);
-    }
-
-    /**
      * Add a Property.
      *
      * @param name  Name of the property.

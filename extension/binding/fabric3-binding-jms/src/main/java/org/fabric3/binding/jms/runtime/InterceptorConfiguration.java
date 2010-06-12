@@ -40,7 +40,7 @@ package org.fabric3.binding.jms.runtime;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 
 /**
- * Template for configuring a JmsInterceptor.
+ * Template for configuring a {@link JmsInterceptor}.
  *
  * @version $Rev$ $Date$
  */

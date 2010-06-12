@@ -77,7 +77,7 @@ import org.fabric3.spi.wire.Interceptor;
 /**
  * Listens for requests sent to a destination and dispatches them to a service, returning a response to the response destination.
  *
- * @version $Revison$ $Date$
+ * @version $Revision$ $Date$
  */
 public class ServiceListener implements MessageListener {
     protected WireHolder wireHolder;

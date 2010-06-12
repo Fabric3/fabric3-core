@@ -103,9 +103,9 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
             }
             return manager.register(name, factory);
         } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
+            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         } catch (NamingException e) {
-            throw new JmsResolutionException("Error resolving connction factory: " + name, e);
+            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }
     }
 

@@ -54,13 +54,13 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * MessageListener that blocks for responses from a service provider. This listener is attached to the reference side of a wire.
  *
- * @version $Revison$ $Date$
+ * @version $Revision$ $Date$
  */
 public class ResponseListener {
     private Destination destination;
 
     /**
-     * @param destination       the response destination
+     * @param destination the response destination
      */
     public ResponseListener(Destination destination) {
         this.destination = destination;
@@ -70,8 +70,8 @@ public class ResponseListener {
      * Performs a blocking receive, i.e. control will not be returned to application code until a response is received.
      *
      * @param correlationId Correlation Id.
-     * @param session the session to use for processing
-     * @param timeout the receive timeout
+     * @param session       the session to use for processing
+     * @param timeout       the receive timeout
      * @return the received message or null if the operation timed out.
      */
     public Message receive(String correlationId, Session session, long timeout) {

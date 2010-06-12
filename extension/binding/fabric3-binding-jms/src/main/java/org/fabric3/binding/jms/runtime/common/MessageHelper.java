@@ -138,7 +138,7 @@ public class MessageHelper {
             return charMessage.readChar();
         case DOUBLE:
             if (!(message instanceof BytesMessage)) {
-                throw new JmsBadMessageException("Invalid message type. Expeciting BytesMessage");
+                throw new JmsBadMessageException("Invalid message type. Expecting BytesMessage");
             }
             BytesMessage doubleMessage = (BytesMessage) message;
             return doubleMessage.readDouble();

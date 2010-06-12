@@ -81,7 +81,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * Constructor that defines an alternative set of supported data types.
      *
      * @param uri             the service URI
-     * @param metadata        metadataused to create a JMS message consumer.
+     * @param metadata        metadata used to create a JMS message consumer.
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML

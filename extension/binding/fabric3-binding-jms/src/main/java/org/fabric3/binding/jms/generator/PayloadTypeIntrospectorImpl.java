@@ -60,7 +60,7 @@ import org.fabric3.model.type.contract.Operation;
  * <li>If the parameters are primitives, the specific primitive type is returned
  * <li>If the parameters are a stream, a stream message is returned
  * <li>If the parameters are Serializable, an object message is returned
- * <li>If the paramter is annotated with @XmlRootElement or @XmlType, an XML type is returned
+ * <li>If the parameter is annotated with @XmlRootElement or @XmlType, an XML type is returned
  * <ul>
  * </pre>
  *
