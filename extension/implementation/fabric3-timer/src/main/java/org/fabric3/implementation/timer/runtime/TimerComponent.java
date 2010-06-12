@@ -99,6 +99,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     public void start() throws ComponentException {
         super.start();
         if (Scope.DOMAIN.equals(scope)) {
+            topologyService.register(this);
             if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
                 // defer scheduling until this node becomes zone leader
                 return;
@@ -109,6 +110,9 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
 
     public void stop() throws ComponentException {
         super.stop();
+        if (Scope.DOMAIN.equals(scope)) {
+            topologyService.deregister(this);
+        }
         if (future != null && !future.isCancelled() && !future.isDone()) {
             future.cancel(true);
         }

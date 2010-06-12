@@ -24,5 +24,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.implementation.java.introspection" version="1.6"/>
     <import.java package="org.fabric3.implementation.java.runtime" version="1.6"/>
     <import.java package="org.fabric3.timer.spi" version="1.6"/>
-    <deployable composite="f3-impl:TimerImplementationExtension"/>
+    <deployable composite="f3-impl:TimerControllerExtension" modes="controller vm"/>
+    <deployable composite="f3-impl:TimerParticipantExtension" modes="participant vm"/>
 </contribution>
