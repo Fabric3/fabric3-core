@@ -53,7 +53,7 @@
 		<module>fabric3-atomikos</module>
 		<module>fabric3-atomikos-jms</module>
 		<module>fabric3-timer-spi</module>
-		<module>fabric3-timer-quartz</module>
+		<module>fabric3-timer-service</module>
 		<module>fabric3-test-spi</module>
 		<module>fabric3-jaxb</module>
 		<module>fabric3-databinding-jaxb</module>

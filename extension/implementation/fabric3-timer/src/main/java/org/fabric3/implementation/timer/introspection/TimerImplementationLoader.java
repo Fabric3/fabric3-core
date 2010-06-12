@@ -37,40 +37,46 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.implementation.java.introspection.JavaImplementationProcessor;
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.implementation.java.introspection.JavaImplementationProcessor;
+import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.implementation.timer.provision.TimerData;
+import org.fabric3.implementation.timer.provision.TimerType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-import org.fabric3.implementation.timer.model.TimerImplementation;
-import org.fabric3.implementation.timer.provision.TriggerData;
-import static org.fabric3.implementation.timer.provision.TriggerData.UNSPECIFIED;
-import org.fabric3.implementation.timer.provision.TriggerType;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+
+import static org.fabric3.implementation.timer.provision.TimerData.UNSPECIFIED;
 
 /**
  * Loads <implementation.timer> entries in a composite.
+ *
+ * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
 public class TimerImplementationLoader implements TypeLoader<TimerImplementation> {
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
     static {
         ATTRIBUTES.put("class", "class");
-        ATTRIBUTES.put("cronExpression", "cronExpression");
+        ATTRIBUTES.put("intervalClass", "intervalClass");
         ATTRIBUTES.put("fixedRate", "fixedRate");
         ATTRIBUTES.put("repeatInterval", "repeatInterval");
         ATTRIBUTES.put("fireOnce", "fireOnce");
+        ATTRIBUTES.put("initialDelay", "initialDelay");
+        ATTRIBUTES.put("unit", "unit");
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
     }
@@ -78,16 +84,12 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
     private final JavaImplementationProcessor implementationProcessor;
     private final LoaderHelper loaderHelper;
 
-
     public TimerImplementationLoader(@Reference JavaImplementationProcessor implementationProcessor, @Reference LoaderHelper loaderHelper) {
         this.implementationProcessor = implementationProcessor;
         this.loaderHelper = loaderHelper;
     }
 
-
     public TimerImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        assert TimerImplementation.IMPLEMENTATION_TIMER.equals(reader.getName());
-
         validateAttributes(reader, context);
         TimerImplementation implementation = new TimerImplementation();
         if (!processImplementationClass(implementation, reader, context)) {
@@ -96,29 +98,55 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
             implementation.setComponentType(type);
             return implementation;
         }
-        TriggerData data = new TriggerData();
-        implementation.setTriggerData(data);
-        processCronExpression(reader, context, data);
+        TimerData data = new TimerData();
+        implementation.setTimerData(data);
+
+        processInitialDelay(data, reader, context);
+        processTimeUnit(data, reader, context);
+        processTask(reader, context, data);
         processRepeatInterval(reader, context, data);
         processRepeatFixedRate(reader, context, data);
         processFireOnce(reader, context, data);
-        validateFireData(reader, context, data);
+        validateData(reader, context, data);
+
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
+
+        implementationProcessor.introspect(implementation, context);
 
         LoaderUtil.skipToEndElement(reader);
 
-        implementationProcessor.introspect(implementation, context);
         return implementation;
     }
 
-    private void validateFireData(XMLStreamReader reader, IntrospectionContext context, TriggerData data) {
-        if (data.getCronExpression() == null
-                && data.getFixedRate() == UNSPECIFIED
-                && data.getRepeatInterval() == UNSPECIFIED
-                && data.getFireOnce() == UNSPECIFIED) {
+    private void processInitialDelay(TimerData data, XMLStreamReader reader, IntrospectionContext context) {
+        String initialDelay = reader.getAttributeValue(null, "initialDelay");
+        if (initialDelay != null) {
+            try {
+                data.setInitialDelay(Long.parseLong(initialDelay));
+            } catch (NumberFormatException e) {
+                InvalidValue failure = new InvalidValue("Invalid initial delay", reader, e);
+                context.addError(failure);
+            }
+        }
+    }
+
+    private void processTimeUnit(TimerData data, XMLStreamReader reader, IntrospectionContext context) {
+        String units = reader.getAttributeValue(null, "unit");
+        if (units != null) {
+            try {
+                TimeUnit timeUnit = TimeUnit.valueOf(units.toUpperCase());
+                data.setTimeUnit(timeUnit);
+            } catch (IllegalArgumentException e) {
+                InvalidValue failure = new InvalidValue("Invalid time unit: " + units, reader);
+                context.addError(failure);
+            }
+        }
+    }
+
+    private void validateData(XMLStreamReader reader, IntrospectionContext context, TimerData data) {
+        if (data.getIntervalClass() == null && data.getFixedRate() == UNSPECIFIED && data.getRepeatInterval() == UNSPECIFIED && data.getFireOnce() == UNSPECIFIED) {
             MissingAttribute failure =
-                    new MissingAttribute("A cron expression, fixed rate, repeat interval, or fire once time must be specified on the timer component",
-                                         reader);
+                    new MissingAttribute("A task, fixed rate, repeat interval, or time must be specified on the timer component", reader);
             context.addError(failure);
         }
     }
@@ -137,10 +165,10 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         try {
             Class<?> clazz = context.getClassLoader().loadClass(implClass);
             if (!(Runnable.class.isAssignableFrom(clazz))) {
-                InvalidInterface failure = new InvalidInterface(implementation);
+                InvalidTimerInterface failure = new InvalidTimerInterface(implementation);
                 context.addError(failure);
                 LoaderUtil.skipToEndElement(reader);
-                return true;  // have processing continue
+                return false;  
 
             }
         } catch (ClassNotFoundException e) {
@@ -152,31 +180,38 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         return true;
     }
 
-    private void processCronExpression(XMLStreamReader reader, IntrospectionContext introspectionContext, TriggerData data) {
-        String cronExpression = reader.getAttributeValue(null, "cronExpression");
-        if (cronExpression != null) {
-            try {
-                new CronExpression(cronExpression);
-                data.setType(TriggerType.CRON);
-                data.setCronExpression(cronExpression);
-            } catch (ParseException e) {
-                InvalidTimerExpression failure =
-                        new InvalidTimerExpression("Cron expression is invalid: " + cronExpression, reader, e);
-                introspectionContext.addError(failure);
-            }
+    private void processTask(XMLStreamReader reader, IntrospectionContext context, TimerData data) throws XMLStreamException {
+        String intervalClass = reader.getAttributeValue(null, "intervalClass");
+        if (intervalClass == null) {
+            // no task defined
+            return;
         }
+        try {
+            Class<?> clazz = context.getClassLoader().loadClass(intervalClass);
+            try {
+                clazz.getMethod("nextInterval");
+            } catch (NoSuchMethodException e) {
+                InvalidIntervalClass failure = new InvalidIntervalClass(intervalClass);
+                context.addError(failure);
+            }
+        } catch (ClassNotFoundException e) {
+            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(intervalClass, e.getMessage());
+            context.addError(failure);
+        }
+
+        data.setIntervalClass(intervalClass);
     }
 
-    private void processRepeatInterval(XMLStreamReader reader, IntrospectionContext introspectionContext, TriggerData data) {
+    private void processRepeatInterval(XMLStreamReader reader, IntrospectionContext introspectionContext, TimerData data) {
         String repeatInterval = reader.getAttributeValue(null, "repeatInterval");
         if (repeatInterval != null) {
-            if (data.getCronExpression() != null) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Cron expression and repeat interval both specified", reader);
+            if (data.getIntervalClass() != null) {
+                InvalidTimerExpression failure = new InvalidTimerExpression("A task and repeat interval are both specified", reader);
                 introspectionContext.addError(failure);
             }
             try {
                 long repeat = Long.parseLong(repeatInterval);
-                data.setType(TriggerType.INTERVAL);
+                data.setType(TimerType.INTERVAL);
                 data.setRepeatInterval(repeat);
             } catch (NumberFormatException e) {
                 InvalidTimerExpression failure =
@@ -186,51 +221,49 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         }
     }
 
-    private void processRepeatFixedRate(XMLStreamReader reader, IntrospectionContext introspectionContext, TriggerData data) {
+    private void processRepeatFixedRate(XMLStreamReader reader, IntrospectionContext introspectionContext, TimerData data) {
         String fixedRate = reader.getAttributeValue(null, "fixedRate");
         if (fixedRate != null) {
-            if (data.getCronExpression() != null) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Cron expression and fixed rate both specified", reader);
+            if (data.getIntervalClass() != null) {
+                InvalidTimerExpression failure = new InvalidTimerExpression("A task and fixed rate are both specified", reader);
                 introspectionContext.addError(failure);
             }
             if (data.getRepeatInterval() != UNSPECIFIED) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Repeat interval and fixed rate both specified", reader);
+                InvalidTimerExpression failure = new InvalidTimerExpression("Repeat interval and fixed rate are both specified", reader);
                 introspectionContext.addError(failure);
             }
             try {
                 long rate = Long.parseLong(fixedRate);
-                data.setType(TriggerType.FIXED_RATE);
+                data.setType(TimerType.FIXED_RATE);
                 data.setFixedRate(rate);
             } catch (NumberFormatException e) {
-                InvalidTimerExpression failure =
-                        new InvalidTimerExpression("Fixed rate interval is invalid: " + fixedRate, reader, e);
+                InvalidTimerExpression failure = new InvalidTimerExpression("Fixed rate interval is invalid: " + fixedRate, reader, e);
                 introspectionContext.addError(failure);
             }
         }
     }
 
-    private void processFireOnce(XMLStreamReader reader, IntrospectionContext introspectionContext, TriggerData data) {
+    private void processFireOnce(XMLStreamReader reader, IntrospectionContext introspectionContext, TimerData data) {
         String time = reader.getAttributeValue(null, "fireOnce");
         if (time != null) {
-            if (data.getCronExpression() != null) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Cron expression and fire once both specified", reader);
+            if (data.getIntervalClass() != null) {
+                InvalidTimerExpression failure = new InvalidTimerExpression("A task and fire once are both specified", reader);
                 introspectionContext.addError(failure);
             }
             if (data.getRepeatInterval() != UNSPECIFIED) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Repeat interval and fire once both specified", reader);
+                InvalidTimerExpression failure = new InvalidTimerExpression("Repeat interval and fire once are both specified", reader);
                 introspectionContext.addError(failure);
             }
             if (data.getFixedRate() != UNSPECIFIED) {
-                InvalidTimerExpression failure = new InvalidTimerExpression("Ficed rate and fire once both specified", reader);
+                InvalidTimerExpression failure = new InvalidTimerExpression("Fixed rate and fire once are both specified", reader);
                 introspectionContext.addError(failure);
             }
             try {
                 long rate = Long.parseLong(time);
-                data.setType(TriggerType.ONCE);
+                data.setType(TimerType.ONCE);
                 data.setFireOnce(rate);
             } catch (NumberFormatException e) {
-                InvalidTimerExpression failure =
-                        new InvalidTimerExpression("Fire once time is invalid: " + time, reader, e);
+                InvalidTimerExpression failure = new InvalidTimerExpression("Fire once time is invalid: " + time, reader, e);
                 introspectionContext.addError(failure);
             }
         }

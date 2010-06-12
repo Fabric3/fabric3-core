@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.java.model.JavaImplementation;
-import org.fabric3.implementation.timer.provision.TriggerData;
+import org.fabric3.implementation.timer.provision.TimerData;
 
 /**
  * Represents a timer component implementation type.
@@ -51,17 +51,17 @@ import org.fabric3.implementation.timer.provision.TriggerData;
 public class TimerImplementation extends JavaImplementation {
     public static final QName IMPLEMENTATION_TIMER = new QName(Namespaces.IMPLEMENTATION, "implementation.timer");
     private static final long serialVersionUID = -911919528396189874L;
-    private TriggerData triggerData;
+    private TimerData timerData;
 
     public QName getType() {
         return IMPLEMENTATION_TIMER;
     }
 
-    public TriggerData getTriggerData() {
-        return triggerData;
+    public TimerData getTimerData() {
+        return timerData;
     }
 
-    public void setTriggerData(TriggerData triggerData) {
-        this.triggerData = triggerData;
+    public void setTimerData(TimerData timerData) {
+        this.timerData = timerData;
     }
 }

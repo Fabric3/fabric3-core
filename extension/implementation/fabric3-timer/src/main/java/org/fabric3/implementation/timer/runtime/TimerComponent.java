@@ -37,16 +37,26 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.concurrent.ScheduledFuture;
+import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.java.runtime.JavaComponent;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.implementation.timer.provision.TriggerData;
+import org.fabric3.implementation.timer.provision.TimerData;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.federation.TopologyListener;
+import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -54,56 +64,47 @@ import org.fabric3.timer.spi.TimerService;
  *
  * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
-public class TimerComponent extends JavaComponent {
-    private TriggerData data;
+public class TimerComponent extends JavaComponent implements TopologyListener {
+    private TimerData data;
     private TimerService timerService;
     private ScheduledFuture<?> future;
+    private ZoneTopologyService topologyService;
+    private Scope scope;
+    private HostInfo info;
+    private ClassLoader classLoader;
+    private TransactionManager tm;
+    private boolean transactional;
 
-    /**
-     * Constructor for a timer component.
-     *
-     * @param componentId     the component's uri
-     * @param factoryProvider the provider for the instance factory
-     * @param scopeContainer  the container for the component's implementation scope
-     * @param deployable      the deployable composite this component is deployed with Ê
-     * @param eager           true if the component should be eager initialized
-     * @param data            timer fire data
-     * @param timerService    the timer service
-     */
     public TimerComponent(URI componentId,
+                          QName deployable,
+                          TimerData data,
+                          boolean transactional,
                           InstanceFactoryProvider factoryProvider,
                           ScopeContainer scopeContainer,
-                          QName deployable,
-                          boolean eager,
-                          TriggerData data,
-                          TimerService timerService) {
-        super(componentId, factoryProvider, scopeContainer, deployable, eager, -1, -1);
+                          TimerService timerService,
+                          TransactionManager tm,
+                          ZoneTopologyService topologyService,
+                          HostInfo info) {
+        super(componentId, factoryProvider, scopeContainer, deployable, false, -1, -1);
         this.data = data;
+        this.transactional = transactional;
         this.timerService = timerService;
+        this.topologyService = topologyService;
+        this.scope = scopeContainer.getScope();
+        this.tm = tm;
+        this.info = info;
+        classLoader = factoryProvider.getImplementationClass().getClassLoader();
     }
 
     public void start() throws ComponentException {
         super.start();
-        TimerComponentInvoker invoker = new TimerComponentInvoker(this);
-        switch (data.getType()) {
-        case CRON:
-            try {
-                future = timerService.schedule(invoker, data.getCronExpression());
-            } catch (ParseException e) {
-                // this should be caught on the controller
-                throw new TimerComponentInitException(e);
+        if (Scope.DOMAIN.equals(scope)) {
+            if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
+                // defer scheduling until this node becomes zone leader
+                return;
             }
-            break;
-        case FIXED_RATE:
-            throw new UnsupportedOperationException("Not yet implemented");
-            // break;
-        case INTERVAL:
-            future = timerService.scheduleWithFixedDelay(invoker, data.getStartTime(), data.getRepeatInterval(), data.getTimeUnit());
-            break;
-        case ONCE:
-            future = timerService.schedule(invoker, data.getFireOnce(), data.getTimeUnit());
-            break;
         }
+        schedule();
     }
 
     public void stop() throws ComponentException {
@@ -113,5 +114,100 @@ public class TimerComponent extends JavaComponent {
         }
     }
 
+    public void onJoin(String name) {
+        // no-op
+    }
+
+    public void onLeave(String name) {
+        // no-op
+    }
+
+    public void onLeaderElected(String name) {
+        if (!Scope.DOMAIN.equals(scope)) {
+            return;
+        }
+        if (topologyService != null && !topologyService.isZoneLeader()) {
+            // this runtime is not the leader, ignore
+            return;
+        }
+        // this runtime was elected leader, schedule the components
+        schedule();
+    }
+
+    private void schedule() {
+        Runnable invoker;
+        if (transactional) {
+            invoker = new TransactionalTimerInvoker(this, tm);
+        } else {
+            invoker = new NonTransactionalTimerInvoker(this);
+        }
+        String name = data.getPoolName();
+        long delay = data.getInitialDelay();
+
+        switch (data.getType()) {
+        case FIXED_RATE:
+            future = timerService.scheduleAtFixedRate(name, invoker, delay, data.getFixedRate(), data.getTimeUnit());
+            break;
+        case INTERVAL:
+            future = timerService.scheduleWithFixedDelay(name, invoker, delay, data.getRepeatInterval(), data.getTimeUnit());
+            break;
+        case RECURRING:
+            Task task = null;
+            try {
+                Object interval = classLoader.loadClass(data.getIntervalClass()).newInstance();
+                task = new TimerTask(interval, invoker);
+            } catch (InstantiationException e) {
+                // TODO send to monitor
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                // TODO send to monitor
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO send to monitor
+                e.printStackTrace();
+            }
+            future = timerService.scheduleRecurring(data.getPoolName(), task);
+            break;
+        case ONCE:
+            future = timerService.schedule(data.getPoolName(), invoker, data.getFireOnce(), data.getTimeUnit());
+            break;
+        }
+    }
+
+    private class TimerTask implements Task {
+        private Method method;
+        private Object interval;
+        private Runnable delegate;
+
+        private TimerTask(Object interval, Runnable delegate) {
+            try {
+                this.method = interval.getClass().getMethod("nextInterval");
+            } catch (NoSuchMethodException e) {
+                // TODO send to monitor
+            }
+            this.interval = interval;
+            this.delegate = delegate;
+        }
+
+        public long nextInterval() {
+            try {
+                if (method == null) {
+                    // the interval class was invalid
+                    return Task.DONE;
+                }
+                return (Long) method.invoke(interval);
+            } catch (ClassCastException e) {
+                throw new ServiceRuntimeException("Invalid interval type returned", e);
+            } catch (IllegalAccessException e) {
+                throw new ServiceRuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
+        public void run() {
+            delegate.run();
+        }
+    }
 
 }

@@ -48,7 +48,7 @@ import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
-import org.fabric3.implementation.timer.provision.TriggerData;
+import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -84,7 +84,7 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         generationHelper.generate(definition, component);
         TimerImplementation implementation = component.getDefinition().getImplementation();
         definition.setTransactional(implementation.getIntents().contains(MANAGED_TRANSACTION));
-        TriggerData data = implementation.getTriggerData();
+        TimerData data = implementation.getTimerData();
         definition.setTriggerData(data);
         return definition;
     }

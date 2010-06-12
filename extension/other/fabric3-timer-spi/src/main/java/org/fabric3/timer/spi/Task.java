@@ -35,32 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.timer.provision;
-
-import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+package org.fabric3.timer.spi;
 
 /**
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
+ * Implementations are executed on a recurring basis by the {@link TimerService}.
+ *
+ * @version $Rev$ $Date$
  */
-public class TimerComponentDefinition extends JavaComponentDefinition {
-    private static final long serialVersionUID = -4795264376334780345L;
-    private TimerData timerData;
-    private boolean transactional;
+public interface Task extends Runnable {
 
-    public TimerData getTriggerData() {
-        return timerData;
-    }
+    /**
+     * Indicates a task has finished its scheduled period and should not be executed again.
+     */
+    int DONE = -1;
 
-    public void setTriggerData(TimerData timerData) {
-        this.timerData = timerData;
-    }
+    /**
+     * Returns next time in milliseconds as an offset of the current time when the task should next be executed.
+     *
+     * @return the next execution time offset or {@link #DONE}
+     */
+    long nextInterval();
 
-    public boolean isTransactional() {
-        return transactional;
-    }
-
-    public void setTransactional(boolean transactional) {
-        this.transactional = transactional;
-    }
-             
 }

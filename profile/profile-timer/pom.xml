@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-timer-quartz</artifactId>
+            <artifactId>fabric3-timer-service</artifactId>
             <version>${project.version}</version>
         </dependency>
 

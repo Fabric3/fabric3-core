@@ -38,22 +38,25 @@
 package org.fabric3.implementation.timer.runtime;
 
 import java.net.URI;
+import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
-import org.fabric3.implementation.timer.provision.TriggerData;
+import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.timer.spi.TimerService;
 
@@ -64,21 +67,30 @@ import org.fabric3.timer.spi.TimerService;
 public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> {
     private ScopeRegistry scopeRegistry;
     private InstanceFactoryBuilder factoryBuilder;
-    private TimerService nonTrxTimerService;
-    private TimerService trxTimerService;
+    private TimerService timerService;
+    private TransactionManager tm;
+    private HostInfo info;
+    private ZoneTopologyService topologyService;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                  @Reference InstanceFactoryBuilder factoryBuilder,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference PropertyObjectFactoryBuilder propertyBuilder,
-                                 @Reference(name = "nonTrxTimerService") TimerService nonTrxTimerService,
-                                 @Reference(name = "trxTimerService") TimerService trxTimerService,
-                                 @Reference IntrospectionHelper helper) {
+                                 @Reference TimerService timerService,
+                                 @Reference TransactionManager tm,
+                                 @Reference IntrospectionHelper helper,
+                                 @Reference HostInfo info) {
         super(classLoaderRegistry, propertyBuilder, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
-        this.nonTrxTimerService = nonTrxTimerService;
-        this.trxTimerService = trxTimerService;
+        this.timerService = timerService;
+        this.tm = tm;
+        this.info = info;
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     public TimerComponent build(TimerComponentDefinition definition) throws BuilderException {
@@ -86,25 +98,26 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
-        // get the scope container for this component
         String scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
-        // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
 
         InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
-        TriggerData data = definition.getTriggerData();
-        TimerService timerService;
-        if (definition.isTransactional()) {
-            timerService = trxTimerService;
-        } else {
-            timerService = nonTrxTimerService;
-        }
-        boolean eager = definition.isEagerInit();
-        TimerComponent component = new TimerComponent(uri, provider, scopeContainer, deployable, eager, data, timerService);
+        TimerData data = definition.getTriggerData();
+        boolean transactional = definition.isTransactional();
+        TimerComponent component = new TimerComponent(uri,
+                                                      deployable,
+                                                      data,
+                                                      transactional,
+                                                      provider,
+                                                      scopeContainer,
+                                                      timerService,
+                                                      tm,
+                                                      topologyService,
+                                                      info);
         buildContexts(component, provider);
         return component;
     }
