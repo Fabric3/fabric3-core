@@ -236,7 +236,7 @@ public class SystemConfigLoader {
         } else if (nodes.getLength() == 0) {
             return new PortRange(DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
         }
-        throw new ParseException("Invalid system configuation: more than one <runtime> element specified");
+        throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
     }
 
     /**
@@ -254,7 +254,7 @@ public class SystemConfigLoader {
             Element monitorElement = (Element) nodes.item(0);
             NodeList configurationElements = monitorElement.getElementsByTagName("configuration");
             if (configurationElements.getLength() != 1) {
-                throw new MonitorConfigurationException("Invalid system configuation: Only one monitor <configuration> element must be specified");
+                throw new MonitorConfigurationException("Invalid system configuration: Only one monitor <configuration> element must be specified");
             } else {
                 Element element = (Element) configurationElements.item(0);
                 addAppenderReferences(systemConfig, elementName, element);
@@ -263,7 +263,7 @@ public class SystemConfigLoader {
         } else if (nodes.getLength() == 0) {
             return null;
         }
-        throw new MonitorConfigurationException("Invalid system configuation: more than one <monitor> element specified");
+        throw new MonitorConfigurationException("Invalid system configuration: more than one <monitor> element specified");
     }
 
     /**
