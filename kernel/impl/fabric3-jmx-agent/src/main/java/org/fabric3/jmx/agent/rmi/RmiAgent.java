@@ -34,16 +34,12 @@ import org.fabric3.jmx.agent.ManagementException;
 /**
  * Utility for starting the JMX server with an RMI agent.
  *
- * @version $Revsion$ $Date$
+ * @version $Revision$ $Date$
  */
 public class RmiAgent extends AbstractAgent {
 
     private Registry registry;
     private int assignedPort;
-
-    public RmiAgent(int port) throws ManagementException {
-        super(port, -1);
-    }
 
     public RmiAgent(int minPort, int maxPort) throws ManagementException {
         super(minPort, maxPort);
