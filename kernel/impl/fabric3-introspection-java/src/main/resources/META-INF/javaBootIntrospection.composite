@@ -127,6 +127,10 @@
 
     <!--Fabric3 Annotations -->
 
+    <component name="DomainProcessor" f3-core:key="org.fabric3.api.annotation.scope.Domain">
+        <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.DomainProcessor"/>
+    </component>
+
     <component name="ConversationProcessor" f3-core:key="org.fabric3.api.annotation.scope.Conversation">
         <f3-impl:implementation.system class="org.fabric3.introspection.java.annotation.ConversationProcessor"/>
     </component>
