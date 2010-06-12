@@ -260,7 +260,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(error);
             }
         }
-        String trxTimeout = reader.getAttributeValue(null, "transaction.timout");
+        String trxTimeout = reader.getAttributeValue(null, "transaction.timeout");
         if (trxTimeout != null) {
             try {
                 int val = Integer.parseInt(trxTimeout);
