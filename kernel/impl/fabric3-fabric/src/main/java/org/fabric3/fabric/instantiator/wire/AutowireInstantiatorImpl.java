@@ -105,10 +105,10 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
     }
 
     /**
-     * Returns true if the reference is targetted through the binding.sca uri attribute.
+     * Returns true if the reference is targeted through the binding.sca uri attribute.
      *
      * @param reference the reference
-     * @return true if the reference is targetted through the binding.sca uri attribute
+     * @return true if the reference is targeted through the binding.sca uri attribute
      */
     private boolean isScaTarget(LogicalReference reference) {
         boolean scaTarget = false;
@@ -157,15 +157,15 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             }
         }
 
-        boolean targetted = !logicalReference.getLeafReference().getWires().isEmpty();
-        if (!targetted && logicalReference.getDefinition().isRequired() && !logicalReference.isConcreteBound()) {
+        boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
+        if (!targeted && logicalReference.getDefinition().isRequired() && !logicalReference.isConcreteBound()) {
             String referenceUri = logicalReference.getUri().toString();
             URI componentUri = component.getUri();
             URI contributionUri = component.getDefinition().getContributionUri();
             ReferenceNotFound error =
                     new ReferenceNotFound("Unable to resolve reference " + referenceUri, referenceUri, componentUri, contributionUri);
             context.addError(error);
-        } else if (targetted) {
+        } else if (targeted) {
             logicalReference.setResolved(true);
         }
     }
