@@ -412,7 +412,7 @@ public abstract class AbstractDomain implements Domain {
      * operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but not
      * deployed to zones. This is because the domain can run headless (i.e. without a controller) and may already be hosting deployed components.
      *
-     * @param deployables   the depoyables
+     * @param deployables   the deployables
      * @param contributions the contributions to deploy
      * @param plan          the deployment plan
      * @param recover       true if recovery mode is enabled
