@@ -49,19 +49,19 @@ import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -238,23 +238,23 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    public <T extends ResourceDefinition> PhysicalWireDefinition generateResource(LogicalResource<T> resource) throws GenerationException {
-        T resourceDefinition = resource.getResourceDefinition();
-        LogicalComponent<?> component = resource.getParent();
+    public <T extends ResourceReferenceDefinition> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws GenerationException {
+        T resourceDefinition = resourceReference.getDefinition();
+        LogicalComponent<?> component = resourceReference.getParent();
 
         // Generates the wire source metadata
         ComponentGenerator sourceGenerator = getGenerator(component);
-        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateResourceSource(resource);
+        PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateResourceSource(resourceReference);
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
         // Generates the wire target metadata
-        ResourceGenerator<T> targetGenerator = getGenerator(resourceDefinition);
-        PhysicalTargetDefinition targetDefinition = targetGenerator.generateWireTarget(resource);
-        targetDefinition.setClassLoaderId(resource.getParent().getDefinition().getContributionUri());
+        ResourceReferenceGenerator<T> targetGenerator = getGenerator(resourceDefinition);
+        PhysicalTargetDefinition targetDefinition = targetGenerator.generateWireTarget(resourceReference);
+        targetDefinition.setClassLoaderId(resourceReference.getParent().getDefinition().getContributionUri());
         boolean optimizable = targetDefinition.isOptimizable();
 
         // Create the wire from the component to the resource
-        List<LogicalOperation> sourceOperations = resource.getOperations();
+        List<LogicalOperation> sourceOperations = resourceReference.getOperations();
         Set<PhysicalOperationDefinition> operations = operationGenerator.generateOperations(sourceOperations, false, null);
         PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, targetDefinition, operations);
         pwd.setOptimizable(optimizable);
@@ -522,8 +522,8 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends ResourceDefinition> ResourceGenerator<T> getGenerator(T definition) throws GeneratorNotFoundException {
-        return (ResourceGenerator<T>) generatorRegistry.getResourceWireGenerator(definition.getClass());
+    private <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getGenerator(T definition) throws GeneratorNotFoundException {
+        return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceWireGenerator(definition.getClass());
     }
 
     @SuppressWarnings("unchecked")

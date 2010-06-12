@@ -109,7 +109,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
             componentType.setConstructor(ctor);
         }
 
-        if (componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResources().isEmpty()) {
+        if (componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResourceReferences().isEmpty()) {
             evaluateConstructor(implementation, implClass, context);
             evaluateSetters(implementation, implClass, context);
             evaluateFields(implementation, implClass, context);

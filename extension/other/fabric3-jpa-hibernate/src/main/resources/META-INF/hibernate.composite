@@ -38,16 +38,16 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.jpa.introspection.PersistenceContextProcessor"/>
     </component>
 
-    <component name="SessionResourceGenerator" f3-core:key="org.fabric3.jpa.model.HibernateSessionResource">
-        <f3-impl:implementation.system class="org.fabric3.jpa.generator.SessionResourceGenerator"/>
+    <component name="SessionResourceGenerator" f3-core:key="org.fabric3.jpa.model.HibernateSessionResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.SessionResourceReferenceGenerator"/>
     </component>
 
-    <component name="PersistenceUnitResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceUnitResource">
-        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceUnitResourceGenerator"/>
+    <component name="PersistenceUnitResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceUnitResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceUnitResourceReferenceGenerator"/>
     </component>
 
-    <component name="PersistenceContextResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceContextResource">
-        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceGenerator"/>
+    <component name="PersistenceContextResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceContextResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceReferenceGenerator"/>
     </component>
 
     <component name="PersistenceUnitWireAttacher" f3-core:key="org.fabric3.jpa.provision.PersistenceUnitTargetDefinition">

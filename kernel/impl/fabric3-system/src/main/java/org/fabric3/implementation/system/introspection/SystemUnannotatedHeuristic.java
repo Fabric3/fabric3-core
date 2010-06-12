@@ -84,7 +84,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor<SystemImpl
         InjectingComponentType componentType = implementation.getComponentType();
 
         // if any properties, references or resources have been defined already assume that was what the user intended and return
-        if (!(componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResources().isEmpty())) {
+        if (!(componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResourceReferences().isEmpty())) {
             return;
         }
 

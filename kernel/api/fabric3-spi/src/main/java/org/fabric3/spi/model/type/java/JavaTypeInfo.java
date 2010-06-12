@@ -144,7 +144,7 @@ public class JavaTypeInfo extends ModelObject {
 
     @Override
     public int hashCode() {
-        // Hashcode must return that of the raw type so JavaGenericType and JavaClass (which uses the logical Class) can return the same hash code.
+        // Hash code must return that of the raw type so JavaGenericType and JavaClass (which uses the logical Class) can return the same hash code.
         // This is necessary for ConcurrentHashMap gets where the equivalence of non-generic and generic unbound types are required.
         return rawType.hashCode();
     }

@@ -35,34 +35,46 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.generator;
+package org.fabric3.monitor.generator;
 
-import javax.persistence.PersistenceContextType;
+import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.jpa.model.PersistenceContextResource;
-import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.host.Names;
+import org.fabric3.monitor.model.MonitorResourceReference;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class PersistenceContextResourceGenerator implements ResourceGenerator<PersistenceContextResource> {
+public class MonitorResourceReferenceGenerator implements ResourceReferenceGenerator<MonitorResourceReference> {
 
-    public PersistenceContextTargetDefinition generateWireTarget(LogicalResource<PersistenceContextResource> logicalResource) {
-        PersistenceContextResource resource = logicalResource.getResourceDefinition();
-        String unitName = resource.getUnitName();
-        boolean multiThreaded = resource.isMultiThreaded();
-        boolean extended = PersistenceContextType.EXTENDED == resource.getType();
-        PersistenceContextTargetDefinition definition = new PersistenceContextTargetDefinition();
-        definition.setUnitName(unitName);
+    public MonitorTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference)
+            throws GenerationException {
+        LogicalComponent<?> component = resourceReference.getParent();
+        String type = resourceReference.getDefinition().getServiceContract().getQualifiedInterfaceName();
+        URI monitorable = component.getUri();
+        String channelName = resourceReference.getDefinition().getChannelName();
+        URI channelUri;
+        if (channelName == null) {
+            // if the component is in the system domain, connect to the runtime channel; otherwise, connect to the app channel
+            if (component.getUri().toString().startsWith(Names.RUNTIME_NAME)) {
+                channelUri = Names.RUNTIME_MONITOR_CHANNEL_URI;
+            } else {
+                channelUri = Names.APPLICATION_MONITOR_CHANNEL_URI;
+            }
+        } else {
+            URI compositeUri = component.getParent().getUri();
+            channelUri = URI.create(compositeUri.toString() + "/" + channelName);
+        }
+        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, monitorable, channelUri);
         definition.setOptimizable(true);
-        definition.setExtended(extended);
-        definition.setMultiThreaded(multiThreaded);
         return definition;
     }
-
 }

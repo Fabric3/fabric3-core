@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
  * Copies a logical model graph.
@@ -115,8 +115,8 @@ public class CopyUtil {
         for (LogicalReference reference : composite.getReferences()) {
             copy(reference, copy, references);
         }
-        for (LogicalResource<?> resource : composite.getResources()) {
-            copy(resource, copy);
+        for (LogicalResourceReference<?> resourceReference : composite.getResourceReferences()) {
+            copy(resourceReference, copy);
         }
         for (LogicalService service : composite.getServices()) {
             copy(service, copy, components, services);
@@ -159,8 +159,8 @@ public class CopyUtil {
             for (LogicalReference reference : component.getReferences()) {
                 copy(reference, copy, references);
             }
-            for (LogicalResource<?> resource : component.getResources()) {
-                copy(resource, copy);
+            for (LogicalResourceReference<?> resourceReference : component.getResourceReferences()) {
+                copy(resourceReference, copy);
             }
             for (LogicalService service : component.getServices()) {
                 copy(service, copy, components, services);
@@ -196,11 +196,11 @@ public class CopyUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static void copy(LogicalResource<?> resource, LogicalComponent parent) {
-        URI uri = resource.getUri();
-        ResourceDefinition definition = resource.getResourceDefinition();
-        LogicalResource copy = new LogicalResource(uri, definition, parent);
-        copy.setTarget(resource.getTarget());
+    private static void copy(LogicalResourceReference<?> resourceReference, LogicalComponent parent) {
+        URI uri = resourceReference.getUri();
+        ResourceReferenceDefinition definition = resourceReference.getDefinition();
+        LogicalResourceReference copy = new LogicalResourceReference(uri, definition, parent);
+        copy.setTarget(resourceReference.getTarget());
         parent.addResource(copy);
     }
 

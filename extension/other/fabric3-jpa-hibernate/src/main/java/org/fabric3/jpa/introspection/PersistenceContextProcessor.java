@@ -46,8 +46,8 @@ import javax.persistence.PersistenceContextType;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.jpa.model.HibernateSessionResource;
-import org.fabric3.jpa.model.PersistenceContextResource;
+import org.fabric3.jpa.model.HibernateSessionResourceReference;
+import org.fabric3.jpa.model.PersistenceContextResourceReference;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -79,10 +79,10 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         FieldInjectionSite site = new FieldInjectionSite(field);
         InjectingComponentType componentType = implementation.getComponentType();
         if (EntityManager.class.equals(field.getType())) {
-            PersistenceContextResource definition = createDefinition(annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(annotation, componentType);
             componentType.add(definition, site);
         } else {
-            HibernateSessionResource definition = createSessionDefinition(annotation, componentType);
+            HibernateSessionResourceReference definition = createSessionDefinition(annotation, componentType);
             componentType.add(definition, site);
         }
         // record that the implementation requires JPA
@@ -93,30 +93,30 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         InjectingComponentType componentType = implementation.getComponentType();
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
-            PersistenceContextResource definition = createDefinition(annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(annotation, componentType);
             componentType.add(definition, site);
         } else {
-            HibernateSessionResource definition = createSessionDefinition(annotation, componentType);
+            HibernateSessionResourceReference definition = createSessionDefinition(annotation, componentType);
             componentType.add(definition, site);
         }
         // record that the implementation requires JPA
         componentType.addRequiredCapability("jpa");
     }
 
-    private PersistenceContextResource createDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
+    private PersistenceContextResourceReference createDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
         String name = annotation.name();
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
-        return new PersistenceContextResource(name, unitName, type, factoryServiceContract, multiThreaded);
+        return new PersistenceContextResourceReference(name, unitName, type, factoryServiceContract, multiThreaded);
     }
 
-    private HibernateSessionResource createSessionDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
+    private HibernateSessionResourceReference createSessionDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
         String name = annotation.name();
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
-        return new HibernateSessionResource(name, unitName, type, factoryServiceContract, multiThreaded);
+        return new HibernateSessionResourceReference(name, unitName, type, factoryServiceContract, multiThreaded);
     }
 
 }

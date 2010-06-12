@@ -57,6 +57,8 @@ import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
+import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
+import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
@@ -132,8 +134,6 @@ import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.monitor.generator.MonitorResourceGenerator;
-import org.fabric3.monitor.model.MonitorResource;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
@@ -447,7 +447,7 @@ public class BootstrapAssemblyFactory {
         registry.register(SystemImplementation.class, systemComponentGenerator);
         registry.register(SingletonImplementation.class, singletonComponentGenerator);
         registry.register(JMXBinding.class, new JMXBindingGenerator());
-        registry.register(MonitorResource.class, new MonitorResourceGenerator());
+        registry.register(MonitorResourceReference.class, new MonitorResourceReferenceGenerator());
         return registry;
     }
 

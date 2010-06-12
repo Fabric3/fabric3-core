@@ -35,32 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.generator;
+package org.fabric3.jpa.generator;
 
-import java.net.URI;
+import javax.persistence.PersistenceContextType;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.host.Names;
-import org.fabric3.resource.model.SystemSourcedResource;
-import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.jpa.model.HibernateSessionResourceReference;
+import org.fabric3.jpa.provision.SessionTargetDefinition;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 7665 $ $Date: 2009-09-21 11:11:12 +0200 (Mon, 21 Sep 2009) $
  */
 @EagerInit
-public class SystemSourcedResourceGenerator implements ResourceGenerator<SystemSourcedResource> {
+public class SessionResourceReferenceGenerator implements ResourceReferenceGenerator<HibernateSessionResourceReference> {
 
-    public SystemSourcedTargetDefinition generateWireTarget(LogicalResource<SystemSourcedResource> resource) throws GenerationException {
-        SystemSourcedResource definition = resource.getResourceDefinition();
-        String mappedName = definition.getMappedName();
-        URI targetUri = URI.create(Names.RUNTIME_NAME + "/" + mappedName);
-        SystemSourcedTargetDefinition targetDefinition = new SystemSourcedTargetDefinition();
-        targetDefinition.setUri(targetUri);
-        return targetDefinition;
+    public SessionTargetDefinition generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
+        HibernateSessionResourceReference resource = logicalResourceReference.getDefinition();
+        String unitName = resource.getUnitName();
+        boolean multiThreaded = resource.isMultiThreaded();
+        boolean extended = PersistenceContextType.EXTENDED == resource.getType();
+        SessionTargetDefinition definition = new SessionTargetDefinition();
+        definition.setUnitName(unitName);
+        definition.setOptimizable(true);
+        definition.setExtended(extended);
+        definition.setMultiThreaded(multiThreaded);
+        return definition;
     }
 
 }

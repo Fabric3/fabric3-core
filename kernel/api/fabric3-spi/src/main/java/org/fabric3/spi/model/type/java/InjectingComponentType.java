@@ -52,7 +52,7 @@ import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
  * A component type associated with an implementation that supports injection.
@@ -229,19 +229,19 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Add a resource and its associated with an injection site.
+     * Add a resource reference and its associated an injection site.
      *
-     * @param resource      the resource to add
+     * @param definition    the resource reference to add
      * @param injectionSite the injection site for the resource
      */
-    public void add(ResourceDefinition resource, InjectionSite injectionSite) {
-        super.add(resource);
-        Injectable injectable = new Injectable(InjectableType.RESOURCE, resource.getName());
+    public void add(ResourceReferenceDefinition definition, InjectionSite injectionSite) {
+        super.add(definition);
+        Injectable injectable = new Injectable(InjectableType.RESOURCE, definition.getName());
         addInjectionSite(injectionSite, injectable);
     }
 
     /**
-     * Adds a callback proxy defintion and its associated injection site
+     * Adds a callback proxy definition and its associated injection site
      *
      * @param definition    the callback proxy definition
      * @param injectionSite the proxy injection site

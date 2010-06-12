@@ -44,7 +44,7 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -76,7 +76,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
         return definition;
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) {
         throw new UnsupportedOperationException("Mock objects cannot have resources");
     }
 

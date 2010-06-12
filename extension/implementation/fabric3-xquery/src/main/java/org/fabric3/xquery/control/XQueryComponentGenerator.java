@@ -64,7 +64,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.instance.LogicalProducer;
@@ -266,9 +266,9 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException {
+    public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
-        sourceDefinition.setUri(resource.getParent().getUri());
+        sourceDefinition.setUri(resourceReference.getParent().getUri());
         return sourceDefinition;
     }
 }

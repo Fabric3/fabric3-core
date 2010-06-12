@@ -35,27 +35,39 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.generator;
+package org.fabric3.jpa.model;
 
-import org.osoa.sca.annotations.EagerInit;
-
-import org.fabric3.resource.model.DataSourceResource;
-import org.fabric3.resource.provision.DataSourceTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
+ * Represents an entity manager factory treated as a resource.
+ *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class DataSourceGenerator implements ResourceGenerator<DataSourceResource> {
+public final class PersistenceUnitResourceReference extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = 8935762119919982256L;
+    private String unitName;
 
-    public DataSourceTargetDefinition generateWireTarget(LogicalResource<DataSourceResource> resource) throws GenerationException {
-        DataSourceResource definition = resource.getResourceDefinition();
-        String dataSourceName = definition.getDataSourceName();
-        boolean optional = definition.isOptional();
-        return  new DataSourceTargetDefinition(dataSourceName, optional);
+    /**
+     * Initializes the resource name and persistence unit name.
+     *
+     * @param name            Name of the resource.
+     * @param unitName        Persistence unit name.
+     * @param serviceContract the service contract for the persistence unit
+     */
+    public PersistenceUnitResourceReference(String name, String unitName, ServiceContract serviceContract) {
+        super(name, serviceContract, true);
+        this.unitName = unitName;
+    }
+
+    /**
+     * Gets the persistence unit name.
+     *
+     * @return Persistence unit name.
+     */
+    public final String getUnitName() {
+        return this.unitName;
     }
 
 }

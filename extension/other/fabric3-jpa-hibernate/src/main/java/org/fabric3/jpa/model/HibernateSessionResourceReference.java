@@ -39,16 +39,16 @@ package org.fabric3.jpa.model;
 
 import javax.persistence.PersistenceContextType;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Represents an entity manager factory treated as a resource.
+ * Represents a Hibernate Sesssion treated as a resource.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7652 $ $Date: 2009-09-20 16:02:49 +0200 (Sun, 20 Sep 2009) $
  */
-public final class PersistenceContextResource extends ResourceDefinition {
-    private static final long serialVersionUID = -8717050996527626286L;
+public final class HibernateSessionResourceReference extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = 4343784880360787751L;
     private String unitName;
     private PersistenceContextType type;
     private boolean multiThreaded;
@@ -62,7 +62,7 @@ public final class PersistenceContextResource extends ResourceDefinition {
      * @param serviceContract the service contract for the persistence unit
      * @param multiThreaded   true if the resource is accessed from a multi-threaded implementation
      */
-    public PersistenceContextResource(String name,
+    public HibernateSessionResourceReference(String name,
                                       String unitName,
                                       PersistenceContextType type,
                                       ServiceContract serviceContract,

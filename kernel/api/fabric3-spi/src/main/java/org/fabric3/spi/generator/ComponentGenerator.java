@@ -49,7 +49,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
@@ -131,10 +131,10 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
      * Generates a {@link PhysicalSourceDefinition} used to attach a physical resource to a source component. Metadata contained in the
      * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
-     * @param resource the source logical resource
+     * @param resourceReference the source logical resource
      * @return the metadata used to attach the wire to its source on the service node
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalSourceDefinition generateResourceSource(LogicalResource<?> resource) throws GenerationException;
+    PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException;
 
 }

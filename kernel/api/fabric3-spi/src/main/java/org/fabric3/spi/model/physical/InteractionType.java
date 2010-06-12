@@ -38,7 +38,7 @@
 package org.fabric3.spi.model.physical;
 
 /**
- * The interacton style a wire implements.
+ * The interaction style a wire implements.
  *
  * @version $Rev$ $Date$
  */

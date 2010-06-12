@@ -159,18 +159,18 @@ public abstract class PhysicalTargetDefinition implements Serializable {
     }
 
     /**
-     * Returns the id of the classloader associated with the target componnet.
+     * Returns the id of the classloader associated with the target component.
      *
-     * @return the id of the classloader associated with the target componnet
+     * @return the id of the classloader associated with the target component
      */
     public URI getClassLoaderId() {
         return classLoaderId;
     }
 
     /**
-     * Sets the id of the classloader associated with the target componnet.
+     * Sets the id of the classloader associated with the target component.
      *
-     * @param classLoaderId the id of the classloader associated with the target componnet
+     * @param classLoaderId the id of the classloader associated with the target component
      */
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;

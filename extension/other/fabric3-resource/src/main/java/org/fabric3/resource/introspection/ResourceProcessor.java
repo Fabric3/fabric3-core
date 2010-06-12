@@ -47,9 +47,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.model.SystemSourcedResource;
+import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -88,11 +88,11 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
         Class<?> type = helper.getBaseType(genericType, typeMapping);
 
         FieldInjectionSite site = new FieldInjectionSite(field);
-        ResourceDefinition definition;
+        ResourceReferenceDefinition definition;
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResource(name, annotation, field, context);
+            definition = handler.createResourceReference(name, annotation, field, context);
         } else {
             boolean optional = annotation.optional();
             String mappedName = annotation.mappedName();
@@ -111,11 +111,11 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        ResourceDefinition definition;
+        ResourceReferenceDefinition definition;
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResource(name, annotation, method, context);
+            definition = handler.createResourceReference(name, annotation, method, context);
         } else {
             boolean optional = annotation.optional();
             String mappedName = annotation.mappedName();
@@ -128,8 +128,8 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
         implementation.getComponentType().add(definition, site);
     }
 
-    private SystemSourcedResource createResource(String name, Class<?> type, boolean optional, String mappedName, IntrospectionContext context) {
+    private SystemSourcedResourceReference createResource(String name, Class<?> type, boolean optional, String mappedName, IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context);
-        return new SystemSourcedResource(name, optional, mappedName, serviceContract);
+        return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
     }
 }

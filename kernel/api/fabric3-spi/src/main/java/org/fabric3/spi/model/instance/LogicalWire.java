@@ -223,9 +223,9 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     }
 
     /**
-     * Hashcode based on the source and target URIs.
+     * Hash code based on the source and target URIs.
      *
-     * @return Hashcode based on the source and target URIs.
+     * @return Hash code based on the source and target URIs.
      */
     public int hashCode() {
 

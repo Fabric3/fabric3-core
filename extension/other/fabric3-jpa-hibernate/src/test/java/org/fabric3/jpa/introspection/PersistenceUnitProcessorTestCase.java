@@ -43,7 +43,7 @@ import javax.persistence.PersistenceUnit;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.jpa.model.PersistenceUnitResource;
+import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -58,7 +58,7 @@ public class PersistenceUnitProcessorTestCase extends TestCase {
 
     public void testCreateDefinition() {
 
-        PersistenceUnitResource definition = processor.createDefinition(annotation);
+        PersistenceUnitResourceReference definition = processor.createDefinition(annotation);
         assertEquals("name", definition.getName());
         assertEquals("unitName", definition.getUnitName());
     }

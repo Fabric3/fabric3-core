@@ -53,12 +53,12 @@ import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -75,7 +75,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
 
     private Map<QName, InterceptorGenerator> interceptorGenerators = new ConcurrentHashMap<QName, InterceptorGenerator>();
 
-    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator<?>>();
+    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceReferenceGenerator<?>>();
 
     @Reference(required = false)
     public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
@@ -93,7 +93,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @Reference(required = false)
-    public void setResourceGenerators(Map<Class<?>, ResourceGenerator<?>> resourceGenerators) {
+    public void setResourceGenerators(Map<Class<?>, ResourceReferenceGenerator<?>> resourceGenerators) {
         this.resourceGenerators = resourceGenerators;
     }
 
@@ -106,7 +106,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         componentGenerators.put(clazz, generator);
     }
 
-    public <T extends ResourceDefinition> void register(Class<T> clazz, ResourceGenerator<T> generator) {
+    public <T extends ResourceReferenceDefinition> void register(Class<T> clazz, ResourceReferenceGenerator<T> generator) {
         resourceGenerators.put(clazz, generator);
     }
 
@@ -141,11 +141,11 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ResourceDefinition> ResourceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+    public <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         if (!resourceGenerators.containsKey(clazz)) {
             throw new GeneratorNotFoundException(clazz);
         }
-        return (ResourceGenerator<T>) resourceGenerators.get(clazz);
+        return (ResourceReferenceGenerator<T>) resourceGenerators.get(clazz);
     }
 
     public InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException {

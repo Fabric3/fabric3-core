@@ -64,7 +64,7 @@ public class ComponentType extends ModelObject implements CapabilityAware {
     private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
     private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
     private Map<String, Property> properties = new HashMap<String, Property>();
-    private Map<String, ResourceDefinition> resources = new HashMap<String, ResourceDefinition>();
+    private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
 
     /**
@@ -158,21 +158,21 @@ public class ComponentType extends ModelObject implements CapabilityAware {
     }
 
     /**
-     * Returns resoures defined by the implementation keyed by name.
+     * Returns resource references defined by the implementation keyed by name.
      *
-     * @return resources defined by the implementation
+     * @return resource references defined by the implementation
      */
-    public Map<String, ResourceDefinition> getResources() {
-        return resources;
+    public Map<String, ResourceReferenceDefinition> getResourceReferences() {
+        return resourceReferences;
     }
 
     /**
-     * Adds a resource defined by the implementation keyed by name.
+     * Adds a resource reference defined by the implementation keyed by name.
      *
-     * @param resource the resource to add
+     * @param definition the resource reference to add
      */
-    public void add(ResourceDefinition resource) {
-        resources.put(resource.getName(), resource);
+    public void add(ResourceReferenceDefinition definition) {
+        resourceReferences.put(definition.getName(), definition);
     }
 
     public Set<String> getRequiredCapabilities() {

@@ -111,7 +111,7 @@ public class Signature extends ModelObject {
      * Constructor that initializes this signature based on the supplied method. The name is taken from the method and the parameter types from the
      * method's parameter classes.
      *
-     * @param method the method to initialze from
+     * @param method the method to initialize from
      */
     public Signature(Method method) {
         name = method.getName();

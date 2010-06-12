@@ -51,8 +51,8 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
     /**
      * Constructor.
      *
-     * @param uri    URI of the SCA artifact.
-     * @param parent Parent of the SCA artifact.
+     * @param uri    artifact URI
+     * @param parent the parent artifact
      */
     protected LogicalAttachPoint(URI uri, LogicalComponent<?> parent) {
         super(parent);
@@ -60,9 +60,9 @@ public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> 
     }
 
     /**
-     * Returns the uri.
+     * Returns the artifact uri.
      *
-     * @return the uri
+     * @return the artifact uri
      */
     public URI getUri() {
         return uri;

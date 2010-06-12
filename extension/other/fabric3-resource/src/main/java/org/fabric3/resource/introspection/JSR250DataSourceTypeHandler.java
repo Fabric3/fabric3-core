@@ -45,9 +45,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.model.DataSourceResource;
+import org.fabric3.resource.model.DataSourceResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -73,13 +73,13 @@ public class JSR250DataSourceTypeHandler implements ResourceTypeHandler {
         contract = contractProcessor.introspect(DataSource.class, new DefaultIntrospectionContext());
     }
 
-    public ResourceDefinition createResource(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
+    public ResourceReferenceDefinition createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
         String dataSourceName = annotation.mappedName();
         if (dataSourceName.length() == 0) {
             MissingDataSourceName error = new MissingDataSourceName(member.getDeclaringClass());
             context.addError(error);
-            return new DataSourceResource(resourceName, contract, annotation.optional(), "error");
+            return new DataSourceResourceReference(resourceName, contract, annotation.optional(), "error");
         }
-        return new DataSourceResource(resourceName, contract, annotation.optional(), dataSourceName);
+        return new DataSourceResourceReference(resourceName, contract, annotation.optional(), dataSourceName);
     }
 }

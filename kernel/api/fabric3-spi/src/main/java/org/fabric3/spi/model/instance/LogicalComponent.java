@@ -70,7 +70,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalReference> references = new HashMap<String, LogicalReference>();
     private Map<String, LogicalProducer> producers = new HashMap<String, LogicalProducer>();
     private Map<String, LogicalConsumer> consumers = new HashMap<String, LogicalConsumer>();
-    private Map<String, LogicalResource<?>> resources = new HashMap<String, LogicalResource<?>>();
+    private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<String, LogicalResourceReference<?>>();
     private String zone = LOCAL_ZONE;
     private QName deployable;
     private Autowire autowire;
@@ -184,31 +184,31 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Returns the resources required by the current component.
+     * Returns the resource references required by the current component.
      *
-     * @return the resources required by the current component
+     * @return the resources references required by the current component
      */
-    public Collection<LogicalResource<?>> getResources() {
-        return resources.values();
+    public Collection<LogicalResourceReference<?>> getResourceReferences() {
+        return resourceReferences.values();
     }
 
     /**
-     * Returns a resource with the given URI.
+     * Returns a resource reference with the given URI.
      *
      * @param name the resource name
      * @return the resource.
      */
-    public LogicalResource<?> getResource(String name) {
-        return resources.get(name);
+    public LogicalResourceReference<?> getResourceReference(String name) {
+        return resourceReferences.get(name);
     }
 
     /**
      * Adds a the resolved resource
      *
-     * @param resource the resource to add
+     * @param resourceReference the resource to add
      */
-    public void addResource(LogicalResource<?> resource) {
-        resources.put(resource.getUri().getFragment(), resource);
+    public void addResource(LogicalResourceReference<?> resourceReference) {
+        resourceReferences.put(resourceReference.getUri().getFragment(), resourceReference);
     }
 
     /**

@@ -49,7 +49,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.policy.EffectivePolicy;
 
@@ -124,9 +124,9 @@ public interface JavaGenerationHelper {
      * Populates the JavaWireSourceDefinition with resource wiring information.
      *
      * @param definition the JavaWireSourceDefinition to populate
-     * @param resource   the resource to be wired
+     * @param resourceReference   the resource to be wired
      * @throws GenerationException if there is an error generating the JavaWireSourceDefinition
      */
-    void generateResourceWireSource(JavaSourceDefinition definition, LogicalResource<?> resource) throws GenerationException;
+    void generateResourceWireSource(JavaSourceDefinition definition, LogicalResourceReference<?> resourceReference) throws GenerationException;
 
 }

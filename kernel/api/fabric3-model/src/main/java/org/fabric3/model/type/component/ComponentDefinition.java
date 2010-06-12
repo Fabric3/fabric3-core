@@ -71,7 +71,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Constructor.
      *
-     * @param name the compnent name
+     * @param name the component name
      */
     public ComponentDefinition(String name) {
         this.name = name;

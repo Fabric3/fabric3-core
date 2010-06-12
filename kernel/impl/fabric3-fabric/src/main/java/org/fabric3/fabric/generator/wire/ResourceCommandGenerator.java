@@ -46,7 +46,7 @@ import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
@@ -71,14 +71,14 @@ public class ResourceCommandGenerator implements CommandGenerator {
 
     public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
         if (component instanceof LogicalCompositeComponent
-                || component.getResources().isEmpty()
+                || component.getResourceReferences().isEmpty()
                 || (component.getState() != LogicalState.NEW && incremental)) {
             return null;
         }
         ConnectionCommand command = new ConnectionCommand();
-        for (LogicalResource<?> resource : component.getResources()) {
+        for (LogicalResourceReference<?> resourceReference : component.getResourceReferences()) {
             AttachWireCommand attachWireCommand = new AttachWireCommand();
-            PhysicalWireDefinition pwd = wireGenerator.generateResource(resource);
+            PhysicalWireDefinition pwd = wireGenerator.generateResource(resourceReference);
             attachWireCommand.setPhysicalWireDefinition(pwd);
             command.add(attachWireCommand);
         }

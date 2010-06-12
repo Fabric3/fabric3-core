@@ -52,7 +52,7 @@ import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -60,7 +60,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
@@ -79,7 +79,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         createReferences(definition, component, componentType);
         createProducers(definition, component, componentType);
         createConsumers(definition, component, componentType);
-        createResources(component, componentType);
+        createResourceReferences(component, componentType);
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
             context.addError(error);
@@ -190,11 +190,12 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         }
     }
 
-    private void createResources(LogicalComponent<?> component, ComponentType componentType) {
-        for (ResourceDefinition resource : componentType.getResources().values()) {
-            URI resourceUri = component.getUri().resolve('#' + resource.getName());
-            LogicalResource<ResourceDefinition> logicalResource = new LogicalResource<ResourceDefinition>(resourceUri, resource, component);
-            component.addResource(logicalResource);
+    private void createResourceReferences(LogicalComponent<?> component, ComponentType componentType) {
+        for (ResourceReferenceDefinition resourceReference : componentType.getResourceReferences().values()) {
+            URI resourceUri = component.getUri().resolve('#' + resourceReference.getName());
+            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference =
+                    new LogicalResourceReference<ResourceReferenceDefinition>(resourceUri, resourceReference, component);
+            component.addResource(logicalResourceReference);
         }
     }
 

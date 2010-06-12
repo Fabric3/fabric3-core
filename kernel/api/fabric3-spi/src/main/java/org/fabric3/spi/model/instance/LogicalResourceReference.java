@@ -39,29 +39,29 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
- * A resource on an instantiated component in the domain.
+ * A reference to a resource on an instantiated component in the domain.
  *
  * @version $Rev$ $Date$
  */
-public class LogicalResource<RD extends ResourceDefinition> extends LogicalInvocable {
+public class LogicalResourceReference<RD extends ResourceReferenceDefinition> extends LogicalInvocable {
     private static final long serialVersionUID = -6298167441706672513L;
 
-    private RD resourceDefinition;
+    private RD definition;
     private URI target;
 
     /**
-     * Initializes the URI and the resource definition.
+     * Constructor.
      *
      * @param uri                URI of the resource.
-     * @param resourceDefinition Definition of the resource.
+     * @param definition the resource reference definition.
      * @param parent             the parent component
      */
-    public LogicalResource(URI uri, RD resourceDefinition, LogicalComponent<?> parent) {
-        super(uri, resourceDefinition != null ? resourceDefinition.getServiceContract() : null, parent);
-        this.resourceDefinition = resourceDefinition;
+    public LogicalResourceReference(URI uri, RD definition, LogicalComponent<?> parent) {
+        super(uri, definition != null ? definition.getServiceContract() : null, parent);
+        this.definition = definition;
     }
 
     /**
@@ -69,8 +69,8 @@ public class LogicalResource<RD extends ResourceDefinition> extends LogicalInvoc
      *
      * @return Definition for this resource.
      */
-    public final RD getResourceDefinition() {
-        return resourceDefinition;
+    public final RD getDefinition() {
+        return definition;
     }
 
     /**

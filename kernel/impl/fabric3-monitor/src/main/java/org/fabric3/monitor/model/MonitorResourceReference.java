@@ -43,13 +43,13 @@
  */
 package org.fabric3.monitor.model;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MonitorResource extends ResourceDefinition {
+public class MonitorResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -6723752212878850748L;
     private String channelName;
 
@@ -59,7 +59,7 @@ public class MonitorResource extends ResourceDefinition {
      * @param name     the resource name
      * @param contract the service contract required of the resource
      */
-    public MonitorResource(String name, ServiceContract contract) {
+    public MonitorResourceReference(String name, ServiceContract contract) {
         super(name, contract, false);
     }
 
@@ -70,7 +70,7 @@ public class MonitorResource extends ResourceDefinition {
      * @param contract    the service contract required of the resource
      * @param channelName the target channel to send monitor events
      */
-    public MonitorResource(String name, ServiceContract contract, String channelName) {
+    public MonitorResourceReference(String name, ServiceContract contract, String channelName) {
         super(name, contract, false);
         this.channelName = channelName;
     }

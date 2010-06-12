@@ -54,7 +54,7 @@ public class PhysicalClassLoaderWireDefinition implements Serializable {
      * Constructor.
      *
      * @param targetClassLoader the URI of the target classloader
-     * @param packageName       the package name that is visibile through the wire.
+     * @param packageName       the package name that is visible through the wire.
      */
     public PhysicalClassLoaderWireDefinition(URI targetClassLoader, String packageName) {
         this.targetClassLoader = targetClassLoader;
@@ -80,9 +80,9 @@ public class PhysicalClassLoaderWireDefinition implements Serializable {
     }
 
     /**
-     * Returns the package visible through the wire or null if the entire contents are visibile.
+     * Returns the package visible through the wire or null if the entire contents are visible.
      *
-     * @return the package visible through the wire or null if the entire contents are visibile.
+     * @return the package visible through the wire or null if the entire contents are visible.
      */
     public String getPackageName() {
         return packageName;

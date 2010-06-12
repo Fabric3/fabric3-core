@@ -35,34 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.generator;
+package org.fabric3.resource.model;
 
-import javax.persistence.PersistenceContextType;
-
-import org.osoa.sca.annotations.EagerInit;
-
-import org.fabric3.jpa.model.HibernateSessionResource;
-import org.fabric3.jpa.provision.SessionTargetDefinition;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * @version $Rev: 7665 $ $Date: 2009-09-21 11:11:12 +0200 (Mon, 21 Sep 2009) $
+ * A resource that takes a DataSource type.
+ *
+ * @version $Rev$ $Date$
  */
-@EagerInit
-public class SessionResourceGenerator implements ResourceGenerator<HibernateSessionResource> {
+public class DataSourceResourceReference extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = -7941116454357577579L;
+    private String dataSourceName;
 
-    public SessionTargetDefinition generateWireTarget(LogicalResource<HibernateSessionResource> logicalResource) {
-        HibernateSessionResource resource = logicalResource.getResourceDefinition();
-        String unitName = resource.getUnitName();
-        boolean multiThreaded = resource.isMultiThreaded();
-        boolean extended = PersistenceContextType.EXTENDED == resource.getType();
-        SessionTargetDefinition definition = new SessionTargetDefinition();
-        definition.setUnitName(unitName);
-        definition.setOptimizable(true);
-        definition.setExtended(extended);
-        definition.setMultiThreaded(multiThreaded);
-        return definition;
+    public DataSourceResourceReference(String resourceName, ServiceContract contract, boolean optional, String dataSourceName) {
+        super(resourceName, contract, optional);
+        this.dataSourceName = dataSourceName;
+    }
+
+    public String getDataSourceName() {
+        return this.dataSourceName;
     }
 
 }

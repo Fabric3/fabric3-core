@@ -35,27 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.spi.generator;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * A resource sourced from the runtime domain.
+ * Wire generator for resource references.
  *
  * @version $Rev$ $Date$
  */
-public class SystemSourcedResource extends ResourceDefinition {
-    private static final long serialVersionUID = 8542386357450347005L;
-    private String mappedName;
+public interface ResourceReferenceGenerator<RD extends ResourceReferenceDefinition> {
 
-    public SystemSourcedResource(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
-        super(name, serviceContract, optional);
-        this.mappedName = mappedName;
-    }
-
-    public String getMappedName() {
-        return this.mappedName;
-    }
+    /**
+     * Generate the target wire definition for logical resource.
+     *
+     * @param logicalResourceReference the resource being wired to
+     * @return Source wire definition.
+     * @throws GenerationException if there was a problem generating the wire
+     */
+    PhysicalTargetDefinition generateWireTarget(LogicalResourceReference<RD> logicalResourceReference) throws GenerationException;
 
 }

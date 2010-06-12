@@ -35,27 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.jpa.generator;
 
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import javax.persistence.PersistenceContextType;
+
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.jpa.model.PersistenceContextResourceReference;
+import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * A resource that takes a DataSource type.
- *
  * @version $Rev$ $Date$
  */
-public class DataSourceResource extends ResourceDefinition {
-    private static final long serialVersionUID = -7941116454357577579L;
-    private String dataSourceName;
+@EagerInit
+public class PersistenceContextResourceReferenceGenerator implements ResourceReferenceGenerator<PersistenceContextResourceReference> {
 
-    public DataSourceResource(String resourceName, ServiceContract contract, boolean optional, String dataSourceName) {
-        super(resourceName, contract, optional);
-        this.dataSourceName = dataSourceName;
-    }
-
-    public String getDataSourceName() {
-        return this.dataSourceName;
+    public PersistenceContextTargetDefinition generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
+        PersistenceContextResourceReference resource = logicalResourceReference.getDefinition();
+        String unitName = resource.getUnitName();
+        boolean multiThreaded = resource.isMultiThreaded();
+        boolean extended = PersistenceContextType.EXTENDED == resource.getType();
+        PersistenceContextTargetDefinition definition = new PersistenceContextTargetDefinition();
+        definition.setUnitName(unitName);
+        definition.setOptimizable(true);
+        definition.setExtended(extended);
+        definition.setMultiThreaded(multiThreaded);
+        return definition;
     }
 
 }

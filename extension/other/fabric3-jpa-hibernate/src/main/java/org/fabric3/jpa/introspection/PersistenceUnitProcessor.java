@@ -45,7 +45,7 @@ import javax.persistence.PersistenceUnit;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.jpa.model.PersistenceUnitResource;
+import org.fabric3.jpa.model.PersistenceUnitResourceReference;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -73,7 +73,7 @@ public class PersistenceUnitProcessor<I extends Implementation<? extends Injecti
 
     public void visitField(PersistenceUnit annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
         FieldInjectionSite site = new FieldInjectionSite(field);
-        PersistenceUnitResource definition = createDefinition(annotation);
+        PersistenceUnitResourceReference definition = createDefinition(annotation);
         InjectingComponentType componentType = implementation.getComponentType();
         componentType.add(definition, site);
         // record that the implementation requires JPA
@@ -82,16 +82,16 @@ public class PersistenceUnitProcessor<I extends Implementation<? extends Injecti
 
     public void visitMethod(PersistenceUnit annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        PersistenceUnitResource definition = createDefinition(annotation);
+        PersistenceUnitResourceReference definition = createDefinition(annotation);
         InjectingComponentType componentType = implementation.getComponentType();
         componentType.add(definition, site);
         // record that the implementation requires JPA
         componentType.addRequiredCapability("jpa");
     }
 
-    PersistenceUnitResource createDefinition(PersistenceUnit annotation) {
+    PersistenceUnitResourceReference createDefinition(PersistenceUnit annotation) {
         String name = annotation.name();
         String unitName = annotation.unitName();
-        return new PersistenceUnitResource(name, unitName, factoryServiceContract);
+        return new PersistenceUnitResourceReference(name, unitName, factoryServiceContract);
     }
 }

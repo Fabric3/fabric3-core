@@ -40,10 +40,10 @@ package org.fabric3.fabric.generator.wire;
 import java.net.URI;
 
 import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
@@ -135,11 +135,11 @@ public interface WireGenerator {
     /**
      * Generates a PhysicalWireDefinition for the resource.
      *
-     * @param resource the resource
+     * @param resourceReference the resource
      * @return the physical wire definition
      * @throws GenerationException if an error ocurrs during generation
      */
-    <T extends ResourceDefinition> PhysicalWireDefinition generateResource(LogicalResource<T> resource) throws GenerationException;
+    <T extends ResourceReferenceDefinition> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws GenerationException;
 
 
 }

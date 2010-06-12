@@ -34,12 +34,12 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.resource.introspection.JSR250DataSourceTypeHandler"/>
     </component>
 
-    <component name="SystemSourcedResourceWireGenerator" f3-core:key="org.fabric3.resource.model.SystemSourcedResource">
-        <f3-impl:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceGenerator"/>
+    <component name="SystemSourcedResourceWireGenerator" f3-core:key="org.fabric3.resource.model.SystemSourcedResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceReferenceGenerator"/>
     </component>
 
-    <component name="DataSourceGenerator" f3-core:key="org.fabric3.resource.model.DataSourceResource">
-        <f3-impl:implementation.system class="org.fabric3.resource.generator.DataSourceGenerator"/>
+    <component name="DataSourceGenerator" f3-core:key="org.fabric3.resource.model.DataSourceResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.resource.generator.DataSourceResourceReferenceGenerator"/>
     </component>
 
     <component name="SystemSourcedResourceWireAttacher" f3-core:key="org.fabric3.resource.provision.SystemSourcedTargetDefinition">

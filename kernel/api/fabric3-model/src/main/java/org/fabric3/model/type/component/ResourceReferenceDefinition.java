@@ -47,18 +47,18 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A component type resource.
+ * A reference to a system resource contained by a component.
  *
  * @version $Rev$ $Date$
  */
-public class ResourceDefinition extends ModelObject {
+public class ResourceReferenceDefinition extends ModelObject {
     private static final long serialVersionUID = 4241666632750146304L;
 
     private String name;
     private boolean optional;
     private ServiceContract serviceContract;
 
-    public ResourceDefinition(String name, ServiceContract serviceContract, boolean optional) {
+    public ResourceReferenceDefinition(String name, ServiceContract serviceContract, boolean optional) {
         this.name = name;
         this.serviceContract = serviceContract;
         this.optional = optional;
@@ -83,7 +83,7 @@ public class ResourceDefinition extends ModelObject {
     }
 
     /**
-     * Returna the service contract for the resource.
+     * Returns the service contract for the resource.
      *
      * @return the service contract
      */

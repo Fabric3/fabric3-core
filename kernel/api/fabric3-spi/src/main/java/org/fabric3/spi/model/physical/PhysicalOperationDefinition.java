@@ -115,7 +115,7 @@ public class PhysicalOperationDefinition implements Serializable {
     }
 
     /**
-     * Returns the fuly qualified source return type for this operation.
+     * Returns the fully qualified source return type for this operation.
      *
      * @return the source return type for this operation.
      */
@@ -207,7 +207,7 @@ public class PhysicalOperationDefinition implements Serializable {
     /**
      * Returns the interceptor definitions available for this operation.
      *
-     * @return Inteceptor definitions for this operation.
+     * @return Interceptor definitions for this operation.
      */
     public Set<PhysicalInterceptorDefinition> getInterceptors() {
         return interceptors;

@@ -47,12 +47,12 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -91,7 +91,7 @@ public interface GeneratorRegistry {
      * @return the registered resource wire generator
      * @throws GeneratorNotFoundException if no generator is registered for the resource type
      */
-    <T extends ResourceDefinition> ResourceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
      * Gets the interceptor definition generator for the qualified name.

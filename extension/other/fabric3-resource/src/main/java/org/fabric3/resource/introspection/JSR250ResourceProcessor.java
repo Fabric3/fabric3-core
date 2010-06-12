@@ -47,9 +47,9 @@ import javax.annotation.Resource;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.model.SystemSourcedResource;
+import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.spi.JSR250ResourceTypeHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -88,11 +88,11 @@ public class JSR250ResourceProcessor<I extends Implementation<? extends Injectin
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         FieldInjectionSite site = new FieldInjectionSite(field);
 
-        ResourceDefinition definition;
+        ResourceReferenceDefinition definition;
         JSR250ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResource(name, annotation, field, context);
+            definition = handler.createResourceReference(name, annotation, field, context);
         } else {
             String mappedName = annotation.mappedName();
             if (mappedName.length() == 0) {
@@ -111,11 +111,11 @@ public class JSR250ResourceProcessor<I extends Implementation<? extends Injectin
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
 
-        ResourceDefinition definition;
+        ResourceReferenceDefinition definition;
         JSR250ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResource(name, annotation, method, context);
+            definition = handler.createResourceReference(name, annotation, method, context);
         } else {
             String mappedName = annotation.mappedName();
             if (mappedName.length() == 0) {
@@ -127,8 +127,8 @@ public class JSR250ResourceProcessor<I extends Implementation<? extends Injectin
         implementation.getComponentType().add(definition, site);
     }
 
-    private SystemSourcedResource createResource(String name, Class<?> type, boolean optional, String mappedName, IntrospectionContext context) {
+    private SystemSourcedResourceReference createResource(String name, Class<?> type, boolean optional, String mappedName, IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context);
-        return new SystemSourcedResource(name, optional, mappedName, serviceContract);
+        return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
     }
 }

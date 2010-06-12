@@ -53,7 +53,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.monitor.model.MonitorResource;
+import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -84,7 +84,7 @@ public class MonitorProcessor<I extends Implementation<? extends InjectingCompon
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         FieldInjectionSite site = new FieldInjectionSite(field);
-        MonitorResource resource = createDefinition(name, annotation, type, context);
+        MonitorResourceReference resource = createDefinition(name, annotation, type, context);
         implementation.getComponentType().add(resource, site);
     }
 
@@ -94,7 +94,7 @@ public class MonitorProcessor<I extends Implementation<? extends InjectingCompon
         Type genericType = helper.getGenericType(method);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        MonitorResource resource = createDefinition(name, annotation, type, context);
+        MonitorResourceReference resource = createDefinition(name, annotation, type, context);
         implementation.getComponentType().add(resource, site);
     }
 
@@ -109,18 +109,18 @@ public class MonitorProcessor<I extends Implementation<? extends InjectingCompon
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        MonitorResource resource = createDefinition(name, annotation, type, context);
+        MonitorResourceReference resource = createDefinition(name, annotation, type, context);
         implementation.getComponentType().add(resource, site);
     }
 
 
-    MonitorResource createDefinition(String name, Monitor annotation, Class<?> type, IntrospectionContext context) {
+    MonitorResourceReference createDefinition(String name, Monitor annotation, Class<?> type, IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(type, context);
         String channelName = annotation.value();
         if (channelName.length() == 0) {
-            return new MonitorResource(name, contract);
+            return new MonitorResourceReference(name, contract);
         } else {
-            return new MonitorResource(name, contract, channelName);
+            return new MonitorResourceReference(name, contract, channelName);
         }
     }
 }

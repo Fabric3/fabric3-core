@@ -35,26 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.generator;
+package org.fabric3.resource.model;
 
-import org.osoa.sca.annotations.EagerInit;
-
-import org.fabric3.jpa.model.PersistenceUnitResource;
-import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
+ * A resource sourced from the runtime domain.
+ *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class PersistenceUnitResourceGenerator implements ResourceGenerator<PersistenceUnitResource> {
+public class SystemSourcedResourceReference extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = 8542386357450347005L;
+    private String mappedName;
 
-    public PersistenceUnitTargetDefinition generateWireTarget(LogicalResource<PersistenceUnitResource> resource) {
-        PersistenceUnitTargetDefinition pwtd = new PersistenceUnitTargetDefinition();
-        pwtd.setOptimizable(true);
-        pwtd.setUnitName(resource.getResourceDefinition().getUnitName());
-        return pwtd;
+    public SystemSourcedResourceReference(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
+        super(name, serviceContract, optional);
+        this.mappedName = mappedName;
+    }
+
+    public String getMappedName() {
+        return this.mappedName;
     }
 
 }
