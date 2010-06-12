@@ -50,7 +50,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target(TYPE)
 @Retention(RUNTIME)
-@Scope(Scopes.COMPOSITE)
+@Scope(Scopes.DOMAIN)
 public @interface Domain {
 
 }
