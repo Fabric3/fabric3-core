@@ -168,7 +168,7 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
                 InvalidTimerInterface failure = new InvalidTimerInterface(implementation);
                 context.addError(failure);
                 LoaderUtil.skipToEndElement(reader);
-                return false;  
+                return false;
 
             }
         } catch (ClassNotFoundException e) {
@@ -187,6 +187,7 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
             return;
         }
         try {
+            data.setType(TimerType.RECURRING);
             Class<?> clazz = context.getClassLoader().loadClass(intervalClass);
             try {
                 clazz.getMethod("nextInterval");

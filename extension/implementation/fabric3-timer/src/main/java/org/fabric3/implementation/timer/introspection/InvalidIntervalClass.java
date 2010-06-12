@@ -50,6 +50,6 @@ public class InvalidIntervalClass extends ValidationFailure {
     }
 
     public String getMessage() {
-        return "Interval class must implement the method getNextInterval(): " + taskClass;
+        return "Interval class must implement the public method nextInterval(): " + taskClass;
     }
 }

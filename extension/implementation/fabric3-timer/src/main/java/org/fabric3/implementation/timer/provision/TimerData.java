@@ -55,7 +55,7 @@ public class TimerData implements Serializable {
     private String poolName = TimerService.DEFAULT_POOL;
     private String intervalClass;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-    private long initialDelay = UNSPECIFIED;
+    private long initialDelay = 100;
     private long fixedRate = UNSPECIFIED;
     private long repeatInterval = UNSPECIFIED;
     private long fireOnce = UNSPECIFIED;
