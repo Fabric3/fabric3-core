@@ -61,7 +61,7 @@ public interface CommandExecutorRegistry {
     <T extends Command> void register(Class<T> type, CommandExecutor<T> executor);
 
     /**
-     * Dispatches a command to an exececutor.
+     * Dispatches a command to an executor.
      *
      * @param command the command to dispatch
      * @throws ExecutionException if there is an error executing the command

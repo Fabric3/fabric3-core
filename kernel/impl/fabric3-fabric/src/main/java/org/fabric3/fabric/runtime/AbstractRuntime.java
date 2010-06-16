@@ -129,7 +129,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         return hostInfo;
     }
 
-    public MonitorProxyService getMonitorservice() {
+    public MonitorProxyService getMonitorProxyService() {
         return monitorService;
     }
 

@@ -523,7 +523,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
     @SuppressWarnings("unchecked")
     private <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getGenerator(T definition) throws GeneratorNotFoundException {
-        return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceWireGenerator(definition.getClass());
+        return (ResourceReferenceGenerator<T>) generatorRegistry.getResourceReferenceGenerator(definition.getClass());
     }
 
     @SuppressWarnings("unchecked")

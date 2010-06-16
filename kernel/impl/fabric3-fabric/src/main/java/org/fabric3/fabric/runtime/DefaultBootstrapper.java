@@ -121,7 +121,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
     private LogicalCompositeComponent domain;
-    private LogicalComponentManager logicalComponetManager;
+    private LogicalComponentManager lcm;
     private ComponentManager componentManager;
     private ChannelManager channelManager;
     private ScopeContainer scopeContainer;
@@ -159,11 +159,11 @@ public class DefaultBootstrapper implements Bootstrapper {
     public void bootRuntimeDomain() throws InitializationException {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
-        monitorService = runtimeServices.getMonitorservice();
-        logicalComponetManager = runtimeServices.getLogicalComponentManager();
+        monitorService = runtimeServices.getMonitorProxyService();
+        lcm = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
         channelManager = runtimeServices.getChannelManager();
-        domain = logicalComponetManager.getRootComponent();
+        domain = lcm.getRootComponent();
         classLoaderRegistry = runtimeServices.getClassLoaderRegistry();
         metaDataStore = runtimeServices.getMetaDataStore();
         scopeRegistry = runtimeServices.getScopeRegistry();
@@ -174,7 +174,7 @@ public class DefaultBootstrapper implements Bootstrapper {
 
         synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
                                                         instantiator,
-                                                        logicalComponetManager,
+                                                        lcm,
                                                         componentManager,
                                                         contractProcessor,
                                                         scopeContainer);
@@ -186,7 +186,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               classLoaderRegistry,
                                                               scopeRegistry,
                                                               componentManager,
-                                                              logicalComponetManager,
+                                                              lcm,
                                                               channelManager,
                                                               metaDataStore,
                                                               mbeanServer,
@@ -239,7 +239,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         // services available through the inward facing RuntimeServices SPI
         registerComponent("ComponentManager", ComponentManager.class, componentManager, true);
         registerComponent("ChannelManager", ChannelManager.class, channelManager, true);
-        registerComponent("RuntimeLogicalComponentManager", LogicalComponentManager.class, logicalComponetManager, true);
+        registerComponent("RuntimeLogicalComponentManager", LogicalComponentManager.class, lcm, true);
         registerComponent("CompositeScopeContainer", ScopeContainer.class, scopeContainer, true);
         registerComponent("ClassLoaderRegistry", ClassLoaderRegistry.class, classLoaderRegistry, true);
         registerComponent("ScopeRegistry", ScopeRegistry.class, scopeRegistry, true);
@@ -310,7 +310,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private void registerRuntimeDomainChannel() {
         ChannelDefinition definition = new ChannelDefinition(RUNTIME_MONITOR_CHANNEL, BOOT_CONTRIBUTION);
-        LogicalCompositeComponent domain = logicalComponetManager.getRootComponent();
+        LogicalCompositeComponent domain = lcm.getRootComponent();
         LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_MONITOR_CHANNEL_URI, definition, domain);
         logicalChannel.setState(LogicalState.PROVISIONED);
         domain.addChannel(logicalChannel);

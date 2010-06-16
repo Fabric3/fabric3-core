@@ -55,6 +55,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.spi.resource.DataSourceConfiguration;
 import org.fabric3.spi.resource.DataSourceFactory;
+import org.fabric3.spi.resource.DataSourceFactoryException;
 import org.fabric3.spi.resource.DataSourceRegistry;
 import org.fabric3.spi.resource.DataSourceType;
 
@@ -124,11 +125,22 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private void registerJMX(AtomikosDataSourceBean bean) {
+    public void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException {
+        String name = configuration.getName();
+        AbstractDataSourceBean bean = beans.remove(name);
+        if (bean == null) {
+            throw new DataSourceFactoryException("DataSource not registered: " + name);
+        }
+        registry.unregister(name);
+        unRegisterJMX(bean);
+        bean.close();
+    }
+
+    private void registerJMX(AbstractDataSourceBean bean) {
         // TODO implement
     }
 
-    private void registerJMX(AtomikosNonXADataSourceBean bean) {
+    private void unRegisterJMX(AbstractDataSourceBean bean) {
         // TODO implement
     }
 

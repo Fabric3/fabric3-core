@@ -57,14 +57,16 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.CompositeService;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * Instatiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
+ * Instantiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
  * <p/>
  * Service and reference information configured as part of a <code>&lt;component&gt;</code> entry and component type will be merged into a single
  * logical artifact.
@@ -98,6 +100,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         instantiateCompositeServices(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
         instantiateCompositeReferences(component, composite);
+        instantiateResources(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
         channelInstantiator.instantiateChannels(composite, component, context);
         if (parent.getComponent(uri) != null) {
@@ -215,5 +218,12 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         }
     }
 
+    @SuppressWarnings({"unchecked"})
+    private void instantiateResources(LogicalCompositeComponent component, Composite composite) {
+        for (ResourceDefinition definition : composite.getResources()) {
+            LogicalResource<?> resource = new LogicalResource(definition, component);
+            component.addResource(resource);
+        }
+    }
 
 }

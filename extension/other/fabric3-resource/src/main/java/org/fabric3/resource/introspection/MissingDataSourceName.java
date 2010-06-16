@@ -58,6 +58,6 @@ public class MissingDataSourceName extends ValidationFailure {
     }
 
     public String getMessage() {
-        return "DataSource name not specified in " + location;
+        return "DataSource mapped name not specified in " + location;
     }
 }

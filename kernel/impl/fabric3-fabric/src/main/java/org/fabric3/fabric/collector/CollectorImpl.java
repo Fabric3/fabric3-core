@@ -46,6 +46,7 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
@@ -103,6 +104,12 @@ public class CollectorImpl implements Collector {
                 channel.setState(LogicalState.PROVISIONED);
             }
         }
+        for (LogicalResource resource : composite.getResources()) {
+            if (LogicalState.NEW == resource.getState()) {
+                resource.setState(LogicalState.PROVISIONED);
+            }
+        }
+
     }
 
 
@@ -159,6 +166,9 @@ public class CollectorImpl implements Collector {
                 channel.setState(LogicalState.MARKED);
             }
         }
+        for (LogicalResource resource : composite.getResources()) {
+            resource.setState(LogicalState.MARKED);
+        }
     }
 
     public void collect(LogicalCompositeComponent composite) {
@@ -191,10 +201,17 @@ public class CollectorImpl implements Collector {
         }
 
         Iterator<LogicalChannel> channelIter = composite.getChannels().iterator();
-        while(channelIter.hasNext()) {
+        while (channelIter.hasNext()) {
             LogicalChannel channel = channelIter.next();
             if (LogicalState.MARKED == channel.getState()) {
                 channelIter.remove();
+            }
+        }
+        Iterator<LogicalResource<?>> resourceIter = composite.getResources().iterator();
+        while (resourceIter.hasNext()) {
+            LogicalResource<?> resource = resourceIter.next();
+            if (LogicalState.MARKED == resource.getState()) {
+                resourceIter.remove();
             }
         }
     }

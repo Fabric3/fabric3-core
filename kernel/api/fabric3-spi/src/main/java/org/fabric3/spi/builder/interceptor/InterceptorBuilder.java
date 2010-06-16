@@ -59,7 +59,7 @@ public interface InterceptorBuilder<PID extends PhysicalInterceptorDefinition> {
      *
      * @param definition metadata used for returning an interceptor
      * @return the interceptor
-     * @throws BuilderException if an error ocurrs returning the interceptor
+     * @throws BuilderException if an error occurs returning the interceptor
      */
     Interceptor build(PID definition) throws BuilderException;
 

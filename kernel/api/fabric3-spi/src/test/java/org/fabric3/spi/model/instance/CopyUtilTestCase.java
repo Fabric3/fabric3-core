@@ -49,6 +49,7 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
@@ -65,6 +66,7 @@ public class CopyUtilTestCase extends TestCase {
         LogicalReference originalReference = createReference("#reference", originalComponent);
         LogicalWire originalWire = createWire(originalService, originalReference);
         LogicalChannel originalChannel = createChannel("channel", originalChildComposite);
+        LogicalResource<?> originalResource = createResource(originalChildComposite);
         LogicalProducer originalProducer = createProducer("#producer", originalComponent);
         LogicalConsumer originalConsumer = createConsumer("#consumer", originalComponent);
 
@@ -83,6 +85,7 @@ public class CopyUtilTestCase extends TestCase {
         assertNotSame(originalChannel.getBindings().get(0), channel.getBindings().get(0));
         assertEquals("zone1", channel.getZone());
         assertEquals(LogicalState.PROVISIONED, channel.getState());
+        assertNotSame(originalResource, childComposite.getResources().iterator().next());
 
 
         assertEquals(1, childComposite.getComponents().size());
@@ -219,11 +222,24 @@ public class CopyUtilTestCase extends TestCase {
         return composite;
     }
 
+    @SuppressWarnings({"unchecked"})
+    private LogicalResource createResource(LogicalCompositeComponent parent) {
+        MockResourceDefinition definition = new MockResourceDefinition();
+        LogicalResource resource = new LogicalResource(definition, parent);
+        parent.addResource(resource);
+        return resource;
+    }
+
     private class MockBinding extends BindingDefinition {
         private static final long serialVersionUID = 2964005114618102630L;
 
         public MockBinding() {
             super("name", null, null);
         }
+    }
+
+    private class MockResourceDefinition extends ResourceDefinition {
+        private static final long serialVersionUID = -8809333483461908752L;
+
     }
 }

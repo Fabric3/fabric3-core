@@ -34,26 +34,56 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.spi.resource;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.fabric.command;
 
-import org.fabric3.host.Fabric3Exception;
+import java.util.List;
+
+import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ * Removes a resource on a runtime.
+ *
+ * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
  */
-public class DataSourceCreationException extends Fabric3Exception {
-    private static final long serialVersionUID = 6382360958341658668L;
+public class UnBuildResourcesCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -3382996929643885337L;
+    private List<PhysicalResourceDefinition> definitions;
 
-    public DataSourceCreationException(String message) {
-        super(message);
+    public UnBuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
+        this.definitions = definitions;
     }
 
-    public DataSourceCreationException(String message, Throwable cause) {
-        super(message, cause);
+    public CompensatableCommand getCompensatingCommand() {
+        return new BuildResourcesCommand(definitions);
     }
 
-    public DataSourceCreationException(Throwable cause) {
-        super(cause);
+    public List<PhysicalResourceDefinition> getDefinitions() {
+        return definitions;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        UnBuildResourcesCommand that = (UnBuildResourcesCommand) o;
+
+        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+    }
+
+    public int hashCode() {
+        return (definitions != null ? definitions.hashCode() : 0);
+    }
+
 }

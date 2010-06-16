@@ -86,6 +86,14 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.DetachChannelConnectionCommandExecutor"/>
     </component>
 
+    <component name="BuildResourcesCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildResourcesCommandExecutor"/>
+    </component>
+
+    <component name="UnBuildResourcesCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildResourcesCommandExecutor"/>
+    </component>
+
     <component name="UnprovisionClassloaderCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnprovisionClassloaderCommandExecutor"/>
     </component>

@@ -37,12 +37,12 @@
 */
 package org.fabric3.tx.atomikos.datasource;
 
-import org.fabric3.spi.resource.DataSourceCreationException;
+import org.fabric3.spi.resource.DataSourceFactoryException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DuplicateDataSourceException extends DataSourceCreationException {
+public class DuplicateDataSourceException extends DataSourceFactoryException {
     private static final long serialVersionUID = -6914379734685084710L;
 
     public DuplicateDataSourceException(String message) {

@@ -73,6 +73,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private Map<QName, Include> includes = new HashMap<QName, Include>();
     private List<WireDefinition> wires = new ArrayList<WireDefinition>();
     private Map<String, ChannelDefinition> channels = new HashMap<String, ChannelDefinition>();
+    private List<ResourceDefinition> resources = new ArrayList<ResourceDefinition>();
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
     private Map<String, Property> propertiesView = new HashMap<String, Property>();
@@ -82,6 +83,7 @@ public class Composite extends ComponentType implements PolicyAware {
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
     private List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
+    private List<ResourceDefinition> resourcesView = new ArrayList<ResourceDefinition>();
 
     private Map<QName, Object> metadata = new HashMap<QName, Object>();
 
@@ -116,7 +118,7 @@ public class Composite extends ComponentType implements PolicyAware {
     /**
      * Sets the URI of the contribution this composite is associated with.
      *
-     * @param contributionUri tcontribution URI
+     * @param contributionUri contribution URI
      */
     public void setContributionUri(URI contributionUri) {
         this.contributionUri = contributionUri;
@@ -243,8 +245,113 @@ public class Composite extends ComponentType implements PolicyAware {
         return wiresView;
     }
 
+    /**
+     * Adds a wire to the composite.
+     *
+     * @param wire the wire
+     */
+    public void add(WireDefinition wire) {
+        wires.add(wire);
+        wiresView.add(wire);
+    }
+
+    /**
+     * Returns all channels including ones from included composites.
+     *
+     * @return channels
+     */
     public Map<String, ChannelDefinition> getChannels() {
         return channelsView;
+    }
+
+    /**
+     * Adds a channel to the composite.
+     *
+     * @param channel the channel
+     */
+    public void add(ChannelDefinition channel) {
+        channelsView.put(channel.getName(), channel);
+        channels.put(channel.getName(), channel);
+    }
+
+    /**
+     * Returns all resources including ones from included composites.
+     *
+     * @return channels
+     */
+    public List<ResourceDefinition> getResources() {
+        return resourcesView;
+    }
+
+    /**
+     * Adds a resource to the composite.
+     *
+     * @param resource the resource
+     */
+    public void add(ResourceDefinition resource) {
+        resourcesView.add(resource);
+        resources.add(resource);
+    }
+
+    /**
+     * Returns included composites.
+     *
+     * @return included composites
+     */
+    public Map<QName, Include> getIncludes() {
+        return includes;
+    }
+
+    /**
+     * Adds an included composite.
+     *
+     * @param include the composite to include
+     */
+    public void add(Include include) {
+        includes.put(include.getName(), include);
+        componentsView.putAll(include.getIncluded().getComponents());
+        referencesView.putAll(include.getIncluded().getReferences());
+        propertiesView.putAll(include.getIncluded().getProperties());
+        servicesView.putAll(include.getIncluded().getServices());
+        wiresView.addAll(include.getIncluded().getWires());
+        channelsView.putAll(include.getIncluded().getChannels());
+        resourcesView.addAll(include.getIncluded().getResources());
+    }
+
+    public void addIntent(QName intent) {
+        intents.add(intent);
+    }
+
+    public Set<QName> getIntents() {
+        return intents;
+    }
+
+    public void addPolicySet(QName policySet) {
+        policySets.add(policySet);
+    }
+
+    public void setIntents(Set<QName> intents) {
+        this.intents = intents;
+    }
+
+    public Set<QName> getPolicySets() {
+        return policySets;
+    }
+
+    public void setPolicySets(Set<QName> policySets) {
+        this.policySets = policySets;
+    }
+
+    public void addMetadata(QName name, Object data) {
+        metadata.put(name, data);
+    }
+
+    public <T> T getMetadata(QName name, Class<T> type) {
+        return type.cast(metadata.get(name));
+    }
+
+    public Map<QName, Object> getMetadata() {
+        return metadata;
     }
 
     /**
@@ -293,16 +400,6 @@ public class Composite extends ComponentType implements PolicyAware {
     }
 
     /**
-     * Adds a wire to the composite.
-     *
-     * @param wire the wire
-     */
-    public void add(WireDefinition wire) {
-        wires.add(wire);
-        wiresView.add(wire);
-    }
-
-    /**
      * Returns channels declared in this composite, except channels from included composites.
      *
      * @return channels
@@ -312,73 +409,12 @@ public class Composite extends ComponentType implements PolicyAware {
     }
 
     /**
-     * Adds a channel to the composite.
+     * Returns resources declared in this composite, except resources from included composites.
      *
-     * @param channel the channel
+     * @return resources
      */
-    public void add(ChannelDefinition channel) {
-        channelsView.put(channel.getName(), channel);
-        channels.put(channel.getName(), channel);
-    }
-
-    /**
-     * Returns included composites.
-     *
-     * @return included composites
-     */
-    public Map<QName, Include> getIncludes() {
-        return includes;
-    }
-
-    /**
-     * Adds an included composite.
-     *
-     * @param include the composite to include
-     */
-    public void add(Include include) {
-        includes.put(include.getName(), include);
-        componentsView.putAll(include.getIncluded().getComponents());
-        referencesView.putAll(include.getIncluded().getReferences());
-        propertiesView.putAll(include.getIncluded().getProperties());
-        servicesView.putAll(include.getIncluded().getServices());
-        wiresView.addAll(include.getIncluded().getWires());
-        channelsView.putAll(include.getIncluded().getChannels());
-    }
-
-    public void addIntent(QName intent) {
-        intents.add(intent);
-    }
-
-    public Set<QName> getIntents() {
-        return intents;
-    }
-
-    public void addPolicySet(QName policySet) {
-        policySets.add(policySet);
-    }
-
-    public void setIntents(Set<QName> intents) {
-        this.intents = intents;
-    }
-
-    public Set<QName> getPolicySets() {
-        return policySets;
-    }
-
-    public void setPolicySets(Set<QName> policySets) {
-        this.policySets = policySets;
-    }
-
-    public void addMetadata(QName name, Object data) {
-        metadata.put(name, data);
-    }
-
-    public <T> T getMetadata(QName name, Class<T> type) {
-        return type.cast(metadata.get(name));
-    }
-
-    public Map<QName, Object> getMetadata() {
-        return metadata;
+    public List<ResourceDefinition> getDeclaredResources() {
+        return resources;
     }
 
     public int hashCode() {

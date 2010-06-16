@@ -37,14 +37,17 @@
 */
 package org.fabric3.spi.resource;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * Represents a configuration for a datasource specified in the runtime system configuration or dynamically through a management interface.
+ * Configuration used to create a datasource on a runtime.
  *
  * @version $Rev$ $Date$
  */
-public class DataSourceConfiguration {
+public class DataSourceConfiguration implements Serializable {
+    private static final long serialVersionUID = -2790525523535863636L;
+
     private String name;
     private String driverClass;
     private DataSourceType type;

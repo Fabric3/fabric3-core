@@ -47,11 +47,13 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
@@ -64,7 +66,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 public interface GeneratorRegistry {
 
     /**
-     * Gets a component generator for the specified implementation.
+     * Returns a component generator for the specified implementation.
      *
      * @param clazz the implementation type the generator handles.
      * @return a the component generator for that implementation type
@@ -73,7 +75,7 @@ public interface GeneratorRegistry {
     <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Gets a binding generator for the specified binding class.
+     * Returns a binding generator for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
@@ -81,23 +83,39 @@ public interface GeneratorRegistry {
      */
     <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
-
+    /**
+     * Returns a connection binding generator for the specified binding class.
+     *
+     * @param clazz The binding type type the generator handles.
+     * @return The registered binding generator.
+     * @throws GeneratorNotFoundException if no generator is registered for the binding type
+     */
     <T extends BindingDefinition> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Gets the resource wire generator for the resource type.
+     * Returns the resource reference generator for the resource type.
      *
      * @param clazz the resource type the generator handles
-     * @return the registered resource wire generator
+     * @return the resource reference generator
      * @throws GeneratorNotFoundException if no generator is registered for the resource type
      */
-    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
+            throws GeneratorNotFoundException;
 
     /**
-     * Gets the interceptor definition generator for the qualified name.
+     * Returns the resource generator for the resource type.
+     *
+     * @param clazz the resource type the generator handles
+     * @return the resource generator
+     * @throws GeneratorNotFoundException if no generator is registered for the resource type
+     */
+    <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
+
+    /**
+     * Returns the interceptor definition generator for the qualified name.
      *
      * @param extensionName qualified name of the policy extension
-     * @return Interceptor definition generator
+     * @return interceptor generator
      * @throws GeneratorNotFoundException if no generator is registered for the policy extension type
      */
     InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException;

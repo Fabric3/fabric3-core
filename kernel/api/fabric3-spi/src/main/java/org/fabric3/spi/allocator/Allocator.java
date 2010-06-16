@@ -39,6 +39,7 @@ package org.fabric3.spi.allocator;
 
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
@@ -65,4 +66,14 @@ public interface Allocator {
      * @throws AllocationException if an error during allocation occurs
      */
     void allocate(LogicalChannel channel, DeploymentPlan plan) throws AllocationException;
+
+    /**
+     * Allocates a resource. Composites are recursed and their children are allocated.
+     *
+     * @param resource the resource to allocate
+     * @param plan     the deployment plan containing zone mappings
+     * @throws AllocationException if an error during allocation occurs
+     */
+    void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException;
+
 }

@@ -41,6 +41,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 /**
+ * A registry of datasources.
+ *
  * @version $Rev$ $Date$
  */
 public interface DataSourceRegistry {

@@ -59,6 +59,7 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     private Map<LogicalReference, List<LogicalWire>> wires = new HashMap<LogicalReference, List<LogicalWire>>();
     private Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
     private Map<URI, LogicalChannel> channels = new HashMap<URI, LogicalChannel>();
+    private List<LogicalResource<?>> resources = new ArrayList<LogicalResource<?>>();
 
     /**
      * Instantiates a composite component.
@@ -188,6 +189,14 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      */
     public void addChannel(LogicalChannel channel) {
         channels.put(channel.getUri(), channel);
+    }
+
+    public Collection<LogicalResource<?>> getResources() {
+        return resources;
+    }
+
+    public void addResource(LogicalResource<?> resource) {
+        resources.add(resource);
     }
 
     /**

@@ -77,8 +77,8 @@ public class CopyUtil {
      * @return the copy
      */
     private static LogicalCompositeComponent copy(LogicalCompositeComponent composite, LogicalCompositeComponent parent) {
-        // Create maps to dereference pointers to components, reference and services. Since the copy is performed depth-first, the maps
-        // will always be populated before a component, reference, or service needs to be dereferenced. 
+        // Create maps to de-reference pointers to components, reference and services. Since the copy is performed depth-first, the maps
+        // will always be populated before a component, reference, or service needs to be de-referenced.
         Map<URI, LogicalComponent<?>> components = new HashMap<URI, LogicalComponent<?>>();
         Map<URI, LogicalReference> references = new HashMap<URI, LogicalReference>();
         Map<URI, LogicalService> services = new HashMap<URI, LogicalService>();
@@ -129,6 +129,9 @@ public class CopyUtil {
         }
         for (LogicalProducer producer : composite.getProducers()) {
             copy(producer, copy);
+        }
+        for (LogicalResource resource : composite.getResources()) {
+            copy(resource, copy);
         }
         return copy;
     }
@@ -256,6 +259,15 @@ public class CopyUtil {
         copy.addPolicySets(consumer.getPolicySets());
         parent.addConsumer(copy);
     }
+
+    @SuppressWarnings({"unchecked"})
+    private static void copy(LogicalResource resource, LogicalCompositeComponent parent) {
+        LogicalResource<?> copy = new LogicalResource(resource.getDefinition(), parent);
+        copy.setDeployable(resource.getDeployable());
+        copy.setZone(resource.getZone());
+        parent.addResource(copy);
+    }
+
 
     @SuppressWarnings({"unchecked"})
     private static void copy(Bindable from, Bindable to) {

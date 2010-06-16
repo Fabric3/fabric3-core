@@ -38,6 +38,8 @@
 package org.fabric3.spi.resource;
 
 /**
+ * Creates and disposes datasources on a runtime.
+ *
  * @version $Rev$ $Date$
  */
 public interface DataSourceFactory {
@@ -46,8 +48,15 @@ public interface DataSourceFactory {
      * Creates and registers a datasource.
      *
      * @param configuration the datasource configuration
-     * @throws DataSourceCreationException if an error is encountered registering a datasource
+     * @throws DataSourceFactoryException if an error is encountered registering the datasource
      */
-    void create(DataSourceConfiguration configuration) throws DataSourceCreationException;
+    void create(DataSourceConfiguration configuration) throws DataSourceFactoryException;
 
+    /**
+     * Removes a datasource.
+     *
+     * @param configuration the datasource configuration
+     * @throws DataSourceFactoryException if an error is encountered removing the datasource
+     */
+    void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException;
 }

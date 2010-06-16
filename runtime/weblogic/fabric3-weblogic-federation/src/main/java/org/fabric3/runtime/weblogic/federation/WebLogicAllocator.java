@@ -43,9 +43,11 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
@@ -75,4 +77,7 @@ public class WebLogicAllocator implements Allocator {
         channel.setZone(domainName);
     }
 
+    public void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException {
+        resource.setZone(domainName);
+    }
 }

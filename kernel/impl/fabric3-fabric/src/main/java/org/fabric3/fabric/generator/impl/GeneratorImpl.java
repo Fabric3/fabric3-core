@@ -63,6 +63,7 @@ import org.fabric3.fabric.generator.collator.ContributionCollator;
 import org.fabric3.fabric.generator.context.StartContextCommandGenerator;
 import org.fabric3.fabric.generator.context.StopContextCommandGenerator;
 import org.fabric3.fabric.generator.extension.ExtensionGenerator;
+import org.fabric3.fabric.generator.resource.DomainResourceCommandGenerator;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.generator.Deployment;
@@ -71,6 +72,7 @@ import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
  * Default Generator implementation.
@@ -92,6 +94,7 @@ public class GeneratorImpl implements Generator {
     private StartContextCommandGenerator startContextCommandGenerator;
     private StopContextCommandGenerator stopContextCommandGenerator;
     private ExtensionGenerator extensionGenerator;
+    private DomainResourceCommandGenerator resourceGenerator;
 
     @Constructor
     public GeneratorImpl(@Reference List<CommandGenerator> commandGenerators,
@@ -119,6 +122,16 @@ public class GeneratorImpl implements Generator {
         this.extensionGenerator = extensionGenerator;
     }
 
+    /**
+     * Injected after bootstrap.
+     *
+     * @param generator the resource generator
+     */
+    @Reference
+    public void setResourceGenerator(DomainResourceCommandGenerator generator) {
+        this.resourceGenerator = generator;
+    }
+
     public Deployment generate(LogicalCompositeComponent domain, boolean incremental) throws GenerationException {
 
         List<LogicalComponent<?>> sorted = topologicalSort(domain);
@@ -131,6 +144,17 @@ public class GeneratorImpl implements Generator {
         Map<String, List<CompensatableCommand>> stopCommands = stopContextCommandGenerator.generate(sorted);
         for (Map.Entry<String, List<CompensatableCommand>> entry : stopCommands.entrySet()) {
             deployment.addCommands(entry.getKey(), entry.getValue());
+        }
+
+        // generate commands for domain-level resources being deployed
+        if (resourceGenerator != null) {
+            for (LogicalResource<?> resource : domain.getResources()) {
+                String zone = resource.getZone();
+                CompensatableCommand command = resourceGenerator.generateBuild(resource, incremental);
+                if (command != null) {
+                    deployment.addCommand(zone, command);
+                }
+            }
         }
 
         // generate commands for domain-level channels being deployed
@@ -168,6 +192,16 @@ public class GeneratorImpl implements Generator {
             }
         }
 
+        // generate commands for domain-level resources being undeployed
+        if (resourceGenerator != null) {
+            for (LogicalResource<?> resource : domain.getResources()) {
+                String zone = resource.getZone();
+                CompensatableCommand command = resourceGenerator.generateUnBuild(resource, incremental);
+                if (command != null) {
+                    deployment.addCommand(zone, command);
+                }
+            }
+        }
         // start contexts
         Map<String, List<CompensatableCommand>> startCommands = startContextCommandGenerator.generate(sorted, incremental);
         for (Map.Entry<String, List<CompensatableCommand>> entry : startCommands.entrySet()) {
@@ -262,7 +296,6 @@ public class GeneratorImpl implements Generator {
         }
     }
 
-
     /**
      * Topologically sorts components in the domain according to their URI.
      *
@@ -294,7 +327,6 @@ public class GeneratorImpl implements Generator {
                 flatten((LogicalCompositeComponent) child, components);
             }
         }
-
     }
 
     private List<CommandGenerator> sortGenerators(List<? extends CommandGenerator> commandGenerators) {

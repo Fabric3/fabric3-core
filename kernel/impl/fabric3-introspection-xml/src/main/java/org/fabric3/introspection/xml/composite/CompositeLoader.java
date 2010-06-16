@@ -75,6 +75,7 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -256,8 +257,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             type.add((CompositeReference) modelObject);
         } else if (modelObject instanceof ComponentDefinition) {
             type.add((ComponentDefinition<?>) modelObject);
+        } else if (modelObject instanceof ResourceDefinition) {
+            type.add((ResourceDefinition) modelObject);
         } else if (type == null) {
-            // there was an error loading the element, ingore it as the errors will have been reported
+            // there was an error loading the element, ignore it as the errors will have been reported
         } else {
             context.addError(new UnrecognizedElement(reader));
         }
@@ -267,7 +270,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException, UnrecognizedElementException {
         WireDefinition wire = registry.load(reader, WireDefinition.class, context);
         if (wire == null) {
-            // errror encountered loading the wire
+            // error encountered loading the wire
             return;
         }
         type.add(wire);
@@ -277,7 +280,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException, UnrecognizedElementException {
         ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, context);
         if (componentDefinition == null) {
-            // errror encountered loading the componentDefinition
+            // error encountered loading the componentDefinition
             return false;
         }
         String key = componentDefinition.getName();
@@ -295,7 +298,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
 
         // Calculate the namespace context from the composite element since XMLStreamReader.getNamespaceCount() only returns the number of namespaces
-        // declared on the current element. This means namespaces defined on parent elements which are active (e.g. <comoposite>) or not reported.
+        // declared on the current element. This means namespaces defined on parent elements which are active (e.g. <composite>) or not reported.
         // Scoping results in no namespaces being reported 
         for (PropertyValue value : componentDefinition.getPropertyValues().values()) {
             value.setNamespaceContext(nsContext);
@@ -308,7 +311,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException, UnrecognizedElementException {
         ChannelDefinition channelDefinition = registry.load(reader, ChannelDefinition.class, context);
         if (channelDefinition == null) {
-            // errror encountered loading the channel definition
+            // error encountered loading the channel definition
             return;
         }
         String key = channelDefinition.getName();
@@ -324,7 +327,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException {
         CompositeReference reference = referenceLoader.load(reader, context);
         if (reference == null) {
-            // errror encountered loading the reference
+            // error encountered loading the reference
             return;
         }
         if (type.getReferences().containsKey(reference.getName())) {
@@ -339,7 +342,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private void handleService(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         CompositeService service = serviceLoader.load(reader, context);
         if (service == null) {
-            // errror encountered loading the service
+            // error encountered loading the service
             return;
         }
         if (type.getServices().containsKey(service.getName())) {
@@ -355,7 +358,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException, UnrecognizedElementException {
         Property property = propertyLoader.load(reader, context);
         if (property == null) {
-            // errror encountered loading the property
+            // error encountered loading the property
             return;
         }
         String key = property.getName();
@@ -371,7 +374,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             throws XMLStreamException, UnrecognizedElementException {
         Include include = registry.load(reader, Include.class, context);
         if (include == null) {
-            // errror encountered loading the include
+            // error encountered loading the include
             return;
         }
         QName includeName = include.getName();

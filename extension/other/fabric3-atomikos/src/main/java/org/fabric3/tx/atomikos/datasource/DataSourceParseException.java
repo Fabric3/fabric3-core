@@ -37,12 +37,14 @@
 */
 package org.fabric3.tx.atomikos.datasource;
 
-import org.fabric3.spi.resource.DataSourceCreationException;
+import org.fabric3.spi.resource.DataSourceFactoryException;
 
 /**
+ * Denotes an error parsing a datasource configuration.
+ *
  * @version $Rev$ $Date$
  */
-public class DataSourceParseException extends DataSourceCreationException {
+public class DataSourceParseException extends DataSourceFactoryException {
     private static final long serialVersionUID = 880082576976360535L;
 
     public DataSourceParseException(String message) {

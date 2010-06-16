@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3-other="urn:fabric3.org:other"
+           targetNamespace="urn:fabric3.org:other"
+           name="DataSourceControllerExtension"
+           autowire="true">
+
+    <component name="DataSourceResourceLoader" f3-core:key="f3-other:datasources">
+        <f3-impl:implementation.system class="org.fabric3.datasource.introspection.DataSourceResourceLoader"/>
+    </component>
+
+    <component name="DataSourceResourceGenerator" f3-core:key="org.fabric3.datasource.model.DataSourceResource">
+        <f3-impl:implementation.system class="org.fabric3.datasource.generator.DataSourceResourceGenerator"/>
+    </component>
+
+</composite>

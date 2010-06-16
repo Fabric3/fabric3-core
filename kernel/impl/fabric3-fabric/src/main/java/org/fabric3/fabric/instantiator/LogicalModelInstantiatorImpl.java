@@ -53,10 +53,12 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
+import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
  * @version $Rev$ $Date$
@@ -109,6 +111,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         // merge the property values into the parent
         includeProperties(composite, domain, context);
 
+        // merge resources
+        includeResources(composite, domain);
+
         // instantiate all the components in the composite and add them to the parent
         List<LogicalComponent<?>> newComponents = instantiate(composite, domain, synthetic, context);
 
@@ -139,6 +144,13 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                 LogicalProperty logicalProperty = new LogicalProperty(name, value, many, domain);
                 domain.setProperties(logicalProperty);
             }
+        }
+    }
+
+    private void includeResources(Composite composite, LogicalCompositeComponent domain) {
+        for (ResourceDefinition definition : composite.getResources()) {
+            LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
+            domain.addResource(resource);
         }
     }
 
@@ -290,6 +302,9 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
             for (LogicalComponent<?> child : composite.getComponents()) {
                 setDeployable(child, deployable);
+            }
+            for (LogicalResource<?> resource : composite.getResources()) {
+                resource.setDeployable(deployable);
             }
             for (LogicalChannel channel : composite.getChannels()) {
                 channel.setDeployable(deployable);

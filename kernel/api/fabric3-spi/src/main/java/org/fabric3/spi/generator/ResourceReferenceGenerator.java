@@ -42,19 +42,19 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * Wire generator for resource references.
+ * Generates metadata to attach a component resource reference to a resource.
  *
  * @version $Rev$ $Date$
  */
-public interface ResourceReferenceGenerator<RD extends ResourceReferenceDefinition> {
+public interface ResourceReferenceGenerator<R extends ResourceReferenceDefinition> {
 
     /**
-     * Generate the target wire definition for logical resource.
+     * Generate the physical definition for the logical resource reference.
      *
      * @param logicalResourceReference the resource being wired to
      * @return Source wire definition.
      * @throws GenerationException if there was a problem generating the wire
      */
-    PhysicalTargetDefinition generateWireTarget(LogicalResourceReference<RD> logicalResourceReference) throws GenerationException;
+    PhysicalTargetDefinition generateWireTarget(LogicalResourceReference<R> logicalResourceReference) throws GenerationException;
 
 }

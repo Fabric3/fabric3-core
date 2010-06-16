@@ -51,16 +51,16 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * Generate a command to attach a component to its resources.
+ * Generates commands to attach a component to its resources.
  *
  * @version $Revision$ $Date$
  */
-public class ResourceCommandGenerator implements CommandGenerator {
+public class ResourceReferenceCommandGenerator implements CommandGenerator {
 
     private final WireGenerator wireGenerator;
     private final int order;
 
-    public ResourceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public ResourceReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
     }

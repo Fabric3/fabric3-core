@@ -46,10 +46,11 @@ import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * Allocator that selectes zones for a collection of components using deployment plan mappings.
+ * Allocator that selects zones for a collection of components using deployment plan mappings.
  *
  * @version $Rev$ $Date$
  */
@@ -62,6 +63,9 @@ public class DefaultAllocator implements Allocator {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
                     allocate(child, plan);
+                }
+                for (LogicalResource<?> resource : composite.getResources()) {
+                    allocate(resource, plan);
                 }
                 for (LogicalChannel channel : composite.getChannels()) {
                     allocate(channel, plan);
@@ -82,6 +86,10 @@ public class DefaultAllocator implements Allocator {
             throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
         }
         channel.setZone(zoneName);
+    }
+
+    public void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException {
+
     }
 
     /**

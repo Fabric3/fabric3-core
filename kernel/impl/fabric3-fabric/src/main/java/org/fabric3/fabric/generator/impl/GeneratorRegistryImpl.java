@@ -53,11 +53,13 @@ import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
@@ -75,7 +77,10 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
 
     private Map<QName, InterceptorGenerator> interceptorGenerators = new ConcurrentHashMap<QName, InterceptorGenerator>();
 
-    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceReferenceGenerator<?>>();
+    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators =
+            new ConcurrentHashMap<Class<?>, ResourceReferenceGenerator<?>>();
+
+    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator<?>>();
 
     @Reference(required = false)
     public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
@@ -93,8 +98,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @Reference(required = false)
-    public void setResourceGenerators(Map<Class<?>, ResourceReferenceGenerator<?>> resourceGenerators) {
-        this.resourceGenerators = resourceGenerators;
+    public void setResourceReferenceGenerators(Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators) {
+        this.resourceReferenceGenerators = resourceReferenceGenerators;
     }
 
     @Reference(required = false)
@@ -102,12 +107,17 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         this.interceptorGenerators = interceptorGenerators;
     }
 
+    @Reference(required = false)
+    public void setResourceGenerators(Map<Class<?>, ResourceGenerator<?>> resourceGenerators) {
+        this.resourceGenerators = resourceGenerators;
+    }
+
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
         componentGenerators.put(clazz, generator);
     }
 
     public <T extends ResourceReferenceDefinition> void register(Class<T> clazz, ResourceReferenceGenerator<T> generator) {
-        resourceGenerators.put(clazz, generator);
+        resourceReferenceGenerators.put(clazz, generator);
     }
 
     public <T extends BindingDefinition> void register(Class<T> clazz, BindingGenerator<T> generator) {
@@ -117,42 +127,57 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     @SuppressWarnings("unchecked")
     public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz)
             throws GeneratorNotFoundException {
-        if (!componentGenerators.containsKey(clazz)) {
+        ComponentGenerator<LogicalComponent<T>> generator = (ComponentGenerator<LogicalComponent<T>>) componentGenerators.get(clazz);
+        if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
         }
-        return (ComponentGenerator<LogicalComponent<T>>) componentGenerators.get(clazz);
+        return generator;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
-        if (!bindingGenerators.containsKey(clazz)) {
+        BindingGenerator<T> generator = (BindingGenerator<T>) bindingGenerators.get(clazz);
+        if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
         }
-        return (BindingGenerator<T>) bindingGenerators.get(clazz);
+        return generator;
     }
 
     @SuppressWarnings({"unchecked"})
     public <T extends BindingDefinition> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz)
             throws GeneratorNotFoundException {
-        if (!connectionBindingGenerators.containsKey(clazz)) {
+        ConnectionBindingGenerator<T> generator = (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
+        if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
         }
-        return (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
+        return generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceWireGenerator(Class<T> clazz) throws GeneratorNotFoundException {
-        if (!resourceGenerators.containsKey(clazz)) {
+    public <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
+            throws GeneratorNotFoundException {
+        ResourceReferenceGenerator<T> generator = (ResourceReferenceGenerator<T>) resourceReferenceGenerators.get(clazz);
+        if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
         }
-        return (ResourceReferenceGenerator<T>) resourceGenerators.get(clazz);
+        return generator;
     }
 
     public InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException {
-        if (!interceptorGenerators.containsKey(extensionName)) {
+        InterceptorGenerator generator = interceptorGenerators.get(extensionName);
+        if (generator == null) {
             throw new GeneratorNotFoundException(extensionName);
         }
-        return interceptorGenerators.get(extensionName);
+        return generator;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException {
+        ResourceGenerator<T> generator = (ResourceGenerator<T>) resourceGenerators.get(clazz);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(clazz);
+        }
+        return generator;
     }
 
 }

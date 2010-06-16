@@ -109,7 +109,7 @@ import org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl;
-import org.fabric3.fabric.generator.wire.ResourceCommandGenerator;
+import org.fabric3.fabric.generator.wire.ResourceReferenceCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
@@ -306,7 +306,7 @@ public class BootstrapAssemblyFactory {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
-        Connector connector = createConnnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorService, info);
+        Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorService, info);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
@@ -361,7 +361,7 @@ public class BootstrapAssemblyFactory {
         return transformerRegistry;
     }
 
-    private static Connector createConnnector(ComponentManager componentManager,
+    private static Connector createConnector(ComponentManager componentManager,
                                               DefaultTransformerRegistry transformerRegistry,
                                               ClassLoaderRegistry classLoaderRegistry,
                                               MBeanServer mbeanServer,
@@ -476,7 +476,7 @@ public class BootstrapAssemblyFactory {
         WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
         commandGenerators.add(new WireCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new ResourceCommandGenerator(wireGenerator, 2));
+        commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator, 2));
 
         // eventing command generators
         ConnectionGenerator connectionGenerator = new ConnectionGeneratorImpl(generatorRegistry);
