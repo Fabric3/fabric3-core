@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.introspection;
+package org.fabric3.datasource.introspection;
 
 import java.lang.reflect.Member;
 import javax.sql.DataSource;
@@ -45,9 +45,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Resource;
+import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.model.DataSourceResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;

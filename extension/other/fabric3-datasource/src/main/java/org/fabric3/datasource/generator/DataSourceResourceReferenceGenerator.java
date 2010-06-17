@@ -35,46 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.resource;
+package org.fabric3.datasource.generator;
 
-import java.util.Map;
-import javax.sql.DataSource;
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.datasource.model.DataSourceResourceReference;
+import org.fabric3.datasource.provision.DataSourceTargetDefinition;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * A registry of datasources.
- *
  * @version $Rev$ $Date$
  */
-public interface DataSourceRegistry {
+@EagerInit
+public class DataSourceResourceReferenceGenerator implements ResourceReferenceGenerator<DataSourceResourceReference> {
 
-    /**
-     * Gets a named datasource from the registry.
-     *
-     * @param name the name of the datasource.
-     * @return Named datasource.
-     */
-    DataSource getDataSource(String name);
-
-    /**
-     * Returns all registered datasources.
-     *
-     * @return all registered datasources
-     */
-    Map<String, DataSource> getDataSources();
-
-    /**
-     * Registers a datasource by name.
-     *
-     * @param name       the ame of the datasource.
-     * @param dataSource the datasource to be registered.
-     */
-    void register(String name, DataSource dataSource);
-
-    /**
-     * Unregisters a datasource.
-     *
-     * @param name the datasource name
-     * @return the unregistered datasource or null if not found
-     */
-    DataSource unregister(String name);
+    public DataSourceTargetDefinition generateWireTarget(LogicalResourceReference<DataSourceResourceReference> reference) throws GenerationException {
+        DataSourceResourceReference definition = reference.getDefinition();
+        String dataSourceName = definition.getDataSourceName();
+        boolean optional = definition.isOptional();
+        return new DataSourceTargetDefinition(dataSourceName, optional);
+    }
 }

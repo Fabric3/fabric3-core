@@ -29,6 +29,7 @@ Public License. See the accompanying license file for details.
             <includes>
                 <include>org.codehaus.fabric3:fabric3-hibernate-library</include>
                 <include>org.codehaus.fabric3:fabric3-jpa-hibernate</include>
+                <include>org.codehaus.fabric3:fabric3-datasource</include>
                 <include>org.codehaus.fabric3:fabric3-tx</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
                 <include>javax.resource:com.springsource.javax.resource</include>

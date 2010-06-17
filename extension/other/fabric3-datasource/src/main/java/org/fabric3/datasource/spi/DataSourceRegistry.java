@@ -35,28 +35,46 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.resource;
+package org.fabric3.datasource.spi;
+
+import java.util.Map;
+import javax.sql.DataSource;
 
 /**
- * Creates and disposes datasources on a runtime.
+ * A registry of datasources.
  *
  * @version $Rev$ $Date$
  */
-public interface DataSourceFactory {
+public interface DataSourceRegistry {
 
     /**
-     * Creates and registers a datasource.
+     * Gets a named datasource from the registry.
      *
-     * @param configuration the datasource configuration
-     * @throws DataSourceFactoryException if an error is encountered registering the datasource
+     * @param name the name of the datasource.
+     * @return Named datasource.
      */
-    void create(DataSourceConfiguration configuration) throws DataSourceFactoryException;
+    DataSource getDataSource(String name);
 
     /**
-     * Removes a datasource.
+     * Returns all registered datasources.
      *
-     * @param configuration the datasource configuration
-     * @throws DataSourceFactoryException if an error is encountered removing the datasource
+     * @return all registered datasources
      */
-    void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException;
+    Map<String, DataSource> getDataSources();
+
+    /**
+     * Registers a datasource by name.
+     *
+     * @param name       the ame of the datasource.
+     * @param dataSource the datasource to be registered.
+     */
+    void register(String name, DataSource dataSource);
+
+    /**
+     * Unregisters a datasource.
+     *
+     * @param name the datasource name
+     * @return the unregistered datasource or null if not found
+     */
+    DataSource unregister(String name);
 }

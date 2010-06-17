@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.resource.introspection;
+package org.fabric3.datasource.introspection;
 
 import org.fabric3.host.contribution.ValidationFailure;
 

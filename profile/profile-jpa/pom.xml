@@ -48,6 +48,12 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-datasource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-jpa-hibernate</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -35,13 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.resource;
+package org.fabric3.datasource.spi;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Denotes a datasource type.
- *
  * @version $Rev$ $Date$
  */
-public enum DataSourceType {
-    XA, NON_XA
+public class DataSourceFactoryException extends Fabric3Exception {
+    private static final long serialVersionUID = 6382360958341658668L;
+
+    public DataSourceFactoryException(String message) {
+        super(message);
+    }
+
+    public DataSourceFactoryException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataSourceFactoryException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -40,7 +40,7 @@ package org.fabric3.datasource.model;
 import java.util.List;
 
 import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.spi.resource.DataSourceConfiguration;
+import org.fabric3.datasource.spi.DataSourceConfiguration;
 
 /**
  * @version $Rev$ $Date$

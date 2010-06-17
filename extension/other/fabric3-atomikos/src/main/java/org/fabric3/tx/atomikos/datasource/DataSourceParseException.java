@@ -37,7 +37,7 @@
 */
 package org.fabric3.tx.atomikos.datasource;
 
-import org.fabric3.spi.resource.DataSourceFactoryException;
+import org.fabric3.datasource.spi.DataSourceFactoryException;
 
 /**
  * Denotes an error parsing a datasource configuration.

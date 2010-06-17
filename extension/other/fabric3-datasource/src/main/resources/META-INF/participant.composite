@@ -23,5 +23,13 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceBuilder"/>
     </component>
 
+    <component name="DataSourceWireAttacher" f3-core:key="org.fabric3.datasource.provision.DataSourceTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceWireAttacher"/>
+    </component>
+
+    <component name="DataSourceRegistry">
+        <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceRegistryImpl"/>
+    </component>
+
 
 </composite>

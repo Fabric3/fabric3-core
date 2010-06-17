@@ -165,6 +165,7 @@
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-resource" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-datasource" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-hibernate-library:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" level="project" />

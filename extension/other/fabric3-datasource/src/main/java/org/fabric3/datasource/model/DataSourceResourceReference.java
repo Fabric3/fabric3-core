@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.model;
+package org.fabric3.datasource.model;
 
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;

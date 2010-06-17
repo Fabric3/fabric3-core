@@ -35,32 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.provision;
+package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.builder.WiringException;
 
 /**
- * Defines the DataSource to inject on a resource.
+ * Denotes a missing or invalid DataSource.
  *
  * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
-public class DataSourceTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 7832372892587547800L;
+public class DataSourceNotFoundException extends WiringException {
+    private static final long serialVersionUID = 1775542460273141013L;
 
-    private String dataSourceName;
-    private boolean optional;
-
-    public DataSourceTargetDefinition(String dataSourceName, boolean optional) {
-        this.dataSourceName = dataSourceName;
-        this.optional = optional;
-        setOptimizable(true);
-    }
-
-    public String getDataSourceName() {
-        return dataSourceName;
-    }
-
-    public boolean isOptional() {
-        return optional;
+    public DataSourceNotFoundException(String message) {
+        super(message);
     }
 }

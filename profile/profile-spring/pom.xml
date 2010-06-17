@@ -55,6 +55,12 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-datasource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-hibernate-library</artifactId>
             <version>${project.version}</version>
         </dependency>

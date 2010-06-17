@@ -19,6 +19,19 @@ Public License. See the accompanying license file for details.
            name="DataSourceControllerExtension"
            autowire="true">
 
+
+    <component name="DataSourceTypeHandler" f3-core:key="javax.sql.DataSource">
+        <f3-impl:implementation.system class="org.fabric3.datasource.introspection.DataSourceTypeHandler"/>
+    </component>
+
+    <component name="JSR250DataSourceTypeHandler" f3-core:key="javax.sql.DataSource">
+        <f3-impl:implementation.system class="org.fabric3.datasource.introspection.JSR250DataSourceTypeHandler"/>
+    </component>
+
+    <component name="DataSourceGenerator" f3-core:key="org.fabric3.datasource.model.DataSourceResourceReference">
+        <f3-impl:implementation.system class="org.fabric3.datasource.generator.DataSourceResourceReferenceGenerator"/>
+    </component>
+
     <component name="DataSourceResourceLoader" f3-core:key="f3-other:datasources">
         <f3-impl:implementation.system class="org.fabric3.datasource.introspection.DataSourceResourceLoader"/>
     </component>

@@ -109,6 +109,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="fabric3-datasource" />
   </component>
 </module>
 

@@ -46,7 +46,7 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.spi.resource.DataSourceRegistry;
+import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
  * @version $Rev$ $Date$

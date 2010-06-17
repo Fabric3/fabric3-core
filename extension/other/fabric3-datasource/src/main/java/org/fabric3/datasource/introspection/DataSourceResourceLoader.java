@@ -46,11 +46,11 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.datasource.model.DataSourceResource;
+import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.resource.DataSourceConfiguration;
-import org.fabric3.spi.resource.DataSourceType;
+import org.fabric3.datasource.spi.DataSourceType;
 
 /**
  * Loads datasource configurations specified in a composite. The format of the datasources element is:

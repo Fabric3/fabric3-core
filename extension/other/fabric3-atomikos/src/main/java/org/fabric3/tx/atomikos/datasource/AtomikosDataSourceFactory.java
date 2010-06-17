@@ -53,11 +53,11 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.resource.DataSourceConfiguration;
-import org.fabric3.spi.resource.DataSourceFactory;
-import org.fabric3.spi.resource.DataSourceFactoryException;
-import org.fabric3.spi.resource.DataSourceRegistry;
-import org.fabric3.spi.resource.DataSourceType;
+import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.datasource.spi.DataSourceFactory;
+import org.fabric3.datasource.spi.DataSourceFactoryException;
+import org.fabric3.datasource.spi.DataSourceRegistry;
+import org.fabric3.datasource.spi.DataSourceType;
 
 /**
  * Initializes configured data sources and provides facilities for creating datasources dynamically.

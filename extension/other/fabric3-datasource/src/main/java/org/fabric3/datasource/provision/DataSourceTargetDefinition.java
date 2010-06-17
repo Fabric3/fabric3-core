@@ -35,47 +35,32 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.runtime.wire;
+package org.fabric3.datasource.provision;
 
-import javax.sql.DataSource;
-
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.resource.provision.DataSourceTargetDefinition;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.SingletonObjectFactory;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.resource.DataSourceRegistry;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * Attaches to a runtime DataSource.
+ * Defines the DataSource to inject on a resource.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
-public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceTargetDefinition> {
-    private DataSourceRegistry registry;
+public class DataSourceTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = 7832372892587547800L;
 
-    public DataSourceWireAttacher(@Reference DataSourceRegistry registry) {
-        this.registry = registry;
+    private String dataSourceName;
+    private boolean optional;
+
+    public DataSourceTargetDefinition(String dataSourceName, boolean optional) {
+        this.dataSourceName = dataSourceName;
+        this.optional = optional;
+        setOptimizable(true);
     }
 
-    public void attach(PhysicalSourceDefinition source, DataSourceTargetDefinition target, Wire wire) throws WiringException {
-        throw new AssertionError();
+    public String getDataSourceName() {
+        return dataSourceName;
     }
 
-    public void detach(PhysicalSourceDefinition source, DataSourceTargetDefinition target) throws WiringException {
-        throw new AssertionError();
-    }
-
-    public ObjectFactory<DataSource> createObjectFactory(DataSourceTargetDefinition target) throws WiringException {
-        String dataSourceName = target.getDataSourceName();
-        DataSource source = registry.getDataSource(dataSourceName);
-        if (!target.isOptional() && source == null) {
-            throw new DataSourceNotFoundException("DataSource not found: " + dataSourceName);
-        }
-        return new SingletonObjectFactory<DataSource>(source);
+    public boolean isOptional() {
+        return optional;
     }
 }

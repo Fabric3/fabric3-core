@@ -81,6 +81,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-jpa-hibernate" />
+    <orderEntry type="module" module-name="fabric3-datasource" />
   </component>
 </module>
 

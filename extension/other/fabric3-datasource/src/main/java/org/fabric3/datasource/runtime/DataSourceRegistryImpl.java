@@ -35,19 +35,35 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.runtime.wire;
+package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.builder.WiringException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
+
+import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
- * Denotes a missing or invalid DataSource.
+ * Default DataSourceRegistry implementation.
  *
- * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
+ * @version $Rev$ $Date$
  */
-public class DataSourceNotFoundException extends WiringException {
-    private static final long serialVersionUID = 1775542460273141013L;
+public class DataSourceRegistryImpl implements DataSourceRegistry {
+    private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
 
-    public DataSourceNotFoundException(String message) {
-        super(message);
+    public DataSource getDataSource(String name) {
+        return dataSources.get(name);
+    }
+
+    public Map<String, DataSource> getDataSources() {
+        return dataSources;
+    }
+
+    public void register(String name, DataSource dataSource) {
+        dataSources.put(name, dataSource);
+    }
+
+    public DataSource unregister(String name) {
+        return dataSources.remove(name);
     }
 }

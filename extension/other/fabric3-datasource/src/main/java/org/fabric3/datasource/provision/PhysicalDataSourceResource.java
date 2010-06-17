@@ -39,8 +39,8 @@ package org.fabric3.datasource.provision;
 
 import java.util.List;
 
+import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
-import org.fabric3.spi.resource.DataSourceConfiguration;
 
 /**
  * Metadata to provision datasources configured in a composite.

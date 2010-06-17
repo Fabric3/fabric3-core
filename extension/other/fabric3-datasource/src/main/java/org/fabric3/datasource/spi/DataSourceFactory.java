@@ -35,28 +35,28 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.resource.generator;
-
-import org.osoa.sca.annotations.EagerInit;
-
-import org.fabric3.resource.model.DataSourceResourceReference;
-import org.fabric3.resource.provision.DataSourceTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceReferenceGenerator;
-import org.fabric3.spi.model.instance.LogicalResourceReference;
+package org.fabric3.datasource.spi;
 
 /**
+ * Creates and disposes datasources on a runtime.
+ *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class DataSourceResourceReferenceGenerator implements ResourceReferenceGenerator<DataSourceResourceReference> {
+public interface DataSourceFactory {
 
-    public DataSourceTargetDefinition generateWireTarget(LogicalResourceReference<DataSourceResourceReference> resourceReference)
-            throws GenerationException {
-        DataSourceResourceReference definition = resourceReference.getDefinition();
-        String dataSourceName = definition.getDataSourceName();
-        boolean optional = definition.isOptional();
-        return new DataSourceTargetDefinition(dataSourceName, optional);
-    }
+    /**
+     * Creates and registers a datasource.
+     *
+     * @param configuration the datasource configuration
+     * @throws DataSourceFactoryException if an error is encountered registering the datasource
+     */
+    void create(DataSourceConfiguration configuration) throws DataSourceFactoryException;
 
+    /**
+     * Removes a datasource.
+     *
+     * @param configuration the datasource configuration
+     * @throws DataSourceFactoryException if an error is encountered removing the datasource
+     */
+    void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException;
 }

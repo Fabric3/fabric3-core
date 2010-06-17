@@ -51,6 +51,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
+import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.host.Names;
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
@@ -66,7 +67,6 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.resource.DataSourceRegistry;
 
 /**
  * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
@@ -76,7 +76,7 @@ import org.fabric3.spi.resource.DataSourceRegistry;
  * on the runtime, they will be aliased as <code>transactionManager</code> and their datasource name respectively. Other system components may be
  * aliased by configuring the <code>beanAliases</code> property.
  * <p/>
- * The child context contains beans defined in the configuration file specifed by the location attribute of the Spring component.
+ * The child context contains beans defined in the configuration file specified by the location attribute of the Spring component.
  *
  * @version $Rev$ $Date$
  */
