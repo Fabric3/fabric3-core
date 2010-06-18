@@ -89,7 +89,16 @@ public class DefaultAllocator implements Allocator {
     }
 
     public void allocate(LogicalResource<?> resource, DeploymentPlan plan) throws AllocationException {
-
+        QName deployable = resource.getDeployable();
+        if (deployable == null) {
+            // programming error
+            throw new AssertionError("Deployable not found for resource");
+        }
+        String zoneName = plan.getDeployableMappings().get(deployable);
+        if (zoneName == null) {
+            throw new DeployableMappingNotFoundException("Zone mapping not found for deployable: " + deployable);
+        }
+        resource.setZone(zoneName);
     }
 
     /**
