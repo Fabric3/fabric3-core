@@ -79,6 +79,7 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         ATTRIBUTES.put("unit", "unit");
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
+        ATTRIBUTES.put("poolName", "poolName");
     }
 
     private final JavaImplementationProcessor implementationProcessor;
@@ -101,6 +102,10 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         TimerData data = new TimerData();
         implementation.setTimerData(data);
 
+        String poolName = reader.getAttributeValue(null, "poolName");
+        if (poolName != null) {
+            data.setPoolName(poolName);
+        }
         processInitialDelay(data, reader, context);
         processTimeUnit(data, reader, context);
         processTask(reader, context, data);
