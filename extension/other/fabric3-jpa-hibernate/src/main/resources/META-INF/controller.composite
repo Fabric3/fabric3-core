@@ -15,16 +15,8 @@ Public License. See the accompanying license file for details.
            xmlns:f3-core="urn:fabric3.org:core"
            xmlns:f3-impl="urn:fabric3.org:implementation"
            targetNamespace="urn:fabric3.org:jpa"
-           name="HibernateJpaExtension"
+           name="HibernateControllerExtension"
            autowire="true">
-
-    <component name="DefaultEmfCache">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEmfCache"/>
-    </component>
-
-    <component name="F3TransactionManagerLookup">
-        <f3-impl:implementation.system class="org.fabric3.jpa.api.F3TransactionManagerLookup"/>
-    </component>
 
     <component name="HibernateContributionListener">
         <f3-impl:implementation.system class="org.fabric3.jpa.contribution.HibernateContributionListener"/>
@@ -48,31 +40,6 @@ Public License. See the accompanying license file for details.
 
     <component name="PersistenceContextResourceWireGenerator" f3-core:key="org.fabric3.jpa.model.PersistenceContextResourceReference">
         <f3-impl:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceReferenceGenerator"/>
-    </component>
-
-    <component name="PersistenceUnitWireAttacher" f3-core:key="org.fabric3.jpa.provision.PersistenceUnitTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.PersistenceUnitWireAttacher"/>
-    </component>
-
-    <component name="PersistenceContextWireAttacher" f3-core:key="org.fabric3.jpa.provision.PersistenceContextTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.PersistenceContextWireAttacher"/>
-    </component>
-
-    <component name="SessionWireAttacher" f3-core:key="org.fabric3.jpa.provision.SessionTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.SessionWireAttacher"/>
-    </component>
-
-    <component name="PersistenceContextParser">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.PersistenceContextParserImpl"/>
-    </component>
-
-    <component name="CachingEmfResolver">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEmfResolver"/>
-        <property name="monitorLevel" source="$systemConfig//jpa/@logging"/>
-    </component>
-
-    <component name="EntityManagerService">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.proxy.EntityManagerServiceImpl"/>
     </component>
 
 </composite>

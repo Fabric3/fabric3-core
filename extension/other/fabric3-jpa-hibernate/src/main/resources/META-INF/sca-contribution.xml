@@ -24,5 +24,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.6"/>
     <import.java package="org.fabric3.datasource.spi"/>
     <export.java package="org.fabric3.jpa.api" version="1.6"/>
-    <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateJpaExtension"/>
+    <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateControllerExtension" modes = "controller vm"/>
+    <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateParticipantExtension" modes = "participant vm"/>
 </contribution>
