@@ -16,15 +16,12 @@ Public License. See the accompanying license file for details.
            xmlns:f3-impl="urn:fabric3.org:implementation"
            xmlns:f3-other="urn:fabric3.org:other"
            targetNamespace="urn:fabric3.org:other"
-           name="DataSourceParticipantExtension"
+           name="DataSourceRegistryExtension"
            autowire="true">
 
-    <component name="DataSourceBuilder" f3-core:key="org.fabric3.datasource.provision.PhysicalDataSourceResource">
-        <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceBuilder"/>
+    <component name="DataSourceRegistry">
+        <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceRegistryImpl"/>
     </component>
 
-    <component name="DataSourceWireAttacher" f3-core:key="org.fabric3.datasource.provision.DataSourceTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.datasource.runtime.DataSourceWireAttacher"/>
-    </component>
 
 </composite>

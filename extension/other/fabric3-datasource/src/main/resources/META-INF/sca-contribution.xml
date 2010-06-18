@@ -12,10 +12,12 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:other="urn:fabric3.org:other"
               xmlns:f3-core="urn:fabric3.org:core"
+              f3-core:description="DataSource extension"
               f3-core:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.6"/>
     <import.java package="org.fabric3.resource.spi" version="1.6"/>
     <export.java package="org.fabric3.datasource.spi" version="1.6"/>
+    <deployable composite="other:DataSourceRegistryExtension"/>
     <deployable composite="other:DataSourceControllerExtension" modes="controller vm"/>
     <deployable composite="other:DataSourceParticipantExtension" modes="participant vm"/>
 </contribution>
