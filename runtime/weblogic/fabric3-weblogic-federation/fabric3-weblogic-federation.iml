@@ -38,7 +38,6 @@
     <orderEntry type="module" module-name="fabric3-weblogic-mock" />
     <orderEntry type="module" module-name="fabric3-weblogic-host" />
     <orderEntry type="module" module-name="fabric3-weblogic-cluster" />
-    <orderEntry type="module" module-name="fabric3-deployment" />
   </component>
 </module>
 

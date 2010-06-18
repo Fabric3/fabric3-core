@@ -127,8 +127,8 @@
     <orderEntry type="module" module-name="fabric3-resource" exported="" />
     <orderEntry type="module" module-name="fabric3-thread-pool" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-recovery:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-deployment:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-allocation:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-federation-deployment" exported="" />
+    <orderEntry type="module" module-name="fabric3-federation-allocation" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-jgroups:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: jgroups:jgroups:2.8.0.GA" level="project" />
     <orderEntry type="module" module-name="fabric3-standalone-admin" exported="" />

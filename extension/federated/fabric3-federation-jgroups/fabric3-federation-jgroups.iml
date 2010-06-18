@@ -77,7 +77,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-deployment" />
   </component>
 </module>
 
