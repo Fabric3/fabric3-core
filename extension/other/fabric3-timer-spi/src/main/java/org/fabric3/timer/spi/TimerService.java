@@ -89,7 +89,7 @@ public interface TimerService {
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
      * @throws NullPointerException       if command is null
      */
-    public ScheduledFuture<?> schedule(String poolName, Runnable command, long delay, TimeUnit unit);
+    ScheduledFuture<?> schedule(String poolName, Runnable command, long delay, TimeUnit unit);
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
@@ -102,7 +102,7 @@ public interface TimerService {
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
      * @throws NullPointerException       if callable is null
      */
-    public <V> ScheduledFuture<V> schedule(String poolName, Callable<V> callable, long delay, TimeUnit unit);
+    <V> ScheduledFuture<V> schedule(String poolName, Callable<V> callable, long delay, TimeUnit unit);
 
     /**
      * Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given period; that
@@ -122,7 +122,7 @@ public interface TimerService {
      * @throws NullPointerException       if command is null
      * @throws IllegalArgumentException   if period less than or equal to zero
      */
-    public ScheduledFuture<?> scheduleAtFixedRate(String poolName, Runnable command, long initialDelay, long period, TimeUnit unit);
+    ScheduledFuture<?> scheduleAtFixedRate(String poolName, Runnable command, long initialDelay, long period, TimeUnit unit);
 
     /**
      * Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given delay between
@@ -140,7 +140,7 @@ public interface TimerService {
      * @throws NullPointerException       if command is null
      * @throws IllegalArgumentException   if delay less than or equal to zero
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(String poolName, Runnable command, long initialDelay, long delay, TimeUnit unit);
+    ScheduledFuture<?> scheduleWithFixedDelay(String poolName, Runnable command, long initialDelay, long delay, TimeUnit unit);
 
 
 }
