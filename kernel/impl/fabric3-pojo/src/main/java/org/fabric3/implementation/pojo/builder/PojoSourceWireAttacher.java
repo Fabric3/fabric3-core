@@ -129,7 +129,7 @@ public abstract class PojoSourceWireAttacher {
             }
             return transformer.transform(value, classLoader);
         } catch (TransformationException e) {
-            throw new KeyInstantiationException("Error transformatng property", e);
+            throw new KeyInstantiationException("Error transforming property", e);
         }
     }
 

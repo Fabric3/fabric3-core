@@ -86,7 +86,7 @@ public class Signature extends ModelObject {
     }
 
     /**
-     * Constructor that initializes the signture from a name and list of parameter types.
+     * Constructor that initializes the signature from a name and list of parameter types.
      *
      * @param name  the method name
      * @param types the parameter types
@@ -97,7 +97,7 @@ public class Signature extends ModelObject {
     }
 
     /**
-     * Constructor that initializes the signture from a name and list of parameter types.
+     * Constructor that initializes the signature from a name and list of parameter types.
      *
      * @param name  the method name
      * @param types the parameter types

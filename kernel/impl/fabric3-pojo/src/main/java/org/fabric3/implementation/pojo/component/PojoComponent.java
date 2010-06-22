@@ -65,13 +65,13 @@ import org.fabric3.spi.model.type.java.Injectable;
  * @version $Rev$ $Date$
  */
 public abstract class PojoComponent implements AtomicComponent {
-    private final URI uri;
-    private final InstanceFactoryProvider provider;
-    private final ScopeContainer scopeContainer;
-    private final QName deployable;
-    private final boolean eager;
-    private final long maxIdleTime;
-    private final long maxAge;
+    private URI uri;
+    private InstanceFactoryProvider provider;
+    private ScopeContainer scopeContainer;
+    private QName deployable;
+    private boolean eager;
+    private long maxIdleTime;
+    private long maxAge;
     private InstanceFactory instanceFactory;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;

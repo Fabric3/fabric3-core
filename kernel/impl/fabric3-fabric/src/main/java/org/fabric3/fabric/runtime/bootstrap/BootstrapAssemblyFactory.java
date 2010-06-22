@@ -57,9 +57,6 @@ import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
-import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
-import org.fabric3.monitor.model.MonitorResourceReference;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
@@ -134,11 +131,8 @@ import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
-import org.fabric3.monitor.provision.MonitorTargetDefinition;
-import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.fabric.policy.NullPolicyAttacher;
 import org.fabric3.fabric.policy.NullPolicyResolver;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -169,15 +163,18 @@ import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonTargetDefinition;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.jmx.control.JMXBindingGenerator;
-import org.fabric3.jmx.provision.JMXSourceDefinition;
-import org.fabric3.jmx.runtime.JMXWireAttacher;
+import org.fabric3.jmx.JMXManagementService;
+import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
+import org.fabric3.monitor.model.MonitorResourceReference;
+import org.fabric3.monitor.provision.MonitorTargetDefinition;
+import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.spi.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -197,7 +194,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.type.binding.JMXBinding;
 import org.fabric3.spi.policy.PolicyAttacher;
 import org.fabric3.spi.policy.PolicyResolver;
 import org.fabric3.spi.transform.SingleTypeTransformer;
@@ -209,6 +205,8 @@ import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
 import org.fabric3.transform.string2java.String2QNameTransformer;
+
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * Bootstraps services required for instantiation, generation, and deployment.
@@ -227,7 +225,7 @@ public class BootstrapAssemblyFactory {
                                       LogicalComponentManager logicalComponentManager,
                                       ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
-                                      MBeanServer mbServer,
+                                      MBeanServer mBeanServer,
                                       HostInfo info) throws InitializationException {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
@@ -235,7 +233,7 @@ public class BootstrapAssemblyFactory {
                                                                                 scopeRegistry,
                                                                                 componentManager,
                                                                                 channelManager,
-                                                                                mbServer,
+                                                                                mBeanServer,
                                                                                 info);
         DeployerMonitor monitor;
         try {
@@ -301,17 +299,17 @@ public class BootstrapAssemblyFactory {
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
                                                                          ChannelManager channelManager,
-                                                                         MBeanServer mbeanServer,
+                                                                         MBeanServer mBeanServer,
                                                                          HostInfo info) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
-        Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, mbeanServer, monitorService, info);
+        Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, monitorService);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
         BuildComponentCommandExecutor executor =
-                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry);
+                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, mBeanServer, info);
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -329,17 +327,21 @@ public class BootstrapAssemblyFactory {
     private static BuildComponentCommandExecutor createBuildComponentExecutor(ComponentManager componentManager,
                                                                               ScopeRegistry scopeRegistry,
                                                                               DefaultTransformerRegistry transformerRegistry,
-                                                                              ClassLoaderRegistry classLoaderRegistry) {
+                                                                              ClassLoaderRegistry classLoaderRegistry,
+                                                                              MBeanServer mBeanServer,
+                                                                              HostInfo info) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
         PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
+        JMXManagementService managementService = new JMXManagementService(mBeanServer, info);
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
-                                                                               factoryBuilder,
-                                                                               classLoaderRegistry,
-                                                                               propertyBuilder,
-                                                                               helper);
+                                                                    factoryBuilder,
+                                                                    classLoaderRegistry,
+                                                                    propertyBuilder,
+                                                                    managementService,
+                                                                    helper);
 
         builders.put(SystemComponentDefinition.class, builder);
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
@@ -362,18 +364,14 @@ public class BootstrapAssemblyFactory {
     }
 
     private static Connector createConnector(ComponentManager componentManager,
-                                              DefaultTransformerRegistry transformerRegistry,
-                                              ClassLoaderRegistry classLoaderRegistry,
-                                              MBeanServer mbeanServer,
-                                              MonitorProxyService monitorService,
-                                              HostInfo info) {
+                                             DefaultTransformerRegistry transformerRegistry,
+                                             ClassLoaderRegistry classLoaderRegistry,
+                                             MonitorProxyService monitorService) {
         Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers =
                 new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
         sourceAttachers.put(SystemSourceDefinition.class, wireAttacher);
         sourceAttachers.put(SingletonSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
-
-        sourceAttachers.put(JMXSourceDefinition.class, new JMXWireAttacher(mbeanServer, classLoaderRegistry, info));
 
         Map<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>> targetAttachers =
                 new ConcurrentHashMap<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>>();
@@ -446,7 +444,6 @@ public class BootstrapAssemblyFactory {
         ComponentGenerator singletonComponentGenerator = new SingletonComponentGenerator();
         registry.register(SystemImplementation.class, systemComponentGenerator);
         registry.register(SingletonImplementation.class, singletonComponentGenerator);
-        registry.register(JMXBinding.class, new JMXBindingGenerator());
         registry.register(MonitorResourceReference.class, new MonitorResourceReferenceGenerator());
         return registry;
     }

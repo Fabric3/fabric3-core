@@ -48,6 +48,8 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.slf4j.Logger;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
@@ -57,6 +59,7 @@ import org.fabric3.spi.monitor.MonitorService;
  * @version $Rev$ $Date$
  */
 @EagerInit
+@Management(name = "MonitorService", description = "Sets monitoring levels for the runtime")
 public class LogBackMonitorService implements MonitorService {
     private ComponentManager manager;
     private MonitorLevel defaultLevel = MonitorLevel.WARNING;
@@ -76,6 +79,7 @@ public class LogBackMonitorService implements MonitorService {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(level);
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a component")
     public void setComponentLevel(String uri, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
@@ -84,6 +88,7 @@ public class LogBackMonitorService implements MonitorService {
         }
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a deployable composite")
     public void setDeployableLevel(String deployable, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
@@ -92,6 +97,7 @@ public class LogBackMonitorService implements MonitorService {
         }
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a provider")
     public void setProviderLevel(String key, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         ch.qos.logback.classic.Level logBackLevel = LevelConverter.getLogbackLevel(parsed);

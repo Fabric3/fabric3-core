@@ -112,7 +112,7 @@ public class DefaultClassVisitor<I extends Implementation<? extends InjectingCom
         walkMethods(implementation, clazz, implClass, context);
 
         if (!isSuperClass) {
-            // If a superclass is being evaluated, ignore its constructors.
+            // If a super class is being evaluated, ignore its constructors.
             // Otherwise references, properties, or resources may be incorrectly introspected.
             walkConstructors(implementation, clazz, implClass, context);
         }

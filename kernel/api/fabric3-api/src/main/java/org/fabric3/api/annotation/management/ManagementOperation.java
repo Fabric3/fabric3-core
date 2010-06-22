@@ -35,59 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jmx.runtime;
+package org.fabric3.api.annotation.management;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Annotation that can be applied to an implementation method to indicate it should be exposed to a management framework.
+ *
  * @version $Rev$ $Date$
  */
-public class OperationKey {
-    private final String name;
-    private final String[] params;
-    private final int hashCode;
-
-    public OperationKey(String name, String[] params) {
-        this.name = name;
-        this.params = params;
-        hashCode = 31 * this.name.hashCode() + Arrays.hashCode(this.params);
-    }
-
-    public OperationKey(Method method) {
-        this.name = method.getName();
-        Class<?>[] paramTypes = method.getParameterTypes();
-        this.params = new String[paramTypes.length];
-        for (int i = 0; i < paramTypes.length; i++) {
-            params[i] = paramTypes[i].getName();
-        }
-        hashCode = 31 * this.name.hashCode() + Arrays.hashCode(this.params);
-    }
-
-    public String toString() {
-        StringBuilder sig = new StringBuilder();
-        sig.append(name).append('(');
-        if (params.length > 0) {
-            sig.append(params[0]);
-            for (int i = 1; i < params.length; i++) {
-                sig.append(',').append(params[i]);
-            }
-        }
-        sig.append(')');
-        return sig.toString();
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OperationKey that = (OperationKey) o;
-
-        return name.equals(that.name) && Arrays.equals(params, that.params);
-
-    }
-
-    public int hashCode() {
-        return hashCode;
-    }
+@Target({METHOD})
+@Retention(RUNTIME)
+public @interface ManagementOperation {
+    /**
+     * Returns the operation description.
+     *
+     * @return the operation description
+     */
+    String description() default "";
 }

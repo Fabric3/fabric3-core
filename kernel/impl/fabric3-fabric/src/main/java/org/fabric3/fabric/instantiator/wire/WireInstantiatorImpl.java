@@ -133,7 +133,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
             }
         }
         if (scaBindings.isEmpty()) {
-            //  if the component reference has no bindings, use the composite definiton's
+            //  if the component reference has no bindings, use the composite definition's
             for (BindingDefinition binding : reference.getDefinition().getBindings()) {
                 if (binding instanceof SCABinding) {
                     SCABinding scaBinding = (SCABinding) binding;
@@ -147,7 +147,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
 
         // Check if any composite level wires with @replace=true exist. If so, ignore wires specified using the @target attribute on the reference
-        // since they are overriden by the existing composite level wires.
+        // since they are overridden by the existing composite level wires.
         List<LogicalWire> existingWires = reference.getWires();
         for (LogicalWire wire : existingWires) {
             if (wire.isReplaces()) {
@@ -191,7 +191,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param reference   the source reference
      * @param bindingName the binding name or null
      * @param parent      the parent component
-     * @param context     the instiatin context
+     * @param context     the instantiation context
      * @return the wire or null if it could not be created
      */
     private LogicalWire createWire(Target target,
@@ -282,9 +282,6 @@ public class WireInstantiatorImpl implements WireInstantiator {
             }
         } else {
             for (LogicalService service : targetComponent.getServices()) {
-                if (service.getDefinition().isManagement()) {
-                    continue;
-                }
                 if (targetService != null) {
                     raiseAmbiguousService(reference, target, parent, context);
                     return null;
@@ -337,7 +334,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         wire.setSourceBinding(referenceBinding);
         wire.setTargetBinding(serviceBinding);
         if (serviceBinding != null && referenceBinding != null && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
-            raiseIncomaptibleBindings(reference, service, referenceBindingName, context);
+            raiseIncompatibleBindings(reference, service, referenceBindingName, context);
         }
     }
 
@@ -493,7 +490,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         context.addError(error);
     }
 
-    private void raiseIncomaptibleBindings(LogicalReference reference,
+    private void raiseIncompatibleBindings(LogicalReference reference,
                                            LogicalService service,
                                            String name,
                                            InstantiationContext context) {

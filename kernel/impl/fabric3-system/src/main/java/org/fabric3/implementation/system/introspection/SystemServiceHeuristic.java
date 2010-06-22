@@ -41,7 +41,6 @@ import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.management.Management;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -49,7 +48,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.model.type.binding.JMXBinding;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
@@ -88,19 +86,10 @@ public class SystemServiceHeuristic implements HeuristicProcessor<SystemImplemen
             }
         }
 
-        // Add the JMX Management binding to all services tagged as management
-        for (ServiceDefinition service : componentType.getServices().values()) {
-            if (service.isManagement()) {
-                JMXBinding binding = new JMXBinding();
-                service.addBinding(binding);
-            }
-        }
     }
 
     private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
-        ServiceDefinition service = new ServiceDefinition(contract.getInterfaceName(), contract);
-        service.setManagement(serviceInterface.isAnnotationPresent(Management.class));
-        return service;
+        return new ServiceDefinition(contract.getInterfaceName(), contract);
     }
 }

@@ -49,8 +49,10 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.Consumer;
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.Producer;
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
 import org.fabric3.implementation.system.introspection.SystemHeuristic;
 import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
@@ -63,6 +65,8 @@ import org.fabric3.introspection.java.annotation.ConsumerProcessor;
 import org.fabric3.introspection.java.annotation.DestroyProcessor;
 import org.fabric3.introspection.java.annotation.EagerInitProcessor;
 import org.fabric3.introspection.java.annotation.InitProcessor;
+import org.fabric3.introspection.java.annotation.ManagementOperationProcessor;
+import org.fabric3.introspection.java.annotation.ManagementProcessor;
 import org.fabric3.introspection.java.annotation.OASISDestroyProcessor;
 import org.fabric3.introspection.java.annotation.OASISEagerInitProcessor;
 import org.fabric3.introspection.java.annotation.OASISInitProcessor;
@@ -125,6 +129,8 @@ public class BootstrapIntrospectionFactory {
         processors.put(Monitor.class, new MonitorProcessor<SystemImplementation>(helper, contractProcessor));
         processors.put(Producer.class, new ProducerProcessor<SystemImplementation>(contractProcessor, helper));
         processors.put(Consumer.class, new ConsumerProcessor<SystemImplementation>(helper));
+        processors.put(Management.class, new ManagementProcessor<SystemImplementation>());
+        processors.put(ManagementOperation.class, new ManagementOperationProcessor<SystemImplementation>());
 
         ClassVisitor<SystemImplementation> classVisitor = new DefaultClassVisitor<SystemImplementation>(processors);
 

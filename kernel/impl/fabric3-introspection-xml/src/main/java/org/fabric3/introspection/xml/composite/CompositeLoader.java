@@ -45,16 +45,12 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -62,10 +58,10 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.CompositeService;
@@ -92,6 +88,10 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.util.UriHelper;
+
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -437,16 +437,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     Map<String, ServiceDefinition> services = componentType.getServices();
                     int numberOfServices = services.size();
                     if (numberOfServices == 2) {
-                        Iterator<? extends ServiceDefinition> iter = services.values().iterator();
-                        ServiceDefinition one = iter.next();
-                        ServiceDefinition two = iter.next();
-                        if (!one.isManagement() && !two.isManagement()) {
-                            PromotionNotFound error =
-                                    new PromotionNotFound("A promoted service must be specified for " + name, reader);
-                            context.addError(error);
-                            return;
-                        }
-                        promotedService = one.isManagement() ? two : one;
+                        PromotionNotFound error = new PromotionNotFound("A promoted service must be specified for " + name, reader);
+                        context.addError(error);
+                        return;
 
                     } else if (numberOfServices == 1) {
                         promotedService = services.values().iterator().next();

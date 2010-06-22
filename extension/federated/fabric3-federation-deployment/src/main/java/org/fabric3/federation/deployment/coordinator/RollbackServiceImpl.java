@@ -42,8 +42,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
@@ -57,8 +58,8 @@ import org.fabric3.spi.executor.ExecutionException;
 /**
  * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
  */
-@Service(interfaces = {RollbackService.class, RollbackServiceMBean.class})
-public class RollbackServiceImpl implements RollbackService, RollbackServiceMBean {
+@Management(name = "RollbackService", group = "deployment", description = "Performs deployment rollback operations")
+public class RollbackServiceImpl implements RollbackService {
     private DeploymentCache cache;
     private CommandExecutorRegistry executorRegistry;
     private ScopeRegistry scopeRegistry;
@@ -75,6 +76,7 @@ public class RollbackServiceImpl implements RollbackService, RollbackServiceMBea
     }
 
     @SuppressWarnings({"unchecked"})
+    @ManagementOperation(description = "Rollbacks the previous deployment")
     public void rollback() throws RollbackException {
         DeploymentCommand command = cache.undo();
         if (command == null) {

@@ -17,7 +17,7 @@
 
 
     <component name="ContributionServiceMBean">
-        <f3-impl:implementation.system class="org.fabric3.admin.controller.ContributionServiceMBeanImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.admin.controller.ContributionServiceMBean"/>
         <property name="hostName" source="$systemConfig//host.bind.address"/>
     </component>
 

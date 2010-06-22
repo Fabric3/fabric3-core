@@ -34,24 +34,43 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.federation.deployment.coordinator;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.spi.model.type.java;
 
-import org.fabric3.api.annotation.management.Management;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.fabric3.model.type.ModelObject;
 
 /**
- * MBean interface for the RollbackService.
+ * Encapsulates management information about a component operation.
  *
- * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
+ *
+ * @version $Rev: 9131 $ $Date: 2010-06-13 00:37:12 +0200 (Sun, 13 Jun 2010) $
  */
-@Management
-public interface RollbackServiceMBean {
+public class ManagementOperationInfo extends ModelObject {
+    private static final long serialVersionUID = 138617917546848298L;
 
-    /**
-     * Reverts the runtime to its previous deployment state.
-     *
-     * @throws RollbackException if an error occurs during rollback
-     */
-    void rollback() throws RollbackException;
+    private Signature signature;
+    private String description;
 
+    public ManagementOperationInfo(Signature signature, String description) {
+        this.signature = signature;
+        this.description = description;
+    }
+
+    public Signature getSignature() {
+        return signature;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

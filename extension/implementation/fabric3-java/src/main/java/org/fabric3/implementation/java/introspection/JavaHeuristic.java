@@ -51,7 +51,6 @@ import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -63,7 +62,6 @@ import org.fabric3.spi.introspection.java.UnknownInjectionType;
 import org.fabric3.spi.introspection.java.annotation.AmbiguousConstructor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.model.type.binding.JMXBinding;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -115,19 +113,10 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
             evaluateFields(implementation, implClass, context);
         }
 
-        // Add the JMX Management binding to all services tagged as management that are composite scope
-        for (ServiceDefinition service : componentType.getServices().values()) {
-            if (service.isManagement()) {
-                String scope = componentType.getScope();
-                if (!Scope.getScope(scope).isSingleton()) {
-                    ServiceContract contract = service.getServiceContract();
-                    IllegalManagementInterface warning = new IllegalManagementInterface(contract.getInterfaceName(), implClass.getName());
-                    context.addWarning(warning);
-                } else {
-                    JMXBinding binding = new JMXBinding();
-                    service.addBinding(binding);
-                }
-            }
+        String scope = componentType.getScope();
+        if (componentType.isManaged() && !Scope.getScope(scope).isSingleton()) {
+            IllegalManagementAttribute warning = new IllegalManagementAttribute(implClass.getName());
+            context.addWarning(warning);
         }
 
     }

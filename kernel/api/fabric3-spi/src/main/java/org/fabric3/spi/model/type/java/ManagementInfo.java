@@ -41,92 +41,95 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.model.type.component;
+package org.fabric3.spi.model.type.java;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.AbstractPolicyAware;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.model.type.ModelObject;
 
 /**
- * A component type service.
+ * Encapsulates management metadata about a component implementation.
  *
  * @version $Rev$ $Date$
  */
-public class ServiceDefinition extends AbstractPolicyAware {
-    private static final long serialVersionUID = -3331868180749278028L;
+public class ManagementInfo extends ModelObject {
+    private static final long serialVersionUID = 8421549578785177167L;
+
     private String name;
-    private ServiceContract serviceContract;
-    private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
-    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
+    private String group;
+    private String description;
+    private String managementClass;
 
-    public ServiceDefinition(String name) {
-        this(name, null);
-    }
+    private List<ManagementOperationInfo> operations = new ArrayList<ManagementOperationInfo>();
 
-    public ServiceDefinition(String name, ServiceContract serviceContract) {
+    /**
+     * Constructor.
+     *
+     * @param name        the management name of this implementation
+     * @param group       the management group of this implementation
+     * @param description the management description of this implementation
+     * @param clazz       the management class
+     */
+    public ManagementInfo(String name, String group, String description, String clazz) {
         this.name = name;
-        this.serviceContract = serviceContract;
+        this.description = description;
+        this.group = group;
+        this.managementClass = clazz;
     }
 
     /**
-     * Return the name of this service definition.
+     * Returns the management name of this implementation.
      *
-     * @return the name of this service definition
+     * @return the management name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the service contract
+     * Returns the management group of this implementation.
      *
-     * @return the service contract
+     * @return the management group
      */
-    public ServiceContract getServiceContract() {
-        return serviceContract;
+    public String getGroup() {
+        return group;
     }
 
     /**
-     * Sets the service contract
+     * Returns the management description of this implementation.
      *
-     * @param contract the service contract
+     * @return the management description
      */
-    public void setServiceContract(ServiceContract contract) {
-        this.serviceContract = contract;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Returns the bindings configured for the service
+     * Returns the management class.
      *
-     * @return the bindings configured for the service
+     * @return the management class
      */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
+    public String getManagementClass() {
+        return managementClass;
     }
 
     /**
-     * Configures the service with a binding
+     * Returns the ordered collection of operations to be exposed to the runtime management framework.
      *
-     * @param binding the binding
+     * @return the ordered collection of operations to be exposed to the runtime management framework.
      */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
+    public List<ManagementOperationInfo> getOperations() {
+        return operations;
     }
 
     /**
-     * @return List of callback bindings defined against the reference.
+     * Adds an operation to be exposed to the runtime management framework.
+     *
+     * @param info the operation information
      */
-    public List<BindingDefinition> getCallbackBindings() {
-        return callbackBindings;
-    }
-
-    /**
-     * @param binding callback binding to be added.
-     */
-    public void addCallbackBinding(BindingDefinition binding) {
-        this.callbackBindings.add(binding);
+    public void addOperation(ManagementOperationInfo info) {
+        operations.add(info);
     }
 
 }

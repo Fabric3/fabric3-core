@@ -45,19 +45,18 @@ import org.easymock.EasyMock;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.domain.ComponentInfo;
-import org.fabric3.management.domain.DomainMBean;
 import org.fabric3.management.domain.InvalidPathException;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DomainMBeanImplTestCase extends TestCase {
-    private DomainMBean mBean;
+    private DistributedDomainMBean mBean;
     private static final URI DOMAIN = URI.create("fabric3://domain");
     private static final URI CHILD1 = URI.create("fabric3://domain/child1");
     private static final URI CHILD2 = URI.create("fabric3://domain/child2");

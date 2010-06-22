@@ -54,6 +54,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * Builds a JavaComponent from a physical definition.
@@ -69,8 +70,9 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
                                 @Reference InstanceFactoryBuilder factoryBuilder,
                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                 @Reference PropertyObjectFactoryBuilder propertyBuilder,
+                                @Reference ManagementService managementService,
                                 @Reference IntrospectionHelper helper) {
-        super(classLoaderRegistry, propertyBuilder, helper);
+        super(classLoaderRegistry, propertyBuilder, managementService, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }
@@ -86,7 +88,6 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
         // create the InstanceFactoryProvider based on the definition in the model
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
-
         InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
@@ -96,11 +97,13 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         boolean eager = definition.isEagerInit();
 
         JavaComponent component = new JavaComponent(uri, provider, scopeContainer, deployable, eager, idleTime, age);
-
         buildContexts(component, provider);
-
+        export(definition, classLoader, component);
         return component;
+    }
 
+    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws BuilderException {
+        dispose(definition);
     }
 
 }

@@ -49,7 +49,6 @@ import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.management.Management;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -61,7 +60,7 @@ import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * Processes the @Service annotation on a component implementaiton class.
+ * Processes the @Service annotation on a component implementation class.
  *
  * @version $Rev$ $Date$
  */
@@ -106,7 +105,6 @@ public class ServiceProcessor<I extends Implementation<? extends InjectingCompon
     private ServiceDefinition createDefinition(Class<?> service, Class<?> implClass, IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(service, implClass, context);
         ServiceDefinition definition = new ServiceDefinition(serviceContract.getInterfaceName(), serviceContract);
-        definition.setManagement(service.isAnnotationPresent(Management.class));
         Annotation[] annotations = service.getAnnotations();
         if (policyProcessor != null) {
             for (Annotation annotation : annotations) {

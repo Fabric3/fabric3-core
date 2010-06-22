@@ -58,7 +58,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.type.binding.JMXBinding;
 import org.fabric3.spi.policy.EffectivePolicy;
 import org.fabric3.spi.policy.PolicyMetadata;
 import org.fabric3.spi.policy.PolicyResolutionException;
@@ -110,7 +109,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
                                         LogicalBinding<?> targetBinding,
                                         LogicalComponent<?> source,
                                         LogicalComponent<?> target) throws PolicyResolutionException {
-        if ((noPolicy(source) && noPolicy(target)) || sourceBinding.getDefinition() instanceof JMXBinding) {
+        if ((noPolicy(source) && noPolicy(target))) {
             return EMPTY_RESULT;
         }
         PolicyResultImpl policyResult = new PolicyResultImpl();

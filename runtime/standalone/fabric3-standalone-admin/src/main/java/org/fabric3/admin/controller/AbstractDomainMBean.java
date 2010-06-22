@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.AssemblyFailure;
@@ -68,6 +70,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 /**
  * @version $Rev$ $Date$
  */
+@Management
 public abstract class AbstractDomainMBean {
     protected Domain domain;
     protected MetaDataStore store;
@@ -85,10 +88,13 @@ public abstract class AbstractDomainMBean {
         this.monitor = monitor;
     }
 
+    @ManagementOperation(description = "Deploys a contribution to the domain.  All contained deployables will be included in the domain composite.")
     public void deploy(URI uri) throws DeploymentManagementException {
         deploy(uri, null);
     }
 
+    @ManagementOperation(description = "Deploys a contribution to the domain using the specified deployment plan.  All contained deployables will be "
+            + "included in the domain composite.")
     public void deploy(URI uri, String plan) throws DeploymentManagementException {
         Contribution contribution = store.find(uri);
         if (contribution == null) {
@@ -126,6 +132,7 @@ public abstract class AbstractDomainMBean {
         }
     }
 
+    @ManagementOperation(description = "Undeploys deployables contained in a contribution")
     public void undeploy(URI uri, boolean force) throws DeploymentManagementException {
         Contribution contribution = store.find(uri);
         if (contribution == null) {
@@ -151,6 +158,8 @@ public abstract class AbstractDomainMBean {
         }
     }
 
+    @ManagementOperation(description = "Returns a list of ComponentInfo instances representing the components deployed to the given composite path. "
+            + "The path / is interpreted as the domain composite.")
     public List<ComponentInfo> getDeployedComponents(String path) throws InvalidPathException {
         String tokens[] = path.split("/");
         LogicalCompositeComponent currentComponent = lcm.getRootComponent();

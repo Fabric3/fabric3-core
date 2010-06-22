@@ -38,12 +38,10 @@
 package org.fabric3.implementation.java.introspection;
 
 import java.lang.annotation.Annotation;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.management.Management;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -105,24 +103,9 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
             componentType.add(serviceDefinition);
         } else if (interfaces.size() == 2) {
             // The class implements two interfaces. If one of them is a management interface, use the other
-            Iterator<Class<?>> iter = interfaces.iterator();
-            Class<?> serviceOne = iter.next();
-            Class<?> serviceTwo = iter.next();
-            if (serviceOne.isAnnotationPresent(Management.class)) {
-                ServiceDefinition serviceOneDefinition = createManagementServiceDefinition(serviceOne, implClass, context);
-                componentType.add(serviceOneDefinition);
-                ServiceDefinition serviceTwoDefinition = createServiceDefinition(serviceTwo, implClass, context);
-                componentType.add(serviceTwoDefinition);
-            } else if (serviceTwo.isAnnotationPresent(Management.class)) {
-                ServiceDefinition serviceOneDefinition = createServiceDefinition(serviceOne, implClass, context);
-                componentType.add(serviceOneDefinition);
-                ServiceDefinition serviceTwoDefinition = createManagementServiceDefinition(serviceTwo, implClass, context);
-                componentType.add(serviceTwoDefinition);
-            } else {
-                // No management interfaces, use the impl class per SCA rules
-                ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
-                componentType.add(serviceDefinition);
-            }
+            // No management interfaces, use the impl class per SCA rules
+            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
+            componentType.add(serviceDefinition);
         } else {
             // multiple interfaces, use the impl class per SCA rules
             ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
@@ -152,13 +135,6 @@ public class JavaServiceHeuristic implements HeuristicProcessor<JavaImplementati
             policyIntrospector.introspectPolicyOnOperations(contract, implClass, context);
 
         }
-    }
-
-    private ServiceDefinition createManagementServiceDefinition(Class<?> serviceInterface, Class<?> implClass, IntrospectionContext context) {
-        ServiceContract contract = contractProcessor.introspect(serviceInterface, implClass, context);
-        ServiceDefinition service = new ServiceDefinition(contract.getInterfaceName(), contract);
-        service.setManagement(true);
-        return service;
     }
 
 }

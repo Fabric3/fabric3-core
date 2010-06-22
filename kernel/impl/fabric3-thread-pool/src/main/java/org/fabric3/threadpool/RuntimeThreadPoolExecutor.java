@@ -40,7 +40,6 @@ package org.fabric3.threadpool;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -51,8 +50,9 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 
 /**
@@ -65,8 +65,8 @@ import org.fabric3.api.annotation.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Service(interfaces = {ExecutorService.class, RuntimeThreadPoolExecutorMBean.class})
-public class RuntimeThreadPoolExecutor extends AbstractExecutorService implements RuntimeThreadPoolExecutorMBean {
+@Management(name = "RuntimeThreadPoolExecutor", group = "kernel", description = "Manages runtime thread pools")
+public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 20;
     private int maximumSize = 20;
     private int queueSize = 10000;
@@ -117,6 +117,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService implement
 
     /**
      * Sets the period between checks for stalled threads.
+     *
      * @param period the period between checks for stalled threads.
      */
     @Property(required = false)
@@ -130,56 +131,69 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService implement
      * @param stallThreshold the time a thread can be processing work before it is considered stalled
      */
     @Property(required = false)
+    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled")
     public void setStallThreshold(int stallThreshold) {
         this.stallThreshold = stallThreshold;
     }
 
+    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled")
     public int getStallThreshold() {
         return stallThreshold;
     }
 
+    @ManagementOperation(description = "Returns the approximate number of threads actively executing tasks")
     public int getActiveCount() {
         return delegate.getActiveCount();
     }
 
+    @ManagementOperation(description = "The maximum thread pool size")
     public int getMaximumPoolSize() {
         return delegate.getMaximumPoolSize();
     }
 
+    @ManagementOperation(description = "The maximum thread pool size")
     public void setMaximumPoolSize(int size) {
         delegate.setMaximumPoolSize(size);
     }
 
+    @ManagementOperation(description = "The core thread pool size")
     public int getCorePoolSize() {
         return delegate.getCorePoolSize();
     }
 
+    @ManagementOperation(description = "The core thread pool size")
     public void setCorePoolSize(int size) {
         delegate.setCorePoolSize(size);
     }
 
+    @ManagementOperation(description = "Returns the largest size the thread pool reached")
     public int getLargestPoolSize() {
         return delegate.getLargestPoolSize();
     }
 
+    @ManagementOperation(description = "Returns the remaining capacity the receive queue has before additional work will be rejected")
     public int getRemainingCapacity() {
         return queue.remainingCapacity();
     }
 
+    @ManagementOperation(description = "Returns the total time the thread pool has spent executing requests")
     public long getTotalExecutionTime() {
         return totalExecutionTime.get();
     }
 
+    @ManagementOperation(description = "Returns the total number of work items processed by the thread pool")
     public long getCompletedWorkCount() {
         return completedWorkCount.get();
     }
 
+    @ManagementOperation(description = "Returns the average elapsed time to process a work request")
     public double getMeanExecutionTime() {
         long count = completedWorkCount.get();
         long totalTime = totalExecutionTime.get();
         return count == 0 ? 0 : totalTime / count;
     }
 
+    @ManagementOperation(description = "Returns the longest elapsed time for a currently running work request")
     public long getLongestRunning() {
         RunnableWrapper runnable = inFlight.peek();
         if (runnable == null) {

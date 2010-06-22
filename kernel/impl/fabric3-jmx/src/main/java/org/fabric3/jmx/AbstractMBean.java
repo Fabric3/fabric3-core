@@ -35,30 +35,51 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.lcm;
+package org.fabric3.jmx;
 
-import org.fabric3.api.annotation.management.Management;
-import org.fabric3.model.type.component.Composite;
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.DynamicMBean;
+import javax.management.JMException;
+import javax.management.MBeanInfo;
 
 /**
  * @version $Rev$ $Date$
  */
-@Management
-public interface LogicalComponentManagerMBean {
+public abstract class AbstractMBean implements DynamicMBean {
+    protected final MBeanInfo mbeanInfo;
 
-    /**
-     * Returns the URI of this domain.
-     *
-     * @return the URI of this domain
-     */
-    String getDomainURI();
+    public AbstractMBean(MBeanInfo mbeanInfo) {
+        this.mbeanInfo = mbeanInfo;
+    }
 
-    /**
-     * Returns the domain composite.
-     * <p/>
-     * The domain composite is a pseudo composite representing the active components in the domain.
-     *
-     * @return the domain composite
-     */
-    Composite getDomainComposite();
+    public MBeanInfo getMBeanInfo() {
+        return mbeanInfo;
+    }
+
+    public AttributeList getAttributes(String[] strings) {
+        AttributeList list = new AttributeList(strings.length);
+        for (String s : strings) {
+            try {
+                Object value = getAttribute(s);
+                list.add(new Attribute(s, value));
+            } catch (JMException e) {
+                // ignore exceptions which means the attribute won't be in the result
+            }
+        }
+        return list;
+    }
+
+    public AttributeList setAttributes(AttributeList attributeList) {
+        AttributeList result = new AttributeList(attributeList.size());
+        for (Object o : attributeList) {
+            Attribute attribute = (Attribute) o;
+            try {
+                setAttribute(attribute);
+            } catch (JMException e) {
+                // ignore exceptions which means the attribute won't be in the result
+            }
+        }
+        return result;
+    }
 }

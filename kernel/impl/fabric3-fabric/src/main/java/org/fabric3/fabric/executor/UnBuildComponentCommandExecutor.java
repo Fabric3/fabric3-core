@@ -44,32 +44,43 @@
 package org.fabric3.fabric.executor;
 
 import java.net.URI;
+import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.fabric.builder.BuilderNotFoundException;
 import org.fabric3.fabric.command.UnBuildComponentCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Deregisters the component from the component manager.
+ * De-registers the component from the component manager.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class UnBuildComponentCommandExecutor implements CommandExecutor<UnBuildComponentCommand> {
-
     private CommandExecutorRegistry executorRegistry;
     private ComponentManager componentManager;
+    private Map<Class<?>, ComponentBuilder> builders;
 
     public UnBuildComponentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ComponentManager componentManager) {
         this.executorRegistry = executorRegistry;
         this.componentManager = componentManager;
+    }
+
+    @Reference(required = false)
+    public void setBuilders(Map<Class<?>, ComponentBuilder> builders) {
+        this.builders = builders;
     }
 
     @Init
@@ -77,12 +88,23 @@ public class UnBuildComponentCommandExecutor implements CommandExecutor<UnBuildC
         executorRegistry.register(UnBuildComponentCommand.class, this);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void execute(UnBuildComponentCommand command) throws ExecutionException {
-        URI uri = command.getDefinition().getComponentUri();
+        PhysicalComponentDefinition definition = command.getDefinition();
+        URI uri = definition.getComponentUri();
         try {
-            componentManager.unregister(uri);
-        } catch (RegistrationException re) {
-            throw new ExecutionException("Unexpected exception unregistering component: " + uri, re);
+            Component component = componentManager.unregister(uri);
+            ComponentBuilder builder = builders.get(definition.getClass());
+            if (builder == null) {
+                throw new BuilderNotFoundException("Builder not found for " + definition.getClass().getName());
+            }
+            builder.dispose(definition, component);
+        } catch (RegistrationException e) {
+            throw new ExecutionException("Unexpected exception un-registering component: " + uri, e);
+        } catch (BuilderNotFoundException e) {
+            throw new ExecutionException(e);
+        } catch (BuilderException e) {
+            throw new ExecutionException(e);
         }
 
     }

@@ -44,6 +44,8 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
@@ -54,6 +56,7 @@ import org.fabric3.spi.monitor.MonitorService;
  *
  * @version $Rev$ $Date$
  */
+@Management(name = "MonitorService", description = "Sets monitoring levels for the runtime")
 public class WebLogicMonitorService implements MonitorService {
     private ComponentManager manager;
 
@@ -61,6 +64,7 @@ public class WebLogicMonitorService implements MonitorService {
         this.manager = manager;
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a component")
     public void setComponentLevel(String uri, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
@@ -69,6 +73,7 @@ public class WebLogicMonitorService implements MonitorService {
         }
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a deployable composite")
     public void setDeployableLevel(String deployable, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));

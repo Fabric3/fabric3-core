@@ -96,11 +96,10 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
     }
 
     public void execute(BuildComponentCommand command) throws ExecutionException {
-
         try {
-            PhysicalComponentDefinition physicalComponentDefinition = command.getDefinition();
-            Component component = build(physicalComponentDefinition);
-            URI classLoaderId = physicalComponentDefinition.getClassLoaderId();
+            PhysicalComponentDefinition definition = command.getDefinition();
+            Component component = build(definition);
+            URI classLoaderId = definition.getClassLoaderId();
             component.setClassLoaderId(classLoaderId);
             componentManager.register(component);
         } catch (BuilderException e) {
@@ -113,18 +112,18 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
     /**
      * Builds a physical component from component definition.
      *
-     * @param componentDefinition Component definition.
+     * @param definition the component definition.
      * @return Component to be built.
      * @throws BuilderException if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    public Component build(PhysicalComponentDefinition componentDefinition) throws BuilderException {
+    public Component build(PhysicalComponentDefinition definition) throws BuilderException {
 
-        ComponentBuilder builder = builders.get(componentDefinition.getClass());
+        ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
-            throw new BuilderNotFoundException("Builder not found for " + componentDefinition.getClass().getName());
+            throw new BuilderNotFoundException("Builder not found for " + definition.getClass().getName());
         }
-        return builder.build(componentDefinition);
+        return builder.build(definition);
 
     }
 

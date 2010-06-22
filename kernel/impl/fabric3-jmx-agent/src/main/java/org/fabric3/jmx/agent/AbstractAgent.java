@@ -49,7 +49,7 @@ import javax.management.remote.JMXServiceURL;
 /**
  * Default agent.
  *
- * @version $Revison$ $Date$
+ * @version $Revision$ $Date$
  */
 public abstract class AbstractAgent implements Agent {
     private static final String DOMAIN = "fabric3";
@@ -59,15 +59,6 @@ public abstract class AbstractAgent implements Agent {
     private JMXConnectorServer connectorServer;
     protected int minPort;
     private int maxPort;
-
-    /**
-     * Constructor using the default RMI port (1099).
-     *
-     * @throws ManagementException If unable to start the agent.
-     */
-    public AbstractAgent() throws ManagementException {
-        this(1199, -1);
-    }
 
     /**
      * Constructor using the given port range.

@@ -66,7 +66,7 @@ import org.fabric3.spi.model.type.java.JavaTypeInfo;
 public interface IntrospectionHelper {
 
     /**
-     * Load the class using the supplied ClassLoader. The class will be defined so any initializers present will be fired. As the class is being
+     * Load the class using the supplied ClassLoader. The class will be defined so any initializer present will be fired. As the class is being
      * loaded, the Thread context ClassLoader will be set to the supplied classloader.
      *
      * @param name the name of the class to load
@@ -162,7 +162,7 @@ public interface IntrospectionHelper {
     InjectableType inferType(Type type, TypeMapping typeMapping);
 
     /**
-     * Determine if an annotation is present on this interface or any superinterface.
+     * Determine if an annotation is present on this interface or any super interface.
      * <p/>
      * This is similar to the use of @Inherited on classes (given @Inherited does not apply to interfaces).
      *
@@ -173,7 +173,7 @@ public interface IntrospectionHelper {
     boolean isAnnotationPresent(Class<?> type, Class<? extends Annotation> annotationType);
 
     /**
-     * Resolves the formal parameters of a class, its superclass and superinterfaces to the concrete types.
+     * Resolves the formal parameters of a class, its super class and super interfaces to the concrete types.
      *
      * @param type        the class whose parameters should be resolved
      * @param typeMapping the type mapping to update with resolved types
@@ -202,18 +202,18 @@ public interface IntrospectionHelper {
     Class<?> getBaseType(Type type, TypeMapping typeMapping);
 
     /**
-     * Returns all service interfaces directly implemented by a class or any superclass.
+     * Returns all service interfaces directly implemented by a class or any super class.
      * <p/>
      * Class#getInterfaces only returns interfaces directly implemented by the class. This method returns all interfaces including those implemented
-     * by any superclasses. It excludes interfaces that are super-interfaces of those implemented by subclasses.
+     * by any super classes. It excludes interfaces that are super-interfaces of those implemented by subclasses.
      *
      * @param type the class whose interfaces should be returned
-     * @return the unique interfaces immplemented by that class
+     * @return the unique interfaces implemented by that class
      */
     Set<Class<?>> getImplementedInterfaces(Class<?> type);
 
     /**
-     * Returns method injection sites provided by a class or any superclass.
+     * Returns method injection sites provided by a class or any super class.
      * <p/>
      * Methods that are part of any service contract are excluded.
      *
@@ -224,7 +224,7 @@ public interface IntrospectionHelper {
     Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition> services);
 
     /**
-     * Returns method injection sites provided by a class or any superclass.
+     * Returns method injection sites provided by a class or any super class.
      * <p/>
      * Methods that are part of any service contract are excluded.
      *

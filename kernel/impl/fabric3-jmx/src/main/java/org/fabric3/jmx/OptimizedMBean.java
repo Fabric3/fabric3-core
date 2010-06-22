@@ -35,8 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jmx.runtime;
+package org.fabric3.jmx;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
@@ -45,32 +47,35 @@ import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ReflectionException;
 
+import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
  */
-public class UnoptimizedMBean extends AbstractMBean {
-    private final Map<String, Interceptor> getters;
-    private final Map<String, Interceptor> setters;
-    private final Map<OperationKey, Interceptor> operations;
+public class OptimizedMBean<T> extends AbstractMBean {
+    private final ObjectFactory<T> objectFactory;
+    private final Map<String, Method> getters;
+    private final Map<String, Method> setters;
+    private final Map<OperationKey, Method> operations;
 
-    public UnoptimizedMBean(MBeanInfo mbeanInfo,
-                            Map<String, Interceptor> getters,
-                            Map<String, Interceptor> setters,
-                            Map<OperationKey, Interceptor> operations) {
+    public OptimizedMBean(ObjectFactory<T> objectFactory,
+                          MBeanInfo mbeanInfo,
+                          Map<String, Method> getters,
+                          Map<String, Method> setters,
+                          Map<OperationKey, Method> operations) {
         super(mbeanInfo);
+        this.objectFactory = objectFactory;
         this.getters = getters;
         this.setters = setters;
         this.operations = operations;
     }
 
     public Object getAttribute(String s) throws AttributeNotFoundException, MBeanException, ReflectionException {
-        Interceptor interceptor = getters.get(s);
+        Method interceptor = getters.get(s);
         if (interceptor == null) {
             throw new AttributeNotFoundException(s);
         }
@@ -79,31 +84,45 @@ public class UnoptimizedMBean extends AbstractMBean {
 
     public void setAttribute(Attribute attribute)
             throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
-        Interceptor interceptor = setters.get(attribute.getName());
+        Method interceptor = setters.get(attribute.getName());
         if (interceptor == null) {
             throw new AttributeNotFoundException(attribute.getName());
         }
         invoke(interceptor, new Object[]{attribute.getValue()});
     }
 
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public Object invoke(String s, Object[] objects, String[] strings) throws MBeanException, ReflectionException {
         OperationKey operation = new OperationKey(s, strings);
-        Interceptor interceptor = operations.get(operation);
+        Method interceptor = operations.get(operation);
         if (interceptor == null) {
             throw new ReflectionException(new NoSuchMethodException(operation.toString()));
         }
         return invoke(interceptor, objects);
     }
 
-    Object invoke(Interceptor interceptor, Object[] args) throws MBeanException, ReflectionException {
+    Object invoke(Method interceptor, Object[] args) throws MBeanException, ReflectionException {
         WorkContext workContext = new WorkContext();
         workContext.addCallFrame(new CallFrame());
-        Message message = new MessageImpl(args, false, workContext);
-        message = interceptor.invoke(message);
-        if (message.isFault()) {
-            throw new MBeanException((Exception) message.getBody());
-        } else {
-            return message.getBody();
+        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            T instance = objectFactory.getInstance();
+            return interceptor.invoke(instance, args);
+        } catch (ObjectCreationException e) {
+            throw new ReflectionException(e);
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            // FIXME print to a monitor
+            cause.printStackTrace();
+            if (cause instanceof Exception) {
+                throw new MBeanException((Exception) e.getCause());
+            } else {
+                throw new ReflectionException(e);
+            }
+        } finally {
+            WorkContextTunnel.setThreadWorkContext(oldContext);
         }
     }
 }

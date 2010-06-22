@@ -74,4 +74,8 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
         }
 
     }
+
+    public void dispose(MonitorComponentDefinition definition, MonitorComponent component) throws BuilderException {
+        // no-op
+    }
 }

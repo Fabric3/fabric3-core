@@ -39,7 +39,6 @@ package org.fabric3.fabric.instantiator.promotion;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.fabric3.fabric.instantiator.AmbiguousReference;
@@ -124,16 +123,7 @@ public class PromotionResolutionServiceImpl implements PromotionResolutionServic
             if (componentServices.size() == 0) {
                 raiseNoServiceError(logicalService, promotedComponentUri, context);
             } else if (componentServices.size() == 2) {
-                Iterator<LogicalService> iter = componentServices.iterator();
-                LogicalService one = iter.next();
-                LogicalService two = iter.next();
-                if (one.getDefinition().isManagement()) {
-                    logicalService.setPromotedUri(two.getUri());
-                } else if (two.getDefinition().isManagement()) {
-                    logicalService.setPromotedUri(one.getUri());
-                } else {
-                    raiseAmbiguousServiceError(logicalService, promotedComponentUri, context);
-                }
+                raiseAmbiguousServiceError(logicalService, promotedComponentUri, context);
             } else if (componentServices.size() > 2) {
                 raiseAmbiguousServiceError(logicalService, promotedComponentUri, context);
             } else {

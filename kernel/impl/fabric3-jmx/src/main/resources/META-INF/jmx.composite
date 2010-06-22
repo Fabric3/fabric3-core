@@ -15,12 +15,8 @@ Public License. See the accompanying license file for details.
            name="JMXComposite"
            autowire="true">
 
-    <component name="JMXBindingGenerator" f3-core:key="org.fabric3.spi.model.type.binding.JMXBinding">
-        <f3-impl:implementation.system class="org.fabric3.jmx.control.JMXBindingGenerator"/>
-    </component>
-
-    <component name="JMXWireAttacher" f3-core:key="org.fabric3.jmx.provision.JMXSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.jmx.runtime.JMXWireAttacher"/>
+    <component name="JMXManagementService">
+        <f3-impl:implementation.system class="org.fabric3.jmx.JMXManagementService"/>
     </component>
 
 </composite>

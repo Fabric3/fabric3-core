@@ -52,15 +52,23 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
  *
  * @version $Rev$ $Date$
  */
-public interface ComponentBuilder<PCD extends PhysicalComponentDefinition, C extends Component> {
+public interface ComponentBuilder<D extends PhysicalComponentDefinition, C extends Component> {
 
     /**
      * Builds a component from its physical component definition.
      *
-     * @param componentDefinition Physical component definition of the component to be built.
-     * @return A component instance that is ready to go live.
-     * @throws BuilderException If unable to build the component.
+     * @param definition physical component definition of the component to be built
+     * @return the component
+     * @throws BuilderException if unable to build the component
      */
-    C build(PCD componentDefinition) throws BuilderException;
+    C build(D definition) throws BuilderException;
 
+    /**
+     * Disposes a component.
+     *
+     * @param definition physical component definition of the component to be built.
+     * @param component  the component
+     * @throws BuilderException if unable to build the component
+     */
+    void dispose(D definition, C component) throws BuilderException;
 }

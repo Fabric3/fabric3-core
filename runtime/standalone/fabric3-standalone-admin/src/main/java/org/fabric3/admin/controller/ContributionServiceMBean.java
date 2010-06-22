@@ -51,6 +51,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.host.contribution.ContributionException;
@@ -66,10 +68,10 @@ import org.fabric3.management.contribution.ContributionInfo;
 import org.fabric3.management.contribution.ContributionInstallException;
 import org.fabric3.management.contribution.ContributionLockedManagementException;
 import org.fabric3.management.contribution.ContributionRemoveException;
-import org.fabric3.management.contribution.ContributionServiceMBean;
 import org.fabric3.management.contribution.ContributionUninstallException;
 import org.fabric3.management.contribution.ErrorInfo;
 import org.fabric3.management.contribution.InvalidContributionException;
+import org.fabric3.spi.VoidService;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.host.ServletHost;
@@ -78,7 +80,8 @@ import org.fabric3.spi.host.ServletHost;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
+@Management(name = "ContributionService", group = "deployment", description = "Manages contributions in a domain")
+public class ContributionServiceMBean implements VoidService {
     private static final String REPOSITORY = "/admin/repository";
     private static final String PROFILE = "/admin/profile";
 
@@ -90,10 +93,10 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
     private String contributionAddress;
     private String profileAddress;
 
-    public ContributionServiceMBeanImpl(@Reference ServletHost servletHost,
-                                       @Reference ContributionService contributionService,
-                                       @Reference MetaDataStore metaDataStore,
-                                       @Monitor ContributionServiceMBeanMonitor monitor) {
+    public ContributionServiceMBean(@Reference ServletHost servletHost,
+                                        @Reference ContributionService contributionService,
+                                        @Reference MetaDataStore metaDataStore,
+                                        @Monitor ContributionServiceMBeanMonitor monitor) {
         this.servletHost = servletHost;
         this.contributionService = contributionService;
         this.metaDataStore = metaDataStore;
@@ -101,7 +104,7 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
     }
 
     /**
-     * Optionally sets the host name to use for determing the IP address for clients to use when uploading contributions to a multi-homed machine.
+     * Optionally sets the host name to use for determining the IP address for clients to use when uploading contributions to a multi-homed machine.
      *
      * @param hostName the host name
      */
@@ -120,14 +123,17 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         servletHost.registerMapping(PROFILE + "/*", profileServlet);
     }
 
+    @ManagementOperation(description = "Returns the network address the service receives contribution archives on")
     public String getContributionServiceAddress() {
         return contributionAddress;
     }
 
+    @ManagementOperation(description = "Returns the network address the service receives profile archives on")
     public String getProfileServiceAddress() {
         return profileAddress;
     }
 
+    @ManagementOperation(description = "Returns metadata for all contributions deployed in a domain")
     public Set<ContributionInfo> getContributions() {
         Set<Contribution> contributions = metaDataStore.getContributions();
         Set<ContributionInfo> infos = new TreeSet<ContributionInfo>();
@@ -145,11 +151,12 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         return infos;
     }
 
+    @ManagementOperation(description = "Installs a stored contribution")
     public void install(URI uri) throws ContributionInstallException {
         try {
             contributionService.install(uri);
         } catch (ValidationException e) {
-            // propagate validaton error messages to the client
+            // propagate validation error messages to the client
             List<ErrorInfo> errors = new ArrayList<ErrorInfo>();
             for (ValidationFailure failure : e.getErrors()) {
                 if (failure instanceof ArtifactValidationFailure) {
@@ -173,6 +180,7 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         }
     }
 
+    @ManagementOperation(description = "Uninstalls a contribution")
     public void uninstall(URI uri) throws ContributionUninstallException {
         try {
             contributionService.uninstall(uri);
@@ -188,6 +196,7 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         }
     }
 
+    @ManagementOperation(description = "Removes a contribution")
     public void remove(URI uri) throws ContributionRemoveException {
         try {
             contributionService.remove(uri);
@@ -198,11 +207,12 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         }
     }
 
+    @ManagementOperation(description = "Installs a profile")
     public void installProfile(URI uri) throws ContributionInstallException {
         try {
             contributionService.installProfile(uri);
         } catch (ValidationException e) {
-            // propagate validaton error messages to the client
+            // propagate validation error messages to the client
             List<ErrorInfo> errors = new ArrayList<ErrorInfo>();
             for (ValidationFailure failure : e.getErrors()) {
                 if (failure instanceof ArtifactValidationFailure) {
@@ -226,6 +236,7 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         }
     }
 
+    @ManagementOperation(description = "Uninstalls a profile")
     public void uninstallProfile(URI uri) throws ContributionUninstallException {
         try {
             contributionService.uninstallProfile(uri);
@@ -241,6 +252,7 @@ public class ContributionServiceMBeanImpl implements ContributionServiceMBean {
         }
     }
 
+    @ManagementOperation(description = "Removes a profile from the domain")
     public void removeProfile(URI uri) throws ContributionRemoveException {
         try {
             contributionService.removeProfile(uri);

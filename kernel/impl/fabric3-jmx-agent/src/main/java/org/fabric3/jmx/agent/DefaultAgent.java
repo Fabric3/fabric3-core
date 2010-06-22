@@ -43,14 +43,14 @@ import javax.management.MBeanServerFactory;
 /**
  * Default JMX agent.
  *
- * @version $Revison$ $Date$
+ * @version $Revision$ $Date$
  */
 public class DefaultAgent implements Agent {
     private static final String DOMAIN = "fabric3";
     private MBeanServer mBeanServer;
 
     /**
-     * Initialies the server.
+     * Initializes the MBean server.
      *
      * @throws ManagementException If unable to start the agent.
      */

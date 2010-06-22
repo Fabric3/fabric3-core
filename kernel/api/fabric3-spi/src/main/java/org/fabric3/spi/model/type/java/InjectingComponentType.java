@@ -65,6 +65,9 @@ public class InjectingComponentType extends ComponentType {
     private String implClass;
     private String scope;
     private int initLevel;
+    private boolean managed;
+    private ManagementInfo managementInfo;
+
     private Signature constructor;
     private Signature initMethod;
     private Signature destroyMethod;
@@ -133,6 +136,42 @@ public class InjectingComponentType extends ComponentType {
      */
     public boolean isEagerInit() {
         return initLevel > 0;
+    }
+
+    /**
+     * Returns true if this implementation is to be exposed for management.
+     *
+     * @return true if this implementation is to be exposed for management
+     */
+    public boolean isManaged() {
+        return managed;
+    }
+
+    /**
+     * Sets if this implementation is to be exposed for management.
+     *
+     * @param managed true if this implementation is to be exposed for management
+     */
+    public void setManaged(boolean managed) {
+        this.managed = managed;
+    }
+
+    /**
+     * Returns the ManagementInfo if this implementation is managed or null.
+     *
+     * @return the ManagementInfo or null
+     */
+    public ManagementInfo getManagementInfo() {
+        return managementInfo;
+    }
+
+    /**
+     * Sets the ManagementInfo for this implementation.
+     *
+     * @param managementInfo the ManagementInfo
+     */
+    public void setManagementInfo(ManagementInfo managementInfo) {
+        this.managementInfo = managementInfo;
     }
 
     /**

@@ -53,7 +53,6 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.host.Names;
-import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
@@ -67,6 +66,8 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
+
+import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 
 /**
  * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
@@ -139,6 +140,10 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         QName deployable = definition.getDeployable();
         SCAApplicationContext parent = createParentContext(classLoader);
         return new SpringComponent(componentUri, deployable, parent, source, classLoader);
+    }
+
+    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
+        // no-op
     }
 
     /**

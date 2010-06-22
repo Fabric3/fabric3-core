@@ -79,4 +79,8 @@ public class MockComponentBuilder implements ComponentBuilder<MockComponentDefin
         return new MockComponent(componentDefinition.getComponentUri(), objectFactory);
     }
 
+    public void dispose(MockComponentDefinition definition, MockComponent component) throws BuilderException {
+        //no-op
+    }
+
 }

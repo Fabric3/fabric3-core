@@ -35,33 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jmx.provision;
+package org.fabric3.spi.management;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import java.net.URI;
+
+import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 8369 $ $Date: 2009-12-04 17:26:32 +0100 (Fri, 04 Dec 2009) $
  */
-public class JMXSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = 5646551044358124108L;
+public class ManagementException extends Fabric3Exception {
+    private static final long serialVersionUID = 1545054739250774920L;
 
-    private String interfaceName;
-
-    /**
-     * Returns the name of the Java interface for the MBean.
-     *
-     * @return the name of the Java interface for the MBean
-     */
-    public String getInterfaceName() {
-        return interfaceName;
+    public ManagementException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    /**
-     * Sets the name of the Java interface for the MBean.
-     *
-     * @param interfaceName the name of the Java interface for the MBean
-     */
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
+    public ManagementException(Throwable cause) {
+        super(cause);
     }
 }

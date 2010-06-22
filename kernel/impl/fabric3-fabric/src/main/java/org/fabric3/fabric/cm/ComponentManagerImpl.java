@@ -74,8 +74,8 @@ public class ComponentManagerImpl implements ComponentManager {
         components.put(uri, component);
     }
 
-    public synchronized void unregister(URI uri) throws RegistrationException {
-        components.remove(uri);
+    public synchronized Component unregister(URI uri) throws RegistrationException {
+        return components.remove(uri);
     }
 
     public Component getComponent(URI name) {

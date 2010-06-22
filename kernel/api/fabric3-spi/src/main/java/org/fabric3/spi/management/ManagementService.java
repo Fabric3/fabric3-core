@@ -35,34 +35,38 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.domain;
+package org.fabric3.spi.management;
 
 import java.net.URI;
 
-import org.fabric3.api.annotation.management.Management;
+import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
- * MBean for invoking runtime domain operations.
+ * Exposes a component to the underlying runtime management framework.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8369 $ $Date: 2009-12-04 17:26:32 +0100 (Fri, 04 Dec 2009) $
  */
-@Management
-public interface RuntimeDomainMBean extends DomainMBean {
+public interface ManagementService {
 
     /**
-     * Deploys contributions contained in a profile to the domain.
+     * Expose the component for management
      *
-     * @param uri the profile URI
-     * @throws DeploymentManagementException if an error occurs during deployment
+     * @param componentUri  the component URI
+     * @param info          the management metadata
+     * @param objectFactory the object factory responsible for returning the managed component instance
+     * @param classLoader   the classloader
+     * @throws ManagementException if an error exposing the component is encountered
      */
-    void deployProfile(URI uri) throws DeploymentManagementException;
+    void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException;
 
     /**
-     * Undeploys contributions contained in a profile to the domain.
+     * Removes a component from the underlying management framework
      *
-     * @param uri the profile URI
-     * @throws DeploymentManagementException if an error occurs during undeployment
+     * @param componentUri the component URI
+     * @param info         the management metadata
+     * @throws ManagementException if an error removing the component is encountered
      */
-    void undeployProfile(URI uri) throws DeploymentManagementException;
+    void remove(URI componentUri, ManagementInfo info) throws ManagementException;
 
 }

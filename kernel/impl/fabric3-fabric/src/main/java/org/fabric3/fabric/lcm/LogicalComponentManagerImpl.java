@@ -38,13 +38,14 @@
 package org.fabric3.fabric.lcm;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
@@ -53,21 +54,19 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.spi.lcm.LogicalComponentManager;
-import org.fabric3.spi.lcm.LogicalComponentManagerMBean;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalReference;
-import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.util.UriHelper;
 
 /**
  * Implementation of LogicalComponentManager. The runtime domain configuration (created during bootstrap) defaults autowire to ON; the application
- * domain defaults autowire to OFF, which can be overriden by the runtime configuration.
+ * domain defaults autowire to OFF, which can be overridden by the runtime configuration.
  *
  * @version $Rev$ $Date$
  */
-public class LogicalComponentManagerImpl implements LogicalComponentManager, LogicalComponentManagerMBean {
+@Management(name = "LogicalComponentManager", group = "deployment", description = "Manages the logical domain")
+public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;
     private String autowireValue;
     private Autowire autowire = Autowire.OFF;
@@ -144,22 +143,9 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager, Log
         domain = component;
     }
 
+    @ManagementOperation(description = "Returns the URI of this domain")
     public String getDomainURI() {
         return domain.getUri().toString();
-    }
-
-    public Composite getDomainComposite() {
-        Composite composite = new Composite(new QName(getDomainURI(), "domain"));
-        for (LogicalComponent<?> component : domain.getComponents()) {
-            composite.add(component.getDefinition());
-        }
-        for (LogicalService service : domain.getServices()) {
-            composite.add(service.getDefinition());
-        }
-        for (LogicalReference reference : domain.getReferences()) {
-            composite.add(reference.getDefinition());
-        }
-        return composite;
     }
 
     private void initializeDomainComposite() {

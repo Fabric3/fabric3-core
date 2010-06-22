@@ -39,17 +39,18 @@ package org.fabric3.admin.controller;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.management.domain.DomainMBean;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DistributedDomainMBean extends AbstractDomainMBean implements DomainMBean {
+@Management(name = "ApplicationDomain", group = "deployment", description = "Manages the application domain")
+public class DistributedDomainMBean extends AbstractDomainMBean {
 
     public DistributedDomainMBean(@Reference(name = "domain") Domain domain,
                                   @Reference MetaDataStore store,

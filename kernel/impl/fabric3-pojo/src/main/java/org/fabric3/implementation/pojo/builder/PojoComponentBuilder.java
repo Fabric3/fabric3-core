@@ -44,6 +44,7 @@
 package org.fabric3.implementation.pojo.builder;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -62,15 +63,19 @@ import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.util.ParamTypes;
 
 /**
@@ -82,10 +87,15 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     protected ClassLoaderRegistry classLoaderRegistry;
     protected IntrospectionHelper helper;
     private PropertyObjectFactoryBuilder propertyBuilder;
+    private ManagementService managementService;
 
-    protected PojoComponentBuilder(ClassLoaderRegistry registry, PropertyObjectFactoryBuilder propertyBuilder, IntrospectionHelper helper) {
+    protected PojoComponentBuilder(ClassLoaderRegistry registry,
+                                   PropertyObjectFactoryBuilder propertyBuilder,
+                                   ManagementService managementService,
+                                   IntrospectionHelper helper) {
         this.classLoaderRegistry = registry;
         this.propertyBuilder = propertyBuilder;
+        this.managementService = managementService;
         this.helper = helper;
     }
 
@@ -107,6 +117,31 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
             boolean many = propertyDefinition.isMany();
             ObjectFactory<?> objectFactory = propertyBuilder.createObjectFactory(name, dataType, value, many, classLoader);
             provider.setObjectFactory(source, objectFactory);
+        }
+    }
+
+    protected void export(PojoComponentDefinition definition, ClassLoader classLoader, AtomicComponent component) throws BuilderException {
+        if (definition.isManaged()) {
+            ManagementInfo info = definition.getManagementInfo();
+            ObjectFactory<Object> objectFactory = component.createObjectFactory();
+            try {
+                URI uri = definition.getComponentUri();
+                managementService.export(uri, info, objectFactory, classLoader);
+            } catch (ManagementException e) {
+                throw new BuilderException(e);
+            }
+        }
+    }
+
+    protected void dispose(PojoComponentDefinition definition) throws BuilderException {
+        if (definition.isManaged()) {
+            ManagementInfo info = definition.getManagementInfo();
+            try {
+                URI uri = definition.getComponentUri();
+                managementService.remove(uri, info);
+            } catch (ManagementException e) {
+                throw new BuilderException(e);
+            }
         }
     }
 

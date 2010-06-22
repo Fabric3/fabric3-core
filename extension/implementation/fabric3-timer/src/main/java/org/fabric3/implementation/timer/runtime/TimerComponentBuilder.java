@@ -58,6 +58,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -78,9 +79,10 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                  @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                  @Reference TimerService timerService,
                                  @Reference TransactionManager tm,
+                                 @Reference ManagementService managementService,
                                  @Reference IntrospectionHelper helper,
                                  @Reference HostInfo info) {
-        super(classLoaderRegistry, propertyBuilder, helper);
+        super(classLoaderRegistry, propertyBuilder, managementService, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
         this.timerService = timerService;
@@ -119,7 +121,11 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                                       topologyService,
                                                       info);
         buildContexts(component, provider);
+        export(definition, classLoader, component);
         return component;
     }
 
+    public void dispose(TimerComponentDefinition definition, TimerComponent component) throws BuilderException {
+        dispose(definition);
+    }
 }

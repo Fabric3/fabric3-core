@@ -44,6 +44,7 @@
 package org.fabric3.implementation.pojo.provision;
 
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
  * Definition of a physical component whose actual implementation is based on a POJO.
@@ -56,6 +57,8 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
     private InstanceFactoryDefinition providerDefinition;
     private String scope;
     private boolean eager;
+    private boolean managed;
+    private ManagementInfo managementInfo;
 
     /**
      * Gets the instance factory provider definition.
@@ -112,5 +115,19 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
         this.eager = eager;
     }
 
+    public boolean isManaged() {
+        return managed;
+    }
 
+    public void setManaged(boolean managed) {
+        this.managed = managed;
+    }
+
+    public ManagementInfo getManagementInfo() {
+        return managementInfo;
+    }
+
+    public void setManagementInfo(ManagementInfo managementInfo) {
+        this.managementInfo = managementInfo;
+    }
 }

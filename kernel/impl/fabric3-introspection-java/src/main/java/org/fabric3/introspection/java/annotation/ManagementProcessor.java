@@ -41,41 +41,49 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.builder;
+package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
- * The root exception for the builder package. Builder exceptions denote a non-recoverable failure.
+ * Processes the {@link Management} annotation on a component implementation class.
  *
  * @version $Rev$ $Date$
  */
-public class BuilderException extends Fabric3Exception {
-    private static final long serialVersionUID = 3208972591954615326L;
+public class ManagementProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Management, I> {
 
-    public BuilderException() {
-        super();
+    public ManagementProcessor() {
+        super(Management.class);
     }
 
-    public BuilderException(String message) {
-        super(message);
-    }
-
-
-    protected BuilderException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    public BuilderException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    protected BuilderException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    public BuilderException(Throwable cause) {
-        super(cause);
+    @Override
+    public void visitType(Management annotation, Class<?> type, I implementation, IntrospectionContext context) {
+        InjectingComponentType componentType = implementation.getComponentType();
+        componentType.setManaged(true);
+        String name = annotation.name();
+        if (name.trim().length() == 0) {
+            name = type.getSimpleName();
+        }
+        String group = annotation.group();
+        if (group.trim().length() == 0) {
+            group = null;
+        }
+        String description = annotation.description();
+        if (description.trim().length() == 0) {
+            description = null;
+        }
+        ManagementInfo info = new ManagementInfo(name, group, description, type.getName());
+        ManagementInfo overriden = componentType.getManagementInfo();
+        if (overriden != null) {
+            // A management annotation was defined in a super class - override it, preserving management operations
+            info.getOperations().addAll(overriden.getOperations());
+        }
+        componentType.setManagementInfo(info);
     }
 
 }

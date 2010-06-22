@@ -37,17 +37,39 @@
 */
 package org.fabric3.api.annotation.management;
 
-import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
- * Annotation that can be applied to a service interface to indicate that it should be exposed to a management framework.
+ * Annotation that can be applied to an implementation to indicate it should be exposed to a management framework.
  *
  * @version $Rev$ $Date$
  */
 @Target({TYPE})
 @Retention(RUNTIME)
 public @interface Management {
+
+    /**
+     * Returns the name the implementation should be registered with.
+     *
+     * @return the name the implementation should be registered with
+     */
+    String name() default "";
+
+    /**
+     * Returns the group the implementation should be registered under.
+     *
+     * @return the group the implementation should be registered under
+     */
+    String group() default "";
+
+    /**
+     * Returns the management description.
+     *
+     * @return the management description
+     */
+    String description() default "";
 }

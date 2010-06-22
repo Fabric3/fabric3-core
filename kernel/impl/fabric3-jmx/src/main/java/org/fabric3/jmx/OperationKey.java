@@ -35,22 +35,65 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.model.type.binding;
+package org.fabric3.jmx;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.model.type.component.BindingDefinition;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
- * Represents a service bound to a JMX provider.
- *
  * @version $Rev$ $Date$
  */
-public class JMXBinding extends BindingDefinition {
-    private static final long serialVersionUID = -8354441354679603299L;
-    private static final QName TYPE = new QName("urn:maven:org.codehaus.fabric3:fabric3-system", "management");
+public class OperationKey {
+    private String name;
+    private String description;
+    private String[] params;
+    private int hashCode;
 
-    public JMXBinding() {
-        super(null, TYPE);
+    public OperationKey(String name, String[] params) {
+        this.name = name;
+        this.params = params;
+        hashCode = 31 * this.name.hashCode() + Arrays.hashCode(this.params);
+    }
+
+    public OperationKey(Method method, String description) {
+        this.description = description;
+        this.name = method.getName();
+        Class<?>[] paramTypes = method.getParameterTypes();
+        this.params = new String[paramTypes.length];
+        for (int i = 0; i < paramTypes.length; i++) {
+            params[i] = paramTypes[i].getName();
+        }
+        hashCode = 31 * this.name.hashCode() + Arrays.hashCode(this.params);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String toString() {
+        StringBuilder sig = new StringBuilder();
+        sig.append(name).append('(');
+        if (params.length > 0) {
+            sig.append(params[0]);
+            for (int i = 1; i < params.length; i++) {
+                sig.append(',').append(params[i]);
+            }
+        }
+        sig.append(')');
+        return sig.toString();
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OperationKey that = (OperationKey) o;
+
+        return name.equals(that.name) && Arrays.equals(params, that.params);
+
+    }
+
+    public int hashCode() {
+        return hashCode;
     }
 }

@@ -66,7 +66,7 @@ public class InputStreamSource implements Source {
 
     public InputStream openStream() throws IOException {
         if (opened) {
-            throw new IllegalStateException("Inputstream can only be opened once");
+            throw new IllegalStateException("Input stream can only be opened once");
         }
         opened = true;
         return source;

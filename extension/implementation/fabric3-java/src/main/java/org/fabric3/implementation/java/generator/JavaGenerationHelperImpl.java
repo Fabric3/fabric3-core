@@ -107,6 +107,10 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setMaxAge(type.getMaxAge());
         definition.setMaxIdleTime(type.getMaxIdleTime());
         definition.setProviderDefinition(factoryDefinition);
+
+        definition.setManaged(type.isManaged());
+        definition.setManagementInfo(type.getManagementInfo());
+
         helper.processPropertyValues(component, definition);
     }
 

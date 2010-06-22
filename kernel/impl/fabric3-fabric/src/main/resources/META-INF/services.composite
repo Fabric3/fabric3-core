@@ -37,7 +37,7 @@
     </component>
 
     <component name="TransportService">
-        <f3-impl:implementation.system class="org.fabric3.fabric.transport.TransportServiceImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.fabric.transport.TransportService"/>
     </component>
 
     <component name="SystemPropertyEvaluator" f3-core:key="101">

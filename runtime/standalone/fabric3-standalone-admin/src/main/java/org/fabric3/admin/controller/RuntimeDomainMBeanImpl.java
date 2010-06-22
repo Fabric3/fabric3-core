@@ -40,11 +40,12 @@ package org.fabric3.admin.controller;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.Deployable;
@@ -53,7 +54,6 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.domain.ContributionNotFoundException;
 import org.fabric3.management.domain.DeploymentManagementException;
-import org.fabric3.management.domain.RuntimeDomainMBean;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -61,7 +61,8 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements RuntimeDomainMBean {
+@Management(name = "RuntimeDomain", group = "kernel", description = "Manages the runtime domain")
+public class RuntimeDomainMBeanImpl extends AbstractDomainMBean {
     private ContributionService contributionService;
 
     public RuntimeDomainMBeanImpl(@Reference(name = "domain") Domain domain,
@@ -74,6 +75,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements Runti
         this.contributionService = contributionService;
     }
 
+    @ManagementOperation(description = "Deploys a profile to the runtime")
     public void deployProfile(URI profileUri) throws DeploymentManagementException {
         List<URI> uris = contributionService.getContributionsInProfile(profileUri);
         try {
@@ -91,6 +93,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean implements Runti
         }
     }
 
+    @ManagementOperation(description = "Undeploys a profile")
     public void undeployProfile(URI uri) throws DeploymentManagementException {
         // the contributions must be undeployed by dependency
         List<URI> uris = contributionService.getSortedContributionsInProfile(uri);

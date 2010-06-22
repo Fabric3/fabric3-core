@@ -66,12 +66,13 @@ public interface ComponentManager {
     void register(Component component) throws RegistrationException;
 
     /**
-     * Deregisters a component
+     * Un-registers a component
      *
-     * @param uri the component URI to deregister
-     * @throws RegistrationException when an error ocurrs registering the component
+     * @param uri the component URI to un-register
+     * @throws RegistrationException when an error occurs registering the component
+     * @return the the component
      */
-    void unregister(URI uri) throws RegistrationException;
+    Component unregister(URI uri) throws RegistrationException;
 
     /**
      * Returns the component with the given URI

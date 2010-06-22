@@ -52,11 +52,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
-import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER;
-import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES;
 import javax.management.remote.JMXServiceURL;
-import static javax.naming.Context.SECURITY_CREDENTIALS;
-import static javax.naming.Context.SECURITY_PRINCIPAL;
 
 import org.fabric3.admin.api.CommunicationException;
 import org.fabric3.admin.api.DomainController;
@@ -72,16 +68,22 @@ import org.fabric3.management.domain.ComponentInfo;
 import org.fabric3.management.domain.DeploymentManagementException;
 import org.fabric3.management.domain.InvalidDeploymentException;
 
+import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER;
+import static javax.management.remote.JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES;
+import static javax.naming.Context.SECURITY_CREDENTIALS;
+import static javax.naming.Context.SECURITY_PRINCIPAL;
+
 /**
  * Default implementation of the DomainController API.
  *
  * @version $Rev$ $Date$
  */
 public class DomainControllerImpl implements DomainController {
-    private static final String CONTRIBUTION_SERVICE_MBEAN = "fabric3:SubDomain=runtime, type=component, name=ContributionServiceMBean";
-    private static final String DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=DistributedDomainMBean";
+    private static final String CONTRIBUTION_SERVICE_MBEAN =
+            "fabric3:SubDomain=runtime, type=component, group=deployment, name=ContributionService";
+    private static final String DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, group=deployment, name=ApplicationDomain";
 
-    private static final String RUNTIME_DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeDomainMBean";
+    private static final String RUNTIME_DOMAIN_MBEAN = "fabric3:SubDomain=runtime, type=component, group=deployment, name=RuntimeDomain";
 
     private String username;
     private String password;

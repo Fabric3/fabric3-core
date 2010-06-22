@@ -46,8 +46,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
+import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
@@ -91,4 +91,7 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 injectorMappings);
     }
 
+    public void dispose(WebComponentDefinition definition, WebComponent component) throws BuilderException {
+        // no-op
+    }
 }

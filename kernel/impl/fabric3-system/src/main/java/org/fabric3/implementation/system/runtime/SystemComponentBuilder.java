@@ -61,6 +61,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * @version $Rev$ $Date$
@@ -74,8 +75,9 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
                                   @Reference InstanceFactoryBuilder factoryBuilder,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference PropertyObjectFactoryBuilder propertyBuilder,
+                                  @Reference ManagementService managementService,
                                   @Reference IntrospectionHelper helper) {
-        super(classLoaderRegistry, propertyBuilder, helper);
+        super(classLoaderRegistry, propertyBuilder, managementService, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }
@@ -95,6 +97,14 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         createPropertyFactories(definition, provider);
 
         boolean eager = definition.isEagerInit();
-        return new SystemComponent(uri, provider, scopeContainer, deployable, eager, -1, -1);
+        SystemComponent component = new SystemComponent(uri, provider, scopeContainer, deployable, eager, -1, -1);
+        export(definition, classLoader, component);
+        return component;
     }
+
+    public void dispose(SystemComponentDefinition definition, SystemComponent component) throws BuilderException {
+        dispose(definition);
+    }
+
+
 }

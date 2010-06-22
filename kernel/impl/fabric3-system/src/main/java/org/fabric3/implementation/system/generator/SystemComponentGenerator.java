@@ -97,6 +97,10 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         // create the physical component definition
         SystemComponentDefinition physical = new SystemComponentDefinition();
         physical.setEagerInit(type.isEagerInit());
+
+        physical.setManaged(type.isManaged());
+        physical.setManagementInfo(type.getManagementInfo());
+
         physical.setProviderDefinition(providerDefinition);
         helper.processPropertyValues(component, physical);
 
@@ -144,6 +148,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         return definition;
     }
 
+    @SuppressWarnings({"unchecked"})
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
         SystemConnectionTargetDefinition definition = new SystemConnectionTargetDefinition();
         LogicalComponent<? extends SystemImplementation> component = (LogicalComponent<? extends SystemImplementation>) consumer.getParent();
