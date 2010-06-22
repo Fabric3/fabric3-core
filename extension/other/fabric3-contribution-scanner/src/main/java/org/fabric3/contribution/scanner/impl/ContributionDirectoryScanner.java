@@ -371,15 +371,17 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     errorCache.put(cached.getName(), cached);
                 }
             } catch (ContributionException e) {
+                monitor.error(e);
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
             } catch (DeploymentException e) {
+                monitor.error(e);
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
-                monitor.error(e);
             } catch (NoClassDefFoundError e) {
+                monitor.error(e);
                 for (FileSystemResource cached : addedResources) {
                     errorCache.put(cached.getName(), cached);
                 }
