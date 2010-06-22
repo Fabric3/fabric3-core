@@ -41,41 +41,55 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.command;
+package org.fabric3.fabric.executor;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import java.net.URI;
+import java.util.List;
+
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.channel.RegistrationException;
+import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Removes a registered component.
+ * Removes a set of channels defined in a composite on a runtime.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
  */
-public class UnBuildComponentCommand extends AbstractComponentCommand {
-    private static final long serialVersionUID = 1894510885498647133L;
+@EagerInit
+public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {
+    private ChannelManager channelManager;
+    private CommandExecutorRegistry executorRegistry;
 
-    public UnBuildComponentCommand(PhysicalComponentDefinition definition) {
-        super(definition);
+    @Constructor
+    public DisposeChannelsCommandExecutor(@Reference ChannelManager channelManager, @Reference CommandExecutorRegistry executorRegistry) {
+        this.channelManager = channelManager;
+        this.executorRegistry = executorRegistry;
     }
 
-    public BuildComponentCommand getCompensatingCommand() {
-        return new BuildComponentCommand(definition);
+    @Init
+    public void init() {
+        executorRegistry.register(DisposeChannelsCommand.class, this);
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public void execute(DisposeChannelsCommand command) throws ExecutionException {
+        try {
+            List<PhysicalChannelDefinition> definitions = command.getDefinitions();
+            for (PhysicalChannelDefinition definition : definitions) {
+                URI uri = definition.getUri();
+                channelManager.unregister(uri);
+            }
+        } catch (RegistrationException e) {
+            throw new ExecutionException(e.getMessage(), e);
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        UnBuildComponentCommand that = (UnBuildComponentCommand) o;
-
-        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
-    }
-
-    public int hashCode() {
-        return (definition != null ? definition.hashCode() : 0);
     }
 
 }

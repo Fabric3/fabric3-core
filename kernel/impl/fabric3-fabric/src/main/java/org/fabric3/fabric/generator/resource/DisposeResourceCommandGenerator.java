@@ -34,35 +34,44 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.fabric.generator.channel;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.fabric.generator.resource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.command.UnBuildChannelsCommand;
+import org.fabric3.fabric.command.DisposeResourcesCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * Creates a command to remove channels defined in a composite from a runtime.
+ * Creates a command to un-build a resource on a runtime.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8693 $ $Date: 2010-03-10 01:34:24 +0100 (Wed, 10 Mar 2010) $
  */
-@EagerInit
-public class UnBuildChannelCommandGenerator implements CommandGenerator {
+public class DisposeResourceCommandGenerator implements CommandGenerator {
+    private GeneratorRegistry generatorRegistry;
     private int order;
 
-    public UnBuildChannelCommandGenerator(@Property(name = "order") int order) {
+    public DisposeResourceCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+        this.generatorRegistry = generatorRegistry;
         this.order = order;
     }
 
@@ -70,28 +79,26 @@ public class UnBuildChannelCommandGenerator implements CommandGenerator {
         return order;
     }
 
-    public CompensatableCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent)) {
+    @SuppressWarnings({"unchecked"})
+    public DisposeResourcesCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent) || (component.getState() != LogicalState.MARKED)) {
             return null;
         }
         LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-        List<PhysicalChannelDefinition> definitions = createDefinitions(composite);
+        if (composite.getResources().isEmpty()) {
+            return null;
+        }
+        List<PhysicalResourceDefinition> definitions = new ArrayList<PhysicalResourceDefinition>();
+        for (LogicalResource<?> resource : composite.getResources()) {
+            ResourceDefinition resourceDefinition = resource.getDefinition();
+            ResourceGenerator generator = generatorRegistry.getResourceGenerator(resourceDefinition.getClass());
+            PhysicalResourceDefinition definition = generator.generateResource(resource);
+            definitions.add(definition);
+        }
         if (definitions.isEmpty()) {
             return null;
         }
-        return new UnBuildChannelsCommand(definitions);
-    }
-
-    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite) {
-        List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
-        for (LogicalChannel channel : composite.getChannels()) {
-            if (channel.getState() == LogicalState.MARKED) {
-                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
-                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
-                definitions.add(definition);
-            }
-        }
-        return definitions;
+        return new DisposeResourcesCommand(definitions);
     }
 
 }

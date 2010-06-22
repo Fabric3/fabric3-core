@@ -67,6 +67,6 @@ public interface DomainResourceCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateUnBuild(LogicalResource resource, boolean incremental) throws GenerationException;
+    CompensatableCommand generateDispose(LogicalResource resource, boolean incremental) throws GenerationException;
 
 }

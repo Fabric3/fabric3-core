@@ -136,18 +136,18 @@
         <property name="order">4</property>
     </component>
 
-    <component name="UnBuildComponentCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.UnBuildComponentCommandGenerator"/>
+    <component name="DisposeComponentCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.DisposeComponentCommandGenerator"/>
         <property name="order">5</property>
     </component>
 
-    <component name="UnBuildChannelCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.UnBuildChannelCommandGenerator"/>
+    <component name="DisposeChannelCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.DisposeChannelCommandGenerator"/>
         <property name="order">5</property>
     </component>
 
-    <component name="UnBuildResourceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.resource.UnBuildResourceCommandGenerator"/>
+    <component name="DisposeResourceCommandGenerator">
+        <f3-impl:implementation.system class="org.fabric3.fabric.generator.resource.DisposeResourceCommandGenerator"/>
         <property name="order">6</property>
     </component>
 

@@ -41,49 +41,64 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.command;
+package org.fabric3.fabric.executor;
 
-import java.util.List;
+import java.util.Map;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.fabric.command.DisposeResourcesCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.resource.ResourceBuilder;
+import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Removes a resource on a runtime.
  *
- * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
+ * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
  */
-public class UnBuildResourcesCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -3382996929643885337L;
-    private List<PhysicalResourceDefinition> definitions;
+@EagerInit
+public class DisposeResourcesCommandExecutor implements CommandExecutor<DisposeResourcesCommand> {
+    private Map<Class<?>, ResourceBuilder> builders;
+    private CommandExecutorRegistry executorRegistry;
 
-    public UnBuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
-        this.definitions = definitions;
+    public DisposeResourcesCommandExecutor(@Reference CommandExecutorRegistry registry) {
+        this.executorRegistry = registry;
     }
 
-    public CompensatableCommand getCompensatingCommand() {
-        return new BuildResourcesCommand(definitions);
+    @Reference(required = false)
+    public void setBuilders(Map<Class<?>, ResourceBuilder> builders) {
+        this.builders = builders;
     }
 
-    public List<PhysicalResourceDefinition> getDefinitions() {
-        return definitions;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public void execute(DisposeResourcesCommand command) throws ExecutionException {
+        for (PhysicalResourceDefinition definition : command.getDefinitions()) {
+            build(definition);
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+    }
+
+    @Init
+    public void init() {
+        executorRegistry.register(DisposeResourcesCommand.class, this);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void build(PhysicalResourceDefinition definition) throws ExecutionException {
+        ResourceBuilder builder = builders.get(definition.getClass());
+        if (builder == null) {
+            throw new ExecutionException("Builder not found for " + definition.getClass().getName());
         }
-
-        UnBuildResourcesCommand that = (UnBuildResourcesCommand) o;
-
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+        try {
+            builder.remove(definition);
+        } catch (BuilderException e) {
+            throw new ExecutionException(e);
+        }
     }
 
-    public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
-    }
 
 }

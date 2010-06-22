@@ -43,7 +43,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
- * Creates commands to build and unbuild domain-level channels. Domain-level channels are special-cased as they are not part of a deployed composite.
+ * Creates commands to build and dispose domain-level channels. Domain-level channels are special-cased as they are not part of a deployed composite.
  * That is, they are contained by the domain composite, which is virtual.
  *
  * @version $Rev$ $Date$
@@ -61,14 +61,14 @@ public interface DomainChannelCommandGenerator {
     CompensatableCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
 
     /**
-     * Generates an unbuild command.
+     * Generates an dispose command.
      *
      * @param channel     the channel to remove
      * @param incremental true if an incremental deployment is being performed
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateUnBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
+    CompensatableCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException;
 
     /**
      * Generates attach and detach commands for a channel bound to a transport.

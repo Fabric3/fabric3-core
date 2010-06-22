@@ -43,30 +43,22 @@
  */
 package org.fabric3.fabric.command;
 
-import java.util.List;
-
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Builds resources defined in a composite on a runtime.
+ * Removes a registered component.
  *
  * @version $Rev$ $Date$
  */
-public class BuildResourcesCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -2232794954042041583L;
-    private List<PhysicalResourceDefinition> definitions;
+public class DisposeComponentCommand extends AbstractComponentCommand {
+    private static final long serialVersionUID = 1894510885498647133L;
 
-    public BuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
-        this.definitions = definitions;
+    public DisposeComponentCommand(PhysicalComponentDefinition definition) {
+        super(definition);
     }
 
-    public CompensatableCommand getCompensatingCommand() {
-        return new DisposeResourcesCommand(definitions);
-    }
-
-    public List<PhysicalResourceDefinition> getDefinitions() {
-        return definitions;
+    public BuildComponentCommand getCompensatingCommand() {
+        return new BuildComponentCommand(definition);
     }
 
     public boolean equals(Object o) {
@@ -77,13 +69,13 @@ public class BuildResourcesCommand implements CompensatableCommand {
             return false;
         }
 
-        BuildResourcesCommand that = (BuildResourcesCommand) o;
+        DisposeComponentCommand that = (DisposeComponentCommand) o;
 
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
     }
 
     public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
+        return (definition != null ? definition.hashCode() : 0);
     }
 
 }

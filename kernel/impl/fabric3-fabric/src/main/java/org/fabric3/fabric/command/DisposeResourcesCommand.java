@@ -41,64 +41,49 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.executor;
+package org.fabric3.fabric.command;
 
-import java.util.Map;
+import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.command.UnBuildResourcesCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.resource.ResourceBuilder;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * Removes a resource on a runtime.
+ * Removes resources on a runtime.
  *
- * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
+ * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
  */
-@EagerInit
-public class UnBuildResourcesCommandExecutor implements CommandExecutor<UnBuildResourcesCommand> {
-    private Map<Class<?>, ResourceBuilder> builders;
-    private CommandExecutorRegistry executorRegistry;
+public class DisposeResourcesCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -3382996929643885337L;
+    private List<PhysicalResourceDefinition> definitions;
 
-    public UnBuildResourcesCommandExecutor(@Reference CommandExecutorRegistry registry) {
-        this.executorRegistry = registry;
+    public DisposeResourcesCommand(List<PhysicalResourceDefinition> definitions) {
+        this.definitions = definitions;
     }
 
-    @Reference(required = false)
-    public void setBuilders(Map<Class<?>, ResourceBuilder> builders) {
-        this.builders = builders;
+    public CompensatableCommand getCompensatingCommand() {
+        return new BuildResourcesCommand(definitions);
     }
 
-    public void execute(UnBuildResourcesCommand command) throws ExecutionException {
-        for (PhysicalResourceDefinition definition : command.getDefinitions()) {
-            build(definition);
+    public List<PhysicalResourceDefinition> getDefinitions() {
+        return definitions;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-    }
-
-    @Init
-    public void init() {
-        executorRegistry.register(UnBuildResourcesCommand.class, this);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void build(PhysicalResourceDefinition definition) throws ExecutionException {
-        ResourceBuilder builder = builders.get(definition.getClass());
-        if (builder == null) {
-            throw new ExecutionException("Builder not found for " + definition.getClass().getName());
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        try {
-            builder.remove(definition);
-        } catch (BuilderException e) {
-            throw new ExecutionException(e);
-        }
+
+        DisposeResourcesCommand that = (DisposeResourcesCommand) o;
+
+        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
     }
 
+    public int hashCode() {
+        return (definitions != null ? definitions.hashCode() : 0);
+    }
 
 }

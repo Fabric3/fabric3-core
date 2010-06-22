@@ -41,49 +41,41 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.command;
+package org.fabric3.fabric.generator.component;
 
-import java.util.List;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.fabric.command.DisposeComponentCommand;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Instantiates channels on a runtime.
+ * Creates a command to remove a component on a runtime.
  *
- * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
+ * @version $Rev$ $Date$
  */
-public class UnBuildChannelsCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -8414719811868296492L;
-    private List<PhysicalChannelDefinition> definitions;
+public class DisposeComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
+    private int order;
 
-    public UnBuildChannelsCommand(List<PhysicalChannelDefinition> definitions) {
-        this.definitions = definitions;
+    public DisposeComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+        super(generatorRegistry);
+        this.order = order;
     }
 
-    public CompensatableCommand getCompensatingCommand() {
-        return new UnBuildChannelsCommand(definitions);
+    public int getOrder() {
+        return order;
     }
 
-    public List<PhysicalChannelDefinition> getDefinitions() {
-        return definitions;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public DisposeComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
+            PhysicalComponentDefinition definition = generateDefinition(component);
+            return new DisposeComponentCommand(definition);
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        UnBuildChannelsCommand that = (UnBuildChannelsCommand) o;
-
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
+        return null;
     }
-
-    public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
-    }
-
 }

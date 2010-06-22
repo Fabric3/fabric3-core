@@ -186,7 +186,7 @@ public class GeneratorImpl implements Generator {
         // generate commands for domain-level channels being undeployed
         for (LogicalChannel channel : domain.getChannels()) {
             String zone = channel.getZone();
-            CompensatableCommand command = channelGenerator.generateUnBuild(channel, incremental);
+            CompensatableCommand command = channelGenerator.generateDispose(channel, incremental);
             if (command != null) {
                 deployment.addCommand(zone, command);
             }
@@ -196,7 +196,7 @@ public class GeneratorImpl implements Generator {
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
                 String zone = resource.getZone();
-                CompensatableCommand command = resourceGenerator.generateUnBuild(resource, incremental);
+                CompensatableCommand command = resourceGenerator.generateDispose(resource, incremental);
                 if (command != null) {
                     deployment.addCommand(zone, command);
                 }

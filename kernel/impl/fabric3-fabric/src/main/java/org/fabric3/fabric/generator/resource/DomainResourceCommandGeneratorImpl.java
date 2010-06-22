@@ -43,7 +43,7 @@ import java.util.List;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.BuildResourcesCommand;
-import org.fabric3.fabric.command.UnBuildResourcesCommand;
+import org.fabric3.fabric.command.DisposeResourcesCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.command.CompensatableCommand;
@@ -75,7 +75,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         return new BuildResourcesCommand(definitions);
     }
 
-    public CompensatableCommand generateUnBuild(LogicalResource resource, boolean incremental) throws GenerationException {
+    public CompensatableCommand generateDispose(LogicalResource resource, boolean incremental) throws GenerationException {
         if (resource.getState() != LogicalState.MARKED) {
             return null;
         }
@@ -83,7 +83,7 @@ public class DomainResourceCommandGeneratorImpl implements DomainResourceCommand
         if (definitions.isEmpty()) {
             return null;
         }
-        return new UnBuildResourcesCommand(definitions);
+        return new DisposeResourcesCommand(definitions);
     }
 
     @SuppressWarnings({"unchecked"})

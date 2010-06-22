@@ -59,7 +59,7 @@ public class BuildComponentCommand extends AbstractComponentCommand {
     }
 
     public CompensatableCommand getCompensatingCommand() {
-        return new UnBuildComponentCommand(definition);
+        return new DisposeComponentCommand(definition);
     }
 
     public boolean equals(Object o) {

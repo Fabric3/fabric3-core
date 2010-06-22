@@ -42,16 +42,16 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildComponentCommandExecutor"/>
     </component>
 
-    <component name="UnBuildComponentCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildComponentCommandExecutor"/>
+    <component name="DisposeComponentCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DisposeComponentCommandExecutor"/>
     </component>
 
     <component name="BuildChannelsCommandExecutor">
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildChannelsCommandExecutor"/>
     </component>
 
-    <component name="UnBuildChannelsCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildChannelsCommandExecutor"/>
+    <component name="DisposeChannelsCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DisposeChannelsCommandExecutor"/>
     </component>
 
     <component name="WireAttachCommandExecutor">
@@ -90,8 +90,8 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.executor.BuildResourcesCommandExecutor"/>
     </component>
 
-    <component name="UnBuildResourcesCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.fabric.executor.UnBuildResourcesCommandExecutor"/>
+    <component name="DisposeResourcesCommandExecutor">
+        <f3-impl:implementation.system class="org.fabric3.fabric.executor.DisposeResourcesCommandExecutor"/>
     </component>
 
     <component name="UnprovisionClassloaderCommandExecutor">

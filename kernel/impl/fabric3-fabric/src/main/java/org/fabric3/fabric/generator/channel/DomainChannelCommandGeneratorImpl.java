@@ -45,7 +45,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
-import org.fabric3.fabric.command.UnBuildChannelsCommand;
+import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
@@ -71,12 +71,12 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
         return new BuildChannelsCommand(definitions);
     }
 
-    public CompensatableCommand generateUnBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
-        List<PhysicalChannelDefinition> definitions = createUnBuildDefinitions(channel);
+    public CompensatableCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException {
+        List<PhysicalChannelDefinition> definitions = createDisposeDefinitions(channel);
         if (definitions.isEmpty()) {
             return null;
         }
-        return new UnBuildChannelsCommand(definitions);
+        return new DisposeChannelsCommand(definitions);
     }
 
     public ChannelConnectionCommand generateAttachDetach(LogicalChannel channel, boolean incremental) throws GenerationException {
@@ -100,7 +100,7 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
     }
 
 
-    private List<PhysicalChannelDefinition> createUnBuildDefinitions(LogicalChannel channel) {
+    private List<PhysicalChannelDefinition> createDisposeDefinitions(LogicalChannel channel) {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         if (channel.getState() == LogicalState.MARKED) {
             generateChannelDefinition(channel, definitions);

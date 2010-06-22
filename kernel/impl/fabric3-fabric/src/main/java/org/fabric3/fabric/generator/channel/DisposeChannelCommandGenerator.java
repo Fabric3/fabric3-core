@@ -34,36 +34,35 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.generator.component;
+*/
+package org.fabric3.fabric.generator.channel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.command.UnBuildComponentCommand;
-import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Creates a command to remove a component on a runtime.
+ * Creates a command to remove channels defined in a composite from a runtime.
  *
  * @version $Rev$ $Date$
  */
-public class UnBuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
+@EagerInit
+public class DisposeChannelCommandGenerator implements CommandGenerator {
     private int order;
 
-    public UnBuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
-        super(generatorRegistry);
+    public DisposeChannelCommandGenerator(@Property(name = "order") int order) {
         this.order = order;
     }
 
@@ -71,11 +70,28 @@ public class UnBuildComponentCommandGenerator extends AbstractBuildComponentComm
         return order;
     }
 
-    public UnBuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent) && component.getState() == LogicalState.MARKED) {
-            PhysicalComponentDefinition definition = generateDefinition(component);
-            return new UnBuildComponentCommand(definition);
+    public CompensatableCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+        if (!(component instanceof LogicalCompositeComponent)) {
+            return null;
         }
-        return null;
+        LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
+        List<PhysicalChannelDefinition> definitions = createDefinitions(composite);
+        if (definitions.isEmpty()) {
+            return null;
+        }
+        return new DisposeChannelsCommand(definitions);
     }
+
+    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite) {
+        List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
+        for (LogicalChannel channel : composite.getChannels()) {
+            if (channel.getState() == LogicalState.MARKED) {
+                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
+                definitions.add(definition);
+            }
+        }
+        return definitions;
+    }
+
 }

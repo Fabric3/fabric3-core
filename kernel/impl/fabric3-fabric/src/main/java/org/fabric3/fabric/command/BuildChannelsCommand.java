@@ -62,7 +62,7 @@ public class BuildChannelsCommand implements CompensatableCommand {
     }
 
     public CompensatableCommand getCompensatingCommand() {
-        return new UnBuildChannelsCommand(definitions);
+        return new DisposeChannelsCommand(definitions);
     }
 
     public List<PhysicalChannelDefinition> getDefinitions() {

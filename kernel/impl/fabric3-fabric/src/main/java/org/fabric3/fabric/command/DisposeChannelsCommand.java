@@ -46,26 +46,26 @@ package org.fabric3.fabric.command;
 import java.util.List;
 
 import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Builds resources defined in a composite on a runtime.
+ * Removes channels on a runtime.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
  */
-public class BuildResourcesCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -2232794954042041583L;
-    private List<PhysicalResourceDefinition> definitions;
+public class DisposeChannelsCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -8414719811868296492L;
+    private List<PhysicalChannelDefinition> definitions;
 
-    public BuildResourcesCommand(List<PhysicalResourceDefinition> definitions) {
+    public DisposeChannelsCommand(List<PhysicalChannelDefinition> definitions) {
         this.definitions = definitions;
     }
 
     public CompensatableCommand getCompensatingCommand() {
-        return new DisposeResourcesCommand(definitions);
+        return new DisposeChannelsCommand(definitions);
     }
 
-    public List<PhysicalResourceDefinition> getDefinitions() {
+    public List<PhysicalChannelDefinition> getDefinitions() {
         return definitions;
     }
 
@@ -77,7 +77,7 @@ public class BuildResourcesCommand implements CompensatableCommand {
             return false;
         }
 
-        BuildResourcesCommand that = (BuildResourcesCommand) o;
+        DisposeChannelsCommand that = (DisposeChannelsCommand) o;
 
         return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
     }
