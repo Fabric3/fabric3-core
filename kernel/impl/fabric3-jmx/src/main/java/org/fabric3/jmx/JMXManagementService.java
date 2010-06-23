@@ -43,11 +43,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -55,13 +57,16 @@ import javax.management.ObjectName;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -99,6 +104,14 @@ public class JMXManagementService implements ManagementService {
         }
     }
 
+    public void export(String name, String group, String description, Object instance) throws ManagementException {
+        Class<?> clazz = instance.getClass();
+        ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName());
+        introspect(instance, info);
+        URI uri = URI.create(Names.RUNTIME_NAME + "/" + name);
+        export(uri, info, new SingletonObjectFactory<Object>(instance), clazz.getClassLoader());
+    }
+
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
         try {
             ObjectName name = getObjectName(componentUri, info);
@@ -106,6 +119,41 @@ public class JMXManagementService implements ManagementService {
         } catch (JMException e) {
             throw new ManagementException(e);
         }
+    }
+
+    public void remove(String name, String group) throws ManagementException {
+        try {
+            ObjectName objectName;
+            if (group != null) {
+                objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=component, group=" + group + ", name=" + name);
+            } else {
+                objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=component, name=" + name);
+            }
+            mBeanServer.unregisterMBean(objectName);
+        } catch (MalformedObjectNameException e) {
+            throw new ManagementException(e);
+        } catch (InstanceNotFoundException e) {
+            throw new ManagementException(e);
+        } catch (MBeanRegistrationException e) {
+            throw new ManagementException(e);
+        }
+    }
+
+    private void introspect(Object instance, ManagementInfo info) {
+        for (Method method : instance.getClass().getMethods()) {
+            ManagementOperation annotation = method.getAnnotation(ManagementOperation.class);
+            if (annotation == null) {
+                continue;
+            }
+            String description = annotation.description();
+            if (description.trim().length() == 0) {
+                description = null;
+            }
+            Signature signature = new Signature(method);
+            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description);
+            info.addOperation(operationInfo);
+        }
+
     }
 
     private ObjectName getObjectName(URI uri, ManagementInfo info) throws MalformedObjectNameException {

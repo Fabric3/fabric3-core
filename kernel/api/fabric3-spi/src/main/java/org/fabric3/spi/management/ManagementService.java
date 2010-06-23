@@ -50,7 +50,7 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 public interface ManagementService {
 
     /**
-     * Expose the component for management
+     * Exposes a component for management.
      *
      * @param componentUri  the component URI
      * @param info          the management metadata
@@ -61,12 +61,32 @@ public interface ManagementService {
     void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException;
 
     /**
-     * Removes a component from the underlying management framework
+     * Exposes an instance for management as a system resource.
+     *
+     * @param name        the management name
+     * @param group       the management group
+     * @param description the instance description
+     * @param instance    the instance
+     * @throws ManagementException if an error exposing the instance is encountered
+     */
+    void export(String name, String group, String description, Object instance) throws ManagementException;
+
+    /**
+     * Removes a component from the underlying management framework.
      *
      * @param componentUri the component URI
      * @param info         the management metadata
      * @throws ManagementException if an error removing the component is encountered
      */
     void remove(URI componentUri, ManagementInfo info) throws ManagementException;
+
+    /**
+     * Removes an instance from the underlying management framework.
+     *
+     * @param name  the management name
+     * @param group the management group
+     * @throws ManagementException if an error removing the component is encountered
+     */
+    public void remove(String name, String group) throws ManagementException;
 
 }
