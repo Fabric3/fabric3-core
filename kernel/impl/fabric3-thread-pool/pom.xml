@@ -23,7 +23,7 @@ Public License. See the accompanying license file for details.
     <dependencies>
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-host-api</artifactId>
+            <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

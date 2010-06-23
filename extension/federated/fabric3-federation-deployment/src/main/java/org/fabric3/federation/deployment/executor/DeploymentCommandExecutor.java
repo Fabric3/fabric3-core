@@ -137,8 +137,10 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
         private AtomicBoolean active = new AtomicBoolean(true);
 
         public void run() {
-            while (active.get()) {
-                doRun();
+            doRun();
+            if (active.get()) {
+                // reschedule
+                executorService.execute(this);
             }
         }
 

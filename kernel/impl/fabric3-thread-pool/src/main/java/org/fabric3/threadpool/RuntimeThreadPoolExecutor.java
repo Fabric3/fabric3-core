@@ -54,6 +54,8 @@ import org.osoa.sca.annotations.Property;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.spi.threadpool.ExecutionContext;
+import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 /**
  * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads.
@@ -131,12 +133,12 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param stallThreshold the time a thread can be processing work before it is considered stalled
      */
     @Property(required = false)
-    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled")
+    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public void setStallThreshold(int stallThreshold) {
         this.stallThreshold = stallThreshold;
     }
 
-    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled")
+    @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public int getStallThreshold() {
         return stallThreshold;
     }
@@ -176,7 +178,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         return queue.remainingCapacity();
     }
 
-    @ManagementOperation(description = "Returns the total time the thread pool has spent executing requests")
+    @ManagementOperation(description = "Returns the total time the thread pool has spent executing requests in milliseconds")
     public long getTotalExecutionTime() {
         return totalExecutionTime.get();
     }
@@ -186,14 +188,14 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         return completedWorkCount.get();
     }
 
-    @ManagementOperation(description = "Returns the average elapsed time to process a work request")
+    @ManagementOperation(description = "Returns the average elapsed time to process a work request in milliseconds")
     public double getMeanExecutionTime() {
         long count = completedWorkCount.get();
         long totalTime = totalExecutionTime.get();
         return count == 0 ? 0 : totalTime / count;
     }
 
-    @ManagementOperation(description = "Returns the longest elapsed time for a currently running work request")
+    @ManagementOperation(description = "Returns the longest elapsed time for a currently running work request in milliseconds")
     public long getLongestRunning() {
         RunnableWrapper runnable = inFlight.peek();
         if (runnable == null) {
@@ -255,7 +257,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     /**
      * Wraps submitted work to record processing statistics.
      */
-    private class RunnableWrapper implements Runnable {
+    private class RunnableWrapper implements Runnable, ExecutionContext {
         private Runnable delegate;
         private Thread currentThread;
 
@@ -266,19 +268,38 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         }
 
         public void run() {
+            ExecutionContext old = ExecutionContextTunnel.setThreadExecutionContext(this);
             try {
-                currentThread = Thread.currentThread();
-                inFlight.add(this);
-                start = System.currentTimeMillis();
+                start();
                 delegate.run();
-                long elapsed = System.currentTimeMillis() - start;
-                totalExecutionTime.addAndGet(elapsed);
-                completedWorkCount.incrementAndGet();
+                stop();
             } finally {
-                currentThread = null;
-                inFlight.remove(this);
+                ExecutionContextTunnel.setThreadExecutionContext(old);
+                clear();
             }
         }
+
+        public void start() {
+            if (currentThread != null) {
+                // already started, ignore
+                return;
+            }
+            currentThread = Thread.currentThread();
+            inFlight.add(this);
+            start = System.currentTimeMillis();
+        }
+
+        public void clear() {
+            currentThread = null;
+            inFlight.remove(this);
+        }
+
+        public void stop() {
+            long elapsed = System.currentTimeMillis() - start;
+            totalExecutionTime.addAndGet(elapsed);
+            completedWorkCount.incrementAndGet();
+        }
+
     }
 
     /**
