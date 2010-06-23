@@ -58,6 +58,8 @@ import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceFactoryException;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.datasource.spi.DataSourceType;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * Initializes configured data sources and provides facilities for creating datasources dynamically.
@@ -66,14 +68,16 @@ import org.fabric3.datasource.spi.DataSourceType;
  */
 @EagerInit
 public class AtomikosDataSourceFactory implements DataSourceFactory {
+    private DataSourceRegistry registry;
+    private ManagementService managementService;
     private List<DataSourceConfiguration> configurations = Collections.emptyList();
     private Map<String, AbstractDataSourceBean> beans;
-    private DataSourceRegistry registry;
     private DataSourceConfigParser parser = new DataSourceConfigParser();
 
 
-    public AtomikosDataSourceFactory(@Reference DataSourceRegistry registry) {
+    public AtomikosDataSourceFactory(@Reference DataSourceRegistry registry, @Reference ManagementService managementService) {
         this.registry = registry;
+        this.managementService = managementService;
     }
 
     @Property(required = false)
@@ -82,7 +86,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
     }
 
     @Init
-    public void init() throws DuplicateDataSourceException {
+    public void init() throws DataSourceFactoryException {
         beans = new HashMap<String, AbstractDataSourceBean>();
         for (DataSourceConfiguration configuration : configurations) {
             create(configuration);
@@ -97,7 +101,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    public void create(DataSourceConfiguration configuration) throws DuplicateDataSourceException {
+    public void create(DataSourceConfiguration configuration) throws DataSourceFactoryException {
         String name = configuration.getName();
         if (registry.getDataSource(name) != null) {
             throw new DuplicateDataSourceException("Datasource already registered with name: " + name);
@@ -136,12 +140,23 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         bean.close();
     }
 
-    private void registerJMX(AbstractDataSourceBean bean) {
-        // TODO implement
+    private void registerJMX(AbstractDataSourceBean bean) throws DataSourceFactoryException {
+        String name = bean.getUniqueResourceName();
+        try {
+            DataSourceWrapper wrapper = new DataSourceWrapper(bean);
+            managementService.export(name, "datasources", "Configured datasources", wrapper);
+        } catch (ManagementException e) {
+            throw new DataSourceFactoryException(e);
+        }
     }
 
-    private void unRegisterJMX(AbstractDataSourceBean bean) {
-        // TODO implement
+    private void unRegisterJMX(AbstractDataSourceBean bean) throws DataSourceFactoryException {
+        try {
+            String name = bean.getUniqueResourceName();
+            managementService.remove(name, "datasources");
+        } catch (ManagementException e) {
+            throw new DataSourceFactoryException(e);
+        }
     }
 
 }
