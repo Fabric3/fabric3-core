@@ -14,6 +14,7 @@ Public License. See the accompanying license file for details.
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:description="Timer service extension"
               f3-core:extension="true">
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
     <import.java package="org.fabric3.timer.spi" version="1.6"/>
     <deployable composite="other:TimerExtension"/>
 
