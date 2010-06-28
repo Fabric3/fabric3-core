@@ -105,11 +105,44 @@ public class JMXManagementService implements ManagementService {
     }
 
     public void export(String name, String group, String description, Object instance) throws ManagementException {
-        Class<?> clazz = instance.getClass();
-        ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName());
-        introspect(instance, info);
-        URI uri = URI.create(Names.RUNTIME_NAME + "/" + name);
-        export(uri, info, new SingletonObjectFactory<Object>(instance), clazz.getClassLoader());
+        try {
+            ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
+            Object managementBean;
+            boolean isStandardMBean = isStandardMBean(instance);
+            if (isStandardMBean) {
+                // use the instance if it is a Standard MBean
+                managementBean = instance;
+            } else {
+                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(instance);
+                Class<?> clazz = instance.getClass();
+                ClassLoader loader = clazz.getClassLoader();
+                ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName());
+                introspect(instance, info);
+                managementBean = createOptimizedMBean(info, factory, loader);
+            }
+            if (!mBeanServer.isRegistered(objectName)) {
+                mBeanServer.registerMBean(managementBean, objectName);
+            }
+        } catch (MalformedObjectNameException e) {
+            throw new ManagementException(e);
+        } catch (JMException e) {
+            throw new ManagementException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ManagementException(e);
+        } catch (NoSuchMethodException e) {
+            throw new ManagementException(e);
+        }
+    }
+
+    private boolean isStandardMBean(Object instance) {
+        boolean isStandardMBean = false;
+        for (Class<?> interfaze : instance.getClass().getInterfaces()) {
+            if (interfaze.getSimpleName().endsWith("MBean")) {
+                isStandardMBean = true;
+                break;
+            }
+        }
+        return isStandardMBean;
     }
 
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
@@ -123,12 +156,7 @@ public class JMXManagementService implements ManagementService {
 
     public void remove(String name, String group) throws ManagementException {
         try {
-            ObjectName objectName;
-            if (group != null) {
-                objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=component, group=" + group + ", name=" + name);
-            } else {
-                objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=component, name=" + name);
-            }
+            ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             mBeanServer.unregisterMBean(objectName);
         } catch (MalformedObjectNameException e) {
             throw new ManagementException(e);
