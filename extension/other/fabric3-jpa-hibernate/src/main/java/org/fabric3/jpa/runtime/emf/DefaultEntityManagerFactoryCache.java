@@ -44,29 +44,49 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 
+import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.jmx.StatisticsService;
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
+import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * Creates and caches entity manager factories.
  *
  * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
  */
-@Service(interfaces = {EmfCache.class, ClassLoaderListener.class})
-public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
+@Service(interfaces = {EntityManagerFactoryCache.class, ClassLoaderListener.class})
+public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCache, ClassLoaderListener {
+    private CacheMonitor monitor;
+
+    public DefaultEntityManagerFactoryCache(@Monitor CacheMonitor monitor) {
+        this.monitor = monitor;
+    }
+
+    private ManagementService managementService;
+
     private Map<String, EntityManagerFactory> cache = new HashMap<String, EntityManagerFactory>();
     private Map<URI, Set<String>> contributionCache = new HashMap<URI, Set<String>>();
+
+    @Reference(required = false)
+    public void setManagementService(ManagementService managementService) {
+        this.managementService = managementService;
+    }
 
     @Destroy
     public void destroy() {
         // the runtime is being shutdown, close any open factories
-        for (EntityManagerFactory emf : cache.values()) {
-            if (emf != null) {
-                emf.close();
+        for (EntityManagerFactory factory : cache.values()) {
+            if (factory != null) {
+                factory.close();
             }
         }
     }
@@ -85,24 +105,57 @@ public class DefaultEmfCache implements EmfCache, ClassLoaderListener {
         Set<String> names = contributionCache.remove(key);
         if (names != null) {
             for (String name : names) {
-                EntityManagerFactory emf = cache.remove(name);
-                emf.close();
+                EntityManagerFactory factory = cache.remove(name);
+                factory.close();
+                remove(name);
             }
         }
     }
 
-    public EntityManagerFactory getEmf(String unitName) {
+    public EntityManagerFactory get(String unitName) {
         return cache.get(unitName);
     }
 
-    public void putEmf(URI uri, String unitName, EntityManagerFactory emf) {
-        cache.put(unitName, emf);
+    public void put(URI uri, String unitName, EntityManagerFactory factory) throws JpaResolutionException {
+        cache.put(unitName, factory);
         Set<String> names = contributionCache.get(uri);
         if (names == null) {
             names = new HashSet<String>();
             contributionCache.put(uri, names);
         }
         names.add(unitName);
+        export(unitName, factory);
+    }
+
+    private void export(String unitName, EntityManagerFactory factory) throws JpaResolutionException {
+        if (managementService == null) {
+            // management not enabled
+            return;
+        }
+        StatisticsService statistics = new StatisticsService();
+        // TODO make configurable
+        if (!(factory instanceof HibernateEntityManagerFactory)) {
+            throw new AssertionError("Expected " + HibernateEntityManagerFactory.class.getName() + " but was " + factory.getClass().getName());
+        }
+        statistics.setSessionFactory(((HibernateEntityManagerFactory) factory).getSessionFactory());
+        statistics.setStatisticsEnabled(true);
+        try {
+            managementService.export(unitName, "Hibernate session factories", "Hibernate session factory MBeans", statistics);
+        } catch (ManagementException e) {
+            throw new JpaResolutionException("Error exporting management bean for persistence unit: " + unitName, e);
+        }
+    }
+
+    private void remove(String unitName) {
+        if (managementService == null) {
+            // management not enabled
+            return;
+        }
+        try {
+            managementService.remove(unitName, "Hibernate");
+        } catch (ManagementException e) {
+            monitor.error(unitName, e);
+        }
     }
 
 }

@@ -42,9 +42,9 @@ import javax.persistence.EntityManagerFactory;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
+import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
-import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.builder.WiringException;
@@ -59,7 +59,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class PersistenceUnitWireAttacher implements TargetWireAttacher<PersistenceUnitTargetDefinition> {
-    private EmfResolver emfResolver;
+    private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
 
     /**
@@ -68,7 +68,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
      * @param emfResolver EntityManagerFactory builder.
      * @param registry   the classloader registry
      */
-    public PersistenceUnitWireAttacher(@Reference EmfResolver emfResolver, @Reference ClassLoaderRegistry registry) {
+    public PersistenceUnitWireAttacher(@Reference EntityManagerFactoryResolver emfResolver, @Reference ClassLoaderRegistry registry) {
         this.emfResolver = emfResolver;
         this.registry = registry;
     }
@@ -91,7 +91,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
             Thread.currentThread().setContextClassLoader(appCl);
             EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, appCl);
             return new SingletonObjectFactory<EntityManagerFactory>(entityManagerFactory);
-        } catch (EmfResolverException e) {
+        } catch (JpaResolutionException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);

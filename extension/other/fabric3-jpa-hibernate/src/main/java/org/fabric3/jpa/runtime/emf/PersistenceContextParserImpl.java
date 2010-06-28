@@ -41,20 +41,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.SharedCacheMode;
+import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
-import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
-import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;
 import javax.sql.DataSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -62,6 +60,11 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.xml.XMLFactory;
+
+import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
+import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * @version $Rev$ $Date$
@@ -89,12 +92,18 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
             List<PersistenceUnitInfo> infos = new ArrayList<PersistenceUnitInfo>();
             reader.nextTag();
             PersistenceUnitInfo info = null;
+            String version = "2.0";
             while (true) {
                 int event = reader.next();
                 switch (event) {
                 case START_ELEMENT:
-                    if ("persistence-unit".equals(reader.getName().getLocalPart())) {
-                        info = parsePersistenceUnit(reader, classLoader, rootUrl);
+                    if ("persistence".equals(reader.getName().getLocalPart())) {
+                        String versionAttr = reader.getAttributeValue(null, "version");
+                        if (versionAttr != null) {
+                            version = versionAttr;
+                        }
+                    } else if ("persistence-unit".equals(reader.getName().getLocalPart())) {
+                        info = parsePersistenceUnit(reader, classLoader, rootUrl, version);
                         infos.add(info);
                     }
                     break;
@@ -140,12 +149,13 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
         }
     }
 
-    private PersistenceUnitInfo parsePersistenceUnit(XMLStreamReader reader, ClassLoader classLoader, URL rootUrl)
+    private PersistenceUnitInfo parsePersistenceUnit(XMLStreamReader reader, ClassLoader classLoader, URL rootUrl, String version)
             throws XMLStreamException, PersistenceUnitException, MalformedURLException {
         String name = reader.getAttributeValue(null, "name");
         String trxAttr = reader.getAttributeValue(null, "transaction-type");
         PersistenceUnitTransactionType trxType = "JTA".equals(trxAttr) ? JTA : RESOURCE_LOCAL;
         Fabric3PersistenceUnitInfo info = new Fabric3PersistenceUnitInfo(name);
+        info.setPersistenceXMLSchemaVersion(version);
         info.setTrxType(trxType);
         info.setClassLoader(classLoader);
         info.setRootUrl(rootUrl);
@@ -176,6 +186,22 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                 } else if ("exclude-unlisted-classes".equals(reader.getName().getLocalPart())) {
                     boolean exclude = Boolean.parseBoolean(reader.getElementText());
                     info.setExcludeUnlistedClasses(exclude);
+                } else if ("shared-cache-mode".equals(reader.getName().getLocalPart())) {
+                    String value = reader.getElementText();
+                    try {
+                        SharedCacheMode mode = SharedCacheMode.valueOf(value);
+                        info.setSharedCacheMode(mode);
+                    } catch (IllegalArgumentException e) {
+                        throw new PersistenceUnitException("Illegal shared cache mode: " + value);
+                    }
+                } else if ("validation-mode".equals(reader.getName().getLocalPart())) {
+                    String value = reader.getElementText();
+                    try {
+                        ValidationMode mode = ValidationMode.valueOf(value);
+                        info.setValidationMode(mode);
+                    } catch (IllegalArgumentException e) {
+                        throw new PersistenceUnitException("Illegal validation mode: " + value);
+                    }
                 }
                 break;
             case END_ELEMENT:

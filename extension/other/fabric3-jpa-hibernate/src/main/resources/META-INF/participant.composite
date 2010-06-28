@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
            name="HibernateParticipantExtension"
            autowire="true">
 
-    <component name="DefaultEmfCache">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEmfCache"/>
+    <component name="DefaultEntityManagerFactoryCache">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEntityManagerFactoryCache"/>
     </component>
 
     <component name="F3TransactionManagerLookup">
@@ -42,8 +42,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.PersistenceContextParserImpl"/>
     </component>
 
-    <component name="CachingEmfResolver">
-        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEmfResolver"/>
+    <component name="CachingEntityManagerFactoryResolver">
+        <f3-impl:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEntityManagerFactoryResolver"/>
         <property name="monitorLevel" source="$systemConfig//jpa/@logging"/>
     </component>
 

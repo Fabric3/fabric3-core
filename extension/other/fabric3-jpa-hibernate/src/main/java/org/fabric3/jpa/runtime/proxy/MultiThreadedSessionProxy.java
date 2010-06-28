@@ -51,10 +51,12 @@ import org.hibernate.Filter;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.UnknownProfileException;
 import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -147,6 +149,14 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().isDirty();
     }
 
+    public boolean isDefaultReadOnly() {
+        return getSession().isDefaultReadOnly();
+    }
+
+    public void setDefaultReadOnly(boolean b) {
+        getSession().setDefaultReadOnly(b);
+    }
+
     public Serializable getIdentifier(Object object) throws HibernateException {
         return getSession().getIdentifier(object);
     }
@@ -163,8 +173,16 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().load(theClass, id, lockMode);
     }
 
+    public Object load(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        return getSession().load(aClass, serializable, lockOptions);
+    }
+
     public Object load(String entityName, Serializable id, LockMode lockMode) throws HibernateException {
         return getSession().load(entityName, id, lockMode);
+    }
+
+    public Object load(String s, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        return getSession().load(s, serializable, lockOptions);
     }
 
     public Object load(Class theClass, Serializable id) throws HibernateException {
@@ -239,12 +257,20 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().lock(entityName, object, lockMode);
     }
 
+    public Session.LockRequest buildLockRequest(LockOptions lockOptions) {
+        return getSession().buildLockRequest(lockOptions);
+    }
+
     public void refresh(Object object) throws HibernateException {
         getSession().refresh(object);
     }
 
     public void refresh(Object object, LockMode lockMode) throws HibernateException {
         getSession().refresh(object, lockMode);
+    }
+
+    public void refresh(Object o, LockOptions lockOptions) throws HibernateException {
+        getSession().refresh(o, lockOptions);
     }
 
     public LockMode getCurrentLockMode(Object object) throws HibernateException {
@@ -303,12 +329,20 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().get(clazz, id, lockMode);
     }
 
+    public Object get(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        return getSession().get(aClass, serializable, lockOptions);
+    }
+
     public Object get(String entityName, Serializable id) throws HibernateException {
         return getSession().get(entityName, id);
     }
 
     public Object get(String entityName, Serializable id, LockMode lockMode) throws HibernateException {
         return getSession().get(entityName, id, lockMode);
+    }
+
+    public Object get(String s, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        return getSession().get(s, serializable, lockOptions);
     }
 
     public String getEntityName(Object object) throws HibernateException {
@@ -331,6 +365,10 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().getStatistics();
     }
 
+    public boolean isReadOnly(Object o) {
+        return getSession().isReadOnly(o);
+    }
+
     public void setReadOnly(Object entity, boolean readOnly) {
         getSession().setReadOnly(entity, readOnly);
     }
@@ -349,6 +387,18 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
 
     public void reconnect(Connection connection) throws HibernateException {
         getSession().reconnect(connection);
+    }
+
+    public boolean isFetchProfileEnabled(String s) throws UnknownProfileException {
+        return getSession().isFetchProfileEnabled(s);
+    }
+
+    public void enableFetchProfile(String s) throws UnknownProfileException {
+        getSession().enableFetchProfile(s);
+    }
+
+    public void disableFetchProfile(String s) throws UnknownProfileException {
+        getSession().disableFetchProfile(s);
     }
 
     /**
@@ -372,7 +422,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
                 throw new ServiceRuntimeException(e);
             }
         } else {
-            // a transaction-scoped persitence context
+            // a transaction-scoped persistence context
             try {
                 Transaction trx = tm.getTransaction();
                 if (trx == null) {

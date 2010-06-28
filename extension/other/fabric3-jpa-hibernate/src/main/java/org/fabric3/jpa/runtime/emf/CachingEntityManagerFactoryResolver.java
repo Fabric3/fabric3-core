@@ -53,22 +53,22 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.Names;
-import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.api.EmfResolverException;
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
+import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
- * An {@link EmfResolver} implementation that caches EntityManagerFactory instances.
+ * An {@link EntityManagerFactoryResolver} implementation that caches EntityManagerFactory instances.
  *
  * @version $Rev$ $Date$
  */
-public class CachingEmfResolver implements EmfResolver {
+public class CachingEntityManagerFactoryResolver implements EntityManagerFactoryResolver {
     private static final String HIBERNATE_LOOKUP = "hibernate.transaction.manager_lookup_class";
 
     private PersistenceContextParser parser;
-    private EmfCache cache;
+    private EntityManagerFactoryCache cache;
     private MonitorService monitorService;
 
     private MonitorLevel logLevel = MonitorLevel.WARNING;
@@ -78,7 +78,9 @@ public class CachingEmfResolver implements EmfResolver {
         this.logLevel = MonitorLevel.valueOf(logLevel);
     }
 
-    public CachingEmfResolver(@Reference PersistenceContextParser parser, @Reference EmfCache cache, @Reference MonitorService monitorService) {
+    public CachingEntityManagerFactoryResolver(@Reference PersistenceContextParser parser,
+                                               @Reference EntityManagerFactoryCache cache,
+                                               @Reference MonitorService monitorService) {
         this.parser = parser;
         this.cache = cache;
         this.monitorService = monitorService;
@@ -90,8 +92,8 @@ public class CachingEmfResolver implements EmfResolver {
         monitorService.setProviderLevel("org.hibernate", logLevel.toString());
     }
 
-    public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws EmfResolverException {
-        EntityManagerFactory resolvedEmf = cache.getEmf(unitName);
+    public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws JpaResolutionException {
+        EntityManagerFactory resolvedEmf = cache.get(unitName);
         if (resolvedEmf != null) {
             return resolvedEmf;
         }
@@ -106,7 +108,7 @@ public class CachingEmfResolver implements EmfResolver {
         for (Map.Entry<String, EntityManagerFactory> entry : emfs.entrySet()) {
             String name = entry.getKey();
             EntityManagerFactory emf = entry.getValue();
-            cache.putEmf(key, name, emf);
+            cache.put(key, name, emf);
             if (unitName.equals(name)) {
                 resolvedEmf = emf;
             }
@@ -120,9 +122,9 @@ public class CachingEmfResolver implements EmfResolver {
      *
      * @param classLoader the persistence unit classloader
      * @return the entity manager factory
-     * @throws EmfResolverException if there is an error creating the factory
+     * @throws JpaResolutionException if there is an error creating the factory
      */
-    private Map<String, EntityManagerFactory> createEntityManagerFactories(ClassLoader classLoader) throws EmfResolverException {
+    private Map<String, EntityManagerFactory> createEntityManagerFactories(ClassLoader classLoader) throws JpaResolutionException {
         Map<String, EntityManagerFactory> emfs = new HashMap<String, EntityManagerFactory>();
         List<PersistenceUnitInfo> infos = parser.parse(classLoader);
         for (PersistenceUnitInfo info : infos) {

@@ -49,12 +49,12 @@ import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ConversationExpirationCallback;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.jpa.runtime.emf.EmfCache;
 
 /**
  * Implementation that manages a cache of EntityManagers.
@@ -63,22 +63,22 @@ import org.fabric3.jpa.runtime.emf.EmfCache;
  */
 public class EntityManagerServiceImpl implements EntityManagerService {
     public static final Object JOINED = new Object();
-    // a chache of entity managers double keyed by scope (transaction or conversation) and persistence unit name
+    // a cache of entity managers double keyed by scope (transaction or conversation) and persistence unit name
     private Map<Object, Map<String, EntityManager>> cache = new ConcurrentHashMap<Object, Map<String, EntityManager>>();
     // tracks which entity managers have joined transactions
     private Map<Transaction, Object> joinedTransaction = new ConcurrentHashMap<Transaction, Object>();
-    private EmfCache emfCache;
+    private EntityManagerFactoryCache emfCache;
     private TransactionManager tm;
     private ScopeContainer scopeContainer;
 
-    public EntityManagerServiceImpl(@Reference EmfCache emfCache, @Reference TransactionManager tm, @Reference ScopeRegistry registry) {
+    public EntityManagerServiceImpl(@Reference EntityManagerFactoryCache emfCache, @Reference TransactionManager tm, @Reference ScopeRegistry registry) {
         this.emfCache = emfCache;
         this.tm = tm;
         this.scopeContainer = registry.getScopeContainer(Scope.CONVERSATION);
     }
 
     public EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws EntityManagerCreationException {
-        // Note this method is threadsafe as a Transaction is only visible to a single thread at time.
+        // Note this method is thread-safe as a Transaction is only visible to a single thread at time.
         EntityManager em = null;
         Map<String, EntityManager> map = cache.get(transaction);
         if (map != null) {
@@ -87,7 +87,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
 
         if (em == null) {
             // no entity manager for the persistence unit associated with the transaction
-            EntityManagerFactory emf = emfCache.getEmf(unitName);
+            EntityManagerFactory emf = emfCache.get(unitName);
             if (emf == null) {
                 throw new EntityManagerCreationException("No EntityManagerFactory found for persistence unit: " + unitName);
             }
@@ -116,7 +116,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
             if (em == null) {
                 // no entity manager for the persistence unit associated with the conversation
                 try {
-                    EntityManagerFactory emf = emfCache.getEmf(unitName);
+                    EntityManagerFactory emf = emfCache.get(unitName);
                     if (emf == null) {
                         throw new EntityManagerCreationException("No EntityManagerFactory found for persistence unit: " + unitName);
                     }

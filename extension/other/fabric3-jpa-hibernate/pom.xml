@@ -28,12 +28,12 @@ Public License. See the accompanying license file for details.
     <dependencies>
 
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>com.springsource.javax.persistence</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jpa-api</artifactId>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-pojo</artifactId>

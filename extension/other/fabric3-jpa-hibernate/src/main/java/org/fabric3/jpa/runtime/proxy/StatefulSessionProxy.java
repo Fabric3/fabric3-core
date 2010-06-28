@@ -51,10 +51,12 @@ import org.hibernate.Filter;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.UnknownProfileException;
 import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -164,6 +166,16 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.isDirty();
     }
 
+    public boolean isDefaultReadOnly() {
+        initSession();
+        return session.isDefaultReadOnly();
+    }
+
+    public void setDefaultReadOnly(boolean read) {
+        initSession();
+        session.setDefaultReadOnly(read);
+    }
+
     public Serializable getIdentifier(Object object) throws HibernateException {
         initSession();
         return session.getIdentifier(object);
@@ -184,9 +196,19 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.load(theClass, id, lockMode);
     }
 
+    public Object load(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        initSession();
+        return session.load(aClass, serializable, lockOptions);
+    }
+
     public Object load(String entityName, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.load(entityName, id, lockMode);
+    }
+
+    public Object load(String s, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        initSession();
+        return session.load(s, serializable, lockOptions);
     }
 
     public Object load(Class theClass, Serializable id) throws HibernateException {
@@ -279,6 +301,11 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.lock(entityName, object, lockMode);
     }
 
+    public Session.LockRequest buildLockRequest(LockOptions lockOptions) {
+        initSession();
+        return session.buildLockRequest(lockOptions);
+    }
+
     public void refresh(Object object) throws HibernateException {
         initSession();
         session.refresh(object);
@@ -287,6 +314,11 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     public void refresh(Object object, LockMode lockMode) throws HibernateException {
         initSession();
         session.refresh(object, lockMode);
+    }
+
+    public void refresh(Object o, LockOptions lockOptions) throws HibernateException {
+        initSession();
+        session.refresh(o, lockOptions);
     }
 
     public LockMode getCurrentLockMode(Object object) throws HibernateException {
@@ -359,6 +391,11 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.get(clazz, id, lockMode);
     }
 
+    public Object get(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        initSession();
+        return session.get(aClass, serializable, lockOptions);
+    }
+
     public Object get(String entityName, Serializable id) throws HibernateException {
         initSession();
         return session.get(entityName, id);
@@ -367,6 +404,11 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     public Object get(String entityName, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.get(entityName, id, lockMode);
+    }
+
+    public Object get(String s, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        initSession();
+        return session.get(s, serializable, lockOptions);
     }
 
     public String getEntityName(Object object) throws HibernateException {
@@ -394,6 +436,11 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.getStatistics();
     }
 
+    public boolean isReadOnly(Object o) {
+        initSession();
+        return session.isReadOnly(o);
+    }
+
     public void setReadOnly(Object entity, boolean readOnly) {
         initSession();
         session.setReadOnly(entity, readOnly);
@@ -417,6 +464,25 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     public void reconnect(Connection connection) throws HibernateException {
         initSession();
         session.reconnect(connection);
+    }
+
+    public boolean isFetchProfileEnabled(String s) throws UnknownProfileException {
+        initSession();
+        return session.isFetchProfileEnabled(s);
+    }
+
+    public void enableFetchProfile(String s) throws UnknownProfileException {
+        initSession();
+        session.enableFetchProfile(s);
+    }
+
+    public void disableFetchProfile(String s) throws UnknownProfileException {
+         initSession();
+        session.disableFetchProfile(s);
+    }
+
+    public void clearEntityManager() {
+        session = null;
     }
 
     /**
@@ -457,7 +523,4 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         }
     }
 
-    public void clearEntityManager() {
-        session = null;
-    }
 }

@@ -40,20 +40,22 @@ package org.fabric3.jpa.runtime.emf;
 import javax.persistence.EntityManagerFactory;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
-import org.fabric3.jpa.api.EmfResolver;
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CachingEmfResolverTest extends TestCase {
 
-    private EmfResolver emfResolver;
+    private EntityManagerFactoryResolver emfResolver;
 
     protected void setUp() throws Exception {
         PersistenceContextParserImpl parser = null;
-        DefaultEmfCache cache = new DefaultEmfCache();
-        emfResolver = new CachingEmfResolver(parser, cache, null);
+        CacheMonitor monitor = EasyMock.createNiceMock(CacheMonitor.class);
+        DefaultEntityManagerFactoryCache cache = new DefaultEntityManagerFactoryCache(monitor);
+        emfResolver = new CachingEntityManagerFactoryResolver(parser, cache, null);
     }
 
     public void testBuild() throws Exception {

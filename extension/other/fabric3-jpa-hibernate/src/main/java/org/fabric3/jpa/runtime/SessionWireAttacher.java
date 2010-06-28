@@ -42,9 +42,9 @@ import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
+import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.provision.SessionTargetDefinition;
-import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.api.EmfResolverException;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
@@ -59,7 +59,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefinition> {
-    private EmfResolver emfResolver;
+    private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
     private TransactionManager tm;
     private EntityManagerService emService;
@@ -74,7 +74,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
      */
     public SessionWireAttacher(@Reference EntityManagerService emService,
                                @Reference TransactionManager tm,
-                               @Reference EmfResolver emfResolver,
+                               @Reference EntityManagerFactoryResolver emfResolver,
                                @Reference ClassLoaderRegistry registry) {
         this.emfResolver = emfResolver;
         this.registry = registry;
@@ -98,7 +98,7 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
             } else {
                 return new StatefulSessionProxyFactory(unitName, extended, emService, tm);
             }
-        } catch (EmfResolverException e) {
+        } catch (JpaResolutionException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);

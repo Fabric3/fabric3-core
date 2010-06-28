@@ -44,8 +44,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
-import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.api.EmfResolverException;
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
+import org.fabric3.jpa.api.JpaResolutionException;
 
 /**
  * Integrates Fabric3 EntityManagerFactory parsing with Spring. This class can be configured in an end-user Spring application context to make entity
@@ -65,21 +65,21 @@ import org.fabric3.jpa.api.EmfResolverException;
 public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManagerFactoryBean {
     private static final long serialVersionUID = 3488984443450640577L;
 
-    private EmfResolver resolver;
+    private EntityManagerFactoryResolver resolver;
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         super.setBeanFactory(beanFactory);
         // Resolve the service responsible for building and caching EntityManagerFactory instances.
         // This is set in the parent application context owned by the Spring SCA component
-        this.resolver = (EmfResolver) beanFactory.getBean(EMF_RESOLVER);
+        this.resolver = (EntityManagerFactoryResolver) beanFactory.getBean(EMF_RESOLVER);
     }
 
     protected EntityManagerFactory createNativeEntityManagerFactory() throws PersistenceException {
         if (resolver != null) {
             try {
                 return resolver.resolve(getPersistenceUnitName(), getBeanClassLoader());
-            } catch (EmfResolverException e) {
+            } catch (JpaResolutionException e) {
                 throw new PersistenceException(e);
             }
         }

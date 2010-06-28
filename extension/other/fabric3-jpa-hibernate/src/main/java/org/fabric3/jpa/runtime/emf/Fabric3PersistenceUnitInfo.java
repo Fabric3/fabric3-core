@@ -41,13 +41,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import javax.persistence.SharedCacheMode;
+import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 /**
- * Encpasulates a persistence unit configured in a persistence.xml file.
+ * Encapsulates a persistence unit configured in a persistence.xml file.
  *
  * @version $Rev: 8929 $ $Date: 2010-04-26 23:53:37 +0200 (Mon, 26 Apr 2010) $
  */
@@ -64,6 +66,9 @@ public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
     private List<String> mappingFiles = new ArrayList<String>();
     private Properties properties = new Properties();
     private PersistenceUnitTransactionType trxType;
+    private String version = "2.0";
+    private SharedCacheMode sharedCacheMode = SharedCacheMode.UNSPECIFIED;
+    private ValidationMode validationMode = ValidationMode.AUTO;
 
     public Fabric3PersistenceUnitInfo(String unitName) {
         this.unitName = unitName;
@@ -86,6 +91,22 @@ public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
 
     public boolean excludeUnlistedClasses() {
         return exclude;
+    }
+
+    public SharedCacheMode getSharedCacheMode() {
+        return sharedCacheMode;
+    }
+
+    public void setSharedCacheMode(SharedCacheMode sharedCacheMode) {
+        this.sharedCacheMode = sharedCacheMode;
+    }
+
+    public ValidationMode getValidationMode() {
+        return validationMode;
+    }
+
+    public void setValidationMode(ValidationMode validationMode) {
+        this.validationMode = validationMode;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
@@ -169,5 +190,11 @@ public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
         return properties;
     }
 
+    public String getPersistenceXMLSchemaVersion() {
+        return version;
+    }
 
+    public void setPersistenceXMLSchemaVersion(String version) {
+        this.version = version;
+    }
 }

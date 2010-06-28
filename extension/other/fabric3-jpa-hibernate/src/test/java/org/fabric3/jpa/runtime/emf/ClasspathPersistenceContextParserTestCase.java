@@ -39,6 +39,8 @@ package org.fabric3.jpa.runtime.emf;
 
 import java.net.URL;
 import java.util.List;
+import javax.persistence.SharedCacheMode;
+import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
@@ -59,6 +61,9 @@ public class ClasspathPersistenceContextParserTestCase extends TestCase {
         assertEquals(2, infos.size());
 
         PersistenceUnitInfo info1 = infos.get(0);
+        assertEquals("2.0", info1.getPersistenceXMLSchemaVersion());
+        assertEquals(SharedCacheMode.ALL, info1.getSharedCacheMode());
+        assertEquals(ValidationMode.CALLBACK, info1.getValidationMode());
         assertEquals("test", info1.getPersistenceUnitName());
         assertEquals(PersistenceUnitTransactionType.RESOURCE_LOCAL, info1.getTransactionType());
         assertEquals("org.fabric3.TestProvider1", info1.getPersistenceProviderClassName());

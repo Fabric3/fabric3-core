@@ -30,14 +30,14 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-spring-library</artifactId>
+            <artifactId>fabric3-jpa-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>com.springsource.javax.persistence</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-spring-library</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- JMS is needed for Atomikos -->

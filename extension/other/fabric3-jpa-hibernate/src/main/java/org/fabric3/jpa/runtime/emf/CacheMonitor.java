@@ -35,25 +35,16 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.api;
+package org.fabric3.jpa.runtime.emf;
 
-import javax.persistence.EntityManagerFactory;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * Resolves EntityManagerFactor instances.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
  */
-public interface EmfResolver {
+public interface CacheMonitor {
 
-    /**
-     * Resolves the EntityManagerFactory corresponding for the given persistence unit.
-     *
-     * @param unitName    Persistence unit name.
-     * @param classLoader Classloader to load the persistence XML.
-     * @return Entity manager factory.
-     * @throws EmfResolverException if an error occurs building the EMF
-     */
-    EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws EmfResolverException;
+    @Severe
+    void error(String message, Throwable e);
 
 }

@@ -42,9 +42,9 @@ import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
-import org.fabric3.jpa.api.EmfResolver;
-import org.fabric3.jpa.api.EmfResolverException;
+import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulEntityManagerProxyFactory;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
@@ -61,7 +61,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextTargetDefinition> {
-    private EmfResolver emfResolver;
+    private EntityManagerFactoryResolver emfResolver;
     private ClassLoaderRegistry registry;
     private TransactionManager tm;
     private EntityManagerService emService;
@@ -76,7 +76,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
      */
     public PersistenceContextWireAttacher(@Reference EntityManagerService emService,
                                           @Reference TransactionManager tm,
-                                          @Reference EmfResolver emfResolver,
+                                          @Reference EntityManagerFactoryResolver emfResolver,
                                           @Reference ClassLoaderRegistry registry) {
         this.emfResolver = emfResolver;
         this.registry = registry;
@@ -100,7 +100,7 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
             } else {
                 return new StatefulEntityManagerProxyFactory(unitName, extended, emService, tm);
             }
-        } catch (EmfResolverException e) {
+        } catch (JpaResolutionException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);

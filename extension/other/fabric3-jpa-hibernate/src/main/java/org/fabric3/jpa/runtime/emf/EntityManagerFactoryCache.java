@@ -35,25 +35,36 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.api;
+package org.fabric3.jpa.runtime.emf;
 
-import org.fabric3.host.Fabric3Exception;
+import java.net.URI;
+import javax.persistence.EntityManagerFactory;
+
+import org.fabric3.jpa.api.JpaResolutionException;
 
 /**
+ * A cache of EntityManagerFactory instances.
+ *
  * @version $Rev$ $Date$
  */
-public class EmfResolverException extends Fabric3Exception {
-    private static final long serialVersionUID = 8918152702982814428L;
+public interface EntityManagerFactoryCache {
 
-    public EmfResolverException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Returns the EntityManagerFactory for the given persistence unit name
+     *
+     * @param unitName the persistence unit name
+     * @return the EntityManagerFactory or null if one has not been created
+     */
+    EntityManagerFactory get(String unitName);
 
-    public EmfResolverException(String message) {
-        super(message);
-    }
+    /**
+     * Caches an EntityManagerFactory.
+     *
+     * @param uri      the URI of the contribution the persistence unit is defined in
+     * @param unitName the persistence unit name
+     * @param factory      the EntityManagerFactory to cache
+     * @throws JpaResolutionException if there is an error caching the EntityManagerFactory
+     */
+    void put(URI uri, String unitName, EntityManagerFactory factory) throws JpaResolutionException;
 
-    public EmfResolverException(Throwable cause) {
-        super(cause);
-    }
 }

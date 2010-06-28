@@ -37,11 +37,17 @@
 */
 package org.fabric3.jpa.runtime.proxy;
 
+import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.metamodel.Metamodel;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
@@ -91,6 +97,18 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         return getEntityManager().find(entityClass, primaryKey);
     }
 
+    public <T> T find(Class<T> tClass, Object o, Map<String, Object> stringObjectMap) {
+        return getEntityManager().find(tClass, o, stringObjectMap);
+    }
+
+    public <T> T find(Class<T> tClass, Object o, LockModeType lockModeType) {
+        return getEntityManager().find(tClass, o, lockModeType);
+    }
+
+    public <T> T find(Class<T> tClass, Object o, LockModeType lockModeType, Map<String, Object> stringObjectMap) {
+        return getEntityManager().find(tClass, o, lockModeType, stringObjectMap);
+    }
+
     public <T> T getReference(Class<T> entityClass, Object primaryKey) {
         return getEntityManager().getReference(entityClass, primaryKey);
     }
@@ -111,24 +129,68 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         getEntityManager().lock(entity, lockMode);
     }
 
+    public void lock(Object o, LockModeType lockModeType, Map<String, Object> stringObjectMap) {
+        getEntityManager().lock(o, lockModeType, stringObjectMap);
+    }
+
     public void refresh(Object entity) {
         getEntityManager().remove(entity);
+    }
+
+    public void refresh(Object o, Map<String, Object> stringObjectMap) {
+        getEntityManager().refresh(o, stringObjectMap);
+    }
+
+    public void refresh(Object o, LockModeType lockModeType) {
+        getEntityManager().refresh(o, lockModeType);
+    }
+
+    public void refresh(Object o, LockModeType lockModeType, Map<String, Object> stringObjectMap) {
+        getEntityManager().refresh(o, lockModeType, stringObjectMap);
     }
 
     public void clear() {
         getEntityManager().clear();
     }
 
+    public void detach(Object o) {
+        getEntityManager().detach(o);
+    }
+
     public boolean contains(Object entity) {
         return getEntityManager().contains(entity);
+    }
+
+    public LockModeType getLockMode(Object o) {
+        return getEntityManager().getLockMode(o);
+    }
+
+    public void setProperty(String s, Object o) {
+        getEntityManager().setProperty(s, o);
+    }
+
+    public Map<String, Object> getProperties() {
+        return getEntityManager().getProperties();
     }
 
     public Query createQuery(String qlString) {
         return getEntityManager().createQuery(qlString);
     }
 
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> tCriteriaQuery) {
+        return getEntityManager().createQuery(tCriteriaQuery);
+    }
+
+    public <T> TypedQuery<T> createQuery(String s, Class<T> tClass) {
+        return getEntityManager().createQuery(s, tClass);
+    }
+
     public Query createNamedQuery(String name) {
         return getEntityManager().createNamedQuery(name);
+    }
+
+    public <T> TypedQuery<T> createNamedQuery(String s, Class<T> tClass) {
+        return getEntityManager().createNamedQuery(s, tClass);
     }
 
     public Query createNativeQuery(String sqlString) {
@@ -147,6 +209,10 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         getEntityManager().joinTransaction();
     }
 
+    public <T> T unwrap(Class<T> tClass) {
+        return getEntityManager().unwrap(tClass);
+    }
+
     public Object getDelegate() {
         return getEntityManager().getDelegate();
     }
@@ -163,8 +229,20 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
         return getEntityManager().getTransaction();
     }
 
-    public void clearEntityManager() {
+    public EntityManagerFactory getEntityManagerFactory() {
+        return getEntityManager().getEntityManagerFactory();
+    }
 
+    public CriteriaBuilder getCriteriaBuilder() {
+        return getEntityManager().getCriteriaBuilder();
+    }
+
+    public Metamodel getMetamodel() {
+        return getEntityManager().getMetamodel();
+    }
+
+    public void clearEntityManager() {
+        // no-op
     }
 
     /**
@@ -188,7 +266,7 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
                 throw new ServiceRuntimeException(e);
             }
         } else {
-            // a transaction-scoped persitence context
+            // a transaction-scoped persistence context
             try {
                 Transaction trx = tm.getTransaction();
                 if (trx == null) {

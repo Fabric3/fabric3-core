@@ -33,7 +33,7 @@ Public License. See the accompanying license file for details.
                 <include>org.codehaus.fabric3:fabric3-tx</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
                 <include>javax.resource:com.springsource.javax.resource</include>
-                <include>javax.persistence:com.springsource.javax.persistence</include>
+                <include>org.codehaus.fabric3:fabric3-jpa-api</include>
                 <include>javax.jms:com.springsource.javax.jms</include>
              </includes>
             <outputDirectory>/extensions</outputDirectory>

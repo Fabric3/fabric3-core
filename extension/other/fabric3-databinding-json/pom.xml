@@ -77,14 +77,4 @@ Public License. See the accompanying license file for details.
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>repository.jboss.org</id>
-            <url>http://repository.jboss.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
 </project>

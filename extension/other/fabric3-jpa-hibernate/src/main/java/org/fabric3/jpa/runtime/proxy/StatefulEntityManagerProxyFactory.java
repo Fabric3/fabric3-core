@@ -43,7 +43,7 @@ import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 
 /**
- * Creates StatefulEntityManagerProxy intances.
+ * Creates StatefulEntityManagerProxy instances.
  *
  * @version $Rev$ $Date$
  */

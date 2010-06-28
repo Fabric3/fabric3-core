@@ -56,7 +56,7 @@ import org.fabric3.host.Names;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.jpa.api.EmfResolver;
+import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
@@ -90,7 +90,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
     private boolean alias = true;
     private TransactionManager tm;
     private DataSourceRegistry dataSourceRegistry;
-    private EmfResolver emfResolver;
+    private EntityManagerFactoryResolver emfResolver;
 
     private Map<String, String> beanAliases = new HashMap<String, String>();
 
@@ -115,7 +115,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
     }
 
     @Reference(required = false)
-    public void setEmfBuilder(EmfResolver emfResolver) {
+    public void setEmfBuilder(EntityManagerFactoryResolver emfResolver) {
         this.emfResolver = emfResolver;
     }
 
