@@ -79,7 +79,7 @@ import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 /**
- * This class provides the commandline interface for starting the Fabric3 standalone server. The class boots a Fabric3 runtime and launches a daemon
+ * This class provides the command line interface for starting the Fabric3 standalone server. The class boots a Fabric3 runtime and launches a daemon
  * that listens for a shutdown command.
  * <p/>
  * The administration port can be specified using the system property <code>fabric3.adminPort</code>.If not specified the default port that is used is
