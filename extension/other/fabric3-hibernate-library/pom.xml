@@ -28,7 +28,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.5.1-Final</version>
+            <version>3.5.3-Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.transaction</groupId>
@@ -45,7 +45,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jmx</artifactId>
-            <version>3.5.1-Final</version>
+            <version>3.5.3-Final</version>
         </dependency>
 
         <!-- SLF4J replaces clogging -->
