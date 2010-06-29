@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
+import javax.management.MBeanServer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -78,8 +79,9 @@ public class BrokerEngine {
     private BrokerConfiguration brokerConfiguration;
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MonitorService monitorService;
+    private MBeanServer mBeanServer;
 
-    public BrokerEngine(@Reference MonitorService monitorService, @Reference HostInfo info) {
+    public BrokerEngine(@Reference HostInfo info) {
         this.monitorService = monitorService;
         tempDir = new File(info.getTempDir(), "activemq");
         // sets the directory where persistent messages are written
@@ -103,6 +105,10 @@ public class BrokerEngine {
         brokerConfiguration = parser.parse(reader);
     }
 
+    @Reference(required = false)
+    public void setMBeanServer(MBeanServer mBeanServer) {
+        this.mBeanServer = mBeanServer;
+    }
 
     @Init
     public void init() throws Exception {
@@ -111,11 +117,11 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // ActiveMQ default level is INFO which is verbose. Only log warnings by default
-        monitorService.setProviderLevel("org.apache.activemq", monitorLevel.toString());
+//        monitorService.setProviderLevel("org.apache.activemq", monitorLevel.toString());
         broker = new BrokerService();
-        // TODO enable JMX via the F3 JMX agent
-        // JMX must be turned off prior to configuring connections to avoid conflicts with the F3 JMX agent.
-        broker.setUseJmx(false);
+        Fabric3ManagementContext context = new Fabric3ManagementContext(brokerName, mBeanServer);
+        broker.setManagementContext(context);
+        broker.setUseJmx(true);
         broker.setTmpDataDirectory(tempDir);
         broker.setDataDirectory(dataDir.toString());
         if (brokerConfiguration == null) {
