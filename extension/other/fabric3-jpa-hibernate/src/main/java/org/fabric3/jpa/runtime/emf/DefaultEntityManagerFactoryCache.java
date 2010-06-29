@@ -140,7 +140,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         statistics.setSessionFactory(((HibernateEntityManagerFactory) factory).getSessionFactory());
         statistics.setStatisticsEnabled(true);
         try {
-            managementService.export(unitName, "Hibernate session factories", "Hibernate session factory MBeans", statistics);
+            managementService.export(unitName, "Hibernate", "Hibernate session factory MBeans", statistics);
         } catch (ManagementException e) {
             throw new JpaResolutionException("Error exporting management bean for persistence unit: " + unitName, e);
         }
