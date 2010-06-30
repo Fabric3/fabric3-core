@@ -65,6 +65,8 @@ import javax.transaction.TransactionManager;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.spi.threadpool.ExecutionContext;
+import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
@@ -965,29 +967,43 @@ public class AdaptiveMessageContainer {
             boolean received = false;
             boolean active = true;
             while (active) {
+                // reset the execution context so the thread does not appear stalled to the runtime
+                ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
                 synchronized (syncMonitor) {
-                    boolean interrupted = false;
-                    boolean waiting = false;
-                    while ((active = isInitialized()) && !isRunning()) {
-                        if (interrupted) {
-                            throw new IllegalStateException("Interrupted while waiting for restart");
+                    try {
+                        if (context != null) {
+                            context.start();
                         }
-                        if (!isRunning()) {
-                            return false;
+                        boolean interrupted = false;
+                        boolean waiting = false;
+                        while ((active = isInitialized()) && !isRunning()) {
+                            if (interrupted) {
+                                throw new IllegalStateException("Interrupted while waiting for restart");
+                            }
+                            if (!isRunning()) {
+                                return false;
+                            }
+                            if (!waiting && isRunning()) {
+                                activeReceiverCount--;
+                            }
+                            waiting = true;
+                            try {
+                                syncMonitor.wait();
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                                interrupted = true;
+                            }
                         }
-                        if (!waiting && isRunning()) {
-                            activeReceiverCount--;
+                        if (waiting) {
+                            activeReceiverCount++;
                         }
-                        waiting = true;
-                        try {
-                            syncMonitor.wait();
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                            interrupted = true;
+                        if (context != null) {
+                            context.stop();
                         }
-                    }
-                    if (waiting) {
-                        activeReceiverCount++;
+                    } finally {
+                        if (context != null) {
+                            context.clear();
+                        }
                     }
                 }
                 if (active) {
