@@ -42,7 +42,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.jetty.handler.HandlerWrapper;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 
 import org.fabric3.container.web.spi.WebRequestTunnel;
 import org.fabric3.spi.invocation.CallFrame;
@@ -55,7 +56,8 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public class WorkContextHandler extends HandlerWrapper {
-    public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         WorkContext oldContext = null;
         try {
             WorkContext workContext = new WorkContext();
@@ -63,7 +65,7 @@ public class WorkContextHandler extends HandlerWrapper {
             workContext.addCallFrame(frame);
             oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
             WebRequestTunnel.setRequest(request);
-            super.handle(target, request, response, dispatch);
+            super.handle(target, baseRequest, request, response);
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldContext);
             WebRequestTunnel.setRequest(null);

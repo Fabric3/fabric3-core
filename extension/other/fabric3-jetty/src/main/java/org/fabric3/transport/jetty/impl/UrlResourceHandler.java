@@ -44,21 +44,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.io.Buffer;
-import org.mortbay.io.ByteArrayBuffer;
-import org.mortbay.io.WriterOutputStream;
-import org.mortbay.jetty.HttpConnection;
-import org.mortbay.jetty.HttpFields;
-import org.mortbay.jetty.HttpHeaders;
-import org.mortbay.jetty.HttpMethods;
-import org.mortbay.jetty.MimeTypes;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Response;
-import org.mortbay.jetty.handler.AbstractHandler;
-import org.mortbay.log.Log;
-import org.mortbay.resource.Resource;
-import org.mortbay.util.TypeUtil;
-import org.mortbay.util.URIUtil;
+import org.eclipse.jetty.http.HttpFields;
+import org.eclipse.jetty.http.HttpHeaders;
+import org.eclipse.jetty.http.HttpMethods;
+import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.io.Buffer;
+import org.eclipse.jetty.io.BufferUtil;
+import org.eclipse.jetty.io.ByteArrayBuffer;
+import org.eclipse.jetty.io.WriterOutputStream;
+import org.eclipse.jetty.server.HttpConnection;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.util.TypeUtil;
+import org.eclipse.jetty.util.URIUtil;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.resource.Resource;
 
 
 public class UrlResourceHandler extends AbstractHandler {
@@ -105,8 +106,8 @@ public class UrlResourceHandler extends AbstractHandler {
         return getResource(path_info);
     }
 
-
-    public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         Request base_request = request instanceof Request ? (Request) request : HttpConnection.getCurrentConnection().getRequest();
         if (base_request.isHandled() || !request.getMethod().equals(HttpMethods.GET))
             return;
@@ -193,7 +194,7 @@ public class UrlResourceHandler extends AbstractHandler {
                 fields.put(HttpHeaders.CACHE_CONTROL_BUFFER, _cacheControl);
         } else {
             if (length > 0)
-                response.setHeader(HttpHeaders.CONTENT_LENGTH, TypeUtil.toString(length));
+                response.setHeader(HttpHeaders.CONTENT_LENGTH, BufferUtil.toBuffer(length).toString());
 
             if (_cacheControl != null)
                 response.setHeader(HttpHeaders.CACHE_CONTROL, _cacheControl.toString());

@@ -47,8 +47,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.mortbay.jetty.webapp.WebAppClassLoader;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebAppClassLoader;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Reference;
 
@@ -155,7 +155,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         WebAppClassLoader webAppClassLoader;
         webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
         context.setClassLoader(webAppClassLoader);
-        context.addHandler(new WorkContextHandler());
+        context.setHandler(new WorkContextHandler());
         return context;
     }
 

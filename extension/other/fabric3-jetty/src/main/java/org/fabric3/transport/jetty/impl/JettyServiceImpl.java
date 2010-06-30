@@ -53,21 +53,20 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ContextHandler;
-import org.mortbay.jetty.handler.ContextHandlerCollection;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.security.SslSocketConnector;
-import org.mortbay.jetty.servlet.ServletHandler;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.jetty.servlet.ServletMapping;
-import org.mortbay.jetty.servlet.SessionHandler;
-import org.mortbay.log.Log;
-import org.mortbay.log.Logger;
-import org.mortbay.thread.BoundedThreadPool;
-import org.mortbay.thread.ThreadPool;
+import org.eclipse.jetty.jsp.JettyLog;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.ServletMapping;
+import org.eclipse.jetty.util.thread.ExecutorThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -89,6 +88,7 @@ import org.fabric3.transport.jetty.JettyService;
 @EagerInit
 @Service(interfaces = {JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
+    private static final String ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS = "org.eclipse.jetty.util.log.class";
 
     private static final String ROOT = "/";
 
@@ -112,23 +112,28 @@ public class JettyServiceImpl implements JettyService, Transport {
     private SelectChannelConnector httpConnector;
     private SslSocketConnector sslConnector;
 
+
     static {
-        // hack to replace the static Jetty logger
-        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
+        // replace the static Jetty logger
+        System.setProperty(ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS, JettyLogger.class.getName());
     }
 
     @Constructor
     public JettyServiceImpl(@Reference ExecutorService executorService, @Monitor TransportMonitor monitor) {
         this.executorService = executorService;
         this.monitor = monitor;
-        // Jetty uses a static logger, so jam in the monitor into a static reference
-        Logger logger = Log.getLogger(null);
-        if (logger instanceof JettyLogger) {
-            JettyLogger jettyLogger = (JettyLogger) logger;
-            jettyLogger.setMonitor(this.monitor);
-            if (debug) {
-                jettyLogger.setDebugEnabled(true);
-            }
+        // Re-route the Jetty logger to use a monitor
+        JettyLogger.setMonitor(monitor);
+        if (debug) {
+            JettyLogger.enableDebug();
+        }
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            // Re-route the GlassFish JSP logger. The GlassFish JSP engine is used by Jetty.
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            JettyLog.init();
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
@@ -409,8 +414,7 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private void initializeThreadPool() {
         if (executorService == null) {
-            BoundedThreadPool threadPool = new BoundedThreadPool();
-            threadPool.setMaxThreads(100);
+            ExecutorThreadPool threadPool = new ExecutorThreadPool(100);
             server.setThreadPool(threadPool);
         } else {
             server.setThreadPool(new Fabric3ThreadPool());
@@ -424,8 +428,8 @@ public class JettyServiceImpl implements JettyService, Transport {
         ContextHandler contextHandler = new ContextHandler(rootHandler, ROOT);
         SessionHandler sessionHandler = new SessionHandler();
         servletHandler = new ServletHandler();
-        sessionHandler.addHandler(servletHandler);
-        contextHandler.addHandler(sessionHandler);
+        sessionHandler.setHandler(servletHandler);
+        contextHandler.setHandler(sessionHandler);
     }
 
 

@@ -45,6 +45,7 @@
         <jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
         <logback.version>0.9.20</logback.version>
         <web.services.version>2.0-b24</web.services.version>
+        <servlet.version>2.5</servlet.version>
     </properties>
 
     <build>

@@ -43,8 +43,8 @@
  */
 package org.fabric3.transport.jetty;
 
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 
 import org.fabric3.spi.host.ServletHost;
 

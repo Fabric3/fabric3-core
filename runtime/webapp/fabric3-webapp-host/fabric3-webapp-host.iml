@@ -52,7 +52,7 @@
     <orderEntry type="module" module-name="fabric3-container-web-spi" exported="" />
     <orderEntry type="module" module-name="fabric3-policy" exported="" />
     <orderEntry type="library" exported="" name="Maven: jaxen:jaxen:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" exported="" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />

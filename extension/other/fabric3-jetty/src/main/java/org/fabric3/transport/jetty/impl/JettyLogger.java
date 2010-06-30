@@ -43,7 +43,9 @@
  */
 package org.fabric3.transport.jetty.impl;
 
-import org.mortbay.log.Logger;
+import java.text.MessageFormat;
+
+import org.eclipse.jetty.util.log.Logger;
 
 /**
  * Serves as a wrapper for a {@link TransportMonitor} to replace Jetty's logging mechanism
@@ -52,33 +54,46 @@ import org.mortbay.log.Logger;
  */
 public class JettyLogger implements Logger {
 
-    private TransportMonitor monitor;
-    private boolean debugEnabled;
+    private static TransportMonitor MONITOR;
+    private static boolean DEBUG_ENABLED;
 
-    public void setMonitor(TransportMonitor monitor) {
-        this.monitor = monitor;
+    public static void setMonitor(TransportMonitor monitor) {
+        MONITOR = monitor;
+    }
+
+    public static void enableDebug() {
+        DEBUG_ENABLED = true;
+    }
+
+    public String getName() {
+        return "Logger";
     }
 
     public boolean isDebugEnabled() {
-        return debugEnabled;
+        return DEBUG_ENABLED;
     }
 
     public void setDebugEnabled(boolean debugEnabled) {
-        this.debugEnabled = debugEnabled;
     }
 
-    public void info(String msg, Object arg0, Object arg1) {
-        if (monitor != null) {
-            monitor.debug(msg, arg0, arg1);
-        } else if (debugEnabled) {
-            System.err.println(":INFO:  " + format(msg, arg0, arg1));
+    public void debug(String msg, Object... args) {
+        if (DEBUG_ENABLED) {
+            if (MONITOR != null) {
+                MONITOR.debug(msg);
+            } else {
+                System.err.println(":DEBUG:  " + msg);
+            }
         }
     }
 
+    public void debug(Throwable thrown) {
+        debug(thrown.getMessage(), thrown);
+    }
+
     public void debug(String msg, Throwable th) {
-        if (debugEnabled) {
-            if (monitor != null) {
-                monitor.debug(msg, th);
+        if (DEBUG_ENABLED) {
+            if (MONITOR != null) {
+                MONITOR.debug(msg, th);
             } else {
                 System.err.println(":DEBUG:  " + msg);
                 th.printStackTrace();
@@ -86,30 +101,46 @@ public class JettyLogger implements Logger {
         }
     }
 
-    public void debug(String msg, Object arg0, Object arg1) {
-        if (debugEnabled) {
-            if (monitor != null) {
-                monitor.debug(msg, arg0, arg1);
-            } else {
-                System.err.println(":DEBUG: " + format(msg, arg0, arg1));
-            }
+    public void warn(String msg, Object... args) {
+        if (MONITOR != null) {
+            MONITOR.warn(msg, args);
+        } else if (DEBUG_ENABLED) {
+            System.err.println(":WARN: " + format(msg, args));
         }
     }
 
-    public void warn(String msg, Object arg0, Object arg1) {
-        if (monitor != null) {
-            monitor.warn(msg, arg0, arg1);
-        } else if (debugEnabled) {
-            System.err.println(":WARN: " + format(msg, arg0, arg1));
-        }
+    public void warn(Throwable thrown) {
+        warn(thrown.getMessage(), thrown);
     }
 
-    public void warn(String msg, Throwable th) {
-        if (monitor != null) {
-            monitor.exception(msg, th);
-        } else if (debugEnabled) {
+    public void warn(String msg, Throwable thrown) {
+        if (MONITOR != null) {
+            MONITOR.exception(msg, thrown);
+        } else if (DEBUG_ENABLED) {
             System.err.println(":WARN: " + msg);
-            th.printStackTrace();
+            thrown.printStackTrace();
+        }
+    }
+
+    public void info(Throwable thrown) {
+        info(thrown.getMessage(), thrown);
+    }
+
+    public void info(String msg, Object... args) {
+        if (MONITOR != null) {
+            MONITOR.debug(msg, args);
+        } else if (DEBUG_ENABLED) {
+            System.err.println(":INFO:  " + format(msg, args));
+        }
+
+    }
+
+    public void info(String msg, Throwable thrown) {
+        if (MONITOR != null) {
+            MONITOR.debug(msg, thrown);
+        } else if (DEBUG_ENABLED) {
+            System.err.println(":INFO: " + msg);
+            thrown.printStackTrace();
         }
     }
 
@@ -117,15 +148,8 @@ public class JettyLogger implements Logger {
         return this;
     }
 
-    private String format(String msg, Object arg0, Object arg1) {
-        int i0 = msg.indexOf("{}");
-        int i1 = i0 < 0 ? -1 : msg.indexOf("{}", i0 + 2);
-        if (arg1 != null && i1 >= 0) {
-            msg = msg.substring(0, i1) + arg1 + msg.substring(i1 + 2);
-        }
-        if (arg0 != null && i0 >= 0) {
-            msg = msg.substring(0, i0) + arg0 + msg.substring(i0 + 2);
-        }
-        return msg;
+    private String format(String msg, Object... args) {
+        MessageFormat formatter = new MessageFormat(msg);
+        return formatter.format(args);
     }
 }

@@ -55,15 +55,8 @@ public class JettyInitializationException extends Fabric3Exception {
         super(message);
     }
 
-    public JettyInitializationException(String message, String identifier) {
-        super(message, identifier);
-    }
-
     public JettyInitializationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public JettyInitializationException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
 }

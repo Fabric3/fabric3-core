@@ -175,7 +175,7 @@ licensed under the Apache 2.0 license.
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <version>${servlet.version}</version>
         </dependency>
 
         <!-- extensions -->

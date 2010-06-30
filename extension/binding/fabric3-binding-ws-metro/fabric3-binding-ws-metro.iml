@@ -88,7 +88,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.xml.bind:jaxb-api-osgi:2.2-promoted-b50" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.xml.bind:jaxb-osgi:2.2-promoted-b50" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.istack:istack-commons-runtime:1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="module" module-name="fabric3-binding-ws" scope="PROVIDED" />
     <orderEntry type="library" exported="" name="Maven: com.sun.xml.ws:webservices-osgi:2.0-b24" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.ctc.wstx:woodstox-osgi:3.2.1-SNAPSHOT" level="project" />

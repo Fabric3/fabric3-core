@@ -119,11 +119,19 @@
     <orderEntry type="module" module-name="fabric3-conversation-propagation" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-provisioning:1.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-jetty" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jetty:6.1.5" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jetty-util:6.1.5" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jsp-2.1:6.1.3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.eclipse.jdt:core:3.1.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: ant:ant:1.6.5" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-webapp:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-xml:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-util:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-servlet:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-security:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-server:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-continuation:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-http:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-io:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-servlets:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-client:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-jmx:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-jsp-2.1:7.1.4.v20100610" level="project" />
     <orderEntry type="module" module-name="fabric3-resource" exported="" />
     <orderEntry type="module" module-name="fabric3-thread-pool" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-recovery:1.6-SNAPSHOT" level="project" />

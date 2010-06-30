@@ -45,7 +45,7 @@ package org.fabric3.transport.jetty.impl;
 
 import java.io.IOException;
 
-import org.mortbay.jetty.security.SslSocketConnector;
+import org.eclipse.jetty.server.ssl.SslSocketConnector;
 
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
