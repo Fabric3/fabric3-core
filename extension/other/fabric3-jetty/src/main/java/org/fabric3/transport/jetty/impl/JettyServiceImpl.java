@@ -344,7 +344,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             // setup HTTP and HTTPS
             String keystore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
             String keyPassword = keyStoreManager.getKeyStorePassword();
-            String truststore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
+            String trustStore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
             String trustPassword = keyStoreManager.getTrustStorePassword();
             String certPassword = keyStoreManager.getCertPassword();
             httpConnector = new ContextAwareConnector();
@@ -354,7 +354,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             sslConnector.setKeystore(keystore);
             sslConnector.setKeyPassword(keyPassword);
             sslConnector.setPassword(certPassword);
-            sslConnector.setTruststore(truststore);
+            sslConnector.setTruststore(trustStore);
             sslConnector.setTrustPassword(trustPassword);
             server.setConnectors(new Connector[]{httpConnector, sslConnector});
         } else {
