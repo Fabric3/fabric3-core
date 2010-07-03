@@ -106,6 +106,7 @@ public class JMXManagementService implements ManagementService {
 
     public void export(String name, String group, String description, Object instance) throws ManagementException {
         try {
+            group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             Object managementBean;
             boolean isStandardMBean = isStandardMBean(instance);
@@ -134,17 +135,6 @@ public class JMXManagementService implements ManagementService {
         }
     }
 
-    private boolean isStandardMBean(Object instance) {
-        boolean isStandardMBean = false;
-        for (Class<?> interfaze : instance.getClass().getInterfaces()) {
-            if (interfaze.getSimpleName().endsWith("MBean")) {
-                isStandardMBean = true;
-                break;
-            }
-        }
-        return isStandardMBean;
-    }
-
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
         try {
             ObjectName name = getObjectName(componentUri, info);
@@ -156,6 +146,7 @@ public class JMXManagementService implements ManagementService {
 
     public void remove(String name, String group) throws ManagementException {
         try {
+            group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             mBeanServer.unregisterMBean(objectName);
         } catch (MalformedObjectNameException e) {
@@ -165,6 +156,36 @@ public class JMXManagementService implements ManagementService {
         } catch (MBeanRegistrationException e) {
             throw new ManagementException(e);
         }
+    }
+
+    /**
+     * Parses a group hierarchy in the form path/subpath to convert it into a JMX hierarchy of the form group=path, group0=subpath.
+     *
+     * @param group the group hierarchy to parse
+     * @return the parsed JMX representation
+     */
+    private String parseGroup(String group) {
+        String[] path = group.split("/");
+        if (path.length > 1) {
+            StringBuilder builder = new StringBuilder(path[0]);
+            for (int i = 1; i < path.length; i++) {
+                String token = path[i];
+                builder.append(", group").append(i).append("=").append(token);
+            }
+            group = builder.toString();
+        }
+        return group;
+    }
+
+    private boolean isStandardMBean(Object instance) {
+        boolean isStandardMBean = false;
+        for (Class<?> interfaze : instance.getClass().getInterfaces()) {
+            if (interfaze.getSimpleName().endsWith("MBean")) {
+                isStandardMBean = true;
+                break;
+            }
+        }
+        return isStandardMBean;
     }
 
     private void introspect(Object instance, ManagementInfo info) {
