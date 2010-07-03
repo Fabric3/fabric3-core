@@ -38,6 +38,7 @@
 package org.fabric3.container.web.jetty;
 
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Receives events related to web application activation and deactivation.
@@ -45,6 +46,15 @@ import org.fabric3.api.annotation.monitor.Info;
  * @version $Rev$ $Date$
  */
 public interface WebApplicationActivatorMonitor {
+
+    /**
+     * An error was encountered.
+     *
+     * @param message the error message
+     * @param e       the exception
+     */
+    @Severe
+    void error(String message, Throwable e);
 
     /**
      * The web application has been activated

@@ -43,59 +43,56 @@
  */
 package org.fabric3.container.web.jetty;
 
-import java.util.List;
-import java.util.Map;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
+import org.eclipse.jetty.webapp.WebAppContext;
 
-import org.eclipse.jetty.servlet.ServletHolder;
-
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.transport.jetty.management.ManagedServletHandler;
-import org.fabric3.transport.jetty.management.ManagedServletHolder;
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
- * Injects a servlet or filter with reference proxies, properties, and the component context.
- *
  * @version $Rev$ $Date$
  */
-public class InjectingServletHandler extends ManagedServletHandler {
-    private Map<String, List<Injector<?>>> injectorMappings;
+@Management
+public class ManagedWebAppContext extends WebAppContext {
+    public ManagedWebAppContext(String webAppDir, String contextPath) {
+        super(webAppDir, contextPath);
+    }
 
-    public InjectingServletHandler(Map<String, List<Injector<?>>> injectorMappings) {
-        this.injectorMappings = injectorMappings;
+    @ManagementOperation(description = "The web app name")
+    public String getDisplayName() {
+        return super.getDisplayName();
     }
 
     @Override
-    public Servlet customizeServlet(Servlet servlet) throws Exception {
-        inject(servlet);
-        return servlet;
+    @ManagementOperation(description = "The web app context path")
+    public String getContextPath() {
+        return super.getContextPath();
     }
 
     @Override
-    public Filter customizeFilter(Filter filter) throws Exception {
-        inject(filter);
-        return filter;
+    @ManagementOperation(description = "If web app is available")
+    public boolean isAvailable() {
+        return super.isAvailable();
     }
 
     @Override
-    public ServletHolder newServletHolder() {
-        return new ManagedServletHolder();
+    @ManagementOperation(description = "The web app state")
+    public String getState() {
+        return super.getState();
+    }
+
+    @ManagementOperation(description = "Start the web app")
+    public void startWebApp() throws Exception {
+        super.start();
+    }
+
+    @ManagementOperation(description = "Stop the web app")
+    public void stopWebApp() throws Exception {
+        super.stop();
     }
 
     @Override
-    public ServletHolder newServletHolder(Class servlet) {
-        return new ManagedServletHolder(servlet);
+    public String[] getVirtualHosts() {
+        return super.getVirtualHosts();
     }
 
-    @SuppressWarnings({"unchecked"})
-    private void inject(Object instance) throws ObjectCreationException {
-        List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
-        if (injectors != null) {
-            for (Injector injector : injectors) {
-                injector.inject(instance);
-            }
-        }
-    }
 }

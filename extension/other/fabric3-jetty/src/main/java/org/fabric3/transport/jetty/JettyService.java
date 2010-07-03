@@ -49,7 +49,7 @@ import org.eclipse.jetty.server.Server;
 import org.fabric3.spi.host.ServletHost;
 
 /**
- * Implementations provide a Jetty transport service to the runtime
+ * Implementations provide a Jetty transport service to the runtime.
  *
  * @version $$Rev$$ $$Date$$
  */

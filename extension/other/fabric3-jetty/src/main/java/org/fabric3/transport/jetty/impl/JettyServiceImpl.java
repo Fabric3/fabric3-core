@@ -62,7 +62,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
-import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
@@ -76,9 +75,15 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
+import org.fabric3.transport.jetty.management.ManagedHashSessionManager;
+import org.fabric3.transport.jetty.management.ManagedServletHandler;
+import org.fabric3.transport.jetty.management.ManagedServletHolder;
+import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -89,6 +94,7 @@ import org.fabric3.transport.jetty.JettyService;
 @Service(interfaces = {JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
     private static final String ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS = "org.eclipse.jetty.util.log.class";
+    private static final String HTTP_SERVLETS = "HTTP/servlets";
 
     private static final String ROOT = "/";
 
@@ -107,10 +113,14 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ExecutorService executorService;
     private boolean debug;
     private Server server;
-    private ServletHandler servletHandler;
-    private ContextHandlerCollection rootHandler;
+    private ManagedServletHandler servletHandler;
     private SelectChannelConnector httpConnector;
     private SslSocketConnector sslConnector;
+    private ManagementService managementService;
+
+    private ContextHandlerCollection rootHandler;
+    private ManagedStatisticsHandler statisticsHandler;
+    private ManagedHashSessionManager sessionManager;
 
 
     static {
@@ -119,8 +129,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Constructor
-    public JettyServiceImpl(@Reference ExecutorService executorService, @Monitor TransportMonitor monitor) {
+    public JettyServiceImpl(@Reference ExecutorService executorService,
+                            @Reference ManagementService managementService,
+                            @Monitor TransportMonitor monitor) {
         this.executorService = executorService;
+        this.managementService = managementService;
         this.monitor = monitor;
         // Re-route the Jetty logger to use a monitor
         JettyLogger.setMonitor(monitor);
@@ -195,11 +208,13 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     @Init
     public void init() throws JettyInitializationException {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             server = new Server();
             initializeThreadPool();
             initializeConnector();
-            initializeRootContextHandler();
+            initializeHandlers();
             server.setStopAtShutdown(true);
             server.setSendServerVersion(sendServerVersion);
             monitor.startHttpListener(selectedHttp);
@@ -207,8 +222,15 @@ public class JettyServiceImpl implements JettyService, Transport {
                 monitor.startHttpsListener(selectedHttps);
             }
             server.start();
+            if (managementService != null) {
+                managementService.export("StatisticsService", "HTTP", "HTTP transport statistics", statisticsHandler);
+                managementService.export("ServletsService", "HTTP", "Servlet management beans", servletHandler);
+                managementService.export("SessionManager", "HTTP", "Servlet session manager", sessionManager);
+            }
         } catch (Exception e) {
             throw new JettyInitializationException("Error starting Jetty service", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
@@ -216,6 +238,18 @@ public class JettyServiceImpl implements JettyService, Transport {
     public void destroy() throws Exception {
         synchronized (joinLock) {
             joinLock.notifyAll();
+        }
+        if (managementService != null) {
+            managementService.remove("StatisticsService", "HTTP");
+            managementService.remove("ServletsService", "HTTP");
+            managementService.remove("SessionManager", "HTTP");
+        }
+        if (servletHandler != null && servletHandler.getServlets() != null) {
+            for (ServletHolder holder : servletHandler.getServlets()) {
+                if (managementService != null) {
+                    managementService.remove(holder.getName(), HTTP_SERVLETS);
+                }
+            }
         }
         server.stop();
     }
@@ -271,12 +305,19 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     public synchronized void registerMapping(String path, Servlet servlet) {
-        ServletHolder holder = new ServletHolder(servlet);
+        ServletHolder holder = new ManagedServletHolder(servlet);
         servletHandler.addServlet(holder);
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
+        if (managementService != null) {
+            try {
+                managementService.export(holder.getName(), HTTP_SERVLETS, "Registered transport servlets", holder);
+            } catch (ManagementException e) {
+                monitor.exception("Exception exporting servlet management object:" + holder.getContextPath(), e);
+            }
+        }
     }
 
     public synchronized Servlet unregisterMapping(String path) {
@@ -300,8 +341,13 @@ public class JettyServiceImpl implements JettyService, Transport {
             } else {
                 try {
                     servlet = holder.getServlet();
+                    if (managementService != null) {
+                        managementService.remove(holder.getName(), HTTP_SERVLETS);
+                    }
                 } catch (ServletException e) {
-                    e.printStackTrace();
+                    monitor.exception("Exception getting servlet:" + holder.getContextPath(), e);
+                } catch (ManagementException e) {
+                    monitor.exception("Exception removing servlet management object:" + holder.getContextPath(), e);
                 }
             }
         }
@@ -421,17 +467,26 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    private void initializeRootContextHandler() {
+    private void initializeHandlers() {
         // setup the root context handler which dispatches to other contexts based on the servlet path
+        statisticsHandler = new ManagedStatisticsHandler();
+        server.setHandler(statisticsHandler);
         rootHandler = new ContextHandlerCollection();
-        server.setHandler(rootHandler);
+        statisticsHandler.setHandler(rootHandler);
         ContextHandler contextHandler = new ContextHandler(rootHandler, ROOT);
-        SessionHandler sessionHandler = new SessionHandler();
-        servletHandler = new ServletHandler();
+        sessionManager = new ManagedHashSessionManager();
+        SessionHandler sessionHandler = new SessionHandler(sessionManager);
+        servletHandler = new ManagedServletHandler();
         sessionHandler.setHandler(servletHandler);
         contextHandler.setHandler(sessionHandler);
-    }
 
+        try {
+            statisticsHandler.start();
+            statisticsHandler.startStatisticsCollection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private int parsePortNumber(String portVal, String portType) {
         int port;

@@ -47,21 +47,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import org.fabric3.container.web.spi.InjectingSessionListener;
-import org.fabric3.transport.jetty.JettyService;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.ContributionResolver;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
+import org.fabric3.transport.jetty.JettyService;
 
 /**
  * Activates a web application in an embedded Jetty instance.
@@ -72,18 +77,32 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     private JettyService jettyService;
     private ClassLoaderRegistry classLoaderRegistry;
     private ContributionResolver resolver;
+    private ManagementService managementService;
     private WebApplicationActivatorMonitor monitor;
     private Map<URI, Holder> mappings;
 
     public JettyWebApplicationActivator(@Reference JettyService jettyService,
                                         @Reference ClassLoaderRegistry classLoaderRegistry,
                                         @Reference ContributionResolver resolver,
+                                        @Reference ManagementService managementService,
                                         @Monitor WebApplicationActivatorMonitor monitor) {
         this.jettyService = jettyService;
-        this.resolver = resolver;
-        this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.resolver = resolver;
+        this.managementService = managementService;
+        this.monitor = monitor;
         mappings = new ConcurrentHashMap<URI, Holder>();
+    }
+
+    @Destroy
+    public void destroy() {
+        for (Holder holder : mappings.values()) {
+            try {
+                remove(holder.getContext());
+            } catch (ManagementException e) {
+                monitor.error("Error removing managed bean for context: " + holder.getContext().getDisplayName(), e);
+            }
+        }
     }
 
     public ClassLoader getWebComponentClassLoader(URI componentId) {
@@ -115,6 +134,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             injectServletContext(servletContext, injectors);
             Holder holder = new Holder(contextPath, context);
             mappings.put(uri, holder);
+            export(context);
             monitor.activated(holder.getContextPath());
             return servletContext;
         } catch (Exception e) {
@@ -128,9 +148,10 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             throw new WebApplicationActivationException("Mapping does not exist: " + uri.toString());
         }
         WebAppContext context = holder.getContext();
-        jettyService.getServer().removeLifeCycle(context);
+        jettyService.getServer().removeBean(context);
         try {
             context.stop();
+            remove(context);
         } catch (Exception e) {
             throw new WebApplicationActivationException(e);
         }
@@ -148,7 +169,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     private WebAppContext createWebAppContext(String contextPath,
                                               Map<String, List<Injector<?>>> injectors,
                                               URL resolved, ClassLoader parentClassLoader) throws IOException, URISyntaxException {
-        WebAppContext context = new WebAppContext(resolved.toExternalForm(), contextPath);
+        WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
         context.setParentLoaderPriority(true);
 
         context.setServletHandler(new InjectingServletHandler(injectors));
@@ -168,6 +189,24 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         }
         for (Injector injector : list) {
             injector.inject(servletContext);
+        }
+    }
+
+    private void export(WebAppContext context) throws ManagementException {
+        String webAppName = context.getDisplayName();
+        managementService.export("WebAppContext", "webapps/" + webAppName, "web application", context);
+        ServletHandler handler = context.getServletHandler();
+        for (ServletHolder servletHolder : handler.getServlets()) {
+            managementService.export(servletHolder.getName(), "webapps/" + webAppName + "/servlets", "web application", servletHolder);
+        }
+    }
+
+    private void remove(WebAppContext context) throws ManagementException {
+        String webAppName = context.getDisplayName();
+        managementService.remove("WebAppContext", "webapps/" + webAppName);
+        ServletHandler handler = context.getServletHandler();
+        for (ServletHolder servletHolder : handler.getServlets()) {
+            managementService.remove(servletHolder.getName(), "webapps/" + webAppName + "/servlets");
         }
     }
 

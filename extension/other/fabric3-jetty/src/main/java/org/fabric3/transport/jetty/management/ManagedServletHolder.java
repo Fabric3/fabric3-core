@@ -41,61 +41,55 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.container.web.jetty;
+package org.fabric3.transport.jetty.management;
 
-import java.util.List;
-import java.util.Map;
-import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.transport.jetty.management.ManagedServletHandler;
-import org.fabric3.transport.jetty.management.ManagedServletHolder;
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
- * Injects a servlet or filter with reference proxies, properties, and the component context.
+ * Overrides the Jetty <code>ServletHolder</code> to provide a custom management view.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9172 $ $Date: 2010-06-30 16:49:34 +0200 (Wed, 30 Jun 2010) $
  */
-public class InjectingServletHandler extends ManagedServletHandler {
-    private Map<String, List<Injector<?>>> injectorMappings;
+@Management
+public class ManagedServletHolder extends ServletHolder {
 
-    public InjectingServletHandler(Map<String, List<Injector<?>>> injectorMappings) {
-        this.injectorMappings = injectorMappings;
+    public ManagedServletHolder() {
+    }
+
+    public ManagedServletHolder(Servlet servlet) {
+        super(servlet);
+    }
+
+    public ManagedServletHolder(Class servlet) {
+        super(servlet);
     }
 
     @Override
-    public Servlet customizeServlet(Servlet servlet) throws Exception {
-        inject(servlet);
-        return servlet;
+    @ManagementOperation(description = "Servlet availability")
+    public boolean isAvailable() {
+        return super.isAvailable();
     }
 
     @Override
-    public Filter customizeFilter(Filter filter) throws Exception {
-        inject(filter);
-        return filter;
+    @ManagementOperation(description = "Servlet context path")
+    public String getContextPath() {
+        return super.getContextPath();
     }
 
     @Override
-    public ServletHolder newServletHolder() {
-        return new ManagedServletHolder();
+    @ManagementOperation(description = "Start the servlet from servicing requests")
+    public void doStart() throws Exception {
+        super.doStart();
     }
 
     @Override
-    public ServletHolder newServletHolder(Class servlet) {
-        return new ManagedServletHolder(servlet);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void inject(Object instance) throws ObjectCreationException {
-        List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
-        if (injectors != null) {
-            for (Injector injector : injectors) {
-                injector.inject(instance);
-            }
-        }
+    @ManagementOperation(description = "Stop the servlet from servicing requests")
+    public void doStop() throws Exception {
+        super.doStop();
     }
 }

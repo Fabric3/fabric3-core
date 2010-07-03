@@ -41,61 +41,61 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.container.web.jetty;
+package org.fabric3.transport.jetty.management;
 
-import java.util.List;
-import java.util.Map;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-
+import org.eclipse.jetty.servlet.FilterMapping;
+import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.ServletMapping;
 
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.transport.jetty.management.ManagedServletHandler;
-import org.fabric3.transport.jetty.management.ManagedServletHolder;
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
- * Injects a servlet or filter with reference proxies, properties, and the component context.
+ * Overrides the Jetty <code>ServletHandler</code> to provide a custom management view.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9172 $ $Date: 2010-06-30 16:49:34 +0200 (Wed, 30 Jun 2010) $
  */
-public class InjectingServletHandler extends ManagedServletHandler {
-    private Map<String, List<Injector<?>>> injectorMappings;
+@Management
+public class ManagedServletHandler extends ServletHandler {
+    private static final String[] EMPTY_RESULT = new String[0];
 
-    public InjectingServletHandler(Map<String, List<Injector<?>>> injectorMappings) {
-        this.injectorMappings = injectorMappings;
-    }
-
-    @Override
-    public Servlet customizeServlet(Servlet servlet) throws Exception {
-        inject(servlet);
-        return servlet;
-    }
-
-    @Override
-    public Filter customizeFilter(Filter filter) throws Exception {
-        inject(filter);
-        return filter;
-    }
-
-    @Override
-    public ServletHolder newServletHolder() {
-        return new ManagedServletHolder();
-    }
-
-    @Override
-    public ServletHolder newServletHolder(Class servlet) {
-        return new ManagedServletHolder(servlet);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void inject(Object instance) throws ObjectCreationException {
-        List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
-        if (injectors != null) {
-            for (Injector injector : injectors) {
-                injector.inject(instance);
-            }
+    @ManagementOperation(description = "Servlet path mappings")
+    public String[] getServletMappingsInfo() {
+        ServletMapping[] mappings = super.getServletMappings();
+        if (mappings == null) {
+            return EMPTY_RESULT;
         }
+        String[] values = new String[mappings.length];
+        for (int i = 0, mappingsLength = mappings.length; i < mappingsLength; i++) {
+            ServletMapping mapping = mappings[i];
+            values[i] = mapping.toString();
+        }
+        return values;
+    }
+
+    @ManagementOperation(description = "Filter mappings")
+    public String[] getFilterMappingsInfo() {
+        FilterMapping[] mappings = super.getFilterMappings();
+        if (mappings == null) {
+            return EMPTY_RESULT;
+        }
+        String[] values = new String[mappings.length];
+        for (int i = 0, mappingsLength = mappings.length; i < mappingsLength; i++) {
+            FilterMapping mapping = mappings[i];
+            values[i] = mapping.toString();
+        }
+        return values;
+    }
+
+    @Override
+    @ManagementOperation(description = "True if the handler is available")
+    public boolean isAvailable() {
+        return super.isAvailable();
+    }
+
+    @Override
+    public void addServlet(ServletHolder holder) {
+        super.addServlet(holder);
     }
 }

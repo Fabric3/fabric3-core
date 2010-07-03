@@ -17,6 +17,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.spi.*" version="1.6"/>
 
     <export.java package="org.fabric3.transport.jetty" version="1.6"/>
+    <export.java package="org.fabric3.transport.jetty.management" version="1.6"/>
     <export.java package="org.eclipse.jetty.webapp" version="7.1.4.v20100610"/>
     <export.java package="org.eclipse.jetty.server" version="7.1.4.v20100610"/>
     <export.java package="org.eclipse.jetty" version="7.1.4.v20100610"/>
