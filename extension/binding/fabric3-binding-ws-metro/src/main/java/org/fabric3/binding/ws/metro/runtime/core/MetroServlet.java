@@ -90,7 +90,7 @@ public class MetroServlet extends WSServlet {
      * Constructor
      *
      * @param executorService     the executor service for dispatching invocations
-     * @param securityEnvironment the Fabric3 implementation of the Metro SecurityEnvironemnt SPI
+     * @param securityEnvironment the Fabric3 implementation of the Metro SecurityEnvironment SPI
      */
     public MetroServlet(ExecutorService executorService, SecurityEnvironment securityEnvironment) {
         this.executorService = executorService;
