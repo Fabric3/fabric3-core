@@ -285,7 +285,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return domainChannel;
     }
 
-    protected String getRuntimeName() {
+    @ManagementOperation(description = "The runtime name")
+    public String getRuntimeName() {
         return domainName + ":controller:" + info.getRuntimeId();
     }
 

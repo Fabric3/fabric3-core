@@ -273,7 +273,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return domainChannel;
     }
 
-    protected String getRuntimeName() {
+    @ManagementOperation(description = "The runtime name")
+    public String getRuntimeName() {
         return domainName + ":participant:" + zoneName + ":" + info.getRuntimeId();
     }
 
