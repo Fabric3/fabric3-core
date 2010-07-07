@@ -46,7 +46,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
-import org.jgroups.Channel;
 import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
@@ -63,6 +62,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
@@ -90,9 +91,10 @@ import org.fabric3.spi.federation.TopologyListener;
  *
  * @version $Rev$ $Date$
  */
+@Management
 @EagerInit
 public class JGroupsDomainTopologyService extends AbstractTopologyService implements DomainTopologyService {
-    private Channel domainChannel;
+    private JChannel domainChannel;
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
     private RuntimeStopEventListener stopListener;
@@ -136,9 +138,20 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         eventService.subscribe(RuntimeStop.class, stopListener);
     }
 
+    @ManagementOperation(description = "The zones in the domain")
     public List<String> getZones() {
         View view = domainChannel.getView();
         return getZones(view);
+    }
+
+    @ManagementOperation(description = "The runtimes in the domain")
+    public List<String> getRuntimeNames() {
+        List<String> runtimes = new ArrayList<String>();
+        for (Address member : domainChannel.getView().getMembers()) {
+            String name = org.jgroups.util.UUID.get(member);
+            runtimes.add(name);
+        }
+        return runtimes;
     }
 
     public List<RuntimeInstance> getRuntimes() {
@@ -265,6 +278,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             stopListener = new RuntimeStopEventListener();
         }
         return stopListener;
+    }
+
+    @Override
+    JChannel getDomainChannel() {
+        return domainChannel;
     }
 
     protected String getRuntimeName() {

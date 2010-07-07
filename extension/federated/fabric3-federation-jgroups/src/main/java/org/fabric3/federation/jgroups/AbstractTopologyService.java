@@ -52,6 +52,8 @@ import org.jgroups.stack.Protocol;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
@@ -70,6 +72,7 @@ import org.fabric3.spi.federation.RemoteSystemException;
  *
  * @version $Rev$ $Date$
  */
+@Management
 public abstract class AbstractTopologyService {
     protected String runtimeName;
     protected String domainName;
@@ -82,7 +85,7 @@ public abstract class AbstractTopologyService {
     protected TopologyServiceMonitor monitor;
 
     protected String defaultBindAddress;
-    protected boolean printlocalAddress;
+    protected boolean printLocalAddress;
     protected String logLevel = "error";
     protected long defaultTimeout = 10000;
     // TODO add properties from http://community.jboss.org/wiki/SystemProps
@@ -108,13 +111,19 @@ public abstract class AbstractTopologyService {
     }
 
     @Property(required = false)
-    public void setPrintlocalAddress(boolean printlocalAddress) {
-        this.printlocalAddress = printlocalAddress;
+    public void setPrintLocalAddress(boolean printLocalAddress) {
+        this.printLocalAddress = printLocalAddress;
     }
 
     @Property(required = false)
+    @ManagementOperation (description = "Default timeout")
     public void setDefaultTimeout(long defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
+    }
+
+    @ManagementOperation (description = "Default timeout")
+    public long getDefaultTimeout() {
+        return defaultTimeout;
     }
 
     @Property(required = false)
@@ -122,6 +131,42 @@ public abstract class AbstractTopologyService {
         this.defaultBindAddress = defaultBindAddress;
     }
 
+    @ManagementOperation (description = "Default bind address")
+    public String getDefaultBindAddressSetting() {
+        return defaultBindAddress;
+    }
+
+    @ManagementOperation(description = "True if the domain channel is connected")
+    public boolean isConnected() {
+        return getDomainChannel().isConnected();
+    }
+
+    @ManagementOperation(description = "The number of waiting messages in the queue")
+    public int getWaitingMessages() {
+        return getDomainChannel().getNumMessages();
+    }
+
+    @ManagementOperation(description = "The number of sent messages")
+    public long getSentMessages() {
+        return getDomainChannel().getSentMessages();
+    }
+
+    @ManagementOperation(description = "The number of sent bytes")
+    public long getSentBytes() {
+        return getDomainChannel().getSentBytes();
+    }
+
+    @ManagementOperation(description = "The number of received messages")
+    public long getReceivedMessages() {
+        return getDomainChannel().getReceivedMessages();
+    }
+
+    @ManagementOperation(description = "The number of received bytes")
+    public long getReceivedBytes() {
+        return getDomainChannel().getReceivedBytes();
+    }
+
+    
     @Init
     public void init() throws ChannelException {
         // set the bind address if it is specified in the system configuration and not specified at JVM startup 
@@ -138,6 +183,8 @@ public abstract class AbstractTopologyService {
         Fabric3EventListener<RuntimeStop> stopListener = getStopListener();
         eventService.subscribe(RuntimeStop.class, stopListener);
     }
+
+    abstract JChannel getDomainChannel();
 
     abstract Fabric3EventListener<JoinDomain> getJoinListener();
 
@@ -159,7 +206,7 @@ public abstract class AbstractTopologyService {
         for (Protocol protocol : channel.getProtocolStack().getProtocols()) {
             protocol.setLevel(logLevel);
             if (protocol instanceof GMS) {
-                ((GMS) protocol).setPrintLocalAddr(printlocalAddress);
+                ((GMS) protocol).setPrintLocalAddr(printLocalAddress);
             }
         }
     }

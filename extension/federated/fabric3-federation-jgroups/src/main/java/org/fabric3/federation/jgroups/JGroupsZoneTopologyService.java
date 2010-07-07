@@ -46,7 +46,6 @@ import java.util.Vector;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
-import org.jgroups.Channel;
 import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
@@ -66,6 +65,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
@@ -92,6 +93,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 /**
  * @version $Rev$ $Date$
  */
+@Management
 @EagerInit
 public class JGroupsZoneTopologyService extends AbstractTopologyService implements ZoneTopologyService {
     private static final int NOT_UPDATED = -1;
@@ -99,7 +101,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     private String zoneName = "default.zone";
     private Map<String, String> transportMetadata = new HashMap<String, String>();
-    private Channel domainChannel;
+    private JChannel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
     private Fabric3EventListener<RuntimeStop> stopListener;
     private MessageDispatcher domainDispatcher;
@@ -173,17 +175,20 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         topologyListeners.remove(listener);
     }
 
+    @ManagementOperation(description = "True if the runtime is the zone leader")
     public boolean isZoneLeader() {
         View view = domainChannel.getView();
         Address address = domainChannel.getAddress();
         return view != null && address != null && address.equals(helper.getZoneLeader(zoneName, view));
     }
 
+    @ManagementOperation(description = "True if the controller is reachable")
     public boolean isControllerAvailable() {
         View view = domainChannel.getView();
         return view != null && helper.getController(view) != null;
     }
 
+    @ManagementOperation(description = "The name of the zone leader")
     public String getZoneLeader() {
         View view = domainChannel.getView();
         if (view == null) {
@@ -263,6 +268,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return stopListener;
     }
 
+    @Override
+    JChannel getDomainChannel() {
+        return domainChannel;
+    }
+
     protected String getRuntimeName() {
         return domainName + ":participant:" + zoneName + ":" + info.getRuntimeId();
     }
@@ -282,11 +292,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-    private void sendAsync(Address adddress, Command command) throws MessageException {
+    private void sendAsync(Address address, Command command) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();
             byte[] payload = helper.serialize(command);
-            Message message = new Message(adddress, sourceAddress, payload);
+            Message message = new Message(address, sourceAddress, payload);
             domainChannel.send(message);
         } catch (ChannelClosedException e) {
             throw new MessageException("Error broadcasting message to zone: " + zoneName, e);
