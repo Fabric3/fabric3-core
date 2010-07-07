@@ -160,7 +160,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
-            // set the TCCL as Jeresy uses it to dynmically load classes
+            // set the TCCL as Jersey uses it to dynamically load classes
             Thread.currentThread().setContextClassLoader(rsClassLoader);
             Object instance = enhancer.create();
             application.addServiceHandler(interfaze, instance);
