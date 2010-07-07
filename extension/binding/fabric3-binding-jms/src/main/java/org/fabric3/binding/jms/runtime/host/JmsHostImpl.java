@@ -62,6 +62,8 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.transport.Transport;
 
 /**
@@ -79,16 +81,19 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     private ExecutorService executorService;
     private TransactionManager tm;
     private MessageContainerMonitor containerMonitor;
+    private ManagementService managementService;
     private HostMonitor monitor;
 
     public JmsHostImpl(@Reference EventService eventService,
                        @Reference ExecutorService executorService,
                        @Reference TransactionManager tm,
+                       @Reference ManagementService managementService,
                        @Monitor MessageContainerMonitor containerMonitor,
                        @Monitor HostMonitor monitor) {
         this.eventService = eventService;
         this.executorService = executorService;
         this.tm = tm;
+        this.managementService = managementService;
         this.containerMonitor = containerMonitor;
         this.monitor = monitor;
     }
@@ -163,8 +168,8 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         URI serviceUri = configuration.getUri();
         AdaptiveMessageContainer container = new AdaptiveMessageContainer(destination, listener, factory, executorService, tm, containerMonitor);
         if (TransactionType.GLOBAL == type) {
-            container.setTransactionType(TransactionType.GLOBAL);
-            container.setAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
+            container.setTransactionTypeProperty(TransactionType.GLOBAL);
+            container.setAcknowledgeModeProperty(Session.AUTO_ACKNOWLEDGE);
         }
         container.setCacheLevel(configuration.getCacheLevel());
         container.setExceptionListener(configuration.getExceptionListener());
@@ -182,6 +187,13 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
 //        container.setDurableSubscriptionName();
 //        container.setLocalDelivery();
         containers.put(serviceUri, container);
+
+        try {
+            String encoded = encode(serviceUri);
+            managementService.export(serviceUri.getFragment(), encoded, "JMS message container", container);
+        } catch (ManagementException e) {
+            throw new JMSException(e.getMessage());
+        }
         if (started) {
             container.initialize();
             monitor.registerListener(serviceUri);
@@ -192,8 +204,19 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         AdaptiveMessageContainer container = containers.remove(serviceUri);
         if (container != null) {
             container.shutdown();
+            try {
+                String encoded = encode(serviceUri);
+                managementService.export(serviceUri.getFragment(), encoded, "JMS message container", container);
+            } catch (ManagementException e) {
+                throw new JMSException(e.getMessage());
+            }
             monitor.unRegisterListener(serviceUri);
         }
     }
+
+    private String encode(URI serviceUri) {
+        return "JMS message containers/" + serviceUri.getPath().substring(1);
+    }
+
 
 }

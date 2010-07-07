@@ -62,6 +62,8 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
@@ -70,15 +72,17 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_SESSION;
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
  * on different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
  * <p/>
- * Note this implementation supports dispatching messages as part of a JTA transaction or non-transactionally.
+ * Note this implementation supports dispatching transactional and non-transactional messages.
  *
  * @version $Rev$ $Date$
  */
+@Management
 public class AdaptiveMessageContainer {
     private static final int DEFAULT_TRX_TIMEOUT = 30;
 
@@ -125,6 +129,7 @@ public class AdaptiveMessageContainer {
     private TransactionManager tm;
 
     private MessageContainerMonitor monitor;
+    private ContainerStatistics statistics = new ContainerStatistics();
 
     /**
      * Constructor. Creates a new container for receiving messages from a destination and dispatching them to a MessageListener.
@@ -165,6 +170,7 @@ public class AdaptiveMessageContainer {
      *
      * @param receiveTimeout the timeout value for receiving messages from a destination.
      */
+    @ManagementOperation(description = "The timeout value for receiving messages from a destination")
     public void setReceiveTimeout(int receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
     }
@@ -174,6 +180,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the timeout value for receiving messages from a destination.
      */
+    @ManagementOperation(description = "The timeout value for receiving messages from a destination")
     public int getReceiveTimeout() {
         return receiveTimeout;
     }
@@ -183,8 +190,14 @@ public class AdaptiveMessageContainer {
      *
      * @param interval the time in milliseconds to wait
      */
+    @ManagementOperation(description = "The time to wait while making repeated recovery attempts")
     public void setRecoveryInterval(long interval) {
         this.recoveryInterval = interval;
+    }
+
+    @ManagementOperation(description = "The time to wait while making repeated recovery attempts")
+    public long getRecoveryInterval() {
+        return recoveryInterval;
     }
 
     /**
@@ -197,12 +210,24 @@ public class AdaptiveMessageContainer {
         this.cacheLevel = level;
     }
 
+    @ManagementOperation(description = "The cache level")
+    public String getLevel() {
+        if (cacheLevel == CACHE_CONNECTION) {
+            return "Connection";
+        } else if (cacheLevel == CACHE_SESSION) {
+            return "Session";
+        } else {
+            return "None";
+        }
+    }
+
     /**
-     * Sets the minimum number of receivers to create for a destination. The default is one. Note the number of receivers for a topic should
-     * gnenerally be one.
+     * Sets the minimum number of receivers to create for a destination. The default is one. Note the number of receivers for a topic should generally
+     * be one.
      *
      * @param min the minimum number of receivers to create.
      */
+    @ManagementOperation(description = "The minimum number of receivers to create for a destination")
     public void setMinReceivers(int min) {
         synchronized (this.syncMonitor) {
             this.minReceivers = min;
@@ -217,6 +242,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the minimum number of receivers to create for a destination
      */
+    @ManagementOperation(description = "The minimum number of receivers to create for a destination")
     public int getMinReceivers() {
         synchronized (syncMonitor) {
             return minReceivers;
@@ -229,6 +255,7 @@ public class AdaptiveMessageContainer {
      *
      * @param max the maximum threshold for the number of receivers to create for a destination
      */
+    @ManagementOperation(description = "The maximum number of receivers to create for a destination")
     public void setMaxReceivers(int max) {
         synchronized (this.syncMonitor) {
             maxReceivers = (max > minReceivers ? max : minReceivers);
@@ -240,6 +267,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the maximum threshold for the number of receivers to create for a destination
      */
+    @ManagementOperation(description = "The maximum number of receivers to create for a destination")
     public int getMaxReceivers() {
         synchronized (syncMonitor) {
             return maxReceivers;
@@ -251,6 +279,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the number of scheduled receivers
      */
+    @ManagementOperation(description = "The number of scheduled receivers")
     public int getReceiverCount() {
         synchronized (syncMonitor) {
             return this.receivers.size();
@@ -262,6 +291,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the number of receivers actively processing messages
      */
+    @ManagementOperation(description = "The number of receivers actively processing messages")
     public int getActiveReceiverCount() {
         synchronized (syncMonitor) {
             return this.activeReceiverCount;
@@ -273,6 +303,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the number of paused receivers
      */
+    @ManagementOperation(description = "The number of paused receivers")
     public int getPausedReceiversCount() {
         synchronized (syncMonitor) {
             return pausedWork.size();
@@ -286,6 +317,8 @@ public class AdaptiveMessageContainer {
      *
      * @param limit the limit to set
      */
+    @ManagementOperation(description = "The number of times a receiver can be marked idle during its execution window before it is removed from the "
+            + "work scheduler")
     public void setIdleLimit(int limit) {
         synchronized (syncMonitor) {
             this.idleLimit = limit;
@@ -297,6 +330,8 @@ public class AdaptiveMessageContainer {
      *
      * @return the maximum idle executions allowed for a receiver
      */
+    @ManagementOperation(description = "The number of times a receiver can be marked idle during its execution window before it is removed from the "
+            + "work scheduler")
     public int getIdleLimit() {
         synchronized (syncMonitor) {
             return idleLimit;
@@ -310,6 +345,7 @@ public class AdaptiveMessageContainer {
      *
      * @param max the maximum number of messages to process by a receivers
      */
+    @ManagementOperation(description = "The maximum number of messages to process by a receivers")
     public void setMaxMessagesToProcess(int max) {
         synchronized (this.syncMonitor) {
             this.maxMessagesToProcess = max;
@@ -321,6 +357,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the maximum number of messages to process by a receiver
      */
+    @ManagementOperation(description = "The maximum number of messages to process by a receivers")
     public int getMaxMessagesToProcess() {
         synchronized (this.syncMonitor) {
             return this.maxMessagesToProcess;
@@ -332,7 +369,7 @@ public class AdaptiveMessageContainer {
      *
      * @param selector the message selector
      */
-    public void setMessageSelector(String selector) {
+    public void setMessageSelectorProperty(String selector) {
         this.messageSelector = selector;
     }
 
@@ -359,7 +396,7 @@ public class AdaptiveMessageContainer {
      *
      * @param durable true if durable topic subscriptions will be used
      */
-    public void setDurable(boolean durable) {
+    public void setDurableProperty(boolean durable) {
         this.durable = durable;
     }
 
@@ -368,6 +405,7 @@ public class AdaptiveMessageContainer {
      *
      * @return true if durable topic subscriptions will be used
      */
+    @ManagementOperation(description = "If durable topic subscriptions are used")
     public boolean isDurable() {
         return this.durable;
     }
@@ -377,7 +415,7 @@ public class AdaptiveMessageContainer {
      *
      * @param name the durable subscription  name
      */
-    public void setDurableSubscriptionName(String name) {
+    public void setDurableSubscriptionNameProperty(String name) {
         this.durableSubscriptionName = name;
     }
 
@@ -386,6 +424,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the name of the durable subscription or null if none is set
      */
+    @ManagementOperation(description = "The durable topic subscription name")
     public String getDurableSubscriptionName() {
         return this.durableSubscriptionName;
     }
@@ -395,8 +434,13 @@ public class AdaptiveMessageContainer {
      *
      * @param transactionType the transaction mode to use
      */
-    public void setTransactionType(TransactionType transactionType) {
+    public void setTransactionTypeProperty(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    @ManagementOperation(description = "The transaction type")
+    public String getTransactionType() {
+        return transactionType.toString();
     }
 
     /**
@@ -404,7 +448,7 @@ public class AdaptiveMessageContainer {
      *
      * @param mode the JMS message acknowledge mode to use
      */
-    public void setAcknowledgeMode(int mode) {
+    public void setAcknowledgeModeProperty(int mode) {
         this.acknowledgeMode = mode;
     }
 
@@ -431,6 +475,7 @@ public class AdaptiveMessageContainer {
      *
      * @return true if the container is active
      */
+    @ManagementOperation(description = "True if the container is initialized")
     public boolean isInitialized() {
         synchronized (this.syncMonitor) {
             return this.initialized;
@@ -442,6 +487,7 @@ public class AdaptiveMessageContainer {
      *
      * @return if the container is running
      */
+    @ManagementOperation(description = "True if the container is running")
     public boolean isRunning() {
         synchronized (this.syncMonitor) {
             return this.running;
@@ -477,8 +523,9 @@ public class AdaptiveMessageContainer {
     /**
      * Starts the container. Once started, messages will be received.
      *
-     * @throws JMSException if an error during startup occurs
+     * @throws JMSException if an error during start-up occurs
      */
+    @ManagementOperation(description = "Starts the containing processing messages")
     public void start() throws JMSException {
         if (cacheLevel >= CACHE_CONNECTION) {
             getSharedConnection();
@@ -496,10 +543,11 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Stops the container from processing messages.
+     * Stops the container processing messages.
      *
      * @throws JMSException if an error occurs during stop
      */
+    @ManagementOperation(description = "Stops the containing processing messages")
     public void stop() throws JMSException {
         synchronized (syncMonitor) {
             this.running = false;
@@ -509,6 +557,47 @@ public class AdaptiveMessageContainer {
         if (cacheLevel >= CACHE_CONNECTION) {
             stopSharedConnection();
         }
+    }
+
+    /**
+     * Returns the current number of idle receivers.
+     *
+     * @return the current number of idle receivers
+     */
+    @ManagementOperation(description = "The current number of idle receivers")
+    public int getIdleCount() {
+        int count = 0;
+        for (MessageReceiver receiver : receivers) {
+            if (receiver.isIdle()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @ManagementOperation(description = "The time this container has been running")
+    public long getTotalTime() {
+        return statistics.getTotalTime();
+    }
+
+    @ManagementOperation(description = "The number of messages received")
+    public long getMessagesReceived() {
+        return statistics.getMessagesReceived();
+    }
+
+    @ManagementOperation(description = "The maximum number of active receivers reached")
+    public int getMaxReceiversReached() {
+        return statistics.getMaxReceivers();
+    }
+
+    @ManagementOperation(description = "The total number of committed transactions")
+    public int getTransactions() {
+        return statistics.getTransactions();
+    }
+
+    @ManagementOperation(description = "The total number of rolled back transactions")
+    public int getTransactionsRolledBack() {
+        return statistics.getTransactionsRolledBack();
     }
 
     /**
@@ -547,7 +636,7 @@ public class AdaptiveMessageContainer {
 
 
     /**
-     * Resizes the receivers pool. If there are no idle receivers and the maximum number of receivers has not been reached, a new receiver will be
+     * Re-sizes the receivers pool. If there are no idle receivers and the maximum number of receivers has not been reached, a new receiver will be
      * scheduled.
      */
     private void resizePool() {
@@ -556,7 +645,6 @@ public class AdaptiveMessageContainer {
             synchronized (syncMonitor) {
                 if (receivers.size() < maxReceivers && getIdleCount() == 0) {
                     addReceiver();
-                    monitor.increaseReceivers(receivers.size());
                 }
             }
         }
@@ -568,7 +656,11 @@ public class AdaptiveMessageContainer {
     private void addReceiver() {
         MessageReceiver receiver = new MessageReceiver();
         if (rescheduleWork(receiver)) {
-            this.receivers.add(receiver);
+            receivers.add(receiver);
+            if (statistics.getMaxReceivers() < receivers.size()) {
+                statistics.incrementMaxReceivers();
+            }
+            monitor.increaseReceivers(receivers.size());
         }
     }
 
@@ -583,22 +675,6 @@ public class AdaptiveMessageContainer {
         boolean extra = (count >= idleLimit && getIdleCount() > 1);
         return (receivers.size() <= (extra ? minReceivers : maxReceivers));
     }
-
-    /**
-     * Returns the current number of idle receivers.
-     *
-     * @return the current number of idle receivers
-     */
-    private int getIdleCount() {
-        int count = 0;
-        for (MessageReceiver receiver : receivers) {
-            if (receiver.isIdle()) {
-                count++;
-            }
-        }
-        return count;
-    }
-
 
     /**
      * Refreshes the shared connection.
@@ -789,6 +865,7 @@ public class AdaptiveMessageContainer {
     private void localCommitOrAcknowledge(Session session, Message message) throws JMSException {
         if (TransactionType.SESSION == transactionType) {
             session.commit();
+            statistics.incrementTransactions();
         } else if (Session.CLIENT_ACKNOWLEDGE == session.getAcknowledgeMode()) {
             message.acknowledge();
         }
@@ -803,8 +880,10 @@ public class AdaptiveMessageContainer {
         try {
             if (tm.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
                 tm.commit();
+                statistics.incrementTransactions();
             } else {
                 tm.rollback();
+                statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
             throw new TransactionException(e);
@@ -830,6 +909,7 @@ public class AdaptiveMessageContainer {
         try {
             if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
                 tm.rollback();
+                statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
             throw new TransactionException(e);
@@ -845,6 +925,7 @@ public class AdaptiveMessageContainer {
     private void localRollback(Session session) throws JMSException {
         if (TransactionType.SESSION == transactionType) {
             session.rollback();
+            statistics.incrementTransactionsRolledBack();
         }
     }
 
@@ -1136,6 +1217,7 @@ public class AdaptiveMessageContainer {
                     resizePool();
                     try {
                         messageListener.onMessage(message);
+                        statistics.incrementMessagesReceived();
                         localCommitOrAcknowledge(sessionToUse, message);
                     } catch (JMSException e) {
                         if (TransactionType.SESSION == transactionType) {
