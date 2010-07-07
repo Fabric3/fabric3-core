@@ -53,7 +53,11 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
+import org.fabric3.timer.spi.PoolAllocationException;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 
@@ -62,8 +66,14 @@ import org.fabric3.timer.spi.TimerService;
  */
 @EagerInit
 public class ExecutorTimerService implements TimerService {
+    private ManagementService managementService;
     private Map<String, ScheduledExecutorService> executors = new ConcurrentHashMap<String, ScheduledExecutorService>();
+    private Map<String, TimerPoolStatistics> statisticsCache = new ConcurrentHashMap<String, TimerPoolStatistics>();
     private int defaultPoolSize = 2;
+
+    public ExecutorTimerService(@Reference ManagementService managementService) {
+        this.managementService = managementService;
+    }
 
     @Property(required = false)
     public void setDefaultPoolSize(int defaultCoreSize) {
@@ -71,7 +81,7 @@ public class ExecutorTimerService implements TimerService {
     }
 
     @Init
-    public void init() {
+    public void init() throws PoolAllocationException {
         allocate(TimerService.DEFAULT_POOL, defaultPoolSize);
     }
 
@@ -82,23 +92,42 @@ public class ExecutorTimerService implements TimerService {
         }
     }
 
-    public void allocate(String poolName, int coreSize) {
+    public void allocate(String poolName, int coreSize) throws PoolAllocationException {
         if (executors.containsKey(poolName)) {
             throw new IllegalStateException("Pool already allocated: " + poolName);
         }
-        executors.put(poolName, new ScheduledThreadPoolExecutor(coreSize));
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(coreSize);
+        executors.put(poolName, executor);
+        TimerPoolStatistics statistics = new TimerPoolStatistics(poolName, coreSize);
+        statistics.start();
+        statisticsCache.put(poolName, statistics);
+        if (managementService != null) {
+            try {
+                managementService.export(poolName, "timer pools", "Timer pools", statistics);
+            } catch (ManagementException e) {
+                throw new PoolAllocationException("Error allocating pool " + poolName, e);
+            }
+        }
     }
 
-    public void deallocate(String poolName) {
+    public void deallocate(String poolName) throws PoolAllocationException {
         ScheduledExecutorService executor = executors.remove(poolName);
         if (executor == null) {
             throw new IllegalStateException("Pool not allocated: " + poolName);
+        }
+        if (managementService != null) {
+            try {
+                managementService.remove(poolName, "timer pools");
+            } catch (ManagementException e) {
+                throw new PoolAllocationException("Error allocating pool " + poolName, e);
+            }
         }
         executor.shutdown();
     }
 
     public ScheduledFuture<?> scheduleRecurring(String poolName, Task task) {
-        RecurringRunnable recurring = new RecurringRunnable(poolName, task);
+        TimerPoolStatistics statistics = this.statisticsCache.get(poolName);
+        RecurringRunnable recurring = new RecurringRunnable(poolName, task, statistics);
         return recurring.schedule();
     }
 
@@ -134,13 +163,16 @@ public class ExecutorTimerService implements TimerService {
      * Implements a recurring task by wrapping an runnable and rescheduling with the executor service after an iteration has completed.
      */
     private class RecurringRunnable implements Runnable {
+        private TimerPoolStatistics statistics;
+
         private String poolName;
         private Task delegate;
         private ScheduledFutureWrapper<?> currentFuture;
 
-        private RecurringRunnable(String poolName, Task delegate) {
+        private RecurringRunnable(String poolName, Task delegate, TimerPoolStatistics statistics) {
             this.poolName = poolName;
             this.delegate = delegate;
+            this.statistics = statistics;
         }
 
         @SuppressWarnings({"unchecked"})
@@ -160,7 +192,11 @@ public class ExecutorTimerService implements TimerService {
         }
 
         public void run() {
+            long start = System.currentTimeMillis();
             delegate.run();
+            long elapsed = System.currentTimeMillis() - start;
+            statistics.incrementTotalExecutions();
+            statistics.incrementExecutionTime(elapsed);
             if (!currentFuture.isCancelled()) {
                 schedule();
             }

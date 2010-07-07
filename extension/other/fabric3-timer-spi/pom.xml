@@ -20,5 +20,13 @@ Public License. See the accompanying license file for details.
     <name>Fabric3 Timer Service SPI</name>
     <description>Fabric3 Timer Service SPI.</description>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-host-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

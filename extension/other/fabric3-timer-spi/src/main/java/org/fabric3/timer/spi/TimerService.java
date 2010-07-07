@@ -55,15 +55,17 @@ public interface TimerService {
      *
      * @param poolName the pool name
      * @param coreSize the  thread pool size
+     * @throws PoolAllocationException if there is an error allocating the pool
      */
-    void allocate(String poolName, int coreSize);
+    void allocate(String poolName, int coreSize) throws PoolAllocationException;
 
     /**
      * Shuts down and de-allocates a timer thread pool.
      *
      * @param poolName the pool name
+     * @throws PoolAllocationException if there is an error de-allocating the pool
      */
-    void deallocate(String poolName);
+    void deallocate(String poolName) throws PoolAllocationException;
 
     /**
      * Creates and executes a recurring action.
