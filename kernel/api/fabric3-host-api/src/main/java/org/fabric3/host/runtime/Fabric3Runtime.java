@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.host.monitor.Monitorable;
 
 /**
- * Represents a runtime in a domain.
+ * A Fabric3 runtime.
  *
  * @version $Rev$ $Date$
  */
