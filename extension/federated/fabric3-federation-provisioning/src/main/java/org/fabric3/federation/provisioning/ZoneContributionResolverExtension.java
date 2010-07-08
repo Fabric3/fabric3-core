@@ -106,7 +106,7 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
     }
 
     public InputStream resolve(URI contributionUri) throws ResolutionException {
-        String zoneLeader = topologyService.getZoneLeader();
+        String zoneLeader = topologyService.getZoneLeaderName();
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
             ProvisionResponse response;

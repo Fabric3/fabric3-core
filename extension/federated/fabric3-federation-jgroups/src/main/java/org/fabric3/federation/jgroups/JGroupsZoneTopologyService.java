@@ -189,7 +189,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     @ManagementOperation(description = "The name of the zone leader")
-    public String getZoneLeader() {
+    public String getZoneLeaderName() {
         View view = domainChannel.getView();
         if (view == null) {
             return null;

@@ -155,7 +155,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         return true;
     }
 
-    public String getZoneLeader() {
+    public String getZoneLeaderName() {
         return null;
     }
 

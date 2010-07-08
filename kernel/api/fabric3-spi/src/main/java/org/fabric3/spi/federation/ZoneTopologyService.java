@@ -85,7 +85,7 @@ public interface ZoneTopologyService {
      *
      * @return the name of the zone leader or null if the current runtime has not joined the domain
      */
-    String getZoneLeader();
+    String getZoneLeaderName();
 
     /**
      * Sends a command asynchronously to all runtimes in the zone.
