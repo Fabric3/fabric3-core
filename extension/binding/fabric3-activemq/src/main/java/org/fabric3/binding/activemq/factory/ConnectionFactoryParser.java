@@ -159,7 +159,7 @@ public class ConnectionFactoryParser {
 
 
     @Destroy
-    public void destroy() {
+    public void destroy() throws FactoryRegistrationException {
         for (ConnectionFactoryConfiguration configuration : configurations) {
             manager.unregister(configuration.getName());
         }

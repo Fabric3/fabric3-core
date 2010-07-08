@@ -215,7 +215,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     }
 
     private String encode(URI serviceUri) {
-        return "JMS message containers/" + serviceUri.getPath().substring(1);
+        return "JMS/message containers/" + serviceUri.getPath().substring(1);
     }
 
 

@@ -47,9 +47,12 @@ import javax.jms.XAConnectionFactory;
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA
@@ -59,8 +62,6 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
  */
 @EagerInit
 public class AtomikosConnectionFactoryManager implements ConnectionFactoryManager {
-    private Map<String, AtomikosConnectionFactoryBean> beans = new HashMap<String, AtomikosConnectionFactoryBean>();
-    private Map<String, ConnectionFactory> nonXA = new HashMap<String, ConnectionFactory>();
     private static final String BORROW_TIMEOUT = "borrow.timeout";
     private static final String MAINTENANCE_INTERVAL = "maintenance.interval";
     private static final String MAX_IDLE = "max.idle";
@@ -70,12 +71,31 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
     private static final String REAP_TIMEOUT = "reap.timeout";
     private static final String TRANSACTION_MODE = "local.transaction.mode";
     private static final int DEFAULT_MAX_POOL_SIZE = 50;
+    private static final String JMS_XA_CONNECTION_POOLS = "JMS/XA connection pools";
+
+    private ManagementService managementService;
+
+    private Map<String, AtomikosConnectionFactoryBean> beans = new HashMap<String, AtomikosConnectionFactoryBean>();
+    private Map<String, ConnectionFactory> nonXA = new HashMap<String, ConnectionFactory>();
+
+    public AtomikosConnectionFactoryManager(@Reference ManagementService managementService) {
+        this.managementService = managementService;
+    }
 
     @Destroy
     public void destroy() {
         for (AtomikosConnectionFactoryBean bean : beans.values()) {
+            try {
+                remove(bean);
+            } catch (ManagementException e) {
+                // continue so the beans can be closed
+                e.printStackTrace();
+            }
+        }
+        for (AtomikosConnectionFactoryBean bean : beans.values()) {
             bean.close();
         }
+        beans.clear();
     }
 
     public ConnectionFactory get(String name) {
@@ -167,16 +187,36 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
             }
         }
         beans.put(name, bean);
+        if (managementService != null) {
+            ConnectionFactoryWrapper wrapper = new ConnectionFactoryWrapper(bean);
+            try {
+                managementService.export(name, JMS_XA_CONNECTION_POOLS, "Configured connection pool", wrapper);
+            } catch (ManagementException e) {
+                throw new FactoryRegistrationException("Error exporting " + name, e);
+            }
+        }
         return bean;
     }
 
 
-    public void unregister(String name) {
+    public void unregister(String name) throws FactoryRegistrationException {
         AtomikosConnectionFactoryBean bean = beans.remove(name);
         if (bean == null) {
             nonXA.remove(name);
+        } else {
+            try {
+                remove(bean);
+            } catch (ManagementException e) {
+                throw new FactoryRegistrationException("Error exporting " + name, e);
+            }
         }
+    }
 
+    private void remove(AtomikosConnectionFactoryBean bean) throws ManagementException {
+        if (managementService != null) {
+            String name = bean.getUniqueResourceName();
+            managementService.remove(name, JMS_XA_CONNECTION_POOLS);
+        }
     }
 
 
