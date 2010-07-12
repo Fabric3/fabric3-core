@@ -114,7 +114,16 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("name");
         ATTRIBUTES.add("requestConnection");
         ATTRIBUTES.add("responseConnection");
+        ATTRIBUTES.add("cache");
+        ATTRIBUTES.add("idle.limit");
+        ATTRIBUTES.add("transaction.timeout");
+        ATTRIBUTES.add("receive.timeout");
+        ATTRIBUTES.add("max.messages");
+        ATTRIBUTES.add("recovery.interval");
+        ATTRIBUTES.add("max.receivers");
+        ATTRIBUTES.add("min.receivers");
     }
+
 
     private LoaderHelper loaderHelper;
 
@@ -192,7 +201,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             }
         }
 
-        loadFabrc3Attributes(metadata, reader, context);
+        loadFabric3Attributes(metadata, reader, context);
 
         String name;
         while (true) {
@@ -232,7 +241,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         }
     }
 
-    private void loadFabrc3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
 //    TODO    boolean durable = false;
 //    TODO    boolean localDelivery;
 //    TODO    String clientId;
