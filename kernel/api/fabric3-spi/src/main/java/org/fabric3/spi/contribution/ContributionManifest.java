@@ -46,7 +46,7 @@ import java.util.Set;
 import org.fabric3.host.contribution.Deployable;
 
 /**
- * Represents a contribution manifest
+ * A contribution manifest.
  *
  * @version $Rev$ $Date$
  */
@@ -82,7 +82,7 @@ public class ContributionManifest implements Serializable {
     }
 
     /**
-     * Rturns true if the contribution is an extension.
+     * Returns true if the contribution is an extension.
      *
      * @return true if the contribution is an extension
      */
@@ -136,9 +136,9 @@ public class ContributionManifest implements Serializable {
     }
 
     /**
-     * Adds a capablity required by the contribution.
+     * Adds a capability required by the contribution.
      *
-     * @param capability a capablity required by the contribution
+     * @param capability a capability required by the contribution
      */
     public void addRequiredCapability(String capability) {
         requiredCapabilities.add(capability);
@@ -220,10 +220,10 @@ public class ContributionManifest implements Serializable {
     /**
      * Adds a contribution deployable.
      *
-     * @param deployale the contribution deployable
+     * @param deployable the contribution deployable
      */
-    public void addDeployable(Deployable deployale) {
-        deployables.add(deployale);
+    public void addDeployable(Deployable deployable) {
+        deployables.add(deployable);
     }
 
 }
