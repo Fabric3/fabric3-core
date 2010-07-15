@@ -112,7 +112,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
                         allPolicies.add(policy);
                     }
                 }
-                PolicyMetadata metadata = policyResult.getMetadata();
+                PolicyMetadata metadata = policyResult.getMetadata(operation);
                 Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(operation, allPolicies, metadata);
                 physicalOperation.setInterceptors(interceptors);
             }
@@ -145,7 +145,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
                 List<PolicySet> policies = result.getInterceptedPolicySets(source);
                 List<PolicySet> allPolicies = new ArrayList<PolicySet>(endpointPolicySets);
                 allPolicies.addAll(policies);
-                PolicyMetadata metadata = result.getMetadata();
+                PolicyMetadata metadata = result.getMetadata(source);
                 Set<PhysicalInterceptorDefinition> interceptors = generateInterceptors(source, allPolicies, metadata);
                 physicalOperation.setInterceptors(interceptors);
             }
@@ -161,7 +161,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      * @param policies  the policies
      * @param metadata  policy metadata
      * @return the interceptor definitions
-     * @throws GenerationException if a generatin error occurs
+     * @throws GenerationException if a generation error occurs
      */
     private Set<PhysicalInterceptorDefinition> generateInterceptors(LogicalOperation operation, List<PolicySet> policies, PolicyMetadata metadata)
             throws GenerationException {

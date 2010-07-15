@@ -57,11 +57,11 @@ import org.fabric3.spi.policy.PolicyResult;
  */
 public class PolicyResultImpl implements PolicyResult {
 
-    private final EffectivePolicyImpl sourcePolicy = new EffectivePolicyImpl();
-    private final EffectivePolicyImpl targetPolicy = new EffectivePolicyImpl();
-    private final Set<PolicySet> interceptedEndpointPolicySets = new HashSet<PolicySet>();
-    private PolicyMetadata metadata = new PolicyMetadata();
-    private final Map<LogicalOperation, List<PolicySet>> interceptedPolicySets = new HashMap<LogicalOperation, List<PolicySet>>();
+    private EffectivePolicyImpl sourcePolicy = new EffectivePolicyImpl();
+    private EffectivePolicyImpl targetPolicy = new EffectivePolicyImpl();
+    private Set<PolicySet> interceptedEndpointPolicySets = new HashSet<PolicySet>();
+    private Map<LogicalOperation, PolicyMetadata> metadataMap = new HashMap<LogicalOperation, PolicyMetadata>();
+    private Map<LogicalOperation, List<PolicySet>> interceptedPolicySets = new HashMap<LogicalOperation, List<PolicySet>>();
 
     public EffectivePolicy getSourcePolicy() {
         return sourcePolicy;
@@ -83,7 +83,12 @@ public class PolicyResultImpl implements PolicyResult {
         return sets;
     }
 
-    public PolicyMetadata getMetadata() {
+    public PolicyMetadata getMetadata(LogicalOperation operation) {
+        PolicyMetadata metadata = metadataMap.get(operation);
+        if (metadata == null) {
+            metadata = new PolicyMetadata();
+            metadataMap.put(operation, metadata);
+        }
         return metadata;
     }
 

@@ -155,7 +155,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
      * @param policyResult  the policy result to populate
      * @param sourceBinding the source binding
      * @param targetBinding the target binding
-     * @param target        the atrget component, or null if the operation invokes a remote service
+     * @param target        the target component, or null if the operation invokes a remote service
      * @throws PolicyResolutionException if there is a resolution error
      */
     private void resolveOperationPolicies(LogicalOperation operation,
@@ -183,11 +183,11 @@ public class DefaultPolicyResolver implements PolicyResolver {
 
         if (target != null) {
             Bindable parent = targetBinding.getParent();
-            // resolve policies using the target (as opposed to source) operation so target implementaton policies are included
+            // resolve policies using the target (as opposed to source) operation so target implementation policies are included
             LogicalOperation targetOperation = matchOperation(operation, parent);
             policies = implementationResolver.resolvePolicySets(target, targetOperation);
             // add policy metadata to the result
-            policyResult.getMetadata().addAll(targetOperation.getDefinition().getMetadata());
+            policyResult.getMetadata(operation).addAll(targetOperation.getDefinition().getMetadata());
             // important: use reference side operation as the key
             policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
             policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
@@ -249,7 +249,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
             return Collections.emptySet();
         }
 
-        public PolicyMetadata getMetadata() {
+        public PolicyMetadata getMetadata(LogicalOperation operation) {
             return metadata;
         }
 

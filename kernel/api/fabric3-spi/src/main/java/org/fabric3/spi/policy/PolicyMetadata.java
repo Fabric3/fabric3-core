@@ -42,7 +42,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 /**
- * Holds metadata for intents and policie sets. Some intents and policy sets, such as role-based authorizaiton, require specific configuration (e.g.
+ * Holds metadata for intents and policy sets. Some intents and policy sets, such as role-based authorization, require specific configuration (e.g.
  * roles specified by the intent annotation on a component). Metadata is keyed by intent or policy set qualified name.
  *
  * @version $Rev$ $Date$

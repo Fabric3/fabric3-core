@@ -273,7 +273,7 @@ public class WireGeneratorImpl implements WireGenerator {
      * runtime.
      *
      * @param wire the logical wire
-     * @return the physical wire definiton
+     * @return the physical wire definition
      * @throws GenerationException if an error occurs during generation
      */
     private PhysicalWireDefinition generateLocalWire(LogicalWire wire) throws GenerationException {

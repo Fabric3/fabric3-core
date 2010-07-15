@@ -80,7 +80,7 @@ public class NullPolicyResolver implements PolicyResolver {
             return Collections.emptyList();
         }
 
-        public PolicyMetadata getMetadata() {
+        public PolicyMetadata getMetadata(LogicalOperation operation) {
             return metadata;
         }
 

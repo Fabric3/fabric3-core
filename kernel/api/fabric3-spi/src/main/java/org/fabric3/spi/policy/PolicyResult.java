@@ -107,10 +107,11 @@ public interface PolicyResult {
     List<PolicySet> getInterceptedPolicySets(LogicalOperation operation);
 
     /**
-     * Returns metadata for the intents and policy sets.
+     * Returns metadata for the intents and policy sets for a given operation.
      *
+     * @param operation the operation to return metadata for
      * @return metadata for the intents and policy sets
      */
-    PolicyMetadata getMetadata();
+    PolicyMetadata getMetadata(LogicalOperation operation);
 
 }
