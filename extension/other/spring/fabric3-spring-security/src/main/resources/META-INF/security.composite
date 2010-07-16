@@ -38,5 +38,8 @@ Public License. See the accompanying license file for details.
         <property name="managerType" source="$systemConfig/security/spring.security/@decision.manager"/>
     </component>
 
+    <component name="SecurityApplicationContextListener">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.SecurityApplicationContextListener"/>
+    </component>
 
 </composite>

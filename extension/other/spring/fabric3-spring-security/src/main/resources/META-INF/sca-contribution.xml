@@ -17,6 +17,8 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.spi.*" version="1.6"/>
     <import.java package="org.fabric3.security.spring.api" version="1.6"/>
     <import.java package="org.fabric3.datasource.spi" version="1.6"/>
+    <import.java package="org.springframework.*"/>
+    <import.java package="org.fabric3.spring.spi"/>
     <f3-core:provides name="spring-security-library"/>
     <deployable composite="security:SpringSecurityExtension"/>
 </contribution>
