@@ -38,44 +38,29 @@
 package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
+import java.util.Collections;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
-import org.springframework.transaction.jta.JtaTransactionManager;
 
-import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.host.Names;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.WorkContext;
-
-import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
+import org.fabric3.spring.spi.ApplicationContextListener;
 
 /**
  * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
  * <p/>
  * The parent context contains object factories for creating wire proxies for references configured on the component. In addition, the parent context
- * also contains system components configured to be aliased as Spring beans. By default, if a JTA transaction manager and datasources are configured
- * on the runtime, they will be aliased as <code>transactionManager</code> and their datasource name respectively. Other system components may be
- * aliased by configuring the <code>beanAliases</code> property.
+ * also contains system components configured to be aliased as Spring beans.
  * <p/>
  * The child context contains beans defined in the configuration file specified by the location attribute of the Spring component.
  *
@@ -83,45 +68,23 @@ import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER
  */
 @EagerInit
 public class SpringComponentBuilder implements ComponentBuilder<SpringComponentDefinition, SpringComponent> {
-    private static final String TRX_ALIAS = "transactionManager";
 
     private ClassLoaderRegistry classLoaderRegistry;
-    private ComponentManager componentManager;
-    private boolean alias = true;
-    private TransactionManager tm;
-    private DataSourceRegistry dataSourceRegistry;
-    private EntityManagerFactoryResolver emfResolver;
-
-    private Map<String, String> beanAliases = new HashMap<String, String>();
+    private boolean validating = true;
+    private List<ApplicationContextListener> listeners = Collections.emptyList();
 
     @Property(required = false)
-    public void setBeanAliases(Map<String, String> beanAliases) {
-        this.beanAliases = beanAliases;
-    }
-
-    @Property(required = false)
-    public void setAlias(boolean alias) {
-        this.alias = alias;
+    public void setValidating(boolean validating) {
+        this.validating = validating;
     }
 
     @Reference(required = false)
-    public void setDataSourceRegistry(DataSourceRegistry dataSourceRegistry) {
-        this.dataSourceRegistry = dataSourceRegistry;
+    public void setListeners(List<ApplicationContextListener> listeners) {
+        this.listeners = listeners;
     }
 
-    @Reference(required = false)
-    public void setTm(TransactionManager tm) {
-        this.tm = tm;
-    }
-
-    @Reference(required = false)
-    public void setEmfBuilder(EntityManagerFactoryResolver emfResolver) {
-        this.emfResolver = emfResolver;
-    }
-
-    public SpringComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference ComponentManager componentManager) {
+    public SpringComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
-        this.componentManager = componentManager;
     }
 
     public SpringComponent build(SpringComponentDefinition definition) throws BuilderException {
@@ -139,11 +102,14 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         SCAApplicationContext parent = createParentContext(classLoader);
-        return new SpringComponent(componentUri, deployable, parent, source, classLoader);
+        return new SpringComponent(componentUri, deployable, parent, source, classLoader, validating);
     }
 
     public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
-        // no-op
+        for (ApplicationContextListener listener : listeners) {
+            SCAApplicationContext context = component.getParent();
+            listener.onDispose(context);
+        }
     }
 
     /**
@@ -158,46 +124,12 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
             SCAApplicationContext parent = new SCAApplicationContext();
-            if (beanAliases.isEmpty() && alias && tm != null) {
-                registerTransactionInfrastructure(parent);
-            } else {
-                registerAliases(parent);
+            for (ApplicationContextListener listener : listeners) {
+                listener.onCreate(parent);
             }
             return parent;
         } finally {
             Thread.currentThread().setContextClassLoader(old);
-        }
-    }
-
-    private void registerTransactionInfrastructure(SCAApplicationContext parent) {
-        JtaTransactionManager platformTm = new JtaTransactionManager(tm);
-        parent.getBeanFactory().registerSingleton(TRX_ALIAS, platformTm);
-        for (Map.Entry<String, DataSource> entry : dataSourceRegistry.getDataSources().entrySet()) {
-            parent.getBeanFactory().registerSingleton(entry.getKey(), entry.getValue());
-        }
-        if (emfResolver != null) {
-            parent.getBeanFactory().registerSingleton(EMF_RESOLVER, emfResolver);
-        }
-    }
-
-    private void registerAliases(SCAApplicationContext parent) throws ComponentNotFoundException, ComponentAliasException {
-        for (Map.Entry<String, String> entry : beanAliases.entrySet()) {
-            try {
-                URI uri = new URI(Names.RUNTIME_NAME + "/" + entry.getKey());
-                // note cast is safe as all system components are atomic
-                AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
-                if (component == null) {
-                    throw new ComponentNotFoundException("Component not found: " + entry.getKey());
-                }
-                WorkContext context = new WorkContext();
-                InstanceWrapper wrapper = component.createInstanceWrapper(context);
-                Object instance = wrapper.getInstance();
-                parent.getBeanFactory().registerSingleton(entry.getKey(), instance);
-            } catch (URISyntaxException e) {
-                throw new ComponentAliasException("Illegal component name", e);
-            } catch (ObjectCreationException e) {
-                throw new ComponentAliasException("Unable to return instance", e);
-            }
         }
     }
 }

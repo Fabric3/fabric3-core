@@ -64,6 +64,7 @@ public class SpringComponent implements Component {
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
     private MonitorLevel level = MonitorLevel.INFO;
+    private boolean validating;
 
     /**
      * Constructor.
@@ -73,13 +74,15 @@ public class SpringComponent implements Component {
      * @param parent      the parent application context for resolving wire and event stream proxies
      * @param source      the location of the application context XML configuration.
      * @param classLoader the contribution classloader containing user-defined application classes and resources
+     * @param validating  true if application context validation should be done
      */
-    public SpringComponent(URI uri, QName deployable, SCAApplicationContext parent, URL source, ClassLoader classLoader) {
+    public SpringComponent(URI uri, QName deployable, SCAApplicationContext parent, URL source, ClassLoader classLoader, boolean validating) {
         this.uri = uri;
         this.deployable = deployable;
         this.parent = parent;
         this.source = source;
         this.classLoader = classLoader;
+        this.validating = validating;
     }
 
     public URI getUri() {
@@ -115,6 +118,7 @@ public class SpringComponent implements Component {
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
             applicationContext = new GenericXmlApplicationContext();
+            applicationContext.setValidating(validating);
             try {
                 // initialize the parent context
                 parent.refresh();
@@ -170,7 +174,11 @@ public class SpringComponent implements Component {
         parent.remove(name);
     }
 
-    public Object getBean(String name) throws SpringBeanNotFoundException {
+    public SCAApplicationContext getParent() {
+        return parent;
+    }
+
+    public Object getBean(String name) {
         return applicationContext.getBean(name);
     }
 

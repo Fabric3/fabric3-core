@@ -21,6 +21,7 @@ Public License. See the accompanying license file for details.
 
     <component name="SpringComponentBuilder" f3-core:key="org.fabric3.implementation.spring.provision.SpringComponentDefinition">
         <f3-impl:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringComponentBuilder"/>
+        <property name="validating" source="$systemConfig//spring/@validating"/>
     </component>
 
     <component name="SpringSourceWireAttacher" f3-core:key="org.fabric3.implementation.spring.provision.SpringSourceDefinition">
@@ -31,5 +32,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.implementation.spring.runtime.builder.SpringTargetWireAttacher"/>
     </component>
 
+    <component name="TxApplicationContextListener">
+        <f3-impl:implementation.system class="org.fabric3.implementation.spring.runtime.tx.TxApplicationContextListener"/>
+    </component>
 
 </composite>

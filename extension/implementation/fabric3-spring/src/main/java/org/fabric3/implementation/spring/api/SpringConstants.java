@@ -48,4 +48,9 @@ public interface SpringConstants {
      * The bean name of the EntityManagerFactory resolver service.
      */
     String EMF_RESOLVER = "Fabric3EMFResolver";
+
+    /**
+     * The bean name of the TransactionManager service.
+     */
+    String TRX_ALIAS = "transactionManager";
 }

@@ -41,6 +41,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.osoa.sca.ServiceRuntimeException;
+import org.springframework.beans.BeansException;
 
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
@@ -91,9 +92,9 @@ public class SpringInvoker implements Interceptor {
             msg.setBodyWithFault(e.getCause());
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
-        } catch (SpringBeanNotFoundException e) {
+        } catch (BeansException e) {
             // this should not happen at this point
-            throw new InvocationRuntimeException("Bean not found: " + beanName, e);
+            throw new InvocationRuntimeException("Error invoking bean: " + beanName, e);
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldWorkContext);
         }
