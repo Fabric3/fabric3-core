@@ -62,5 +62,6 @@
 		<module>fabric3-databinding-json</module>
 		<module>fabric3-databinding-hessian</module>
 		<module>fabric3-recovery</module>
+		<module>spring</module>
 	</modules>
 </project>

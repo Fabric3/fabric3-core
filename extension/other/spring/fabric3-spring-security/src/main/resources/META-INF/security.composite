@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (C) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3-impl="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org:security"
+           name="SpringSecurityExtension"
+           autowire="true">
+    <!-- REMOVE -->
+    <component name="KeyStoreManagerImpl">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.KeyStoreManagerImpl"/>
+    </component>
+
+    <component name="SpringAuthenticationService">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.Fabric3ProviderManager"/>
+        <property name="configuration" source="$systemConfig/security/spring.security"/>
+    </component>
+
+    <component name="ConfigurationParser">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.config.ConfigurationParserImpl"/>
+    </component>
+
+    <component name="AuthenticationProviderFactory">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.factory.AuthenticationProviderFactoryImpl"/>
+    </component>
+
+    <component name="SpringAuthorizationService">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.Fabric3AccessDecisionManager"/>
+        <property name="managerType" source="$systemConfig/security/spring.security/@decision.manager"/>
+    </component>
+
+
+</composite>
