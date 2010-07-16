@@ -76,7 +76,7 @@ public class HibernateContributionListener implements ContributionServiceListene
 
     public void onProcessManifest(Contribution contribution) {
         if (noImplicitImport || contribution.getManifest().isExtension()) {
-            // implicy import disabled or the contribution is an extension
+            // implicitly import disabled or the contribution is an extension
             return;
         }
         boolean jpaImported = false;
