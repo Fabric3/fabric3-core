@@ -132,6 +132,8 @@
     <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-client:7.1.4.v20100610" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-jmx:7.1.4.v20100610" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-jsp-2.1:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20091210" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.eclipse.jdt.core.compiler:ecj:3.5.1" level="project" />
     <orderEntry type="module" module-name="fabric3-resource" exported="" />
     <orderEntry type="module" module-name="fabric3-thread-pool" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-recovery:1.6-SNAPSHOT" level="project" />
