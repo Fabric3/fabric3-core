@@ -36,7 +36,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-web:3.0.2.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-webmvc:3.0.2.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-webmvc-portlet:3.0.2.RELEASE" level="project" />
-    <orderEntry type="module" module-name="fabric3-spring-security-library" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:spring-security-core:3.0.3.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:spring-security-acl:3.0.3.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:spring-security-cas-client:3.0.3.RELEASE" level="project" />

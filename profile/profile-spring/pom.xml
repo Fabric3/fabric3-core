@@ -52,12 +52,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-spring-security-library</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
         <!-- JMS is needed for Atomikos -->
         <dependency>
             <groupId>javax.jms</groupId>

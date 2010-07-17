@@ -1,1 +1,9 @@
 http\://docs.oasis-open.org/opencsa/sca-assembly/sca-1.1.xsd=META-INF/sca-implementation-spring.xsd
+http\://www.springframework.org/schema/security/spring-security.xsd=org/springframework/security/config/spring-security-3.0.3.xsd
+http\://www.springframework.org/schema/security/spring-security-3.0.xsd=org/springframework/security/config/spring-security-3.0.xsd
+http\://www.springframework.org/schema/security/spring-security-3.0.3.xsd=org/springframework/security/config/spring-security-3.0.3.xsd
+http\://www.springframework.org/schema/security/spring-security-2.0.xsd=org/springframework/security/config/spring-security-2.0.xsd
+http\://www.springframework.org/schema/security/spring-security-2.0.1.xsd=org/springframework/security/config/spring-security-2.0.1.xsd
+http\://www.springframework.org/schema/security/spring-security-2.0.2.xsd=org/springframework/security/config/spring-security-2.0.2.xsd
+http\://www.springframework.org/schema/security/spring-security-2.0.4.xsd=org/springframework/security/config/spring-security-2.0.4.xsd
+

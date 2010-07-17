@@ -249,7 +249,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      *
      * @parameter
      */
-    public String[] hiddenPackages = new String[]{"javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap."};
+    public String[] hiddenPackages = new String[]{"javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap.", "org.springframework."};
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 

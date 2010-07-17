@@ -1,1 +1,2 @@
 http\://docs.oasis-open.org/ns/opencsa/sca/200912=org.fabric3.implementation.spring.runtime.namespace.SCANamespaceHandler
+http\://www.springframework.org/schema/security=org.springframework.security.config.SecurityNamespaceHandler

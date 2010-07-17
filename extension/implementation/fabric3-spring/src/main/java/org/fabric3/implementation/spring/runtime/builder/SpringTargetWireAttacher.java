@@ -39,6 +39,8 @@ package org.fabric3.implementation.spring.runtime.builder;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -57,6 +59,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.fabric3.spring.spi.WireListener;
 
 /**
  * Attaches the target side of a wire to a Spring component.
@@ -67,10 +70,16 @@ import org.fabric3.spi.wire.Wire;
 public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTargetDefinition> {
     private ComponentManager manager;
     private ClassLoaderRegistry classLoaderRegistry;
+    private List<WireListener> listeners = Collections.emptyList();
 
     public SpringTargetWireAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
         this.classLoaderRegistry = classLoaderRegistry;
+    }
+
+    @Reference(required = false)
+    public void setListeners(List<WireListener> listeners) {
+        this.listeners = listeners;
     }
 
     public void attach(PhysicalSourceDefinition source, SpringTargetDefinition target, Wire wire) throws WiringException {
@@ -81,6 +90,9 @@ public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTarget
             interfaze = loader.loadClass(target.getBeanInterface());
         } catch (ClassNotFoundException e) {
             throw new WiringException(e);
+        }
+        for (WireListener listener : listeners) {
+            listener.onAttach(wire);
         }
         SpringComponent component = getComponent(target);
         for (InvocationChain chain : wire.getInvocationChains()) {

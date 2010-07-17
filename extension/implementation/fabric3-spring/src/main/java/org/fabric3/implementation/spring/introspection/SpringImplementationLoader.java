@@ -105,7 +105,7 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
     }
 
     /**
-     * Make Spring classes available to the contribution classloader. This is required since user classes may extend Spring class.
+     * Make Spring classes available to the contribution classloader. This is required since user classes may extend Spring classes.
      *
      * @param classLoader the application classloader.
      */

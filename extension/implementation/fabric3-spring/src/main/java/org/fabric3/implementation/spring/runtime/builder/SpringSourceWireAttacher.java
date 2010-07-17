@@ -38,6 +38,8 @@
 package org.fabric3.implementation.spring.runtime.builder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -54,6 +56,7 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.Wire;
+import org.fabric3.spring.spi.WireListener;
 
 /**
  * Attaches the source side of a wire to a Spring component.
@@ -66,6 +69,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
     private WireProxyService proxyService;
 
     private ClassLoaderRegistry classLoaderRegistry;
+    private List<WireListener> listeners = Collections.emptyList();
 
     public SpringSourceWireAttacher(@Reference ComponentManager manager,
                                     @Reference WireProxyService proxyService,
@@ -73,6 +77,11 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
         this.manager = manager;
         this.classLoaderRegistry = classLoaderRegistry;
         this.proxyService = proxyService;
+    }
+
+    @Reference(required = false)
+    public void setListeners(List<WireListener> listeners) {
+        this.listeners = listeners;
     }
 
     public void attach(SpringSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
@@ -86,6 +95,9 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
             // note callbacks not supported for spring beans
             ObjectFactory<?> factory = proxyService.createObjectFactory(interfaze, interactionType, wire, null);
             component.attach(referenceName, interfaze, factory);
+            for (WireListener listener : listeners) {
+                listener.onAttach(wire);
+            }
         } catch (ClassNotFoundException e) {
             throw new WiringException(e);
         } catch (ProxyCreationException e) {

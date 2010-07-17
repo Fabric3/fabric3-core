@@ -13,6 +13,7 @@ Public License. See the accompanying license file for details.
               xmlns:security="urn:fabric3.org:security"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.springframework.*" version="3.0.2"/>
+    <import.java package="org.springframework.*" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.6"/>
     <export.java package="org.fabric3.spring.spi" version="1.6"/>
 </contribution>

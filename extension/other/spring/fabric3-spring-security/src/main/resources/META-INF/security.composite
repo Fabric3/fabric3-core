@@ -42,4 +42,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.security.spring.SecurityApplicationContextListener"/>
     </component>
 
+    <component name="SecurityWireListener">
+        <f3-impl:implementation.system class="org.fabric3.security.spring.SecurityWireListener"/>
+    </component>
+
 </composite>
