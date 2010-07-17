@@ -176,6 +176,9 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                     return;
                 }
                 cacheDeployment(command);
+            } catch (RuntimeException e) {
+                monitor.errorMessage("Error performing deployment", e);
+                throw e;
             } catch (InterruptedException e) {
                 active.set(false);
                 Thread.currentThread().interrupt();

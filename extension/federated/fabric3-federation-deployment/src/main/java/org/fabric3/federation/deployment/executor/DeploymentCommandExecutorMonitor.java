@@ -37,7 +37,8 @@
 */
 package org.fabric3.federation.deployment.executor;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
@@ -63,5 +64,14 @@ public interface DeploymentCommandExecutorMonitor {
      */
     @Severe
     void error(Throwable e);
+
+    /**
+     * Callback when an error is thrown processing a deployment.
+     *
+     * @param msg the error message
+     * @param e   the error
+     */
+    @Severe
+    void errorMessage(String msg, Throwable e);
 
 }
