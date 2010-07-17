@@ -15,10 +15,6 @@ Public License. See the accompanying license file for details.
            targetNamespace="urn:fabric3.org:security"
            name="SpringSecurityExtension"
            autowire="true">
-    <!-- REMOVE -->
-    <component name="KeyStoreManagerImpl">
-        <f3-impl:implementation.system class="org.fabric3.security.spring.KeyStoreManagerImpl"/>
-    </component>
 
     <component name="SpringAuthenticationService">
         <f3-impl:implementation.system class="org.fabric3.security.spring.Fabric3ProviderManager"/>
