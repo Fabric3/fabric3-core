@@ -45,6 +45,8 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
@@ -104,12 +106,16 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        throw new UnsupportedOperationException();
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
+        generationHelper.generateConnectionSource(definition, producer);
+        return definition;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
+        generationHelper.generateConnectionTarget(definition, consumer);
+        return definition;
     }
 
     public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
