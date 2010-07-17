@@ -112,16 +112,14 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
-        generationHelper.generateConnectionTarget(definition, consumer);
-        return definition;
-    }
-
     public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         JavaSourceDefinition definition = new JavaSourceDefinition();
         generationHelper.generateResourceWireSource(definition, resourceReference);
         return definition;
+    }
+
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
+        throw new UnsupportedOperationException("Timer components cannot be configured as event consumers");
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
