@@ -56,14 +56,10 @@ import org.w3c.dom.Document;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Fabric3Exception;
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
@@ -78,12 +74,13 @@ import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+
 /**
- * This class provides the command line interface for starting the Fabric3 standalone server. The class boots a Fabric3 runtime and launches a daemon
- * that listens for a shutdown command.
- * <p/>
- * The administration port can be specified using the system property <code>fabric3.adminPort</code>.If not specified the default port that is used is
- * <code>1199</code>
+ * This class provides the command line interface for starting the Fabric3 standalone server.
  *
  * @version $Rev$ $Date$
  */
@@ -97,8 +94,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
     /**
      * Main method.
      *
-     * @param args Commandline arguments.
-     * @throws Fabric3Exception if there is a catostrophic problem starting the runtime
+     * @param args command line arguments.
+     * @throws Fabric3Exception if there is a catastrophic problem starting the runtime
      */
     public static void main(String[] args) throws Fabric3Exception {
         Params params = parse(args);
@@ -111,7 +108,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
      *
      * @param params the runtime parameters
-     * @throws Fabric3ServerException if catostrophic exception was encountered leaving the runtime in an unstable state
+     * @throws Fabric3ServerException if catastrophic exception was encountered leaving the runtime in an unstable state
      */
     public void start(Params params) throws Fabric3ServerException {
         try {
