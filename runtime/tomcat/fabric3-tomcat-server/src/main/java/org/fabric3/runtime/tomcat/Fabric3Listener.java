@@ -58,14 +58,10 @@ import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.mbeans.MBeanUtils;
 import org.w3c.dom.Document;
 
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
@@ -80,12 +76,18 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+
 /**
  * Bootstraps Fabric3 in a host Tomcat runtime.
  *
  * @version $Rev$ $Date$
  */
 public class Fabric3Listener implements LifecycleListener {
+    private static final String RUNTIME_NAME = "org.fabric3.name";
 
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
@@ -104,13 +106,14 @@ public class Fabric3Listener implements LifecycleListener {
 
     private void init(Server server) {
         try {
+            String runtimeName = System.getProperty(RUNTIME_NAME, "vm");
+
             // This class is loaded in <tomcat install>/lib. The Fabric3 runtime is installed at <tomcat install>/fabric3
             File installDirectory = new File(BootstrapHelper.getInstallDirectory(getClass()), "fabric3");
             File extensionsDir = new File(installDirectory, "extensions");
 
-            //  calculate config directories based on the mode the runtime is booted in - currently only VM mode is supported
-            File rootRuntimesDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
-            File runtimeDir = BootstrapHelper.getDirectory(rootRuntimesDir, "vm");
+            //  calculate config directories based on the mode the runtime is booted in
+            File runtimeDir = getRuntimeDirectory(installDirectory, runtimeName);
             File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
 
             // create the classloaders for booting the runtime
@@ -129,8 +132,10 @@ public class Fabric3Listener implements LifecycleListener {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
+            RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo("vm", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -174,7 +179,7 @@ public class Fabric3Listener implements LifecycleListener {
             coordinator.start();
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(RuntimeMode.VM.toString());
+            monitor.started(mode.toString());
         } catch (Exception e) {
             if (monitor != null) {
                 // there could have been an error initializing the monitor
@@ -196,5 +201,13 @@ public class Fabric3Listener implements LifecycleListener {
         }
     }
 
+    private File getRuntimeDirectory(File installDirectory, String runtimeName) {
+        File rootRuntimeDir = new File(installDirectory, "runtimes");
+        File runtimeDir = new File(rootRuntimeDir, runtimeName);
+        if (!runtimeDir.exists()) {
+            throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
+        }
+        return runtimeDir;
+    }
 
 }
