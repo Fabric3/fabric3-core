@@ -104,15 +104,22 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     }
 
     public SecuritySubject authenticate(AuthenticationToken<?, ?> token) throws AuthenticationException {
-        Authentication authentication;
-        if (token instanceof UsernamePasswordToken) {
-            UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-            authentication = new UsernamePasswordAuthenticationToken(userToken.getPrincipal(), userToken.getCredentials());
-        } else {
-            // TODO support other tokens
-            throw new UnsupportedOperationException("Support for token type not yet implemented");
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            // set the TCCL as the Sun JNDI LDAP provider implementation requires it
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            Authentication authentication;
+            if (token instanceof UsernamePasswordToken) {
+                UsernamePasswordToken userToken = (UsernamePasswordToken) token;
+                authentication = new UsernamePasswordAuthenticationToken(userToken.getPrincipal(), userToken.getCredentials());
+            } else {
+                // TODO support other tokens
+                throw new UnsupportedOperationException("Support for token type not yet implemented");
+            }
+            authentication = authenticate(authentication);
+            return new SpringSecuritySubject(authentication);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
-        authentication = authenticate(authentication);
-        return new SpringSecuritySubject(authentication);
     }
 }

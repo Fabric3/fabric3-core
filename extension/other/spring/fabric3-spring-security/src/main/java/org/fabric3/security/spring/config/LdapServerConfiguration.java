@@ -44,7 +44,7 @@ package org.fabric3.security.spring.config;
  */
 public class LdapServerConfiguration extends AuthenticationProviderConfiguration {
     private String serverLocation;
-    private String managerDN;
+    private String managerDN ="";
     private String managerPassword;
 
     public LdapServerConfiguration(String serverLocation) {

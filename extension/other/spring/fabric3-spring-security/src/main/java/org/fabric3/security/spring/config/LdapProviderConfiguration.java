@@ -48,8 +48,8 @@ public class LdapProviderConfiguration extends AuthenticationProviderConfigurati
     private String userSearchBase;
     private String userSearchFilter;
     private String groupSearchBase;
-    private String groupSearchFilter;
-    private String groupRoleAttribute;
+    private String groupSearchFilter = "uniqueMember={0}";
+    private String groupRoleAttribute = "cn";
 
     public String getPassword() {
         return password;

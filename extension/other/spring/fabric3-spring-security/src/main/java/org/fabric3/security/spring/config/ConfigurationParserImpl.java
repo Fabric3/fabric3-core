@@ -98,11 +98,19 @@ public class ConfigurationParserImpl implements ConfigurationParser {
 
     private LdapProviderConfiguration parseLdapProvider(XMLStreamReader reader) {
         LdapProviderConfiguration configuration = new LdapProviderConfiguration();
-        String[] patterns = {reader.getAttributeValue(null, "user-dn-pattern")};
-        configuration.setDnPattern(patterns);
+        String entry = reader.getAttributeValue(null, "user-dn-pattern");
+        if (entry != null) {
+            configuration.setDnPattern(new String[]{entry});
+        }
         configuration.setGroupSearchBase(reader.getAttributeValue(null, "group-search-base"));
-        configuration.setGroupSearchFilter(reader.getAttributeValue(null, "group-search-filter"));
-        configuration.setGroupRoleAttribute(reader.getAttributeValue(null, "group-role-attribute"));
+        String groupSearchFilter = reader.getAttributeValue(null, "group-search-filter");
+        if (groupSearchFilter != null) {
+            configuration.setGroupSearchFilter(groupSearchFilter);
+        }
+        String groupRoleAttribute = reader.getAttributeValue(null, "group-role-attribute");
+        if (groupRoleAttribute != null) {
+            configuration.setGroupRoleAttribute(groupRoleAttribute);
+        }
         configuration.setUserSearchBase(reader.getAttributeValue(null, "user-search-base"));
         configuration.setUserSearchFilter(reader.getAttributeValue(null, "user-search-filter"));
         return configuration;
@@ -156,9 +164,13 @@ public class ConfigurationParserImpl implements ConfigurationParser {
         }
         LdapServerConfiguration configuration = new LdapServerConfiguration(url);
         String managerDN = reader.getAttributeValue(null, "manager-dn");
-        configuration.setManagerDN(managerDN);
+        if (managerDN != null) {
+            configuration.setManagerDN(managerDN);
+        }
         String managerPassword = reader.getAttributeValue(null, "manager-password");
-        configuration.setManagerPassword(managerPassword);
+        if (managerPassword != null) {
+            configuration.setManagerPassword(managerPassword);
+        }
         return configuration;
     }
 
