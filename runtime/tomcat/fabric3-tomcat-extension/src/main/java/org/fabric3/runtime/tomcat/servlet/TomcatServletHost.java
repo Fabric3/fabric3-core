@@ -73,6 +73,11 @@ public class TomcatServletHost implements ServletHost {
         this.service = service;
     }
 
+    @Property (required = false)
+    public void setHttpPort(int defaultHttpPort) {
+        this.defaultHttpPort = defaultHttpPort;
+    }
+    
     @Property(required = false)
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;

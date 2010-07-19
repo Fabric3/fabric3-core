@@ -90,7 +90,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         this.resolver = resolver;
     }
 
-    @Property
+    @Property (required = false)
     public void setHttpPort(int defaultHttpPort) {
         this.defaultHttpPort = defaultHttpPort;
     }

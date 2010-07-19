@@ -1,3 +1,4 @@
 <config>
     <runtime mode="participant"/>
+    <tomcat httpPort="8181"/>
 </config>
