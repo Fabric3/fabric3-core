@@ -49,8 +49,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * A servlet programmatically registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle
- * requests destined to services sent using HTTP-based bindings.
+ * A servlet registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle requests destined to
+ * services sent using HTTP-based bindings.
  *
  * @version $Rev$ $Date$
  */
