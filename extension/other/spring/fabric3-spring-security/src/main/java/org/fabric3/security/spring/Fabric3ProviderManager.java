@@ -52,6 +52,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 import org.fabric3.security.spring.config.ConfigurationParser;
 import org.fabric3.security.spring.config.SecurityConfigurationException;
@@ -75,10 +76,15 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     private AuthenticationProviderFactory factory;
     private ConfigurationParser parser;
     private AuthenticationManagerConfiguration configuration;
+    private SecurityMonitor monitor;
+    private boolean disabled;
 
-    public Fabric3ProviderManager(@Reference ConfigurationParser parser, @Reference AuthenticationProviderFactory factory) {
+    public Fabric3ProviderManager(@Reference ConfigurationParser parser,
+                                  @Reference AuthenticationProviderFactory factory,
+                                  @Monitor SecurityMonitor monitor) {
         this.parser = parser;
         this.factory = factory;
+        this.monitor = monitor;
     }
 
     @Reference(required = false)
@@ -94,16 +100,22 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     @Override
     @Init
     public void afterPropertiesSet() throws Exception {
-        if (configuration != null) {
-            setEraseCredentialsAfterAuthentication(configuration.isEraseCredentials());
-            // instantiate providers
-            List<AuthenticationProvider> providers = factory.create(configuration);
-            setProviders(providers);
+        if (configuration == null) {
+            monitor.disabled();
+            disabled = true;
+            return;
         }
+        setEraseCredentialsAfterAuthentication(configuration.isEraseCredentials());
+        // instantiate providers
+        List<AuthenticationProvider> providers = factory.create(configuration);
+        setProviders(providers);
         super.afterPropertiesSet();
     }
 
     public SecuritySubject authenticate(AuthenticationToken<?, ?> token) throws AuthenticationException {
+        if (disabled) {
+            throw new AuthenticationException("Authentication is disabled");
+        }
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             // set the TCCL as the Sun JNDI LDAP provider implementation requires it
