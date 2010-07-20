@@ -53,6 +53,7 @@ import org.fabric3.spi.channel.EventStreamHandler;
  * @version $Rev$ $Date$
  */
 public class MonitorHandler implements InvocationHandler {
+    private static final Object[] EMPTY_DATA = new Object[0];
     private Monitorable monitorable;
     private String runtime;
     private String source;
@@ -92,6 +93,9 @@ public class MonitorHandler implements InvocationHandler {
         String thread = Thread.currentThread().getName();
         currentMessage = format(currentMessage, args);
         long time = System.currentTimeMillis();
+        if (args == null) {
+            args = EMPTY_DATA;
+        }
         MonitorEvent event = new MonitorEventImpl(runtime, source, currentLevel, time, thread, currentMessage, args);
         // events are passed as arrays
         Object[] param = new Object[]{event};
