@@ -117,7 +117,6 @@
     <orderEntry type="module" module-name="fabric3-async" exported="" />
     <orderEntry type="module" module-name="fabric3-contribution-scanner" exported="" />
     <orderEntry type="module" module-name="fabric3-conversation-propagation" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-provisioning:1.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-jetty" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-webapp:7.1.4.v20100610" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.eclipse.jetty:jetty-xml:7.1.4.v20100610" level="project" />
@@ -138,6 +137,7 @@
     <orderEntry type="module" module-name="fabric3-thread-pool" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-recovery:1.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-federation-deployment" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-provisioning:1.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-federation-allocation" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3:fabric3-federation-jgroups:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: jgroups:jgroups:2.8.0.GA" level="project" />
