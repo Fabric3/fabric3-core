@@ -38,10 +38,12 @@
 
 package org.fabric3.tx.atomikos.datasource;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import javax.xml.stream.XMLStreamReader;
 
 import com.atomikos.jdbc.AbstractDataSourceBean;
@@ -109,9 +111,10 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         if (DataSourceType.XA == configuration.getType()) {
             AtomikosDataSourceBean bean = new AtomikosDataSourceBean();
             bean.setUniqueResourceName(name);
-            bean.setXaProperties(configuration.getProperties());
+            Properties properties = configuration.getProperties();
+            bean.setXaProperties(properties);
             bean.setXaDataSourceClassName(configuration.getDriverClass());
-            // TODO set pool properties
+            setProperties(properties, bean);
             registerJMX(bean);
             beans.put(name, bean);
             registry.register(name, bean);
@@ -122,6 +125,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setUrl(configuration.getUrl());
             bean.setUser(configuration.getUsername());
             bean.setPassword(configuration.getPassword());
+            setProperties(configuration.getProperties(), bean);
             // TODO set pool properties
             registerJMX(bean);
             beans.put(name, bean);
@@ -140,6 +144,49 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         bean.close();
     }
 
+    private void setProperties(Properties properties, AbstractDataSourceBean bean) throws DataSourceFactoryException {
+        String maxSize = (String) properties.get("maxPoolSize");
+        if (maxSize != null) {
+            bean.setMaxPoolSize(Integer.parseInt(maxSize));
+        }
+        String connectionTimeout = (String) properties.get("borrowConnectionTimeout");
+        if (connectionTimeout != null) {
+            bean.setBorrowConnectionTimeout(Integer.parseInt(connectionTimeout));
+        }
+        String login = (String) properties.get("loginTimeout");
+        if (login != null) {
+            try {
+                bean.setLoginTimeout(Integer.parseInt(login));
+            } catch (SQLException e) {
+                throw new DataSourceFactoryException(e);
+            }
+        }
+        String maintenanceInterval = (String) properties.get("maintenanceInterval");
+        if (maintenanceInterval != null) {
+            bean.setMaintenanceInterval(Integer.parseInt(maintenanceInterval));
+        }
+        String maxIdle = (String) properties.get("maxIdle");
+        if (maxIdle != null) {
+            bean.setMaxIdleTime(Integer.parseInt(maxIdle));
+        }
+        String minPoolSize = (String) properties.get("minPoolSize");
+        if (minPoolSize != null) {
+            bean.setMinPoolSize(Integer.parseInt(minPoolSize));
+        }
+        String poolsize = (String) properties.get("poolSize");
+        if (poolsize != null) {
+            bean.setPoolSize(Integer.parseInt(poolsize));
+        }
+        String reap = (String) properties.get("reapTimeout");
+        if (reap != null) {
+            bean.setReapTimeout(Integer.parseInt(reap));
+        }
+        String query = (String) properties.get("testQuery");
+        if (query != null) {
+            bean.setTestQuery(query);
+        }
+    }
+    
     private void registerJMX(AbstractDataSourceBean bean) throws DataSourceFactoryException {
         String name = bean.getUniqueResourceName();
         try {
