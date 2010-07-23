@@ -235,6 +235,9 @@ public class BrokerParser {
 
     private void raiseInvalidConfiguration(String message, Throwable e, XMLStreamReader reader) throws InvalidConfigurationException {
         Location location = reader.getLocation();
+        if (location == null) {
+            throw new InvalidConfigurationException(message, e);
+        }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
         throw new InvalidConfigurationException(message + " [" + line + "," + col + "]", e);
