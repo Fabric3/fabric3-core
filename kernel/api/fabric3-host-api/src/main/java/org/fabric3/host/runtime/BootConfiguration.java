@@ -55,7 +55,7 @@ import org.w3c.dom.Document;
 import org.fabric3.host.contribution.ContributionSource;
 
 /**
- * Encapsulates configuration needed to boostrap a runtime.
+ * Encapsulates configuration needed to bootstrap a runtime.
  *
  * @version $Rev$ $Date$
  */
