@@ -139,7 +139,6 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
                 monitor.error("Error starting service listener: " + entry.getKey(), e);
             }
         }
-        started = false;
         started = true;
     }
 
