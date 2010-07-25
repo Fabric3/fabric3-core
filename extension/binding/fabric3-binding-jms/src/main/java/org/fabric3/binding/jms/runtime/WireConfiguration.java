@@ -57,7 +57,7 @@ public class WireConfiguration {
     private ResponseListener responseListener;
     private TransactionType transactionType;
     private TransactionManager tm;
-    private long timeout = 0;   // default JMS timeout - forever
+    private long responseTimeout;
 
     public CorrelationScheme getCorrelationScheme() {
         return correlationScheme;
@@ -115,11 +115,11 @@ public class WireConfiguration {
         this.tm = tm;
     }
 
-    public long getTimeout() {
-        return timeout;
+    public long getResponseTimeout() {
+        return responseTimeout;
     }
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
+    public void setResponseTimeout(long responseTimeout) {
+        this.responseTimeout = responseTimeout;
     }
 }

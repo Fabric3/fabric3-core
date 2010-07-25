@@ -94,8 +94,9 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         WireConfiguration wireConfiguration = new WireConfiguration();
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         wireConfiguration.setClassloader(targetClassLoader);
-        wireConfiguration.setCorrelationScheme(target.getMetadata().getCorrelationScheme());
         wireConfiguration.setTransactionManager(tm);
+        wireConfiguration.setCorrelationScheme(target.getMetadata().getCorrelationScheme());
+        wireConfiguration.setResponseTimeout(target.getMetadata().getResponseTimeout());
         wireConfiguration.setTransactionType(target.getTransactionType());
 
         // resolve the connection factories and destinations for the wire

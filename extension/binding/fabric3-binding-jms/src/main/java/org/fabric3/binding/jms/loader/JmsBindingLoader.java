@@ -118,6 +118,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("idle.limit");
         ATTRIBUTES.add("transaction.timeout");
         ATTRIBUTES.add("receive.timeout");
+        ATTRIBUTES.add("response.timeout");
         ATTRIBUTES.add("max.messages");
         ATTRIBUTES.add("recovery.interval");
         ATTRIBUTES.add("max.receivers");
@@ -287,6 +288,17 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 metadata.setReceiveTimeout(val);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid receive.timeout attribute", reader, e);
+                context.addError(error);
+            }
+        }
+
+        String responseTimeout = reader.getAttributeValue(null, "response.timeout");
+        if (responseTimeout != null) {
+            try {
+                int val = Integer.parseInt(responseTimeout);
+                metadata.setResponseTimeout(val);
+            } catch (NumberFormatException e) {
+                InvalidValue error = new InvalidValue("Invalid response.timeout attribute", reader, e);
                 context.addError(error);
             }
         }

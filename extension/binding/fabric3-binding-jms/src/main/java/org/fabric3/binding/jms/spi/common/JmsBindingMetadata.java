@@ -79,6 +79,7 @@ public class JmsBindingMetadata extends ModelObject {
     private int idleLimit = 1;
     private int transactionTimeout = 30; // in seconds
     private int receiveTimeout = (transactionTimeout / 2) * 1000;  // set the timeout in milliseconds to half that of the trx timeout
+    private int responseTimeout = 600000;  // set the default response wait to 10 minutes
     private int maxMessagesToProcess = -1;
     private long recoveryInterval = 5000;   // default 5 seconds
     private boolean durable = false;
@@ -226,6 +227,14 @@ public class JmsBindingMetadata extends ModelObject {
 
     public void setReceiveTimeout(int receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
+    }
+
+    public int getResponseTimeout() {
+        return responseTimeout;
+    }
+
+    public void setResponseTimeout(int responseTimeout) {
+        this.responseTimeout = responseTimeout;
     }
 
     public int getMaxMessagesToProcess() {

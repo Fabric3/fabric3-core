@@ -110,8 +110,4 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
 }

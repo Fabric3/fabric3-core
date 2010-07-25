@@ -96,7 +96,7 @@ public class JmsInterceptor implements Interceptor {
     private boolean oneWay;
     private TransactionType transactionType;
     private TransactionManager tm;
-    private long timeout;
+    private long responseTimeout;
 
     /**
      * Constructor.
@@ -112,7 +112,7 @@ public class JmsInterceptor implements Interceptor {
         this.responseListener = wireConfig.getResponseListener();
         this.tm = wireConfig.getTransactionManager();
         this.transactionType = wireConfig.getTransactionType();
-        this.timeout = wireConfig.getTimeout();
+        this.responseTimeout = wireConfig.getResponseTimeout();
         this.oneWay = configuration.isOneWay();
         this.methodName = configuration.getOperationName();
         this.payloadTypes = configuration.getPayloadTypes();
@@ -221,7 +221,7 @@ public class JmsInterceptor implements Interceptor {
      * @throws JmsBadMessageException if an unrecoverable error such as a bad message type occurs waiting for or processing the response
      */
     private Message receive(String correlationId, Session session) throws JMSException, JmsBadMessageException {
-        javax.jms.Message resultMessage = responseListener.receive(correlationId, session, timeout);
+        javax.jms.Message resultMessage = responseListener.receive(correlationId, session, responseTimeout);
         if (resultMessage == null) {
             throw new ServiceUnavailableException("Timeout waiting for response to message: " + correlationId);
         }
