@@ -70,6 +70,8 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 @Management(name = "RuntimeThreadPoolExecutor", group = "kernel", description = "Manages runtime thread pools")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 20;
+    private long keepAliveTime = 60000;
+    private boolean allowCoreThreadTimeOut = true;
     private int maximumSize = 20;
     private int queueSize = 10000;
     private int stallThreshold = 600000;
@@ -136,6 +138,29 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public void setStallThreshold(int stallThreshold) {
         this.stallThreshold = stallThreshold;
+    }
+
+
+    @ManagementOperation(description = "Thread keep alive time in milliseconds")
+    public long getKeepAliveTime() {
+        return keepAliveTime;
+    }
+
+    @ManagementOperation(description = "Thread keep alive time in milliseconds")
+    @Property(required = false)
+    public void setKeepAliveTime(long keepAliveTime) {
+        this.keepAliveTime = keepAliveTime;
+    }
+
+    @ManagementOperation(description = "True if the thread pool expires core threads")
+    public boolean isAllowCoreThreadTimeOut() {
+        return allowCoreThreadTimeOut;
+    }
+
+    @ManagementOperation(description = "True if the thread pool expires core threads")
+    @Property(required = false)
+    public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+        this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
     }
 
     @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
@@ -219,6 +244,8 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         }
         RuntimeThreadFactory factory = new RuntimeThreadFactory();
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);
+        delegate.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
+        delegate.allowCoreThreadTimeOut(allowCoreThreadTimeOut);
         stalledMonitor = new StalledThreadMonitor();
         delegate.execute(stalledMonitor);
     }

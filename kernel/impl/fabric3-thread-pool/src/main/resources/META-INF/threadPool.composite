@@ -17,6 +17,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.threadpool.RuntimeThreadPoolExecutor"/>
         <property name="maximumSize" source="$systemConfig//thread.pool/@size"/>
         <property name="coreSize" source="$systemConfig//thread.pool/@coreSize"/>
+        <property name="keepAliveTime" source="$systemConfig//thread.pool/@keepAliveTime"/>
+        <property name="allowCoreThreadTimeOut" source="$systemConfig//thread.pool/@allowCoreThreadTimeOut"/>
         <property name="queueSize" source="$systemConfig//thread.pool/@queueSize"/>
         <property name="stallThreshold" source="$systemConfig//thread.pool/@stallThreshold"/>
         <property name="stallCheckPeriod" source="$systemConfig//thread.pool/@stallCheckPeriod"/>
