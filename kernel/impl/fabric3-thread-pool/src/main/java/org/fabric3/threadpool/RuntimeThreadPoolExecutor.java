@@ -75,6 +75,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int maximumSize = 20;
     private int queueSize = 10000;
     private int stallThreshold = 600000;
+    private boolean checkStalledThreads = true;
     private long stallCheckPeriod = 60000;
 
     private ThreadPoolExecutor delegate;
@@ -163,6 +164,16 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
     }
 
+    @ManagementOperation(description = "True warnings should be issued for stalled threads")
+    public boolean isCheckStalledThreads() {
+        return checkStalledThreads;
+    }
+
+    @Property(required = false)
+    public void setCheckStalledThreads(boolean checkStalledThreads) {
+        this.checkStalledThreads = checkStalledThreads;
+    }
+
     @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public int getStallThreshold() {
         return stallThreshold;
@@ -246,13 +257,17 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);
         delegate.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
         delegate.allowCoreThreadTimeOut(allowCoreThreadTimeOut);
-        stalledMonitor = new StalledThreadMonitor();
-        delegate.execute(stalledMonitor);
+        if (checkStalledThreads) {
+            stalledMonitor = new StalledThreadMonitor();
+            delegate.execute(stalledMonitor);
+        }
     }
 
     @Destroy
     public void stop() {
-        stalledMonitor.stop();
+        if (stalledMonitor != null) {
+            stalledMonitor.stop();
+        }
         delegate.shutdown();
     }
 

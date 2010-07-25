@@ -21,6 +21,7 @@ Public License. See the accompanying license file for details.
         <property name="allowCoreThreadTimeOut" source="$systemConfig//thread.pool/@allowCoreThreadTimeOut"/>
         <property name="queueSize" source="$systemConfig//thread.pool/@queueSize"/>
         <property name="stallThreshold" source="$systemConfig//thread.pool/@stallThreshold"/>
+        <property name="checkStalledThreads" source="$systemConfig//thread.pool/@checkStalledThreads"/>
         <property name="stallCheckPeriod" source="$systemConfig//thread.pool/@stallCheckPeriod"/>
     </component>
 
