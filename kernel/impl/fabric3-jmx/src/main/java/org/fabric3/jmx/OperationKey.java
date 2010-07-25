@@ -73,7 +73,7 @@ public class OperationKey {
     public String toString() {
         StringBuilder sig = new StringBuilder();
         sig.append(name).append('(');
-        if (params.length > 0) {
+        if (params != null && params.length > 0) {
             sig.append(params[0]);
             for (int i = 1; i < params.length; i++) {
                 sig.append(',').append(params[i]);
@@ -89,7 +89,12 @@ public class OperationKey {
 
         OperationKey that = (OperationKey) o;
 
-        return name.equals(that.name) && Arrays.equals(params, that.params);
+        if (!name.equals(that.name)) {
+            return false;
+        } else if (params == null && that.params == null) {
+            return true;
+        }
+        return Arrays.equals(params, that.params);
 
     }
 
