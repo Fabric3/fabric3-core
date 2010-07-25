@@ -63,7 +63,7 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.ServiceRuntimeException;
-import org.osoa.sca.ServiceUnavailableException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
@@ -217,7 +217,7 @@ public class JmsInterceptor implements Interceptor {
      * @param correlationId the id for correlating the response message
      * @param session       the session to perform the receive in
      * @return the response message
-     * @throws JMSException if an error occurs in the JMS provider waiting for or processing the response
+     * @throws JMSException           if an error occurs in the JMS provider waiting for or processing the response
      * @throws JmsBadMessageException if an unrecoverable error such as a bad message type occurs waiting for or processing the response
      */
     private Message receive(String correlationId, Session session) throws JMSException, JmsBadMessageException {
