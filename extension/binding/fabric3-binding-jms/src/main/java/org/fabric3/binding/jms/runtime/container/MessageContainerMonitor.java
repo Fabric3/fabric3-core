@@ -52,6 +52,9 @@ public interface MessageContainerMonitor {
     void error(String message, Throwable e);
 
     @Debug
+    void scheduledReceiver(String name);
+
+    @Debug
     void increaseReceivers(int count);
 
     @Debug

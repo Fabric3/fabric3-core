@@ -986,6 +986,7 @@ public class AdaptiveMessageContainer {
             boolean messageReceived = false;
             try {
                 if (maxMessagesToProcess < 0) {
+                    monitor.scheduledReceiver(destination.toString());
                     messageReceived = receiveLoop();
                 } else {
                     int messageCount = 0;
