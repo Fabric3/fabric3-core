@@ -47,7 +47,7 @@ import javax.management.MBeanServer;
 public interface Agent {
 
     /**
-     * Gets the MBean server used by the agent.
+     * Returns the MBean server used by the agent.
      *
      * @return MBean server used by the agent.
      */
