@@ -39,12 +39,12 @@ package org.fabric3.security.impl;
 
 import java.security.Principal;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.host.security.Role;
 
 /**
  * SecuritySubject for the Fabric3 basic security implementation.
@@ -54,18 +54,17 @@ import org.fabric3.api.SecuritySubject;
 public class BasicSecuritySubject implements SecuritySubject, Principal {
     private String username;
     private String password;
-    private List<Role> roles;
-    private Map<String, Role> mapping = new HashMap<String, Role>();
+    private Set<Role> roles;
     private Subject jaasSubject;
 
-    public BasicSecuritySubject(String username, String password, List<Role> roles) {
+    public BasicSecuritySubject(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
-        for (Role role : roles) {
-            mapping.put(role.getName(), role);
-        }
-        jaasSubject = new Subject(true, Collections.singleton(this), Collections.emptySet(), Collections.emptySet());
+        Set<Principal> principals = new HashSet<Principal>(roles);
+        principals.add(this);
+        jaasSubject = new Subject(true, principals, Collections.emptySet(), Collections.emptySet());
+
     }
 
     public String getUsername() {
@@ -76,12 +75,13 @@ public class BasicSecuritySubject implements SecuritySubject, Principal {
         return password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
+    @SuppressWarnings({"SuspiciousMethodCalls"})
     public boolean hasRole(String name) {
-        return mapping.containsKey(name);
+        return roles.contains(new Role(name));
     }
 
     public <T> T getDelegate(Class<T> type) {

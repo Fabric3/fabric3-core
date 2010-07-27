@@ -35,14 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.security.impl;
+package org.fabric3.host.security;
+
+import java.security.Principal;
 
 /**
  * Represents a user role.
  *
  * @version $Rev$ $Date$
  */
-public class Role {
+public class Role implements Principal {
 
     private String name;
 
@@ -52,5 +54,22 @@ public class Role {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Role role = (Role) o;
+
+        if (name != null ? !name.equals(role.name) : role.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

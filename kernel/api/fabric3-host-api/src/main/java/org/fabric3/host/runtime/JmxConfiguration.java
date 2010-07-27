@@ -34,49 +34,53 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.jmx;
+*/
+package org.fabric3.host.runtime;
 
-import java.util.List;
-import javax.management.remote.JMXAuthenticator;
-import javax.security.auth.Subject;
+import java.util.Set;
 
-import org.osoa.sca.annotations.Reference;
+import org.fabric3.host.security.Role;
 
 /**
- * Delegates to a runtime extension to perform JMX authentication. Since a JMXAuthenticator is required to be created and passed to the JMX connector
- * during bootstrap, this implementation is used as a bridge to the actual JMXAuthenticator which is installed as a runtime extension and available
- * only after bootstrap.
- * <p/>
- * When it is created during bootstrap, this implementation will be registered as a component in the runtime domain, which enables it to be injected
- * when the delegate JMXAuthenticator becomes available.
+ * Configuration for the JMX server.
  *
  * @version $Rev$ $Date$
  */
-public class DelegatingJmxAuthenticator implements JMXAuthenticator {
-    private JMXAuthenticator delegate;
+public class JmxConfiguration {
+    private JmxSecurity security;
+    private Set<Role> roles;
+    private int minimum;
+    private int maximum;
 
     /**
-     * Used to obtain the JMXAuthenticator delegate when it becomes available as an extension. A collection is required since reinjection is only
-     * performed on multiplicities.
+     * Constructor.
      *
-     * @param authenticators the authenticator
+     * @param security the security setting
+     * @param roles    the roles allowed to access the JMX server when authorization is enabled
+     * @param minimum  the minimum port number
+     * @param maximum  the maximum port number
      */
-    @Reference(required = false)
-    public void setAuthenticators(List<JMXAuthenticator> authenticators) {
-        delegate = authenticators.get(0);
+    public JmxConfiguration(JmxSecurity security, Set<Role> roles, int minimum, int maximum) {
+        this.security = security;
+        this.roles = roles;
+        this.minimum = minimum;
+        this.maximum = maximum;
     }
 
-    public Subject authenticate(Object credentials) {
-        if (delegate == null) {
-            throw new SecurityException("Delegate JMXAuthenticator not configured");
-        }
-        return delegate.authenticate(credentials);
+    public JmxSecurity getSecurity() {
+        return security;
     }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public int getMinimum() {
+        return minimum;
+    }
+
+    public int getMaximum() {
+        return maximum;
+    }
+
 }

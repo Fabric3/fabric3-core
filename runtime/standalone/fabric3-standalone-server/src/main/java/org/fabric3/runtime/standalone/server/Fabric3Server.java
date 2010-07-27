@@ -47,9 +47,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.remote.JMXAuthenticator;
 
 import org.w3c.dom.Document;
 
@@ -63,15 +65,20 @@ import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
+import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.runtime.JmxConfiguration;
+import org.fabric3.host.runtime.JmxSecurity;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.PortRange;
+import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
+import org.fabric3.host.security.DelegatingJmxAuthenticator;
 import org.fabric3.host.util.FileHelper;
+import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
@@ -142,16 +149,17 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            // create the JMX agent
-            PortRange range = bootstrapService.parseJmxPort(systemConfig);
-            RmiAgent agent = new RmiAgent(range.getMinimum(), range.getMaximum());
+            BootConfiguration configuration = new BootConfiguration();
+
+            RmiAgent agent = createJmxAgent(systemConfig, bootstrapService, configuration);
+
             MBeanServer mbServer = agent.getMBeanServer();
 
             // create and configure the monitor dispatchers
             MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig);
             MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig);
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, runtimeDispatcher, appDispatcher);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, runtimeDispatcher, appDispatcher, null);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -159,7 +167,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
-            BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
@@ -202,6 +209,18 @@ public class Fabric3Server implements Fabric3ServerMBean {
     public void shutdownRuntime() {
         latch.countDown();
         shutdown();
+    }
+
+    private RmiAgent createJmxAgent(Document systemConfig, BootstrapService bootstrapService, BootConfiguration configuration)
+            throws ParseException, ManagementException {
+        JmxConfiguration jmxConfiguration = bootstrapService.parseJmxConfiguration(systemConfig);
+        if (JmxSecurity.DISABLED != jmxConfiguration.getSecurity()) {
+            JMXAuthenticator authenticator = new DelegatingJmxAuthenticator(jmxConfiguration.getSecurity(), jmxConfiguration.getRoles());
+            ComponentRegistration registration = new ComponentRegistration("JMXAuthenticator", JMXAuthenticator.class, authenticator, true);
+            configuration.addRegistrations(Collections.singletonList(registration));
+            return new RmiAgent(authenticator, jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());
+        }
+        return new RmiAgent(jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());
     }
 
     private void shutdown() {

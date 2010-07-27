@@ -1,5 +1,5 @@
 <config>
-    <runtime mode="participant" jmxPort="8000-9000"/>
+    <runtime mode="participant" jmx.port="8000-9000"/>
     <web.server>
         <http port="8181-8281"/>
     </web.server>

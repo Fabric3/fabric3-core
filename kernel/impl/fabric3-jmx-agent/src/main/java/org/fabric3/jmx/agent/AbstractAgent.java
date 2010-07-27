@@ -39,9 +39,12 @@ package org.fabric3.jmx.agent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
+import javax.management.remote.JMXAuthenticator;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
@@ -54,19 +57,33 @@ import javax.management.remote.JMXServiceURL;
 public abstract class AbstractAgent implements Agent {
     private static final String DOMAIN = "fabric3";
 
-    private MBeanServer mBeanServer;
-    private AtomicBoolean started = new AtomicBoolean();
-    private JMXConnectorServer connectorServer;
+    private JMXAuthenticator authenticator;
     protected int minPort;
     private int maxPort;
 
+    private MBeanServer mBeanServer;
+    private AtomicBoolean started = new AtomicBoolean();
+    private JMXConnectorServer connectorServer;
+
     /**
-     * Constructor using the given port range.
+     * Instantiates an agent that does not enable JMX security.
      *
      * @param minPort the minimum port number
      * @param maxPort the maximum port number
      */
     protected AbstractAgent(int minPort, int maxPort) {
+        this(null, minPort, maxPort);
+    }
+
+    /**
+     * Instantiates an agent with JMX security enabled.
+     *
+     * @param authenticator the authenticator
+     * @param minPort       the minimum port number
+     * @param maxPort       the maximum port number
+     */
+    public AbstractAgent(JMXAuthenticator authenticator, int minPort, int maxPort) {
+        this.authenticator = authenticator;
         this.minPort = minPort;
         this.maxPort = maxPort;
         mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
@@ -83,7 +100,11 @@ public abstract class AbstractAgent implements Agent {
             }
             preStart();
             JMXServiceURL url = getAdaptorUrl();
-            connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
+            Map<String, Object> environment = new HashMap<String, Object>();
+            if (authenticator != null) {
+                environment.put(JMXConnectorServer.AUTHENTICATOR, authenticator);
+            }
+            connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, environment, mBeanServer);
             connectorServer.start();
             started.set(true);
         } catch (MalformedURLException ex) {

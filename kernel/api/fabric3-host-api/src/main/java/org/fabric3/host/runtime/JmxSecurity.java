@@ -38,38 +38,14 @@
 package org.fabric3.host.runtime;
 
 /**
- * Encapsulates a configured port range.
+ * Security settings for the JMX server.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8923 $ $Date: 2010-04-26 10:43:08 +0200 (Mon, 26 Apr 2010) $
  */
-public class PortRange {
-    private int minimum;
-    private int maximum;
+public enum JmxSecurity {
 
-    /**
-     * Constuctor.
-     *
-     * @param minimum the minimum port number
-     * @param maximum the maximum port number
-     */
-    public PortRange(int minimum, int maximum) {
-        this.minimum = minimum;
-        this.maximum = maximum;
-    }
+    DISABLED,
+    AUTHENTICATION,
+    AUTHORIZATION
 
-    public int getMinimum() {
-        return minimum;
-    }
-
-    public void setMinimum(int minimum) {
-        this.minimum = minimum;
-    }
-
-    public int getMaximum() {
-        return maximum;
-    }
-
-    public void setMaximum(int maximum) {
-        this.maximum = maximum;
-    }
 }

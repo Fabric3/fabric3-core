@@ -38,10 +38,13 @@
 package org.fabric3.security.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.fabric3.host.security.Role;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.NotAuthorizedException;
 
@@ -51,7 +54,7 @@ import org.fabric3.spi.security.NotAuthorizedException;
 public class AuthorizationServiceImplTestCase extends TestCase {
 
     public void testHasRole() throws Exception {
-        List<Role> roles = new ArrayList<Role>();
+        Set<Role> roles = new HashSet<Role>();
         roles.add(new Role("role1"));
         roles.add(new Role("role2"));
 
@@ -69,7 +72,7 @@ public class AuthorizationServiceImplTestCase extends TestCase {
     }
 
     public void testHasRoles() throws Exception {
-        List<Role> roles = new ArrayList<Role>();
+        Set<Role> roles = new HashSet<Role>();
         roles.add(new Role("role1"));
         roles.add(new Role("role2"));
 

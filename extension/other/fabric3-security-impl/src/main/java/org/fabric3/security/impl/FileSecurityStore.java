@@ -41,9 +41,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -57,6 +57,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.security.Role;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
@@ -110,7 +111,7 @@ public class FileSecurityStore implements SecurityStore {
         reader.nextTag();
         String username = null;
         String password = null;
-        List<Role> roles = new ArrayList<Role>();
+        Set<Role> roles = new HashSet<Role>();
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
@@ -137,14 +138,14 @@ public class FileSecurityStore implements SecurityStore {
                     cache.put(subject.getUsername(), subject);
                     username = null;
                     password = null;
-                    roles = new ArrayList<Role>();
+                    roles = new HashSet<Role>();
                 }
             }
         }
 
     }
 
-    private List<Role> parseRoles(XMLStreamReader reader, List<Role> roles) throws XMLStreamException, StoreException {
+    private Set<Role> parseRoles(XMLStreamReader reader, Set<Role> roles) throws XMLStreamException, StoreException {
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:

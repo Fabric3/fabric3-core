@@ -42,6 +42,7 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.host.security.Role;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.UsernamePasswordToken;
@@ -52,7 +53,7 @@ import org.fabric3.spi.security.UsernamePasswordToken;
 public class AuthenticationServiceImplTestCase extends TestCase {
 
     public void testAuthenticate() throws Exception {
-        BasicSecuritySubject subject = new BasicSecuritySubject("foo", "bar", Collections.<Role>emptyList());
+        BasicSecuritySubject subject = new BasicSecuritySubject("foo", "bar", Collections.<Role>emptySet());
         SecurityStore store = EasyMock.createMock(SecurityStore.class);
         EasyMock.expect(store.find(EasyMock.eq("foo"))).andReturn(subject);
         EasyMock.replay(store);
@@ -76,7 +77,7 @@ public class AuthenticationServiceImplTestCase extends TestCase {
     }
 
     public void testAuthenticatePasswordFail() throws Exception {
-        BasicSecuritySubject subject = new BasicSecuritySubject("foo", "bar", Collections.<Role>emptyList());
+        BasicSecuritySubject subject = new BasicSecuritySubject("foo", "bar", Collections.<Role>emptySet());
         SecurityStore store = EasyMock.createMock(SecurityStore.class);
         EasyMock.expect(store.find(EasyMock.eq("foo"))).andReturn(subject);
         EasyMock.replay(store);

@@ -26,6 +26,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
+import javax.management.remote.JMXAuthenticator;
 import javax.management.remote.JMXServiceURL;
 
 import org.fabric3.jmx.agent.AbstractAgent;
@@ -43,6 +44,10 @@ public class RmiAgent extends AbstractAgent {
 
     public RmiAgent(int minPort, int maxPort) throws ManagementException {
         super(minPort, maxPort);
+    }
+
+    public RmiAgent(JMXAuthenticator authenticator, int minPort, int maxPort) throws ManagementException {
+        super(authenticator, minPort, maxPort);
     }
 
     @Override

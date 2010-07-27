@@ -52,7 +52,6 @@ import javax.management.MBeanServer;
 import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootExports;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
@@ -60,11 +59,6 @@ import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
-import org.fabric3.host.Names;
-import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
-import static org.fabric3.host.Names.HOST_CONTRIBUTION;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
@@ -80,6 +74,7 @@ import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Composite;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
@@ -100,6 +95,11 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
+
+import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
+import static org.fabric3.host.Names.HOST_CONTRIBUTION;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * The default Bootstrapper implementation.
@@ -192,8 +192,9 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               mbeanServer,
                                                               hostInfo);
 
-        // register domain components
-        registerDomain();
+        // register the runtime domain component
+        registerComponent("RuntimeDomain", Domain.class, runtimeDomain, true);
+
 
         // register the domain channel
         registerRuntimeDomainChannel();
@@ -274,18 +275,6 @@ public class DefaultBootstrapper implements Bootstrapper {
             }
         }
         return HostInfo.class;
-    }
-
-    /**
-     * Registers the runtime domain.
-     *
-     * @throws InitializationException if there is an error during registration
-     */
-    private void registerDomain() throws InitializationException {
-        registerComponent("RuntimeDomain", Domain.class, runtimeDomain, true);
-        // the following initializes the Domain and MetaDataStore so they may be reinjected
-        runtime.getComponent(Domain.class, Names.RUNTIME_DOMAIN_SERVICE_URI);
-        runtime.getComponent(MetaDataStore.class, FabricNames.METADATA_STORE_URI);
     }
 
     /**
