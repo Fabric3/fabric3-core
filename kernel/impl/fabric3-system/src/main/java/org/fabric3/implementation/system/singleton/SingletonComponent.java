@@ -48,8 +48,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
@@ -105,11 +108,9 @@ public class SingletonComponent implements AtomicComponent {
     }
 
     public void start() {
-
     }
 
     public void stop() {
-
     }
 
     public QName getDeployable() {
@@ -117,7 +118,7 @@ public class SingletonComponent implements AtomicComponent {
     }
 
     public boolean isEagerInit() {
-        return false;
+        return true;
     }
 
     public long getMaxIdleTime() {
@@ -266,7 +267,14 @@ public class SingletonComponent implements AtomicComponent {
                     } else if (member instanceof Method) {
                         try {
                             Object param = factory.getInstance();
-                            ((Method) member).invoke(instance, param);
+                            Method method = (Method) member;
+                            Class<?> type = method.getParameterTypes()[0];
+                            if (Set.class.equals(type)) {
+                                param = Collections.singleton(param);
+                            } else if (List.class.equals(type)) {
+                                param = Collections.singletonList(param);
+                            }
+                            method.invoke(instance, param);
                         } catch (IllegalAccessException e) {
                             // should not happen as accessibility is already set
                             throw new ObjectCreationException(e);
