@@ -37,7 +37,12 @@
 */
 package org.fabric3.security.impl;
 
+import javax.management.remote.JMXAuthenticator;
+import javax.security.auth.Subject;
+
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;
@@ -46,11 +51,14 @@ import org.fabric3.spi.security.AuthenticationToken;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
- * Basic authentication and service that relies on a SecurityStore for subject information.
+ * Basic authentication and service that relies on a SecurityStore for subject information. This implementation may also be used to authenticate JMX
+ * credentials.
  *
  * @version $Rev$ $Date$
  */
-public class AuthenticationServiceImpl implements AuthenticationService {
+@Service(interfaces = {AuthenticationService.class, JMXAuthenticator.class})
+@EagerInit
+public class AuthenticationServiceImpl implements AuthenticationService, JMXAuthenticator {
     private SecurityStore store;
 
     public AuthenticationServiceImpl(@Reference SecurityStore store) {
@@ -78,4 +86,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationException(e);
         }
     }
+
+    public Subject authenticate(Object credentials) {
+        if (!(credentials instanceof String[])) {
+            if (credentials == null) {
+                throw new SecurityException("Credentials were null");
+            }
+            throw new SecurityException("Credentials must be a String[]");
+        }
+
+        String[] params = (String[]) credentials;
+        if (params.length != 2) {
+            throw new SecurityException("Credentials must consist of a username and password");
+        }
+        UsernamePasswordToken token = new UsernamePasswordToken(params[0], params[1]);
+        try {
+            SecuritySubject subject = authenticate(token);
+            return subject.getJaasSubject();
+        } catch (AuthenticationException e) {
+            throw new SecurityException(e);
+        }
+
+    }
+
 }

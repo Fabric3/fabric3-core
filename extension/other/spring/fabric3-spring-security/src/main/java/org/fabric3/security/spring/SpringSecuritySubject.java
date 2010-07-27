@@ -37,6 +37,8 @@
 */
 package org.fabric3.security.spring;
 
+import java.security.Principal;
+import java.util.Collections;
 import javax.security.auth.Subject;
 
 import org.springframework.security.core.Authentication;
@@ -48,11 +50,13 @@ import org.fabric3.api.SecuritySubject;
  *
  * @version $Rev$ $Date$
  */
-public class SpringSecuritySubject implements SecuritySubject {
+public class SpringSecuritySubject implements SecuritySubject, Principal {
     private Authentication authentication;
+    private Subject jaasSubject;
 
     public SpringSecuritySubject(Authentication authentication) {
         this.authentication = authentication;
+        jaasSubject = new Subject(true, Collections.singleton(this), Collections.emptySet(), Collections.emptySet());
     }
 
     public <T> T getDelegate(Class<T> type) {
@@ -63,6 +67,10 @@ public class SpringSecuritySubject implements SecuritySubject {
     }
 
     public Subject getJaasSubject() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return jaasSubject;
+    }
+
+    public String getName() {
+        return authentication.getName();
     }
 }

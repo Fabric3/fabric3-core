@@ -51,7 +51,7 @@ import org.fabric3.api.SecuritySubject;
  *
  * @version $Rev$ $Date$
  */
-public class BasicSecuritySubject implements SecuritySubject {
+public class BasicSecuritySubject implements SecuritySubject, Principal {
     private String username;
     private String password;
     private List<Role> roles;
@@ -65,7 +65,7 @@ public class BasicSecuritySubject implements SecuritySubject {
         for (Role role : roles) {
             mapping.put(role.getName(), role);
         }
-        jaasSubject = new Subject(true, Collections.<Principal>emptySet(), Collections.emptySet(), Collections.emptySet());
+        jaasSubject = new Subject(true, Collections.singleton(this), Collections.emptySet(), Collections.emptySet());
     }
 
     public String getUsername() {
@@ -93,5 +93,9 @@ public class BasicSecuritySubject implements SecuritySubject {
 
     public Subject getJaasSubject() {
         return jaasSubject;
+    }
+
+    public String getName() {
+        return username;
     }
 }
