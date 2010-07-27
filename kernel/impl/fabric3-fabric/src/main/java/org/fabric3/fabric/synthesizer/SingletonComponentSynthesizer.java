@@ -44,7 +44,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
@@ -57,12 +56,14 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
 import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -73,6 +74,8 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.fabric3.spi.synthesize.InvalidServiceContractException;
+
+import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 
 /**
  * Implementation that synthesizes a singleton component from an existing object instance.
@@ -118,9 +121,14 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             AtomicComponent physical = createPhysicalComponent(logical, instance);
             componentManager.register(physical);
             scopeContainer.register(physical);
+            // initialize the component - needed for reinjection to work
+            WorkContext workContext = new WorkContext();
+            scopeContainer.getWrapper(physical, workContext);
         } catch (RegistrationException e) {
             throw new ComponentRegistrationException(e);
         } catch (AssemblyException e) {
+            throw new ComponentRegistrationException(e);
+        } catch (InstanceLifecycleException e) {
             throw new ComponentRegistrationException(e);
         }
     }
@@ -132,6 +140,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         ComponentDefinition<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
         InstantiationContext context = new InstantiationContext();
         LogicalComponent<?> logical = instantiator.instantiate(definition, domain, context);
+        logical.setAutowire(domain.getAutowire());
         if (context.hasErrors()) {
             throw new AssemblyException(context.getErrors());
         }
