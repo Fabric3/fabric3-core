@@ -43,7 +43,11 @@
  */
 package org.fabric3.introspection.java.annotation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.fabric3.api.annotation.management.Management;
+import org.fabric3.host.security.Role;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
@@ -77,7 +81,16 @@ public class ManagementProcessor<I extends Implementation<? extends InjectingCom
         if (description.trim().length() == 0) {
             description = null;
         }
-        ManagementInfo info = new ManagementInfo(name, group, description, type.getName());
+        Set<Role> readRoles = new HashSet<Role>();
+        for (String roleName : annotation.readRoles()) {
+            readRoles.add(new Role(roleName));
+        }
+        Set<Role> writeRoles = new HashSet<Role>();
+        for (String roleName : annotation.writeRoles()) {
+            writeRoles.add(new Role(roleName));
+        }
+
+        ManagementInfo info = new ManagementInfo(name, group, description, type.getName(), readRoles, writeRoles);
         ManagementInfo overriden = componentType.getManagementInfo();
         if (overriden != null) {
             // A management annotation was defined in a super class - override it, preserving management operations

@@ -38,12 +38,17 @@
 package org.fabric3.security.spring;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.host.security.Role;
 
 /**
  * Implementation of {@link SecuritySubject} that wraps a Spring <code>Authentication</code> instance.
@@ -56,7 +61,14 @@ public class SpringSecuritySubject implements SecuritySubject, Principal {
 
     public SpringSecuritySubject(Authentication authentication) {
         this.authentication = authentication;
-        jaasSubject = new Subject(true, Collections.singleton(this), Collections.emptySet(), Collections.emptySet());
+        Collection<GrantedAuthority> authorities = authentication.getAuthorities();
+        Set<Principal> principals = new HashSet<Principal>();
+        for (GrantedAuthority authority : authorities) {
+            Role role = new Role(authority.getAuthority());
+            principals.add(role);
+        }
+        principals.add(this);
+        jaasSubject = new Subject(true, principals, Collections.emptySet(), Collections.emptySet());
     }
 
     public <T> T getDelegate(Class<T> type) {

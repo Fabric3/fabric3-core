@@ -51,6 +51,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE})
 @Retention(RUNTIME)
 public @interface Management {
+    String FABRIC3_ADMIN_ROLE = "ROLE_FABRIC3_ADMIN";
+
+    String FABRIC3_OBSERVER_ROLE = "ROLE_FABRIC3_OBSERVER";
 
     /**
      * Returns the name the implementation should be registered with.
@@ -72,4 +75,19 @@ public @interface Management {
      * @return the management description
      */
     String description() default "";
+
+    /**
+     * Returns the roles required to access getter attributes.
+     *
+     * @return the roles required to access getter attributes
+     */
+    String[] readRoles() default {FABRIC3_ADMIN_ROLE, FABRIC3_OBSERVER_ROLE};
+
+    /**
+     * Returns the roles required to access setter attributes and operations.
+     *
+     * @return the roles required to access setter attributes and operations
+     */
+    String[] writeRoles() default {FABRIC3_ADMIN_ROLE};
+
 }

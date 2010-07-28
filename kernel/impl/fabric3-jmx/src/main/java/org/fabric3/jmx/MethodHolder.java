@@ -35,33 +35,38 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.management;
+package org.fabric3.jmx;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.util.Set;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.fabric3.host.security.Role;
 
 /**
- * Annotation that can be applied to an implementation method to indicate it should be exposed to a management framework.
+ * Holder for an MBean method and its associated security metadata.
  *
  * @version $Rev$ $Date$
  */
-@Target({METHOD})
-@Retention(RUNTIME)
-public @interface ManagementOperation {
-    /**
-     * Returns the operation description.
-     *
-     * @return the operation description
-     */
-    String description() default "";
+public class MethodHolder {
+    private Method method;
+    Set<Role> roles;
 
     /**
-     * Returns the roles allowed to access the operation.
+     * Constructor.
      *
-     * @return the roles allowed to access the operation
+     * @param method the method
+     * @param roles  roles allowed to access the method
      */
-    String[] rolesAllowed() default {};
+    public MethodHolder(Method method, Set<Role> roles) {
+        this.method = method;
+        this.roles = roles;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }

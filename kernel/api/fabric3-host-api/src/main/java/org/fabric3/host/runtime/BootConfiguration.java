@@ -64,6 +64,7 @@ public class BootConfiguration {
     private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
+    private JmxSecurity security = JmxSecurity.DISABLED;
     private Map<String, String> exportedPackages = new HashMap<String, String>();
     private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
@@ -108,6 +109,14 @@ public class BootConfiguration {
 
     public void setHostClassLoader(ClassLoader hostClassLoader) {
         this.hostClassLoader = hostClassLoader;
+    }
+
+    public JmxSecurity getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(JmxSecurity security) {
+        this.security = security;
     }
 
     public Map<String, String> getExportedPackages() {

@@ -138,6 +138,7 @@ import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.JmxSecurity;
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
@@ -226,6 +227,7 @@ public class BootstrapAssemblyFactory {
                                       ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
                                       MBeanServer mBeanServer,
+                                      JmxSecurity security,
                                       HostInfo info) throws InitializationException {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
@@ -234,6 +236,7 @@ public class BootstrapAssemblyFactory {
                                                                                 componentManager,
                                                                                 channelManager,
                                                                                 mBeanServer,
+                                                                                security,
                                                                                 info);
         DeployerMonitor monitor;
         try {
@@ -300,6 +303,7 @@ public class BootstrapAssemblyFactory {
                                                                          ComponentManager componentManager,
                                                                          ChannelManager channelManager,
                                                                          MBeanServer mBeanServer,
+                                                                         JmxSecurity security,
                                                                          HostInfo info) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
@@ -309,7 +313,7 @@ public class BootstrapAssemblyFactory {
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
         BuildComponentCommandExecutor executor =
-                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, mBeanServer, info);
+                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, mBeanServer, security, info);
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -329,13 +333,14 @@ public class BootstrapAssemblyFactory {
                                                                               DefaultTransformerRegistry transformerRegistry,
                                                                               ClassLoaderRegistry classLoaderRegistry,
                                                                               MBeanServer mBeanServer,
+                                                                              JmxSecurity security,
                                                                               HostInfo info) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
         PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
-        JMXManagementService managementService = new JMXManagementService(mBeanServer, info);
+        JMXManagementService managementService = new JMXManagementService(mBeanServer, info, security);
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                     factoryBuilder,
                                                                     classLoaderRegistry,

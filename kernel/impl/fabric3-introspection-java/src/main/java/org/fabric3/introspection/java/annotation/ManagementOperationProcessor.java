@@ -44,9 +44,12 @@
 package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.security.Role;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
@@ -81,7 +84,11 @@ public class ManagementOperationProcessor<I extends Implementation<? extends Inj
             description = null;
         }
         Signature signature = new Signature(method);
-        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description);
+        Set<Role> roles = new HashSet<Role>();
+        for (String roleName : annotation.rolesAllowed()) {
+            roles.add(new Role(roleName));
+        }
+        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description, roles);
         info.addOperation(operationInfo);
     }
 

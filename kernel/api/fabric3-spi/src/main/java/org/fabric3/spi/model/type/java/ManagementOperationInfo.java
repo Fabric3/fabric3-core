@@ -43,6 +43,9 @@
  */
 package org.fabric3.spi.model.type.java;
 
+import java.util.Set;
+
+import org.fabric3.host.security.Role;
 import org.fabric3.model.type.ModelObject;
 
 /**
@@ -55,10 +58,12 @@ public class ManagementOperationInfo extends ModelObject {
 
     private Signature signature;
     private String description;
+    private Set<Role> roles;
 
-    public ManagementOperationInfo(Signature signature, String description) {
+    public ManagementOperationInfo(Signature signature, String description, Set<Role> roles) {
         this.signature = signature;
         this.description = description;
+        this.roles = roles;
     }
 
     public Signature getSignature() {
@@ -67,5 +72,9 @@ public class ManagementOperationInfo extends ModelObject {
 
     public String getDescription() {
         return description;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 }

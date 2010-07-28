@@ -54,12 +54,17 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.runtime.JmxSecurity;
+import org.fabric3.host.security.Role;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementException;
@@ -77,12 +82,26 @@ import org.fabric3.spi.util.UriHelper;
 @EagerInit
 public class JMXManagementService implements ManagementService {
     private static final String DOMAIN = "fabric3";
-    private final MBeanServer mBeanServer;
-    private final URI applicationDomain;
+    boolean authorization;
 
+    private MBeanServer mBeanServer;
+    private URI applicationDomain;
+
+    @Property(required = false)
+    public void setSecurity(String security) {
+        authorization = "AUTHORIZATION".equals(security.toUpperCase());
+    }
+
+    @Constructor
     public JMXManagementService(@Reference MBeanServer mBeanServer, @Reference HostInfo info) {
         this.mBeanServer = mBeanServer;
         this.applicationDomain = info.getDomain();
+    }
+
+    public JMXManagementService(MBeanServer mBeanServer, HostInfo info, JmxSecurity security) {
+        this.mBeanServer = mBeanServer;
+        this.applicationDomain = info.getDomain();
+        authorization = security == JmxSecurity.AUTHORIZATION;
     }
 
     public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
@@ -117,7 +136,29 @@ public class JMXManagementService implements ManagementService {
                 SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(instance);
                 Class<?> clazz = instance.getClass();
                 ClassLoader loader = clazz.getClassLoader();
-                ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName());
+
+                Set<Role> readRoles = new HashSet<Role>();
+                Set<Role> writeRoles = new HashSet<Role>();
+                Management annotation = clazz.getAnnotation(Management.class);
+                if (annotation != null) {
+                    String[] readRoleNames = annotation.readRoles();
+                    for (String roleName : readRoleNames) {
+                        readRoles.add(new Role(roleName));
+                    }
+                    String[] writeRoleNames = annotation.writeRoles();
+                    for (String roleName : writeRoleNames) {
+                        writeRoles.add(new Role(roleName));
+                    }
+                }
+
+                if (readRoles.isEmpty()) {
+                    readRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
+                    readRoles.add(new Role(Management.FABRIC3_OBSERVER_ROLE));
+                }
+                if (writeRoles.isEmpty()) {
+                    writeRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
+                }
+                ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName(), readRoles, writeRoles);
                 introspect(instance, info);
                 managementBean = createOptimizedMBean(info, factory, loader);
             }
@@ -199,7 +240,12 @@ public class JMXManagementService implements ManagementService {
                 description = null;
             }
             Signature signature = new Signature(method);
-            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description);
+            String[] roleNames = annotation.rolesAllowed();
+            Set<Role> roles = new HashSet<Role>();
+            for (String name : roleNames) {
+                roles.add(new Role(name));
+            }
+            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description, roles);
             info.addOperation(operationInfo);
         }
 
@@ -236,28 +282,45 @@ public class JMXManagementService implements ManagementService {
         String className = info.getManagementClass();
         Class<?> clazz = loader.loadClass(className);
         Set<AttributeDescription> attributes = new HashSet<AttributeDescription>();
-        Map<String, Method> getters = new HashMap<String, Method>();
-        Map<String, Method> setters = new HashMap<String, Method>();
-        Map<OperationKey, Method> operations = new HashMap<OperationKey, Method>();
+        Map<String, MethodHolder> getters = new HashMap<String, MethodHolder>();
+        Map<String, MethodHolder> setters = new HashMap<String, MethodHolder>();
+        Map<OperationKey, MethodHolder> operations = new HashMap<OperationKey, MethodHolder>();
         for (ManagementOperationInfo operationInfo : info.getOperations()) {
             Method method = operationInfo.getSignature().getMethod(clazz);
             String description = operationInfo.getDescription();
+            Set<Role> roles = operationInfo.getRoles();
+
             switch (getType(method)) {
             case GETTER:
                 String getterName = getAttributeName(method);
                 AttributeDescription attribute = new AttributeDescription(getterName, description);
                 attributes.add(attribute);
-                getters.put(getterName, method);
+                if (roles.isEmpty()) {
+                    // default to read roles specified on the implementation
+                    roles = info.getReadRoles();
+                }
+                MethodHolder holder = new MethodHolder(method, roles);
+                getters.put(getterName, holder);
                 break;
             case SETTER:
                 String setterName = getAttributeName(method);
                 attribute = new AttributeDescription(setterName, description);
                 attributes.add(attribute);
-                setters.put(setterName, method);
+                if (roles.isEmpty()) {
+                    // default to write roles specified on the implementation
+                    roles = info.getWriteRoles();
+                }
+                holder = new MethodHolder(method, roles);
+                setters.put(setterName, holder);
                 break;
             case OPERATION:
                 OperationKey key = new OperationKey(method, description);
-                operations.put(key, method);
+                if (roles.isEmpty()) {
+                    // default to write roles specified on the implementation
+                    roles = info.getWriteRoles();
+                }
+                holder = new MethodHolder(method, roles);
+                operations.put(key, holder);
                 break;
             }
         }
@@ -266,28 +329,37 @@ public class JMXManagementService implements ManagementService {
         MBeanOperationInfo[] mBeanOperations = createOperationInfo(operations);
         String description = info.getDescription();
         MBeanInfo mbeanInfo = new MBeanInfo(className, description, mBeanAttributes, null, mBeanOperations, null);
-        return new OptimizedMBean<T>(objectFactory, mbeanInfo, getters, setters, operations);
+        return new OptimizedMBean<T>(objectFactory, mbeanInfo, getters, setters, operations, authorization);
     }
 
-    private MBeanOperationInfo[] createOperationInfo(Map<OperationKey, Method> operations) {
+    private MBeanOperationInfo[] createOperationInfo(Map<OperationKey, MethodHolder> operations) {
         MBeanOperationInfo[] mBeanOperations = new MBeanOperationInfo[operations.size()];
         int i = 0;
-        for (Map.Entry<OperationKey, Method> entry : operations.entrySet()) {
+        for (Map.Entry<OperationKey, MethodHolder> entry : operations.entrySet()) {
             String description = entry.getKey().getDescription();
-            Method value = entry.getValue();
+            Method value = entry.getValue().getMethod();
             mBeanOperations[i++] = new MBeanOperationInfo(description, value);
         }
         return mBeanOperations;
     }
 
-    private MBeanAttributeInfo[] createAttributeInfo(Set<AttributeDescription> descriptions, Map<String, Method> getters, Map<String, Method> setters)
-            throws IntrospectionException {
+    private MBeanAttributeInfo[] createAttributeInfo(Set<AttributeDescription> descriptions,
+                                                     Map<String, MethodHolder> getters,
+                                                     Map<String, MethodHolder> setters) throws IntrospectionException {
         MBeanAttributeInfo[] mBeanAttributes = new MBeanAttributeInfo[descriptions.size()];
         int i = 0;
         for (AttributeDescription description : descriptions) {
             String name = description.getName();
-            Method getter = getters.get(name);
-            Method setter = setters.get(name);
+            MethodHolder getterHolder = getters.get(name);
+            Method getter = null;
+            if (getterHolder != null) {
+                getter = getterHolder.getMethod();
+            }
+            MethodHolder setterHolder = setters.get(name);
+            Method setter = null;
+            if (setterHolder != null) {
+                setter = setterHolder.getMethod();
+            }
             mBeanAttributes[i++] = new MBeanAttributeInfo(name, description.getDescription(), getter, setter);
         }
         return mBeanAttributes;

@@ -45,7 +45,9 @@ package org.fabric3.spi.model.type.java;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.fabric3.host.security.Role;
 import org.fabric3.model.type.ModelObject;
 
 /**
@@ -60,6 +62,8 @@ public class ManagementInfo extends ModelObject {
     private String group;
     private String description;
     private String managementClass;
+    private Set<Role> readRoles;
+    private Set<Role> writeRoles;
 
     private List<ManagementOperationInfo> operations = new ArrayList<ManagementOperationInfo>();
 
@@ -70,12 +74,16 @@ public class ManagementInfo extends ModelObject {
      * @param group       the management group of this implementation
      * @param description the management description of this implementation
      * @param clazz       the management class
+     * @param readRoles   roles allowed access to getter attributes
+     * @param writeRoles  roles allowed access to setter attributes and operations
      */
-    public ManagementInfo(String name, String group, String description, String clazz) {
+    public ManagementInfo(String name, String group, String description, String clazz, Set<Role> readRoles, Set<Role> writeRoles) {
         this.name = name;
         this.description = description;
         this.group = group;
         this.managementClass = clazz;
+        this.readRoles = readRoles;
+        this.writeRoles = writeRoles;
     }
 
     /**
@@ -130,6 +138,24 @@ public class ManagementInfo extends ModelObject {
      */
     public void addOperation(ManagementOperationInfo info) {
         operations.add(info);
+    }
+
+    /**
+     * Returns the roles allowed to access getter methods.
+     *
+     * @return the roles allowed to access getter methods.
+     */
+    public Set<Role> getReadRoles() {
+        return readRoles;
+    }
+
+    /**
+     * Returns the roles allowed to access setter methods and operations.
+     *
+     * @return the roles allowed to access setter methods and operations.
+     */
+    public Set<Role> getWriteRoles() {
+        return writeRoles;
     }
 
 }

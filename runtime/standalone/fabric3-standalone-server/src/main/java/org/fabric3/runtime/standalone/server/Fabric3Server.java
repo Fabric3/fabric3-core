@@ -218,6 +218,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             JMXAuthenticator authenticator = new DelegatingJmxAuthenticator(jmxConfiguration.getSecurity(), jmxConfiguration.getRoles());
             ComponentRegistration registration = new ComponentRegistration("JMXAuthenticator", JMXAuthenticator.class, authenticator, true);
             configuration.addRegistrations(Collections.singletonList(registration));
+            configuration.setSecurity(jmxConfiguration.getSecurity());
             return new RmiAgent(authenticator, jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());
         }
         return new RmiAgent(jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());

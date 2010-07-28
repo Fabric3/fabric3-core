@@ -39,14 +39,19 @@ package org.fabric3.jmx;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessControlContext;
+import java.security.AccessController;
 import java.util.Map;
+import java.util.Set;
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ReflectionException;
+import javax.security.auth.Subject;
 
+import org.fabric3.host.security.Role;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.invocation.CallFrame;
@@ -54,60 +59,90 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
+ * Wraps a Java-based component as an MBean and allows it to be invoked by an MBean server.
+ *
  * @version $Rev$ $Date$
  */
 public class OptimizedMBean<T> extends AbstractMBean {
     private final ObjectFactory<T> objectFactory;
-    private final Map<String, Method> getters;
-    private final Map<String, Method> setters;
-    private final Map<OperationKey, Method> operations;
+    private final Map<String, MethodHolder> getters;
+    private final Map<String, MethodHolder> setters;
+    private final Map<OperationKey, MethodHolder> operations;
+    private boolean authorization;
 
     public OptimizedMBean(ObjectFactory<T> objectFactory,
                           MBeanInfo mbeanInfo,
-                          Map<String, Method> getters,
-                          Map<String, Method> setters,
-                          Map<OperationKey, Method> operations) {
+                          Map<String, MethodHolder> getters,
+                          Map<String, MethodHolder> setters,
+                          Map<OperationKey, MethodHolder> operations,
+                          boolean authorization) {
         super(mbeanInfo);
         this.objectFactory = objectFactory;
         this.getters = getters;
         this.setters = setters;
         this.operations = operations;
+        this.authorization = authorization;
     }
 
-    public Object getAttribute(String s) throws AttributeNotFoundException, MBeanException, ReflectionException {
-        Method interceptor = getters.get(s);
-        if (interceptor == null) {
-            throw new AttributeNotFoundException(s);
+    public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
+        MethodHolder holder = getters.get(attribute);
+        if (holder == null) {
+            throw new AttributeNotFoundException(attribute);
         }
-        return invoke(interceptor, null);
+        if (authorization) {
+            authorize(holder.getRoles());
+        }
+        Method method = holder.getMethod();
+        return invoke(method, null);
     }
 
     public void setAttribute(Attribute attribute)
             throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
-        Method interceptor = setters.get(attribute.getName());
-        if (interceptor == null) {
+        MethodHolder holder = setters.get(attribute.getName());
+        if (holder == null) {
             throw new AttributeNotFoundException(attribute.getName());
         }
-        invoke(interceptor, new Object[]{attribute.getValue()});
+        if (authorization) {
+            authorize(holder.getRoles());
+        }
+        Method method = holder.getMethod();
+        invoke(method, new Object[]{attribute.getValue()});
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public Object invoke(String s, Object[] objects, String[] strings) throws MBeanException, ReflectionException {
         OperationKey operation = new OperationKey(s, strings);
-        Method interceptor = operations.get(operation);
-        if (interceptor == null) {
+        MethodHolder holder = operations.get(operation);
+        if (holder == null) {
             throw new ReflectionException(new NoSuchMethodException(operation.toString()));
         }
-        return invoke(interceptor, objects);
+        if (authorization) {
+            authorize(holder.getRoles());
+        }
+        Method method = holder.getMethod();
+        return invoke(method, objects);
     }
 
-    Object invoke(Method interceptor, Object[] args) throws MBeanException, ReflectionException {
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    private void authorize(Set<Role> roles) throws MBeanException {
+        // retrieve the current security context set by the JMXAuthenticator when the JMX client connected to the MBeanServer
+        AccessControlContext acc = AccessController.getContext();
+        Subject subject = Subject.getSubject(acc);
+        for (Role role : roles) {
+            if (subject.getPrincipals().contains(role)) {
+                return;
+            }
+        }
+        throw new MBeanException(new Exception("Not authorized"));
+    }
+
+    Object invoke(Method method, Object[] args) throws MBeanException, ReflectionException {
         WorkContext workContext = new WorkContext();
         workContext.addCallFrame(new CallFrame());
         WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             T instance = objectFactory.getInstance();
-            return interceptor.invoke(instance, args);
+            return method.invoke(instance, args);
         } catch (ObjectCreationException e) {
             throw new ReflectionException(e);
         } catch (IllegalAccessException e) {

@@ -69,6 +69,7 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.JmxSecurity;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
@@ -135,6 +136,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
+    private JmxSecurity security;
     private Map<String, String> exportedPackages;
     private ClassLoader hostClassLoader;
     private Contribution bootContribution;
@@ -146,6 +148,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         systemConfig = configuration.getSystemConfig();
         hostClassLoader = configuration.getHostClassLoader();
         bootClassLoader = configuration.getBootClassLoader();
+        security = configuration.getSecurity();
         exportedPackages = configuration.getExportedPackages();
         registrations = configuration.getRegistrations();
 
@@ -190,6 +193,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               channelManager,
                                                               metaDataStore,
                                                               mbeanServer,
+                                                              security,
                                                               hostInfo);
 
         // register the runtime domain component
