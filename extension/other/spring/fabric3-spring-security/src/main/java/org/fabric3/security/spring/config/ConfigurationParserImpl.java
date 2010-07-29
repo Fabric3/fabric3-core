@@ -176,6 +176,9 @@ public class ConfigurationParserImpl implements ConfigurationParser {
 
     private void raiseConfigurationException(String message, XMLStreamReader reader) throws SecurityConfigurationException {
         Location location = reader.getLocation();
+        if (location == null) {
+            throw new SecurityConfigurationException(message);
+        }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
         throw new SecurityConfigurationException(message + " [" + line + "," + col + "]");
