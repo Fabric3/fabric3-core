@@ -27,6 +27,8 @@
         <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
         <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
         <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
+        <property name="minPort" source="$systemConfig//jms/activemq/@min.port"/>
+        <property name="maxPort" source="$systemConfig//jms/activemq/@max.port"/>
     </component>
 
     <component name="ConnectionFactoryParser">

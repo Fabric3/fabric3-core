@@ -44,8 +44,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
-
 /**
  * @version $Rev$ $Date$
  */
@@ -90,12 +88,7 @@ public class BrokerParserTestCase extends TestCase {
         InputStream stream = new ByteArrayInputStream(NO_BROKER_NAME.getBytes());
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         reader.nextTag();
-        try {
-            BrokerConfiguration configuration = parser.parse(reader);
-            fail();
-        } catch (InvalidConfigurationException e) {
-            // expected
-        }
+        parser.parse(reader);
     }
 
 }

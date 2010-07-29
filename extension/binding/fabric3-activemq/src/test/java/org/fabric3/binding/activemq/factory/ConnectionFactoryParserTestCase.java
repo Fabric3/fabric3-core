@@ -48,9 +48,11 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
+import org.easymock.EasyMock;
 
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * @version $Rev$ $Date$
@@ -85,7 +87,10 @@ public class ConnectionFactoryParserTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new MockConnectionFactoryManager();
-        parser = new ConnectionFactoryParser(registry);
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeId()).andReturn("broker");
+        EasyMock.replay(info);
+        parser = new ConnectionFactoryParser(registry, info);
 
         InputStream stream = new ByteArrayInputStream(XML.getBytes());
         reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);

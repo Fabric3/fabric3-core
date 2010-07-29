@@ -54,9 +54,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.activemq.ActiveMQConstants;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Parses ConnectionFactoryConfiguration entries in the runtime system configuration, instantiates connection factories for them, and registers the
@@ -68,9 +68,12 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 public class ConnectionFactoryParser {
     private List<ConnectionFactoryConfiguration> configurations = new ArrayList<ConnectionFactoryConfiguration>();
     private ConnectionFactoryManager manager;
+    private String brokerName;
 
-    public ConnectionFactoryParser(@Reference ConnectionFactoryManager manager) {
+    public ConnectionFactoryParser(@Reference ConnectionFactoryManager manager, @Reference HostInfo info) {
         this.manager = manager;
+        // set broker name to runtime name
+        this.brokerName = info.getRuntimeId();
     }
 
     @Property
@@ -94,8 +97,7 @@ public class ConnectionFactoryParser {
                     configuration.setName(name);
                     String urlString = reader.getAttributeValue(null, "broker.url");
                     if (urlString == null) {
-                        // connect to default broker
-                        urlString = "vm://" + ActiveMQConstants.DEFAULT_BROKER;
+                        urlString = "vm://" + brokerName;
                     }
                     try {
                         URI uri = new URI(urlString);

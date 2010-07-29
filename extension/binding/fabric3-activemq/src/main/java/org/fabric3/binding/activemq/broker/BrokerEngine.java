@@ -56,7 +56,6 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.binding.activemq.ActiveMQConstants;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.monitor.MonitorService;
@@ -68,7 +67,7 @@ import org.fabric3.spi.monitor.MonitorService;
  */
 @EagerInit
 public class BrokerEngine {
-    private String brokerName = ActiveMQConstants.DEFAULT_BROKER;
+    private String brokerName;
     private BrokerService broker;
     private File tempDir;
     private int selectedPort = 61616;
@@ -82,12 +81,24 @@ public class BrokerEngine {
     private MBeanServer mBeanServer;
 
     public BrokerEngine(@Reference HostInfo info) {
-        this.monitorService = monitorService;
         tempDir = new File(info.getTempDir(), "activemq");
         // sets the directory where persistent messages are written
         File baseDataDir = info.getDataDir();
         dataDir = new File(baseDataDir, "activemq.data");
+        // set the broker name to the runtime id
+        brokerName = info.getRuntimeId();
     }
+
+    @Property(required = false)
+    public void setMinPort(int minPort) {
+        this.minPort = minPort;
+    }
+
+    @Property(required = false)
+    public void setMaxPort(int maxPort) {
+        this.maxPort = maxPort;
+    }
+
 
     @Property(required = false)
     public void setMonitorLevel(String monitorLevel) {

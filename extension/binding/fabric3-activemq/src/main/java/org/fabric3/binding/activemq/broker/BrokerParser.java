@@ -75,16 +75,12 @@ public class BrokerParser {
 
                 break;
             case XMLStreamConstants.END_DOCUMENT:
-                if (configuration.getName() == null) {
-                    raiseInvalidConfiguration("Broker name must be specified", reader);
-                }
                 return configuration;
             }
         }
     }
 
-    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration)
-            throws XMLStreamException, InvalidConfigurationException {
+    private void parsePersistenceAdapter(XMLStreamReader reader, BrokerConfiguration configuration) throws InvalidConfigurationException {
         String type = reader.getAttributeValue(null, "type");
         PersistenceAdapterConfig adaptorConfig = new PersistenceAdapterConfig();
         if (type == null) {
@@ -228,6 +224,9 @@ public class BrokerParser {
 
     private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws InvalidConfigurationException {
         Location location = reader.getLocation();
+        if (location == null) {
+            throw new InvalidConfigurationException(message);
+        }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
         throw new InvalidConfigurationException(message + " [" + line + "," + col + "]");
