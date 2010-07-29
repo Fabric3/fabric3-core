@@ -168,6 +168,9 @@ public class FileSecurityStore implements SecurityStore {
 
     private void raiseInvalidConfiguration(String message, XMLStreamReader reader) throws StoreException {
         Location location = reader.getLocation();
+        if (location == null) {
+            throw new StoreException(message);
+        }
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
         throw new StoreException(message + " [" + line + "," + col + "]");
