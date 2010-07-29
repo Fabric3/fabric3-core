@@ -37,6 +37,7 @@
 */
 package org.fabric3.host.security;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 /**
@@ -44,7 +45,8 @@ import java.security.Principal;
  *
  * @version $Rev$ $Date$
  */
-public class Role implements Principal {
+public class Role implements Principal, Serializable {
+    private static final long serialVersionUID = 1693670327381297096L;
 
     private String name;
 
