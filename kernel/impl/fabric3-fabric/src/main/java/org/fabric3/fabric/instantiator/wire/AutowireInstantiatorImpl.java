@@ -141,7 +141,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             }
 
         } else {
-            // The reference is explicity configured on the component definition in the composite
+            // The reference is explicitly configured on the component definition in the composite
             List<Target> targets = componentReference.getTargets();
             if (!targets.isEmpty()) {
                 return;

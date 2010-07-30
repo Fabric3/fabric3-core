@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * Base class for validation failures occuring in XML artifacts.
+ * Base class for validation failures occurring in XML artifacts.
  *
  * @version $Rev$ $Date$
  */
