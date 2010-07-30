@@ -37,6 +37,7 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
+
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Encapsulates a persistence unit configured in a persistence.xml file.
@@ -162,8 +165,18 @@ public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
     }
 
     public ClassLoader getNewTempClassLoader() {
-        // TODO implement
-        return null;
+        if (!(classLoader instanceof MultiParentClassLoader)) {
+            return null;
+        }
+        MultiParentClassLoader original = (MultiParentClassLoader) classLoader;
+        MultiParentClassLoader newClassLoader = new MultiParentClassLoader(URI.create("f3-temp"), original.getParent());
+        for (ClassLoader parent : original.getParents()) {
+            newClassLoader.addParent(parent);
+        }
+        for (URL url : original.getURLs()) {
+            newClassLoader.addURL(url);
+        }
+        return newClassLoader;
     }
 
     public void setPersistenceProviderClassName(String persistenceProviderClassName) {
