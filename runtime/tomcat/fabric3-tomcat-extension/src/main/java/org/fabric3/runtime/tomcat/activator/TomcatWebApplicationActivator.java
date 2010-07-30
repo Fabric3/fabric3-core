@@ -47,6 +47,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.AnnotationProcessor;
 import org.apache.catalina.Container;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
@@ -55,6 +56,7 @@ import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
@@ -78,13 +80,16 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private Connector connector;
     // mappings from component URI to Tomcat context path
     private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
+    private ActivatorMonitor monitor;
 
     public TomcatWebApplicationActivator(@Reference ConnectorService connectorService,
                                          @Reference ClassLoaderRegistry registry,
-                                         @Reference ContributionResolver resolver) {
+                                         @Reference ContributionResolver resolver,
+                                         @Monitor ActivatorMonitor monitor) {
         this.connectorService = connectorService;
         this.classLoaderRegistry = registry;
         this.resolver = resolver;
+        this.monitor = monitor;
     }
 
     @Init
@@ -131,7 +136,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
             injectServletContext(servletContext, injectors);
 
             mappings.put(uri, contextPath);
-//            monitor.activated(holder.getContextPath());
+            monitor.activated(contextPath);
             return servletContext;
         } catch (Exception e) {
             throw new WebApplicationActivationException(e);
@@ -144,7 +149,28 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         if (contextPath == null) {
             throw new WebApplicationActivationException("Context not registered for component: " + uri);
         }
-        connector.getContainer().findChild(contextPath);
+        StandardContext context = null;
+        try {
+            for (Container container : connector.getContainer().findChildren()) {
+                if (container instanceof StandardHost) {
+                    context = (StandardContext) container.findChild(contextPath);
+                    container.removeChild(context);
+                    try {
+                        context.destroy();
+                    } catch (Exception e) {
+                        throw new WebApplicationActivationException(e);
+                    }
+                    break;
+                }
+            }
+            if (context == null) {
+                throw new WebApplicationActivationException("Context not found for: " + contextPath);
+            }
+            context.stop();
+            monitor.deactivated(contextPath);
+        } catch (LifecycleException e) {
+            throw new WebApplicationActivationException(e);
+        }
     }
 
     private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
@@ -152,7 +178,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         return new MultiParentClassLoader(id, cl);
     }
 
-    public StandardContext createContext(String path, String docBase, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
+    private StandardContext createContext(String path, String docBase, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
         StandardContext context = new StandardContext();
         context.setDocBase(docBase);
         context.setPath(path);
@@ -167,7 +193,6 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         context.setAnnotationProcessor(annotationProcessor);
         context.getServletContext().setAttribute(AnnotationProcessor.class.getName(), annotationProcessor);
         return (context);
-
     }
 
     @SuppressWarnings({"unchecked"})
