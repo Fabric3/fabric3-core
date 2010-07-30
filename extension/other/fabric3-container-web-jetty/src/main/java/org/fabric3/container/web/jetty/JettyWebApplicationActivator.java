@@ -39,7 +39,6 @@ package org.fabric3.container.web.jetty;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +169,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
 
     private WebAppContext createWebAppContext(String contextPath,
                                               Map<String, List<Injector<?>>> injectors,
-                                              URL resolved, ClassLoader parentClassLoader) throws IOException, URISyntaxException {
+                                              URL resolved, ClassLoader parentClassLoader) throws IOException {
         WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
         context.setParentLoaderPriority(true);
 
