@@ -67,6 +67,10 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.transform.property.Property2StringTransformer"/>
     </component>
 
+    <component name="Property2ElementTransformer">
+        <f3-impl:implementation.system class="org.fabric3.transform.property.Property2ElementTransformer"/>
+    </component>
+
     <component name="Property2URITransformer">
         <f3-impl:implementation.system class="org.fabric3.transform.property.Property2URITransformer"/>
     </component>

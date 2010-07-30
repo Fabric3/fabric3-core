@@ -57,7 +57,7 @@ public class Property2BooleanTestCase extends BaseTransformTest {
             assertNotNull(convBoolean);
             assertTrue(convBoolean);
         } catch (Exception e) {
-            fail("Unexpexcted Exception Should not occur " + e);
+            fail("Unexpected Exception Should not occur " + e);
         }
     }
 
@@ -73,7 +73,7 @@ public class Property2BooleanTestCase extends BaseTransformTest {
             assertNotNull(convBoolean);
             assertFalse(convBoolean);
         } catch (Exception e) {
-            fail("Unexpexcted Exception Should not occur " + e);
+            fail("Unexpected Exception Should not occur " + e);
         }
     }
 
@@ -89,7 +89,7 @@ public class Property2BooleanTestCase extends BaseTransformTest {
             assertNotNull(convBoolean);
             assertFalse(convBoolean);
         } catch (Exception e) {
-            fail("Unexpexcted Exception Should not occur " + e);
+            fail("Unexpected Exception Should not occur " + e);
         }
     }
 
