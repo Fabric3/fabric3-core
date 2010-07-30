@@ -47,6 +47,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * A servlet registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle requests destined to
@@ -65,9 +66,8 @@ public class Fabric3DispatchingServlet extends HttpServlet {
         this.config = config;
     }
 
-    public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {
-        assert req instanceof HttpServletRequest;
-        String path = ((HttpServletRequest) req).getPathInfo();
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getPathInfo();
         Servlet servlet = servlets.get(path);
         if (servlet == null) {
             int i;
@@ -82,7 +82,9 @@ public class Fabric3DispatchingServlet extends HttpServlet {
                 }
             }
             if (servlet == null) {
-                throw new IllegalStateException("No servlet registered for path: " + path);
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("No servlet registered for path: " + req.getPathInfo());
+                return;
             }
         }
         servlet.service(req, resp);
