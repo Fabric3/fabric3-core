@@ -51,6 +51,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.fabric3.spec</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>${sca.api.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

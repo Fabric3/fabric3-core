@@ -78,7 +78,6 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.security.DelegatingJmxAuthenticator;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
@@ -211,8 +210,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         shutdown();
     }
 
-    private RmiAgent createJmxAgent(Document systemConfig, BootstrapService bootstrapService, BootConfiguration configuration)
-            throws ParseException, ManagementException {
+    private RmiAgent createJmxAgent(Document systemConfig, BootstrapService bootstrapService, BootConfiguration configuration) throws ParseException {
         JmxConfiguration jmxConfiguration = bootstrapService.parseJmxConfiguration(systemConfig);
         if (JmxSecurity.DISABLED != jmxConfiguration.getSecurity()) {
             JMXAuthenticator authenticator = new DelegatingJmxAuthenticator(jmxConfiguration.getSecurity(), jmxConfiguration.getRoles());

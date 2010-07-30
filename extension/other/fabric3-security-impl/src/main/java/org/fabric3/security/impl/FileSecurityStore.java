@@ -58,6 +58,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.security.Role;
+import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**

@@ -12,14 +12,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="Maven: jaxen:jaxen:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-spi" exported="" />
-    <orderEntry type="module" module-name="fabric3-api" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" exported="" />
-    <orderEntry type="module" module-name="fabric3-model" exported="" />
-    <orderEntry type="module" module-name="fabric3-management-api" exported="" />
-    <orderEntry type="module" module-name="fabric3-util" exported="" />
+    <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module" module-name="fabric3-model" />
+    <orderEntry type="module" module-name="fabric3-management-api" />
+    <orderEntry type="module" module-name="fabric3-util" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />

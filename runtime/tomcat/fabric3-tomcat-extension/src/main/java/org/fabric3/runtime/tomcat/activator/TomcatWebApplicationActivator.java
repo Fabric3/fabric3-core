@@ -47,19 +47,18 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.AnnotationProcessor;
 import org.apache.catalina.Container;
-import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
+import org.fabric3.runtime.tomcat.connector.ConnectorService;
 import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
@@ -73,40 +72,24 @@ import org.fabric3.spi.contribution.ContributionResolver;
  * @version $Rev$ $Date$
  */
 public class TomcatWebApplicationActivator implements WebApplicationActivator {
-    private Service service;
+    private ConnectorService connectorService;
     private ClassLoaderRegistry classLoaderRegistry;
     private ContributionResolver resolver;
-    // default tomcat port
-    private int defaultHttpPort = 8080;
-    private Connector defaultHttpConnector;
+    private Connector connector;
     // mappings from component URI to Tomcat context path
     private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
 
-    public TomcatWebApplicationActivator(@Reference Service service,
+    public TomcatWebApplicationActivator(@Reference ConnectorService connectorService,
                                          @Reference ClassLoaderRegistry registry,
                                          @Reference ContributionResolver resolver) {
-        this.service = service;
+        this.connectorService = connectorService;
         this.classLoaderRegistry = registry;
         this.resolver = resolver;
     }
 
-    @Property (required = false)
-    public void setHttpPort(int defaultHttpPort) {
-        this.defaultHttpPort = defaultHttpPort;
-    }
-
     @Init
     public void init() throws ServletHostException {
-        for (Connector connector : service.findConnectors()) {
-            if (connector.getPort() == defaultHttpPort) {
-                defaultHttpConnector = connector;
-                break;
-            }
-        }
-        if (defaultHttpConnector == null) {
-            throw new ServletHostException("Default HTTP connector not found for port: " + defaultHttpPort
-                    + ". Ensure that the Fabric3 runtime HTTP port is configured in systemConfig.xml.");
-        }
+        connector = connectorService.getConnector();
     }
 
     public ClassLoader getWebComponentClassLoader(URI componentId) {
@@ -127,7 +110,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
             URL resolved = resolver.resolve(uri);
             ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
             StandardContext context = createContext(contextPath, resolved.getFile(), parentClassLoader, injectors);
-            for (Container container : defaultHttpConnector.getContainer().findChildren()) {
+            for (Container container : connector.getContainer().findChildren()) {
                 if (container instanceof StandardHost) {
                     container.addChild(context);
                 }
@@ -161,7 +144,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
         if (contextPath == null) {
             throw new WebApplicationActivationException("Context not registered for component: " + uri);
         }
-        defaultHttpConnector.getContainer().findChild(contextPath);
+        connector.getContainer().findChild(contextPath);
     }
 
     private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {

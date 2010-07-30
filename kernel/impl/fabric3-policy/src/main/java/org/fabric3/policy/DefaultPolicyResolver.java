@@ -187,7 +187,10 @@ public class DefaultPolicyResolver implements PolicyResolver {
             LogicalOperation targetOperation = matchOperation(operation, parent);
             policies = implementationResolver.resolvePolicySets(target, targetOperation);
             // add policy metadata to the result
-            policyResult.getMetadata(operation).addAll(targetOperation.getDefinition().getMetadata());
+            PolicyMetadata metadata = policyResult.getMetadata(operation);
+            metadata.addAll(targetOperation.getDefinition().getMetadata());
+            // add metadata from implementation
+            metadata.addAll(targetOperation.getParent().getParent().getDefinition().getImplementation().getMetadata());
             // important: use reference side operation as the key
             policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
             policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));

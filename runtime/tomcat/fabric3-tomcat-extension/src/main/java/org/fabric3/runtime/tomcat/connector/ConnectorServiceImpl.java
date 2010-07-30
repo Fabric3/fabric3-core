@@ -35,43 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.security.impl;
+package org.fabric3.runtime.tomcat.connector;
 
-import java.util.Collection;
+import org.apache.catalina.Service;
+import org.apache.catalina.connector.Connector;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.security.AuthorizationException;
-import org.fabric3.spi.security.AuthorizationService;
-import org.fabric3.spi.security.BasicSecuritySubject;
-import org.fabric3.spi.security.NotAuthorizedException;
-import org.fabric3.api.SecuritySubject;
+import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 
 /**
- * Basic implementation of the AuthorizationService.
  *
  * @version $Rev$ $Date$
  */
-public class AuthorizationServiceImpl implements AuthorizationService {
-    public void checkRole(SecuritySubject subject, String role) throws AuthorizationException {
-        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
-        if (!basicSubject.hasRole(role)) {
-            throw new NotAuthorizedException("Subject not authorized for role: " + role);
-        }
+@EagerInit
+public class ConnectorServiceImpl implements ConnectorService {
+    private int defaultHttpPort = 8080;   // default Tomcat port
+    private Service service;
+    private Connector defaultHttpConnector;
+
+
+    public ConnectorServiceImpl(@Reference Service service) {
+        this.service = service;
     }
 
-    public void checkRoles(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
-        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
-        for (String role : roles) {
-            if (!basicSubject.hasRole(role)) {
-                throw new NotAuthorizedException("Subject not authorized for role: " + role);
+    @Property(required = false)
+    public void setHttpPort(int defaultHttpPort) {
+        this.defaultHttpPort = defaultHttpPort;
+    }
+
+    @Init
+    public void init() throws ServletHostException {
+        for (Connector connector : service.findConnectors()) {
+            if (connector.getPort() == defaultHttpPort) {
+                defaultHttpConnector = connector;
+                break;
             }
         }
+        if (defaultHttpConnector == null) {
+            throw new ServletHostException("Default HTTP connector not found for port: " + defaultHttpPort
+                    + ". Ensure that the Fabric3 runtime HTTP port is configured in systemConfig.xml.");
+        }
     }
 
-    public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void checkPermissions(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
-        throw new UnsupportedOperationException();
+    public Connector getConnector() {
+        return defaultHttpConnector;
     }
 }

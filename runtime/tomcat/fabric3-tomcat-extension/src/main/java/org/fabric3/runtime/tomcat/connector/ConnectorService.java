@@ -35,67 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.security.impl;
+package org.fabric3.runtime.tomcat.connector;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.security.auth.Subject;
-
-import org.fabric3.api.SecuritySubject;
-import org.fabric3.host.security.Role;
+import org.apache.catalina.connector.Connector;
 
 /**
- * SecuritySubject for the Fabric3 basic security implementation.
+ * Returns the Tomcat HTTP connector.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9216 $ $Date: 2010-07-19 10:15:48 +0200 (Mon, 19 Jul 2010) $
  */
-public class BasicSecuritySubject implements SecuritySubject, Principal {
-    private String username;
-    private String password;
-    private Set<Role> roles;
-    private Subject jaasSubject;
+public interface ConnectorService {
 
-    public BasicSecuritySubject(String username, String password, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-        Set<Principal> principals = new HashSet<Principal>(roles);
-        principals.add(this);
-        jaasSubject = new Subject(true, principals, Collections.emptySet(), Collections.emptySet());
-
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    @SuppressWarnings({"SuspiciousMethodCalls"})
-    public boolean hasRole(String name) {
-        return roles.contains(new Role(name));
-    }
-
-    public <T> T getDelegate(Class<T> type) {
-        if (!BasicSecuritySubject.class.equals(type)) {
-            throw new IllegalArgumentException("Unknown delegate type: " + type);
-        }
-        return type.cast(this);
-    }
-
-    public Subject getJaasSubject() {
-        return jaasSubject;
-    }
-
-    public String getName() {
-        return username;
-    }
+    Connector getConnector();
 }

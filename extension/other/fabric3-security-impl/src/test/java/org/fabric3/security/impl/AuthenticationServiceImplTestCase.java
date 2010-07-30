@@ -45,6 +45,7 @@ import org.easymock.EasyMock;
 import org.fabric3.host.security.Role;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**

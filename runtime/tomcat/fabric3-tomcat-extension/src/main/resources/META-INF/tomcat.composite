@@ -19,6 +19,11 @@ Copyright (C) 2009 Metaform Systems
            name="TomcatExtensionComposite"
            autowire="true">
 
+
+    <component name="ConnectorService">
+        <f3-impl:implementation.system class="org.fabric3.runtime.tomcat.connector.ConnectorServiceImpl"/>
+    </component>
+
     <component name="TomcatServletHost">
         <f3-impl:implementation.system class="org.fabric3.runtime.tomcat.servlet.TomcatServletHost"/>
         <property name="httpPort" source="$systemConfig//tomcat/@httpPort"/>
@@ -26,7 +31,14 @@ Copyright (C) 2009 Metaform Systems
 
     <component name="TomcatWebApplicationActivator">
         <f3-impl:implementation.system class="org.fabric3.runtime.tomcat.activator.TomcatWebApplicationActivator"/>
-        <property name="httpPort" source="$systemConfig//tomcat/@httpPort"/>
+    </component>
+
+    <component name="TomcatAuthenticationService">
+        <f3-impl:implementation.system class="org.fabric3.runtime.tomcat.security.TomcatAuthenticationService"/>
+    </component>
+
+    <component name="TomcatAuthorizationService">
+        <f3-impl:implementation.system class="org.fabric3.runtime.tomcat.security.TomcatAuthorizationService"/>
     </component>
 
 </composite>

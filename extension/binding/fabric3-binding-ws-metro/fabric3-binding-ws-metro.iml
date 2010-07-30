@@ -90,15 +90,15 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.istack:istack-commons-runtime:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="module" module-name="fabric3-binding-ws" scope="PROVIDED" />
-    <orderEntry type="library" exported="" name="Maven: com.sun.xml.ws:webservices-osgi:2.0-b24" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.ctc.wstx:woodstox-osgi:3.2.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.jvnet:mimepull:1.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.glassfish.gmbal:gmbal-api-only:3.0.0-b023" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.glassfish.external:management-api:3.0.0-b012" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.7" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.ws:webservices-osgi:2.0-b24" level="project" />
+    <orderEntry type="library" name="Maven: com.ctc.wstx:woodstox-osgi:3.2.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet:mimepull:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.gmbal:gmbal-api-only:3.0.0-b023" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.external:management-api:3.0.0-b012" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.xml:webservices-api-osgi:2.0-b24" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.objectweb.asm:com.springsource.org.objectweb.asm:3.1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: javax.security.auth.message:jmac:1.0-rev-1" level="project" />
+    <orderEntry type="library" name="Maven: javax.security.auth.message:jmac:1.0-rev-1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />

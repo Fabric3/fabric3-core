@@ -35,23 +35,37 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.security.impl;
+package org.fabric3.runtime.tomcat.security;
 
 import java.util.Collection;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.NotAuthorizedException;
-import org.fabric3.api.SecuritySubject;
 
 /**
- * Basic implementation of the AuthorizationService.
+ * Implementation which uses Tomcat security to determine access rights.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9216 $ $Date: 2010-07-19 10:15:48 +0200 (Mon, 19 Jul 2010) $
  */
-public class AuthorizationServiceImpl implements AuthorizationService {
+@EagerInit
+public class TomcatAuthorizationService implements AuthorizationService {
+    private AuthorizationService delegate;
+
+    @Reference(required = false)
+    public void setDelegate(AuthorizationService delegate) {
+        this.delegate = delegate;
+    }
+
     public void checkRole(SecuritySubject subject, String role) throws AuthorizationException {
+        if (delegate != null) {
+            delegate.checkRole(subject, role);
+        }
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         if (!basicSubject.hasRole(role)) {
             throw new NotAuthorizedException("Subject not authorized for role: " + role);
@@ -59,6 +73,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     public void checkRoles(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
+        if (delegate != null) {
+            delegate.checkRoles(subject, roles);
+        }
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         for (String role : roles) {
             if (!basicSubject.hasRole(role)) {
@@ -68,10 +85,16 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {
+        if (delegate != null) {
+            delegate.checkPermission(subject, role);
+        }
         throw new UnsupportedOperationException();
     }
 
     public void checkPermissions(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
+        if (delegate != null) {
+            delegate.checkPermissions(subject, roles);
+        }
         throw new UnsupportedOperationException();
     }
 }

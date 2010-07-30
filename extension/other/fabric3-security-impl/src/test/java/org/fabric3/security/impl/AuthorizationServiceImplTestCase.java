@@ -46,6 +46,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.host.security.Role;
 import org.fabric3.spi.security.AuthorizationService;
+import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.NotAuthorizedException;
 
 /**

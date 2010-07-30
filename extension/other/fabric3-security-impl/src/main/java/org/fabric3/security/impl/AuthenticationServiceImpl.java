@@ -48,6 +48,7 @@ import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
+import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**

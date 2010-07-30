@@ -12,18 +12,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="fabric3-jmx-agent" exported="" />
-    <orderEntry type="module" module-name="fabric3-host-api" exported="" />
-    <orderEntry type="module" module-name="fabric3-model" exported="" />
-    <orderEntry type="module" module-name="fabric3-api" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-management-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-jmx-agent" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module" module-name="fabric3-model" />
+    <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-management-api" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="module" module-name="fabric3-monitor" exported="" />
-    <orderEntry type="module" module-name="fabric3-spi" exported="" />
-    <orderEntry type="library" exported="" name="Maven: ch.qos.logback:logback-classic:0.9.20" level="project" />
-    <orderEntry type="library" exported="" name="Maven: ch.qos.logback:logback-core:0.9.20" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.5.11" level="project" />
+    <orderEntry type="module" module-name="fabric3-monitor" />
+    <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:0.9.20" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:0.9.20" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymockclassextension:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />

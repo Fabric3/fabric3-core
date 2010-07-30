@@ -35,43 +35,67 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.security.impl;
+package org.fabric3.spi.security;
 
-import java.util.Collection;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.security.auth.Subject;
 
-import org.fabric3.spi.security.AuthorizationException;
-import org.fabric3.spi.security.AuthorizationService;
-import org.fabric3.spi.security.BasicSecuritySubject;
-import org.fabric3.spi.security.NotAuthorizedException;
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.host.security.Role;
 
 /**
- * Basic implementation of the AuthorizationService.
+ * SecuritySubject for the Fabric3 basic security implementation.
  *
  * @version $Rev$ $Date$
  */
-public class AuthorizationServiceImpl implements AuthorizationService {
-    public void checkRole(SecuritySubject subject, String role) throws AuthorizationException {
-        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
-        if (!basicSubject.hasRole(role)) {
-            throw new NotAuthorizedException("Subject not authorized for role: " + role);
+public class BasicSecuritySubject implements SecuritySubject, Principal {
+    private String username;
+    private String password;
+    private Set<Role> roles;
+    private Subject jaasSubject;
+
+    public BasicSecuritySubject(String username, String password, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        Set<Principal> principals = new HashSet<Principal>(roles);
+        principals.add(this);
+        jaasSubject = new Subject(true, principals, Collections.emptySet(), Collections.emptySet());
+
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    @SuppressWarnings({"SuspiciousMethodCalls"})
+    public boolean hasRole(String name) {
+        return roles.contains(new Role(name));
+    }
+
+    public <T> T getDelegate(Class<T> type) {
+        if (!BasicSecuritySubject.class.equals(type)) {
+            throw new IllegalArgumentException("Unknown delegate type: " + type);
         }
+        return type.cast(this);
     }
 
-    public void checkRoles(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
-        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
-        for (String role : roles) {
-            if (!basicSubject.hasRole(role)) {
-                throw new NotAuthorizedException("Subject not authorized for role: " + role);
-            }
-        }
+    public Subject getJaasSubject() {
+        return jaasSubject;
     }
 
-    public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void checkPermissions(SecuritySubject subject, Collection<String> roles) throws AuthorizationException {
-        throw new UnsupportedOperationException();
+    public String getName() {
+        return username;
     }
 }

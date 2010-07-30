@@ -52,6 +52,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.runtime.tomcat.connector.ConnectorService;
 import org.fabric3.spi.host.ServletHost;
 
 /**
@@ -61,23 +62,25 @@ import org.fabric3.spi.host.ServletHost;
  */
 @EagerInit
 public class TomcatServletHost implements ServletHost {
-    private int defaultHttpPort = 8080;   // default Tomcat port
-    private String servicePath = "";      // context path for bound services; defaults to the root context
-    private int defaultHttpsPort = -1;
     private Service service;
-    private Connector defaultHttpConnector;
+    private ConnectorService connectorService;
+    private int defaultHttpPort = 8080;   // default Tomcat port
+       private String servicePath = "";      // context path for bound services; defaults to the root context
+    private int defaultHttpsPort = -1;
+    private Connector connector;
     private Fabric3DispatchingServlet dispatchingServlet;
 
 
-    public TomcatServletHost(@Reference Service service) {
+    public TomcatServletHost(@Reference Service service, @Reference ConnectorService connectorService) {
         this.service = service;
+        this.connectorService = connectorService;
     }
 
     @Property (required = false)
     public void setHttpPort(int defaultHttpPort) {
         this.defaultHttpPort = defaultHttpPort;
     }
-    
+     
     @Property(required = false)
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
@@ -85,20 +88,11 @@ public class TomcatServletHost implements ServletHost {
 
     @Init
     public void init() throws ServletHostException {
-        for (Connector connector : service.findConnectors()) {
-            if (connector.getPort() == defaultHttpPort) {
-                defaultHttpConnector = connector;
-                break;
-            }
-        }
-        if (defaultHttpConnector == null) {
-            throw new ServletHostException("Default HTTP connector not found for port: " + defaultHttpPort
-                    + ". Ensure that the Fabric3 runtime HTTP port is configured in systemConfig.xml.");
-        }
+        connector = connectorService.getConnector();
         dispatchingServlet = new Fabric3DispatchingServlet();
         Fabric3ServletWrapper wrapper = new Fabric3ServletWrapper(dispatchingServlet);
         wrapper.setName("Fabric3Servlet");
-        for (Container container : defaultHttpConnector.getContainer().findChildren()) {
+        for (Container container : connector.getContainer().findChildren()) {
             if (container instanceof StandardHost) {
                 Container child = container.findChild("");
                 if (child != null) {

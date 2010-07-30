@@ -12,13 +12,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="fabric3-host-api" exported="" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-management-api" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.maven.surefire:surefire-api:2.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.plexus:plexus-utils:1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-management-api" />
+    <orderEntry type="library" name="Maven: org.apache.maven.surefire:surefire-api:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:1.1" level="project" />
   </component>
 </module>
 

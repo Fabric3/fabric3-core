@@ -18,7 +18,7 @@
     <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
-    <orderEntry type="library" exported="" name="Maven: stax:stax-api:1.0" level="project" />
+    <orderEntry type="library" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
   </component>
 </module>

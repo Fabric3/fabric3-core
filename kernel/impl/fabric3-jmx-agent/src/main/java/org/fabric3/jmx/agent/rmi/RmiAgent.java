@@ -42,11 +42,11 @@ public class RmiAgent extends AbstractAgent {
     private Registry registry;
     private int assignedPort;
 
-    public RmiAgent(int minPort, int maxPort) throws ManagementException {
+    public RmiAgent(int minPort, int maxPort) {
         super(minPort, maxPort);
     }
 
-    public RmiAgent(JMXAuthenticator authenticator, int minPort, int maxPort) throws ManagementException {
+    public RmiAgent(JMXAuthenticator authenticator, int minPort, int maxPort) {
         super(authenticator, minPort, maxPort);
     }
 

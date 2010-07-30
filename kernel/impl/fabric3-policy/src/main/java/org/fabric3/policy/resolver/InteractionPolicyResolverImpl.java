@@ -125,7 +125,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         Set<QName> alwaysProvidedIntents = new LinkedHashSet<QName>();
         Set<QName> mayProvidedIntents = new LinkedHashSet<QName>();
 
-        // FIXME This should not happen, all binding types should be registsred
+        // FIXME This should not happen, all binding types should be registered
         if (bindingType != null) {
             alwaysProvidedIntents = bindingType.getAlwaysProvide();
             mayProvidedIntents = bindingType.getMayProvide();
