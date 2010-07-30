@@ -329,7 +329,12 @@ public abstract class AbstractDomain implements Domain {
             QName deployable = entry.getKey();
             String planName = entry.getValue();
             QNameSymbol symbol = new QNameSymbol(deployable);
-            Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
+            ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
+            if (element == null) {
+                throw new DeploymentException("Contribution containing the deployable not found: " + deployable
+                        + ". The domain journal (domain.xml) may be out of sync.");
+            }
+            Contribution contribution = element.getResource().getContribution();
             if (contribution == null) {
                 // this should not happen
                 throw new DeploymentException("Contribution for deployable not found: " + deployable);
