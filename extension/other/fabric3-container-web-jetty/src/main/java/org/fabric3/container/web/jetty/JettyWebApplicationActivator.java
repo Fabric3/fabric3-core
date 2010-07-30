@@ -150,8 +150,10 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         WebAppContext context = holder.getContext();
         jettyService.getServer().removeBean(context);
         try {
-            context.stop();
             remove(context);
+            // Stop must called be after remove() as it releases servlets which are accessed by the latter to 
+            // unregister them from the MBean server
+            context.stop();
         } catch (Exception e) {
             throw new WebApplicationActivationException(e);
         }
