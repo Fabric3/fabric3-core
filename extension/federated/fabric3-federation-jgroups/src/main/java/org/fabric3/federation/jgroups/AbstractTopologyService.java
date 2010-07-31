@@ -49,7 +49,7 @@ import org.jgroups.logging.LogFactory;
 import org.jgroups.protocols.TP;
 import org.jgroups.protocols.pbcast.GMS;
 import org.jgroups.stack.Protocol;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 import org.osoa.sca.annotations.Property;
 
 import org.fabric3.api.annotation.management.Management;

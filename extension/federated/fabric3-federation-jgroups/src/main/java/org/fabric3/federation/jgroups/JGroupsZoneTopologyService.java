@@ -64,6 +64,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Element;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -100,6 +101,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private static final int UPDATED = 1;
 
     private String zoneName = "default.zone";
+    private Element channelConfig;
     private Map<String, String> transportMetadata = new HashMap<String, String>();
     private JChannel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
@@ -124,6 +126,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     @Property(required = false)
     public void setZoneName(String zoneName) {
         this.zoneName = zoneName;
+    }
+
+    @Property(required = false)
+    public void setChannelConfig(Element config) {
+        this.channelConfig = (Element) config.getElementsByTagName("config").item(0);
     }
 
     @Reference(required = false)
@@ -157,7 +164,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         executorRegistry.register(ZoneMetadataUpdateCommand.class, metadataExecutor);
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
         executorRegistry.register(ControllerAvailableCommand.class, executor);
-        domainChannel = new JChannel();
+
+        if (channelConfig != null) {
+            domainChannel = new JChannel(channelConfig);
+        } else {
+            domainChannel = new JChannel();
+        }
         domainChannel.setName(getRuntimeName());
         initializeChannel(domainChannel);
 
