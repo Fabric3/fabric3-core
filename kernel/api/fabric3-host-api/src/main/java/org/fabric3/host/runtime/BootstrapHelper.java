@@ -57,7 +57,7 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.util.FileHelper;
 
 /**
- * Utility class for boostrap operations.
+ * Utility class for bootstrap operations.
  *
  * @version $Revision$ $Date$
  */

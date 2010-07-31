@@ -44,8 +44,19 @@ package org.fabric3.host.runtime;
  */
 public interface BootConstants {
 
-    String RUNTIME_MONITOR = "runtime.monitor";
+    /**
+     * The runtime monitor name, which is the root logging context. The root context is used so third-party
+     */
+    String RUNTIME_MONITOR = "ROOT";
 
+    /**
+     * The runtime monitor alias used for configuration.
+     */
+    String RUNTIME_ALIAS = "runtime.monitor";
+
+    /**
+     * The application monitor name.
+     */
     String APP_MONITOR = "application.monitor";
 
 }

@@ -75,6 +75,9 @@ import org.fabric3.host.security.Role;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_ALIAS;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+
 /**
  * Loads the system configuration property for a runtime domain.
  *
@@ -263,7 +266,13 @@ public class SystemConfigLoader {
      */
     public Element getMonitorConfiguration(String elementName, Document systemConfig) throws MonitorConfigurationException {
         Element root = systemConfig.getDocumentElement();
-        NodeList nodes = root.getElementsByTagName(elementName);
+        NodeList nodes;
+        if (RUNTIME_MONITOR.equals(elementName)) {
+            // the configuration element <runtime.monitor> is used as an alias for the runtime monitor name, which is ROOT 
+            nodes = root.getElementsByTagName(RUNTIME_ALIAS);
+        } else {
+            nodes = root.getElementsByTagName(elementName);
+        }
         if (nodes.getLength() == 1) {
             Element monitorElement = (Element) nodes.item(0);
             NodeList configurationElements = monitorElement.getElementsByTagName("configuration");
@@ -343,5 +352,5 @@ public class SystemConfigLoader {
         }
         return JmxSecurity.DISABLED;
     }
-    
+
 }

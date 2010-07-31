@@ -76,9 +76,9 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     private Logger logger;
 
     static {
-       ((LoggerContext)LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
     }
-    
+
     public LogbackDispatcher(String name) {
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = context.getLogger(name);
@@ -94,7 +94,6 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
             document.appendChild(element);
             InputSource source = transform(document);
 
-            // configure the root logging context
             logger.detachAndStopAllAppenders();
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(context);

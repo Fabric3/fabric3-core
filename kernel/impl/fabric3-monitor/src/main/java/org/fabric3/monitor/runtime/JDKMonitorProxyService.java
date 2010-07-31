@@ -66,7 +66,6 @@ import org.fabric3.spi.channel.PassThroughHandler;
 public class JDKMonitorProxyService implements MonitorProxyService {
     private ChannelManager channelManager;
     private Monitorable defaultMonitorable;
-    private MonitorLevel defaultLevel = MonitorLevel.TRACE;
 
     public JDKMonitorProxyService(Monitorable monitorable, ChannelManager channelManager) {
         this.defaultMonitorable = monitorable;
