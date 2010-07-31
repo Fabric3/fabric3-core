@@ -47,10 +47,10 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.datasource.model.DataSourceResource;
 import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.datasource.spi.DataSourceType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.datasource.spi.DataSourceType;
 
 /**
  * Loads datasource configurations specified in a composite. The format of the datasources element is:
@@ -77,7 +77,7 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                 if ("datasource".equals(reader.getName().getLocalPart())) {
                     String name = readMandatoryAttribute("name", reader, context);
                     DataSourceType dataSourceType;
-                    String type = readMandatoryAttribute("type", reader, context);
+                    String type = reader.getAttributeValue(null, "type");
                     if (type == null) {
                         dataSourceType = DataSourceType.NON_XA;
                     } else {
