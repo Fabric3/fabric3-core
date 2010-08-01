@@ -67,7 +67,6 @@ public class TxInterceptor implements Interceptor {
         this.transactionManager = transactionManager;
         this.txAction = txAction;
         this.monitor = monitor;
-        monitor.interceptorInitialized(txAction);
     }
 
     public Interceptor getNext() {
@@ -116,7 +115,7 @@ public class TxInterceptor implements Interceptor {
 
     private void setRollbackOnly() throws ServiceRuntimeException {
         try {
-            monitor.markedForRollback(hashCode());
+            monitor.markedForRollback(Thread.currentThread().getName());
             transactionManager.setRollbackOnly();
         } catch (SystemException e) {
             throw new ServiceRuntimeException(e);
@@ -133,7 +132,7 @@ public class TxInterceptor implements Interceptor {
 
     private void rollback() throws ServiceRuntimeException {
         try {
-            monitor.rolledback(hashCode());
+            monitor.rolledback(Thread.currentThread().getName());
             transactionManager.rollback();
         } catch (SystemException e) {
             throw new ServiceRuntimeException(e);

@@ -45,28 +45,11 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface TxMonitor {
 
-    @Debug
-    void started(int hashCode);
-
-    @Debug
-    void committed(int hashCode);
-
-    @Debug
-    void suspended(int hashCode);
+    @Warning
+    void rolledback(String threadName);
 
     @Warning
-    void rolledback(int hashCode);
+    void markedForRollback(String threadName);
 
-    @Debug
-    void resumed(int hashCode);
-
-    @Debug
-    void markedForRollback(int hashCode);
-
-    @Debug
-    void interceptorInitialized(TxAction txAction);
-
-    @Debug
-    void joined(int hashCode);
 
 }
