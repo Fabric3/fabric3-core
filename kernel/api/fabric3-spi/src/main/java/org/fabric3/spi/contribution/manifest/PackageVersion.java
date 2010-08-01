@@ -166,14 +166,14 @@ public class PackageVersion implements Comparable {
                         qualifier = st.nextToken();
 
                         if (st.hasMoreTokens()) {
-                            throw new IllegalArgumentException("invalid format");
+                            throw new IllegalArgumentException("invalid format: " + version);
                         }
                     }
                 }
             }
         }
         catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("invalid format");
+            throw new IllegalArgumentException("invalid format: " + version);
         }
 
         this.major = major;
