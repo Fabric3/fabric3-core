@@ -46,6 +46,7 @@ import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
@@ -67,7 +68,13 @@ public class JavaExportLoader implements TypeLoader<JavaExport> {
         PackageInfo info;
         String version = reader.getAttributeValue(null, "version");
         if (version != null) {
-            PackageVersion packageVersion = new PackageVersion(version);
+            PackageVersion packageVersion;
+            try {
+                packageVersion = new PackageVersion(version);
+            } catch (IllegalArgumentException e) {
+                context.addError(new InvalidValue("Invalid export version", reader, e));
+                packageVersion = new PackageVersion("0");
+            }
             info = new PackageInfo(statement, packageVersion, true, true);
         } else {
             info = new PackageInfo(statement);
