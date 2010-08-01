@@ -43,4 +43,5 @@ import org.fabric3.implementation.java.provision.JavaTargetDefinition;
  * @version $Rev$ $Date$
  */
 public class RsTargetDefinition extends JavaTargetDefinition {
+    private static final long serialVersionUID = -4324727803731009324L;
 }

@@ -56,30 +56,32 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public final class RsWebApplication extends HttpServlet {
+    private static final long serialVersionUID = 1954697059021782141L;
 
-    RsServlet servlet;
-    ClassLoader cl;
-    ServletConfig cfg;
-    Fabric3ComponentProvider provider;
-    boolean reload = false;
-    ReentrantReadWriteLock reloadRWLock = new ReentrantReadWriteLock();
-    Lock reloadLock = reloadRWLock.readLock();
-    Lock serviceLock = reloadRWLock.writeLock();
+    private ClassLoader classLoader;
+    private Fabric3ProviderFactory providerFactory;
 
-    public RsWebApplication(ClassLoader cl) {
-        this.cl = cl;
-        this.provider = new Fabric3ComponentProvider();
+    private RsServlet servlet;
+    private ServletConfig servletConfig;
+    private boolean reload = false;
+    private ReentrantReadWriteLock reloadRWLock = new ReentrantReadWriteLock();
+    private Lock reloadLock = reloadRWLock.readLock();
+    private Lock serviceLock = reloadRWLock.writeLock();
+
+    public RsWebApplication(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        this.providerFactory = new Fabric3ProviderFactory();
         reload = true;
     }
 
-    public void addServiceHandler(Class<?> resource, Object instance) {
-        provider.addServiceHandler(resource, instance);
+    public void addResource(Class<?> resource, Object instance) {
+        providerFactory.addResource(resource, instance);
         reload = true;
     }
 
     @Override
-    public void init(final ServletConfig config) throws ServletException {
-        cfg = new ServletConfigWrapper(config);
+    public void init(final ServletConfig config) {
+        servletConfig = new ServletConfigWrapper(config);
     }
 
     public void reload() throws ServletException {
@@ -87,20 +89,20 @@ public final class RsWebApplication extends HttpServlet {
             reloadLock.lock();
             // Set the class loader to the runtime one so Jersey loads the
             // ResourceConfig properly
-            ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(cl);
-                this.servlet = new RsServlet(this.provider);
-                servlet.init(cfg);
+                Thread.currentThread().setContextClassLoader(classLoader);
+                servlet = new RsServlet(this.providerFactory);
+                servlet.init(servletConfig);
             } catch (ServletException se) {
-                se.printStackTrace();//Jetty only seems to log exceptions when debug is enabled
-                throw se;//TODO this is not getting logged in the F3 Runtime
+                se.printStackTrace();
+                throw se;
             } catch (Throwable t) {
                 ServletException se = new ServletException(t);
-                se.printStackTrace();//Jetty only seems to log exceptions when debug is enabled
+                se.printStackTrace();
                 throw se;
             } finally {
-                Thread.currentThread().setContextClassLoader(oldcl);
+                Thread.currentThread().setContextClassLoader( old);
             }
             reload = false;
         } finally {
@@ -116,27 +118,26 @@ public final class RsWebApplication extends HttpServlet {
                 reload();
             }
 
-            ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
             WorkContext oldContext = null;
             try {
-                Thread.currentThread().setContextClassLoader(cl);
+                Thread.currentThread().setContextClassLoader(classLoader);
                 WorkContext workContext = new WorkContext();
                 CallFrame frame = new CallFrame();
                 workContext.addCallFrame(frame);
                 oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
                 servlet.service(req, res);
             } catch (ServletException se) {
-                se.printStackTrace();//Jetty only seems to log exceptions when debug is enabled
+                se.printStackTrace();
                 throw se;
             } catch (IOException ie) {
-                ie.printStackTrace();//Jetty only seems to log exceptions when debug is enabled
+                ie.printStackTrace();
                 throw ie;
             } catch (Throwable t) {
-                t.printStackTrace();//Jetty only seems to log exceptions when debug is enabled
-                ServletException se = new ServletException(t);
-                throw se;
+                t.printStackTrace();
+                throw new ServletException(t);
             } finally {
-                Thread.currentThread().setContextClassLoader(oldcl);
+                Thread.currentThread().setContextClassLoader(old);
                 WorkContextTunnel.setThreadWorkContext(oldContext);
             }
         } finally {
@@ -148,31 +149,26 @@ public final class RsWebApplication extends HttpServlet {
      * Wrapper class to add the Jersey resource class as a web app init parameter
      */
     public class ServletConfigWrapper implements ServletConfig {
+        private ServletConfig servletConfig;
 
-        ServletConfig config;
-
-        public ServletConfigWrapper(ServletConfig config) {
-            this.config = config;
+        public ServletConfigWrapper(ServletConfig servletConfig) {
+            this.servletConfig = servletConfig;
         }
 
         public String getInitParameter(String name) {
             if ("javax.ws.rs.Application".equals(name)) {
                 return Fabric3ResourceConfig.class.getName();
             }
-            return config.getInitParameter(name);
+            return servletConfig.getInitParameter(name);
         }
 
         public Enumeration getInitParameterNames() {
-            final Enumeration e = config.getInitParameterNames();
+            final Enumeration e = servletConfig.getInitParameterNames();
             return new Enumeration() {
-
                 boolean finished = false;
 
                 public boolean hasMoreElements() {
-                    if (e.hasMoreElements() || !finished) {
-                        return true;
-                    }
-                    return false;
+                    return e.hasMoreElements() || !finished;
                 }
 
                 public Object nextElement() {
@@ -189,11 +185,11 @@ public final class RsWebApplication extends HttpServlet {
         }
 
         public ServletContext getServletContext() {
-            return config.getServletContext();
+            return servletConfig.getServletContext();
         }
 
         public String getServletName() {
-            return config.getServletName();
+            return servletConfig.getServletName();
         }
     }
 }

@@ -37,6 +37,8 @@
  */
 package org.fabric3.implementation.rs.runtime.rs;
 
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.sun.jersey.api.core.DefaultResourceConfig;
@@ -45,16 +47,28 @@ import com.sun.jersey.api.core.DefaultResourceConfig;
  * @version $Rev$ $Date$
  */
 public class Fabric3ResourceConfig extends DefaultResourceConfig {
+    private Set<Class<?>> resources = new HashSet<Class<?>>();
 
-    Fabric3ComponentProvider provider;
+    private Fabric3ProviderFactory factory;
 
-    public void setProvider(Fabric3ComponentProvider provider) {
-        this.provider = provider;
+    /**
+     * Constructor. The properties parameter is required by Jersey.
+     *
+     * @param properties context properties passed by Jersey
+     */
+    public Fabric3ResourceConfig(Map<?, ?> properties) {
+    }
+
+    public void setFactory(Fabric3ProviderFactory factory) {
+        this.factory = factory;
     }
 
     @Override
     public Set<Class<?>> getClasses() {
-        return provider.getClasses();
+        if (factory != null) {
+            resources.addAll(factory.getClasses());
+        }
+        return resources;
     }
 
 }

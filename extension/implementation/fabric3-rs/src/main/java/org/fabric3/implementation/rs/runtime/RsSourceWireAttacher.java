@@ -37,7 +37,6 @@
 */
 package org.fabric3.implementation.rs.runtime;
 
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -59,12 +57,8 @@ import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -73,11 +67,10 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefinition> {
-
-    private final ClassLoaderRegistry classLoaderRegistry;
+    private ClassLoaderRegistry classLoaderRegistry;
+    private ServletHost servletHost;
     private RsWireAttacherMonitor monitor;
-    private final ServletHost servletHost;
-    private final Map<URI, RsWebApplication> webApplications = new ConcurrentHashMap<URI, RsWebApplication>();
+    private Map<URI, RsWebApplication> webApplications = new ConcurrentHashMap<URI, RsWebApplication>();
 
     public RsSourceWireAttacher(@Reference ServletHost servletHost, @Reference ClassLoaderRegistry registry, @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
@@ -85,11 +78,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         this.monitor = monitor;
     }
 
-    public void attach(RsSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition, Wire wire)
-            throws WireAttachException {
-
-        URI sourceUri = sourceDefinition.getUri();
-
+    public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
+        URI sourceUri = source.getUri();
         RsWebApplication application = webApplications.get(sourceUri);
         if (application == null) {
             application = new RsWebApplication(getClass().getClassLoader());
@@ -103,20 +93,20 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         }
 
         try {
-            provision(sourceDefinition, wire, application);
+            provision(source, wire, application);
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
-            String name = sourceDefinition.getInterfaceName();
+            String name = source.getInterfaceName();
             throw new WireAttachException("Unable to load interface class " + name, sourceUri, null, e);
         }
-
     }
 
     public void detach(RsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        URI uri = source.getUri();
-        String mapping = creatingMappingUri(uri);
+        URI sourceUri = source.getUri();
+        String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
-        monitor.removedEndpoint(source.getUri());
+        webApplications.remove(sourceUri);
+        monitor.removedEndpoint(sourceUri);
     }
 
     public void attachObjectFactory(RsSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
@@ -137,9 +127,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     }
 
     private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsWebApplication application) throws ClassNotFoundException {
-
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
-
         Map<String, InvocationChain> invocationChains = new HashMap<String, InvocationChain>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
@@ -154,7 +142,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         enhancer.setCallback(methodInterceptor);
 
         // CGLib requires a classloader with access to the application classloader and this extension classloader
-        MultiParentClassLoader rsClassLoader = new MultiParentClassLoader(URI.create("RESTclassloader"), getClass().getClassLoader());
+        MultiParentClassLoader rsClassLoader = new MultiParentClassLoader(URI.create("RESTClassLoader"), getClass().getClassLoader());
         rsClassLoader.addParent(classLoader);
         enhancer.setClassLoader(rsClassLoader);
 
@@ -163,36 +151,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
             // set the TCCL as Jersey uses it to dynamically load classes
             Thread.currentThread().setContextClassLoader(rsClassLoader);
             Object instance = enhancer.create();
-            application.addServiceHandler(interfaze, instance);
+            application.addResource(interfaze, instance);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
 
-    private class RsMethodInterceptor implements MethodInterceptor {
-
-        private Map<String, InvocationChain> invocationChains;
-
-        private RsMethodInterceptor(Map<String, InvocationChain> invocationChains) {
-            this.invocationChains = invocationChains;
-        }
-
-        public Object intercept(Object object, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-            Message message = new MessageImpl(args, false, new WorkContext());
-            InvocationChain invocationChain = invocationChains.get(method.getName());
-            if (invocationChain != null) {
-                Interceptor headInterceptor = invocationChain.getHeadInterceptor();
-                Message ret = headInterceptor.invoke(message);
-                if (ret.isFault()) {
-                    throw (Throwable) ret.getBody();
-                } else {
-                    return ret.getBody();
-                }
-            } else {
-                return null;
-            }
-        }
-
-    }
 
 }

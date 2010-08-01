@@ -37,44 +37,29 @@
 */
 package org.fabric3.implementation.rs.runtime.rs;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.sun.jersey.spi.service.ComponentProvider;
+import com.sun.jersey.core.spi.component.ComponentScope;
+import com.sun.jersey.core.spi.component.ioc.IoCManagedComponentProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Fabric3ComponentProvider implements ComponentProvider {
-    private ConcurrentHashMap<Class<?>, Object> instances = new ConcurrentHashMap<Class<?>, Object>();
+public class Fabric3ComponentProvider implements IoCManagedComponentProvider {
+    private Object instance;
 
-    public <T> T getInstance(Scope scope, Class<T> c) throws InstantiationException, IllegalAccessException {
-        return c.cast(instances.get(c));
+    public Fabric3ComponentProvider(Object instance) {
+        this.instance = instance;
     }
 
-    public <T> T getInstance(Scope scope, Constructor<T> constructor, Object[] parameters) throws InstantiationException,
-            IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return null;
-    }
-
-    public void addServiceHandler(Class<?> resource, Object instance) {
-        instances.put(resource, instance);
-    }
-
-    public Set<Class<?>> getClasses() {
-        return instances.keySet();
-    }
-
-    public <T> T getInjectableInstance(T instance) {
+    public Object getInjectableInstance(Object o) {
         return instance;
     }
 
-    public void inject(Object instance) {
+    public Object getInstance() {
+        return instance;
     }
 
-    public <T> T getInstance(com.sun.jersey.spi.service.ComponentContext context, ComponentProvider.Scope scope, Class<T> clazz) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ComponentScope getScope() {
+        // F3 invocation chains are stateless and dispatch to the correct instance so the component can be treated as a Singleton
+        return ComponentScope.Singleton;
     }
 }

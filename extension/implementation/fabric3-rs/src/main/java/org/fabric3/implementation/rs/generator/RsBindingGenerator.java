@@ -60,23 +60,20 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
 
-    public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> logicalBinding,
+    public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
 
-        RsSourceDefinition rwsd = new RsSourceDefinition();
-        rwsd.setUri(logicalBinding.getDefinition().getTargetUri());
-        rwsd.setInterfaceName(contract.getInterfaceName());
-        rwsd.setIsResource(logicalBinding.getDefinition().isResource());
-        rwsd.setIsProvider(logicalBinding.getDefinition().isProvider());
-
-
-        return rwsd;
-
+        RsSourceDefinition definition = new RsSourceDefinition();
+        definition.setUri(binding.getDefinition().getTargetUri());
+        definition.setInterfaceName(contract.getInterfaceName());
+        definition.setIsResource(binding.getDefinition().isResource());
+        definition.setIsProvider(binding.getDefinition().isProvider());
+        return definition;
     }
 
-    public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> logicalBinding,
+    public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
@@ -84,7 +81,7 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
 
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> serviceBinding,
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

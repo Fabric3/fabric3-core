@@ -35,33 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.runtime.rs;
+package org.fabric3.implementation.rs.runtime;
 
-import com.sun.jersey.api.core.ResourceConfig;
-import com.sun.jersey.spi.container.WebApplication;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.wire.InvocationChain;
 
 /**
+ * Dispatches an invocation from Jersey to the Fabric3 invocation chain fronting a component instance.
+ *
  * @version $Rev$ $Date$
  */
-public class RsServlet extends ServletContainer {
-    private static final long serialVersionUID = -8351194346044994829L;
+public class RsMethodInterceptor implements MethodInterceptor {
+    private Map<String, InvocationChain> invocationChains;
 
-    private Fabric3ProviderFactory factory;
-
-    public RsServlet(Fabric3ProviderFactory factory) {
-        this.factory = factory;
+    public RsMethodInterceptor(Map<String, InvocationChain> invocationChains) {
+        this.invocationChains = invocationChains;
     }
 
-    @Override
-    protected void initiate(ResourceConfig resourceConfig, WebApplication webApplication) {
-        if (resourceConfig instanceof Fabric3ResourceConfig) {
-            Fabric3ResourceConfig f3ResourceConfig = (Fabric3ResourceConfig) resourceConfig;
-            f3ResourceConfig.setFactory(factory);
-            webApplication.initiate(f3ResourceConfig, factory);
+    public Object intercept(Object object, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        Message message = new MessageImpl(args, false, new WorkContext());
+        InvocationChain invocationChain = invocationChains.get(method.getName());
+        if (invocationChain != null) {
+            Interceptor headInterceptor = invocationChain.getHeadInterceptor();
+            Message ret = headInterceptor.invoke(message);
+            if (ret.isFault()) {
+                throw (Throwable) ret.getBody();
+            } else {
+                return ret.getBody();
+            }
         } else {
-            webApplication.initiate(resourceConfig);
+            return null;
         }
-
     }
+
 }
+

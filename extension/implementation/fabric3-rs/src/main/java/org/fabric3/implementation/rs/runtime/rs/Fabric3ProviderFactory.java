@@ -35,41 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.implementation.rs.model;
+package org.fabric3.implementation.rs.runtime.rs;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import com.sun.jersey.core.spi.component.ComponentContext;
+import com.sun.jersey.core.spi.component.ioc.IoCComponentProvider;
+import com.sun.jersey.core.spi.component.ioc.IoCComponentProviderFactory;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RsBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 7344870455465600359L;
+public class Fabric3ProviderFactory implements IoCComponentProviderFactory {
+    private Map<Class<?>, Fabric3ComponentProvider> providers = new ConcurrentHashMap<Class<?>, Fabric3ComponentProvider>();
 
-    public static final QName BINDING_RS = new QName(Namespaces.IMPLEMENTATION, "binding.rs");
-    private boolean isResource;
-    private boolean isProvider;
-
-    public RsBindingDefinition(URI targetUri) {
-        super(targetUri, BINDING_RS);
+    public IoCComponentProvider getComponentProvider(Class<?> clazz) {
+        return providers.get(clazz);
     }
 
-    public boolean isProvider() {
-        return isProvider;
+    public IoCComponentProvider getComponentProvider(ComponentContext cc, Class<?> clazz) {
+        return getComponentProvider(clazz);
     }
 
-    public void setIsProvider(boolean value) {
-        this.isProvider = value;
+    public void addResource(Class<?> clazz, Object instance) {
+        Fabric3ComponentProvider provider = new Fabric3ComponentProvider(instance);
+        providers.put(clazz, provider);
     }
 
-    public boolean isResource() {
-        return isResource;
+    public Set<Class<?>> getClasses() {
+        return providers.keySet();
     }
 
-    public void setIsResource(boolean value) {
-        this.isResource = value;
-    }
+
 }
