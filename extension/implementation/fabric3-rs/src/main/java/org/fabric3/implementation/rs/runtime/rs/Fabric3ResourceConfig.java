@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sun.jersey.api.core.DefaultResourceConfig;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 
 /**
  * @version $Rev$ $Date$
@@ -57,6 +58,8 @@ public class Fabric3ResourceConfig extends DefaultResourceConfig {
      * @param properties context properties passed by Jersey
      */
     public Fabric3ResourceConfig(Map<?, ?> properties) {
+        // register the JSON message body reader and writer
+        getSingletons().add(new JacksonJaxbJsonProvider());
     }
 
     public void setFactory(Fabric3ProviderFactory factory) {

@@ -34,8 +34,8 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:0.9.9-4" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:0.9.9-4" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.5.5" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.5.5" level="project" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
