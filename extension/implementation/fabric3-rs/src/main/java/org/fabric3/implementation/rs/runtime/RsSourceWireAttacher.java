@@ -96,7 +96,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
             provision(source, wire, application);
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
-            String name = source.getInterfaceName();
+            String name = source.getRsClass();
             throw new WireAttachException("Unable to load interface class " + name, sourceUri, null, e);
         }
     }
@@ -136,7 +136,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
 
         MethodInterceptor methodInterceptor = new RsMethodInterceptor(invocationChains);
 
-        Class<?> interfaze = classLoader.loadClass(sourceDefinition.getInterfaceName());
+        Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(methodInterceptor);

@@ -37,30 +37,30 @@
 */
 package org.fabric3.implementation.rs.provision;
 
-import org.fabric3.implementation.java.provision.JavaSourceDefinition;
+import java.net.URI;
+
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RsSourceDefinition extends JavaSourceDefinition {
+public class RsSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 2180952036516977449L;
 
-    private boolean isResource;
-    private boolean isProvider;
+    private String rsClass;
 
-    public boolean isProvider() {
-        return isProvider;
+    /**
+     * Constructor.
+     *
+     * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
+     * @param uri     the source URI.
+     */
+    public RsSourceDefinition(String rsClass, URI uri) {
+        this.rsClass = rsClass;
+        setUri(uri);
     }
 
-    public void setIsProvider(boolean value) {
-        this.isProvider = value;
-    }
-
-    public boolean isResource() {
-        return isResource;
-    }
-
-    public void setIsResource(boolean value) {
-        this.isResource = value;
+    public String getRsClass() {
+        return rsClass;
     }
 }

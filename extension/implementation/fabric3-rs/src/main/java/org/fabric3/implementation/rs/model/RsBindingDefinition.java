@@ -49,12 +49,12 @@ import org.fabric3.model.type.component.BindingDefinition;
 public class RsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 7344870455465600359L;
 
-    public static final QName BINDING_RS = new QName(Namespaces.IMPLEMENTATION, "binding.rs");
+    public static final QName BINDING_RS = new QName(Namespaces.BINDING, "binding.rs");
     private boolean isResource;
     private boolean isProvider;
 
-    public RsBindingDefinition(URI targetUri) {
-        super(targetUri, BINDING_RS);
+    public RsBindingDefinition(String name, URI targetUri) {
+        super(name, targetUri, BINDING_RS);
     }
 
     public boolean isProvider() {

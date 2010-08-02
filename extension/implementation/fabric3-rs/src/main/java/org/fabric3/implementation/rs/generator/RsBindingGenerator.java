@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.rs.generator;
 
+import java.net.URI;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -64,13 +65,9 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
-
-        RsSourceDefinition definition = new RsSourceDefinition();
-        definition.setUri(binding.getDefinition().getTargetUri());
-        definition.setInterfaceName(contract.getInterfaceName());
-        definition.setIsResource(binding.getDefinition().isResource());
-        definition.setIsProvider(binding.getDefinition().isProvider());
-        return definition;
+        String interfaze = contract.getQualifiedInterfaceName();
+        URI uri = binding.getDefinition().getTargetUri();
+        return new RsSourceDefinition(interfaze, uri);
     }
 
     public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,

@@ -124,7 +124,7 @@ public class RsHeuristicImpl implements RsHeuristic {
     }
 
     private ServiceDefinition addRESTService(final JavaImplementation impl, URI webAppURI) {
-        RsBindingDefinition bindingDefinition = new RsBindingDefinition(webAppURI);
+        RsBindingDefinition bindingDefinition = new RsBindingDefinition(null, webAppURI);
         ServiceDefinition definition = new ServiceDefinition("REST");
         ServiceContract serviceContract = new ServiceContract() {
 

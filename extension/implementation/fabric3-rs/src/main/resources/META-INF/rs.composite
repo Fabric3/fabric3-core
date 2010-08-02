@@ -11,12 +11,17 @@ Public License. See the accompanying license file for details.
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3-core="urn:fabric3.org:core"
            xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3-binding="urn:org.fabric3:binding"
            targetNamespace="urn:fabric3.org:implementation"
            name="RsExtension"
            autowire="true">
 
     <component name="RsHeuristic">
         <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsHeuristicImpl"/>
+    </component>
+
+    <component name="RsBindingLoader" f3-core:key="f3-binding:binding.rs">
+        <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsBindingLoader"/>
     </component>
 
     <component name="RsImplementationLoader" f3-core:key="f3-impl:implementation.rs">
