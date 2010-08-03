@@ -19,6 +19,6 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="2.0.0"/>
     <import.java package="org.slf4j.*"/>
-    <export.java package="org.hibernate.*" version="3.5.3-Final"/>
-    <export.java package="javassist.util.proxy" version="3.5.3-Final"/>
+    <export.java package="org.hibernate.*" version="3.5.3"/>
+    <export.java package="javassist.util.proxy" version="3.5.3"/>
 </contribution>
