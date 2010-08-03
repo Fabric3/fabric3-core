@@ -103,7 +103,27 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                         // read property
                         String name = reader.getName().getLocalPart();
                         String value = reader.getElementText();
-                        configuration.setProperty(name, value);
+                        if ("maxPoolSize".equals(name)) {
+                            configuration.setMaxPoolSize(parseInt(value, reader, context));
+                        } else if ("minPoolSize".equals(name)) {
+                            configuration.setMinPoolSize(parseInt(value, reader, context));
+                        } else if ("connectionTimeout".equals(name)) {
+                            configuration.setConnectionTimeout(parseInt(value, reader, context));
+                        } else if ("loginTimeout".equals(name)) {
+                            configuration.setLoginTimeout(parseInt(value, reader, context));
+                        } else if ("maintenanceInterval".equals(name)) {
+                            configuration.setMaintenanceInterval(parseInt(value, reader, context));
+                        } else if ("maxIdle".equals(name)) {
+                            configuration.setMaxIdle(parseInt(value, reader, context));
+                        } else if ("poolSize".equals(name)) {
+                            configuration.setPoolSize(parseInt(value, reader, context));
+                        } else if ("reap".equals(name)) {
+                            configuration.setReap(parseInt(value, reader, context));
+                        } else if ("query".equals(name)) {
+                            configuration.setQuery(value);
+                        } else {
+                            configuration.setProperty(name, value);
+                        }
                     }
                 }
 
@@ -127,5 +147,14 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
             context.addError(error);
         }
         return val;
+    }
+
+    private int parseInt(String value, XMLStreamReader reader, IntrospectionContext context) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            context.addError(new InvalidValue("Invalid value", reader, e));
+            return 0;
+        }
     }
 }

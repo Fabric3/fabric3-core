@@ -87,7 +87,29 @@ public class DataSourceConfigParser {
                             // read property
                             String name = reader.getName().getLocalPart();
                             String value = reader.getElementText();
-                            configuration.setProperty(name, value);
+
+                            if ("maxPoolSize".equals(name)) {
+                                configuration.setMaxPoolSize(parseInt(value, "maxPoolSize"));
+                            } else if ("minPoolSize".equals(name)) {
+                                configuration.setMinPoolSize(parseInt(value, "minPoolSize"));
+                            } else if ("connectionTimeout".equals(name)) {
+                                configuration.setConnectionTimeout(parseInt(value, "connectionTimeout"));
+                            } else if ("loginTimeout".equals(name)) {
+                                configuration.setLoginTimeout(parseInt(value, "loginTimeout"));
+                            } else if ("maintenanceInterval".equals(name)) {
+                                configuration.setMaintenanceInterval(parseInt(value, "maintenanceInterval"));
+                            } else if ("maxIdle".equals(name)) {
+                                configuration.setMaxIdle(parseInt(value, "maxIdle"));
+                            } else if ("poolSize".equals(name)) {
+                                configuration.setPoolSize(parseInt(value, "poolSize"));
+                            } else if ("reap".equals(name)) {
+                                configuration.setReap(parseInt(value, "reap"));
+                            } else if ("query".equals(name)) {
+                                configuration.setQuery(value);
+                            } else {
+                                configuration.setProperty(name, value);
+                            }
+
                         }
                     }
 
@@ -103,6 +125,14 @@ public class DataSourceConfigParser {
             }
         } catch (XMLStreamException e) {
             throw new DataSourceParseException(e);
+        }
+    }
+
+    private int parseInt(String value, String name) throws DataSourceParseException {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new DataSourceParseException("Invalid value for " + name, e);
         }
     }
 

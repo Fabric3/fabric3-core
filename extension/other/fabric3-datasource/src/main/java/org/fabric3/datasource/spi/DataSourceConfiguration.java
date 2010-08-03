@@ -54,6 +54,15 @@ public class DataSourceConfiguration implements Serializable {
     private String url;
     private String username;
     private String password;
+    private int maxPoolSize = -1;
+    private int minPoolSize = -1;
+    private int connectionTimeout = -1;
+    private int loginTimeout = -1;
+    private int maintenanceInterval = -1;
+    private int maxIdle = -1;
+    private int poolSize = -1;
+    private int reap = -1;
+    private String query;
 
     private Properties properties = new Properties();
 
@@ -101,6 +110,78 @@ public class DataSourceConfiguration implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getMaxPoolSize() {
+        return maxPoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
+    }
+
+    public int getMinPoolSize() {
+        return minPoolSize;
+    }
+
+    public void setMinPoolSize(int minPoolSize) {
+        this.minPoolSize = minPoolSize;
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public int getLoginTimeout() {
+        return loginTimeout;
+    }
+
+    public void setLoginTimeout(int loginTimeout) {
+        this.loginTimeout = loginTimeout;
+    }
+
+    public int getMaintenanceInterval() {
+        return maintenanceInterval;
+    }
+
+    public void setMaintenanceInterval(int maintenanceInterval) {
+        this.maintenanceInterval = maintenanceInterval;
+    }
+
+    public int getMaxIdle() {
+        return maxIdle;
+    }
+
+    public void setMaxIdle(int maxIdle) {
+        this.maxIdle = maxIdle;
+    }
+
+    public int getPoolSize() {
+        return poolSize;
+    }
+
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
+    }
+
+    public int getReap() {
+        return reap;
+    }
+
+    public void setReap(int reap) {
+        this.reap = reap;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     /**

@@ -54,4 +54,8 @@ public class DataSourceParseException extends DataSourceFactoryException {
     public DataSourceParseException(Throwable cause) {
         super(cause);
     }
+
+    public DataSourceParseException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
