@@ -89,7 +89,7 @@ public class MBeanServerWrapper implements MBeanServer {
     Map<ObjectName, ObjectName> mappings = new ConcurrentHashMap<ObjectName, ObjectName>();
 
     public MBeanServerWrapper(String brokerName, MBeanServer delegate) {
-        this.brokerName = brokerName;
+        this.brokerName = brokerName.replace(":", "_");
         this.delegate = delegate;
     }
 
