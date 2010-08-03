@@ -151,7 +151,12 @@ public class BrokerEngine {
             connector.setDiscoveryUri(URI.create("multicast://default"));
             broker.addNetworkConnector("multicast://default");
         } else {
-            broker.setBrokerName(brokerConfiguration.getName());
+            String name = brokerConfiguration.getName();
+            if (name != null) {
+                broker.setBrokerName(name);
+            } else {
+                broker.setBrokerName(brokerName);
+            }
             PersistenceAdapterConfig persistenceConfig = brokerConfiguration.getPersistenceAdapter();
             if (persistenceConfig != null) {
                 if (PersistenceAdapterConfig.Type.AMQ == persistenceConfig.getType()) {
