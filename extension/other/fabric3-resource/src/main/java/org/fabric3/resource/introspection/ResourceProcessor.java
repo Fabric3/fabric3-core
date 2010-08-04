@@ -37,6 +37,7 @@
 */
 package org.fabric3.resource.introspection;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -56,6 +57,7 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
@@ -79,6 +81,37 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
     @Reference(required = false)
     public void setHandlers(Map<Class<?>, ResourceTypeHandler> handlers) {
         this.handlers = handlers;
+    }
+
+    @Override
+    public void visitConstructorParameter(Resource annotation,
+                                          Constructor<?> constructor,
+                                          int index,
+                                          Class<?> implClass,
+                                          I implementation,
+                                          IntrospectionContext context) {
+        String name = helper.getSiteName(constructor, index, annotation.name());
+        Type genericType = helper.getGenericType(constructor, index);
+        TypeMapping typeMapping = context.getTypeMapping(implClass);
+        Class<?> type = helper.getBaseType(genericType, typeMapping);
+
+        ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
+        ResourceReferenceDefinition definition;
+        ResourceTypeHandler handler = handlers.get(type);
+        if (handler != null) {
+            // there is a specific Handler for this type
+            definition = handler.createResourceReference(name, annotation, constructor, context);
+        } else {
+            boolean optional = annotation.optional();
+            String mappedName = annotation.mappedName();
+            if (mappedName.length() == 0) {
+                // default to the field type simple name
+                mappedName = type.getSimpleName();
+            }
+            definition = createResource(name, type, optional, mappedName, context);
+        }
+        implementation.getComponentType().add(definition, site);
+
     }
 
     public void visitField(Resource annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
@@ -128,7 +161,11 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
         implementation.getComponentType().add(definition, site);
     }
 
-    private SystemSourcedResourceReference createResource(String name, Class<?> type, boolean optional, String mappedName, IntrospectionContext context) {
+    private SystemSourcedResourceReference createResource(String name,
+                                                          Class<?> type,
+                                                          boolean optional,
+                                                          String mappedName,
+                                                          IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context);
         return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
     }
