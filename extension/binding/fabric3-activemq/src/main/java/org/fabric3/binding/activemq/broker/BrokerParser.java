@@ -170,7 +170,7 @@ public class BrokerParser {
                         try {
                             transportConfig.setDiscoveryUri(new URI(discoveryUriString));
                         } catch (URISyntaxException e) {
-                            raiseInvalidConfiguration("Invalid disovery uri", e, reader);
+                            raiseInvalidConfiguration("Invalid discovery uri", e, reader);
                         }
                     }
                     transportConfigs.add(transportConfig);

@@ -89,7 +89,7 @@ public class MBeanServerWrapper implements MBeanServer {
     Map<ObjectName, ObjectName> mappings = new ConcurrentHashMap<ObjectName, ObjectName>();
 
     public MBeanServerWrapper(String brokerName, MBeanServer delegate) {
-        this.brokerName = brokerName.replace(":", "_");
+        this.brokerName = brokerName.replace(":", ".");
         this.delegate = delegate;
     }
 
@@ -123,7 +123,10 @@ public class MBeanServerWrapper implements MBeanServer {
     }
 
     public void unregisterMBean(ObjectName name) throws InstanceNotFoundException, MBeanRegistrationException {
-        ObjectName mapped = mappings.get(name);
+        ObjectName mapped = mappings.remove(name);
+        if (mapped == null) {
+            throw new InstanceNotFoundException(name.toString());
+        }
         delegate.unregisterMBean(mapped);
     }
 
@@ -266,8 +269,9 @@ public class MBeanServerWrapper implements MBeanServer {
         } else if (object instanceof ConnectionView) {
             try {
                 String connectionName = name.getKeyProperty("ConnectorName");
+                String connectorName = name.getKeyProperty("Name");
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
-                        + ", subgroup=connections, connectionName=" + connectionName);
+                        + ", subgroup=connections, connectionName=" + connectionName + ", Name=" + connectorName);
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
@@ -288,10 +292,11 @@ public class MBeanServerWrapper implements MBeanServer {
                 destinationType = "topics";
             }
             try {
-                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName="
-                        + brokerName + ", subgroup=subscriptions, desintantionType=" + destinationType + ", destinationName="
-                        + JMXSupport.encodeObjectNamePart(view.getDestinationName()) + ", cliendId=" + view.getClientId()
-                        + ", consumerId" + view.getSubcriptionId());
+                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName="+ brokerName
+                        + ", subgroup=subscriptions, desintantionType=" + destinationType
+                        + ", destinationName=" + JMXSupport.encodeObjectNamePart(view.getDestinationName())
+                        + ", cliendId=" + JMXSupport.encodeObjectNamePart(view.getClientId())
+                        + ", consumerId=" + view.getSubcriptionId());
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }

@@ -57,6 +57,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
  * Parses ConnectionFactoryConfiguration entries in the runtime system configuration, instantiates connection factories for them, and registers the
@@ -70,10 +71,17 @@ public class ConnectionFactoryParser {
     private ConnectionFactoryManager manager;
     private String brokerName;
 
-    public ConnectionFactoryParser(@Reference ConnectionFactoryManager manager, @Reference HostInfo info) {
+    public ConnectionFactoryParser(@Reference ConnectionFactoryManager manager,
+                                   @Reference(required = false) ZoneTopologyService topologyService,
+                                   @Reference HostInfo info) {
         this.manager = manager;
-        // set broker name to runtime name
-        this.brokerName = info.getRuntimeId();
+        if (topologyService != null) {
+            //
+            this.brokerName = topologyService.getRuntimeName().replace(":", ".");
+        } else {
+            // running in a single process domain, use the runtime id
+            this.brokerName = info.getRuntimeId();
+        }
     }
 
     @Property

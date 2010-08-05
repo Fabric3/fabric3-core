@@ -58,6 +58,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
@@ -67,6 +68,7 @@ import org.fabric3.spi.monitor.MonitorService;
  */
 @EagerInit
 public class BrokerEngine {
+    private HostInfo info;
     private String brokerName;
     private BrokerService broker;
     private File tempDir;
@@ -79,14 +81,14 @@ public class BrokerEngine {
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MonitorService monitorService;
     private MBeanServer mBeanServer;
+    private ZoneTopologyService topologyService;
 
     public BrokerEngine(@Reference HostInfo info) {
         tempDir = new File(info.getTempDir(), "activemq");
         // sets the directory where persistent messages are written
         File baseDataDir = info.getDataDir();
         dataDir = new File(baseDataDir, "activemq.data");
-        // set the broker name to the runtime id
-        brokerName = info.getRuntimeId();
+        this.info = info;
     }
 
     @Property(required = false)
@@ -117,6 +119,11 @@ public class BrokerEngine {
     }
 
     @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
+    }
+
+    @Reference(required = false)
     public void setMBeanServer(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
     }
@@ -127,17 +134,22 @@ public class BrokerEngine {
             // if the host address is not specified, use localhost address
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
-        // ActiveMQ default level is INFO which is verbose. Only log warnings by default
-//        monitorService.setProviderLevel("org.apache.activemq", monitorLevel.toString());
+        // set the default broker name
+        if (topologyService != null) {
+            brokerName = topologyService.getRuntimeName().replace(":", ".");
+        } else {
+            // a non-clustered environment, default to the runtime id
+            brokerName = info.getRuntimeId();
+        }
+
         broker = new BrokerService();
-        Fabric3ManagementContext context = new Fabric3ManagementContext(brokerName, mBeanServer);
-        broker.setManagementContext(context);
         broker.setUseJmx(true);
         broker.setTmpDataDirectory(tempDir);
         broker.setDataDirectory(dataDir.toString());
         if (brokerConfiguration == null) {
             // default configuration
             broker.setBrokerName(brokerName);
+            createManagementContext(brokerName);
             boolean loop = true;
             TransportConnector connector = null;
             while (loop) {
@@ -148,15 +160,18 @@ public class BrokerEngine {
                     selectPort();
                 }
             }
-            connector.setDiscoveryUri(URI.create("multicast://default"));
-            broker.addNetworkConnector("multicast://default");
+            String group = info.getDomain().getAuthority();
+            connector.setDiscoveryUri(URI.create("multicast://default?group=" + group));
+            broker.addNetworkConnector("multicast://default?group=" + group);
         } else {
             String name = brokerConfiguration.getName();
             if (name != null) {
+                brokerName = name;
                 broker.setBrokerName(name);
             } else {
                 broker.setBrokerName(brokerName);
             }
+            createManagementContext(brokerName);
             PersistenceAdapterConfig persistenceConfig = brokerConfiguration.getPersistenceAdapter();
             if (persistenceConfig != null) {
                 if (PersistenceAdapterConfig.Type.AMQ == persistenceConfig.getType()) {
@@ -171,8 +186,22 @@ public class BrokerEngine {
                     broker.setPersistenceAdapter(adapter);
                 }
             }
+            for (URI uri : brokerConfiguration.getNetworkConnectorUris()) {
+                broker.addNetworkConnector(uri);
+            }
+            for (TransportConnectorConfig config : brokerConfiguration.getTransportConnectorConfigs()) {
+                URI uri = config.getUri();
+                URI discoveryUri = config.getDiscoveryUri();
+                TransportConnector connector = broker.addConnector(uri);
+                connector.setDiscoveryUri(discoveryUri);
+            }
         }
         broker.start();
+    }
+
+    private void createManagementContext(String brokerName) {
+        Fabric3ManagementContext context = new Fabric3ManagementContext(brokerName, mBeanServer);
+        broker.setManagementContext(context);
     }
 
     @Destroy
