@@ -41,7 +41,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Factory that returns named threads.
+ * Factory that returns named threads and sets an uncaught exception handler that forwards exceptions to a monitor.
  *
  * @version $Rev$ $Date$
  */
