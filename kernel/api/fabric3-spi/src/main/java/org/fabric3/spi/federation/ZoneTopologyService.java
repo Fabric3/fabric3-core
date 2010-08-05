@@ -53,18 +53,25 @@ import org.fabric3.spi.command.ResponseCommand;
 public interface ZoneTopologyService {
 
     /**
+     * Returns the fully qualified runtime name which is unique to the domain.
+     *
+     * @return the fully qualified runtime name
+     */
+    String getRuntimeName();
+
+    /**
      * Registers a transient {@link TopologyListener}.
      *
      * @param listener the listener
      */
-    public void register(TopologyListener listener);
+    void register(TopologyListener listener);
 
     /**
      * De-registers a transient {@link TopologyListener}.
      *
      * @param listener the listener
      */
-    public void deregister(TopologyListener listener);
+    void deregister(TopologyListener listener);
 
     /**
      * Returns true if the current runtime is the zone leader.

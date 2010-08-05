@@ -138,6 +138,9 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         runtimeChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
     }
 
+    public String getRuntimeName() {
+        return runtimeName;
+    }
 
     public void register(TopologyListener listener) {
 

@@ -39,6 +39,8 @@
     <orderEntry type="module" module-name="fabric3-weblogic-host" />
     <orderEntry type="module" module-name="fabric3-weblogic-cluster" />
     <orderEntry type="module" module-name="fabric3-federation-deployment" />
+    <orderEntry type="module" module-name="sca-spec" />
+    <orderEntry type="module" module-name="fabric3-api" />
   </component>
 </module>
 
