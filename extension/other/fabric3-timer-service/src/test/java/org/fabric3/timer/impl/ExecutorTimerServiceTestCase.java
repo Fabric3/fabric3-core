@@ -49,7 +49,7 @@ import org.fabric3.timer.spi.Task;
  * @version $Rev$ $Date$
  */
 public class ExecutorTimerServiceTestCase extends TestCase {
-    private ExecutorTimerService timerService = new ExecutorTimerService(null);
+    private ExecutorTimerService timerService = new ExecutorTimerService(null, null);
 
     public void testAllocateDeallocate() throws Exception {
         timerService.allocate("test", 10);

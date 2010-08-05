@@ -37,11 +37,14 @@
 */
 package org.fabric3.timer.impl;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -54,7 +57,9 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.PoolAllocationException;
@@ -65,14 +70,17 @@ import org.fabric3.timer.spi.TimerService;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ExecutorTimerService implements TimerService {
+@Service(interfaces = {TimerService.class, ScheduledExecutorService.class})
+public class ExecutorTimerService implements TimerService, ScheduledExecutorService {
     private ManagementService managementService;
+    private TimerServiceMonitor monitor;
     private Map<String, ScheduledExecutorService> executors = new ConcurrentHashMap<String, ScheduledExecutorService>();
     private Map<String, TimerPoolStatistics> statisticsCache = new ConcurrentHashMap<String, TimerPoolStatistics>();
     private int defaultPoolSize = 2;
 
-    public ExecutorTimerService(@Reference ManagementService managementService) {
+    public ExecutorTimerService(@Reference ManagementService managementService, @Monitor TimerServiceMonitor monitor) {
         this.managementService = managementService;
+        this.monitor = monitor;
     }
 
     @Property(required = false)
@@ -97,6 +105,8 @@ public class ExecutorTimerService implements TimerService {
             throw new IllegalStateException("Pool already allocated: " + poolName);
         }
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(coreSize);
+        TimerThreadFactory threadFactory = new TimerThreadFactory(poolName, monitor);
+        executor.setThreadFactory(threadFactory);
         executors.put(poolName, executor);
         TimerPoolStatistics statistics = new TimerPoolStatistics(poolName, coreSize);
         statistics.start();
@@ -151,6 +161,75 @@ public class ExecutorTimerService implements TimerService {
         return executor.schedule(callable, delay, unit);
     }
 
+    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+        return schedule(TimerService.DEFAULT_POOL, command, delay, unit);
+    }
+
+    public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+        return schedule(TimerService.DEFAULT_POOL, callable, delay, unit);
+    }
+
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+        return scheduleAtFixedRate(TimerService.DEFAULT_POOL, command, initialDelay, period, unit);
+    }
+
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        return scheduleWithFixedDelay(TimerService.DEFAULT_POOL, command, initialDelay, delay, unit);
+    }
+
+    public void shutdown() {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<Runnable> shutdownNow() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isShutdown() {
+        return false;
+    }
+
+    public boolean isTerminated() {
+        return false;
+    }
+
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> Future<T> submit(Callable<T> task) {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> Future<T> submit(Runnable task, T result) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Future<?> submit(Runnable task) {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void execute(Runnable command) {
+        throw new UnsupportedOperationException();
+    }
+
     private ScheduledExecutorService getExecutor(String poolName) {
         ScheduledExecutorService executor = executors.get(poolName);
         if (executor == null) {
@@ -193,12 +272,18 @@ public class ExecutorTimerService implements TimerService {
 
         public void run() {
             long start = System.currentTimeMillis();
-            delegate.run();
-            long elapsed = System.currentTimeMillis() - start;
-            statistics.incrementTotalExecutions();
-            statistics.incrementExecutionTime(elapsed);
-            if (!currentFuture.isCancelled()) {
-                schedule();
+            try {
+                delegate.run();
+            } catch (RuntimeException e) {
+                monitor.threadError(e);
+                throw e;
+            } finally {
+                long elapsed = System.currentTimeMillis() - start;
+                statistics.incrementTotalExecutions();
+                statistics.incrementExecutionTime(elapsed);
+                if (!currentFuture.isCancelled()) {
+                    schedule();
+                }
             }
         }
     }
