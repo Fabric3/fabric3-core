@@ -37,12 +37,16 @@
 */
 package org.fabric3.threadpool;
 
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ExecutorMonitor {
+
+    @Severe
+    void threadError(Throwable t);
 
     @Warning
     void stalledThread(String threadName, long elapsedTime, String trace);

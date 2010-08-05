@@ -253,7 +253,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
             // create an unbounded queue to accept work
             queue = new LinkedBlockingQueue<Runnable>();
         }
-        RuntimeThreadFactory factory = new RuntimeThreadFactory();
+        RuntimeThreadFactory factory = new RuntimeThreadFactory(monitor);
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);
         delegate.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
         delegate.allowCoreThreadTimeOut(allowCoreThreadTimeOut);

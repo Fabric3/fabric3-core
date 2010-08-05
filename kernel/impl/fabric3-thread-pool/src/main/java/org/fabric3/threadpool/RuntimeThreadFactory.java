@@ -49,11 +49,13 @@ public class RuntimeThreadFactory implements ThreadFactory {
     private AtomicInteger number = new AtomicInteger(1);
     private ThreadGroup group;
     private String prefix;
+    private RuntimeUncaughtExceptionHandler handler;
 
-    public RuntimeThreadFactory() {
+    public RuntimeThreadFactory(ExecutorMonitor monitor) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         prefix = "pooled:";
+        handler = new RuntimeUncaughtExceptionHandler(monitor);
     }
 
     public Thread newThread(Runnable r) {
@@ -64,7 +66,20 @@ public class RuntimeThreadFactory implements ThreadFactory {
         if (thread.getPriority() != Thread.NORM_PRIORITY) {
             thread.setPriority(Thread.NORM_PRIORITY);
         }
+        thread.setUncaughtExceptionHandler(handler);
         return thread;
+    }
+
+    private class RuntimeUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+        private ExecutorMonitor monitor;
+
+        private RuntimeUncaughtExceptionHandler(ExecutorMonitor monitor) {
+            this.monitor = monitor;
+        }
+
+        public void uncaughtException(Thread t, Throwable e) {
+            monitor.threadError(e);
+        }
     }
 }
 
