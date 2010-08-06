@@ -41,7 +41,6 @@ import java.net.URI;
 
 import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.fabric.instantiator.component.DuplicateComponent;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Composite;
@@ -60,7 +59,7 @@ public class ChannelInstantiatorImpl implements ChannelInstantiator {
         for (ChannelDefinition definition : composite.getChannels().values()) {
             URI uri = URI.create(parent.getUri() + "/" + definition.getName());
             if (parent.getChannel(uri) != null) {
-                DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
+                DuplicateChannel error = new DuplicateChannel(uri, definition.getContributionUri());
                 context.addError(error);
                 continue;
             }
