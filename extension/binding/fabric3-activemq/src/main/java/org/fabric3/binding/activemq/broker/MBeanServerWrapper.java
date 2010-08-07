@@ -268,10 +268,17 @@ public class MBeanServerWrapper implements MBeanServer {
             }
         } else if (object instanceof ConnectionView) {
             try {
-                String connectionName = name.getKeyProperty("ConnectorName");
-                String connectorName = name.getKeyProperty("Name");
-                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
-                        + ", subgroup=connections, connectionName=" + connectionName + ", Name=" + connectorName);
+                String connectionName = name.getKeyProperty("Connection");
+                String connectorName = name.getKeyProperty("ConnectorName");
+                if (connectionName != null) {
+                    name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
+                            + ", subgroup=connections, connection=" + connectionName + ", ConnectorName=" + connectorName);
+                } else {
+                    String propertyName = name.getKeyProperty("Name");
+                    name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
+                            + ", subgroup=connections, Name=" + propertyName + ", ConnectorName=" + connectorName);
+
+                }
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
@@ -292,7 +299,7 @@ public class MBeanServerWrapper implements MBeanServer {
                 destinationType = "topics";
             }
             try {
-                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName="+ brokerName
+                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
                         + ", subgroup=subscriptions, desintantionType=" + destinationType
                         + ", destinationName=" + JMXSupport.encodeObjectNamePart(view.getDestinationName())
                         + ", cliendId=" + JMXSupport.encodeObjectNamePart(view.getClientId())
