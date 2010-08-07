@@ -79,7 +79,7 @@ public class CallFrame implements Serializable {
      * @param callbackUri         the URI the caller of the current service can be called back on
      * @param correlationId       the key used to correlate the forward invocation with the target component implementation instance. For stateless
      *                            targets, the id may be null.
-     * @param conversation        the conversaation associated with the invocation or null
+     * @param conversation        the conversation associated with the invocation or null
      * @param conversationContext the type of conversational context
      */
     public CallFrame(String callbackUri, Serializable correlationId, F3Conversation conversation, ConversationContext conversationContext) {
@@ -127,7 +127,7 @@ public class CallFrame implements Serializable {
      * @return the copied frame
      */
     public CallFrame copy() {
-        // data is immutable, return shallow copy
+        // data is immutable, return a shallow copy
         return new CallFrame(callbackUri, correlationId, conversation, conversationContext);
     }
 
