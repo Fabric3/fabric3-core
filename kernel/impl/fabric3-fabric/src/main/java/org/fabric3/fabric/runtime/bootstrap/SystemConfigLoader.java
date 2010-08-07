@@ -173,7 +173,11 @@ public class SystemConfigLoader {
             String name = node.getAttribute("domain");
             if (name.length() > 0) {
                 try {
-                    return new URI("fabric3://" + name);
+                    URI uri = new URI("fabric3://" + name);
+                    if (uri.getHost() == null) {
+                        throw new ParseException("Invalid domain name specified in system configuration. Domain names must be a valid URI host.");
+                    }
+                    return uri;
                 } catch (URISyntaxException e) {
                     throw new ParseException("Invalid domain name specified in system configuration", e);
                 }
