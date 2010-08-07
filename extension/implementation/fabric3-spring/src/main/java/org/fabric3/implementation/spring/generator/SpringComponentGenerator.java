@@ -41,9 +41,12 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
+import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
+import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -60,7 +63,10 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -108,11 +114,31 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        SpringConnectionSourceDefinition definition = new SpringConnectionSourceDefinition();
+        URI uri = producer.getUri();
+        ServiceContract serviceContract = producer.getDefinition().getServiceContract();
+        String interfaceName = serviceContract.getQualifiedInterfaceName();
+        definition.setUri(uri);
+        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
+        definition.setInterfaceName(interfaceName);
+        return definition;
     }
 
+    @SuppressWarnings({"unchecked"})
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        SpringConnectionTargetDefinition definition = new SpringConnectionTargetDefinition();
+        LogicalComponent<? extends SpringImplementation> component = (LogicalComponent<? extends SpringImplementation>) consumer.getParent();
+        // TODO support promotion by returning the leaf component URI instead of the parent component URI
+        URI uri = component.getUri();
+        definition.setTargetUri(uri);
+        SpringComponentType type = component.getDefinition().getImplementation().getComponentType();
+        Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
+        if (signature == null) {
+            // programming error
+            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
+        }
+        definition.setConsumerSignature(signature);
+        return definition;
     }
 
     public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
@@ -122,4 +148,6 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         throw new UnsupportedOperationException();
     }
+
+
 }

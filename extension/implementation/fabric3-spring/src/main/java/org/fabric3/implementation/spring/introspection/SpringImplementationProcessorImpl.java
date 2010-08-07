@@ -71,6 +71,8 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
     private static final QName SERVICE = new QName(Constants.SCA_NS, "service");
     private static final QName REFERENCE = new QName(Constants.SCA_NS, "reference");
     private static final QName PROPERTY = new QName(Constants.SCA_NS, "property");
+    private static final QName PRODUCER = new QName(Constants.SCA_NS, "producer");
+    private static final QName CONSUMER = new QName(Constants.SCA_NS, "consumer");
 
     private JavaContractProcessor contractProcessor;
     private XMLFactory factory;
@@ -104,6 +106,14 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
                         }
                     } else if (PROPERTY.equals(reader.getName())) {
                         if (!processProperty(type, reader, context)) {
+                            return type;
+                        }
+                    } else if (PRODUCER.equals(reader.getName())) {
+                        if (!processProducer(type, reader, context)) {
+                            return type;
+                        }
+                    } else if (CONSUMER.equals(reader.getName())) {
+                        if (!processConsumer(type, reader, context)) {
                             return type;
                         }
                     }
@@ -280,6 +290,31 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         type.add(property);
         return true;
     }
+
+    /**
+     * Processes an SCA <code>consumer</code> element.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processConsumer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        return false;
+    }
+
+    /**
+     * Processes an SCA <code>producer</code> element.
+     *
+     * @param type    the component type
+     * @param reader  the reader
+     * @param context the context for reporting errors
+     * @return true if processing completed without validation errors
+     */
+    private boolean processProducer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        return false;
+    }
+
 
     /**
      * Performs heuristic introspection and validation.
