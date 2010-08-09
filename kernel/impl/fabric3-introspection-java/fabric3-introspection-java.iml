@@ -42,6 +42,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-spi" />
     <orderEntry type="module" module-name="fabric3-model" />
+    <orderEntry type="module" module-name="sca-spec" />
   </component>
 </module>
 
