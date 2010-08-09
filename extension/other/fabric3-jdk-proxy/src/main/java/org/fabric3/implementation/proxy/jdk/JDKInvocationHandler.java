@@ -91,9 +91,8 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
      * @param interfaze   the proxy interface
      * @param callbackUri the callback uri or null if the wire is unidirectional
      * @param mapping     the method to invocation chain mappings for the wire
-     * @throws NoMethodForOperationException if an error occurs creating the proxy
      */
-    public JDKInvocationHandler(Class<B> interfaze, String callbackUri, Map<Method, InvocationChain> mapping) throws NoMethodForOperationException {
+    public JDKInvocationHandler(Class<B> interfaze, String callbackUri, Map<Method, InvocationChain> mapping) {
         this(interfaze, InteractionType.STATELESS, callbackUri, mapping, null);
     }
 
@@ -105,13 +104,12 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
      * @param callbackUri    the callback uri or null if the wire is unidirectional
      * @param mapping        the method to invocation chain mappings for the wire
      * @param scopeContainer the conversational scope container
-     * @throws NoMethodForOperationException if an error occurs creating the proxy
      */
     public JDKInvocationHandler(Class<B> interfaze,
                                 InteractionType type,
                                 String callbackUri,
                                 Map<Method, InvocationChain> mapping,
-                                ScopeContainer scopeContainer) throws NoMethodForOperationException {
+                                ScopeContainer scopeContainer) {
         this.callbackUri = callbackUri;
         assert mapping != null;
         this.businessInterface = interfaze;
