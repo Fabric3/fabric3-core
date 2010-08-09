@@ -174,12 +174,45 @@ public class SpringComponent implements Component {
         parent.remove(name);
     }
 
+    /**
+     * Returns the parent application context.
+     *
+     * @return the parent application context
+     */
     public SCAApplicationContext getParent() {
         return parent;
     }
 
+    /**
+     * Returns a bean instance for the given bean name.
+     *
+     * @param name the bean name
+     * @return a bean instance
+     */
     public Object getBean(String name) {
+        if (applicationContext == null) {
+            throw new IllegalStateException("Attempt to access a bean the Spring component has been started: " + name);
+        }
         return applicationContext.getBean(name);
+    }
+
+    /**
+     * Returns the bean implementation class for the given bean name.
+     *
+     * @param name the bean name
+     * @return a bean implementation class
+     */
+    public Class<?> getBeanClass(String name) {
+        if (applicationContext == null) {
+            throw new IllegalStateException("Attempt to access a bean before the Spring component has been started: " + name);
+        }
+        String beanClassName = applicationContext.getBeanDefinition(name).getBeanClassName();
+        try {
+            return classLoader.loadClass(beanClassName);
+        } catch (ClassNotFoundException e) {
+            // this should not happen at this point
+            throw new AssertionError(e);
+        }
     }
 
 }

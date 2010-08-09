@@ -37,13 +37,47 @@
 */
 package org.fabric3.implementation.spring.provision;
 
-import org.fabric3.implementation.pojo.provision.PojoConnectionTargetDefinition;
+import java.net.URI;
+
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Used to attach the target side of a channel connection to a Spring bean consumer.
  *
  * @version $Revision$ $Date$
  */
-public class SpringConnectionTargetDefinition extends PojoConnectionTargetDefinition {
+public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 967914855829805771L;
+    private String beanName;
+    private JavaType<?> type;
+    private String methodName;
+
+    /**
+     * Constructor.
+     *
+     * @param beanName   the name of the bean to dispatch events to
+     * @param methodName the name of the bean method to dispatch events to
+     * @param type       the event type
+     * @param channelUri the URI of the source channel
+     */
+    public SpringConnectionTargetDefinition(String beanName, String methodName, JavaType<?> type, URI channelUri) {
+        this.beanName = beanName;
+        this.methodName = methodName;
+        this.type = type;
+        setTargetUri(channelUri);
+    }
+
+    public String getBeanName() {
+        return beanName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public JavaType<?> getType() {
+        return type;
+    }
+
 }

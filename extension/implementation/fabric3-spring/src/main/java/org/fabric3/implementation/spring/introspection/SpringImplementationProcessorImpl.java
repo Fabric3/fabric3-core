@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -51,7 +50,10 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.stream.Source;
 import org.fabric3.implementation.spring.model.BeanDefinition;
 import org.fabric3.implementation.spring.model.SpringComponentType;
+import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringService;
+import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -59,7 +61,10 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.xml.XMLFactory;
+
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Default SpringImplementationProcessor implementation.
@@ -299,9 +304,51 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @param context the context for reporting errors
      * @return true if processing completed without validation errors
      */
-    private boolean processConsumer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
-        return false;
+    private <T> boolean processConsumer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("A consumer name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        if (type.getConsumers().containsKey(name)) {
+            DuplicateConsumer failure = new DuplicateConsumer(name, reader);
+            context.addError(failure);
+            return false;
+        }
+        String typeAttr = reader.getAttributeValue(null, "type");
+        if (typeAttr == null) {
+            MissingAttribute failure = new MissingAttribute("A consumer data type must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        Class<T> consumerType;
+        try {
+            ClassLoader loader = context.getClassLoader();
+            consumerType = cast(loader.loadClass(typeAttr));
+        } catch (ClassNotFoundException e) {
+            InvalidValue failure = new InvalidValue("Consumer interface not found: " + typeAttr, reader);
+            context.addError(failure);
+            return false;
+        }
+        JavaClass<T> dataType = new JavaClass<T>(consumerType);
+        String target = reader.getAttributeValue(null, "target");
+        if (target == null) {
+            MissingAttribute failure = new MissingAttribute("A consumer target must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        String[] targetTokens = target.split("/");
+        if (targetTokens.length != 2) {
+            InvalidValue failure = new InvalidValue("Target value must be in the form beanName/methodName", reader);
+            context.addError(failure);
+            return false;
+        }
+        ConsumerDefinition definition = new SpringConsumer(name, dataType, targetTokens[0], targetTokens[1]);
+        type.add(definition);
+        return true;
     }
+
 
     /**
      * Processes an SCA <code>producer</code> element.
@@ -312,7 +359,38 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private boolean processProducer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
-        return false;
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute failure = new MissingAttribute("A producer name must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        if (type.getConsumers().containsKey(name)) {
+            DuplicateConsumer failure = new DuplicateConsumer(name, reader);
+            context.addError(failure);
+            return false;
+        }
+
+        String typeAttr = reader.getAttributeValue(null, "type");
+        if (typeAttr == null) {
+            MissingAttribute failure = new MissingAttribute("A producer data type must be specified", reader);
+            context.addError(failure);
+            return false;
+        }
+        Class<?> interfaze;
+        try {
+            ClassLoader loader = context.getClassLoader();
+            interfaze = loader.loadClass(typeAttr);
+        } catch (ClassNotFoundException e) {
+            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+            context.addError(failure);
+            return false;
+        }
+        ServiceContract contract = contractProcessor.introspect(interfaze, context);
+
+        ProducerDefinition definition = new ProducerDefinition(name, contract);
+        type.add(definition);
+        return true;
     }
 
 
@@ -408,5 +486,9 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         }
     }
 
+    @SuppressWarnings({"unchecked"})
+    private <T> T cast(Object o) {
+        return (T) o;
+    }
 
 }

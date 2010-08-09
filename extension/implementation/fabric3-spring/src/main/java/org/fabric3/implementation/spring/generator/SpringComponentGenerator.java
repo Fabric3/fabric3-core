@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.implementation.spring.model.SpringComponentType;
+import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
@@ -63,10 +63,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -92,7 +90,8 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         }
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = reference.getParent().getUri();
-        return new SpringSourceDefinition(reference.getDefinition().getName(), interfaze, uri);
+        String referenceName = reference.getDefinition().getName();
+        return new SpringSourceDefinition(referenceName, interfaze, uri);
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
@@ -114,31 +113,21 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
-        SpringConnectionSourceDefinition definition = new SpringConnectionSourceDefinition();
-        URI uri = producer.getUri();
+        String producerName = producer.getDefinition().getName();
+        URI uri = producer.getParent().getUri();
         ServiceContract serviceContract = producer.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
-        definition.setUri(uri);
-        definition.setInjectable(new Injectable(InjectableType.PRODUCER, uri.getFragment()));
-        definition.setInterfaceName(interfaceName);
-        return definition;
+        return new SpringConnectionSourceDefinition(producerName, interfaceName, uri);
     }
 
     @SuppressWarnings({"unchecked"})
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        SpringConnectionTargetDefinition definition = new SpringConnectionTargetDefinition();
-        LogicalComponent<? extends SpringImplementation> component = (LogicalComponent<? extends SpringImplementation>) consumer.getParent();
-        // TODO support promotion by returning the leaf component URI instead of the parent component URI
-        URI uri = component.getUri();
-        definition.setTargetUri(uri);
-        SpringComponentType type = component.getDefinition().getImplementation().getComponentType();
-        Signature signature = type.getConsumerSignature(consumer.getUri().getFragment());
-        if (signature == null) {
-            // programming error
-            throw new GenerationException("Consumer signature not found on: " + consumer.getUri());
-        }
-        definition.setConsumerSignature(signature);
-        return definition;
+        SpringConsumer springConsumer = (SpringConsumer) consumer.getDefinition();
+        String beanName = springConsumer.getBeanName();
+        String methodName = springConsumer.getMethodName();
+        JavaType<?> type = springConsumer.getType();
+        URI uri = consumer.getParent().getUri();
+        return new SpringConnectionTargetDefinition(beanName, methodName, type, uri);
     }
 
     public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {

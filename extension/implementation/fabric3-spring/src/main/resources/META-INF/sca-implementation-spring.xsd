@@ -46,6 +46,26 @@
         </complexType>
     </element>
 
+    <element name="consumer">
+         <complexType>
+             <attribute name="name" use="required">
+                 <simpleType>
+                     <restriction base="string" />
+                 </simpleType>
+             </attribute>
+             <attribute name="type" use="required">
+                 <simpleType>
+                     <restriction base="string" />
+                 </simpleType>
+             </attribute>
+             <attribute name="target" use="required">
+                 <simpleType>
+                     <restriction base="string" />
+                 </simpleType>
+             </attribute>
+         </complexType>
+     </element>
+
 
     <element name="reference">
         <complexType>
@@ -60,6 +80,26 @@
                 </simpleType>
             </attribute>
             <attribute name="default" use="optional">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="producer">
+        <complexType>
+            <attribute name="name" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="type" use="required">
+                <simpleType>
+                    <restriction base="string" />
+                </simpleType>
+            </attribute>
+            <attribute name="target" use="required">
                 <simpleType>
                     <restriction base="string" />
                 </simpleType>

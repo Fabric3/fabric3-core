@@ -37,36 +37,62 @@
 */
 package org.fabric3.implementation.spring.model;
 
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import java.util.Collections;
+
+import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
- * An SCA service definition in a Spring application context.
+ * An SCA consumer definition in a Spring application context.
  *
  * @version $Rev$ $Date$
  */
-public class SpringService extends ServiceDefinition {
+public class SpringConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = 204519855340684340L;
-    private String target;
+    private String beanName;
+    private JavaType<?> type;
+    private String methodName;
 
     /**
      * Constructor.
      *
-     * @param name            the service name
-     * @param serviceContract the service contract
-     * @param target          the service target name
+     * @param name       the consumer name
+     * @param type       the consumer type
+     * @param targetBean the target bean name to dispatch events to
+     * @param methodName the target method name on the bean to dispatch events to
      */
-    public SpringService(String name, ServiceContract serviceContract, String target) {
-        super(name, serviceContract);
-        this.target = target;
+    public SpringConsumer(String name, JavaType<?> type, String targetBean, String methodName) {
+        super(name, Collections.<DataType<?>>singletonList(type));
+        this.type = type;
+        this.beanName = targetBean;
+        this.methodName = methodName;
     }
 
     /**
-     * Returns the configured service target name.
+     * Returns the bean name to dispatch events to.
      *
-     * @return the configured service target name
+     * @return the bean name
      */
-    public String getTarget() {
-        return target;
+    public String getBeanName() {
+        return beanName;
+    }
+
+    /**
+     * Returns the name of the bean method to dispatch events to.
+     *
+     * @return the bean method name
+     */
+    public String getMethodName() {
+        return methodName;
+    }
+
+    /**
+     * Returns the event type
+     *
+     * @return the event type
+     */
+    public JavaType<?> getType() {
+        return type;
     }
 }

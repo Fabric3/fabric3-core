@@ -35,42 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.spring.provision;
+package org.fabric3.implementation.spring.introspection;
 
-import java.net.URI;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.implementation.pojo.provision.PojoConnectionSourceDefinition;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Used to attach the source side of a channel connection to a Spring component producer.
- *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class SpringConnectionSourceDefinition extends PojoConnectionSourceDefinition {
-    private static final long serialVersionUID = 3672289617445414801L;
+public class DuplicateConsumer extends XmlValidationFailure {
 
-    private String producerName;
-
-    /**
-     * Constructor.
-     *
-     * @param producerName  the producer name.
-     * @param interfaceName the producer interface name
-     * @param uri           the source Spring component URI;
-     */
-    public SpringConnectionSourceDefinition(String producerName, String interfaceName, URI uri) {
-        this.producerName = producerName;
-        setInterfaceName(interfaceName);
-        setUri(uri);
-    }
-
-    /**
-     * Returns the producer name.
-     *
-     * @return the producer name
-     */
-    public String getProducerName() {
-        return producerName;
+    public DuplicateConsumer(String name, XMLStreamReader reader) {
+        super("A consumer with the name name" + name + "is already specified", reader);
     }
 
 }
