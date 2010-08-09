@@ -75,16 +75,16 @@ public class PojoConnectionSourceDefinition extends PhysicalConnectionSourceDefi
     /**
      * Returns the Injectable this wire applies to.
      *
-     * @return the the injectible this wire applies to
+     * @return the the injectable this wire applies to
      */
     public Injectable getInjectable() {
         return injectable;
     }
 
     /**
-     * Sets the Injectable for this wire appies to.
+     * Sets the Injectable for this wire applies to.
      *
-     * @param injectable the injectible this wire applies to
+     * @param injectable the injectable this wire applies to
      */
     public void setInjectable(Injectable injectable) {
         this.injectable = injectable;
