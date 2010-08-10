@@ -86,7 +86,7 @@ public class MonitorHandler implements InvocationHandler {
             currentLevel = info.getLevel();
             currentMessage = info.getMessage();
         }
-        if (currentLevel.intValue() < monitorable.getLevel().intValue()) {
+        if (currentLevel == null || currentLevel.intValue() < monitorable.getLevel().intValue()) {
             // monitoring is off
             return null;
         }
