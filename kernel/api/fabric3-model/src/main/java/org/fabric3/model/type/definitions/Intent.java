@@ -157,7 +157,7 @@ public final class Intent extends AbstractPolicyDefinition {
      * Returns a set of qualifiers defined inline using the <qualifier> element. Note that this method does not return qualifiers defined using a
      * distinct <intent> element.
      *
-     * @return the qualified intnets
+     * @return the qualified intents
      */
     public Set<Qualifier> getQualifiers() {
         return qualifiers;

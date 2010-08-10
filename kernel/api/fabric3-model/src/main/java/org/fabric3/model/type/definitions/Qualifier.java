@@ -44,11 +44,11 @@ package org.fabric3.model.type.definitions;
  */
 public class Qualifier {
     private String name;
-    private boolean defaultQualifer;
+    private boolean defaultQualifier;
 
-    public Qualifier(String name, boolean defaultQualifer) {
+    public Qualifier(String name, boolean defaultQualifier) {
         this.name = name;
-        this.defaultQualifer = defaultQualifer;
+        this.defaultQualifier = defaultQualifier;
     }
 
     /**
@@ -61,11 +61,11 @@ public class Qualifier {
     }
 
     /**
-     * Returns true if the qualifer is the default.
+     * Returns true if the qualifier is the default.
      *
-     * @return true if the qualifer is the default.
+     * @return true if the qualifier is the default.
      */
     public boolean isDefault() {
-        return defaultQualifer;
+        return defaultQualifier;
     }
 }
