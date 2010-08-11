@@ -37,47 +37,18 @@
 */
 package org.fabric3.runtime.tomcat.connector;
 
-import org.apache.catalina.Service;
-import org.apache.catalina.connector.Connector;
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ConnectorServiceImpl implements ConnectorService {
-    private int defaultHttpPort = 8080;   // default Tomcat port
-    private Service service;
-    private Connector defaultHttpConnector;
+public class ConnectorInitException extends Fabric3Exception {
+    private static final long serialVersionUID = 3744495380927959286L;
 
-
-    public ConnectorServiceImpl(@Reference Service service) {
-        this.service = service;
-    }
-
-    @Property(required = false)
-    public void setHttpPort(int defaultHttpPort) {
-        this.defaultHttpPort = defaultHttpPort;
-    }
-
-    @Init
-    public void init() throws ConnectorInitException {
-        for (Connector connector : service.findConnectors()) {
-            if (connector.getPort() == defaultHttpPort) {
-                defaultHttpConnector = connector;
-                break;
-            }
-        }
-        if (defaultHttpConnector == null) {
-            throw new ConnectorInitException("Default HTTP connector not found for port: " + defaultHttpPort
-                    + ". Ensure that the Fabric3 runtime HTTP port is configured in systemConfig.xml.");
-        }
-    }
-
-    public Connector getConnector() {
-        return defaultHttpConnector;
+    public ConnectorInitException(String message) {
+        super(message);
     }
 }
