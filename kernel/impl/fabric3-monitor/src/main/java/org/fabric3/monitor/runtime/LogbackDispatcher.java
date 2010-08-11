@@ -79,9 +79,27 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
     }
 
+    /**
+     * Constructor which delegates to a log context that uses a private appender configuration and does not send messages to parent appenders.
+     *
+     * @param name the log context name
+     */
     public LogbackDispatcher(String name) {
+        // by default do not send log messages to parent appenders
+        this(name, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name     the log context name
+     * @param additive true if the log context should use parent appenders; otherwise the log context uses a private appender configuration and does
+     *                 not send messages to parent appenders.
+     */
+    public LogbackDispatcher(String name, boolean additive) {
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = context.getLogger(name);
+        logger.setAdditive(additive);
     }
 
     public void configure(Element element) throws MonitorConfigurationException {

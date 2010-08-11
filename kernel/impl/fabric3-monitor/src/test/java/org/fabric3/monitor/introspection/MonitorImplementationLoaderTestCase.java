@@ -68,7 +68,7 @@ public class MonitorImplementationLoaderTestCase extends TestCase {
     private static final String XML_NO_CONFIGURATION = "<implementation.monitor/>";
     Document configuration;
 
-    public void testLoadConfiguraton() throws Exception {
+    public void testLoadConfiguration() throws Exception {
         LoaderHelper helper = EasyMock.createMock(LoaderHelper.class);
         EasyMock.expect(helper.transform(EasyMock.isA(XMLStreamReader.class))).andReturn(configuration);
         EasyMock.replay(helper);
@@ -82,7 +82,7 @@ public class MonitorImplementationLoaderTestCase extends TestCase {
         EasyMock.verify(helper);
     }
 
-    public void testLoadNoConfiguraton() throws Exception {
+    public void testLoadNoConfiguration() throws Exception {
         LoaderHelper helper = EasyMock.createMock(LoaderHelper.class);
         EasyMock.replay(helper);
         MonitorImplementationLoader loader = new MonitorImplementationLoader(helper);

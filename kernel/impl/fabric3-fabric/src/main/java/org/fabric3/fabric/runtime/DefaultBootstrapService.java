@@ -51,20 +51,21 @@ import org.w3c.dom.Element;
 
 import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootConstants;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.ParseException;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.JmxConfiguration;
+import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanException;
 import org.fabric3.host.runtime.ScanResult;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.stream.Source;
-import org.fabric3.host.RuntimeMode;
 import org.fabric3.monitor.runtime.LogbackDispatcher;
 
 /**
@@ -107,7 +108,10 @@ public class DefaultBootstrapService implements BootstrapService {
     }
 
     public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException {
-        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName);
+        // set additive to true to use the root appender for the runtime log context hierarchy; otherwise set to false
+        // for the application hierarchy in order for application events to be logged to the app monitor hierarchy
+        boolean additive = !BootConstants.APP_MONITOR.equals(elementName);
+        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName, additive);
         Element element = systemConfigLoader.getMonitorConfiguration(elementName, systemConfig);
         if (element != null) {
             dispatcher.configure(element);
