@@ -69,7 +69,7 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.JmxConfiguration;
-import org.fabric3.host.runtime.JmxSecurity;
+import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;

@@ -53,6 +53,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.security.JmxSecurity;
 
 /**
  * Encapsulates configuration needed to bootstrap a runtime.

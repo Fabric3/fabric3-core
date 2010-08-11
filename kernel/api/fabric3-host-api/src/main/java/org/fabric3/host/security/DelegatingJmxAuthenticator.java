@@ -50,8 +50,6 @@ import javax.security.auth.Subject;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.runtime.JmxSecurity;
-
 /**
  * Delegates to a runtime extension to perform JMX authentication. Since a JMXAuthenticator is required to be created and passed to the JMX connector
  * during bootstrap, this implementation is used as a bridge to the actual JMXAuthenticator which is installed as a runtime extension and available

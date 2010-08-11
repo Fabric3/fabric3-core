@@ -69,7 +69,7 @@ import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.JmxConfiguration;
-import org.fabric3.host.runtime.JmxSecurity;
+import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.security.Role;
 import org.fabric3.host.stream.Source;
