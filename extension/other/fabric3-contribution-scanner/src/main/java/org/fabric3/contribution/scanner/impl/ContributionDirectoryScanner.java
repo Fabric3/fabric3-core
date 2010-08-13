@@ -145,7 +145,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
 
     @Destroy
     public void destroy() {
-        executor.shutdownNow();
+        if (executor != null) {
+            executor.shutdownNow();
+        }
     }
 
     public void onEvent(Fabric3Event event) {
