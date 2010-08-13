@@ -147,6 +147,13 @@ Public License. See the accompanying license file for details.
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>${jax.rs.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        
         <!-- base extensions -->
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>

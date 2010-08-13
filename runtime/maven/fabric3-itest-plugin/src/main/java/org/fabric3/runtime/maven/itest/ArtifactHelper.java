@@ -209,6 +209,13 @@ public class ArtifactHelper {
         wsAPI.setVersion("2.0-b24");
         hostArtifacts.addAll(resolveArtifacts(wsAPI, true));
 
+        // add JAX-RS API
+        Dependency rsAPI = new Dependency();
+        rsAPI.setGroupId("javax.ws.rs");
+        rsAPI.setArtifactId("jsr311-api");
+        rsAPI.setVersion("1.1.1");
+        hostArtifacts.addAll(resolveArtifacts(rsAPI, true));
+
         // add shared artifacts to the host classpath
         if (shared != null) {
             for (Dependency sharedDependency : shared) {

@@ -33,6 +33,7 @@
                 <include>javax.annotation:com.springsource.javax.annotation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.xml:webservices-api-osgi</include>
+                <include>javax.ws.rs:jsr311-api</include>
                 <include>stax:stax-api</include>
             </includes>
             <outputDirectory>fabric3/host</outputDirectory>
