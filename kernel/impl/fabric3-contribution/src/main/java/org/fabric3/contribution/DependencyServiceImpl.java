@@ -94,7 +94,7 @@ public class DependencyServiceImpl implements DependencyService {
             URI uri = contribution.getUri();
             for (Import imprt : manifest.getImports()) {
                 // See if the import is already stored
-                // note that extension imports do not need to be checked since we assume extensons are installed prior
+                // note that extension imports do not need to be checked since we assume extensions are installed prior
                 List<Vertex<Contribution>> sinks = findTargetVertex(dag, uri, imprt);
                 if (sinks.isEmpty()) {
                     List<Contribution> resolvedContributions = store.resolve(uri, imprt);
@@ -167,7 +167,7 @@ public class DependencyServiceImpl implements DependencyService {
         // detect cycles
         List<Cycle<Contribution>> cycles = detector.findCycles(dag);
         if (!cycles.isEmpty()) {
-            // this is a programmin error
+            // this is a programming error
             throw new AssertionError("Cylces detected");
         }
         try {
@@ -178,18 +178,18 @@ public class DependencyServiceImpl implements DependencyService {
             }
             return ordered;
         } catch (GraphException e) {
-            // this is a programmin error
+            // this is a programming error
             throw new AssertionError(e);
         }
     }
 
     /**
-     * Finds the Vertex in the graph with a maching export
+     * Finds the Vertex in the graph with a matching export
      *
      * @param dag             the graph to resolve against
      * @param contributionUri the importing contribution URI
      * @param imprt           the import to resolve
-     * @return the matching Vertext or null
+     * @return the matching Vertex or null
      */
     private List<Vertex<Contribution>> findTargetVertex(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
         List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
