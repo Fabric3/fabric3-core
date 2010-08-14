@@ -55,6 +55,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openid4java:openid4java-server-JdbcServerAssociationStore:0.9.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openid4java:openid4java-consumer-SampleConsumer:0.9.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openid4java:openid4java-server-SampleServer:0.9.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: cglib:cglib-nodep:2.2" level="project" />
   </component>
 </module>
 
