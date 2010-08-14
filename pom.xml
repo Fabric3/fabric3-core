@@ -48,6 +48,7 @@
         <jax.rs.version>1.1.1</jax.rs.version>
         <servlet.version>2.5</servlet.version>
         <logback.version>0.9.20</logback.version>
+        <atomikos.version>3.6.5</atomikos.version>
     </properties>
 
     <build>

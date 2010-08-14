@@ -51,7 +51,6 @@
 		<module>fabric3-sca-intents</module>
 		<module>fabric3-security-impl</module>
 		<module>fabric3-tx</module>
-		<module>fabric3-atomikos-install</module>
 		<module>fabric3-atomikos</module>
 		<module>fabric3-atomikos-jms</module>
 		<module>fabric3-timer-spi</module>

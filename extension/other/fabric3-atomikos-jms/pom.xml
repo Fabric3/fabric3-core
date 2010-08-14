@@ -31,31 +31,31 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions-jms</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions-api</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>atomikos-util</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions-jta</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -70,14 +70,6 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-binding-jms</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-atomikos-install</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
             <scope>provided</scope>
         </dependency>
 
@@ -105,7 +97,7 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
         <dependency>
             <groupId>com.atomikos</groupId>
             <artifactId>transactions-jms</artifactId>
-            <version>3.5.5</version>
+            <version>${atomikos.version}</version>
         </dependency>
 
         <dependency>
@@ -123,5 +115,21 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
             </plugin>
         </plugins>
     </build>
-
+    <repositories>
+        <repository>
+            <id>atomikos</id>
+            <name>Atomikos Repository for Maven</name>
+            <url>http://repo.atomikos.com/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+ 
 </project>
