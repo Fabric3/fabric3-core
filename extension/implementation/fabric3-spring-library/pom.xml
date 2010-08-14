@@ -268,7 +268,12 @@ Public License. See the accompanying license file for details.
                 </exclusion>
             </exclusions>
         </dependency>
-         
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2</version>
+        </dependency>
 
     </dependencies>
     <build>
