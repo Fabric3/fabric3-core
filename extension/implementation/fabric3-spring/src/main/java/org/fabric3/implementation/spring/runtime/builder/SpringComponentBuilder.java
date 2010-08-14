@@ -117,9 +117,8 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
      *
      * @param classLoader the context classloader
      * @return the parent application context
-     * @throws BuilderException if there is an error creating the context
      */
-    private SCAApplicationContext createParentContext(ClassLoader classLoader) throws BuilderException {
+    private SCAApplicationContext createParentContext(ClassLoader classLoader) {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
