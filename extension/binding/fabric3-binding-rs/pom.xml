@@ -19,14 +19,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-extension-implementation-parent-pom</artifactId>
+        <artifactId>fabric3-extension-binding-parent-pom</artifactId>
         <version>1.6-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-rs</artifactId>
+    <artifactId>fabric3-binding-rs</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 REST Extension</name>
-    <description>Fabric3 JSR-311 REST component implementation.</description>
+    <name>Fabric3 JAX-RS Extension</name>
+    <description>Fabric3 JAX-RS (REST) binding.</description>
 
     <dependencies>
         <dependency>
