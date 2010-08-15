@@ -97,6 +97,9 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      */
     @Property(required = false)
     public void setCoreSize(int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Core pool size must be greater than or equal to 0");
+        }
         this.coreSize = size;
     }
 
@@ -107,6 +110,9 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      */
     @Property(required = false)
     public void setMaximumSize(int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("The MaximumSize pool size must be greater than or equal to 0");
+        }
         this.maximumSize = size;
     }
 
@@ -150,6 +156,10 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     @ManagementOperation(description = "Thread keep alive time in milliseconds")
     @Property(required = false)
     public void setKeepAliveTime(long keepAliveTime) {
+        if (keepAliveTime < 0) {
+            throw new IllegalArgumentException("Keep alive time must be greater than or equal to 0");
+        }
+
         this.keepAliveTime = keepAliveTime;
     }
 
@@ -246,6 +256,9 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     @Init
     public void init() {
+        if (maximumSize < coreSize) {
+            throw new IllegalArgumentException("Maximum pool size cannot be less than core pool size");
+        }
         if (queueSize > 0) {
             // create a bounded queue to accept work
             queue = new LinkedBlockingQueue<Runnable>(queueSize);
