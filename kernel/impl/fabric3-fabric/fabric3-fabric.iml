@@ -24,8 +24,6 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.11" level="project" />
     <orderEntry type="module" module-name="fabric3-pojo" />
     <orderEntry type="module" module-name="fabric3-transform" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3:fabric3-introspection-xml:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3:fabric3-introspection-java:1.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-system" />
     <orderEntry type="module" module-name="fabric3-jmx" />
     <orderEntry type="module" module-name="fabric3-contribution" />
@@ -36,6 +34,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymockclassextension:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="module" module-name="fabric3-introspection-xml" />
   </component>
 </module>
 
