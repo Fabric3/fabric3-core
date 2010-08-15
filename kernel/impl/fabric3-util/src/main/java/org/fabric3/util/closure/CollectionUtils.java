@@ -53,43 +53,32 @@ public class CollectionUtils {
     }
 
     public static <OBJECT> List<OBJECT> filter(List<OBJECT> source, Closure<OBJECT, Boolean> filter) {
-
         List<OBJECT> result = new ArrayList<OBJECT>();
-
         for (OBJECT object : source) {
             if (filter.execute(object)) {
                 result.add(object);
             }
         }
-
         return result;
-
     }
 
     public static <OBJECT> Set<OBJECT> filter(Set<OBJECT> source, Closure<OBJECT, Boolean> filter) {
-
         LinkedHashSet<OBJECT> result = new LinkedHashSet<OBJECT>();
-
         for (OBJECT object : source) {
             if (filter.execute(object)) {
                 result.add(object);
             }
         }
-
         return result;
 
     }
 
     public static <SOURCE, RESULT> Set<RESULT> transform(Set<SOURCE> source, Closure<SOURCE, RESULT> transformer) {
-
         LinkedHashSet<RESULT> result = new LinkedHashSet<RESULT>();
-
         for (SOURCE object : source) {
             result.add(transformer.execute(object));
         }
-
         return result;
-
     }
 
 }

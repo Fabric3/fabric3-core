@@ -53,9 +53,6 @@ import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 public class NoMethodForEventStreamException extends ProxyCreationException {
     private static final long serialVersionUID = -5203755690182265124L;
 
-    public NoMethodForEventStreamException() {
-    }
-
     public NoMethodForEventStreamException(String message) {
         super(message);
     }

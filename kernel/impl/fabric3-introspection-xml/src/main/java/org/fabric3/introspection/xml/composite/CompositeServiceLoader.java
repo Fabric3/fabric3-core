@@ -94,7 +94,7 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
         }
         String promote = reader.getAttributeValue(null, "promote");
         if (promote == null) {
-            MissingPromotion error = new MissingPromotion("Promotion not specied on composite service " + name, reader);
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite service " + name, reader);
             context.addError(error);
         }
         URI uri;
@@ -151,7 +151,7 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
                         }
                     }
                 } else if (type == null) {
-                    // there was an error loading the element, ingore it as the errors will have been reported
+                    // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
                     context.addError(new UnrecognizedElement(reader));

@@ -48,7 +48,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Implements the URIRef function defined by the SCA Policy Specificaton.
+ * Implements the URIRef function defined by the SCA Policy Specification.
  *
  * @version $Rev$ $Date$
  */

@@ -120,7 +120,7 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
             promoteError = true;
         }
         if (!promoteError && (promotedUris == null || promotedUris.isEmpty())) {
-            MissingPromotion error = new MissingPromotion("Promotion not specied on composite reference " + name, reader);
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite reference " + name, reader);
             context.addError(error);
         }
         Multiplicity multiplicity = null;
@@ -178,7 +178,7 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                         }
                     }
                 } else if (type == null) {
-                    // there was an error loading the element, ingore it as the errors will have been reported
+                    // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
                     context.addError(new UnrecognizedElement(reader));

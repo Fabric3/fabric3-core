@@ -135,13 +135,12 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     private <O> O load(String id, InputStream stream, Class<O> type, IntrospectionContext ctx)
             throws XMLStreamException, UnrecognizedElementException {
         XMLStreamReader reader;
-        
+
         // if the id is a URL, use it as the system id
         if (isURL(id)) {
-        	   reader = xmlFactory.createXMLStreamReader(id, stream);
-        }
-        else {
-        	   reader = xmlFactory.createXMLStreamReader(stream);
+            reader = xmlFactory.createXMLStreamReader(id, stream);
+        } else {
+            reader = xmlFactory.createXMLStreamReader(stream);
         }
 
         try {
@@ -160,12 +159,13 @@ public class LoaderRegistryImpl implements LoaderRegistry {
 
     /**
      * Tests to see if a string can be parsed as a URL
-     * @param aPath
+     *
+     * @param path the string as a path
      * @return true if the string can be parsed as a URL
      */
-    private boolean isURL(String aPath) {
-    	  try {
-    	      URL url = new URL(aPath);
+    private boolean isURL(String path) {
+        try {
+            new URL(path);
             return true;
         }
         catch (MalformedURLException ex) {

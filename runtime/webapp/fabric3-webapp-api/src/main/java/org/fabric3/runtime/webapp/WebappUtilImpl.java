@@ -56,7 +56,6 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.jmx.agent.DefaultAgent;
-import org.fabric3.jmx.agent.ManagementException;
 
 /**
  * @version $Rev$ $Date$
@@ -66,7 +65,7 @@ public class WebappUtilImpl implements WebappUtil {
     private static final String SYSTEM_CONFIG = "/WEB-INF/systemConfig.xml";
     private static final String RUNTIME_CLASS = "org.fabric3.runtime.webapp.WebappRuntimeImpl";
     private static final String COORDINATOR_CLASS = "org.fabric3.fabric.runtime.DefaultCoordinator";
-    private static final String SYSETM_COMPOSITE = "META-INF/fabric3/webapp.composite";
+    private static final String SYSTEM_COMPOSITE = "META-INF/fabric3/webapp.composite";
 
     private final ServletContext servletContext;
 
@@ -94,7 +93,7 @@ public class WebappUtilImpl implements WebappUtil {
 
     public URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePathException {
         try {
-            return convertToURL(SYSETM_COMPOSITE, bootClassLoader);
+            return convertToURL(SYSTEM_COMPOSITE, bootClassLoader);
         } catch (MalformedURLException e) {
             throw new InvalidResourcePathException("Webapp system composite", e);
         }
@@ -124,12 +123,7 @@ public class WebappUtilImpl implements WebappUtil {
      * @throws Fabric3InitException If unable to initialize the MBean server.
      */
     public MBeanServer createMBeanServer() throws Fabric3InitException {
-        DefaultAgent agent;
-        try {
-            agent = new DefaultAgent();
-        } catch (ManagementException e) {
-            throw new Fabric3InitException(e);
-        }
+        DefaultAgent agent = new DefaultAgent();
         return agent.getMBeanServer();
     }
 

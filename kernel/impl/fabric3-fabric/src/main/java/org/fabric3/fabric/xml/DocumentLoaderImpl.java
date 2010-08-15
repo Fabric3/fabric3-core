@@ -81,7 +81,7 @@ public class DocumentLoaderImpl implements DocumentLoader {
             }
             return document;
         } finally {
-            IOHelper.closeQueitly(stream);
+            IOHelper.closeQuietly(stream);
         }
     }
 

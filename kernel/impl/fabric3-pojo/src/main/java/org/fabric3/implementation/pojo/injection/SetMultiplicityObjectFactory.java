@@ -49,8 +49,6 @@ import org.fabric3.spi.ObjectFactory;
  * @version $Rev$ $Date$
  */
 public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<Set<?>> {
-
-    // Object factories
     private Set<ObjectFactory<?>> factories = new CopyOnWriteArraySet<ObjectFactory<?>>();
 
     public Set<Object> getInstance() throws ObjectCreationException {

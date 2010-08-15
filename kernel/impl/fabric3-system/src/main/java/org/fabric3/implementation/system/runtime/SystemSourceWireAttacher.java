@@ -83,7 +83,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
 
     /**
      * Used for lazy injection of the proxy service. Since the ProxyService is only available after extensions are loaded and this class is loaded
-     * during runtime boostrap, injection of the former service must be delayed. This is achieved by setting the reference to no required. when the
+     * during runtime bootstrap, injection of the former service must be delayed. This is achieved by setting the reference to no required. when the
      * ProxyService becomes available, it will be wired to this reference.
      *
      * @param proxyService the service used to create reference proxies
@@ -95,7 +95,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
 
     public void attach(SystemSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         if (proxyService == null) {
-            throw new WiringException("Attempt to inject a non-optimized wire during runtime boostrap.");
+            throw new WiringException("Attempt to inject a non-optimized wire during runtime bootstrap.");
         }
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(source.getUri());

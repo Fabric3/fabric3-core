@@ -76,7 +76,7 @@ public interface ChannelProxyService {
      * @param mappings  mappings from interface method to event streams contained in a channel connection
      * @param <T>       the interface type
      * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
+     * @throws ProxyCreationException if there is an error creating the proxy
      */
     <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
 
@@ -87,7 +87,7 @@ public interface ChannelProxyService {
      * @param stream    the event stream
      * @param <T>       the interface type
      * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the procy
+     * @throws ProxyCreationException if there is an error creating the proxy
      */
     <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException;
 }

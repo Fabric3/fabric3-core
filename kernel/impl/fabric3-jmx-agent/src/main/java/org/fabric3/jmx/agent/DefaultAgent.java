@@ -50,11 +50,9 @@ public class DefaultAgent implements Agent {
     private MBeanServer mBeanServer;
 
     /**
-     * Initializes the MBean server.
-     *
-     * @throws ManagementException If unable to start the agent.
+     * Constructor. Initializes the MBean server.
      */
-    public DefaultAgent() throws ManagementException {
+    public DefaultAgent() {
         mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
     }
 

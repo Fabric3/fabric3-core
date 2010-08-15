@@ -59,7 +59,7 @@ import org.fabric3.spi.policy.PolicyResolutionException;
 public interface InteractionPolicyResolver {
 
     /**
-     * Returns the set of intents configured for the binding and its ancestors that are explictly provided by the binding extension through the
+     * Returns the set of intents configured for the binding and its ancestors that are explicitly provided by the binding extension through the
      * <code>mayProvide</code> attribute.
      *
      * @param binding the binding configuration
@@ -69,7 +69,7 @@ public interface InteractionPolicyResolver {
     Set<Intent> resolveProvidedIntents(LogicalBinding binding) throws PolicyResolutionException;
 
     /**
-     * Returns the set of intents configured for an operation that are explictly provided by the binding extension through the <code>mayProvide</code>
+     * Returns the set of intents configured for an operation that are explicitly provided by the binding extension through the <code>mayProvide</code>
      * attribute.
      *
      * @param operation the operation

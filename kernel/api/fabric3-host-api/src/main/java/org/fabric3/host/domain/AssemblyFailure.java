@@ -60,18 +60,18 @@ public abstract class AssemblyFailure {
     }
 
     /**
-     * Returns the URI of the contribution where the error occured.
+     * Returns the URI of the contribution where the error occurred.
      *
-     * @return the URI of the contribution where the error occured.
+     * @return the URI of the contribution where the error occurred.
      */
     public URI getContributionUri() {
         return contributionUri;
     }
 
     /**
-     * Returns the URI of the component where the error occured.
+     * Returns the URI of the component where the error occurred.
      *
-     * @return the URI of the component where the error occured.
+     * @return the URI of the component where the error occurred.
      */
     public URI getComponentUri() {
         return componentUri;

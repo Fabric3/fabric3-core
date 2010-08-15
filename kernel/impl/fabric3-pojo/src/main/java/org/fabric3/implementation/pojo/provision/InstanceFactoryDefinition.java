@@ -68,18 +68,18 @@ public class InstanceFactoryDefinition implements Serializable {
     private Map<InjectionSite, Injectable> reinjection = new HashMap<InjectionSite, Injectable>();
 
     /**
-     * Returns the signature of the constrctor that should be used.
+     * Returns the signature of the constructor that should be used.
      *
-     * @return the signature of the constrctor that should be used
+     * @return the signature of the constructor that should be used
      */
     public Signature getConstructor() {
         return constructor;
     }
 
     /**
-     * Sets the signature of the constrctor that should be used.
+     * Sets the signature of the constructor that should be used.
      *
-     * @param constructor the signature of the constrctor that should be used
+     * @param constructor the signature of the constructor that should be used
      */
     public void setConstructor(Signature constructor) {
         this.constructor = constructor;

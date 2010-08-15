@@ -93,7 +93,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     private MetaDataStore store;
 
     /**
-     * Constructor used during boostrap.
+     * Constructor used during bootstrap.
      *
      * @param registry the loader registry
      */

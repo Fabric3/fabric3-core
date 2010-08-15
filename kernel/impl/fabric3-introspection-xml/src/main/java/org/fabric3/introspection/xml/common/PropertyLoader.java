@@ -86,7 +86,7 @@ public class PropertyLoader implements TypeLoader<Property> {
         String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
         if (typeAttribute != null && elementAttribute != null) {
-            InvalidAtttributes error = new InvalidAtttributes("Cannot specify both type and element attributes for a property", reader);
+            InvalidAttributes error = new InvalidAttributes("Cannot specify both type and element attributes for a property", reader);
             context.addError(error);
         }
 
@@ -96,14 +96,14 @@ public class PropertyLoader implements TypeLoader<Property> {
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAtttributes error = new InvalidAtttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
                 context.addError(error);
             }
         } else if (elementAttribute != null) {
             try {
                 element = helper.createQName(elementAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAtttributes error = new InvalidAtttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), reader);
                 context.addError(error);
             }
         }

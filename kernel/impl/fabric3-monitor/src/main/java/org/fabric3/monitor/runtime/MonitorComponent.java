@@ -41,7 +41,6 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;

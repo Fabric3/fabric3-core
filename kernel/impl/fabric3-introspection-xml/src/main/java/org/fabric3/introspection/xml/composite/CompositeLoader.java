@@ -354,8 +354,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void handleProperty(Composite type, XMLStreamReader reader, IntrospectionContext context)
-            throws XMLStreamException, UnrecognizedElementException {
+    private void handleProperty(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Property property = propertyLoader.load(reader, context);
         if (property == null) {
             // error encountered loading the property

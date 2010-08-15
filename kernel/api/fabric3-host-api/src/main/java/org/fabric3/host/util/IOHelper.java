@@ -69,14 +69,14 @@ public final class IOHelper {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int count = 0;
         int n;
-        while (-1 != (n = input.read(buffer))) { // NOPMD
+        while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
             count += n;
         }
         return count;
     }
 
-    public static void closeQueitly(Closeable closeable) {
+    public static void closeQuietly(Closeable closeable) {
         try {
             closeable.close();
         } catch (IOException ignore) {

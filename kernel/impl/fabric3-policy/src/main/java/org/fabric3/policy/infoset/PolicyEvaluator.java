@@ -54,7 +54,7 @@ public interface PolicyEvaluator {
      *
      * @param xpathExpression the XPath expression
      * @param target          the target component
-     * @return a list of selected nodes, i.e. LogicalComponnet, LogicalService, LogicalReference, LogicalBinding, or LogicalOperation
+     * @return a list of selected nodes, i.e. LogicalComponent, LogicalService, LogicalReference, LogicalBinding, or LogicalOperation
      * @throws PolicyEvaluationException if there is an exception evaluating the expression
      */
     List<LogicalScaArtifact<?>> evaluate(String xpathExpression, LogicalComponent<?> target) throws PolicyEvaluationException;

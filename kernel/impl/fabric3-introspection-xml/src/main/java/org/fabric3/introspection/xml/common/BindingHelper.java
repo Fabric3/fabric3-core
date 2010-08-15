@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public class BindingHelper {
 
     /**
-     * Configures the default binding name if no name is specified in SCDL.
+     * Configures the default binding name if no name is specified in a composite.
      *
      * @param binding     the binding
      * @param defaultName the default name to use

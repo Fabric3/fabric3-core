@@ -70,8 +70,8 @@ public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     }
 
     public void remove(Vertex<T> vertex) {
-        List<Edge<T>> vedges = new ArrayList<Edge<T>>(getOutgoingEdges(vertex));
-        for (Edge<T> edge : vedges) {
+        List<Edge<T>> edges = new ArrayList<Edge<T>>(getOutgoingEdges(vertex));
+        for (Edge<T> edge : edges) {
             removeEdge(edge);
         }
         graphVertices.remove(vertex);

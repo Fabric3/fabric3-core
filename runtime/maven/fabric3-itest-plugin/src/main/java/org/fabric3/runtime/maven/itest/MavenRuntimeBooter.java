@@ -75,7 +75,6 @@ import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.Agent;
 import org.fabric3.jmx.agent.DefaultAgent;
-import org.fabric3.jmx.agent.ManagementException;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
@@ -171,13 +170,7 @@ public class MavenRuntimeBooter {
         MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(URI.create(DOMAIN), moduleDependencies, tempDir);
 
         // TODO Add better host JMX support from the next release
-        Agent agent;
-        try {
-            agent = new DefaultAgent();
-        } catch (ManagementException e) {
-            throw new MojoExecutionException("Error initializing JMX Agent", e);
-        }
-
+        Agent agent = new DefaultAgent();
         MBeanServer mBeanServer = agent.getMBeanServer();
 
         MavenMonitorEventDispatcher runtimeDispatcher = new MavenMonitorEventDispatcher(log);

@@ -46,7 +46,7 @@ import java.util.List;
 
 /**
  * Prevents packages and resources from being loaded by child classloaders. Used to allow a Fabric3 runtime to load alternative versions or
- * implementations of classes visible on the system classlpath, including JDK libraries such as JAXB.
+ * implementations of classes visible on the system classpath, including JDK libraries such as JAXB.
  *
  * @version $Rev$ $Date$
  */

@@ -208,7 +208,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
     private Set<Intent> filterProvidedIntents(QName type, Set<Intent> requiredIntents) {
         BindingType bindingType = policyRegistry.getDefinition(type, BindingType.class);
         if (bindingType == null) {
-            // tolerate a binding type not being reigstered
+            // tolerate a binding type not being registered
             return Collections.emptySet();
         }
         Set<QName> mayProvidedIntents = bindingType.getMayProvide();

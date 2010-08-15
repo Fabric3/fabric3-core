@@ -245,7 +245,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     /**
      * Determines the conversational sequence of a conversational service.
      *
-     * @param conversational true if the service is conversaional
+     * @param conversational true if the service is conversational
      * @param method         the method being introspected
      * @param context        the introspection context 
      * @return the conversational sequence

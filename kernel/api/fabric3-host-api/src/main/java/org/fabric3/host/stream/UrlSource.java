@@ -39,9 +39,7 @@ package org.fabric3.host.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.util.StringTokenizer;
 
 import org.fabric3.host.util.FileHelper;
 
@@ -51,7 +49,7 @@ import org.fabric3.host.util.FileHelper;
  * @version $Rev$ $Date$
  */
 public class UrlSource implements Source {
-	
+
     private URL url;
 
     public UrlSource(URL url) {
@@ -69,12 +67,12 @@ public class UrlSource implements Source {
     public InputStream openStream() throws IOException {
         return url.openStream();
     }
-    
-    public Source getImportSource(String parentLocation, String importLocation) throws IOException	{
-       String baseLocation = parentLocation != null ? parentLocation : getSystemId();
-       String resolvedLocation = FileHelper.resolveRelativePath(baseLocation, importLocation);
-       // assuming the resolved location is also a proper URL
-       URL importURL = new URL(resolvedLocation);
-       return new UrlSource(importURL);
+
+    public Source getImportSource(String parentLocation, String importLocation) throws IOException {
+        String baseLocation = parentLocation != null ? parentLocation : getSystemId();
+        String resolvedLocation = FileHelper.resolveRelativePath(baseLocation, importLocation);
+        // assuming the resolved location is also a proper URL
+        URL importURL = new URL(resolvedLocation);
+        return new UrlSource(importURL);
     }
 }

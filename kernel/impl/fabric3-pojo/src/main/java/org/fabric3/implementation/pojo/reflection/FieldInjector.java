@@ -80,7 +80,7 @@ public class FieldInjector implements Injector<Object> {
         try {
             Object target;
             if (objectFactory == null) {
-                // this can happen if a value is removed such as a reference being unwired
+                // this can happen if a value is removed such as a reference being un-wired
                 target = null;
             } else {
                 target = objectFactory.getInstance();

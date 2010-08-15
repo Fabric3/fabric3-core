@@ -158,9 +158,9 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
     /**
      * Aggregate policies from ancestors.
      *
-     * @param operation        the operaton
+     * @param operation        the operation
      * @param logicalComponent the target component
-     * @return the agreggated policy sets
+     * @return the aggregated policy sets
      */
     protected Set<QName> aggregatePolicySets(LogicalOperation operation, LogicalComponent<?> logicalComponent) {
         LogicalScaArtifact<?> temp = operation;

@@ -50,7 +50,7 @@ import org.fabric3.spi.policy.PolicyResolutionException;
  * a wire.
  * <p/>
  * Note this is different than interaction resolution as endpoint- and operation-level policy is not distinguished. Since implementation policies are
- * not visibile to clients, they are not handled at the transport level. Hence, the requirement by some transport protocols to distinguish policy
+ * not visible to clients, they are not handled at the transport level. Hence, the requirement by some transport protocols to distinguish policy
  * assertions is not applicable. Normalizing policy at the operation-level simplifies the resolver service contract and allows one-step resolution.
  *
  * @version $Rev$ $Date$
@@ -63,7 +63,7 @@ public interface ImplementationPolicyResolver {
      *
      * @param component the logical component for which intents are to be resolved.
      * @param operation the operation for which the provided intents are to be computed.
-     * @return Set of intents that need to be explictly provided by the implementation.
+     * @return Set of intents that need to be explicitly provided by the implementation.
      * @throws PolicyResolutionException If there are any unidentified intents.
      */
     Set<Intent> resolveProvidedIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException;
@@ -72,7 +72,7 @@ public interface ImplementationPolicyResolver {
      * Returns the set of policies explicitly declared for the operation and those that satisfy the intents not provided by the implementation type.
      *
      * @param component the logical component for which policies are to be resolved.
-     * @param operation the oeration for which the provided intents are to be computed.
+     * @param operation the operation for which the provided intents are to be computed.
      * @return Set of resolved policies.
      * @throws PolicyResolutionException If all intents cannot be resolved.
      */

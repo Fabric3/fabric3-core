@@ -50,14 +50,6 @@ package org.fabric3.host.runtime;
 public class ScanException extends InitializationException {
     private static final long serialVersionUID = -8809402788313731400L;
 
-    public ScanException(String message) {
-        super(message);
-    }
-
-    public ScanException(Throwable cause) {
-        super(cause);
-    }
-
     public ScanException(String message, Throwable cause) {
         super(message, cause);
     }

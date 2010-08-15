@@ -61,7 +61,7 @@ public interface DepthFirstTraverser<T> {
      * @param graph the graph
      * @param start the starting vertex
      * @param end   the ending vertex
-     * @return the vertices sorted depth-first or an empty list if no path betweent the vertices exists
+     * @return the vertices sorted depth-first or an empty list if no path between the vertices exists
      */
     List<Vertex<T>> traversePath(DirectedGraph<T> graph, Vertex<T> start, Vertex<T> end);
 

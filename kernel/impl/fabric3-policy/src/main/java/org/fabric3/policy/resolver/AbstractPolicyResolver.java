@@ -135,7 +135,7 @@ public class AbstractPolicyResolver {
      * Aggregate intents from ancestors.
      *
      * @param scaArtifact the logical artifact to aggregate intents for
-     * @return the agreggated intents
+     * @return the aggregated intents
      */
     protected Set<QName> aggregateIntents(LogicalScaArtifact<?> scaArtifact) {
         LogicalScaArtifact<?> temp = scaArtifact;
@@ -162,10 +162,10 @@ public class AbstractPolicyResolver {
                 throw new PolicyResolutionException("Unknown intent", intentName);
             }
             if (intent.isProfile()) {
-                for (QName requiredInentName : intent.getRequires()) {
-                    Intent requiredIntent = policyRegistry.getDefinition(requiredInentName, Intent.class);
+                for (QName requiredIntentName : intent.getRequires()) {
+                    Intent requiredIntent = policyRegistry.getDefinition(requiredIntentName, Intent.class);
                     if (requiredIntent == null) {
-                        throw new PolicyResolutionException("Unknown intent", requiredInentName);
+                        throw new PolicyResolutionException("Unknown intent", requiredIntentName);
                     }
                     requiredIntents.add(requiredIntent);
 

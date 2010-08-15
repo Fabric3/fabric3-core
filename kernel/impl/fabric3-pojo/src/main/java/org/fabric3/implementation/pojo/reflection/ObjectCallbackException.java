@@ -53,16 +53,8 @@ import org.fabric3.host.Fabric3Exception;
 public class ObjectCallbackException extends Fabric3Exception {
     private static final long serialVersionUID = -2828664920912394309L;
 
-    public ObjectCallbackException() {
-        super();
-    }
-
     public ObjectCallbackException(String message) {
         super(message);
-    }
-
-    public ObjectCallbackException(String message, String identifier) {
-        super(message, identifier);
     }
 
     public ObjectCallbackException(String message, Throwable cause) {

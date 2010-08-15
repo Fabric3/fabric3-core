@@ -108,7 +108,7 @@ public interface Domain {
      * Activates a set of definitions contained in the contribution.
      *
      * @param uri the contribution URI
-     * @throws DeploymentException if an error is encountered durng activation
+     * @throws DeploymentException if an error is encountered during activation
      */
     void activateDefinitions(URI uri) throws DeploymentException;
 
@@ -116,7 +116,7 @@ public interface Domain {
      * Deactivates a set of definitions contained in the contribution.
      *
      * @param uri the contribution URI
-     * @throws DeploymentException if an error is encountered durng activation
+     * @throws DeploymentException if an error is encountered during activation
      */
     void deactivateDefinitions(URI uri) throws DeploymentException;
 

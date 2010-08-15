@@ -58,9 +58,6 @@ public class SingletonImplementation extends Implementation<InjectingComponentTy
 
     private String implementationClass;
 
-    public SingletonImplementation() {
-    }
-
     public SingletonImplementation(InjectingComponentType componentType, String implementationClass) {
         super(componentType);
         this.implementationClass = implementationClass;

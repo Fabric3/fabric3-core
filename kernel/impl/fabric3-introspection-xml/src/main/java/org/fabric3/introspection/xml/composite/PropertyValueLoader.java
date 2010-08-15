@@ -55,7 +55,7 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.introspection.xml.common.InvalidAtttributes;
+import org.fabric3.introspection.xml.common.InvalidAttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.component.PropertyMany;
@@ -148,14 +148,14 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAtttributes error = new InvalidAtttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
                 context.addError(error);
             }
         } else if (elementAttribute != null) {
             try {
                 element = helper.createQName(elementAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAtttributes error = new InvalidAtttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), reader);
                 context.addError(error);
             }
         }

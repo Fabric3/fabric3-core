@@ -100,7 +100,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
      * @param policySet   the PolicySet to attach
      * @param target      the target to attach to
      * @param incremental if the attachment is being performed as part of an incremental deployment. If true, the state of the target is set to NEW.
-     * @throws PolicyEvaluationException if an error accurs performing the attachment
+     * @throws PolicyEvaluationException if an error occurs performing the attachment
      */
     void attach(QName policySet, LogicalScaArtifact<?> target, boolean incremental) throws PolicyEvaluationException {
         if (target instanceof LogicalComponent) {
@@ -161,7 +161,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
      *
      * @param policySet the PolicySet to attach
      * @param target    the target to attach to
-     * @throws PolicyEvaluationException if an error accurs performing the attachment
+     * @throws PolicyEvaluationException if an error occurs performing the attachment
      */
     void detach(QName policySet, LogicalScaArtifact<?> target) throws PolicyEvaluationException {
         if (target instanceof LogicalComponent) {

@@ -58,7 +58,7 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * A SourceWireAttacher used to reinject singleton components after the runtime bootsrap.
+ * A SourceWireAttacher used to reinject singleton components after the runtime bootstrap.
  *
  * @version $Rev$ $Date$
  */

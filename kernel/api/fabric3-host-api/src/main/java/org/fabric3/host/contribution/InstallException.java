@@ -38,7 +38,7 @@
 package org.fabric3.host.contribution;
 
 /**
- * Denotes an error installing a conribution.
+ * Denotes an error installing a contribution.
  *
  * @version $Rev$ $Date$
  */

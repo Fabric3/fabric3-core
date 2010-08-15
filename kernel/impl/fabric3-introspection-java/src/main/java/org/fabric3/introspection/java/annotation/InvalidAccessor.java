@@ -63,4 +63,8 @@ public class InvalidAccessor extends ValidationFailure {
     public String getMessage() {
         return message;
     }
+
+    public Class<?> getImplementationClass() {
+        return implClass;
+    }
 }

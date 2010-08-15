@@ -106,8 +106,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
             return null;
         }
 
-        // TODO: we should copy all in-context namespaces to the declaration if we can find what they are
-        // in the mean time, see if the value looks like it might contain a prefix
         int index = key.indexOf(':');
         if (index != -1 && !key.startsWith("{")) {
             // treat the key as a QName
@@ -292,7 +290,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 }
                 depth--;
                 if (depth == 0) {
-                    // property has multiple values, reset the curent element and document
+                    // property has multiple values, reset the current element and document
                     element = root;
                 } else {
                     element = element.getParentNode();

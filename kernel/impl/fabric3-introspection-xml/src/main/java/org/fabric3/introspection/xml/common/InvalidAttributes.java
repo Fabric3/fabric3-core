@@ -46,9 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  *
  * @version $Rev$ $Date$
  */
-public class InvalidAtttributes extends XmlValidationFailure {
+public class InvalidAttributes extends XmlValidationFailure {
 
-    public InvalidAtttributes(String message, XMLStreamReader reader) {
+    public InvalidAttributes(String message, XMLStreamReader reader) {
         super(message, reader);
     }
 

@@ -259,7 +259,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
             return InjectableType.REFERENCE;
         }
 
-        // if it has a Callback anotation, it's a calback
+        // if it has a Callback annotation, it's a callback
         if (isAnnotationPresent(rawType, Callback.class) || isAnnotationPresent(rawType, org.osoa.sca.annotations.Callback.class)) {
             return InjectableType.CALLBACK;
         }
@@ -473,7 +473,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
             }
 
         } else if (actualType instanceof Map) {
-            // the map is not paramterized
+            // the map is not parameterized
             return new JavaClass<Object>(Object.class);
         } else {
             throw new IllegalArgumentException("Type not a Map: " + type);

@@ -40,7 +40,7 @@ package org.fabric3.host.monitor;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * Throw when an invalid monitor entry in the system configuation is parsed.
+ * Throw when an invalid monitor entry in the system configuration is parsed.
  *
  * @version $Rev$ $Date$
  */

@@ -54,7 +54,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * Implements the OperationRef function defined by the SCA Policy Specificaton.
+ * Implements the OperationRef function defined by the SCA Policy Specification.
  *
  * @version $Rev$ $Date$
  */
