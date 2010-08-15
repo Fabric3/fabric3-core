@@ -45,7 +45,7 @@ import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 
 /**
- * Wires two contributions, using the Java import/export mechanism, making a set of classes from the exporting contribution visibile to the importing
+ * Wires two contributions, using the Java import/export mechanism, making a set of classes from the exporting contribution visible to the importing
  * contribution. The semantics of a JavaContributionWire are defined by OSGi R4 bundle imports and exports.
  *
  * @version $Rev$ $Date$

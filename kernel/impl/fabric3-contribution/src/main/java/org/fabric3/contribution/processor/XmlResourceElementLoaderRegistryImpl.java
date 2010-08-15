@@ -50,7 +50,7 @@ import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Default impelmentation of an XmlIndexerRegistry.
+ * Default implementation of an XmlIndexerRegistry.
  *
  * @version $Rev$ $Date$
  */

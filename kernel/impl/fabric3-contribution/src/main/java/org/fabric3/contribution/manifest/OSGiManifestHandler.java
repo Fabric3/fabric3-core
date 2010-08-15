@@ -54,7 +54,7 @@ import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Parses OSGi manifest headers and adds the metadta to the SCA contribution manifest.
+ * Parses OSGi manifest headers and adds the metadata to the SCA contribution manifest.
  *
  * @version $Rev$ $Date$
  */

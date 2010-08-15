@@ -54,13 +54,12 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 @EagerInit
 public class QNameExportLoader implements TypeLoader<QNameExport> {
-    //private static final QName EXPORT = new QName(SCA_NS, "export");
 
     public QNameExport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         String ns = reader.getAttributeValue(null, "namespace");
         if (ns == null) {
-            MissingMainifestAttribute failure = new MissingMainifestAttribute("The namespace attribute must be specified", reader);
+            MissingManifestAttribute failure = new MissingManifestAttribute("The namespace attribute must be specified", reader);
             context.addError(failure);
             return null;
         }

@@ -63,7 +63,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * Processes an XML-based contribution. The implementaton dispatches to a specific XmlProcessor based on the QName of the document element.
+ * Processes an XML-based contribution. The implementation dispatches to a specific XmlProcessor based on the QName of the document element.
  *
  * @version $Rev$ $Date$
  */

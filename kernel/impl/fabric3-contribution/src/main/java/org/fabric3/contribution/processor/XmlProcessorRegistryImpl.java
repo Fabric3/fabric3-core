@@ -49,7 +49,7 @@ import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Default impelmentation of an XmlProcessorRegistry.
+ * Default implementation of an XmlProcessorRegistry.
  *
  * @version $Rev$ $Date$
  */

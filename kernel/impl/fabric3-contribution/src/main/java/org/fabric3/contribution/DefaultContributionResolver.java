@@ -67,10 +67,6 @@ public class DefaultContributionResolver implements ContributionResolver {
     private ArtifactCache cache;
     private List<ContributionResolverExtension> extensions;
 
-    public DefaultContributionResolver(MetaDataStore store) {
-        this.store = store;
-    }
-
     @Constructor
     public DefaultContributionResolver(@Reference MetaDataStore store, @Reference ArtifactCache cache) {
         this.store = store;

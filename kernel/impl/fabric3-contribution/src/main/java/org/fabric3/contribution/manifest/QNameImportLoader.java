@@ -62,7 +62,7 @@ public class QNameImportLoader implements TypeLoader<QNameImport> {
         validateAttributes(reader, context);
         String ns = reader.getAttributeValue(null, "namespace");
         if (ns == null) {
-            MissingMainifestAttribute failure = new MissingMainifestAttribute("The namespace attribute must be specified", reader);
+            MissingManifestAttribute failure = new MissingManifestAttribute("The namespace attribute must be specified", reader);
             context.addError(failure);
             return null;
         }

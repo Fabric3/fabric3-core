@@ -42,11 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -67,6 +65,9 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a contribution manifest from a contribution element
@@ -118,8 +119,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     validateDeployableAttributes(reader, context);
                     String name = reader.getAttributeValue(null, "composite");
                     if (name == null) {
-                        MissingMainifestAttribute failure =
-                                new MissingMainifestAttribute("Composite attribute must be specified", reader);
+                        MissingManifestAttribute failure =
+                                new MissingManifestAttribute("Composite attribute must be specified", reader);
                         context.addError(failure);
                         return null;
                     }
@@ -214,7 +215,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     runtimeModes.add(RuntimeMode.VM);
                 } else {
                     runtimeModes = Deployable.DEFAULT_MODES;
-                    InvalidValue error = new InvalidValue("Invalid mode attrbiute: " + modeAttr, reader);
+                    InvalidValue error = new InvalidValue("Invalid mode attribute: " + modeAttr, reader);
                     context.addError(error);
                     break;
                 }

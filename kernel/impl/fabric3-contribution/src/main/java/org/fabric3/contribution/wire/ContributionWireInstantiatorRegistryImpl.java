@@ -57,15 +57,15 @@ public class ContributionWireInstantiatorRegistryImpl implements ContributionWir
             new HashMap<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>>();
 
     @Reference
-    public void setInstantiators(Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiors) {
-        this.instantiators = instantiors;
+    public void setInstantiators(Map<Class<? extends Import>, ContributionWireInstantiator<?, ?, ?>> instantiators) {
+        this.instantiators = instantiators;
     }
 
 
     public <I extends Import, E extends Export> ContributionWire<I, E> instantiate(I imprt, E export, URI importUri, URI exportUri) {
         ContributionWireInstantiator instantiator = instantiators.get(imprt.getClass());
         if (instantiator == null) {
-            throw new AssertionError("Insantiator not configured: " + imprt.getClass());
+            throw new AssertionError("Instantiator not configured: " + imprt.getClass());
         }
         // cast is safe
         //noinspection unchecked

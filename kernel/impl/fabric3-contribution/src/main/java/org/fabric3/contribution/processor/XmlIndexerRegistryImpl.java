@@ -49,7 +49,7 @@ import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Default impelmentation of an XmlIndexerRegistry.
+ * Default implementation of an XmlIndexerRegistry.
  *
  * @version $Rev$ $Date$
  */

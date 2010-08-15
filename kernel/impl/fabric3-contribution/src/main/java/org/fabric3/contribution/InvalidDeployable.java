@@ -66,10 +66,6 @@ public class InvalidDeployable extends ValidationFailure {
         return deployable;
     }
 
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
     public String getMessage() {
         return message;
     }

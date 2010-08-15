@@ -58,7 +58,7 @@ public interface DependencyService {
     List<Contribution> order(List<Contribution> contributions) throws DependencyException;
 
     /**
-     * Orders a list of contributions to uninsall. Ordering is calculated by topologically sorting the list based on contribution imports.
+     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on contribution imports.
      *
      * @param contributions the contributions to order
      * @return the ordered list of contributions

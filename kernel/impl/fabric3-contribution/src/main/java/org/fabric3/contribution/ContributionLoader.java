@@ -55,7 +55,7 @@ public interface ContributionLoader {
      * @param contribution the contribution to load
      * @return the classloader with access to the contribution and dependent resources
      * @throws ContributionLoadException if an error occurs during load
-     * @throws UnresolvedImportException if the contribution contains an unresolveable import
+     * @throws UnresolvedImportException if the contribution contains an unresolvable import
      */
     ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException;
 

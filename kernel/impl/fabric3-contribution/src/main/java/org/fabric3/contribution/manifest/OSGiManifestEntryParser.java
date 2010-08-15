@@ -75,8 +75,8 @@ public class OSGiManifestEntryParser {
         END
     }
 
-    private static char PARAMETER_SEPARATOR = ';';
-    private static char SEPARATOR = ',';
+    private static final char PARAMETER_SEPARATOR = ';';
+    private static final char SEPARATOR = ',';
 
     // the OSGi header text
     private String header;
