@@ -153,15 +153,15 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, Action action) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
-        iterateArtifactsResursive(contribution, context, action, root);
+        iterateArtifactsRecursive(contribution, context, action, root);
     }
 
-    private void iterateArtifactsResursive(Contribution contribution, final IntrospectionContext context, Action action, File dir)
+    private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, Action action, File dir)
             throws InstallException {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsResursive(contribution, context, action, file);
+                iterateArtifactsRecursive(contribution, context, action, file);
             } else {
                 try {
                     URL entryUrl = file.toURI().toURL();
