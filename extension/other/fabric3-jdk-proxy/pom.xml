@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jdk-proxy</artifactId>
-    <name>Fabric3 JDK Proxy Service</name>
-    <description>Fabric3 JDK Proxy Service.</description>
+    <name>Fabric3 JDK Proxy Extension</name>
+    <description>Support for creating reference proxies</description>
     <packaging>jar</packaging>
 
     <dependencies>

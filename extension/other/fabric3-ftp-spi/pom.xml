@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-ftp-spi</artifactId>
     <packaging>jar</packaging>
-    <name>Fabric3 FTP SPI</name>
-    <description>Fabric3 FTP SPI.</description>
+    <name>Fabric3 FTP SPI Extension</name>
+    <description>Provides SPIs for extending FTP support</description>
 
     <dependencies>
         <dependency>

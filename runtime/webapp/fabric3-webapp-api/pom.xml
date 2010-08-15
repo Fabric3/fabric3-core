@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3.webapp</groupId>
     <artifactId>fabric3-webapp-api</artifactId>
     <name>Fabric3 Webapp Runtime API</name>
-    <description>Fabric3 Webapp Runtime API.</description>
+    <description>Webapp Runtime API</description>
 
     <dependencies>
 

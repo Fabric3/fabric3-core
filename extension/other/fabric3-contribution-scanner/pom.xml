@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-contribution-scanner</artifactId>
-    <name>Fabric3 Contribution Scanner</name>
-    <description>Fabric3 Contribution Scanner Implementation.</description>
+    <name>Fabric3 Contribution Scanner Extension</name>
+    <description>Support for file-system deployments by scanning a directory for contributions</description>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -25,8 +25,8 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-rs</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 JAX-RS Extension</name>
-    <description>Fabric3 JAX-RS (REST) binding.</description>
+    <name>Fabric3 JAX-RS Binding Extension</name>
+    <description>Support for exposing components as JAX-RS (REST) resources</description>
 
     <dependencies>
         <dependency>

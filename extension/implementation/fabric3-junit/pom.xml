@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-junit</artifactId>
     <packaging>jar</packaging>
-    <name>Fabric3 JUnit Extension</name>
-    <description>Fabric3 JUnit Component Implementation.</description>
+    <name>Fabric3 JUnit Implementation Extension</name>
+    <description>Support for JUnit components</description>
 
     <dependencies>
 

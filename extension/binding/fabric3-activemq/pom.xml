@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-activemq</artifactId>
     <name>Fabric3 ActiveMQ Extension</name>
-    <description>Runs an Embedded ActiveMQ Broker.</description>
+    <description>Provides support for running an embedded ActiveMQ broker</description>
     <packaging>sca-contribution-jar</packaging>
 
     <dependencies>

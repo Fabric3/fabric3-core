@@ -20,7 +20,7 @@
     <groupId>org.codehaus.fabric3.standalone</groupId>
     <artifactId>fabric3-standalone-shutdown</artifactId>
     <name>Fabric3 Standalone Runtime Shutdown</name>
-    <description>Fabric3 Standalone Runtime Server Shutdown Command.</description>
+    <description>Fabric3 runtime shutdown command</description>
 
     <build>
         <plugins>

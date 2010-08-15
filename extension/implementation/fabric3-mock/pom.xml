@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-mock</artifactId>
     <packaging>jar</packaging>
-    <name>Fabric3 Mock Extension</name>
-    <description>Fabric3 mock component implementation.</description>
+    <name>Fabric3 Mock Implementation Extension</name>
+    <description>Support for mock components</description>
 
     <dependencies>
 

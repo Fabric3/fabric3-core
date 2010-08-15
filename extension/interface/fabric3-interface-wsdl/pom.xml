@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-interface-wsdl</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 WSDL Interface</name>
-    <description>Fabric3 WSDL Interface.</description>
+    <name>Fabric3 WSDL Interface Extension</name>
+    <description>Support for WSDL interfaces</description>
 
     <dependencies>
 

@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jaxb</artifactId>
     <name>Fabric3 JAXB Extension</name>
-    <description>Extension containing the JAXB RI.</description>
+    <description>Extension containing the JAXB RI</description>
     <packaging>sca-contribution-jar</packaging>
 
     <dependencies>

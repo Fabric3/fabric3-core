@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-async</artifactId>
     <name>Fabric3 Async Extension</name>
-    <description>Fabric3 Async Support.</description>
+    <description>Provides asynchronous invocation support</description>
     <packaging>jar</packaging>
 
     <dependencies>

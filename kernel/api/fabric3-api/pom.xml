@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-api</artifactId>
     <name>Fabric3 API</name>
-    <description>Fabric3 APIs for end user applications.</description>
+    <description>Fabric3 APIs for applications</description>
 
     <dependencies>
         <dependency>

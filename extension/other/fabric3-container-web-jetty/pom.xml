@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-container-web-jetty</artifactId>
-    <name>Fabric3 Web Container Extension</name>
-    <description>Fabric3 Web Container Extension.</description>
+    <name>Fabric3 Jetty Web Container Extension</name>
+    <description>Provides support for using Jetty as a web container</description>
     <packaging>jar</packaging>
 
     <dependencies>

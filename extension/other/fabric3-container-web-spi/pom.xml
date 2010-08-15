@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-container-web-spi</artifactId>
-    <name>Fabric3 Web Container Extension</name>
-    <description>Fabric3 Web Container Extension.</description>
+    <name>Fabric3 Web Container SPI Extension</name>
+    <description>Web Container SPI</description>
     <packaging>jar</packaging>
 
     <dependencies>

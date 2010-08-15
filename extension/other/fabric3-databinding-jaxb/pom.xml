@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-databinding-jaxb</artifactId>
     <name>Fabric3 JAXB Databinding Extension</name>
-    <description>Fabric3 JAXB Databinding Extension.</description>
+    <description>Provides data serialization using JAXB</description>
     <packaging>jar</packaging>
 
     <dependencies>

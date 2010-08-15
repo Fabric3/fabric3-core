@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-contribution-war</artifactId>
     <name>Fabric3 WAR Contribution Extension</name>
-    <description>Fabric3 WAR Contribution Extension.</description>
+    <description>Support for processing and loading  WAR contributions</description>
     <packaging>jar</packaging>
 
     <dependencies>

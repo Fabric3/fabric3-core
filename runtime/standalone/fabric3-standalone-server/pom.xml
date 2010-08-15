@@ -20,7 +20,7 @@
     <groupId>org.codehaus.fabric3.standalone</groupId>
     <artifactId>fabric3-standalone-server</artifactId>
     <name>Fabric3 Standalone Runtime Server</name>
-    <description>Fabric3 Standalone Runtime Server Start Command.</description>
+    <description>Fabric3 runtime start command</description>
 
     <dependencies>
 

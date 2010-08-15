@@ -27,7 +27,7 @@
     <artifactId>fabric3-atomikos</artifactId>
     <packaging>sca-contribution-jar</packaging>
     <name>Fabric3 Atomikos Extension</name>
-    <description>Fabric3 Atomikos Transaction Manager extension.</description>
+    <description>Provides integration with the Atomikos transaction manager</description>
 
     <dependencies>
         <dependency>

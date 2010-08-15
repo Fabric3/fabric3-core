@@ -19,8 +19,8 @@
     </parent>
     <groupId>org.codehaus.fabric3.standalone</groupId>
     <artifactId>fabric3-standalone-admin</artifactId>
-    <name>Fabric3 Standalone Runtime Admin Extension</name>
-    <description>Fabric3 Standalone Runtime Admin Extension.</description>
+    <name>Fabric3 Runtime Admin Extension</name>
+    <description>Provides runtime administration capabilities</description>
     <packaging>jar</packaging>
 
     <dependencies>

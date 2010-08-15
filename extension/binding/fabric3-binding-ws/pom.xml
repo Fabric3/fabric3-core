@@ -20,8 +20,8 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-ws</artifactId>
     <packaging>jar</packaging>
-    <name>Fabric3 WS Binding</name>
-    <description>Fabric3 WS Binding Implementation Core.</description>
+    <name>Fabric3 Web Services Binding Extension</name>
+    <description>Support for remote invocations using Web Services</description>
 
     <dependencies>
 

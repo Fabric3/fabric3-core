@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-federation-allocation</artifactId>
     <name>Fabric3 Federated Allocator Extension</name>
-    <description>Fabric3 Federated Allocator Extension.</description>
+    <description>Default implementation of allocation for federated topologies</description>
     <packaging>jar</packaging>
 
     <dependencies>

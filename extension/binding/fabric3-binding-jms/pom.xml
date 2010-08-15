@@ -21,8 +21,8 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-jms</artifactId>
     <packaging>jar</packaging>
-    <name>Fabric3 JMS Binding</name>
-    <description>Fabric3 JMS Binding Implementation.</description>
+    <name>Fabric3 JMS Binding Extension</name>
+    <description>Provides support for JMS-based messaging</description>
 
     <dependencies>
 

@@ -20,7 +20,7 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-spi</artifactId>
     <name>Fabric3 SPI</name>
-    <description>Fabric3 SPIs for fabric extensions.</description>
+    <description>SPIs for runtime extensions</description>
 
     <dependencies>
 

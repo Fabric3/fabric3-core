@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-timer-service</artifactId>
-    <name>Fabric3 Timer Service Implementation</name>
-    <description>Fabric3 Timer Service Implementation.</description>
+    <name>Fabric3 Timer Service Extension</name>
+    <description>Provides runtime timer facilities</description>
     <packaging>jar</packaging>
 
     <dependencies>

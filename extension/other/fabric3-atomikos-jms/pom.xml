@@ -24,7 +24,7 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
     <artifactId>fabric3-atomikos-jms</artifactId>
     <packaging>sca-contribution-jar</packaging>
     <name>Fabric3 Atomikos JMS Extension</name>
-    <description>Fabric3 Atomikos JMS extension.</description>
+    <description>Provides support for integrating the Atomikos transaction manager with JMS extensions</description>
 
     <dependencies>
 

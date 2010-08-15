@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3.webapp</groupId>
     <artifactId>fabric3-webapp-extension</artifactId>
     <name>Fabric3 Webapp Runtime Extension</name>
-    <description>Fabric3 Webapp Runtime Extension.</description>
+    <description>Webapp runtime extensions</description>
     <packaging>jar</packaging>
 
     <dependencies>

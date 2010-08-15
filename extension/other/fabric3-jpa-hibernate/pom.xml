@@ -21,7 +21,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jpa-hibernate</artifactId>
     <name>Fabric3 JPA/Hibernate Extension</name>
-    <description>Fabric3 JPA/Hibernate Extension.</description>
+    <description>Support for JPA and Hibernate</description>
 
     <packaging>jar</packaging>
 

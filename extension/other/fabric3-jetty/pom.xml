@@ -19,8 +19,8 @@ Public License. See the accompanying license file for details.
     <artifactId>fabric3-jetty</artifactId>
     <packaging>sca-contribution-jar</packaging>
 
-    <name>Fabric3 Jetty Transport</name>
-    <description>Fabric3 HTTP Transport based on Jetty</description>
+    <name>Fabric3 Jetty Extension</name>
+    <description>Support for running an embedded Jetty instance</description>
 
     <dependencies>
         <dependency>

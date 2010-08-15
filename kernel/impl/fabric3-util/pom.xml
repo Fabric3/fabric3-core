@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-util</artifactId>
-    <name>Fabric3 Util</name>
-    <description>Fabric3 Utilities.</description>
+    <name>Fabric3 Utilities Core Module</name>
+    <description>Provides reusable utility services</description>
 
     <dependencies>
 

@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-timer-spi</artifactId>
     <name>Fabric3 Timer Service SPI</name>
-    <description>Fabric3 Timer Service SPI.</description>
+    <description>SPI for extending the runtime timer service</description>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>

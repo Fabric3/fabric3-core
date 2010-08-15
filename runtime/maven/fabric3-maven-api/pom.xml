@@ -20,7 +20,7 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-maven-api</artifactId>
     <name>Fabric3 Maven Runtime API</name>
-    <description>Fabric3 Maven Runtime API.</description>
+    <description>Fabric3 APIs for embedding a runtime in Maven</description>
 
     <dependencies>
         <dependency>

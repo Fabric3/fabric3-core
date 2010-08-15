@@ -20,7 +20,7 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-model</artifactId>
     <name>Fabric3 Assembly Model</name>
-    <description>Fabric3 model of assembly concepts.</description>
+    <description>The in-memory model of an assembly</description>
 
     <dependencies>
         <dependency>

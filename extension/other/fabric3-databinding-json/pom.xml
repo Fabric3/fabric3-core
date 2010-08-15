@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-databinding-json</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 JSON Databinding</name>
-    <description>Fabric3 JSON Databinding Extension.</description>
+    <name>Fabric3 JSON Databinding Extension</name>
+    <description>Provides data serialization using The Jackson JSON parser</description>
 
     <dependencies>
 

@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jmx</artifactId>
-    <name>Fabric3 JMX</name>
-    <description>Fabric3 JMX Management.</description>
+    <name>Fabric3 JMX Core Module</name>
+    <description>Support for exposing components as MBeans</description>
 
     <dependencies>
         <dependency>

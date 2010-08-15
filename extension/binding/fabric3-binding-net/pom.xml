@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-net</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 Network Binding</name>
-    <description>Fabric3 WS Network Binding.</description>
+    <name>Fabric3 Network Binding Extension</name>
+    <description>Support for remote invocations over HTTP and TCP transports</description>
 
     <dependencies>
 

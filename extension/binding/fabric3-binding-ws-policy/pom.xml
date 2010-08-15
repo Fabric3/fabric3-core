@@ -21,6 +21,6 @@
     <artifactId>fabric3-binding-ws-policy</artifactId>
     <packaging>jar</packaging>
     <name>Fabric3 Web Services Policy Definitions</name>
-    <description>Fabric3 Web Services Default Policy Definitions.</description>
+    <description>Contains default policy definitions for the web services binding</description>
 
 </project>

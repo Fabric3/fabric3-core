@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-conversation-propagation</artifactId>
     <name>Fabric3 Conversation Propagation Extension</name>
-    <description>Fabric3 Conversation Propagation Support.</description>
+    <description>Support for conversation propagation</description>
     <packaging>jar</packaging>
 
     <dependencies>

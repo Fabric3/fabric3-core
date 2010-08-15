@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-admin-api</artifactId>
     <name>Fabric3 Domain Admin API</name>
-    <description>Fabric3 APIs for Domain Administration.</description>
+    <description>Fabric3 APIs for domain administration.</description>
 
 
     <dependencies>

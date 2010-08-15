@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-databinding-hessian</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 Hessian Databinding</name>
-    <description>Fabric3 hessian Databinding Extension.</description>
+    <name>Fabric3 Hessian Databinding Extension</name>
+    <description>Provides data serialization using Hessian</description>
 
     <dependencies>
 

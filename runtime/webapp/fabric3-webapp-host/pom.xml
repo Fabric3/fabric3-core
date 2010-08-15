@@ -16,8 +16,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3.webapp</groupId>
     <artifactId>fabric3-webapp-host</artifactId>
-    <name>Fabric3 Webapp Runtime Host</name>
-    <description>Fabric3 Webapp Runtime Host.</description>
+    <name>Fabric3 Webapp Runtime Host APIs</name>
+    <description>Fabric3 Webapp runtime host APIs</description>
 
     <dependencies>
 

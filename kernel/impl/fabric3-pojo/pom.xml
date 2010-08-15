@@ -19,8 +19,8 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-pojo</artifactId>
-    <name>Fabric3 POJO</name>
-    <description>Fabric3 Support Module for Implementations based on POJOs.</description>
+    <name>Fabric3 POJO Core Module</name>
+    <description>Functionality common to component implementations based on Java classes</description>
 
     <dependencies>
 

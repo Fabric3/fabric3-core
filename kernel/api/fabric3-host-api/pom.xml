@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-host-api</artifactId>
     <name>Fabric3 Host API</name>
-    <description>Fabric3 APIs for hosts embedding the fabric.</description>
+    <description>Host APIs for embedding and managing a Fabric3 runtime</description>
 
     <dependencies>
         <dependency>

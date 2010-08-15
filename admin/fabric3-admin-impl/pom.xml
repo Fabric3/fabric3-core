@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-admin-impl</artifactId>
     <name>Fabric3 Domain Admin Implementation</name>
-    <description>Fabric3 Implementation for Domain Administration.</description>
+    <description>Implementation for domain administration</description>
 
     <dependencies>
         <dependency>

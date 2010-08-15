@@ -20,7 +20,7 @@
     <artifactId>fabric3-itest-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Fabric3 Maven Runtime Plugin</name>
-    <description>Fabric3 Maven Runtime Plugin.</description>
+    <description>Fabric3 Maven Runtime plugin</description>
     <build>
         <plugins>
             <plugin>

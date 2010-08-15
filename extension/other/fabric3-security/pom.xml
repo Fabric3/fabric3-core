@@ -20,8 +20,8 @@ Public License. See the accompanying license file for details.
 
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-security</artifactId>
-    <name>Fabric3 Security</name>
-    <description>Fabric3 Security Framework.</description>
+    <name>Fabric3 Security Extension</name>
+    <description>The Fabric3 security framework</description>
     <packaging>jar</packaging>
 
     <dependencies>

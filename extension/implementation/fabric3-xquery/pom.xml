@@ -20,8 +20,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-xquery</artifactId>
-    <name>Fabric3 XQuery Extension</name>
-    <description>Fabric3 XQuery component implementation.</description>
+    <name>Fabric3 XQuery Implementation Extension</name>
+    <description>Support for XQuery components</description>
     <packaging>sca-contribution-jar</packaging>
     <dependencies>
         <dependency>

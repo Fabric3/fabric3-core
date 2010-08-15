@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-thread-pool</artifactId>
-    <name>Fabric3 Thread Pool Executor</name>
-    <description>Fabric3 Thread Pool Executor.</description>
+    <name>Fabric3 Thread Pool Core Module</name>
+    <description>Provides work scheduling</description>
 
     <dependencies>
         <dependency>

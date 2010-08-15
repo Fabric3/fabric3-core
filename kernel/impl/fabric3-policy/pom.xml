@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-policy</artifactId>
-    <name>Fabric3 Policy</name>
-    <description>Fabric3 Policy.</description>
+    <name>Fabric3 Policy Core Module</name>
+    <description>Support for SCA policy</description>
 
     <dependencies>
         <dependency>

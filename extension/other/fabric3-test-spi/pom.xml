@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-test-spi</artifactId>
     <name>Fabric3 Test SPI</name>
-    <description>Fabric3 Test SPI.</description>
+    <description>Fabric3 Test SPI</description>
     <packaging>jar</packaging>
 
     <dependencies>

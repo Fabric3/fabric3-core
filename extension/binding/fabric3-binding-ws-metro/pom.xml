@@ -20,8 +20,8 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-ws-metro</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 WS Binding (Metro)</name>
-    <description>Fabric3 WS Binding Implementation using Metro.</description>
+    <name>Fabric3 Metro Binding Extension</name>
+    <description>Extends the Web Service binding to use Metro</description>
 
     <dependencies>
 
