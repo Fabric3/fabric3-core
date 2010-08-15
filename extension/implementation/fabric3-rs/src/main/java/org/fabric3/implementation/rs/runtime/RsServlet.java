@@ -35,17 +35,33 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.introspection;
+package org.fabric3.implementation.rs.runtime;
 
-import java.net.URI;
-
-import org.fabric3.implementation.java.model.JavaImplementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.spi.container.WebApplication;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface RsHeuristic {
+public class RsServlet extends ServletContainer {
+    private static final long serialVersionUID = -8351194346044994829L;
 
-    public void applyHeuristics(JavaImplementation impl, URI webAppUri, IntrospectionContext context);
+    private Fabric3ProviderFactory factory;
+
+    public RsServlet(Fabric3ProviderFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
+    protected void initiate(ResourceConfig resourceConfig, WebApplication webApplication) {
+        if (resourceConfig instanceof Fabric3ResourceConfig) {
+            Fabric3ResourceConfig f3ResourceConfig = (Fabric3ResourceConfig) resourceConfig;
+            f3ResourceConfig.setFactory(factory);
+            webApplication.initiate(f3ResourceConfig, factory);
+        } else {
+            webApplication.initiate(resourceConfig);
+        }
+
+    }
 }

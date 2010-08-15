@@ -16,17 +16,8 @@ Public License. See the accompanying license file for details.
            name="RsExtension"
            autowire="true">
 
-    <component name="RsHeuristic">
-        <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsHeuristicImpl"/>
-    </component>
-
     <component name="RsBindingLoader" f3-core:key="f3-binding:binding.rs">
         <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsBindingLoader"/>
-    </component>
-
-    <component name="RsImplementationLoader" f3-core:key="f3-impl:implementation.rs">
-        <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsImplementationLoader"/>
-        <reference name="implementationProcessor" target="JavaImplementationProcessorImpl"/>
     </component>
 
     <!-- Rs Binding Generator -->

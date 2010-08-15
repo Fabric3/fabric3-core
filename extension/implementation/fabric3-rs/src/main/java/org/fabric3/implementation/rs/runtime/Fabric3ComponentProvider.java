@@ -35,33 +35,31 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.runtime.rs;
+package org.fabric3.implementation.rs.runtime;
 
-import com.sun.jersey.api.core.ResourceConfig;
-import com.sun.jersey.spi.container.WebApplication;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
+import com.sun.jersey.core.spi.component.ComponentScope;
+import com.sun.jersey.core.spi.component.ioc.IoCManagedComponentProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RsServlet extends ServletContainer {
-    private static final long serialVersionUID = -8351194346044994829L;
+public class Fabric3ComponentProvider implements IoCManagedComponentProvider {
+    private Object instance;
 
-    private Fabric3ProviderFactory factory;
-
-    public RsServlet(Fabric3ProviderFactory factory) {
-        this.factory = factory;
+    public Fabric3ComponentProvider(Object instance) {
+        this.instance = instance;
     }
 
-    @Override
-    protected void initiate(ResourceConfig resourceConfig, WebApplication webApplication) {
-        if (resourceConfig instanceof Fabric3ResourceConfig) {
-            Fabric3ResourceConfig f3ResourceConfig = (Fabric3ResourceConfig) resourceConfig;
-            f3ResourceConfig.setFactory(factory);
-            webApplication.initiate(f3ResourceConfig, factory);
-        } else {
-            webApplication.initiate(resourceConfig);
-        }
+    public Object getInjectableInstance(Object o) {
+        return instance;
+    }
 
+    public Object getInstance() {
+        return instance;
+    }
+
+    public ComponentScope getScope() {
+        // F3 invocation chains are stateless and dispatch to the correct instance so the component can be treated as a Singleton
+        return ComponentScope.Singleton;
     }
 }

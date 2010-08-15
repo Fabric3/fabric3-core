@@ -20,12 +20,12 @@ Public License. See the accompanying license file for details.
     <include schemaLocation="sca-core-1.1-cd05.xsd" />
 
 
-    <element name="implementation.rs" 
-		type="RsImplementation" substitutionGroup="sca:implementation"/>
+    <element name="binding.rs"
+		type="RsBinding" substitutionGroup="sca:binding"/>
 		
-    <complexType name="RsImplementation ">
+    <complexType name="RsBinding ">
         <complexContent>
-            <extension base="sca:Implementation">
+            <extension base="sca:Binding">
                 <sequence>
                     <any namespace="##other" processContents="lax"
                          minOccurs="0" maxOccurs="unbounded"/>

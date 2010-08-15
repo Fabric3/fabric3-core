@@ -50,26 +50,8 @@ public class RsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 7344870455465600359L;
 
     public static final QName BINDING_RS = new QName(Namespaces.BINDING, "binding.rs");
-    private boolean isResource;
-    private boolean isProvider;
 
     public RsBindingDefinition(String name, URI targetUri) {
         super(name, targetUri, BINDING_RS);
-    }
-
-    public boolean isProvider() {
-        return isProvider;
-    }
-
-    public void setIsProvider(boolean value) {
-        this.isProvider = value;
-    }
-
-    public boolean isResource() {
-        return isResource;
-    }
-
-    public void setIsResource(boolean value) {
-        this.isResource = value;
     }
 }

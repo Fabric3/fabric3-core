@@ -35,38 +35,43 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.implementation.rs.runtime.rs;
+package org.fabric3.implementation.rs.runtime;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.jersey.core.spi.component.ComponentContext;
-import com.sun.jersey.core.spi.component.ioc.IoCComponentProvider;
-import com.sun.jersey.core.spi.component.ioc.IoCComponentProviderFactory;
+import com.sun.jersey.api.core.DefaultResourceConfig;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Fabric3ProviderFactory implements IoCComponentProviderFactory {
-    private Map<Class<?>, Fabric3ComponentProvider> providers = new ConcurrentHashMap<Class<?>, Fabric3ComponentProvider>();
+public class Fabric3ResourceConfig extends DefaultResourceConfig {
+    private Set<Class<?>> resources = new HashSet<Class<?>>();
 
-    public IoCComponentProvider getComponentProvider(Class<?> clazz) {
-        return providers.get(clazz);
+    private Fabric3ProviderFactory factory;
+
+    /**
+     * Constructor. The properties parameter is required by Jersey.
+     *
+     * @param properties context properties passed by Jersey
+     */
+    public Fabric3ResourceConfig(Map<?, ?> properties) {
+        // register the JSON message body reader and writer
+        getSingletons().add(new JacksonJaxbJsonProvider());
     }
 
-    public IoCComponentProvider getComponentProvider(ComponentContext cc, Class<?> clazz) {
-        return getComponentProvider(clazz);
+    public void setFactory(Fabric3ProviderFactory factory) {
+        this.factory = factory;
     }
 
-    public void addResource(Class<?> clazz, Object instance) {
-        Fabric3ComponentProvider provider = new Fabric3ComponentProvider(instance);
-        providers.put(clazz, provider);
-    }
-
+    @Override
     public Set<Class<?>> getClasses() {
-        return providers.keySet();
+        if (factory != null) {
+            resources.addAll(factory.getClasses());
+        }
+        return resources;
     }
-
 
 }
