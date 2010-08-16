@@ -30,6 +30,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>fabric3-spring-library</module>
 		<module>fabric3-spring-spi</module>
 		<module>fabric3-spring-security</module>
 	</modules>
