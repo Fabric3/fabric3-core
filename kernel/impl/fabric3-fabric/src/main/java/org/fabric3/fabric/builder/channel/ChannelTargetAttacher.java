@@ -78,7 +78,7 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
     private Channel getChannel(URI uri) throws ChannelNotFoundException {
         Channel channel = channelManager.getChannel(uri);
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channel);
+            throw new ChannelNotFoundException("Channel not found");
         }
         return channel;
     }

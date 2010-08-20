@@ -79,7 +79,7 @@ public class JDKMonitorProxyService implements MonitorProxyService {
     public <T> T createMonitor(Class<T> type, Monitorable monitorable, URI channelUri) throws MonitorCreationException {
         Channel channel = channelManager.getChannel(channelUri);
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channelUri);
+            throw new ChannelNotFoundException("Channel not found");
         }
 
         EventStreamHandler streamHandler = new PassThroughHandler();
