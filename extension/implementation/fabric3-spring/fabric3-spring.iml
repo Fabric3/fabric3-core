@@ -68,7 +68,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-spring-library" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
