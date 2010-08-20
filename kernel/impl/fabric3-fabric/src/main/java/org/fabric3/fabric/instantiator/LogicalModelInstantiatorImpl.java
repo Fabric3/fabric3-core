@@ -112,7 +112,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         includeProperties(composite, domain, context);
 
         // merge resources
-        includeResources(composite, domain);
+        includeResources(composite, domain, synthetic);
 
         // instantiate all the components in the composite and add them to the parent
         List<LogicalComponent<?>> newComponents = instantiate(composite, domain, synthetic, context);
@@ -147,10 +147,22 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         }
     }
 
-    private void includeResources(Composite composite, LogicalCompositeComponent domain) {
-        for (ResourceDefinition definition : composite.getResources()) {
-            LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
-            domain.addResource(resource);
+    private void includeResources(Composite composite, LogicalCompositeComponent domain, boolean synthetic) {
+        if (synthetic) {
+            for (Include include : composite.getIncludes().values()) {
+                Composite included = include.getIncluded();
+                for (ResourceDefinition definition : included.getResources()) {
+                    LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
+                    resource.setDeployable(included.getName());
+                    domain.addResource(resource);
+                }
+            }
+        } else {
+            for (ResourceDefinition definition : composite.getResources()) {
+                LogicalResource<?> resource = new LogicalResource<ResourceDefinition>(definition, domain);
+                resource.setDeployable(composite.getName());
+                domain.addResource(resource);
+            }
         }
     }
 

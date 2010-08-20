@@ -264,6 +264,7 @@ public class CopyUtil {
     private static void copy(LogicalResource resource, LogicalCompositeComponent parent) {
         LogicalResource<?> copy = new LogicalResource(resource.getDefinition(), parent);
         copy.setDeployable(resource.getDeployable());
+        copy.setState(resource.getState());
         copy.setZone(resource.getZone());
         parent.addResource(copy);
     }
