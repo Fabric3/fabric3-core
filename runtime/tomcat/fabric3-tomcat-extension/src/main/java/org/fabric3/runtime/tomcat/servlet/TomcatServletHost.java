@@ -65,7 +65,7 @@ public class TomcatServletHost implements ServletHost {
     private Service service;
     private ConnectorService connectorService;
     private int defaultHttpPort = 8080;   // default Tomcat port
-       private String servicePath = "";      // context path for bound services; defaults to the root context
+    private String servicePath = "";      // context path for bound services; defaults to the root context
     private int defaultHttpsPort = -1;
     private Connector connector;
     private Fabric3DispatchingServlet dispatchingServlet;
@@ -76,11 +76,11 @@ public class TomcatServletHost implements ServletHost {
         this.connectorService = connectorService;
     }
 
-    @Property (required = false)
+    @Property(required = false)
     public void setHttpPort(int defaultHttpPort) {
         this.defaultHttpPort = defaultHttpPort;
     }
-     
+
     @Property(required = false)
     public void setServicePath(String servicePath) {
         this.servicePath = servicePath;
@@ -96,7 +96,7 @@ public class TomcatServletHost implements ServletHost {
             if (container instanceof StandardHost) {
                 Container child = container.findChild("");
                 if (child != null) {
-                	   container.removeChild(child);
+                    container.removeChild(child);
                 }
                 StandardContext context = createContext("", ".");
                 context.addChild(wrapper);
