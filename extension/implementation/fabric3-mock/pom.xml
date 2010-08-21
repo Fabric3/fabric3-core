@@ -13,7 +13,7 @@ Public License. See the accompanying license file for details.
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-extension-implementation-parent-pom</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>1.6</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-mock</artifactId>
