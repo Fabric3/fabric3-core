@@ -15,15 +15,15 @@ Public License. See the accompanying license file for details.
               f3-core:description="Timer implementation extension"
               f3-core:extension="true">
     <import.java package="javax.transaction" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.model" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.introspection" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.generator" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.provision" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.introspection" version="1.6"/>
-    <import.java package="org.fabric3.implementation.java.runtime" version="1.6"/>
-    <import.java package="org.fabric3.timer.spi" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.7"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.model" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.introspection" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.generator" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.provision" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.introspection" version="1.7"/>
+    <import.java package="org.fabric3.implementation.java.runtime" version="1.7"/>
+    <import.java package="org.fabric3.timer.spi" version="1.7"/>
     <deployable composite="f3-impl:TimerControllerExtension" modes="controller vm"/>
     <deployable composite="f3-impl:TimerParticipantExtension" modes="participant vm"/>
 </contribution>

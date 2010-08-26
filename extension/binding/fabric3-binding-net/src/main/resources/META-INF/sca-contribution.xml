@@ -14,7 +14,7 @@ Public License. See the accompanying license file for details.
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true"
               f3-core:description="Network extension">
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.7"/>
     <deployable composite="f3-binding:NetBindingControllerExtension" modes="controller vm"/>
     <deployable composite="f3-binding:NetBindingParticipantExtension" modes="participant vm"/>
     <f3-core:provides name="binding.net"/>

@@ -20,10 +20,10 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.persistence" version="1.0.0"/>
     <import.java package="org.hibernate.*" version="3.4.0.GA"/>
     <import.java package="javassist.util.proxy" version="3.4.0.GA"/>
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
-    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.7"/>
+    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.7"/>
     <import.java package="org.fabric3.datasource.spi"/>
-    <export.java package="org.fabric3.jpa.api" version="1.6"/>
+    <export.java package="org.fabric3.jpa.api" version="1.7"/>
     <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateControllerExtension" modes = "controller vm"/>
     <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateParticipantExtension" modes = "participant vm"/>
 </contribution>

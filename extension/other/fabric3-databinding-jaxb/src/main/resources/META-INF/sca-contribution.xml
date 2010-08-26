@@ -13,7 +13,7 @@ Public License. See the accompanying license file for details.
               xmlns:databinding="urn:fabric3.org:databinding"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="javax.xml.bind" version="2.2"/>
     <import.java package="javax.xml.bind.annotation" version="2.2"/>
     <import.java package="javax.xml.bind.annotation.adaptors" version="2.2"/>

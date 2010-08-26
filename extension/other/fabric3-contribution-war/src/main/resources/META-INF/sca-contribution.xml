@@ -15,6 +15,6 @@ Public License. See the accompanying license file for details.
               xmlns:web="urn:fabric3.org:web"
               f3-core:extension="true"
               f3-core:description="WAR extension">
-    <import.java package="org.fabric3.spi.*" version="1.6"/>
+    <import.java package="org.fabric3.spi.*" version="1.7"/>
     <deployable composite="web:WarContributionExtension"/>
 </contribution>
