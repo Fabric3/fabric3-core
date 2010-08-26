@@ -39,9 +39,6 @@
 		<module>fabric3-conversation-propagation</module>
 		<module>fabric3-jdk-proxy</module>
 		<module>fabric3-jetty</module>
-		<module>fabric3-hibernate-library</module>
-		<module>fabric3-jpa-api</module>
-		<module>fabric3-jpa-hibernate</module>
 		<module>fabric3-resource</module>
 		<module>fabric3-datasource</module>
 		<module>fabric3-sca-taglib</module>
@@ -55,6 +52,7 @@
 		<module>fabric3-timer-service</module>
 		<module>fabric3-test-spi</module>
 		<module>fabric3-recovery</module>
+		<module>jpa</module>
 		<module>spring</module>
 		<module>databinding</module>
 		<module>ftp</module>
