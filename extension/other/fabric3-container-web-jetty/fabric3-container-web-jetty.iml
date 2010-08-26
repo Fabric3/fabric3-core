@@ -14,11 +14,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-container-web-spi" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-jetty" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.jetty:jetty-webapp:7.1.4.v20100610" level="project" />

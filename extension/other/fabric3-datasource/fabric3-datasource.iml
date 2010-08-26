@@ -13,11 +13,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-resource" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-pojo" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:com.springsource.javax.annotation:1.0.0" level="project" />
