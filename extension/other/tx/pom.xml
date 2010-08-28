@@ -20,36 +20,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-extension-parent-pom</artifactId>
+        <artifactId>fabric3-extension-other-parent-pom</artifactId>
         <version>1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-extension-other-parent-pom</artifactId>
-    <name>Fabric3 Extension Other Parent POM</name>
-    <description>Fabric3 Extension Other Parent POM.</description>
+    <artifactId>fabric3-extension-tx-parent-pom</artifactId>
+    <name>Fabric3 Transaction Extensions Parent POM</name>
+    <description>Fabric3 Transaction Extensions Parent POM.</description>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>fabric3-async</module>
-		<module>fabric3-container-web-jetty</module>
-		<module>fabric3-container-web-spi</module>
-		<module>fabric3-contribution-scanner</module>
-		<module>fabric3-contribution-scanner-war</module>
-		<module>fabric3-contribution-war</module>
-		<module>fabric3-conversation-propagation</module>
-		<module>fabric3-jdk-proxy</module>
-		<module>fabric3-jetty</module>
-		<module>fabric3-resource</module>
-		<module>fabric3-sca-taglib</module>
-		<module>fabric3-sca-intents</module>
-		<module>fabric3-test-spi</module>
-		<module>fabric3-recovery</module>
-		<module>tx</module>
-		<module>jpa</module>
-		<module>spring</module>
-		<module>security</module>
-        <module>timer</module>
-		<module>databinding</module>
-		<module>ftp</module>
+		<module>fabric3-tx</module>
+		<module>fabric3-datasource</module>
+		<module>fabric3-atomikos</module>
+		<module>fabric3-atomikos-jms</module>
 	</modules>
 </project>
