@@ -16,7 +16,7 @@
 
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-extension-other-parent-pom</artifactId>
+        <artifactId>fabric3-extension-core-parent-pom</artifactId>
         <version>1.7-SNAPSHOT</version>
     </parent>
 

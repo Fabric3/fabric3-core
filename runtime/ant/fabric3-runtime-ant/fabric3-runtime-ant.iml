@@ -118,10 +118,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-jdk-proxy" exported="" />
-    <orderEntry type="module" module-name="fabric3-contribution-scanner" exported="" />
-    <orderEntry type="module" module-name="fabric3-conversation-propagation" exported="" />
-    <orderEntry type="module" module-name="fabric3-jetty" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.mortbay.jetty:jetty:6.1.3">
         <CLASSES>
@@ -174,7 +170,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-resource" exported="" />
   </component>
 </module>
 

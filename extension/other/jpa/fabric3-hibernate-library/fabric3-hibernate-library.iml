@@ -236,7 +236,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-resource" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
