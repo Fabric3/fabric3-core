@@ -42,9 +42,7 @@
 		<module>fabric3-resource</module>
 		<module>fabric3-datasource</module>
 		<module>fabric3-sca-taglib</module>
-		<module>fabric3-security</module>
 		<module>fabric3-sca-intents</module>
-		<module>fabric3-security-impl</module>
 		<module>fabric3-tx</module>
 		<module>fabric3-atomikos</module>
 		<module>fabric3-atomikos-jms</module>
@@ -54,6 +52,7 @@
 		<module>fabric3-recovery</module>
 		<module>jpa</module>
 		<module>spring</module>
+		<module>security</module>
 		<module>databinding</module>
 		<module>ftp</module>
 	</modules>
