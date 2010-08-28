@@ -30,15 +30,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>fabric3-async</module>
-		<module>fabric3-contribution-scanner</module>
-		<module>fabric3-conversation-propagation</module>
-		<module>fabric3-jdk-proxy</module>
-		<module>fabric3-jetty</module>
-		<module>fabric3-resource</module>
-		<module>fabric3-sca-intents</module>
-		<module>fabric3-test-spi</module>
-		<module>fabric3-recovery</module>
 		<module>tx</module>
 		<module>jpa</module>
 		<module>spring</module>

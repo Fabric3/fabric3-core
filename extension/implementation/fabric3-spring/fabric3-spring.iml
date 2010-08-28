@@ -79,8 +79,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="fabric3-jpa-hibernate" />
-    <orderEntry type="module" module-name="fabric3-datasource" />
     <orderEntry type="module" module-name="fabric3-spring-spi" />
     <orderEntry type="module" module-name="sca-spec" />
     <orderEntry type="module" module-name="fabric3-model" />
