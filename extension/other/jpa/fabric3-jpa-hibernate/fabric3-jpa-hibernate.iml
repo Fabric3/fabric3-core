@@ -148,7 +148,6 @@
     <orderEntry type="module" module-name="fabric3-pojo" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-resource" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-datasource" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-hibernate-library:1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.transaction:com.springsource.javax.transaction:1.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />

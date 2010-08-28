@@ -13,7 +13,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-datasource" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-spring-library" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-core:3.0.2.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-asm:3.0.2.RELEASE" level="project" />
