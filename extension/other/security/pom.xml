@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-extension-security-parent-pom</artifactId>
-    <name>Fabric3 JPA Extensions Parent POM</name>
+    <name>Fabric3 Security Extensions Parent POM</name>
     <description>Fabric3 Security Extensions Parent POM.</description>
 	<packaging>pom</packaging>
 
