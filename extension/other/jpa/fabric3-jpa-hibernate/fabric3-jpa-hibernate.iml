@@ -145,6 +145,7 @@
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-hibernate-library:1.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-hibernate-library" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-hibernate-library" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-jpa-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final" level="project" />
     <orderEntry type="module" module-name="fabric3-pojo" scope="PROVIDED" />

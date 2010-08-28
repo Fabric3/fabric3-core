@@ -12,7 +12,7 @@ Public License. See the accompanying license file for details.
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-extension-other-parent-pom</artifactId>
+        <artifactId>fabric3-extension-web-parent-pom</artifactId>
         <version>1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3.spec</groupId>
