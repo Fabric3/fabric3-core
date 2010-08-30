@@ -184,13 +184,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
     public Dependency[] shared;
 
     /**
-     * Properties passed to the runtime throught the HostInfo interface.
-     *
-     * @parameter
-     */
-    public Properties properties;
-
-    /**
      * @parameter expression="${project.testClasspathElements}"
      * @required
      * @readonly
@@ -333,7 +326,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
         configuration.setModuleDependencies(moduleDependencies);
         configuration.setOutputDirectory(outputDirectory);
-        configuration.setProperties(properties);
         configuration.setSystemConfig(systemConfig);
         configuration.setSystemConfigDir(systemConfigDir);
         return configuration;

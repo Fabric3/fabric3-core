@@ -75,7 +75,7 @@
     <orderEntry type="module" module-name="fabric3-maven-api" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="module" module-name="fabric3-thread-pool" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.mortbay.jetty:servlet-api:3.0.20100224" level="project" />
   </component>
 </module>
 

@@ -22,14 +22,6 @@ public class MavenBootConfiguration {
     private ExtensionHelper extensionHelper;
     private List<URL> policyUrls;
 
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
     public File getOutputDirectory() {
         return outputDirectory;
     }
