@@ -43,59 +43,83 @@
  */
 package org.fabric3.container.web.jetty;
 
+import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import org.fabric3.spi.Injector;
 import org.fabric3.spi.ObjectCreationException;
 import org.fabric3.transport.jetty.management.ManagedServletHandler;
-import org.fabric3.transport.jetty.management.ManagedServletHolder;
 
 /**
  * Injects a servlet or filter with reference proxies, properties, and the component context.
  *
  * @version $Rev$ $Date$
  */
-public class InjectingServletHandler extends ManagedServletHandler {
+public class InjectingDecorator implements ServletContextHandler.Decorator {
     private Map<String, List<Injector<?>>> injectorMappings;
 
-    public InjectingServletHandler(Map<String, List<Injector<?>>> injectorMappings) {
+    public InjectingDecorator(Map<String, List<Injector<?>>> injectorMappings) {
         this.injectorMappings = injectorMappings;
     }
 
-    @Override
-    public Servlet customizeServlet(Servlet servlet) throws Exception {
-        inject(servlet);
-        return servlet;
-    }
 
-    @Override
-    public Filter customizeFilter(Filter filter) throws Exception {
+    public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
         inject(filter);
         return filter;
     }
 
-    @Override
-    public ServletHolder newServletHolder() {
-        return new ManagedServletHolder();
+    public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
+        inject(servlet);
+        return servlet;
     }
 
-    @Override
-    public ServletHolder newServletHolder(Class servlet) {
-        return new ManagedServletHolder(servlet);
+    public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
+        inject(listener);
+        return listener;
+    }
+
+    public void decorateFilterHolder(FilterHolder filter) throws ServletException {
+        inject(filter);
+
+    }
+
+    public void decorateServletHolder(ServletHolder servlet) throws ServletException {
+        inject(servlet);
+    }
+
+    public void destroyServletInstance(Servlet s) {
+
+    }
+
+    public void destroyFilterInstance(Filter f) {
+
+    }
+
+    public void destroyListenerInstance(EventListener f) {
+
     }
 
     @SuppressWarnings({"unchecked"})
-    private void inject(Object instance) throws ObjectCreationException {
+    private void inject(Object instance) throws ServletException {
         List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
         if (injectors != null) {
             for (Injector injector : injectors) {
-                injector.inject(instance);
+                try {
+                    injector.inject(instance);
+                } catch (ObjectCreationException e) {
+                    throw new ServletException(e);
+                }
             }
         }
     }
+
+
 }

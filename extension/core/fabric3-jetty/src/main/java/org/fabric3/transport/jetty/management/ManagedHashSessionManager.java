@@ -94,12 +94,6 @@ public class ManagedHashSessionManager extends HashSessionManager {
 
     @Override
     @ManagementOperation(description = "The maximum session cookie age in seconds")
-    public int getMaxCookieAge() {
-        return super.getMaxCookieAge();
-    }
-
-    @Override
-    @ManagementOperation(description = "The maximum session cookie age in seconds")
     public int getSessionsMax() {
         return super.getSessionsMax();
     }
@@ -126,18 +120,6 @@ public class ManagedHashSessionManager extends HashSessionManager {
     @ManagementOperation(description = "True if sessions are using client-side cookies")
     public boolean isUsingCookies() {
         return super.isUsingCookies();
-    }
-
-    @Override
-    @ManagementOperation(description = "True if sessions are using client-side cookies")
-    public void setUsingCookies(boolean usingCookies) {
-        super.setUsingCookies(usingCookies);
-    }
-
-    @Override
-    @ManagementOperation(description = "Maximum cookie age")
-    public void setMaxCookieAge(int maxCookieAgeInSeconds) {
-        super.setMaxCookieAge(maxCookieAgeInSeconds);
     }
 
     @Override

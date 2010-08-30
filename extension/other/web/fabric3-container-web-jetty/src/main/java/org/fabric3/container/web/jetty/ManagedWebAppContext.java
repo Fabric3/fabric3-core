@@ -94,5 +94,4 @@ public class ManagedWebAppContext extends WebAppContext {
     public String[] getVirtualHosts() {
         return super.getVirtualHosts();
     }
-
 }

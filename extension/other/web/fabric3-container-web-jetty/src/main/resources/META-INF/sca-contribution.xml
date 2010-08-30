@@ -19,9 +19,9 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.transport.jetty" version="1.7"/>
     <import.java package="org.fabric3.transport.jetty.management" version="1.7"/>
     <!-- Jetty, Jasper and EL classes must be visible for as this extension accesses Jetty classes and for JSP compilation -->
-    <import.java package="org.eclipse.jetty.webapp" version="7.1.4.v20100610"/>
-    <import.java package="org.eclipse.jetty.server" version="7.1.4.v20100610"/>
-    <import.java package="org.eclipse.jetty" version="7.1.4.v20100610"/>
+    <import.java package="org.eclipse.jetty.webapp" version="8.0.0.M1"/>
+    <import.java package="org.eclipse.jetty.server" version="8.0.0.M1"/>
+    <import.java package="org.eclipse.jetty" version="8.0.0.M1"/>
     <import.java package="org.apache.jasper.runtime" version="7.1.4.v20100610"/>
     <import.java package="com.sun.el" version="7.1.4.v20100610"/>
     <deployable composite="web:JettyWebContainerExtension"/>

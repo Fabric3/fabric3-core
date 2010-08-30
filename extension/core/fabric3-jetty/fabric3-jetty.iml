@@ -17,22 +17,23 @@
     <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-webapp:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-continuation:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlets:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-client:7.1.4.v20100610" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-jmx:7.1.4.v20100610" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:servlet-api:3.0.20100224" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-webapp:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-continuation:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlets:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-client:8.0.0.M1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-jmx:8.0.0.M1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-jsp-2.1:7.1.4.v20100610" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20091210" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jdt.core.compiler:ecj:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-websocket:8.0.0.M1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
   </component>

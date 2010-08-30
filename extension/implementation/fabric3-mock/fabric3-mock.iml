@@ -25,12 +25,12 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-spi:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-api:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-host-api:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-model:1.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-management-api:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="library" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" name="Maven: org.easymock:easymock:2.2" level="project" />

@@ -172,8 +172,8 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                                               URL resolved, ClassLoader parentClassLoader) throws IOException {
         WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
         context.setParentLoaderPriority(true);
-
-        context.setServletHandler(new InjectingServletHandler(injectors));
+        InjectingDecorator decorator = new InjectingDecorator(injectors);
+        context.setDecorator(decorator);
         WebAppClassLoader webAppClassLoader;
         webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
         context.setClassLoader(webAppClassLoader);

@@ -62,6 +62,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
@@ -121,6 +122,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
     private ManagedHashSessionManager sessionManager;
+    private ServletContextHandler contextHandler;
 
 
     static {
@@ -311,6 +313,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         mapping.setServletName(holder.getName());
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
+        contextHandler.addServlet(holder, path);
         if (managementService != null) {
             try {
                 managementService.export(holder.getName(), HTTP_SERVLETS, "Registered transport servlets", holder);
@@ -473,7 +476,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         server.setHandler(statisticsHandler);
         rootHandler = new ContextHandlerCollection();
         statisticsHandler.setHandler(rootHandler);
-        ContextHandler contextHandler = new ContextHandler(rootHandler, ROOT);
+         contextHandler = new ServletContextHandler(rootHandler, ROOT);
         sessionManager = new ManagedHashSessionManager();
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
         servletHandler = new ManagedServletHandler();

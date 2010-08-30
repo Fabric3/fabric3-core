@@ -14,6 +14,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="fabric3-admin-api" />
     <orderEntry type="module" module-name="fabric3-management-api" />
+    <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
     <orderEntry type="module" module-name="fabric3-admin-interpreter" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
