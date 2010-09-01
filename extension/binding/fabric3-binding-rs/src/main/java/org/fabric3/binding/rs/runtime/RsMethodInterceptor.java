@@ -35,31 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.runtime;
+package org.fabric3.binding.rs.runtime;
 
-import com.sun.jersey.core.spi.component.ComponentScope;
-import com.sun.jersey.core.spi.component.ioc.IoCManagedComponentProvider;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.wire.InvocationChain;
 
 /**
+ * Dispatches an invocation from Jersey to the Fabric3 invocation chain fronting a component instance.
+ *
  * @version $Rev$ $Date$
  */
-public class Fabric3ComponentProvider implements IoCManagedComponentProvider {
-    private Object instance;
+public class RsMethodInterceptor implements MethodInterceptor {
+    private Map<String, InvocationChain> invocationChains;
 
-    public Fabric3ComponentProvider(Object instance) {
-        this.instance = instance;
+    public RsMethodInterceptor(Map<String, InvocationChain> invocationChains) {
+        this.invocationChains = invocationChains;
     }
 
-    public Object getInjectableInstance(Object o) {
-        return instance;
+    public Object intercept(Object object, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        Message message = new MessageImpl(args, false, new WorkContext());
+        InvocationChain invocationChain = invocationChains.get(method.getName());
+        if (invocationChain != null) {
+            Interceptor headInterceptor = invocationChain.getHeadInterceptor();
+            Message ret = headInterceptor.invoke(message);
+            if (ret.isFault()) {
+                throw (Throwable) ret.getBody();
+            } else {
+                return ret.getBody();
+            }
+        } else {
+            return null;
+        }
     }
 
-    public Object getInstance() {
-        return instance;
-    }
-
-    public ComponentScope getScope() {
-        // F3 invocation chains are stateless and dispatch to the correct instance so the component can be treated as a Singleton
-        return ComponentScope.Singleton;
-    }
 }
+

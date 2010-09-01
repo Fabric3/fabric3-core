@@ -35,13 +35,33 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.provision;
+package org.fabric3.binding.rs.runtime;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.spi.container.WebApplication;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RsTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = -4324727803731009324L;
+public class RsServlet extends ServletContainer {
+    private static final long serialVersionUID = -8351194346044994829L;
+
+    private Fabric3ProviderFactory factory;
+
+    public RsServlet(Fabric3ProviderFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
+    protected void initiate(ResourceConfig resourceConfig, WebApplication webApplication) {
+        if (resourceConfig instanceof Fabric3ResourceConfig) {
+            Fabric3ResourceConfig f3ResourceConfig = (Fabric3ResourceConfig) resourceConfig;
+            f3ResourceConfig.setFactory(factory);
+            webApplication.initiate(f3ResourceConfig, factory);
+        } else {
+            webApplication.initiate(resourceConfig);
+        }
+
+    }
 }

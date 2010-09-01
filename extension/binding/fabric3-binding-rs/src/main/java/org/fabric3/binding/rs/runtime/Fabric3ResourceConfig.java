@@ -35,23 +35,43 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.implementation.rs.model;
+package org.fabric3.binding.rs.runtime;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import com.sun.jersey.api.core.DefaultResourceConfig;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RsBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 7344870455465600359L;
+public class Fabric3ResourceConfig extends DefaultResourceConfig {
+    private Set<Class<?>> resources = new HashSet<Class<?>>();
 
-    public static final QName BINDING_RS = new QName(Namespaces.BINDING, "binding.rs");
+    private Fabric3ProviderFactory factory;
 
-    public RsBindingDefinition(String name, URI targetUri) {
-        super(name, targetUri, BINDING_RS);
+    /**
+     * Constructor. The properties parameter is required by Jersey.
+     *
+     * @param properties context properties passed by Jersey
+     */
+    public Fabric3ResourceConfig(Map<?, ?> properties) {
+        // register the JSON message body reader and writer
+        getSingletons().add(new JacksonJaxbJsonProvider());
     }
+
+    public void setFactory(Fabric3ProviderFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        if (factory != null) {
+            resources.addAll(factory.getClasses());
+        }
+        return resources;
+    }
+
 }

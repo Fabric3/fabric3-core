@@ -17,17 +17,17 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="RsBindingLoader" f3-core:key="f3-binding:binding.rs">
-        <f3-impl:implementation.system class="org.fabric3.implementation.rs.introspection.RsBindingLoader"/>
+        <f3-impl:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingLoader"/>
     </component>
 
     <!-- Rs Binding Generator -->
-    <component name="RsBindingGenerator" f3-core:key="org.fabric3.implementation.rs.model.RsBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.rs.generator.RsBindingGenerator"/>
+    <component name="RsBindingGenerator" f3-core:key="org.fabric3.binding.rs.model.RsBindingDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
     </component>
 
     <!-- Rs Binding Wire Attachers  -->
-    <component name="RsSourceWireAttacher" f3-core:key="org.fabric3.implementation.rs.provision.RsSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.rs.runtime.RsSourceWireAttacher"/>
+    <component name="RsSourceWireAttacher" f3-core:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
     </component>
 
 

@@ -35,16 +35,16 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.rs.generator;
+package org.fabric3.binding.rs.generator;
 
 import java.net.URI;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.implementation.rs.model.RsBindingDefinition;
-import org.fabric3.implementation.rs.provision.RsSourceDefinition;
-import org.fabric3.implementation.rs.provision.RsTargetDefinition;
+import org.fabric3.binding.rs.model.RsBindingDefinition;
+import org.fabric3.binding.rs.provision.RsSourceDefinition;
+import org.fabric3.binding.rs.provision.RsTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;

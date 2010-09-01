@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.implementation.rs.introspection;
+package org.fabric3.binding.rs.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.implementation.rs.model.RsBindingDefinition;
+import org.fabric3.binding.rs.model.RsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
