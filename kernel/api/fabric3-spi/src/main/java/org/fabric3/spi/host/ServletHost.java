@@ -56,6 +56,13 @@ import javax.servlet.ServletContext;
 public interface ServletHost {
 
     /**
+     * Returns the servlet host type, typically the container name.
+     *
+     * @return the servlet host type
+     */
+    String getHostType();
+
+    /**
      * Returns the runtime HTTP.
      *
      * @return the runtime HTTP

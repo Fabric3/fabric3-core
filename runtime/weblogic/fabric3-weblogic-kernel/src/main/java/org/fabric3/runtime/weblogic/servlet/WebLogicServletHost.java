@@ -54,7 +54,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -80,7 +79,7 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
         this.mBeanServer = mBeanServer;
     }
 
-    @Init
+    @org.oasisopen.sca.annotation.Init
     public void start() throws JMException, ServletHostInitException, MalformedURLException {
         // determine the default HTTP and HTTPS URLs 
         ObjectName serverRuntimeMBean = (ObjectName) mBeanServer.getAttribute(Constants.WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
@@ -96,6 +95,10 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
         }
         httpsPort = new URL(httpsUrl).getPort();
 
+    }
+
+    public String getHostType() {
+        return "WebLogic";
     }
 
     public int getHttpPort() {

@@ -256,6 +256,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         server.stop();
     }
 
+    public String getHostType() {
+        return "Jetty";
+    }
+
     public void suspend() {
         if (httpConnector != null && httpConnector.isRunning()) {
             try {

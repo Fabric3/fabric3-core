@@ -78,6 +78,10 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector {
         servlets = new ConcurrentHashMap<String, Servlet>();
     }
 
+    public String getHostType() {
+        return "WebApp";
+    }
+
     public int getHttpPort() {
         return -1;
     }

@@ -113,6 +113,10 @@ public class TomcatServletHost implements ServletHost {
 
     }
 
+    public String getHostType() {
+        return "Tomcat";
+    }
+
     public int getHttpPort() {
         return defaultHttpPort;
     }

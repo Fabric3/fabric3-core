@@ -22,7 +22,8 @@ Public License. See the accompanying license file for details.
     <export.java package="org.eclipse.jetty.server" version="8.0.0.M1"/>
     <export.java package="org.eclipse.jetty" version="8.0.0.M1"/>
     <export.java package="org.eclipse.jetty.websocket" version="8.0.0.M1"/>
-    <!-- The following exports are required for JSP compilation -->
+    <export.java package="org.eclipse.jetty.continuation" version="8.0.0.M1"/>
+        <!-- The following exports are required for JSP compilation -->
     <export.java package="org.apache.jasper.runtime" version="7.1.4.v20100610"/>
     <export.java package="com.sun.el" version="7.1.4.v20100610"/>
     <deployable composite="other:JettyExtension"/>

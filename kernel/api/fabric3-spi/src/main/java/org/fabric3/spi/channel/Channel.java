@@ -84,7 +84,7 @@ public interface Channel {
     /**
      * Subscribe to receive events from the channel.
      *
-     * @param uri        the URI indentifying the subscription
+     * @param uri        the URI identifying the subscription
      * @param connection the connection to receive events on
      */
     void subscribe(URI uri, ChannelConnection connection);
