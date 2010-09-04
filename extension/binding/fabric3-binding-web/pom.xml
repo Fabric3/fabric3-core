@@ -23,10 +23,10 @@
         <version>1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-pubsub</artifactId>
+    <artifactId>fabric3-binding-web</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 RESTful Pub/Sub Extension</name>
-    <description>Support for Pub/Sub connections using Comet and Websockets</description>
+    <name>Fabric3 RESTful Web Binding Extension</name>
+    <description>Support for Comet and Websocket endpoints</description>
 
     <dependencies>
         <dependency>
@@ -35,6 +35,14 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>${servlet.groupId}</groupId>
+            <artifactId>${servlet.artifactId}</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-jersey</artifactId>

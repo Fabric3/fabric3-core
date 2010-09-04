@@ -13,7 +13,9 @@ Public License. See the accompanying license file for details.
               xmlns:f3-impl="urn:fabric3.org:implementation"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true"
-              f3-core:description="RESTful pub/sub extension">
+              f3-core:description="Web binding extension">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
-   <deployable composite="f3-impl:PubSubExtension"/>
+    <import.java package="org.eclipse.jetty.continuation" version="8.0.0.M1"/>
+
+   <deployable composite="f3-impl:WebBindingExtension"/>
 </contribution>

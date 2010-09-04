@@ -31,6 +31,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.codehaus.jackson.*" version="1.5.5"/>
 
     <export.java package="com.sun.jersey."/>
+
     <!-- provides required for JAXB support. Jersey loads JAXB implementation classes using Class.forName() -->
     <f3-core:provides name="jaxb"/>
     <deployable composite="f3-impl:RsExtension"/>

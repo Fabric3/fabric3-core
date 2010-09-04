@@ -32,6 +32,7 @@
 	<modules>
 		<module>fabric3-binding-jms</module>
         <module>fabric3-binding-rs</module>
+        <module>fabric3-binding-web</module>
 		<module>fabric3-binding-test</module>
 		<module>fabric3-binding-ws</module>
         <module>fabric3-binding-ws-metro</module>
