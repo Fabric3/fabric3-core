@@ -38,6 +38,7 @@
 package org.fabric3.binding.web.runtime;
 
 import org.atmosphere.cpr.Broadcaster;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
@@ -56,7 +57,14 @@ public class BroadcasterEventStream implements EventStream, EventStreamHandler {
     }
 
     public void handle(Object event) {
-        broadcaster.broadcast(event);
+        if (event == null || !event.getClass().isArray()) {
+            throw new AssertionError("Error in binding: event must be an array");
+        }
+        Object[] payload = (Object[]) event;
+        if (payload.length != 1) {
+            throw new ServiceRuntimeException("Events must be a single type");
+        }
+        broadcaster.broadcast(payload[0]);
     }
 
     public PhysicalEventStreamDefinition getDefinition() {
