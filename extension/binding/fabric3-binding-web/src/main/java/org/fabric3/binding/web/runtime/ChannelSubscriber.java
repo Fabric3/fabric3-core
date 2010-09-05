@@ -37,47 +37,25 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.atmosphere.cpr.AtmosphereResource;
-
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-
-import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
 
 /**
  * Receives incoming requests for a channel published as a web endpoint. This dispatcher implements GET semantics for the RESTful publish/subscribe
- * protocol, where clients are subscribed to receive events from the channel. A GET will either result in the creation of a websocket connection for
- * clients that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
+ * protocol, where clients are subscribed to receive events from the channel. A successful GET will either result in the creation of a websocket
+ * connection for clients that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all
+ * subscribed clients.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelSubscriber implements ChannelConnection {
-    private List<EventStream> streams = new ArrayList<EventStream>();
+public interface ChannelSubscriber extends ChannelConnection {
 
-    public ChannelSubscriber(EventStream stream) {
-        streams.add(stream);
-    }
-
-    public void subscribe(HttpServletRequest request) throws ServletException, IOException {
-        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
-        if (resource == null) {
-            throw new IllegalStateException("Web binding extension not properly configured");
-        }
-        resource.suspend(-1);
-    }
-
-    public List<EventStream> getEventStreams() {
-        return streams;
-    }
-
-    public void addEventStream(EventStream stream) {
-        // no-op
-    }
-
+    /**
+     * Perform the subscription
+     *
+     * @param request the HTTP request
+     * @throws OperationException if an error occurs subscribing
+     */
+    void subscribe(HttpServletRequest request) throws OperationException;
 }

@@ -34,33 +34,29 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.web.provision;
+*/
 
-import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+package org.fabric3.binding.web.common;
 
 /**
- * Metadata for attaching a channel to a websocket or comet connection.
+ * Defines the operations allowed for an endpoint.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
-    private static final long serialVersionUID = -3299304017732795098L;
+public enum OperationsAllowed {
 
-    private OperationsAllowed allowed;
+    /**
+     * Only publishing to the channel is permitted
+     */
+    PUBLISH,
 
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
-        this.allowed = allowed;
-    }
+    /**
+     * Only subscribing to the channel is permitted
+     */
+    SUBSCRIBE,
 
-    public OperationsAllowed getAllowed() {
-        return allowed;
-    }
+    /**
+     * Publishing and subscribing to the channel is permitted
+     */
+    ALL
 }

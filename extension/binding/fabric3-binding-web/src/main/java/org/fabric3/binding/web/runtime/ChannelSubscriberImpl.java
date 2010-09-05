@@ -34,33 +34,46 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.web.provision;
+*/
+package org.fabric3.binding.web.runtime;
 
-import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+
+import org.atmosphere.cpr.AtmosphereResource;
+
+import org.fabric3.spi.channel.EventStream;
+
+import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
 
 /**
- * Metadata for attaching a channel to a websocket or comet connection.
+ * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients
+ * that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
-    private static final long serialVersionUID = -3299304017732795098L;
+public class ChannelSubscriberImpl implements ChannelSubscriber {
+    private List<EventStream> streams = new ArrayList<EventStream>();
 
-    private OperationsAllowed allowed;
-
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
-        this.allowed = allowed;
+    public ChannelSubscriberImpl(EventStream stream) {
+        streams.add(stream);
     }
 
-    public OperationsAllowed getAllowed() {
-        return allowed;
+    public void subscribe(HttpServletRequest request) {
+        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
+        if (resource == null) {
+            throw new IllegalStateException("Web binding extension not properly configured");
+        }
+        resource.suspend(-1);
     }
+
+    public List<EventStream> getEventStreams() {
+        return streams;
+    }
+
+    public void addEventStream(EventStream stream) {
+        // no-op
+    }
+
 }

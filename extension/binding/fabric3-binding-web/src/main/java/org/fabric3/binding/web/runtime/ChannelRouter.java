@@ -83,7 +83,14 @@ public class ChannelRouter extends HttpServlet {
             // TODO return 404
             throw new AssertionError("Path not found");
         }
-        subscriber.subscribe(request);
+        try {
+            subscriber.subscribe(request);
+        } catch (OperationDeniedException e) {
+            response.setStatus(403);   // forbidden
+        } catch (OperationException e) {
+            response.setStatus(500);
+            // TODO log
+        }
     }
 
     @Override
@@ -94,7 +101,14 @@ public class ChannelRouter extends HttpServlet {
             // TODO return 404
             throw new AssertionError("Path not found");
         }
-        publisher.publish(request);
+        try {
+            publisher.publish(request);
+        } catch (OperationDeniedException e) {
+            response.setStatus(403);   // forbidden
+        } catch (OperationException e) {
+            response.setStatus(500);
+            // TODO log
+        }
     }
 
 }

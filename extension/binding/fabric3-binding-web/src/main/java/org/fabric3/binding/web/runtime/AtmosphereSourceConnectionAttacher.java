@@ -48,6 +48,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
@@ -122,17 +123,30 @@ public class AtmosphereSourceConnectionAttacher implements SourceConnectionAttac
 
         String path = UriHelper.getBaseName(sourceUri);
 
-        // create the subscriber responsible for broadcasting channel events to suspended clients
-        Broadcaster broadcaster = broadcasterManager.get(path);
-        EventStream stream = new BroadcasterEventStream(broadcaster);
-        ChannelSubscriber subscriber = new ChannelSubscriber(stream);
-        channel.subscribe(sourceUri, subscriber);
-        router.register(path, subscriber);
+        OperationsAllowed allowed = source.getAllowed();
 
+        if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
+            // create the subscriber responsible for broadcasting channel events to suspended clients
+            Broadcaster broadcaster = broadcasterManager.get(path);
+            EventStream stream = new BroadcasterEventStream(broadcaster);
+            ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream);
+            channel.subscribe(sourceUri, subscriber);
+            router.register(path, subscriber);
+        } else {
+            // not allowed to subscribe
+            DenyChannelSubscriber subscriber = new DenyChannelSubscriber();
+            router.register(path, subscriber);
+        }
         // create the publisher responsible for flowing events from clients to the channel
-        ChannelPublisher publisher = new ChannelPublisher();
-        channel.attach(publisher);
-        router.register(path, publisher);
+        if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
+            ChannelPublisher publisher = new ChannelPublisherImpl();
+            channel.attach(publisher);
+            router.register(path, publisher);
+        } else {
+            // not allowed to publish
+            DenyChannelPublisher publisher = new DenyChannelPublisher();
+            router.register(path, publisher);
+        }
         // TODO monitor
     }
 

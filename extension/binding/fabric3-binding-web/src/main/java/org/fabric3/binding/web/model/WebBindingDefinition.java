@@ -39,6 +39,7 @@ package org.fabric3.binding.web.model;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.BindingDefinition;
 
@@ -49,7 +50,15 @@ public class WebBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 3182899822938972425L;
     private static final QName BINDING_WEB = new QName(Namespaces.BINDING, "binding.web");
 
-    public WebBindingDefinition(String name) {
+    private OperationsAllowed allowed;
+
+    public WebBindingDefinition(String name, OperationsAllowed allowed) {
         super(name, null, BINDING_WEB);
+        this.allowed = allowed;
+    }
+
+
+    public OperationsAllowed getAllowed() {
+        return allowed;
     }
 }

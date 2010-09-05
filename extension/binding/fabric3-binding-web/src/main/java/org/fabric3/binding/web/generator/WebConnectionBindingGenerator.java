@@ -45,6 +45,7 @@ package org.fabric3.binding.web.generator;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
@@ -61,7 +62,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 public class WebConnectionBindingGenerator implements ConnectionBindingGenerator<WebBindingDefinition> {
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<WebBindingDefinition> binding) {
-        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition();
+        OperationsAllowed allowed = binding.getDefinition().getAllowed();
+        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition(allowed);
         definition.setUri(binding.getParent().getUri());
         return definition;
     }

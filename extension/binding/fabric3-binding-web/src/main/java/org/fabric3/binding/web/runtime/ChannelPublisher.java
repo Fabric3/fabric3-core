@@ -37,37 +37,23 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Receives incoming requests for a channel published as a web endpoint. This dispatcher implements POST semantics for the publish/subscribe protocol,
- * where data is sent as events to the channel.
+ * Receives incoming requests for a channel published as a web endpoint.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelPublisher implements EventStreamHandler {
-    private EventStreamHandler next;
+public interface ChannelPublisher extends EventStreamHandler {
 
-    public void publish(HttpServletRequest request) throws ServletException, IOException {
-        Object event = "event";
-        handle(event);
-    }
-
-    public void handle(Object event) {
-        // pass the object to the head stream handler
-        next.handle(event);
-    }
-
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
+    /**
+     * Publish to a channel.
+     *
+     * @param request the request
+     * @throws OperationException if an error occurs during publishing
+     */
+    public void publish(HttpServletRequest request) throws OperationException;
 
 }

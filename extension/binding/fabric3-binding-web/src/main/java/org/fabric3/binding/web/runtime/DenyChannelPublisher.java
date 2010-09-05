@@ -34,33 +34,34 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.web.provision;
+*/
+package org.fabric3.binding.web.runtime;
 
-import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import javax.servlet.http.HttpServletRequest;
+
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Metadata for attaching a channel to a websocket or comet connection.
+ * Blocks publishing events to a channel.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
-    private static final long serialVersionUID = -3299304017732795098L;
+public class DenyChannelPublisher implements ChannelPublisher {
+    private EventStreamHandler next;
 
-    private OperationsAllowed allowed;
-
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
-        this.allowed = allowed;
+    public void publish(HttpServletRequest request) throws OperationDeniedException {
+        throw new OperationDeniedException();
     }
 
-    public OperationsAllowed getAllowed() {
-        return allowed;
+    public void handle(Object event) {
     }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
 }

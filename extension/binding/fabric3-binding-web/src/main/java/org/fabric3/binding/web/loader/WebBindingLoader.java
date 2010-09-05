@@ -43,11 +43,14 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads <code>binding.web</code> elements in a composite.
@@ -63,10 +66,31 @@ public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
     }
 
     public WebBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
         String bindingName = reader.getAttributeValue(null, "name");
-        WebBindingDefinition definition = new WebBindingDefinition(bindingName);
+        OperationsAllowed allowed = OperationsAllowed.ALL;
+        String allowedStr = reader.getAttributeValue(null, "allowed");
+        if (allowedStr != null) {
+            try {
+                allowed = OperationsAllowed.valueOf(allowedStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                context.addError(new InvalidValue("Invalid allowed type: " + allowedStr, reader));
+            }
+        }
+
+        WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return definition;
     }
+
+    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"allowed".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
+    }
+
 }

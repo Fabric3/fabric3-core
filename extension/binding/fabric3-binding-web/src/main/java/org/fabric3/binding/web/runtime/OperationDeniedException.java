@@ -34,33 +34,12 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.web.provision;
-
-import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+*/
+package org.fabric3.binding.web.runtime;
 
 /**
- * Metadata for attaching a channel to a websocket or comet connection.
- *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
-    private static final long serialVersionUID = -3299304017732795098L;
-
-    private OperationsAllowed allowed;
-
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
-        this.allowed = allowed;
-    }
-
-    public OperationsAllowed getAllowed() {
-        return allowed;
-    }
+public class OperationDeniedException extends OperationException {
+    private static final long serialVersionUID = -1089377329217256099L;
 }
