@@ -41,10 +41,10 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-public class AtmosphereServletConfig implements ServletConfig {
+public class GatewayServletConfig implements ServletConfig {
     ServletContext context;
 
-    public AtmosphereServletConfig(ServletContext context) {
+    public GatewayServletConfig(ServletContext context) {
         this.context = context;
     }
 

@@ -57,12 +57,12 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-public class AtmosphereServletContext implements ServletContext {
+public class GatewayServletContext implements ServletContext {
     private final static String WEB_INF = "/WEB-INF/classes/";
     private String contextPath;
     private Map<String, String> initParams = new HashMap<String, String>();
 
-    public AtmosphereServletContext(String contextPath) {
+    public GatewayServletContext(String contextPath) {
         this.contextPath = contextPath;
     }
 

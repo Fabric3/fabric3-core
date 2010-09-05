@@ -73,7 +73,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
 
-    private AtmosphereServlet atmosphereServlet;
+    private AtmosphereServlet gatewayServlet;
     private ChannelRouter router;
 
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
@@ -86,16 +86,16 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
     @Init
     public void init() throws ServletException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        AtmosphereServletContext context = new AtmosphereServletContext(CONTEXT_PATH);
+        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH);
         // TODO support other configuration as specified in AtmosphereServlet init()
         context.setInitParameter(AtmosphereServlet.PROPERTY_SESSION_SUPPORT, "false");
         context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
         context.setInitParameter(AtmosphereServlet.WEBSOCKET_SUPPORT, "true");
 
-        AtmosphereServletConfig config = new AtmosphereServletConfig(context);
+        GatewayServletConfig config = new GatewayServletConfig(context);
 
-        atmosphereServlet = new GatewayServlet(servletHost);
-        atmosphereServlet.init(config);
+        gatewayServlet = new GatewayServlet(servletHost);
+        gatewayServlet.init(config);
 
         router = new ChannelRouter();
 
@@ -103,14 +103,14 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         processor.setServlet(router);
         processor.init(config);
         WebSocketHandler webSocketHandler = new WebSocketHandler(processor, broadcasterManager);
-        atmosphereServlet.addAtmosphereHandler("/*", webSocketHandler);
-        servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
+        gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
+        servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
     }
 
     @Destroy
     public void destroy() {
         servletHost.unregisterMapping(CONTEXT_PATH);
-        atmosphereServlet.destroy();
+        gatewayServlet.destroy();
     }
 
     public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
@@ -152,7 +152,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
     public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
         String path = null;
-        atmosphereServlet.removeAtmosphereHandler(path);
+        gatewayServlet.removeAtmosphereHandler(path);
     }
 
 }
