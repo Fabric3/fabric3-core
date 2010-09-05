@@ -66,7 +66,7 @@ import org.fabric3.spi.util.UriHelper;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class AtmosphereSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSourceDefinition> {
+public class WebSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSourceDefinition> {
     private static final String CONTEXT_PATH = "/channels/*";
 
     private ChannelManager channelManager;
@@ -76,7 +76,7 @@ public class AtmosphereSourceConnectionAttacher implements SourceConnectionAttac
     private AtmosphereServlet atmosphereServlet;
     private ChannelRouter router;
 
-    public AtmosphereSourceConnectionAttacher(@Reference ChannelManager channelManager,
+    public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
                                               @Reference BroadcasterManager broadcasterManager,
                                               @Reference ServletHost servletHost) {
         this.channelManager = channelManager;

@@ -28,8 +28,8 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.BroadcasterManagerImpl"/>
     </component>
 
-    <component name="WebConnectionSourceDefinition" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.AtmosphereSourceConnectionAttacher"/>
+    <component name="WebSourceConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.WebSourceConnectionAttacher"/>
     </component>
 
 
