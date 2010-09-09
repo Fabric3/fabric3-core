@@ -37,23 +37,44 @@
 */
 package org.fabric3.binding.web.runtime;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.cpr.DefaultBroadcaster;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
+import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.model.type.json.JsonType;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
+ * Default implementation of the BroadcasterManager.
+ *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class BroadcasterManagerImpl implements BroadcasterManager {
+    private static final JsonType<Object> JSON_TYPE = new JsonType<Object>(String.class, Object.class);
+
+    private TransformerRegistry registry;
+    private Transformer<Object, String> jsonTransformer;
     private Map<String, Broadcaster> broadcasters = new ConcurrentHashMap<String, Broadcaster>();
+
+    public BroadcasterManagerImpl(@Reference TransformerRegistry registry) {
+        this.registry = registry;
+    }
 
     public Broadcaster get(String path) {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
-            // TODO configure executor service
-            broadcaster = new DefaultBroadcaster(path);
+            initializeTransformer();
+            broadcaster = new ChannelBroadcaster(path, jsonTransformer, registry);
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;
@@ -62,4 +83,22 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
     public void remove(String path) {
         broadcasters.remove(path);
     }
+
+    @SuppressWarnings({"unchecked"})
+    public void initializeTransformer() {
+        if (jsonTransformer != null) {
+            return;
+        }
+        try {
+            JavaClass<Object> javaType = new JavaClass<Object>(Object.class);
+            List<Class<?>> list = Collections.emptyList();
+            jsonTransformer = (Transformer<Object, String>) registry.getTransformer(javaType, JSON_TYPE, list, list);
+            if (jsonTransformer == null) {
+                throw new ServiceRuntimeException("JSON transformer not found. Ensure that the JSON databinding extension is installed");
+            }
+        } catch (TransformationException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
 }

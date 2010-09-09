@@ -34,57 +34,35 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.binding.web.runtime;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.binding.web.provision;
 
-import org.atmosphere.cpr.Broadcaster;
+import java.net.URI;
 
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * Receives events flowing through a channel and broadcasts them to subscribed websocket and comet connections.
+ * Metadata for attaching a service to a websocket or comet connection.
  *
- * @version $Rev$ $Date$
+ * @version $Revision$ $Date$
  */
-public class BroadcasterEventStream implements EventStream, EventStreamHandler {
-    private Broadcaster broadcaster;
+public class WebSourceDefinition extends PhysicalSourceDefinition {
+    private static final long serialVersionUID = 5221631145909112099L;
+    private ServiceContract contract;
 
-    public BroadcasterEventStream(Broadcaster broadcaster) {
-        this.broadcaster = broadcaster;
+    public WebSourceDefinition(URI uri, ServiceContract contract) {
+        setUri(uri);
+        this.contract = contract;
     }
 
-    public void handle(Object event) {
-        broadcaster.broadcast(event);
-    }
-
-    public PhysicalEventStreamDefinition getDefinition() {
-        return null;
-    }
-
-    public EventStreamHandler getHeadHandler() {
-        return this;
-    }
-
-    public EventStreamHandler getTailHandler() {
-        return this;
-    }
-
-    public void addHandler(EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void addHandler(int index, EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public void setNext(EventStreamHandler next) {
-        throw new UnsupportedOperationException();
-    }
-
-    public EventStreamHandler getNext() {
-        return null;
+    public ServiceContract getContract() {
+        return contract;
     }
 }

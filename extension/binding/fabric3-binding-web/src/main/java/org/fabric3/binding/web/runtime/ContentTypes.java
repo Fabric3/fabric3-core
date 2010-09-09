@@ -37,54 +37,21 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.atmosphere.cpr.Broadcaster;
-
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-
 /**
- * Receives events flowing through a channel and broadcasts them to subscribed websocket and comet connections.
+ * Common content types.
  *
- * @version $Rev$ $Date$
+ * @version $Rev $ $Date
  */
-public class BroadcasterEventStream implements EventStream, EventStreamHandler {
-    private Broadcaster broadcaster;
+public interface ContentTypes {
 
-    public BroadcasterEventStream(Broadcaster broadcaster) {
-        this.broadcaster = broadcaster;
-    }
+    String APPLICATION_XML = "application/xml";
 
-    public void handle(Object event) {
-        broadcaster.broadcast(event);
-    }
+    String APPLICATION_XHTML_XML = "application/xhtml+xml";
 
-    public PhysicalEventStreamDefinition getDefinition() {
-        return null;
-    }
+    String APPLICATION_JSON = "application/json";
 
-    public EventStreamHandler getHeadHandler() {
-        return this;
-    }
+    String TEXT_XML = "text/xml";
 
-    public EventStreamHandler getTailHandler() {
-        return this;
-    }
+    String TEXT_PLAIN = "text/plain";
 
-    public void addHandler(EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void addHandler(int index, EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public void setNext(EventStreamHandler next) {
-        throw new UnsupportedOperationException();
-    }
-
-    public EventStreamHandler getNext() {
-        return null;
-    }
 }

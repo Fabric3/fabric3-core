@@ -94,7 +94,7 @@ public class ChannelRouter extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getPathInfo().substring(1);    // strip leading '/'
         ChannelPublisher publisher = publishers.get(path);
         if (publisher == null) {

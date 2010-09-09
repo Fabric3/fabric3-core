@@ -61,7 +61,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * Attaches a channel to a servlet that accepts incoming comet and websocket connections.
+ * Attaches a channel to the gateway servlet that accepts incoming comet and websocket connections using Atmosphere. The gateway servlet is
+ * responsible for receiving events and routing them to the appropriate channel based on the request path.
  *
  * @version $Rev$ $Date$
  */
@@ -77,15 +78,21 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     private ChannelRouter router;
 
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
-                                              @Reference BroadcasterManager broadcasterManager,
-                                              @Reference ServletHost servletHost) {
+                                       @Reference BroadcasterManager broadcasterManager,
+                                       @Reference ServletHost servletHost) {
         this.channelManager = channelManager;
         this.broadcasterManager = broadcasterManager;
         this.servletHost = servletHost;
     }
 
+    /**
+     * Initializes the Atmosphere infrastructure, including the gateway servlet, websocket handler, and channel router. The gateway servlet is
+     * registered with the runtime Servlet host to receive incoming comet and websocket requests.
+     *
+     * @throws ServletException if an error initializing one of the Atmosphere servlets is encountered
+     */
     @Init
-    public void init() throws ServletException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public void init() throws ServletException {
         GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH);
         // TODO support other configuration as specified in AtmosphereServlet init()
         context.setInitParameter(AtmosphereServlet.PROPERTY_SESSION_SUPPORT, "false");
@@ -122,9 +129,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         }
 
         String path = UriHelper.getBaseName(sourceUri);
-
         OperationsAllowed allowed = source.getAllowed();
-
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
             Broadcaster broadcaster = broadcasterManager.get(path);

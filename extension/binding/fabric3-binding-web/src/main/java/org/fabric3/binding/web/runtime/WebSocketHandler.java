@@ -43,11 +43,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.atmosphere.cpr.AtmosphereHandler;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
 import org.atmosphere.websocket.WebSocketHttpServletResponse;
 
 /**
+ * Manages incoming requests. This includes setting the broadcaster associated with the request, forwarding HTTP requests to additional handlers or
+ * suspending the request it is websocket-based.
+ *
  * @version $Rev$ $Date$
  */
 public class WebSocketHandler extends AbstractReflectorAtmosphereHandler {
@@ -60,14 +64,19 @@ public class WebSocketHandler extends AbstractReflectorAtmosphereHandler {
     }
 
     public void onRequest(AtmosphereResource<HttpServletRequest, HttpServletResponse> r) throws IOException {
+        String path = r.getRequest().getPathInfo().substring(1); // strip leading "/"
+        Broadcaster broadcaster = broadcasterManager.get(path);
+        r.setBroadcaster(broadcaster);
         if (!r.getResponse().getClass().isAssignableFrom(WebSocketHttpServletResponse.class)) {
-            String path = r.getRequest().getPathInfo().substring(1); // strip leading "/"
-            Broadcaster broadcaster = broadcasterManager.get(path);
-            r.setBroadcaster(broadcaster);
+            // not a websocket request
             handler.onRequest(r);
         } else {
             r.suspend(-1, false);
         }
     }
 
+    @Override
+    public void onStateChange(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) throws IOException {
+        super.onStateChange(event);
+    }
 }
