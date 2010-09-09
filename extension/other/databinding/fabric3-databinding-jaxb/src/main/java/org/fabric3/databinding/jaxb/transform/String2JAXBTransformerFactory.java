@@ -49,6 +49,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
@@ -66,7 +67,7 @@ public class String2JAXBTransformerFactory implements TransformerFactory {
     }
 
     public boolean canTransform(DataType<?> source, DataType<?> target) {
-        return String.class.equals(source.getPhysical()) && target instanceof JavaType;
+        return source instanceof XSDType && String.class.equals(source.getPhysical()) && target instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes)
