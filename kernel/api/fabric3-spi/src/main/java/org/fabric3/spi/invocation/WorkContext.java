@@ -169,7 +169,7 @@ public class WorkContext implements Serializable {
     /**
      * Clears a header for the current request context.
      *
-     * @param name the hader name
+     * @param name the header name
      */
     public void removeHeader(String name) {
         if (headers == null) {
