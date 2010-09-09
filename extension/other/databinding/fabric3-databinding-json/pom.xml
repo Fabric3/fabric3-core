@@ -35,6 +35,19 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-xc</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>

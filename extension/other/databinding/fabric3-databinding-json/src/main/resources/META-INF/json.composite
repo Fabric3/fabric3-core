@@ -25,4 +25,16 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
     </component>
 
+    <component name="String2ObjectJsonTransformerFactory">
+        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.String2ObjectJsonTransformerFactory"/>
+    </component>
+
+    <component name="Object2StringJsonTransformerFactory">
+        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.Object2StringJsonTransformerFactory"/>
+    </component>
+
+    <component name="Stream2ObjectJsonTransformerFactory">
+        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.Stream2ObjectJsonTransformerFactory"/>
+    </component>
+
 </composite>
