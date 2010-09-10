@@ -72,16 +72,17 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
     private ChannelManager channelManager;
     private BroadcasterManager broadcasterManager;
+    private PubSubManager pubSubManager;
     private ServletHost servletHost;
-
     private AtmosphereServlet gatewayServlet;
-    private ChannelRouter router;
 
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
                                        @Reference BroadcasterManager broadcasterManager,
+                                       @Reference PubSubManager pubSubManager,
                                        @Reference ServletHost servletHost) {
         this.channelManager = channelManager;
         this.broadcasterManager = broadcasterManager;
+        this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
     }
 
@@ -101,10 +102,10 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         GatewayServletConfig config = new GatewayServletConfig(context);
 
-        gatewayServlet = new GatewayServlet(servletHost);
+        gatewayServlet = new GatewayServlet(servletHost, pubSubManager);
         gatewayServlet.init(config);
 
-        router = new ChannelRouter();
+        ChannelRouter router = new ChannelRouter(pubSubManager);
 
         ReflectorServletProcessor processor = new ReflectorServletProcessor();
         processor.setServlet(router);
@@ -136,21 +137,21 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             EventStream stream = new BroadcasterEventStream(broadcaster);
             ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream);
             channel.subscribe(sourceUri, subscriber);
-            router.register(path, subscriber);
+            pubSubManager.register(path, subscriber);
         } else {
             // not allowed to subscribe
             DenyChannelSubscriber subscriber = new DenyChannelSubscriber();
-            router.register(path, subscriber);
+            pubSubManager.register(path, subscriber);
         }
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
             ChannelPublisher publisher = new ChannelPublisherImpl();
             channel.attach(publisher);
-            router.register(path, publisher);
+            pubSubManager.register(path, publisher);
         } else {
             // not allowed to publish
             DenyChannelPublisher publisher = new DenyChannelPublisher();
-            router.register(path, publisher);
+            pubSubManager.register(path, publisher);
         }
         // TODO monitor
     }
@@ -158,6 +159,12 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
         String path = null;
         gatewayServlet.removeAtmosphereHandler(path);
+        OperationsAllowed allowed = source.getAllowed();
+        if (OperationsAllowed.SUBSCRIBE == allowed) {
+            pubSubManager.unsubscribe(path);
+        } else {
+            pubSubManager.unregisterPublisher(path);
+        }
     }
 
 }

@@ -58,10 +58,12 @@ import org.fabric3.spi.wire.Wire;
 @EagerInit
 public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefinition> {
     private static final String CONTEXT_PATH = "web";
+    private PubSubManager pubSubManager;
     private ServletHost servletHost;
     private GatewayServlet gatewayServlet;
 
-    public WebSourceWireAttacher(@Reference ServletHost servletHost) {
+    public WebSourceWireAttacher(@Reference PubSubManager pubSubManager, @Reference ServletHost servletHost) {
+        this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
     }
 
@@ -73,8 +75,8 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         context.setInitParameter(AtmosphereServlet.WEBSOCKET_SUPPORT, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
+        gatewayServlet = new GatewayServlet(servletHost, pubSubManager);
 
-        gatewayServlet = new GatewayServlet(servletHost);
         try {
             gatewayServlet.init(config);
 

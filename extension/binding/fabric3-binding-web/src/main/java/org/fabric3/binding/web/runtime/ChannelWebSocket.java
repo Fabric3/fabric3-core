@@ -37,30 +37,67 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.WebSocketProcessor;
+import org.atmosphere.websocket.JettyWebSocketSupport;
+import org.eclipse.jetty.websocket.WebSocket;
+
 import org.fabric3.spi.channel.EventWrapper;
 
 /**
- * Blocks publishing events to a channel.
+ * Handles setting up a websocket connection and receiving inbound messages on it.
  *
  * @version $Rev$ $Date$
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public class ChannelWebSocket implements WebSocket {
+    private AtmosphereServlet servlet;
+    private HttpServletRequest request;
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
+    private String contentType;
+    private WebSocketProcessor webSocketProcessor;
+    private ChannelPublisher publisher;
+
+
+    public ChannelWebSocket(AtmosphereServlet servlet, ChannelPublisher publisher, HttpServletRequest request) {
+        this.servlet = servlet;
+        this.publisher = publisher;
+        this.request = request;
+        contentType = request.getHeader("Content-Type");
     }
 
-    public void handle(Object event) {
+    public void onConnect(Outbound outbound) {
+        JettyWebSocketSupport support = new JettyWebSocketSupport(outbound);
+        webSocketProcessor = new WebSocketProcessor(servlet, support);
+        try {
+            webSocketProcessor.connect(request);
+        } catch (IOException e) {
+            // TODO monitor failure
+        }
     }
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
+    public void onMessage(byte frame, String data) {
+        try {
+            EventWrapper wrapper = ChannelUtils.createWrapper(contentType, data);
+            publisher.publish(wrapper);
+        } catch (OperationException e) {
+            e.printStackTrace();
+            // TODO monitor
+        } catch (InvalidContentTypeException e) {
+            e.printStackTrace();
+            // TODO monitor
+        }
     }
 
-    public EventStreamHandler getNext() {
-        return next;
+    public void onMessage(byte frame, byte[] data, int offset, int length) {
+        onMessage(frame, new String(data, offset, length));
     }
+
+    public void onDisconnect() {
+        webSocketProcessor.close();
+    }
+
 
 }

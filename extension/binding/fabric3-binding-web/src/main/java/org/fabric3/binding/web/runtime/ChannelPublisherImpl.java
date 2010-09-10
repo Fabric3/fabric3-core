@@ -37,23 +37,8 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.ServiceRuntimeException;
-
-import org.fabric3.host.util.IOHelper;
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
-import org.fabric3.spi.model.type.json.JsonType;
-import org.fabric3.spi.model.type.xsd.XSDType;
-
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_JSON;
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XHTML_XML;
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XML;
 
 /**
  * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
@@ -64,15 +49,9 @@ import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XML;
  * @version $Rev$ $Date$
  */
 public class ChannelPublisherImpl implements ChannelPublisher {
-    private static final String ISO_8859_1 = "ISO-8859-1";
-    private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
-    private static final JsonType<Object> JSON = new JsonType<Object>(String.class, Object.class);
-    private static final XSDType XML = new XSDType(String.class, XSD_ANY);
-
     private EventStreamHandler next;
 
-    public void publish(HttpServletRequest request) throws OperationException {
-        EventWrapper wrapper = wrapEvent(request);
+    public void publish(EventWrapper wrapper) {
         handle(wrapper);
     }
 
@@ -87,46 +66,6 @@ public class ChannelPublisherImpl implements ChannelPublisher {
 
     public EventStreamHandler getNext() {
         return next;
-    }
-
-    private EventWrapper wrapEvent(HttpServletRequest request) throws OperationException {
-        try {
-            String contentType = request.getHeader("Content-Type");
-            DataType<?> eventType;
-            if ((contentType == null)) {
-                throw new ServiceRuntimeException("No content type specified: " + contentType);
-            } else if (contentType.contains(APPLICATION_XML)
-                    || contentType.contains(APPLICATION_XHTML_XML)
-                    || contentType.contains(ContentTypes.TEXT_XML)) {
-
-                eventType = XML;
-            } else if (contentType.contains(APPLICATION_JSON)) {
-                eventType = JSON;
-            } else {
-                throw new ServiceRuntimeException("Unknown content type: " + contentType);
-            }
-            String content = read(request);
-            return new EventWrapper(eventType, content);
-        } catch (IOException e) {
-            throw new OperationException(e);
-        }
-    }
-
-    /**
-     * Reads the body of an HTTP request using the set encoding and returns the contents as a string.
-     *
-     * @param request the HTTP request
-     * @return the contents as a string
-     * @throws IOException if an error occurs reading the contents
-     */
-    public String read(HttpServletRequest request) throws IOException {
-        String encoding = request.getCharacterEncoding();
-        if (encoding == null) {
-            encoding = ISO_8859_1;
-        }
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        IOHelper.copy(request.getInputStream(), outputStream);
-        return outputStream.toString(encoding);
     }
 
 }

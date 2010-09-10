@@ -37,30 +37,40 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.model.type.json.JsonType;
+import org.fabric3.spi.model.type.xsd.XSDType;
+
+import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_JSON;
+import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XHTML_XML;
+import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XML;
+import static org.fabric3.binding.web.runtime.ContentTypes.TEXT_XML;
 
 /**
- * Blocks publishing events to a channel.
- *
  * @version $Rev$ $Date$
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public final class ChannelUtils {
+    private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
+    private static final JsonType<Object> JSON = new JsonType<Object>(String.class, Object.class);
+    private static final XSDType XML = new XSDType(String.class, XSD_ANY);
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
-    }
-
-    public void handle(Object event) {
-    }
-
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
+    public static EventWrapper createWrapper(String contentType, String data) throws InvalidContentTypeException {
+        DataType<?> eventType;
+        if ((contentType == null)) {
+            throw new ServiceRuntimeException("No content type specified: " + contentType);
+        } else if (contentType.contains(APPLICATION_XML) || contentType.contains(APPLICATION_XHTML_XML) || contentType.contains(TEXT_XML)) {
+            eventType = XML;
+        } else if (contentType.contains(APPLICATION_JSON)) {
+            eventType = JSON;
+        } else {
+            throw new InvalidContentTypeException("Unknown content type: " + contentType);
+        }
+        return new EventWrapper(eventType, data);
     }
 
 }

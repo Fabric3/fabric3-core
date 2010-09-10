@@ -37,30 +37,39 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Blocks publishing events to a channel.
- *
  * @version $Rev$ $Date$
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public class PubSubManagerImpl implements PubSubManager{
+    private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();
+    private Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<String, ChannelSubscriber>();
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
+
+    public void register(String path, ChannelPublisher publisher) {
+        publishers.put(path, publisher);
     }
 
-    public void handle(Object event) {
+    public void register(String path, ChannelSubscriber subscriber) {
+        subscribers.put(path, subscriber);
     }
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
+    public void unregisterPublisher(String path) {
+        publishers.remove(path);
     }
 
-    public EventStreamHandler getNext() {
-        return next;
+    public void unsubscribe(String path) {
+        subscribers.remove(path);
+    }
+
+    public ChannelPublisher getPublisher(String path) {
+        return publishers.get(path);
+    }
+
+    public ChannelSubscriber getSubscriber(String path) {
+        return subscribers.get(path);
     }
 
 }

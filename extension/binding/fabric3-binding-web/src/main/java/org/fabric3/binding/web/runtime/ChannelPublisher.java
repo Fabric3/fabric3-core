@@ -37,9 +37,8 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.EventWrapper;
 
 /**
  * Receives incoming requests for a channel published as a web endpoint.
@@ -51,9 +50,9 @@ public interface ChannelPublisher extends EventStreamHandler {
     /**
      * Publish to a channel.
      *
-     * @param request the request
+     * @param wrapper the wrapped event
      * @throws OperationException if an error occurs during publishing
      */
-    public void publish(HttpServletRequest request) throws OperationException;
+    public void publish(EventWrapper wrapper) throws OperationException;
 
 }

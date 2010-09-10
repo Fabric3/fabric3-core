@@ -37,30 +37,15 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Blocks publishing events to a channel.
- *
  * @version $Rev$ $Date$
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public class InvalidContentTypeException extends Fabric3Exception {
+    private static final long serialVersionUID = -116154642580171649L;
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
+    public InvalidContentTypeException(String message) {
+        super(message);
     }
-
-    public void handle(Object event) {
-    }
-
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
-
 }

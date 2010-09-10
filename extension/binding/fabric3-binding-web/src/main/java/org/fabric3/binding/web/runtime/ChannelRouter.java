@@ -37,13 +37,19 @@
 */
 package org.fabric3.binding.web.runtime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.fabric3.host.util.IOHelper;
+import org.fabric3.spi.channel.EventWrapper;
 
 /**
  * Coordinates the RESTful pub/sub protocol for active channels. Incoming requests are routed through the Atmosphere gateway servlet to this
@@ -54,31 +60,18 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ChannelRouter extends HttpServlet {
     private static final long serialVersionUID = -1830803509605261532L;
+    private static final String ISO_8859_1 = "ISO-8859-1";
 
-    Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();
-    Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<String, ChannelSubscriber>();
+    private PubSubManager pubSubManager;
 
-
-    public void register(String path, ChannelPublisher publisher) {
-        publishers.put(path, publisher);
-    }
-
-    public void register(String path, ChannelSubscriber subscriber) {
-        subscribers.put(path, subscriber);
-    }
-
-    public void unregisterPublisher(String path) {
-        publishers.remove(path);
-    }
-
-    public void unsubscribe(String path) {
-        subscribers.remove(path);
+    public ChannelRouter(PubSubManager pubSubManager) {
+        this.pubSubManager = pubSubManager;
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getPathInfo().substring(1);    // strip leading '/'
-        ChannelSubscriber subscriber = subscribers.get(path);
+        ChannelSubscriber subscriber = pubSubManager.getSubscriber(path);
         if (subscriber == null) {
             // TODO return 404
             throw new AssertionError("Path not found");
@@ -96,19 +89,49 @@ public class ChannelRouter extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getPathInfo().substring(1);    // strip leading '/'
-        ChannelPublisher publisher = publishers.get(path);
+        ChannelPublisher publisher = pubSubManager.getPublisher(path);
         if (publisher == null) {
             // TODO return 404
             throw new AssertionError("Path not found");
         }
         try {
-            publisher.publish(request);
+            String contentType = request.getHeader("Content-Type");
+
+            String encoding = request.getCharacterEncoding();
+            if (encoding == null) {
+                encoding = ISO_8859_1;
+            }
+            ServletInputStream stream = request.getInputStream();
+            String data = read(stream, encoding);
+            EventWrapper wrapper = ChannelUtils.createWrapper(contentType, data);
+            publisher.publish(wrapper);
         } catch (OperationDeniedException e) {
             response.setStatus(403);   // forbidden
         } catch (OperationException e) {
             response.setStatus(500);
             // TODO log
+        } catch (IOException e) {
+            response.setStatus(500);
+            // TODO log
+        } catch (InvalidContentTypeException e) {
+            response.setStatus(400);
+            // TODO log
         }
     }
+
+    /**
+     * Reads the body of an HTTP request using the set encoding and returns the contents as a string.
+     *
+     * @param stream   the contents as a stream
+     * @param encoding the content encoding
+     * @return the contents as a string
+     * @throws IOException if an error occurs reading the contents
+     */
+    private String read(InputStream stream, String encoding) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        IOHelper.copy(stream, outputStream);
+        return outputStream.toString(encoding);
+    }
+
 
 }

@@ -32,6 +32,10 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.BroadcasterManagerImpl"/>
     </component>
 
+    <component name="PubSubManager">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.PubSubManagerImpl"/>
+    </component>
+
     <component name="WebBindingSourceWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.WebSourceWireAttacher"/>
     </component>

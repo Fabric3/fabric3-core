@@ -38,23 +38,27 @@
 package org.fabric3.binding.web.runtime;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.cpr.CometSupportResolver;
+import org.eclipse.jetty.websocket.WebSocket;
 
 import org.fabric3.spi.host.ServletHost;
 
 /**
- * Extends the AtmosphereServlet to provider a custom CometSupportResolver and override configuration loading.
+ * Extends the AtmosphereServlet to provider a custom CometSupportResolver and WebSocket handler.
  *
  * @version $Rev$ $Date$
  */
 public class GatewayServlet extends AtmosphereServlet {
     private static final long serialVersionUID = -5519309286029777471L;
     private ServletHost servletHost;
+    private PubSubManager pubSubManager;
 
-    public GatewayServlet(ServletHost servletHost) {
+    public GatewayServlet(ServletHost servletHost, PubSubManager pubSubManager) {
         this.servletHost = servletHost;
+        this.pubSubManager = pubSubManager;
     }
 
     protected CometSupportResolver createCometSupportResolver() {
@@ -65,5 +69,12 @@ public class GatewayServlet extends AtmosphereServlet {
     protected void loadConfiguration(ServletConfig config) {
         // no-op, required
     }
+
+    protected WebSocket doWebSocketConnect(HttpServletRequest request, final String protocol) {
+        String path = request.getPathInfo().substring(1);    // strip leading '/'
+        ChannelPublisher publisher = pubSubManager.getPublisher(path);
+        return new ChannelWebSocket(this, publisher, request);
+    }
+
 
 }

@@ -37,30 +37,57 @@
 */
 package org.fabric3.binding.web.runtime;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
-
 /**
- * Blocks publishing events to a channel.
+ * Manages {@link ChannelSubscriber} and {@link ChannelPublisher} instances.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public interface PubSubManager {
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
-    }
+    /**
+     * Registers a publisher.
+     *
+     * @param path      the relative path of the channel the publisher sends events to.
+     * @param publisher the publisher
+     */
+    void register(String path, ChannelPublisher publisher);
 
-    public void handle(Object event) {
-    }
+    /**
+     * Registers a subscriber.
+     *
+     * @param path       the relative path of the channel the subscriber listens to.
+     * @param subscriber the publisher
+     */
+    void register(String path, ChannelSubscriber subscriber);
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
+    /**
+     * Removes a publisher.
+     *
+     * @param path the relative path of the channel the subscriber listens to.
+     */
+    void unregisterPublisher(String path);
 
-    public EventStreamHandler getNext() {
-        return next;
-    }
+    /**
+     * Removes a subscriber.
+     *
+     * @param path the relative path of the channel the subscriber listens to.
+     */
+    void unsubscribe(String path);
+
+    /**
+     * Returns the publisher for the given channel.
+     *
+     * @param path the relative channel path
+     * @return the publisher
+     */
+    ChannelPublisher getPublisher(String path);
+
+    /**
+     * Returns the subscriber for the given channel.
+     *
+     * @param path the relative channel path
+     * @return the subscriber
+     */
+    ChannelSubscriber getSubscriber(String path);
 
 }
