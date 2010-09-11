@@ -50,9 +50,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
-import org.fabric3.binding.web.runtime.BroadcasterManager;
-import org.fabric3.binding.web.runtime.GatewayServletConfig;
-import org.fabric3.binding.web.runtime.GatewayServletContext;
+import org.fabric3.binding.web.runtime.common.BroadcasterManager;
+import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
+import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.Channel;

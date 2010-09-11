@@ -35,32 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.common;
 
-import java.util.Enumeration;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import org.atmosphere.cpr.Broadcaster;
 
-public class GatewayServletConfig implements ServletConfig {
-    ServletContext context;
+/**
+ * Manages active Atmosphere <code>Broadcaster</code> instances.
+ *
+ * @version $Rev$ $Date$
+ */
+public interface BroadcasterManager {
 
-    public GatewayServletConfig(ServletContext context) {
-        this.context = context;
-    }
+    /**
+     * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
+     *
+     * @param path the path
+     * @return the Broadcaster
+     */
+    Broadcaster get(String path);
 
-    public String getServletName() {
-        return "AtmosphereServlet";
-    }
-
-    public ServletContext getServletContext() {
-        return context;
-    }
-
-    public String getInitParameter(String name) {
-        return context.getInitParameter(name);
-    }
-
-    public Enumeration<String> getInitParameterNames() {
-        return context.getInitParameterNames();
-    }
+    /**
+     * Disposes a Broadcaster for the HTTP URL path.
+     *
+     * @param path the path
+     */
+    void remove(String path);
 }

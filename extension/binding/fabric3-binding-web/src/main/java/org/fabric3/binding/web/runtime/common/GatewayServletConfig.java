@@ -35,17 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.common;
 
-import org.fabric3.host.Fabric3Exception;
+import java.util.Enumeration;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
-/**
- * @version $Rev$ $Date$
- */
-public class InvalidContentTypeException extends Fabric3Exception {
-    private static final long serialVersionUID = -116154642580171649L;
+public class GatewayServletConfig implements ServletConfig {
+    ServletContext context;
 
-    public InvalidContentTypeException(String message) {
-        super(message);
+    public GatewayServletConfig(ServletContext context) {
+        this.context = context;
+    }
+
+    public String getServletName() {
+        return "AtmosphereServlet";
+    }
+
+    public ServletContext getServletContext() {
+        return context;
+    }
+
+    public String getInitParameter(String name) {
+        return context.getInitParameter(name);
+    }
+
+    public Enumeration<String> getInitParameterNames() {
+        return context.getInitParameterNames();
     }
 }

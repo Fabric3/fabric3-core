@@ -48,7 +48,7 @@ import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
 import org.atmosphere.websocket.WebSocketHttpServletResponse;
 
-import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 
 /**
  * Manages incoming requests destined for a channel. This includes setting the broadcaster associated with the request, forwarding HTTP requests to

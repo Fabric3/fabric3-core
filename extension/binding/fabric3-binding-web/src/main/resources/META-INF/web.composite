@@ -29,7 +29,7 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="BroadcasterManager">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.BroadcasterManagerImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.common.BroadcasterManagerImpl"/>
     </component>
 
     <component name="ServiceManager">

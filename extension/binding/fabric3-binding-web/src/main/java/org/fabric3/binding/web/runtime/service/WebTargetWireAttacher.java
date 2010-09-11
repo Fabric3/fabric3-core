@@ -41,7 +41,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.web.provision.WebTargetDefinition;
-import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;

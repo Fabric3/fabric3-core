@@ -45,8 +45,8 @@ import org.atmosphere.cpr.WebSocketProcessor;
 import org.atmosphere.websocket.JettyWebSocketSupport;
 import org.eclipse.jetty.websocket.WebSocket;
 
-import org.fabric3.binding.web.runtime.ContentTypes;
-import org.fabric3.binding.web.runtime.InvalidContentTypeException;
+import org.fabric3.binding.web.runtime.common.ContentTypes;
+import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.spi.channel.EventWrapper;
 
 /**

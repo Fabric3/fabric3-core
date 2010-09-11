@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.common;
 
 /**
  * Common content types.

@@ -35,29 +35,17 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.common;
 
-import org.atmosphere.cpr.Broadcaster;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Manages active Atmosphere <code>Broadcaster</code> instances.
- *
  * @version $Rev$ $Date$
  */
-public interface BroadcasterManager {
+public class InvalidContentTypeException extends Fabric3Exception {
+    private static final long serialVersionUID = -116154642580171649L;
 
-    /**
-     * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
-     *
-     * @param path the path
-     * @return the Broadcaster
-     */
-    Broadcaster get(String path);
-
-    /**
-     * Disposes a Broadcaster for the HTTP URL path.
-     *
-     * @param path the path
-     */
-    void remove(String path);
+    public InvalidContentTypeException(String message) {
+        super(message);
+    }
 }

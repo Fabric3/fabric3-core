@@ -44,7 +44,7 @@ import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.cpr.CometSupportResolver;
 import org.eclipse.jetty.websocket.WebSocket;
 
-import org.fabric3.binding.web.runtime.Fabric3CometSupportResolver;
+import org.fabric3.binding.web.runtime.common.Fabric3CometSupportResolver;
 import org.fabric3.spi.host.ServletHost;
 
 /**

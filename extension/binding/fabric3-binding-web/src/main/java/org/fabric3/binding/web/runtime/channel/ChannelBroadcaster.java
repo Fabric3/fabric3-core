@@ -61,9 +61,9 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XHTML_XML;
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XML;
-import static org.fabric3.binding.web.runtime.ContentTypes.TEXT_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XHTML_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_XML;
 
 /**
  * A synchronous <code>Broadcaster</code> implementation. This class overrides the default Atmosphere asynchronous broadcast behavior as channels

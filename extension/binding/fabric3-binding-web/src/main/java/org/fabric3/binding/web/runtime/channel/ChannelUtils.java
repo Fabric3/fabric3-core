@@ -41,16 +41,16 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.web.runtime.InvalidContentTypeException;
+import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.channel.EventWrapper;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_JSON;
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XHTML_XML;
-import static org.fabric3.binding.web.runtime.ContentTypes.APPLICATION_XML;
-import static org.fabric3.binding.web.runtime.ContentTypes.TEXT_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_JSON;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XHTML_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_XML;
 
 /**
  * @version $Rev$ $Date$

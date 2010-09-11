@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.fabric3.binding.web.runtime.InvalidContentTypeException;
+import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.channel.EventWrapper;
 
