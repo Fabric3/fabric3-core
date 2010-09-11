@@ -80,7 +80,6 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
-        // TODO support callback
         if (!binding.isCallback()) {
             throw new UnsupportedOperationException("The web binding not supported on references");
         }
