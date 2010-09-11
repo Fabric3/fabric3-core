@@ -35,41 +35,46 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+
+import org.atmosphere.cpr.AtmosphereResource;
+
+import org.fabric3.spi.channel.EventStream;
+
+import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
 
 /**
+ * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients
+ * that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
+ *
  * @version $Rev$ $Date$
  */
-public class PubSubManagerImpl implements PubSubManager{
-    private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();
-    private Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<String, ChannelSubscriber>();
+public class ChannelSubscriberImpl implements ChannelSubscriber {
+    private List<EventStream> streams = new ArrayList<EventStream>();
 
-
-    public void register(String path, ChannelPublisher publisher) {
-        publishers.put(path, publisher);
+    public ChannelSubscriberImpl(EventStream stream) {
+        streams.add(stream);
     }
 
-    public void register(String path, ChannelSubscriber subscriber) {
-        subscribers.put(path, subscriber);
+    public void subscribe(HttpServletRequest request) {
+        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
+        if (resource == null) {
+            throw new IllegalStateException("Web binding extension not properly configured");
+        }
+        // TODO fix timeout
+        resource.suspend(-1);
     }
 
-    public void unregisterPublisher(String path) {
-        publishers.remove(path);
+    public List<EventStream> getEventStreams() {
+        return streams;
     }
 
-    public void unsubscribe(String path) {
-        subscribers.remove(path);
-    }
-
-    public ChannelPublisher getPublisher(String path) {
-        return publishers.get(path);
-    }
-
-    public ChannelSubscriber getSubscriber(String path) {
-        return subscribers.get(path);
+    public void addEventStream(EventStream stream) {
+        // no-op
     }
 
 }

@@ -35,48 +35,53 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
 
-import java.io.IOException;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.atmosphere.cpr.AtmosphereHandler;
-import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResourceEvent;
-import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
-import org.atmosphere.websocket.WebSocketHttpServletResponse;
+import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.CometSupportResolver;
+import org.eclipse.jetty.websocket.WebSocket;
+
+import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.Fabric3CometSupportResolver;
+import org.fabric3.spi.host.ServletHost;
 
 /**
- * Manages incoming requests. This includes setting the broadcaster associated with the request, forwarding HTTP requests to additional handlers or
- * suspending the request it is websocket-based.
+ * Receives incoming comet and websocket requests destined for a service. This class extends the AtmosphereServlet to provide custom
+ * <code>CometSupportResolver</code> and <code>WebSocket</code> implementations.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9436 $ $Date: 2010-09-10 17:13:50 +0200 (Fri, 10 Sep 2010) $
  */
-public class WebSocketHandler extends AbstractReflectorAtmosphereHandler {
-    private AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler;
+public class ServiceGatewayServlet extends AtmosphereServlet {
+    private static final long serialVersionUID = -5519309286029777471L;
+    private ServiceManager serviceManager;
     private BroadcasterManager broadcasterManager;
+    private ServletHost servletHost;
 
-    public WebSocketHandler(AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler, BroadcasterManager broadcasterManager) {
-        this.handler = handler;
+    public ServiceGatewayServlet(ServiceManager serviceManager, BroadcasterManager broadcasterManager, ServletHost servletHost) {
+        this.serviceManager = serviceManager;
         this.broadcasterManager = broadcasterManager;
-    }
-
-    public void onRequest(AtmosphereResource<HttpServletRequest, HttpServletResponse> r) throws IOException {
-        String path = r.getRequest().getPathInfo().substring(1); // strip leading "/"
-        Broadcaster broadcaster = broadcasterManager.get(path);
-        r.setBroadcaster(broadcaster);
-        if (!r.getResponse().getClass().isAssignableFrom(WebSocketHttpServletResponse.class)) {
-            // not a websocket request
-            handler.onRequest(r);
-        } else {
-            r.suspend(-1, false);
-        }
+        this.servletHost = servletHost;
     }
 
     @Override
-    public void onStateChange(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) throws IOException {
-        super.onStateChange(event);
+    protected CometSupportResolver createCometSupportResolver() {
+        return new Fabric3CometSupportResolver(servletHost, config);
     }
+
+    @Override
+    protected void loadConfiguration(ServletConfig config) {
+        // no-op, required
+    }
+
+    @Override
+    protected WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
+        String path = request.getPathInfo().substring(1);    // strip leading '/'
+        ChainPair pair = serviceManager.get(path);
+        return new ServiceWebSocket(pair.getChain(), pair.getCallbackUri(), broadcasterManager, request, this);
+    }
+
+
 }

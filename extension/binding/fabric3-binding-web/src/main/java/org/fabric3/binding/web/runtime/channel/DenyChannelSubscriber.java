@@ -35,24 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+
+import org.fabric3.spi.channel.EventStream;
 
 /**
- * Receives incoming requests for a channel published as a web endpoint.
+ * Denies subscription requests for a channel.
  *
  * @version $Rev$ $Date$
  */
-public interface ChannelPublisher extends EventStreamHandler {
+public class DenyChannelSubscriber implements ChannelSubscriber {
 
-    /**
-     * Publish to a channel.
-     *
-     * @param wrapper the wrapped event
-     * @throws OperationException if an error occurs during publishing
-     */
-    public void publish(EventWrapper wrapper) throws OperationException;
+    public void subscribe(HttpServletRequest request) throws OperationDeniedException {
+        throw new OperationDeniedException();
+    }
+
+    public List<EventStream> getEventStreams() {
+        return null;
+    }
+
+    public void addEventStream(EventStream stream) {
+    }
 
 }

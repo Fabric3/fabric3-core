@@ -35,29 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
 
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Denies subscription requests for a channel.
+ * Manages invocation chains for a service exposed over the websocket binding.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
-public class DenyChannelSubscriber implements ChannelSubscriber {
+public interface ServiceManager {
 
-    public void subscribe(HttpServletRequest request) throws OperationDeniedException {
-        throw new OperationDeniedException();
-    }
+    /**
+     * Registers the invocation chain for a service.
+     *
+     * @param path        the path part of the service URI
+     * @param chain       the invocation chain
+     * @param callbackUri the callback URI. This may be null if the service is unidirectional
+     */
+    void register(String path, InvocationChain chain, String callbackUri);
 
-    public List<EventStream> getEventStreams() {
-        return null;
-    }
+    /**
+     * Removes the invocation chain for a service.
+     *
+     * @param path the path part of the service URI
+     */
+    void unregister(String path);
 
-    public void addEventStream(EventStream stream) {
-    }
-
+    /**
+     * Returns the invocation chain and callback URI pair for a registered service.
+     *
+     * @param path the path part of the service URI
+     * @return the invocation chain and callback URI pair
+     */
+    ChainPair get(String path);
 }

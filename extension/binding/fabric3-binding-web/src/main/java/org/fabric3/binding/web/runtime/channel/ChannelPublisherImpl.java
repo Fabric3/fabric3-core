@@ -35,46 +35,37 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServletRequest;
-
-import org.atmosphere.cpr.AtmosphereServlet;
-import org.atmosphere.cpr.CometSupportResolver;
-import org.eclipse.jetty.websocket.WebSocket;
-
-import org.fabric3.spi.host.ServletHost;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.EventWrapper;
 
 /**
- * Extends the AtmosphereServlet to provider a custom CometSupportResolver and WebSocket handler.
+ * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
+ * <p/>
+ * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
+ * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
  *
  * @version $Rev$ $Date$
  */
-public class GatewayServlet extends AtmosphereServlet {
-    private static final long serialVersionUID = -5519309286029777471L;
-    private ServletHost servletHost;
-    private PubSubManager pubSubManager;
+public class ChannelPublisherImpl implements ChannelPublisher {
+    private EventStreamHandler next;
 
-    public GatewayServlet(ServletHost servletHost, PubSubManager pubSubManager) {
-        this.servletHost = servletHost;
-        this.pubSubManager = pubSubManager;
+    public void publish(EventWrapper wrapper) {
+        handle(wrapper);
     }
 
-    protected CometSupportResolver createCometSupportResolver() {
-        return new Fabric3CometSupportResolver(servletHost, config);
+    public void handle(Object event) {
+        // pass the object to the head stream handler
+        next.handle(event);
     }
 
-    @Override
-    protected void loadConfiguration(ServletConfig config) {
-        // no-op, required
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
     }
 
-    protected WebSocket doWebSocketConnect(HttpServletRequest request, final String protocol) {
-        String path = request.getPathInfo().substring(1);    // strip leading '/'
-        ChannelPublisher publisher = pubSubManager.getPublisher(path);
-        return new ChannelWebSocket(this, publisher, request);
+    public EventStreamHandler getNext() {
+        return next;
     }
-
 
 }

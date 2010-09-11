@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
+import org.fabric3.binding.web.provision.WebTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -75,12 +76,15 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         return new WebSourceDefinition(uri, contract);
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> referenceBinding,
+    public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
         // TODO support callback
-        throw new UnsupportedOperationException("The web binding not supported on references");
+        if (!binding.isCallback()) {
+            throw new UnsupportedOperationException("The web binding not supported on references");
+        }
+        return new WebTargetDefinition(binding.getParent().getUri(), contract);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WebBindingDefinition> binding,

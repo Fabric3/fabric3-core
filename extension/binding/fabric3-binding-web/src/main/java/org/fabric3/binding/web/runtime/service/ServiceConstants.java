@@ -35,37 +35,18 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
-
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+package org.fabric3.binding.web.runtime.service;
 
 /**
- * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
- * <p/>
- * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
- * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
+ * Constants.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9436 $ $Date: 2010-09-10 17:13:50 +0200 (Fri, 10 Sep 2010) $
  */
-public class ChannelPublisherImpl implements ChannelPublisher {
-    private EventStreamHandler next;
+public interface ServiceConstants {
 
-    public void publish(EventWrapper wrapper) {
-        handle(wrapper);
-    }
-
-    public void handle(Object event) {
-        // pass the object to the head stream handler
-        next.handle(event);
-    }
-
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
+    /**
+     * The name of the servlet attribute used for associating a broadcaster with an HTTP request.
+     */
+    String FABRIC3_BROADCASTER = "fabric3.broadcaster";
 
 }

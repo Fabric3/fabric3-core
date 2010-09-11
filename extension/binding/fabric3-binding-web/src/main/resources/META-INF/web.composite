@@ -32,17 +32,24 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.BroadcasterManagerImpl"/>
     </component>
 
+    <component name="ServiceManager">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.ServiceManagerImpl"/>
+    </component>
+
     <component name="PubSubManager">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.PubSubManagerImpl"/>
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.PubSubManagerImpl"/>
     </component>
 
     <component name="WebBindingSourceWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.WebSourceWireAttacher"/>
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
+    </component>
+
+    <component name="WebTargetWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
     </component>
 
     <component name="WebBindingSourceConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.WebSourceConnectionAttacher"/>
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebSourceConnectionAttacher"/>
     </component>
-
 
 </composite>

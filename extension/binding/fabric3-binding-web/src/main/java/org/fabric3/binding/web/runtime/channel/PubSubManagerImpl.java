@@ -35,56 +35,41 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
-import org.atmosphere.cpr.Broadcaster;
-
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Receives events flowing through a channel and broadcasts them to subscribed websocket and comet connections.
- *
  * @version $Rev$ $Date$
  */
-public class BroadcasterEventStream implements EventStream, EventStreamHandler {
-    private Broadcaster broadcaster;
+public class PubSubManagerImpl implements PubSubManager {
+    private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();
+    private Map<String, ChannelSubscriber> subscribers = new ConcurrentHashMap<String, ChannelSubscriber>();
 
-    public BroadcasterEventStream(Broadcaster broadcaster) {
-        this.broadcaster = broadcaster;
+
+    public void register(String path, ChannelPublisher publisher) {
+        publishers.put(path, publisher);
     }
 
-    public void handle(Object event) {
-        broadcaster.broadcast(event);
+    public void register(String path, ChannelSubscriber subscriber) {
+        subscribers.put(path, subscriber);
     }
 
-    public PhysicalEventStreamDefinition getDefinition() {
-        return null;
+    public void unregisterPublisher(String path) {
+        publishers.remove(path);
     }
 
-    public EventStreamHandler getHeadHandler() {
-        return this;
+    public void unsubscribe(String path) {
+        subscribers.remove(path);
     }
 
-    public EventStreamHandler getTailHandler() {
-        return this;
+    public ChannelPublisher getPublisher(String path) {
+        return publishers.get(path);
     }
 
-    public void addHandler(EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
+    public ChannelSubscriber getSubscriber(String path) {
+        return subscribers.get(path);
     }
 
-    public void addHandler(int index, EventStreamHandler handler) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public void setNext(EventStreamHandler next) {
-        throw new UnsupportedOperationException();
-    }
-
-    public EventStreamHandler getNext() {
-        return null;
-    }
 }

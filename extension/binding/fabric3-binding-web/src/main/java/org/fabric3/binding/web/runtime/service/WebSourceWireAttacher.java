@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
 
 import javax.servlet.ServletException;
 
@@ -43,31 +43,44 @@ import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.handler.ReflectorServletProcessor;
 import org.oasisopen.sca.annotation.Reference;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 
 import org.fabric3.binding.web.provision.WebSourceDefinition;
+import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.GatewayServletConfig;
+import org.fabric3.binding.web.runtime.GatewayServletContext;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
+ * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
+ * receiving invocations and routing them to the appropriate service based on the request path.
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefinition> {
-    private static final String CONTEXT_PATH = "web";
-    private PubSubManager pubSubManager;
-    private ServletHost servletHost;
-    private GatewayServlet gatewayServlet;
+    private static final String CONTEXT_PATH = "/web/*";
 
-    public WebSourceWireAttacher(@Reference PubSubManager pubSubManager, @Reference ServletHost servletHost) {
-        this.pubSubManager = pubSubManager;
+    private ServiceManager serviceManager;
+    private BroadcasterManager broadcasterManager;
+    private ServletHost servletHost;
+
+    public WebSourceWireAttacher(@Reference ServiceManager serviceManager,
+                                 @Reference BroadcasterManager broadcasterManager,
+                                 @Reference ServletHost servletHost) {
+        this.broadcasterManager = broadcasterManager;
+        this.serviceManager = serviceManager;
         this.servletHost = servletHost;
     }
 
-    public void attach(WebSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+    @Init
+    public void init() throws ServletException {
         GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH);
         // TODO support other configuration as specified in AtmosphereServlet init()
         context.setInitParameter(AtmosphereServlet.PROPERTY_SESSION_SUPPORT, "false");
@@ -75,25 +88,36 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         context.setInitParameter(AtmosphereServlet.WEBSOCKET_SUPPORT, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
-        gatewayServlet = new GatewayServlet(servletHost, pubSubManager);
 
-        try {
-            gatewayServlet.init(config);
+        ServiceGatewayServlet gatewayServlet = new ServiceGatewayServlet(serviceManager, broadcasterManager, servletHost);
+        gatewayServlet.init(config);
 
-            ReflectorServletProcessor processor = new ReflectorServletProcessor();
-            //processor.setServlet(router);
-            processor.init(config);
-            //WebSocketHandler webSocketHandler = new WebSocketHandler(processor, broadcasterManager);
-            //gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
-            servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
-        } catch (ServletException e) {
-            throw new WiringException(e);
+        ServiceRouter router = new ServiceRouter();
+
+        ReflectorServletProcessor processor = new ReflectorServletProcessor();
+        processor.setServlet(router);
+        processor.init(config);
+        ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(processor);
+        gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
+        servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
+    }
+
+    public void attach(WebSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+        if (wire.getInvocationChains().size() != 1) {
+            // the websocket binding only supports service contracts with one operation
+            throw new IllegalArgumentException("Invalid wire size");
         }
+        String path = source.getUri().getPath().substring(1); // strip leading "/"
+        InvocationChain chain = wire.getInvocationChains().get(0);
 
+        // use the service URI as the callback id
+        String callbackUri = source.getUri().toString();
+        serviceManager.register(path, chain, callbackUri);
     }
 
     public void detach(WebSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-
+        String path = source.getUri().getPath().substring(1); // strip leading "/"
+        serviceManager.unregister(path);
     }
 
     public void attachObjectFactory(WebSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {

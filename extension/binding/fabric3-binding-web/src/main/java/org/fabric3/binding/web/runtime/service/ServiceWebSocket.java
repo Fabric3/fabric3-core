@@ -35,36 +35,55 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
 
 import java.io.IOException;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.WebSocketProcessor;
 import org.atmosphere.websocket.JettyWebSocketSupport;
 import org.eclipse.jetty.websocket.WebSocket;
 
-import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.ContentTypes;
+import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.wire.InvocationChain;
+
+import static org.fabric3.binding.web.runtime.service.ServiceConstants.FABRIC3_BROADCASTER;
 
 /**
- * Handles setting up a websocket connection and receiving inbound messages on it.
+ * Handles setting up a websocket connection and receiving inbound messages destined for a service.
  *
  * @version $Rev$ $Date$
  */
-public class ChannelWebSocket implements WebSocket {
-    private AtmosphereServlet servlet;
+public class ServiceWebSocket implements WebSocket {
+    private InvocationChain chain;
+    private String callbackUri;
+    private BroadcasterManager broadcastManager;
     private HttpServletRequest request;
+    private AtmosphereServlet servlet;
+    private Broadcaster broadcaster;
+    private String uuid;
 
     private String contentType;
     private WebSocketProcessor webSocketProcessor;
-    private ChannelPublisher publisher;
 
-
-    public ChannelWebSocket(AtmosphereServlet servlet, ChannelPublisher publisher, HttpServletRequest request) {
-        this.servlet = servlet;
-        this.publisher = publisher;
+    public ServiceWebSocket(InvocationChain chain,
+                            String callbackUri,
+                            BroadcasterManager broadcasterManager,
+                            HttpServletRequest request,
+                            AtmosphereServlet servlet) {
+        this.chain = chain;
+        this.callbackUri = callbackUri;
+        this.broadcastManager = broadcasterManager;
         this.request = request;
+        this.servlet = servlet;
         contentType = request.getHeader("Content-Type");
         if (contentType == null) {
             contentType = ContentTypes.DEFAULT;
@@ -72,26 +91,33 @@ public class ChannelWebSocket implements WebSocket {
     }
 
     public void onConnect(Outbound outbound) {
+        // Create a broadcaster unique to the client
+        uuid = UUID.randomUUID().toString();
+        broadcaster = broadcastManager.get(uuid);
         JettyWebSocketSupport support = new JettyWebSocketSupport(outbound);
         webSocketProcessor = new WebSocketProcessor(servlet, support);
         try {
+            request.setAttribute(FABRIC3_BROADCASTER, broadcaster);
             webSocketProcessor.connect(request);
         } catch (IOException e) {
             // TODO monitor failure
         }
     }
 
-    public void onMessage(byte frame, String data) {
-        try {
-            EventWrapper wrapper = ChannelUtils.createWrapper(contentType, data);
-            publisher.publish(wrapper);
-        } catch (OperationException e) {
-            e.printStackTrace();
-            // TODO monitor
-        } catch (InvalidContentTypeException e) {
-            e.printStackTrace();
-            // TODO monitor
-        }
+    public void onMessage(byte bytes, String data) {
+        // Construct the work context and send to the target service
+        // Set the correlation id to the broadcaster UUID so callbacks can be routed to the correct broadcaster instance
+        Object[] content = new Object[]{data};
+        WorkContext context = new WorkContext();
+        CallFrame frame = new CallFrame(callbackUri, uuid, null, null);
+        context.addCallFrame(frame);
+        // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation 
+        context.addCallFrame(frame);
+        MessageImpl message = new MessageImpl(content, false, context);
+
+        // Invoke the service and return a response using the broadcaster for this web socket
+        Message response = chain.getHeadInterceptor().invoke(message);
+        broadcaster.broadcast(response.getBody());
     }
 
     public void onMessage(byte frame, byte[] data, int offset, int length) {
@@ -100,6 +126,7 @@ public class ChannelWebSocket implements WebSocket {
 
     public void onDisconnect() {
         webSocketProcessor.close();
+        broadcastManager.remove(uuid);
     }
 
 

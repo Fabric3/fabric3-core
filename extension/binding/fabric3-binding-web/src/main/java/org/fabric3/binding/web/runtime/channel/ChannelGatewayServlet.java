@@ -35,59 +35,50 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
+
+import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.CometSupportResolver;
+import org.eclipse.jetty.websocket.WebSocket;
+
+import org.fabric3.binding.web.runtime.Fabric3CometSupportResolver;
+import org.fabric3.spi.host.ServletHost;
 
 /**
- * Manages {@link ChannelSubscriber} and {@link ChannelPublisher} instances.
+ * Receives incoming comet and websocket requests destined for a channel. This class extends the AtmosphereServlet to provide custom
+ * <code>CometSupportResolver</code> and <code>WebSocket</code> implementations.
  *
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
+ * @version $Rev$ $Date$
  */
-public interface PubSubManager {
+public class ChannelGatewayServlet extends AtmosphereServlet {
+    private static final long serialVersionUID = -5519309286029777471L;
+    private ServletHost servletHost;
+    private PubSubManager pubSubManager;
 
-    /**
-     * Registers a publisher.
-     *
-     * @param path      the relative path of the channel the publisher sends events to.
-     * @param publisher the publisher
-     */
-    void register(String path, ChannelPublisher publisher);
+    public ChannelGatewayServlet(ServletHost servletHost, PubSubManager pubSubManager) {
+        this.servletHost = servletHost;
+        this.pubSubManager = pubSubManager;
+    }
 
-    /**
-     * Registers a subscriber.
-     *
-     * @param path       the relative path of the channel the subscriber listens to.
-     * @param subscriber the publisher
-     */
-    void register(String path, ChannelSubscriber subscriber);
+    @Override
+    protected CometSupportResolver createCometSupportResolver() {
+        return new Fabric3CometSupportResolver(servletHost, config);
+    }
 
-    /**
-     * Removes a publisher.
-     *
-     * @param path the relative path of the channel the subscriber listens to.
-     */
-    void unregisterPublisher(String path);
+    @Override
+    protected void loadConfiguration(ServletConfig config) {
+        // no-op, required
+    }
 
-    /**
-     * Removes a subscriber.
-     *
-     * @param path the relative path of the channel the subscriber listens to.
-     */
-    void unsubscribe(String path);
+    @Override
+    protected WebSocket doWebSocketConnect(HttpServletRequest request, final String protocol) {
+        String path = request.getPathInfo().substring(1);    // strip leading '/'
+        ChannelPublisher publisher = pubSubManager.getPublisher(path);
+        return new ChannelWebSocket(this, publisher, request);
+    }
 
-    /**
-     * Returns the publisher for the given channel.
-     *
-     * @param path the relative channel path
-     * @return the publisher
-     */
-    ChannelPublisher getPublisher(String path);
-
-    /**
-     * Returns the subscriber for the given channel.
-     *
-     * @param path the relative channel path
-     * @return the subscriber
-     */
-    ChannelSubscriber getSubscriber(String path);
 
 }

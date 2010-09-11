@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
 import java.net.URI;
 import javax.servlet.ServletException;
@@ -50,6 +50,9 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
+import org.fabric3.binding.web.runtime.BroadcasterManager;
+import org.fabric3.binding.web.runtime.GatewayServletConfig;
+import org.fabric3.binding.web.runtime.GatewayServletContext;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
@@ -102,7 +105,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         GatewayServletConfig config = new GatewayServletConfig(context);
 
-        gatewayServlet = new GatewayServlet(servletHost, pubSubManager);
+        gatewayServlet = new ChannelGatewayServlet(servletHost, pubSubManager);
         gatewayServlet.init(config);
 
         ChannelRouter router = new ChannelRouter(pubSubManager);
@@ -110,7 +113,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         ReflectorServletProcessor processor = new ReflectorServletProcessor();
         processor.setServlet(router);
         processor.init(config);
-        WebSocketHandler webSocketHandler = new WebSocketHandler(processor, broadcasterManager);
+        ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler(processor, broadcasterManager);
         gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
         servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
     }

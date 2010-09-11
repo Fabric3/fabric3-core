@@ -35,32 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.channel;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.fabric3.host.Fabric3Exception;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.EventWrapper;
 
 /**
+ * Blocks publishing events to a channel.
  *
  * @version $Rev$ $Date$
  */
-public class OperationException extends Fabric3Exception {
-    private static final long serialVersionUID = 8846071494329846526L;
+public class DenyChannelPublisher implements ChannelPublisher {
+    private EventStreamHandler next;
 
-    public OperationException() {
+    public void publish(EventWrapper wrapper) throws OperationDeniedException {
+        throw new OperationDeniedException();
     }
 
-    public OperationException(String message) {
-        super(message);
+    public void handle(Object event) {
     }
 
-    public OperationException(String message, Throwable cause) {
-        super(message, cause);
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
     }
 
-    public OperationException(Throwable cause) {
-        super(cause);
+    public EventStreamHandler getNext() {
+        return next;
     }
+
 }

@@ -47,6 +47,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.binding.web.runtime.channel.ChannelBroadcaster;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformationException;

@@ -35,32 +35,44 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.atmosphere.cpr.AtmosphereHandler;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
+import org.atmosphere.websocket.WebSocketHttpServletResponse;
+
+import static org.fabric3.binding.web.runtime.service.ServiceConstants.FABRIC3_BROADCASTER;
 
 /**
- * Blocks publishing events to a channel.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
-public class DenyChannelPublisher implements ChannelPublisher {
-    private EventStreamHandler next;
+public class ServiceWebSocketHandler extends AbstractReflectorAtmosphereHandler {
+    private AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler;
 
-    public void publish(EventWrapper wrapper) throws OperationDeniedException {
-        throw new OperationDeniedException();
+    public ServiceWebSocketHandler(AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler) {
+        this.handler = handler;
     }
 
-    public void handle(Object event) {
+    public void onRequest(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) throws IOException {
+        Broadcaster broadcaster = (Broadcaster) resource.getRequest().getAttribute(FABRIC3_BROADCASTER);
+        resource.setBroadcaster(broadcaster);
+        if (!resource.getResponse().getClass().isAssignableFrom(WebSocketHttpServletResponse.class)) {
+            // not a websocket request
+            handler.onRequest(resource);
+        } else {
+            resource.suspend(-1, false);
+        }
     }
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
+    @Override
+    public void onStateChange(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) throws IOException {
+        super.onStateChange(event);
     }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
-
 }

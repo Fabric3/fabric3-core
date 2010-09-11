@@ -35,11 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime;
+package org.fabric3.binding.web.runtime.service;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
-public class OperationDeniedException extends OperationException {
-    private static final long serialVersionUID = -1089377329217256099L;
+public class ServiceManagerImpl implements ServiceManager {
+    private Map<String, ChainPair> cache = new ConcurrentHashMap<String, ChainPair>();
+
+    public void register(String path, InvocationChain chain, String callbackUri) {
+        ChainPair pair = new ChainPair(chain, callbackUri);
+        cache.put(path, pair);
+    }
+
+    public void unregister(String path) {
+        cache.remove(path);
+    }
+
+    public ChainPair get(String path) {
+        return cache.get(path);
+    }
 }
