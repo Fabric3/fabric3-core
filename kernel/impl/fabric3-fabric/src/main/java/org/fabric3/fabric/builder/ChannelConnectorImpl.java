@@ -37,13 +37,16 @@
 */
 package org.fabric3.fabric.builder;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.channel.FilterHandler;
 import org.fabric3.fabric.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.channel.EventStreamImpl;
+import org.fabric3.fabric.channel.FilterHandler;
+import org.fabric3.fabric.channel.TransformerHandler;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.EventFilter;
 import org.fabric3.spi.builder.channel.EventFilterBuilder;
@@ -51,11 +54,14 @@ import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.type.java.JavaClass;
+import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Default ChannelConnector implementation.
@@ -69,6 +75,22 @@ public class ChannelConnectorImpl implements ChannelConnector {
             targetAttachers;
     private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
             filterBuilders;
+
+    private ClassLoaderRegistry classLoaderRegistry;
+    private TransformerRegistry transformerRegistry;
+
+    public ChannelConnectorImpl() {
+    }
+
+    @Reference
+    public void setClassLoaderRegistry(ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
+    }
+
+    @Reference
+    public void setTransformerRegistry(TransformerRegistry transformerRegistry) {
+        this.transformerRegistry = transformerRegistry;
+    }
 
     @Reference
     public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
@@ -120,20 +142,65 @@ public class ChannelConnectorImpl implements ChannelConnector {
         targetAttacher.detach(source, target);
     }
 
-    @SuppressWarnings({"unchecked"})
+    /**
+     * Creates the connection.
+     *
+     * @param definition the connection definition
+     * @return the connection
+     * @throws BuilderException if there is an error creating the connection
+     */
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws BuilderException {
+        ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
         ChannelConnection connection = new ChannelConnectionImpl();
         for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
             EventStream stream = new EventStreamImpl(streamDefinition);
-            for (PhysicalEventFilterDefinition filterDefinition : streamDefinition.getFilters()) {
-                EventFilterBuilder filterBuilder = filterBuilders.get(filterDefinition.getClass());
-                EventFilter filter = filterBuilder.build(filterDefinition);
-                FilterHandler handler = new FilterHandler(filter);
-                stream.addHandler(handler);
-            }
+            addTransformer(streamDefinition, stream, loader);
+            addFilters(streamDefinition, stream);
             connection.addEventStream(stream);
         }
         return connection;
+    }
+
+    /**
+     * Adds event transformers to convert an event from one format to another.
+     *
+     * @param streamDefinition the stream definition
+     * @param stream           the stream being created
+     * @param loader           the target classloader to use for the transformation
+     * @throws BuilderException if there is an error adding a filter
+     */
+    @SuppressWarnings({"unchecked"})
+    private void addTransformer(PhysicalEventStreamDefinition streamDefinition, EventStream stream, ClassLoader loader) throws BuilderException {
+        if (transformerRegistry == null) {
+            // no transformer registry configured (e.g. during bootstrap) so skip
+            return;
+        }
+        List<String> eventTypes = streamDefinition.getEventTypes();
+        String stringifiedType = eventTypes.get(0);
+        try {
+            DataType<Object> type = new JavaClass(loader.loadClass(stringifiedType));
+            TransformerHandler handler = new TransformerHandler(type, transformerRegistry);
+            stream.addHandler(handler);
+        } catch (ClassNotFoundException e) {
+            throw new BuilderException(e);
+        }
+    }
+
+    /**
+     * Adds event filters if they are defined for the stream.
+     *
+     * @param streamDefinition the stream definition
+     * @param stream           the stream being created
+     * @throws BuilderException if there is an error adding a filter
+     */
+    @SuppressWarnings({"unchecked"})
+    private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws BuilderException {
+        for (PhysicalEventFilterDefinition filterDefinition : streamDefinition.getFilters()) {
+            EventFilterBuilder filterBuilder = filterBuilders.get(filterDefinition.getClass());
+            EventFilter filter = filterBuilder.build(filterDefinition);
+            FilterHandler handler = new FilterHandler(filter);
+            stream.addHandler(handler);
+        }
     }
 
 

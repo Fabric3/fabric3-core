@@ -82,7 +82,7 @@ public class EventWrapper {
         cache.put(type, representation);
     }
 
-    public Object getEvent(DataType<Object> type) {
+    public Object getEvent(DataType<?> type) {
         Object cached = null;
         if (cache != null) {
             return cache.get(type);

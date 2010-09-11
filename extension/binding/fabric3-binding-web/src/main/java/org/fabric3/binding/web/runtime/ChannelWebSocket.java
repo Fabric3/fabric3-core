@@ -66,6 +66,9 @@ public class ChannelWebSocket implements WebSocket {
         this.publisher = publisher;
         this.request = request;
         contentType = request.getHeader("Content-Type");
+        if (contentType == null) {
+            contentType = ContentTypes.DEFAULT;
+        }
     }
 
     public void onConnect(Outbound outbound) {

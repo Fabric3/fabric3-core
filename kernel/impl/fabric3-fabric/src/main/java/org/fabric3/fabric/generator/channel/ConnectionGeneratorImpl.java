@@ -160,7 +160,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     }
 
     private List<PhysicalEventStreamDefinition> generate(LogicalConsumer consumer) {
-        // there is only one event strem from a channel to a consumer
+        // there is only one event stream from a channel to a consumer
         List<PhysicalEventStreamDefinition> streams = new ArrayList<PhysicalEventStreamDefinition>();
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
         List<DataType<?>> types = consumer.getDefinition().getTypes();

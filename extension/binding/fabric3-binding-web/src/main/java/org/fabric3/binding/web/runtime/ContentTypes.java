@@ -54,4 +54,5 @@ public interface ContentTypes {
 
     String TEXT_PLAIN = "text/plain";
 
+    String DEFAULT = APPLICATION_JSON;
 }
