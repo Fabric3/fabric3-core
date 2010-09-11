@@ -51,14 +51,19 @@ public class WebBindingDefinition extends BindingDefinition {
     private static final QName BINDING_WEB = new QName(Namespaces.BINDING, "binding.web");
 
     private OperationsAllowed allowed;
+    private String wireFormat;
 
-    public WebBindingDefinition(String name, OperationsAllowed allowed) {
+    public WebBindingDefinition(String name, OperationsAllowed allowed, String wireFormat) {
         super(name, null, BINDING_WEB);
         this.allowed = allowed;
+        this.wireFormat = wireFormat;
     }
-
 
     public OperationsAllowed getAllowed() {
         return allowed;
+    }
+
+    public String getWireFormat() {
+        return wireFormat;
     }
 }

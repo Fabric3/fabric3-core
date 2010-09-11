@@ -78,7 +78,15 @@ public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
             }
         }
 
-        WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed);
+        String wireFormat = reader.getAttributeValue(null, "wireFormat");
+        if (wireFormat != null) {
+            if (!wireFormat.equalsIgnoreCase("json") || !wireFormat.equalsIgnoreCase("xml")) {
+                InvalidValue error = new InvalidValue("Invalid wire format: " + wireFormat, reader);
+                context.addError(error);
+            }
+        }
+
+        WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed, wireFormat);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return definition;
