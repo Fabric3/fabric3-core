@@ -48,7 +48,6 @@ import org.atmosphere.websocket.JettyWebSocketSupport;
 import org.eclipse.jetty.websocket.WebSocket;
 
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
-import org.fabric3.binding.web.runtime.common.ContentTypes;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -71,7 +70,6 @@ public class ServiceWebSocket implements WebSocket {
     private Broadcaster broadcaster;
     private String uuid;
 
-    private String contentType;
     private WebSocketProcessor webSocketProcessor;
 
     public ServiceWebSocket(InvocationChain chain,
@@ -84,10 +82,6 @@ public class ServiceWebSocket implements WebSocket {
         this.broadcastManager = broadcasterManager;
         this.request = request;
         this.servlet = servlet;
-        contentType = request.getHeader("Content-Type");
-        if (contentType == null) {
-            contentType = ContentTypes.DEFAULT;
-        }
     }
 
     public void onConnect(Outbound outbound) {
