@@ -45,6 +45,7 @@ package org.fabric3.binding.web.provision;
 
 import java.net.URI;
 
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
@@ -57,7 +58,8 @@ public class WebSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 5221631145909112099L;
     private ServiceContract contract;
 
-    public WebSourceDefinition(URI uri, ServiceContract contract) {
+    public WebSourceDefinition(URI uri, ServiceContract contract, DataType<?> type) {
+        super(type);
         setUri(uri);
         this.contract = contract;
     }

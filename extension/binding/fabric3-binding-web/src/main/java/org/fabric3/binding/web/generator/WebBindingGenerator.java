@@ -45,12 +45,14 @@ package org.fabric3.binding.web.generator;
 
 import java.net.URI;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.provision.WebTargetDefinition;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -58,6 +60,8 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.type.json.JsonType;
+import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.policy.EffectivePolicy;
 
 /**
@@ -67,13 +71,23 @@ import org.fabric3.spi.policy.EffectivePolicy;
  */
 @EagerInit
 public class WebBindingGenerator implements BindingGenerator<WebBindingDefinition> {
+    private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
 
     public PhysicalSourceDefinition generateSource(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
         URI uri = binding.getParent().getUri();
-        return new WebSourceDefinition(uri, contract);
+        String wireFormat = binding.getDefinition().getWireFormat();
+
+        DataType<?> dataType;
+        if ("xml".equalsIgnoreCase(wireFormat)) {
+            dataType = new XSDType(Object.class, XSD_ANY);
+        } else {
+            // default to JSON
+            dataType = new JsonType<Object>(String.class, Object.class);
+        }
+        return new WebSourceDefinition(uri, contract, dataType);
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
