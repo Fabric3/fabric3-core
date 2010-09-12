@@ -62,8 +62,8 @@ public class TransformerInterceptor implements Interceptor {
      *
      * @param inTransformer  the input parameter transformer
      * @param outTransformer the output parameter transformer
-     * @param inLoader       the input parameter classloader, i.e. the target service contributon classloader
-     * @param outLoader      the output parameter classloader, i.e. the source component contributon classloader
+     * @param inLoader       the input parameter classloader, i.e. the target service contribution classloader
+     * @param outLoader      the output parameter classloader, i.e. the source component contribution classloader
      */
     public TransformerInterceptor(Transformer<Object, Object> inTransformer,
                                   Transformer<Object, Object> outTransformer,
