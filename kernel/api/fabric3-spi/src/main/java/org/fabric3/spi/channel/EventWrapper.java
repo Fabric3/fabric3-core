@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.channel;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,7 +55,9 @@ import org.fabric3.model.type.contract.DataType;
  *
  * @version $Rev$ $Date$
  */
-public class EventWrapper {
+public class EventWrapper implements Serializable {
+    private static final long serialVersionUID = 7377714429939143568L;
+
     private DataType<?> defaultType;
     private final Object defaultEvent;
     private Map<DataType<?>, Object> cache;

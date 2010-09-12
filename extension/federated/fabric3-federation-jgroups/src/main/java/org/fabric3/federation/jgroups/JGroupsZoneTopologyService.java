@@ -37,15 +37,17 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
+import org.jgroups.Channel;
 import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelException;
 import org.jgroups.ChannelNotConnectedException;
@@ -88,7 +90,9 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.ControllerNotFoundException;
 import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.TopologyListener;
+import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
@@ -102,7 +106,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     private String zoneName = "default.zone";
     private Element channelConfig;
-    private Map<String, String> transportMetadata = new HashMap<String, String>();
     private JChannel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
     private Fabric3EventListener<RuntimeStop> stopListener;
@@ -111,6 +114,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private final Object viewLock = new Object();
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
+    private Map<String, String> transportMetadata = new ConcurrentHashMap<String, String>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
 
     private int state = NOT_UPDATED;
 
@@ -177,6 +182,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         Fabric3RequestHandler requestHandler = new Fabric3RequestHandler();
         ZoneMemberListener memberListener = new ZoneMemberListener();
         domainDispatcher = new MessageDispatcher(domainChannel, messageListener, memberListener, requestHandler);
+    }
+
+    public boolean supportsDynamicChannels() {
+        return true;
     }
 
     public void register(TopologyListener listener) {
@@ -264,6 +273,44 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             throw new ControllerNotFoundException("Controller could not be located");
         }
         sendAsync(controller, command);
+    }
+
+
+    public void openChannel(String name, String configuration, final MessageReceiver receiver) throws ZoneChannelException {
+        if (channels.containsKey(name)) {
+            throw new ZoneChannelException("Channel already open:" + name);
+        }
+        try {
+            final Channel channel = new JChannel();
+            channels.put(name, channel);
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver);
+            channel.setReceiver(delegatingReceiver);
+            channel.connect(name);
+        } catch (ChannelException e) {
+            throw new ZoneChannelException(e);
+        }
+    }
+
+    public void closeChannel(String name) throws ZoneChannelException {
+        Channel channel = channels.remove(name);
+        if (channel == null) {
+            throw new ZoneChannelException("Channel not found: " + name);
+        }
+        channel.close();
+    }
+
+    public void sendAsynchronous(String name, Serializable message) throws MessageException {
+        Channel channel = channels.get(name);
+        if (channel == null) {
+            throw new MessageException("Channel not found: " + name);
+        }
+        try {
+            channel.send(null, null, message);
+        } catch (ChannelNotConnectedException e) {
+            throw new MessageException(e);
+        } catch (ChannelClosedException e) {
+            throw new MessageException(e);
+        }
     }
 
     Fabric3EventListener<JoinDomain> getJoinListener() {
@@ -416,6 +463,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             if (domainChannel != null && domainChannel.isConnected()) {
                 domainChannel.disconnect();
                 domainChannel.close();
+            }
+            for (Channel channel : channels.values()) {
+                if (channel.isConnected()) {
+                    channel.disconnect();
+                    channel.close();
+                }
             }
         }
     }

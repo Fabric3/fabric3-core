@@ -37,14 +37,23 @@
 */
 package org.fabric3.spi.federation;
 
+import org.fabric3.host.Fabric3Exception;
+
 /**
  * @version $Rev$ $Date$
  */
-public class MessageTimeoutException extends MessageException {
-    private static final long serialVersionUID = -1705962954917886183L;
+public class ZoneChannelException extends Fabric3Exception {
+    private static final long serialVersionUID = -6557528031274360829L;
 
-    public MessageTimeoutException(String message, Throwable cause) {
+    public ZoneChannelException(String message) {
+        super(message);
+    }
+
+    public ZoneChannelException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    public ZoneChannelException(Throwable cause) {
+        super(cause);
+    }
 }

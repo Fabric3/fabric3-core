@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.federation;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.fabric3.spi.command.Command;
@@ -60,6 +61,21 @@ public interface ZoneTopologyService {
     String getRuntimeName();
 
     /**
+     * Returns true if the current runtime is the zone leader.
+     *
+     * @return true if the current runtime is the zone leader
+     */
+    boolean isZoneLeader();
+
+    /**
+     * Returns true if the group communications infrastructure supports creation of channels using {@link #openChannel(String, String,
+     * MessageReceiver)}.
+     *
+     * @return true if the group communications infrastructure supports creation of channels
+     */
+    boolean supportsDynamicChannels();
+
+    /**
      * Registers a transient {@link TopologyListener}.
      *
      * @param listener the listener
@@ -72,13 +88,6 @@ public interface ZoneTopologyService {
      * @param listener the listener
      */
     void deregister(TopologyListener listener);
-
-    /**
-     * Returns true if the current runtime is the zone leader.
-     *
-     * @return true if the current runtime is the zone leader
-     */
-    boolean isZoneLeader();
 
     /**
      * Returns true if the domain controller is available.
@@ -126,7 +135,7 @@ public interface ZoneTopologyService {
      * Sends a command synchronously to all runtimes in the zone.
      *
      * @param command the command
-     * @param timeout the timout to wait for responses
+     * @param timeout the timeout to wait for responses
      * @return the responses
      * @throws MessageException if an error occurs sending the message
      */
@@ -149,5 +158,32 @@ public interface ZoneTopologyService {
      * @throws MessageException if an error occurs sending the message
      */
     void sendAsynchronousToController(Command command) throws MessageException;
+
+    /**
+     * Opens a channel.
+     *
+     * @param name          the channel name
+     * @param configuration the channel configuration or null to use the default configuration
+     * @param receiver      the receiver to callback when a message is received
+     * @throws ZoneChannelException if an error occurs opening the channel
+     */
+    void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException;
+
+    /**
+     * Closes a channel.
+     *
+     * @param name the channel name
+     * @throws ZoneChannelException if an error occurs closing the channel
+     */
+    void closeChannel(String name) throws ZoneChannelException;
+
+    /**
+     * Asynchronously sends a message over the given channel.
+     *
+     * @param name    the channel name
+     * @param message the message
+     * @throws MessageException if there is an error sending the message
+     */
+    void sendAsynchronous(String name, Serializable message) throws MessageException;
 
 }

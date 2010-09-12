@@ -38,6 +38,7 @@
 package org.fabric3.runtime.weblogic.federation;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.List;
@@ -71,7 +72,9 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.TopologyListener;
+import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
@@ -142,16 +145,20 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         return runtimeName;
     }
 
+    public boolean isZoneLeader() {
+        return false;
+    }
+
+    public boolean supportsDynamicChannels() {
+        return false;
+    }
+
     public void register(TopologyListener listener) {
 
     }
 
     public void deregister(TopologyListener listener) {
 
-    }
-
-    public boolean isZoneLeader() {
-        return false;
     }
 
     public boolean isControllerAvailable() {
@@ -195,6 +202,21 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     }
 
     public void sendAsynchronousToController(Command command) throws MessageException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void closeChannel(String name) throws ZoneChannelException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void sendAsynchronous(String name, Serializable message) throws MessageException {
         throw new UnsupportedOperationException();
     }
 
