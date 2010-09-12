@@ -51,8 +51,8 @@ public interface ChannelPublisher extends EventStreamHandler {
      * Publish to a channel.
      *
      * @param wrapper the wrapped event
-     * @throws OperationException if an error occurs during publishing
+     * @throws PublishException if an error occurs during publishing
      */
-    public void publish(EventWrapper wrapper) throws OperationException;
+    public void publish(EventWrapper wrapper) throws PublishException;
 
 }

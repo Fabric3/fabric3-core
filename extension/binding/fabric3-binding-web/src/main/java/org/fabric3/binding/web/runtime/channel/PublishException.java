@@ -37,9 +37,26 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import org.fabric3.host.Fabric3Exception;
+
 /**
  * @version $Rev$ $Date$
  */
-public class OperationDeniedException extends OperationException {
-    private static final long serialVersionUID = -1089377329217256099L;
+public class PublishException extends Fabric3Exception {
+    private static final long serialVersionUID = 8846071494329846526L;
+
+    public PublishException() {
+    }
+
+    public PublishException(String message) {
+        super(message);
+    }
+
+    public PublishException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PublishException(Throwable cause) {
+        super(cause);
+    }
 }

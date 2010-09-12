@@ -37,35 +37,9 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
-
 /**
- * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
- * <p/>
- * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
- * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
- *
  * @version $Rev$ $Date$
  */
-public class ChannelPublisherImpl implements ChannelPublisher {
-    private EventStreamHandler next;
-
-    public void publish(EventWrapper wrapper) {
-        handle(wrapper);
-    }
-
-    public void handle(Object event) {
-        // pass the object to the head stream handler
-        next.handle(event);
-    }
-
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
-
+public class PublishDeniedException extends PublishException {
+    private static final long serialVersionUID = -1089377329217256099L;
 }

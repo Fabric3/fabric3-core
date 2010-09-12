@@ -49,8 +49,8 @@ import org.fabric3.spi.channel.EventStream;
  */
 public class DenyChannelSubscriber implements ChannelSubscriber {
 
-    public void subscribe(HttpServletRequest request) throws OperationDeniedException {
-        throw new OperationDeniedException();
+    public void subscribe(HttpServletRequest request) throws PublishDeniedException {
+        throw new PublishDeniedException();
     }
 
     public List<EventStream> getEventStreams() {

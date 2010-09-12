@@ -77,9 +77,9 @@ public class ChannelRouter extends HttpServlet {
         }
         try {
             subscriber.subscribe(request);
-        } catch (OperationDeniedException e) {
+        } catch (PublishDeniedException e) {
             response.setStatus(403);   // forbidden
-        } catch (OperationException e) {
+        } catch (PublishException e) {
             response.setStatus(500);
             // TODO log
         }
@@ -104,9 +104,9 @@ public class ChannelRouter extends HttpServlet {
             String data = read(stream, encoding);
             EventWrapper wrapper = ChannelUtils.createWrapper(contentType, data);
             publisher.publish(wrapper);
-        } catch (OperationDeniedException e) {
+        } catch (PublishDeniedException e) {
             response.setStatus(403);   // forbidden
-        } catch (OperationException e) {
+        } catch (PublishException e) {
             response.setStatus(500);
             // TODO log
         } catch (IOException e) {

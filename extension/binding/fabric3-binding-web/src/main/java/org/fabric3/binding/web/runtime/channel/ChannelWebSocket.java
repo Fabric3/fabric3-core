@@ -87,7 +87,7 @@ public class ChannelWebSocket implements WebSocket {
         try {
             EventWrapper wrapper = ChannelUtils.createWrapper(contentType, data);
             publisher.publish(wrapper);
-        } catch (OperationException e) {
+        } catch (PublishException e) {
             e.printStackTrace();
             // TODO monitor
         } catch (InvalidContentTypeException e) {

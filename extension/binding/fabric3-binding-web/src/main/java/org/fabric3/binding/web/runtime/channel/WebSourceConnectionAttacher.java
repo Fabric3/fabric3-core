@@ -60,6 +60,8 @@ import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.federation.ZoneChannelException;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -78,6 +80,8 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     private BroadcasterManager broadcasterManager;
     private PubSubManager pubSubManager;
     private ServletHost servletHost;
+    private ZoneTopologyService topologyService;
+
     private AtmosphereServlet gatewayServlet;
     private long timeout = 1000 * 10 * 60;
 
@@ -89,6 +93,11 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     /**
@@ -160,7 +169,15 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         }
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
-            ChannelPublisher publisher = new ChannelPublisherImpl();
+            String channelName = sourceUri.toString();
+            DefaultChannelPublisher publisher = new DefaultChannelPublisher(channelName, topologyService);
+            if (topologyService != null && topologyService.supportsDynamicChannels()) {
+                try {
+                    topologyService.openChannel(channelName, null, publisher);
+                } catch (ZoneChannelException e) {
+                    throw new ConnectionAttachException(e);
+                }
+            }
             channel.attach(publisher);
             pubSubManager.register(path, publisher);
         } else {
@@ -171,7 +188,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         // TODO monitor
     }
 
-    public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) {
+    public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         String path = null;
         gatewayServlet.removeAtmosphereHandler(path);
         OperationsAllowed allowed = source.getAllowed();
@@ -179,6 +196,13 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             pubSubManager.unsubscribe(path);
         } else {
             pubSubManager.unregisterPublisher(path);
+        }
+        if (topologyService != null && topologyService.supportsDynamicChannels()) {
+            try {
+                topologyService.closeChannel(source.getSourceUri().toString());
+            } catch (ZoneChannelException e) {
+                throw new ConnectionAttachException(e);
+            }
         }
     }
 

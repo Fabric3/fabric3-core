@@ -37,22 +37,53 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * Blocks publishing events to a channel.
+ * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
+ * <p/>
+ * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
+ * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
  *
  * @version $Rev$ $Date$
  */
-public class DenyChannelPublisher implements ChannelPublisher {
+public class DefaultChannelPublisher implements ChannelPublisher, MessageReceiver {
     private EventStreamHandler next;
+    private ZoneTopologyService topologyService;
+    private String channelName;
 
-    public void publish(EventWrapper wrapper) throws PublishDeniedException {
-        throw new PublishDeniedException();
+    /**
+     * Constructor.
+     *
+     * @param channelName
+     * @param topologyService the topology service for broadcasting events to other runtimes in the same zone. May be null, in which case events will
+     *                        not be clustered.
+     */
+    public DefaultChannelPublisher(String channelName, ZoneTopologyService topologyService) {
+        this.channelName = channelName;
+        this.topologyService = topologyService;
+    }
+
+    public void publish(EventWrapper wrapper) throws PublishException {
+        if (topologyService != null && topologyService.supportsDynamicChannels()) {
+            try {
+                topologyService.sendAsynchronous(channelName, wrapper);
+            } catch (MessageException e) {
+                throw new PublishException(e);
+            }
+        }
+        handle(wrapper);
     }
 
     public void handle(Object event) {
+        // pass the object to the head stream handler
+        next.handle(event);
     }
 
     public void setNext(EventStreamHandler next) {
@@ -63,4 +94,10 @@ public class DenyChannelPublisher implements ChannelPublisher {
         return next;
     }
 
+    public void onMessage(Object object) {
+        if (!(object instanceof EventWrapper)) {
+            throw new ServiceRuntimeException("Unexpected message type " + EventWrapper.class.getName());
+        }
+        handle(object);
+    }
 }

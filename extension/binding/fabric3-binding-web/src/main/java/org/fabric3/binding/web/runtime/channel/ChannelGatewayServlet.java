@@ -77,6 +77,10 @@ public class ChannelGatewayServlet extends AtmosphereServlet {
     protected WebSocket doWebSocketConnect(HttpServletRequest request, final String protocol) {
         String path = request.getPathInfo().substring(1);    // strip leading '/'
         ChannelPublisher publisher = pubSubManager.getPublisher(path);
+        if (publisher == null) {
+            // TODO return 404
+            throw new AssertionError("Path not found");
+        }
         return new ChannelWebSocket(this, publisher, request);
     }
 

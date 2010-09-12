@@ -55,7 +55,7 @@ public interface ChannelSubscriber extends ChannelConnection {
      * Perform the subscription
      *
      * @param request the HTTP request
-     * @throws OperationException if an error occurs subscribing
+     * @throws PublishException if an error occurs subscribing
      */
-    void subscribe(HttpServletRequest request) throws OperationException;
+    void subscribe(HttpServletRequest request) throws PublishException;
 }
