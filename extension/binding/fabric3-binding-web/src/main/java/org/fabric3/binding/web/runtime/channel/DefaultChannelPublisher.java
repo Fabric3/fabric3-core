@@ -61,7 +61,7 @@ public class DefaultChannelPublisher implements ChannelPublisher, MessageReceive
     /**
      * Constructor.
      *
-     * @param channelName
+     * @param channelName     the name of the channel the publisher sends messages to
      * @param topologyService the topology service for broadcasting events to other runtimes in the same zone. May be null, in which case events will
      *                        not be clustered.
      */
