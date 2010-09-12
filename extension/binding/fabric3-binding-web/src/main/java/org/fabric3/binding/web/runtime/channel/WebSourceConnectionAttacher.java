@@ -46,6 +46,7 @@ import org.atmosphere.handler.ReflectorServletProcessor;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
@@ -78,6 +79,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     private PubSubManager pubSubManager;
     private ServletHost servletHost;
     private AtmosphereServlet gatewayServlet;
+    private long timeout = 1000 * 10 * 60;
 
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
                                        @Reference BroadcasterManager broadcasterManager,
@@ -87,6 +89,16 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
+    }
+
+    /**
+     * Sets the client connection timeout
+     *
+     * @param timeout the timeout in milliseconds
+     */
+    @Property(required = false)
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     /**
@@ -138,7 +150,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             // create the subscriber responsible for broadcasting channel events to suspended clients
             Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path);
             EventStream stream = new BroadcasterEventStream(broadcaster);
-            ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream);
+            ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream, timeout);
             channel.subscribe(sourceUri, subscriber);
             pubSubManager.register(path, subscriber);
         } else {

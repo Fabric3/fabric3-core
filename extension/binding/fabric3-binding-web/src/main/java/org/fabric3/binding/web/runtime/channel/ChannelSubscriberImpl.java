@@ -54,10 +54,18 @@ import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
  * @version $Rev$ $Date$
  */
 public class ChannelSubscriberImpl implements ChannelSubscriber {
+    private long timeout;
     private List<EventStream> streams = new ArrayList<EventStream>();
 
-    public ChannelSubscriberImpl(EventStream stream) {
+    /**
+     * Constructor.
+     *
+     * @param stream  the event stream for the channel that is being subscribed to
+     * @param timeout the client connection timeout
+     */
+    public ChannelSubscriberImpl(EventStream stream, long timeout) {
         streams.add(stream);
+        this.timeout = timeout;
     }
 
     public void subscribe(HttpServletRequest request) {
@@ -66,7 +74,7 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
             throw new IllegalStateException("Web binding extension not properly configured");
         }
         // TODO fix timeout
-        resource.suspend(-1);
+        resource.suspend(timeout);
     }
 
     public List<EventStream> getEventStreams() {

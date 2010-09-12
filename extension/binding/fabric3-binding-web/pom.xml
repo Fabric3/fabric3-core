@@ -25,7 +25,7 @@
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-web</artifactId>
     <packaging>sca-contribution-jar</packaging>
-    <name>Fabric3 RESTful Web Binding Extension</name>
+    <name>Fabric3 Web Binding Extension</name>
     <description>Support for Comet and Websocket endpoints</description>
 
     <dependencies>

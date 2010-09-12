@@ -52,6 +52,16 @@ import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
  */
 public class ServiceRouter extends HttpServlet {
     private static final long serialVersionUID = -5280160176214956503L;
+    private long timeout;
+
+    /**
+     * Constructor.
+     *
+     * @param timeout the client connection timeout
+     */
+    public ServiceRouter(long timeout) {
+        this.timeout = timeout;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,7 +70,7 @@ public class ServiceRouter extends HttpServlet {
             throw new IllegalStateException("Web binding extension not properly configured");
         }
         // TODO fix timeout
-        resource.suspend(-1);
+        resource.suspend(timeout);
     }
 
     @Override

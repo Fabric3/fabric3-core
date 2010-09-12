@@ -44,6 +44,7 @@ import org.atmosphere.handler.ReflectorServletProcessor;
 import org.oasisopen.sca.annotation.Reference;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
@@ -70,6 +71,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
     private ServiceManager serviceManager;
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
+    private long timeout = 1000 * 10 * 60;
 
     public WebSourceWireAttacher(@Reference ServiceManager serviceManager,
                                  @Reference BroadcasterManager broadcasterManager,
@@ -77,6 +79,16 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         this.broadcasterManager = broadcasterManager;
         this.serviceManager = serviceManager;
         this.servletHost = servletHost;
+    }
+
+    /**
+     * Sets the client connection timeout
+     *
+     * @param timeout the timeout in milliseconds
+     */
+    @Property(required = false)
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     @Init
@@ -92,7 +104,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         ServiceGatewayServlet gatewayServlet = new ServiceGatewayServlet(serviceManager, broadcasterManager, servletHost);
         gatewayServlet.init(config);
 
-        ServiceRouter router = new ServiceRouter();
+        ServiceRouter router = new ServiceRouter(timeout);
 
         ReflectorServletProcessor processor = new ReflectorServletProcessor();
         processor.setServlet(router);

@@ -42,14 +42,16 @@ Public License. See the accompanying license file for details.
 
     <component name="WebBindingSourceWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
-    </component>
-
-    <component name="WebTargetWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
+        <property name="timeout" source="$systemConfig//web.binding/@timeout" />
     </component>
 
     <component name="WebBindingSourceConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebSourceConnectionAttacher"/>
+        <property name="timeout" source="$systemConfig//web.binding/@timeout" />
+    </component>
+
+    <component name="WebTargetWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
     </component>
 
 </composite>
