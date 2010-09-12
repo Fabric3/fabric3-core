@@ -52,7 +52,15 @@ public interface BroadcasterManager {
      * @param path the path
      * @return the Broadcaster
      */
-    Broadcaster get(String path);
+    Broadcaster getChannelBroadcaster(String path);
+
+    /**
+     * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
+     *
+     * @param path the path
+     * @return the Broadcaster
+     */
+    Broadcaster getServiceBroadcaster(String path);
 
     /**
      * Disposes a Broadcaster for the HTTP URL path.

@@ -136,7 +136,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         OperationsAllowed allowed = source.getAllowed();
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
-            Broadcaster broadcaster = broadcasterManager.get(path);
+            Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path);
             EventStream stream = new BroadcasterEventStream(broadcaster);
             ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream);
             channel.subscribe(sourceUri, subscriber);

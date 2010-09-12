@@ -56,6 +56,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -72,6 +73,8 @@ import org.fabric3.spi.policy.EffectivePolicy;
 @EagerInit
 public class WebBindingGenerator implements BindingGenerator<WebBindingDefinition> {
     private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
+    private static final DataType<?> XSD_TYPE = new XSDType(Object.class, XSD_ANY);
+    private static final DataType<?> JSON_TYPE = new JsonType<Object>(String.class, Object.class);
 
     public PhysicalSourceDefinition generateSource(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
@@ -80,16 +83,9 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         URI uri = binding.getParent().getUri();
         String wireFormat = binding.getDefinition().getWireFormat();
 
-        DataType<?> dataType;
-        if ("xml".equalsIgnoreCase(wireFormat)) {
-            dataType = new XSDType(Object.class, XSD_ANY);
-        } else {
-            // default to JSON
-            dataType = new JsonType<Object>(String.class, Object.class);
-        }
+        DataType<?> dataType = getDataType(wireFormat);
         return new WebSourceDefinition(uri, contract, dataType);
     }
-
     public PhysicalTargetDefinition generateTarget(LogicalBinding<WebBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
@@ -97,7 +93,13 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
         if (!binding.isCallback()) {
             throw new UnsupportedOperationException("The web binding not supported on references");
         }
-        return new WebTargetDefinition(binding.getParent().getUri(), contract);
+        Bindable service = binding.getParent();
+        String wireFormat = binding.getDefinition().getWireFormat();
+        if (wireFormat == null) {
+            wireFormat = introspectWireFormat(service);
+        }
+        DataType<?> dataType = getDataType(wireFormat);
+        return new WebTargetDefinition(service.getUri(), contract, dataType);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WebBindingDefinition> binding,
@@ -106,4 +108,36 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
                                                                  EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException("The web binding not supported on references");
     }
+
+    private String introspectWireFormat(Bindable service) throws GenerationException {
+        String wireFormat = null;
+        boolean found = false;
+        // use wire format from the forward binding on the service
+        for (LogicalBinding<?> forwardBinding : service.getBindings()) {
+            if (forwardBinding.getDefinition() instanceof WebBindingDefinition) {
+                WebBindingDefinition definition = (WebBindingDefinition) forwardBinding.getDefinition();
+                wireFormat = definition.getWireFormat();
+                if (found && wireFormat != null) {
+                    URI uri = service.getUri();
+                    throw new GenerationException("Multiple web bindings configured on service. The wire format must be explicitly set:" + uri);
+                }
+                if (wireFormat != null) {
+                    found = true;
+                }
+            }
+
+        }
+        return (wireFormat == null) ? "json" : wireFormat;
+    }
+
+
+    private DataType<?> getDataType(String wireFormat) {
+        if ("xml".equalsIgnoreCase(wireFormat)) {
+            return XSD_TYPE;
+        } else {
+            // default to JSON
+            return JSON_TYPE;
+        }
+    }
+
 }

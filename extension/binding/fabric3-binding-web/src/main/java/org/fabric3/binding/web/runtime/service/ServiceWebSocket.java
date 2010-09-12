@@ -87,7 +87,7 @@ public class ServiceWebSocket implements WebSocket {
     public void onConnect(Outbound outbound) {
         // Create a broadcaster unique to the client
         uuid = UUID.randomUUID().toString();
-        broadcaster = broadcastManager.get(uuid);
+        broadcaster = broadcastManager.getServiceBroadcaster(uuid);
         JettyWebSocketSupport support = new JettyWebSocketSupport(outbound);
         webSocketProcessor = new WebSocketProcessor(servlet, support);
         try {

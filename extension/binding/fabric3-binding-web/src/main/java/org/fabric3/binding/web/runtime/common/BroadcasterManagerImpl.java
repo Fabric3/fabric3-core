@@ -47,7 +47,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.web.runtime.channel.ChannelBroadcaster;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformationException;
@@ -71,11 +70,21 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
         this.registry = registry;
     }
 
-    public Broadcaster get(String path) {
+    public Broadcaster getChannelBroadcaster(String path) {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
             initializeTransformer();
             broadcaster = new ChannelBroadcaster(path, jsonTransformer, registry);
+            broadcasters.put(path, broadcaster);
+        }
+        return broadcaster;
+    }
+
+    public Broadcaster getServiceBroadcaster(String path) {
+        Broadcaster broadcaster = broadcasters.get(path);
+        if (broadcaster == null) {
+            initializeTransformer();
+            broadcaster = new ServiceBroadcaster(path);
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;
