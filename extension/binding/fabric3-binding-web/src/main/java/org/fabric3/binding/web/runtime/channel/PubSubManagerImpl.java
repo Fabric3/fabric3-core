@@ -60,7 +60,7 @@ public class PubSubManagerImpl implements PubSubManager {
         publishers.remove(path);
     }
 
-    public void unsubscribe(String path) {
+    public void unregisterSubscriber(String path) {
         subscribers.remove(path);
     }
 

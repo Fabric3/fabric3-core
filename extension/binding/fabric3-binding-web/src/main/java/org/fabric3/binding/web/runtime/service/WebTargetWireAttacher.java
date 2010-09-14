@@ -70,7 +70,7 @@ public class WebTargetWireAttacher implements TargetWireAttacher<WebTargetDefini
     }
 
     public void detach(PhysicalSourceDefinition source, WebTargetDefinition target) throws WiringException {
-        // TODO implement
+        // no-op
     }
 
     public ObjectFactory<?> createObjectFactory(WebTargetDefinition target) throws WiringException {

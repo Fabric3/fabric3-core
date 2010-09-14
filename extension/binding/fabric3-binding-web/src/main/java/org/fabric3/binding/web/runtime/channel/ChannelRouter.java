@@ -62,9 +62,11 @@ public class ChannelRouter extends HttpServlet {
     private static final String ISO_8859_1 = "ISO-8859-1";
 
     private PubSubManager pubSubManager;
+    private ChannelMonitor monitor;
 
-    public ChannelRouter(PubSubManager pubSubManager) {
+    public ChannelRouter(PubSubManager pubSubManager, ChannelMonitor monitor) {
         this.pubSubManager = pubSubManager;
+        this.monitor = monitor;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class ChannelRouter extends HttpServlet {
             response.setStatus(403);   // forbidden
         } catch (PublishException e) {
             response.setStatus(500);
-            // TODO log
+            monitor.error(e);
         }
     }
 
@@ -108,13 +110,13 @@ public class ChannelRouter extends HttpServlet {
             response.setStatus(403);   // forbidden
         } catch (PublishException e) {
             response.setStatus(500);
-            // TODO log
+            monitor.error(e);
         } catch (IOException e) {
             response.setStatus(500);
-            // TODO log
+            monitor.error(e);
         } catch (InvalidContentTypeException e) {
             response.setStatus(400);
-            // TODO log
+            monitor.error(e);
         }
     }
 

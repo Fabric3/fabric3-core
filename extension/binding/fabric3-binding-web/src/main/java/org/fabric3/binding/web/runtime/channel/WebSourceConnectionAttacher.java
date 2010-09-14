@@ -49,6 +49,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
@@ -84,15 +85,18 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
     private AtmosphereServlet gatewayServlet;
     private long timeout = 1000 * 10 * 60;
+    private ChannelMonitor monitor;
 
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
                                        @Reference BroadcasterManager broadcasterManager,
                                        @Reference PubSubManager pubSubManager,
-                                       @Reference ServletHost servletHost) {
+                                       @Reference ServletHost servletHost,
+                                       @Monitor ChannelMonitor monitor) {
         this.channelManager = channelManager;
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
+        this.monitor = monitor;
     }
 
     @Reference(required = false)
@@ -129,7 +133,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         gatewayServlet = new ChannelGatewayServlet(servletHost, pubSubManager);
         gatewayServlet.init(config);
 
-        ChannelRouter router = new ChannelRouter(pubSubManager);
+        ChannelRouter router = new ChannelRouter(pubSubManager, monitor);
 
         ReflectorServletProcessor processor = new ReflectorServletProcessor();
         processor.setServlet(router);
@@ -148,13 +152,12 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
         URI sourceUri = source.getSourceUri();
-        Channel channel = channelManager.getChannel(sourceUri);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + sourceUri);
-        }
+        Channel channel = getChannel(sourceUri);
 
         String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = source.getAllowed();
+
+        // setup the subscriber infrastructure
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
             Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path);
@@ -163,10 +166,11 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             channel.subscribe(sourceUri, subscriber);
             pubSubManager.register(path, subscriber);
         } else {
-            // not allowed to subscribe
+            // clients are not not allowed to subscribe
             DenyChannelSubscriber subscriber = new DenyChannelSubscriber();
             pubSubManager.register(path, subscriber);
         }
+
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
             String channelName = sourceUri.toString();
@@ -181,29 +185,51 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             channel.attach(publisher);
             pubSubManager.register(path, publisher);
         } else {
-            // not allowed to publish
+            // clients are not allowed to publish to the channel
             DenyChannelPublisher publisher = new DenyChannelPublisher();
             pubSubManager.register(path, publisher);
         }
-        // TODO monitor
+        String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
+        monitor.provisionedChannelEndpoint(prefix + path);
     }
 
     public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        String path = null;
-        gatewayServlet.removeAtmosphereHandler(path);
+        URI sourceUri = source.getSourceUri();
+        Channel channel = getChannel(sourceUri);
+
+        String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = source.getAllowed();
-        if (OperationsAllowed.SUBSCRIBE == allowed) {
-            pubSubManager.unsubscribe(path);
+
+        //   remove the subscriber infrastructure
+        if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
+            pubSubManager.unregisterSubscriber(path);
+            channel.unsubscribe(sourceUri);
+            broadcasterManager.remove(path);
         } else {
             pubSubManager.unregisterPublisher(path);
         }
-        if (topologyService != null && topologyService.supportsDynamicChannels()) {
-            try {
-                topologyService.closeChannel(source.getSourceUri().toString());
-            } catch (ZoneChannelException e) {
-                throw new ConnectionAttachException(e);
+
+        // detach publisher and close cluster channel
+        pubSubManager.unregisterPublisher(path);
+        if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
+            if (topologyService != null && topologyService.supportsDynamicChannels()) {
+                try {
+                    topologyService.closeChannel(source.getSourceUri().toString());
+                } catch (ZoneChannelException e) {
+                    throw new ConnectionAttachException(e);
+                }
             }
         }
+        String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
+        monitor.removedChannelEndpoint(prefix + path);
+    }
+
+    private Channel getChannel(URI sourceUri) throws ChannelNotFoundException {
+        Channel channel = channelManager.getChannel(sourceUri);
+        if (channel == null) {
+            throw new ChannelNotFoundException("Channel not found: " + sourceUri);
+        }
+        return channel;
     }
 
 }

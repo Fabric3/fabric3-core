@@ -99,7 +99,7 @@ public class WebBindingGenerator implements BindingGenerator<WebBindingDefinitio
             wireFormat = introspectWireFormat(service);
         }
         DataType<?> dataType = getDataType(wireFormat);
-        return new WebTargetDefinition(service.getUri(), contract, dataType);
+        return new WebTargetDefinition(service.getUri(), dataType);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WebBindingDefinition> binding,

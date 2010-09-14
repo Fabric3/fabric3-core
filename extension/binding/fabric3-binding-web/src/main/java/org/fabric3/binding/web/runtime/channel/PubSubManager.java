@@ -72,7 +72,7 @@ public interface PubSubManager {
      *
      * @param path the relative path of the channel the subscriber listens to.
      */
-    void unsubscribe(String path);
+    void unregisterSubscriber(String path);
 
     /**
      * Returns the publisher for the given channel.

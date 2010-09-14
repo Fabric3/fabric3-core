@@ -42,10 +42,12 @@ import javax.servlet.ServletException;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.handler.ReflectorServletProcessor;
 import org.oasisopen.sca.annotation.Reference;
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
@@ -72,13 +74,17 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
     private long timeout = 1000 * 10 * 60;
+    private ServiceGatewayServlet gatewayServlet;
+    private ServiceMonitor monitor;
 
     public WebSourceWireAttacher(@Reference ServiceManager serviceManager,
                                  @Reference BroadcasterManager broadcasterManager,
-                                 @Reference ServletHost servletHost) {
+                                 @Reference ServletHost servletHost,
+                                 @Monitor ServiceMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.serviceManager = serviceManager;
         this.servletHost = servletHost;
+        this.monitor = monitor;
     }
 
     /**
@@ -101,7 +107,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
 
         GatewayServletConfig config = new GatewayServletConfig(context);
 
-        ServiceGatewayServlet gatewayServlet = new ServiceGatewayServlet(serviceManager, broadcasterManager, servletHost);
+        gatewayServlet = new ServiceGatewayServlet(serviceManager, broadcasterManager, servletHost, monitor);
         gatewayServlet.init(config);
 
         ServiceRouter router = new ServiceRouter(timeout);
@@ -114,22 +120,32 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
     }
 
+    @Destroy
+    public void destroy() {
+        servletHost.unregisterMapping(CONTEXT_PATH);
+        gatewayServlet.destroy();
+    }
+
     public void attach(WebSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
+        String path = getPath(source);
         if (wire.getInvocationChains().size() != 1) {
             // the websocket binding only supports service contracts with one operation
             throw new IllegalArgumentException("Invalid wire size");
         }
-        String path = source.getUri().getPath().substring(1); // strip leading "/"
         InvocationChain chain = wire.getInvocationChains().get(0);
 
         // use the service URI as the callback id
         String callbackUri = source.getUri().toString();
         serviceManager.register(path, chain, callbackUri);
+        String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
+        monitor.provisionedEndpoint(prefix + path);
     }
 
     public void detach(WebSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        String path = source.getUri().getPath().substring(1); // strip leading "/"
+        String path = getPath(source);
         serviceManager.unregister(path);
+        String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
+        monitor.removedEndpoint(prefix + path);
     }
 
     public void attachObjectFactory(WebSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {
@@ -139,4 +155,15 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
     public void detachObjectFactory(WebSourceDefinition source, PhysicalTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Returns the service path by stripping the leading '/'.
+     *
+     * @param source the source metadata
+     * @return the path
+     */
+    private String getPath(WebSourceDefinition source) {
+        return source.getUri().getPath().substring(1);
+    }
+
 }

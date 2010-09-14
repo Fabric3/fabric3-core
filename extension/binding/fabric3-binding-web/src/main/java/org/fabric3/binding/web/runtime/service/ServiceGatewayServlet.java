@@ -59,11 +59,16 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
     private ServiceManager serviceManager;
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
+    private ServiceMonitor monitor;
 
-    public ServiceGatewayServlet(ServiceManager serviceManager, BroadcasterManager broadcasterManager, ServletHost servletHost) {
+    public ServiceGatewayServlet(ServiceManager serviceManager,
+                                 BroadcasterManager broadcasterManager,
+                                 ServletHost servletHost,
+                                 ServiceMonitor monitor) {
         this.serviceManager = serviceManager;
         this.broadcasterManager = broadcasterManager;
         this.servletHost = servletHost;
+        this.monitor = monitor;
     }
 
     @Override
@@ -80,7 +85,7 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
     protected WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
         String path = request.getPathInfo().substring(1);    // strip leading '/'
         ChainPair pair = serviceManager.get(path);
-        return new ServiceWebSocket(pair.getChain(), pair.getCallbackUri(), broadcasterManager, request, this);
+        return new ServiceWebSocket(pair.getChain(), pair.getCallbackUri(), broadcasterManager, request, this, monitor);
     }
 
 

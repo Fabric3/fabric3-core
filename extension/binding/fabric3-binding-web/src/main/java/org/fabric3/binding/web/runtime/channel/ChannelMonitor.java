@@ -35,46 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime.service;
+package org.fabric3.binding.web.runtime.channel;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.atmosphere.cpr.AtmosphereResource;
-
-import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceRouter extends HttpServlet {
-    private static final long serialVersionUID = -5280160176214956503L;
-    private long timeout;
+public interface ChannelMonitor {
 
-    /**
-     * Constructor.
-     *
-     * @param timeout the client connection timeout
-     */
-    public ServiceRouter(long timeout) {
-        this.timeout = timeout;
-    }
+    @Info
+    void provisionedChannelEndpoint(String path);
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
-        if (resource == null) {
-            throw new IllegalStateException("Web binding extension not properly configured");
-        }
-        resource.suspend(timeout);
-    }
+    @Info
+    void removedChannelEndpoint(String path);
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(500);
-    }
+    @Severe
+    void error(Throwable t);
 
 }

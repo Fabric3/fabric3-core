@@ -73,7 +73,6 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
         if (resource == null) {
             throw new IllegalStateException("Web binding extension not properly configured");
         }
-        // TODO fix timeout
         resource.suspend(timeout);
     }
 

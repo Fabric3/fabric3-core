@@ -56,15 +56,10 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 public class WebTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 5975064272932161181L;
-    private ServiceContract contract;
 
-    public WebTargetDefinition(URI uri, ServiceContract contract, DataType<?> type) {
+    public WebTargetDefinition(URI uri, DataType<?> type) {
         super(type);
         setUri(uri);
-        this.contract = contract;
     }
 
-    public ServiceContract getContract() {
-        return contract;
-    }
 }

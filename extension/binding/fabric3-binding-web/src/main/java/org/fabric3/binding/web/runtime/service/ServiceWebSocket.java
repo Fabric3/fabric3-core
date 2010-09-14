@@ -71,17 +71,20 @@ public class ServiceWebSocket implements WebSocket {
     private String uuid;
 
     private WebSocketProcessor webSocketProcessor;
+    private ServiceMonitor monitor;
 
     public ServiceWebSocket(InvocationChain chain,
                             String callbackUri,
                             BroadcasterManager broadcasterManager,
                             HttpServletRequest request,
-                            AtmosphereServlet servlet) {
+                            AtmosphereServlet servlet,
+                            ServiceMonitor monitor) {
         this.chain = chain;
         this.callbackUri = callbackUri;
         this.broadcastManager = broadcasterManager;
         this.request = request;
         this.servlet = servlet;
+        this.monitor = monitor;
     }
 
     public void onConnect(Outbound outbound) {
@@ -94,7 +97,7 @@ public class ServiceWebSocket implements WebSocket {
             request.setAttribute(FABRIC3_BROADCASTER, broadcaster);
             webSocketProcessor.connect(request);
         } catch (IOException e) {
-            // TODO monitor failure
+            monitor.error(e);
         }
     }
 
