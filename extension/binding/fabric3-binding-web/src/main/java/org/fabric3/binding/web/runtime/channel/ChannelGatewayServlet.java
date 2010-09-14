@@ -84,5 +84,16 @@ public class ChannelGatewayServlet extends AtmosphereServlet {
         return new ChannelWebSocket(this, publisher, request);
     }
 
-
+    @Override
+    public void destroy() {
+        // avoid class not found exception thrown by atmosphere
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            ClassLoader loader = getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(loader);
+            super.destroy();
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
 }

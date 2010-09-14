@@ -88,5 +88,17 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
         return new ServiceWebSocket(pair.getChain(), pair.getCallbackUri(), broadcasterManager, request, this, monitor);
     }
 
+    @Override
+    public void destroy() {
+        // avoid class not found exception thrown by atmosphere
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            ClassLoader loader = getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(loader);
+            super.destroy();
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
 
 }
