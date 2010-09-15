@@ -48,6 +48,7 @@ import org.atmosphere.websocket.JettyWebSocketSupport;
 import org.eclipse.jetty.websocket.WebSocket;
 
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
+import org.fabric3.binding.web.runtime.common.ClosedAwareJettyWebSocketSupport;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -91,7 +92,7 @@ public class ServiceWebSocket implements WebSocket {
         // Create a broadcaster unique to the client
         uuid = UUID.randomUUID().toString();
         broadcaster = broadcastManager.getServiceBroadcaster(uuid);
-        JettyWebSocketSupport support = new JettyWebSocketSupport(outbound);
+        JettyWebSocketSupport support = new ClosedAwareJettyWebSocketSupport(outbound);
         webSocketProcessor = new WebSocketProcessor(servlet, support);
         try {
             request.setAttribute(FABRIC3_BROADCASTER, broadcaster);

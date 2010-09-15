@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
+import org.fabric3.binding.web.runtime.common.ContentTypes;
 import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.channel.EventWrapper;
@@ -50,6 +51,7 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_JSON;
 import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XHTML_XML;
 import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_XML;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_PLAIN;
 import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_XML;
 
 /**
@@ -66,7 +68,7 @@ public final class ChannelUtils {
             throw new ServiceRuntimeException("No content type specified: " + contentType);
         } else if (contentType.contains(APPLICATION_XML) || contentType.contains(APPLICATION_XHTML_XML) || contentType.contains(TEXT_XML)) {
             eventType = XML;
-        } else if (contentType.contains(APPLICATION_JSON)) {
+        } else if (contentType.contains(APPLICATION_JSON) ||contentType.contains(TEXT_PLAIN) ) {
             eventType = JSON;
         } else {
             throw new InvalidContentTypeException("Unknown content type: " + contentType);
