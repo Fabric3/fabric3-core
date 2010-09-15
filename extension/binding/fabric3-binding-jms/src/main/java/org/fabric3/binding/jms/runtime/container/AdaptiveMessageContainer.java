@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -125,6 +126,7 @@ public class AdaptiveMessageContainer {
     private Set<MessageReceiver> receivers = new HashSet<MessageReceiver>();
     private List<Runnable> pausedWork = new LinkedList<Runnable>();
 
+    private URI listenerUri;
     private ExecutorService executorService;
     private TransactionManager tm;
 
@@ -134,25 +136,31 @@ public class AdaptiveMessageContainer {
     /**
      * Constructor. Creates a new container for receiving messages from a destination and dispatching them to a MessageListener.
      *
-     * @param destination       the destination
-     * @param listener          the message listener
-     * @param connectionFactory the connection factory to use for creating JMS resources
-     * @param executorService   the work scheduler to schedule message receivers
-     * @param tm                the JTA transaction manager for transacted messaging
-     * @param monitor           the monitor for reporting events and errors
+     * @param listenerUri        the listener URI, typically a service or consumer
+     * @param destination        the destination
+     * @param listener           the message listener
+     * @param connectionFactory  the connection factory to use for creating JMS resources
+     * @param executorService    the work scheduler to schedule message receivers
+     * @param tm                 the JTA transaction manager for transacted messaging
+     * @param transactionTimeout the transaction timeout
+     * @param monitor            the monitor for reporting events and errors
      */
-    public AdaptiveMessageContainer(Destination destination,
+    public AdaptiveMessageContainer(URI listenerUri,
+                                    Destination destination,
                                     MessageListener listener,
                                     ConnectionFactory connectionFactory,
                                     ExecutorService executorService,
                                     TransactionManager tm,
+                                    int transactionTimeout,
                                     MessageContainerMonitor monitor) {
+        this.listenerUri = listenerUri;
         this.executorService = executorService;
         this.destination = destination;
         this.messageListener = listener;
         this.durableSubscriptionName = listener.getClass().getName();
         this.connectionFactory = connectionFactory;
         this.tm = tm;
+        this.transactionTimeout = transactionTimeout;
         this.monitor = monitor;
     }
 
@@ -163,6 +171,16 @@ public class AdaptiveMessageContainer {
      */
     public void setLocalDelivery(boolean localDelivery) {
         this.localDelivery = localDelivery;
+    }
+
+    @ManagementOperation(description = "The transaction timeout value")
+    public int getTransactionTimeout() {
+        return transactionTimeout;
+    }
+
+    @ManagementOperation(description = "The transaction timeout value")
+    public void setTransactionTimeout(int transactionTimeout) {
+        this.transactionTimeout = transactionTimeout;
     }
 
     /**
@@ -756,7 +774,7 @@ public class AdaptiveMessageContainer {
                 }
             }
         } catch (Exception e) {
-            monitor.error("Error stopping connection", e);
+            monitor.error("Error stopping connection for" + listenerUri, e);
         }
     }
 
@@ -775,7 +793,7 @@ public class AdaptiveMessageContainer {
                 }
                 break;
             } catch (Exception e) {
-                monitor.error("Error refreshing connection for destination: " + destination, e);
+                monitor.error("Error refreshing connection for destination " + destination + " for " + listenerUri, e);
             }
             // wait and try again
             sleep();
@@ -794,7 +812,7 @@ public class AdaptiveMessageContainer {
                 exceptionListener.onException((JMSException) e);
             }
         }
-        monitor.error("Listener threw an exception", e);
+        monitor.error("Listener threw an exception for " + listenerUri, e);
     }
 
     /**
@@ -886,17 +904,17 @@ public class AdaptiveMessageContainer {
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         } catch (IllegalStateException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         } catch (SecurityException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         } catch (HeuristicMixedException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         } catch (HeuristicRollbackException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         } catch (RollbackException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error handling message for " + listenerUri, e);
         }
     }
 
@@ -912,7 +930,7 @@ public class AdaptiveMessageContainer {
                 statistics.incrementTransactionsRolledBack();
             }
         } catch (SystemException e) {
-            throw new TransactionException(e);
+            throw new TransactionException("Error reverting transaction for " + listenerUri, e);
         }
     }
 
@@ -1030,9 +1048,9 @@ public class AdaptiveMessageContainer {
                 } else if (isRunning()) {
                     int nonPausedReceivers = getReceiverCount() - getPausedReceiversCount();
                     if (nonPausedReceivers < 1) {
-                        monitor.errorMessage("All receivers are paused, possibly as a result of rejected work.");
+                        monitor.errorMessage("All receivers are paused, possibly as a result of rejected work for " + listenerUri);
                     } else if (nonPausedReceivers < getMinReceivers()) {
-                        monitor.errorMessage("The number is below the minimum threshold, possibly as a result of rejected work.");
+                        monitor.errorMessage("The number is below the minimum threshold, possibly as a result of rejected work for " + listenerUri);
                     }
                 }
             }
@@ -1060,7 +1078,7 @@ public class AdaptiveMessageContainer {
                         boolean waiting = false;
                         while ((active = isInitialized()) && !isRunning()) {
                             if (interrupted) {
-                                throw new IllegalStateException("Interrupted while waiting for restart");
+                                throw new IllegalStateException("Interrupted while waiting for restart for " + listenerUri);
                             }
                             if (!isRunning()) {
                                 return false;
@@ -1118,10 +1136,9 @@ public class AdaptiveMessageContainer {
          * Waits to receive a message and invokes the listener within the context of a global transaction.
          *
          * @return true if a message was received
-         * @throws JMSException         if an exception occured during the receive
          * @throws TransactionException if an exception starting, committing, or rolling back a transaction occured
          */
-        private boolean jtaReceiveMessage() throws JMSException, TransactionException {
+        private boolean jtaReceiveMessage() throws TransactionException {
 
             try {
                 int status = tm.getStatus();
@@ -1130,6 +1147,8 @@ public class AdaptiveMessageContainer {
                     // this should always be true
                     tm.begin();
                     begun = true;
+                } else {
+                    monitor.errorMessage("No transaction for " + listenerUri);
                 }
                 boolean received;
                 received = receive();
@@ -1138,18 +1157,18 @@ public class AdaptiveMessageContainer {
                 }
                 return received;
             } catch (JMSException e) {
-                monitor.error("Error receiving message", e);
+                monitor.error("Error receiving message for " + listenerUri, e);
                 globalRollback();
             } catch (RuntimeException e) {
-                monitor.error("Error receiving message", e);
+                monitor.error("Error receiving message for " + listenerUri, e);
                 globalRollback();
             } catch (Error e) {
-                monitor.error("Error receiving message", e);
+                monitor.error("Error receiving message  for " + listenerUri, e);
                 globalRollback();
             } catch (SystemException e) {
-                throw new TransactionException(e);
+                throw new TransactionException("Error receiving message for " + listenerUri, e);
             } catch (NotSupportedException e) {
-                throw new TransactionException(e);
+                throw new TransactionException("Error receiving message for " + listenerUri, e);
             }
             return false;
         }
@@ -1192,7 +1211,7 @@ public class AdaptiveMessageContainer {
                     try {
                         tm.setTransactionTimeout(transactionTimeout);
                     } catch (SystemException e) {
-                        monitor.error("Error setting transaction timeout", e);
+                        monitor.error("Error setting transaction timeout for " + listenerUri, e);
                         return false;
                     }
                 }
@@ -1205,7 +1224,7 @@ public class AdaptiveMessageContainer {
                             try {
                                 tm.rollback();
                             } catch (SystemException e) {
-                                monitor.error("Error setting rollback", e);
+                                monitor.error("Error setting rollback for " + listenerUri, e);
                             }
                         } else {
                             localRollback(session);

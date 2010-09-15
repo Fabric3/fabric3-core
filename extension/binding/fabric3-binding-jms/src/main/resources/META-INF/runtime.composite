@@ -18,6 +18,7 @@ licensed under the Apache 2.0 license.
 
     <component name="JmsHost" f3-core:key="jms">
         <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.host.JmsHostImpl"/>
+        <property name="transactionTimeout" source="$systemConfig//jms/@transaction.timeout"/>
     </component>
 
     <component name="JmsSourceWireAttacher" f3-core:key="org.fabric3.binding.jms.spi.provision.JmsSourceDefinition">

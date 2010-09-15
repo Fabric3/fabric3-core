@@ -49,6 +49,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.transaction.TransactionManager;
 
+import org.oasisopen.sca.annotation.Property;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -83,6 +84,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     private MessageContainerMonitor containerMonitor;
     private ManagementService managementService;
     private HostMonitor monitor;
+    private int transactionTimeout;
 
     public JmsHostImpl(@Reference EventService eventService,
                        @Reference ExecutorService executorService,
@@ -96,6 +98,11 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         this.managementService = managementService;
         this.containerMonitor = containerMonitor;
         this.monitor = monitor;
+    }
+
+    @Property(required = false)
+    public void setTransactionTimeout(int transactionTimeout) {
+        this.transactionTimeout = transactionTimeout;
     }
 
     @Init
@@ -164,8 +171,9 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         MessageListener listener = configuration.getMessageListener();
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
-        URI serviceUri = configuration.getUri();
-        AdaptiveMessageContainer container = new AdaptiveMessageContainer(destination, listener, factory, executorService, tm, containerMonitor);
+        URI uri = configuration.getUri();
+        AdaptiveMessageContainer container =
+                new AdaptiveMessageContainer(uri, destination, listener, factory, executorService, tm, transactionTimeout, containerMonitor);
         if (TransactionType.GLOBAL == type) {
             container.setTransactionTypeProperty(TransactionType.GLOBAL);
             container.setAcknowledgeModeProperty(Session.AUTO_ACKNOWLEDGE);
@@ -185,17 +193,17 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
 //        container.setDurable();
 //        container.setDurableSubscriptionName();
 //        container.setLocalDelivery();
-        containers.put(serviceUri, container);
+        containers.put(uri, container);
 
         try {
-            String encoded = encode(serviceUri);
-            managementService.export(serviceUri.getFragment(), encoded, "JMS message container", container);
+            String encoded = encode(uri);
+            managementService.export(uri.getFragment(), encoded, "JMS message container", container);
         } catch (ManagementException e) {
             throw new JMSException(e.getMessage());
         }
         if (started) {
             container.initialize();
-            monitor.registerListener(serviceUri);
+            monitor.registerListener(uri);
         }
     }
 
