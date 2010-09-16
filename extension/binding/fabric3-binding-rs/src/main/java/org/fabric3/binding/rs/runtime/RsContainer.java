@@ -53,9 +53,11 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
+ * Manages resources defined in a deployable contribution.
+ *
  * @version $Rev$ $Date$
  */
-public final class RsWebApplication extends HttpServlet {
+public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;
 
     private ClassLoader classLoader;
@@ -68,7 +70,7 @@ public final class RsWebApplication extends HttpServlet {
     private Lock reloadLock = reloadRWLock.readLock();
     private Lock serviceLock = reloadRWLock.writeLock();
 
-    public RsWebApplication(ClassLoader classLoader) {
+    public RsContainer(ClassLoader classLoader) {
         this.classLoader = classLoader;
         this.providerFactory = new Fabric3ProviderFactory();
         reload = true;
@@ -162,16 +164,16 @@ public final class RsWebApplication extends HttpServlet {
             return servletConfig.getInitParameter(name);
         }
 
-        public Enumeration getInitParameterNames() {
-            final Enumeration e = servletConfig.getInitParameterNames();
-            return new Enumeration() {
+        public Enumeration<String> getInitParameterNames() {
+            final Enumeration<String> e = servletConfig.getInitParameterNames();
+            return new Enumeration<String>() {
                 boolean finished = false;
 
                 public boolean hasMoreElements() {
                     return e.hasMoreElements() || !finished;
                 }
 
-                public Object nextElement() {
+                public String nextElement() {
                     if (e.hasMoreElements()) {
                         return e.nextElement();
                     }

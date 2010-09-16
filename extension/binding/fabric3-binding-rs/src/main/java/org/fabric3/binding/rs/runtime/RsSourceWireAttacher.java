@@ -69,7 +69,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ClassLoaderRegistry classLoaderRegistry;
     private ServletHost servletHost;
     private RsWireAttacherMonitor monitor;
-    private Map<URI, RsWebApplication> webApplications = new ConcurrentHashMap<URI, RsWebApplication>();
+    private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();
 
     public RsSourceWireAttacher(@Reference ServletHost servletHost, @Reference ClassLoaderRegistry registry, @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
@@ -79,20 +79,20 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
         URI sourceUri = source.getUri();
-        RsWebApplication application = webApplications.get(sourceUri);
-        if (application == null) {
-            application = new RsWebApplication(getClass().getClassLoader());
-            webApplications.put(sourceUri, application);
+        RsContainer container = containers.get(sourceUri);
+        if (container == null) {
+            container = new RsContainer(getClass().getClassLoader());
+            containers.put(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {
                 // wire reprovisioned
                 servletHost.unregisterMapping(mapping);
             }
-            servletHost.registerMapping(mapping, application);
+            servletHost.registerMapping(mapping, container);
         }
 
         try {
-            provision(source, wire, application);
+            provision(source, wire, container);
             monitor.provisionedEndpoint(sourceUri);
         } catch (ClassNotFoundException e) {
             String name = source.getRsClass();
@@ -104,7 +104,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
-        webApplications.remove(sourceUri);
+        containers.remove(sourceUri);
         monitor.removedEndpoint(sourceUri);
     }
 
@@ -125,7 +125,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         return servletMapping;
     }
 
-    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsWebApplication application) throws ClassNotFoundException {
+    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<String, InvocationChain>();
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -150,7 +150,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
             // set the TCCL as Jersey uses it to dynamically load classes
             Thread.currentThread().setContextClassLoader(rsClassLoader);
             Object instance = enhancer.create();
-            application.addResource(interfaze, instance);
+            container.addResource(interfaze, instance);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
