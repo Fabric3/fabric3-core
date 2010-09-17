@@ -46,8 +46,28 @@ public class UsernamePasswordToken implements AuthenticationToken<String, String
     private String username;
     private String password;
 
+    /**
+     * Constructor used for serialization/deserialization with databinding frameworks.
+     */
+    public UsernamePasswordToken() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param username the username
+     * @param password the password
+     */
     public UsernamePasswordToken(String username, String password) {
         this.username = username;
+        this.password = password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
