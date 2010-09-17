@@ -75,7 +75,11 @@ public class AuthenticationServiceImpl implements AuthenticationService, JMXAuth
         }
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
         try {
-            BasicSecuritySubject subject = store.find(userToken.getPrincipal());
+            String principal = userToken.getPrincipal();
+            if (principal == null) {
+                throw new AuthenticationException("Principal was null");
+            }
+            BasicSecuritySubject subject = store.find(principal);
             if (subject == null) {
                 throw new InvalidAuthenticationException("Invalid authentication information");
             }
