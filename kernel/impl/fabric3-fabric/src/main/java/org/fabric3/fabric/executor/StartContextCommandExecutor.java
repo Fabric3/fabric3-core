@@ -53,7 +53,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
