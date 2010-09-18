@@ -37,7 +37,9 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereServlet;
@@ -60,6 +62,7 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
     private ServiceMonitor monitor;
+    private AtomicBoolean initialized = new AtomicBoolean();
 
     public ServiceGatewayServlet(ServiceManager serviceManager,
                                  BroadcasterManager broadcasterManager,
@@ -69,6 +72,14 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
         this.broadcasterManager = broadcasterManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
+    }
+
+    @Override
+    public void init(ServletConfig sc) throws ServletException {
+        // avoid initializing the servlet twice (once in the attacher and once by the servlet host)
+        if (!initialized.getAndSet(true)) {
+            super.init(sc);
+        }
     }
 
     @Override

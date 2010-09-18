@@ -37,7 +37,9 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereServlet;
@@ -57,6 +59,7 @@ public class ChannelGatewayServlet extends AtmosphereServlet {
     private static final long serialVersionUID = -5519309286029777471L;
     private ServletHost servletHost;
     private PubSubManager pubSubManager;
+    private AtomicBoolean initialized = new AtomicBoolean();
 
     public ChannelGatewayServlet(ServletHost servletHost, PubSubManager pubSubManager) {
         this.servletHost = servletHost;
@@ -82,6 +85,14 @@ public class ChannelGatewayServlet extends AtmosphereServlet {
             throw new AssertionError("Path not found");
         }
         return new ChannelWebSocket(this, publisher, request);
+    }
+
+    @Override
+    public void init(ServletConfig sc) throws ServletException {
+        // avoid initializing the servlet twice (once in the attacher and once by the servlet host)
+        if (!initialized.getAndSet(true)) {
+            super.init(sc);
+        }
     }
 
     @Override
