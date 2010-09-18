@@ -43,7 +43,7 @@ import org.osoa.sca.RequestContext;
  * A Fabric3 extension to the OSOA SCA RequestContext API. Components may reference this interface when for fields or setters marked with @Context
  * instead of the SCA RequestContext variant. For example:
  * <pre>
- * public class SomeComponnent implements SomeService {
+ * public class SomeComponent implements SomeService {
  *      &#064;Context
  *      protected F3RequestContext context;
  *      //...
