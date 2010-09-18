@@ -18,14 +18,18 @@ Public License. See the accompanying license file for details.
            name="SecurityExtension"
            autowire="true">
 
-    <!-- Authorization Interceptor Builder -->
     <component name="AuthorizationInterceptorBuilder" f3-core:key="org.fabric3.security.authorization.AuthorizationInterceptorDefinition">
         <f3-impl:implementation.system class="org.fabric3.security.authorization.AuthorizationInterceptorBuilder"/>
     </component>
 
-    <!-- Authorization Interceptor Generator -->
     <component name="AuthorizationInterceptorDefinitionGenerator" f3-core:key="{urn:fabric3.org:policy}authorization">
         <f3-impl:implementation.system class="org.fabric3.security.authorization.AuthorizationInterceptorGenerator"/>
+    </component>
+
+    <component name="CachingAuthenticationService">
+        <f3-impl:implementation.system class="org.fabric3.security.authentication.CachingAuthenticationService"/>
+        <property name="enabled" source="$systemConfig//security/@authentication.service"/>
+        <property name="allowHttp" source="$systemConfig//security/@allow.http.authentication"/>
     </component>
 
 </composite>
