@@ -39,12 +39,17 @@ package org.fabric3.binding.rs.generator;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
+import javax.xml.namespace.QName;
 
+import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.binding.rs.model.RsBindingDefinition;
+import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
 import org.fabric3.binding.rs.provision.RsTargetDefinition;
+import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -60,6 +65,11 @@ import org.fabric3.spi.policy.EffectivePolicy;
  */
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
+    private static final QName F3_AUTHORIZATION = new QName(Namespaces.POLICY, "authorization");
+    private static final QName SCA_AUTHORIZATION = new QName(Constants.SCA_NS, "authorization");
+    private static final QName SCA_AUTHENTICATION = null;
+    private static final QName F3_BASIC_AUTHENTICATION = null;
+    private static final QName F3_DIGEST_AUTHENTICATION = null;
 
     public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
@@ -67,15 +77,16 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
                                              EffectivePolicy policy) throws GenerationException {
         String interfaze = contract.getQualifiedInterfaceName();
         URI uri = binding.getDefinition().getTargetUri();
-        return new RsSourceDefinition(interfaze, uri);
+
+        AuthenticationType type = calculateAuthenticationType(binding, operations);
+        return new RsSourceDefinition(interfaze, uri, type);
     }
 
     public RsTargetDefinition generateTarget(LogicalBinding<RsBindingDefinition> binding,
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
-        throw new GenerationException("Not supported");
-
+        throw new UnsupportedOperationException();
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
@@ -84,4 +95,25 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
                                                                  EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
+
+    private AuthenticationType calculateAuthenticationType(LogicalBinding<RsBindingDefinition> binding, List<LogicalOperation> operations) {
+        if (binding.getIntents().contains(SCA_AUTHENTICATION)) {
+            return AuthenticationType.BASIC;
+        } else if (binding.getIntents().contains(F3_BASIC_AUTHENTICATION)) {
+            return AuthenticationType.BASIC;
+        } else if (binding.getIntents().contains(F3_DIGEST_AUTHENTICATION)) {
+            return AuthenticationType.BASIC;
+        }
+
+        for (LogicalOperation operation : operations) {
+            Set<QName> intents = operation.getIntents();
+            if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
+                // default to basic authentication
+                return AuthenticationType.BASIC;
+            }
+        }
+
+        return AuthenticationType.NONE;
+    }
+
 }

@@ -48,7 +48,10 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
+import org.fabric3.binding.rs.runtime.security.Authenticator;
+import org.fabric3.binding.rs.runtime.security.BasicAuthenticator;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -58,6 +61,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -66,15 +70,21 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefinition> {
-    private ClassLoaderRegistry classLoaderRegistry;
     private ServletHost servletHost;
+    private ClassLoaderRegistry classLoaderRegistry;
     private RsWireAttacherMonitor monitor;
+    private Authenticator basicAuthenticator;
     private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();
 
-    public RsSourceWireAttacher(@Reference ServletHost servletHost, @Reference ClassLoaderRegistry registry, @Monitor RsWireAttacherMonitor monitor) {
+    public RsSourceWireAttacher(@Reference AuthenticationService authenticationService,
+                                @Reference ServletHost servletHost,
+                                @Reference ClassLoaderRegistry registry,
+                                @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.monitor = monitor;
+        // TODO make realm configurable
+        basicAuthenticator = new BasicAuthenticator(authenticationService, "fabric3");
     }
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
@@ -133,7 +143,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
             invocationChains.put(operation.getName(), chain);
         }
 
-        MethodInterceptor methodInterceptor = new RsMethodInterceptor(invocationChains);
+        MethodInterceptor methodInterceptor = createMethodInterceptor(sourceDefinition, invocationChains);
 
         Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
         Enhancer enhancer = new Enhancer();
@@ -154,6 +164,24 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
+    }
+
+    private MethodInterceptor createMethodInterceptor(RsSourceDefinition sourceDefinition, Map<String, InvocationChain> invocationChains) {
+        MethodInterceptor methodInterceptor;
+        if (AuthenticationType.BASIC == sourceDefinition.getAuthenticationType()) {
+            methodInterceptor = new RsMethodInterceptor(invocationChains, basicAuthenticator);
+            for (InvocationChain chain : invocationChains.values()) {
+                RsAuthorizationInterceptor authInterceptor = new RsAuthorizationInterceptor();
+                chain.addInterceptor(0, authInterceptor);
+            }
+        } else if (AuthenticationType.STATEFUL_FORM == sourceDefinition.getAuthenticationType()) {
+            throw new UnsupportedOperationException();
+        } else if (AuthenticationType.DIGEST == sourceDefinition.getAuthenticationType()) {
+            throw new UnsupportedOperationException();
+        } else {
+            methodInterceptor = new RsMethodInterceptor(invocationChains);
+        }
+        return methodInterceptor;
     }
 
 

@@ -35,39 +35,42 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.provision;
+package org.fabric3.binding.rs.runtime;
 
-import java.net.URI;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.security.NotAuthorizedException;
+import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ * Translates authorization exceptions to HTTP 403 Forbidden responses.
+ *
+ * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
  */
-public class RsSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = 2180952036516977449L;
+public class RsAuthorizationInterceptor implements Interceptor {
+    private Interceptor next;
 
-    private String rsClass;
-    private AuthenticationType authenticationType;
-
-    /**
-     * Constructor.
-     *
-     * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
-     * @param uri     the source URI.
-     * @param type    the authentication type
-     */
-    public RsSourceDefinition(String rsClass, URI uri, AuthenticationType type) {
-        this.rsClass = rsClass;
-        setUri(uri);
-        this.authenticationType = type;
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    public Message invoke(Message msg) {
+        Message message = next.invoke(msg);
+        if (message.isFault() && message.getBody() instanceof ServiceRuntimeException) {
+            ServiceRuntimeException e = (ServiceRuntimeException) message.getBody();
+            if (e.getCause() instanceof NotAuthorizedException) {
+                msg.setBodyWithFault(new WebApplicationException(Response.Status.FORBIDDEN));
+            }
+        }
+        return msg;
     }
 
-    public String getRsClass() {
-        return rsClass;
+    public void setNext(Interceptor next) {
+        this.next = next;
     }
 
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
+    public Interceptor getNext() {
+        return next;
     }
 }

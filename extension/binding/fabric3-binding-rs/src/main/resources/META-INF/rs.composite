@@ -20,15 +20,12 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingLoader"/>
     </component>
 
-    <!-- Rs Binding Generator -->
     <component name="RsBindingGenerator" f3-core:key="org.fabric3.binding.rs.model.RsBindingDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
     </component>
 
-    <!-- Rs Binding Wire Attachers  -->
     <component name="RsSourceWireAttacher" f3-core:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
     </component>
-
 
 </composite>

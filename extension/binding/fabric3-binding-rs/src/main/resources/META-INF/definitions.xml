@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ Fabric3
+ Copyright (c) 2009 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+    $Rev: 7288 $ $Date: 2009-07-06 11:14:23 +0200 (Mon, 06 Jul 2009) $
+
+*****************************************************************************
+
+Policy sets are based on policy definitions provided by the WS-* interop
+working group (http://mssoapinterop.org/ilab/) and the document: 
+http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
+-->
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             targetNamespace="urn:fabric3.org:policy"
+             xmlns:f3-policy="urn:fabric3.org:policy">
+
+    <policySet name="authenticationPolicy" provides="sca:authentication.message sca:clientAuthentication" appliesTo="binding.rs">
+        <f3-policy:security user="user" password="password" f3-policy:phase="provided"/>
+    </policySet>
+
+
+</definitions>

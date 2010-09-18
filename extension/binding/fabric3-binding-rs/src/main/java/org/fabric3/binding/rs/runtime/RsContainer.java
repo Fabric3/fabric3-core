@@ -125,6 +125,8 @@ public final class RsContainer extends HttpServlet {
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
                 WorkContext workContext = new WorkContext();
+                workContext.setHeader("fabric3.httpRequest", req);
+                workContext.setHeader("fabric3.httpResponse", res);
                 CallFrame frame = new CallFrame();
                 workContext.addCallFrame(frame);
                 oldContext = WorkContextTunnel.setThreadWorkContext(workContext);

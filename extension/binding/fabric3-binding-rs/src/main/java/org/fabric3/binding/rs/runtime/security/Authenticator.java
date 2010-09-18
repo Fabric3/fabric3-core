@@ -35,39 +35,29 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.provision;
+package org.fabric3.binding.rs.runtime.security;
 
-import java.net.URI;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.invocation.WorkContext;
 
 /**
+ * Implementations support an authentication scheme such as HTTP basic auth.
+ *
  * @version $Rev$ $Date$
  */
-public class RsSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = 2180952036516977449L;
-
-    private String rsClass;
-    private AuthenticationType authenticationType;
+public interface Authenticator {
 
     /**
-     * Constructor.
+     * Perform the authentication. If successful, the work context will be updated with the authenticated security subject.
      *
-     * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
-     * @param uri     the source URI.
-     * @param type    the authentication type
+     * @param request  the current HTTP request
+     * @param response the current HTTP response
+     * @param context  the current work context
+     * @throws WebApplicationException if authentication failed or credentials were not supplied
      */
-    public RsSourceDefinition(String rsClass, URI uri, AuthenticationType type) {
-        this.rsClass = rsClass;
-        setUri(uri);
-        this.authenticationType = type;
-    }
+    void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context) throws WebApplicationException;
 
-    public String getRsClass() {
-        return rsClass;
-    }
-
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
-    }
 }

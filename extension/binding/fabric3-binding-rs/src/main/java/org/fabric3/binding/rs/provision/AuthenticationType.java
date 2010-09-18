@@ -44,30 +44,10 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 /**
  * @version $Rev$ $Date$
  */
-public class RsSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = 2180952036516977449L;
-
-    private String rsClass;
-    private AuthenticationType authenticationType;
-
-    /**
-     * Constructor.
-     *
-     * @param rsClass the class or interface containing JAX-RS annotations to use for mapping Java operations to REST resources.
-     * @param uri     the source URI.
-     * @param type    the authentication type
-     */
-    public RsSourceDefinition(String rsClass, URI uri, AuthenticationType type) {
-        this.rsClass = rsClass;
-        setUri(uri);
-        this.authenticationType = type;
-    }
-
-    public String getRsClass() {
-        return rsClass;
-    }
-
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
-    }
+public enum AuthenticationType {
+    NONE,
+    BASIC,
+    DIGEST,
+    FORM,
+    STATEFUL_FORM
 }

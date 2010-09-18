@@ -39,13 +39,19 @@ package org.fabric3.binding.rs.runtime;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.fabric3.api.SecuritySubject;
+import org.fabric3.binding.rs.runtime.security.Authenticator;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
@@ -55,14 +61,24 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class RsMethodInterceptor implements MethodInterceptor {
+    private static final String FABRIC3_SUBJECT = "fabric3.subject";
+
     private Map<String, InvocationChain> invocationChains;
+    private Authenticator authenticator;
 
     public RsMethodInterceptor(Map<String, InvocationChain> invocationChains) {
         this.invocationChains = invocationChains;
     }
 
+    public RsMethodInterceptor(Map<String, InvocationChain> invocationChains, Authenticator authenticator) {
+        this.invocationChains = invocationChains;
+        this.authenticator = authenticator;
+    }
+
     public Object intercept(Object object, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        Message message = new MessageImpl(args, false, new WorkContext());
+        WorkContext context = WorkContextTunnel.getThreadWorkContext();
+        authenticate(context);
+        Message message = new MessageImpl(args, false, context);
         InvocationChain invocationChain = invocationChains.get(method.getName());
         if (invocationChain != null) {
             Interceptor headInterceptor = invocationChain.getHeadInterceptor();
@@ -75,6 +91,30 @@ public class RsMethodInterceptor implements MethodInterceptor {
         } else {
             return null;
         }
+    }
+
+    private void authenticate(WorkContext context) {
+        if (authenticator == null) {
+            // authentication is not required
+            return;
+        }
+        HttpServletRequest request = (HttpServletRequest) context.getHeaders().get("fabric3.httpRequest");
+        HttpServletResponse response = (HttpServletResponse) context.getHeaders().get("fabric3.httpResponse");
+        if (!"https".equals(request.getScheme())) {
+            // authentication must be done over HTTPS
+            //throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+        // check if the subject was cached in the session
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            SecuritySubject subject = (SecuritySubject) session.getAttribute(FABRIC3_SUBJECT);
+            if (subject != null) {
+                context.setSubject(subject);
+                return;
+            }
+        }
+        authenticator.authenticate(request, response, context);
     }
 
 }
