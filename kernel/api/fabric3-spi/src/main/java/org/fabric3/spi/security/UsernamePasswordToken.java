@@ -37,11 +37,14 @@
 */
 package org.fabric3.spi.security;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * A token used to authenticate based on a username/password pair.
  *
  * @version $Rev$ $Date$
  */
+@XmlRootElement
 public class UsernamePasswordToken implements AuthenticationToken<String, String> {
     private String username;
     private String password;
