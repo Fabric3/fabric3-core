@@ -89,7 +89,7 @@ public class CachingAuthenticationServiceTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
 
-        EasyMock.expect(request.getProtocol()).andReturn("https");
+        EasyMock.expect(request.getScheme()).andReturn("https");
         EasyMock.expect(request.getContentType()).andReturn("application/json");
         EasyMock.expect(request.getInputStream()).andReturn(new ServletInputStream() {
             public int read() {
@@ -130,7 +130,7 @@ public class CachingAuthenticationServiceTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
 
-        EasyMock.expect(request.getProtocol()).andReturn("https");
+        EasyMock.expect(request.getScheme()).andReturn("https");
         EasyMock.expect(request.getContentType()).andReturn("application/xml");
         EasyMock.expect(request.getInputStream()).andReturn(new ServletInputStream() {
             public int read() {

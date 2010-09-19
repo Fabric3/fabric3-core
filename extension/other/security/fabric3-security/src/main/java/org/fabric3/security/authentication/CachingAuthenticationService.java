@@ -132,7 +132,7 @@ public class CachingAuthenticationService extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String protocol = req.getProtocol();
+        String protocol = req.getScheme();
         if (!allowHttp && !"https".equals(protocol)) {
             resp.setStatus(403);
             return;
