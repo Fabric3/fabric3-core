@@ -54,6 +54,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.SecuritySubject;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.type.java.JavaClass;
@@ -67,9 +68,9 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * Performs HTTP form-based authentication and populates the current work context and HTTP session with the authenticated subject.
+ * Performs authentication and populates the current work context and HTTP session with the authenticated subject.
  * <p/>
- * This service supports three types of posted data:
+ * Authentication and logon are performed using an HTTP POST, using one of three content types:
  * <pre>
  * <ul>
  * <li>HTTP FORM data
@@ -78,6 +79,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * </ul>
  * <p/>
  * <pre>
+ * Logout is performed by performing an HTTP DELETE.
  *
  * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
  */
@@ -95,8 +97,9 @@ public class CachingAuthenticationService extends HttpServlet {
     private static final DataType<?> XML_TYPE = new XSDType(String.class, new QName(XSDType.XSD_NS, "string"));
     private final static JavaClass<UsernamePasswordToken> JAVA_TYPE = new JavaClass<UsernamePasswordToken>(UsernamePasswordToken.class);
 
-    private ServletHost host;
     private AuthenticationService authService;
+    private ServletHost host;
+    private AuthMonitor monitor;
     private boolean enabled = true;
     private boolean allowHttp;
     private String mapping = "/fabric/security/token";
@@ -106,10 +109,12 @@ public class CachingAuthenticationService extends HttpServlet {
 
     public CachingAuthenticationService(@Reference AuthenticationService authService,
                                         @Reference TransformerRegistry registry,
-                                        @Reference ServletHost host) {
+                                        @Reference ServletHost host,
+                                        @Monitor AuthMonitor monitor) {
         this.authService = authService;
         this.registry = registry;
         this.host = host;
+        this.monitor = monitor;
     }
 
     @Property(required = false)
@@ -130,8 +135,15 @@ public class CachingAuthenticationService extends HttpServlet {
         host.registerMapping(mapping, this);
     }
 
+    /**
+     * Authenticates a client and caches the authenticated subject in the current session context.
+     *
+     * @param req  the request
+     * @param resp the response
+     * @throws ServletException
+     */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         String protocol = req.getScheme();
         if (!allowHttp && !"https".equals(protocol)) {
             resp.setStatus(403);
@@ -156,16 +168,22 @@ public class CachingAuthenticationService extends HttpServlet {
             SecuritySubject subject = authService.authenticate(token);
             req.getSession().setAttribute(FABRIC3_SUBJECT, subject);
         } catch (TransformationException e) {
-            e.printStackTrace();
-            // TODO set error
+            monitor.error("Error authenticating", e);
         } catch (AuthenticationException e) {
-            e.printStackTrace();
-            // TODO set error
+            monitor.error("Error authenticating", e);
+        } catch (IOException e) {
+            monitor.error("Error authenticating", e);
         }
     }
 
+    /**
+     * Logs the current client out and removes the authenticated subject from the session context.
+     *
+     * @param req  the request
+     * @param resp the response
+     */
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute(FABRIC3_SUBJECT) != null) {
             session.invalidate();

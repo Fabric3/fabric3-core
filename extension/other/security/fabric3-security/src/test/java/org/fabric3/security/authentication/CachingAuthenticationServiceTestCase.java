@@ -101,7 +101,7 @@ public class CachingAuthenticationServiceTestCase extends TestCase {
 
         EasyMock.replay(authService, transformer, registry, host, session, request, response);
 
-        CachingAuthenticationService service = new CachingAuthenticationService(authService, registry, host);
+        CachingAuthenticationService service = new CachingAuthenticationService(authService, registry, host, null);
         service.doPost(request, response);
         EasyMock.verify(authService, transformer, registry, host, session, request, response);
     }
@@ -142,7 +142,7 @@ public class CachingAuthenticationServiceTestCase extends TestCase {
 
         EasyMock.replay(authService, transformer, registry, host, session, request, response);
 
-        CachingAuthenticationService service = new CachingAuthenticationService(authService, registry, host);
+        CachingAuthenticationService service = new CachingAuthenticationService(authService, registry, host, null);
         service.doPost(request, response);
         EasyMock.verify(authService, transformer, registry, host, session, request, response);
     }
