@@ -57,7 +57,6 @@ import org.eclipse.jetty.jsp.JettyLog;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
@@ -480,7 +479,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         server.setHandler(statisticsHandler);
         rootHandler = new ContextHandlerCollection();
         statisticsHandler.setHandler(rootHandler);
-         contextHandler = new ServletContextHandler(rootHandler, ROOT);
+        contextHandler = new ServletContextHandler(rootHandler, ROOT);
         sessionManager = new ManagedHashSessionManager();
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
         servletHandler = new ManagedServletHandler();
