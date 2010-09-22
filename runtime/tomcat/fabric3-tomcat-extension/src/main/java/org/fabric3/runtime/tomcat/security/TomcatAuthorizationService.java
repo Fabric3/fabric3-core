@@ -68,7 +68,7 @@ public class TomcatAuthorizationService implements AuthorizationService {
         }
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         if (!basicSubject.hasRole(role)) {
-            throw new NotAuthorizedException("Subject not authorized for role: " + role);
+            throw new NotAuthorizedException("Subject not authorized for role");
         }
     }
 
@@ -79,7 +79,7 @@ public class TomcatAuthorizationService implements AuthorizationService {
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         for (String role : roles) {
             if (!basicSubject.hasRole(role)) {
-                throw new NotAuthorizedException("Subject not authorized for role: " + role);
+                throw new NotAuthorizedException("Subject not authorized for role");
             }
         }
     }
