@@ -37,7 +37,6 @@
 */
 package org.fabric3.tx;
 
-import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
