@@ -104,6 +104,7 @@
     <orderEntry type="module" module-name="fabric3-util" />
     <orderEntry type="module" module-name="fabric3-policy" />
     <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.1" level="project" />
+    <orderEntry type="module" module-name="fabric3-security" />
     <orderEntry type="module" module-name="fabric3-security-impl" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: stax:stax-api:1.0.1" level="project" />
