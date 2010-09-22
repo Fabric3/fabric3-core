@@ -82,6 +82,10 @@ public class SpringSecuritySubject implements SecuritySubject, Principal {
         return jaasSubject;
     }
 
+    public String getUsername() {
+        return getName();
+    }
+
     public String getName() {
         return authentication.getName();
     }

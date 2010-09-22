@@ -47,6 +47,13 @@ import javax.security.auth.Subject;
 public interface SecuritySubject {
 
     /**
+     * Returns the user name of this subject.
+     *
+     * @return the user name of this subject.
+     */
+    public String getUsername();
+
+    /**
      * Returns the underlying security provider subject.
      *
      * @param type the subject type

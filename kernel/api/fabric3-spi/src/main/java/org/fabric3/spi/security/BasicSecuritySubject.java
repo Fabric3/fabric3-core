@@ -98,4 +98,9 @@ public class BasicSecuritySubject implements SecuritySubject, Principal {
     public String getName() {
         return username;
     }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 }
