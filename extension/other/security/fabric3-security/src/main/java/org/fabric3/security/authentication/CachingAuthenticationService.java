@@ -186,6 +186,7 @@ public class CachingAuthenticationService extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute(FABRIC3_SUBJECT) != null) {
+            session.removeAttribute(FABRIC3_SUBJECT);
             session.invalidate();
         }
     }
