@@ -40,7 +40,7 @@ package org.fabric3.jmx;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.fabric3.host.security.Role;
+import org.fabric3.api.Role;
 
 /**
  * Holder for an MBean method and its associated security metadata.

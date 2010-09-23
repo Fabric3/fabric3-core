@@ -59,12 +59,12 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.security.JmxSecurity;
-import org.fabric3.host.security.Role;
 import org.fabric3.spi.ObjectFactory;
 import org.fabric3.spi.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementException;

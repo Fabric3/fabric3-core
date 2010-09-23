@@ -37,6 +37,7 @@
 */
 package org.fabric3.api;
 
+import java.util.Set;
 import javax.security.auth.Subject;
 
 /**
@@ -51,7 +52,14 @@ public interface SecuritySubject {
      *
      * @return the user name of this subject.
      */
-    public String getUsername();
+    String getUsername();
+
+    /**
+     * Returns the assigned roles of this subject
+     *
+     * @return the roles
+     */
+    Set<Role> getRoles();
 
     /**
      * Returns the underlying security provider subject.
@@ -62,9 +70,9 @@ public interface SecuritySubject {
     <T> T getDelegate(Class<T> type);
 
     /**
-     * Returns the JAAS representation of the subject. Note inheritance cannot be used as the JAAS Subject is a final class.
+     * Returns the JAAS representation of this subject. Note inheritance cannot be used as the JAAS Subject is a final class.
      *
-     * @return the JAAS representation of the subject
+     * @return the JAAS representation of this subject
      */
     Subject getJaasSubject();
 }

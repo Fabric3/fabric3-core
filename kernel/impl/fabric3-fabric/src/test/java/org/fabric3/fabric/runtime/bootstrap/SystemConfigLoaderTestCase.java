@@ -50,10 +50,10 @@ import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.fabric3.api.Role;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.JmxConfiguration;
 import org.fabric3.host.security.JmxSecurity;
-import org.fabric3.host.security.Role;
 import org.fabric3.host.stream.InputStreamSource;
 
 /**

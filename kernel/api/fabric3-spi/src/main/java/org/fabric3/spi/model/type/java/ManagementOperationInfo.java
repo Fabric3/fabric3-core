@@ -45,7 +45,7 @@ package org.fabric3.spi.model.type.java;
 
 import java.util.Set;
 
-import org.fabric3.host.security.Role;
+import org.fabric3.api.Role;
 import org.fabric3.model.type.ModelObject;
 
 /**

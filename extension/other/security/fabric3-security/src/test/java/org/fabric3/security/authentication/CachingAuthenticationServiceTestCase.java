@@ -49,7 +49,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.host.security.Role;
+import org.fabric3.api.Role;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationService;

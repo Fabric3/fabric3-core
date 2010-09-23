@@ -44,7 +44,7 @@ import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.host.security.Role;
+import org.fabric3.api.Role;
 
 /**
  * SecuritySubject for the Fabric3 basic security implementation.

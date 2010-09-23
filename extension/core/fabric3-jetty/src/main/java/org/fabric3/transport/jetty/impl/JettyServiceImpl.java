@@ -77,6 +77,7 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
@@ -98,6 +99,13 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private static final String ROOT = "/";
 
+    private ExecutorService executorService;
+    private ManagementService managementService;
+    private TransportMonitor monitor;
+
+    private KeyStoreManager keyStoreManager;
+    private AuthenticationService authenticationService;
+
     private final Object joinLock = new Object();
     private boolean enableHttps;
     private int minHttpPort = 8080;
@@ -108,15 +116,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     private int selectedHttps = -1;
     //    private String keystore;
     private boolean sendServerVersion;
-    private KeyStoreManager keyStoreManager;
-    private TransportMonitor monitor;
-    private ExecutorService executorService;
     private boolean debug;
     private Server server;
     private ManagedServletHandler servletHandler;
     private SelectChannelConnector httpConnector;
     private SslSocketConnector sslConnector;
-    private ManagementService managementService;
 
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
@@ -158,6 +162,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Reference(required = false)
     public void setKeyStoreManager(KeyStoreManager keyStoreManager) {
         this.keyStoreManager = keyStoreManager;
+    }
+
+    @Reference(required = false)
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     @Property(required = false)
@@ -213,6 +222,11 @@ public class JettyServiceImpl implements JettyService, Transport {
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             server = new Server();
+            if (authenticationService != null) {
+                // setup authentication if the authentication service is available 
+                Fabric3LoginService loginService = new Fabric3LoginService(authenticationService);
+                server.addBean(loginService);
+            }
             initializeThreadPool();
             initializeConnector();
             initializeHandlers();

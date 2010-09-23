@@ -40,7 +40,7 @@ package org.fabric3.host.runtime;
 import java.util.Set;
 
 import org.fabric3.host.security.JmxSecurity;
-import org.fabric3.host.security.Role;
+import org.fabric3.api.Role;
 
 /**
  * Configuration for the JMX server.
