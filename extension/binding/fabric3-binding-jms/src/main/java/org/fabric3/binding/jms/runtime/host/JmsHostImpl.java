@@ -129,7 +129,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
             try {
                 entry.getValue().stop();
             } catch (JMSException e) {
-                monitor.error("Error stopping service listener: " + entry.getKey(), e);
+                monitor.stopError(entry.getKey(), e);
             }
         }
         started = false;
@@ -143,7 +143,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
             try {
                 entry.getValue().start();
             } catch (JMSException e) {
-                monitor.error("Error starting service listener: " + entry.getKey(), e);
+                monitor.startError(entry.getKey(), e);
             }
         }
         started = true;
@@ -156,7 +156,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
                 entry.getValue().initialize();
                 monitor.registerListener(entry.getKey());
             } catch (JMSException e) {
-                monitor.error("Error starting service listener: " + entry.getKey(), e);
+                monitor.startError(entry.getKey(), e);
             }
         }
         started = true;

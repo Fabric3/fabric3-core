@@ -43,8 +43,8 @@
  */
 package org.fabric3.spi.domain;
 
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Event monitor for the Deployer.
@@ -53,19 +53,16 @@ import org.fabric3.api.annotation.monitor.Debug;
  */
 public interface DeployerMonitor {
 
-    @Debug
+    @Debug("Deploying to zone {0}")
     void deploy(String zone);
 
-    @Debug
-    void commit(String zone);
-
-    @Debug
+    @Debug("Rolling back deployment for runtime {0}")
     void rollback(String zone);
 
-    @Severe
+    @Severe("Error raised when deploying to runtime {0}: \n {1}")
     void deploymentError(String runtime, Throwable e);
 
-    @Severe
+    @Severe("Error raised when rolling back deployment for zone {0}:")
     void rollbackError(String message, Throwable e);
 
 }

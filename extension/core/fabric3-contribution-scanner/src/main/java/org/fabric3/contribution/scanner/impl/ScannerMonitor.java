@@ -37,8 +37,8 @@
 */
 package org.fabric3.contribution.scanner.impl;
 
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Monitoring interface for the DirectoryScanner
@@ -52,7 +52,7 @@ public interface ScannerMonitor {
      *
      * @param name the name of the contribution
      */
-    @Info
+    @Info("Processed {0}")
     void processed(String name);
 
     /**
@@ -60,7 +60,7 @@ public interface ScannerMonitor {
      *
      * @param name the name of the contribution
      */
-    @Info
+    @Info("Removed {0}")
     void removed(String name);
 
     /**
@@ -68,7 +68,7 @@ public interface ScannerMonitor {
      *
      * @param name the name of the contribution
      */
-    @Info
+    @Info("Updated {0}")
     void updated(String name);
 
     /**
@@ -76,7 +76,7 @@ public interface ScannerMonitor {
      *
      * @param name the file name
      */
-    @Info
+    @Info("Contribution type not recognized: {0}. If this is a valid type, ensure runtime extensions are installed.")
     void ignored(String name);
 
     /**
@@ -84,7 +84,7 @@ public interface ScannerMonitor {
      *
      * @param e the error
      */
-    @Severe
+    @Severe("An error was encountered deploying a contribution")
     void error(Throwable e);
 
     /**
@@ -93,7 +93,7 @@ public interface ScannerMonitor {
      * @param filename the file being removed
      * @param e        the error
      */
-    @Severe
+    @Severe("Error removing {0}")
     void removalError(String filename, Throwable e);
 
     /**
@@ -101,7 +101,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Severe
+    @Severe("The following contribution errors were found")
     void contributionErrors(String description);
 
     /**
@@ -109,7 +109,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Severe
+    @Severe("The following deployment errors were raised")
     void deploymentErrors(String description);
 
 }

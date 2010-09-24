@@ -46,10 +46,10 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface DomainMonitor {
 
-    @Info
+    @Info("Deploying composite {0}")
     void deploy(QName deployable);
 
-    @Info
+    @Info("Un-deploying composite {0}")
     void undeploy(QName deployable);
 
 }

@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface TimerServiceMonitor {
 
-    @Severe
+    @Severe("The following exception was raised")
     void threadError(Throwable t);
 
 }

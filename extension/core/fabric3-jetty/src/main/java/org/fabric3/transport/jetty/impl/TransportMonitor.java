@@ -43,7 +43,10 @@
  */
 package org.fabric3.transport.jetty.impl;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  * The monitoring interfaces used by the Jetty system service
@@ -52,31 +55,37 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface TransportMonitor {
 
-    @Info
+    @Info("HTTP listener started on port {0,number,#}")
     void startHttpListener(int port);
 
-    @Info
+    @Info("HTTPS listener started on port {0,number,#}")
     void startHttpsListener(int port);
 
     /**
-     * Captures Jetty warnings
+     * Captures Jetty warnings.
      *
      * @param msg  the warning message
      * @param args arguments
      */
-    @Warning
+    @Warning("Jetty warning: {0} \n {1}")
     void warn(String msg, Object... args);
 
-    @Severe
+    /**
+     * Captures Jetty exceptions
+     *
+     * @param msg  the warning message
+     * @param args the exceptions
+     */
+    @Severe("Jetty exception: {0}")
     void exception(String msg, Throwable args);
 
     /**
-     * Captures Jetty debug events
+     * Captures Jetty debug events.
      *
      * @param msg  the debug message
      * @param args arguments
      */
-    @Debug
+    @Debug("Jetty debug: {0} \n {1}")
     void debug(String msg, Object... args);
 
 }

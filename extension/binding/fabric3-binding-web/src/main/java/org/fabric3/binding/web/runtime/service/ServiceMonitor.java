@@ -45,12 +45,12 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface ServiceMonitor {
 
-    @Info
+    @Info("HTTP/Websocket endpoint provisioned at {0}")
     void provisionedEndpoint(String path);
 
-    @Info
+    @Info("Channel HTTP/Websocket endpoint removed at {0}")
     void removedEndpoint(String path);
 
-    @Severe
+    @Severe("HTTP/websocket error encountered: {0}")
     void error(Throwable e);
 }

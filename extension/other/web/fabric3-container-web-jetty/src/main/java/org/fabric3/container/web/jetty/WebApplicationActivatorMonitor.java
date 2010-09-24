@@ -61,7 +61,7 @@ public interface WebApplicationActivatorMonitor {
      *
      * @param path the WAR context path
      */
-    @Info
+    @Info("Web application activated: [{0}]")
     void activated(String path);
 
     /**
@@ -69,6 +69,6 @@ public interface WebApplicationActivatorMonitor {
      *
      * @param path the WAR context path
      */
-    @Info
+    @Info("Web application deactivated: [{0}]")
     void deactivated(String path);
 }

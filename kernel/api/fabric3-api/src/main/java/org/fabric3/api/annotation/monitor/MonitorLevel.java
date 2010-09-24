@@ -65,34 +65,5 @@ public enum MonitorLevel {
         return value;
     }
 
-    /**
-     * Encapsulates the logic used to read monitor method level annotations. Argument <code>Method</code> instances should be annotated with a {@link
-     * MonitorEventType} directly or with one of the level annotations which have a {@link MonitorEventType} meta-annotation.
-     *
-     * @param method monitor method
-     * @return the annotated <code>LogLevels</code> value
-     */
-    public static MonitorLevel getAnnotatedLogLevel(Method method) {
-        MonitorLevel level = null;
-
-        MonitorEventType annotation = method.getAnnotation(MonitorEventType.class);
-        if (annotation != null) {
-            level = annotation.value();
-        }
-
-        if (level == null) {
-            for (Annotation methodAnnotation : method.getDeclaredAnnotations()) {
-                Class<? extends Annotation> annotationType = methodAnnotation.annotationType();
-
-                MonitorEventType monitorEventType = annotationType.getAnnotation(MonitorEventType.class);
-                if (monitorEventType != null) {
-                    level = monitorEventType.value();
-                    break;
-                }
-            }
-        }
-
-        return level;
-    }
 
 }

@@ -758,7 +758,7 @@ public class AdaptiveMessageContainer {
                 }
             }
         } catch (JMSException e) {
-            monitor.debugError("Error starting connection", e);
+            monitor.startConnectionError(e);
         }
     }
 
@@ -774,7 +774,7 @@ public class AdaptiveMessageContainer {
                 }
             }
         } catch (Exception e) {
-            monitor.error("Error stopping connection for" + listenerUri, e);
+            monitor.stopConnectionError(listenerUri, e);
         }
     }
 
@@ -793,7 +793,7 @@ public class AdaptiveMessageContainer {
                 }
                 break;
             } catch (Exception e) {
-                monitor.error("Error refreshing connection for destination " + destination + " for " + listenerUri, e);
+                monitor.connectionError(destination.toString(), listenerUri.toString(), e);
             }
             // wait and try again
             sleep();
@@ -812,7 +812,7 @@ public class AdaptiveMessageContainer {
                 exceptionListener.onException((JMSException) e);
             }
         }
-        monitor.error("Listener threw an exception for " + listenerUri, e);
+        monitor.listenerError(listenerUri.toString(), e);
     }
 
     /**
@@ -1048,9 +1048,9 @@ public class AdaptiveMessageContainer {
                 } else if (isRunning()) {
                     int nonPausedReceivers = getReceiverCount() - getPausedReceiversCount();
                     if (nonPausedReceivers < 1) {
-                        monitor.errorMessage("All receivers are paused, possibly as a result of rejected work for " + listenerUri);
+                        monitor.pauseError(listenerUri.toString());
                     } else if (nonPausedReceivers < getMinReceivers()) {
-                        monitor.errorMessage("The number is below the minimum threshold, possibly as a result of rejected work for " + listenerUri);
+                        monitor.minimumError(listenerUri.toString());
                     }
                 }
             }
@@ -1148,7 +1148,7 @@ public class AdaptiveMessageContainer {
                     tm.begin();
                     begun = true;
                 } else {
-                    monitor.errorMessage("No transaction for " + listenerUri);
+                    monitor.noTransaction(listenerUri);
                 }
                 boolean received;
                 received = receive();
@@ -1157,13 +1157,13 @@ public class AdaptiveMessageContainer {
                 }
                 return received;
             } catch (JMSException e) {
-                monitor.error("Error receiving message for " + listenerUri, e);
+                monitor.receiveError(listenerUri, e);
                 globalRollback();
             } catch (RuntimeException e) {
-                monitor.error("Error receiving message for " + listenerUri, e);
+                monitor.receiveError(listenerUri, e);
                 globalRollback();
             } catch (Error e) {
-                monitor.error("Error receiving message  for " + listenerUri, e);
+                monitor.receiveError(listenerUri, e);
                 globalRollback();
             } catch (SystemException e) {
                 throw new TransactionException("Error receiving message for " + listenerUri, e);
@@ -1211,7 +1211,7 @@ public class AdaptiveMessageContainer {
                     try {
                         tm.setTransactionTimeout(transactionTimeout);
                     } catch (SystemException e) {
-                        monitor.error("Error setting transaction timeout for " + listenerUri, e);
+                        monitor.timeoutError(listenerUri, e);
                         return false;
                     }
                 }
@@ -1224,7 +1224,7 @@ public class AdaptiveMessageContainer {
                             try {
                                 tm.rollback();
                             } catch (SystemException e) {
-                                monitor.error("Error setting rollback for " + listenerUri, e);
+                                monitor.rollbackError(listenerUri, e);
                             }
                         } else {
                             localRollback(session);

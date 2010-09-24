@@ -56,9 +56,7 @@ import javax.servlet.ServletContextListener;
 import org.w3c.dom.Document;
 
 import org.fabric3.api.annotation.monitor.Info;
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Names;
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -76,9 +74,11 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.weblogic.api.Constants;
-import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcherFactory;
+
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
@@ -278,17 +278,12 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     public interface ServerMonitor {
-        @Severe
-        void runError(Exception e);
 
-        @Info
+        @Info("Fabric3 ready [Mode:{0}]")
         void started(String mode);
 
-        @Info
+        @Info("Fabric3 shutdown")
         void stopped();
-
-        @Info
-        void exited(Exception e);
 
     }
 

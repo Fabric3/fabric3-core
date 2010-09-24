@@ -44,6 +44,6 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface ProfileTrackerMonitor {
 
-    @Severe
+    @Severe("Error saving profile index:")
     void error(Exception e);
 }

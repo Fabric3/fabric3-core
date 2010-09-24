@@ -73,14 +73,14 @@ public class EventStreamListener implements MessageListener {
             Thread.currentThread().setContextClassLoader(cl);
             if (!(request instanceof ObjectMessage)) {
                 String type = request.getClass().getName();
-                monitor.errorMessage("Message is an invalid type. Since the message is invalid, redelivery will not be attempted:" + type);
+                monitor.invalidMessageType(type);
                 return;
             }
             ObjectMessage message = (ObjectMessage) request;
             handler.handle(message.getObject());
         } catch (JMSException e) {
             // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
-            monitor.error("Error processing message. Redelivery will not be attempted", e);
+            monitor.redeliveryError(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface SecurityMonitor {
 
-    @Info
+    @Info("Security will be disabled as a provider is not configured")
     void disabled();
 
 }

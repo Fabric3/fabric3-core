@@ -48,15 +48,15 @@ import org.fabric3.api.annotation.monitor.Debug;
  */
 public interface FtpInterceptorMonitor {
 
-    @Debug
+    @Debug("Command sent: {0}")
     void onCommand(String command);
 
-    @Debug
+    @Debug("Response received: {0}")
     void onResponse(String response);
 
-    @Debug
+    @Debug("Connecting to {0} on port {1,number,#}")
     void onConnect(InetAddress hostAddress, int port);
 
-    @Debug
+    @Debug("Authenticating")
     void onAuthenticate();
 }

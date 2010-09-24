@@ -45,10 +45,10 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface ListenerMonitor {
 
-    @Severe
-    public void error(String message, Throwable e);
+    @Severe("Error processing message. Redelivery will not be attempted")
+    public void redeliveryError(Throwable e);
 
-    @Severe
-    public void errorMessage(String message);
+    @Severe("Message is an invalid type. Since the message is invalid, redelivery will not be attempted: {0}")
+    public void invalidMessageType(String type);
 
 }

@@ -37,8 +37,8 @@
 */
 package org.fabric3.transport.ftp.server.monitor;
 
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Monitor interface for logging significant events.
@@ -53,7 +53,7 @@ public interface FtpMonitor {
      * @param command Command that was received.
      * @param user    User that sent the command.
      */
-    @Info
+    @Info("Command received from user {1}: {0}")
     void onCommand(Object command, String user);
 
     /**
@@ -62,16 +62,16 @@ public interface FtpMonitor {
      * @param response Response that was sent.
      * @param user     User that sent the command.
      */
-    @Info
+    @Info("Response sent to user {1}: {0}")
     void onResponse(Object response, String user);
 
     /**
      * Logged when an exception occurs.
      *
-     * @param throwable Exception that occured.
+     * @param throwable Exception that occurred.
      * @param user      User whose command caused the exception.
      */
-    @Severe
+    @Severe("Exception caught for user {1}: {0}")
     void onException(Throwable throwable, String user);
 
     /**
@@ -79,7 +79,7 @@ public interface FtpMonitor {
      *
      * @param user User whose command caused the exception.
      */
-    @Severe
+    @Severe("FTPLet aborted upload for user: {0}")
     void uploadError(String user);
 
     /**
@@ -87,7 +87,7 @@ public interface FtpMonitor {
      *
      * @param resource the resource address.
      */
-    @Severe
+    @Severe("No registered FtpLet for resource: {0}")
     void noFtpLetRegistered(String resource);
 
     /**
@@ -95,7 +95,7 @@ public interface FtpMonitor {
      *
      * @param user the user.
      */
-    @Severe
+    @Severe("FTP Connection timed out for user: {0}")
     void connectionTimedOut(String user);
 
 }

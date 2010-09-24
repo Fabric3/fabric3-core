@@ -37,25 +37,26 @@
 */
 package org.fabric3.runtime.ant.test;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface TestRunnerMonitor {
 
-    @Info
+    @Info("Running {0}")
     void runningTest(String name);
 
-    @Info
+    @Info("No tests found")
     void noTests();
 
-    @Info
+    @Info("\tPASSED: {0}, Elapsed time: {1} sec")
     void passed(String name, long time);
 
-    @Severe
+    @Severe("\tFAILED: {0}, Error was \n {1}")
     void failed(String name, Throwable e);
 
-    @Info
+    @Info("Total tests run: {0}")
     void finished(int number);
 }

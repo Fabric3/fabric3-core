@@ -37,8 +37,8 @@
 */
 package org.fabric3.binding.net;
 
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitor for communications events.
@@ -47,31 +47,25 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface NetBindingMonitor {
 
-    @Info
+    @Info("Net binding HTTP listener started on port {0,number,#}")
     void startHttpListener(int port);
 
-    @Info
-    void startHttpsListener(int port);
-
-    @Info
+    @Info("Net binding TCP listener started on port {0,number,#}")
     void startTcpListener(int port);
 
-    @Info
+    @Info("HTTP endpoint provisioned at http://{0}:{1,number,#}{2}")
     void httpEndpointProvisioned(String ipAddress, int httpPort, String path);
 
-    @Info
+    @Info("TCP endpoint provisioned at tcp://{0}:{1,number,#}{2}")
     void tcpEndpointProvisioned(String ipAddress, int tcpPort, String path);
 
-    @Info
+    @Info("HTTP endpoint removed from http://{0}:{1,number,#}{2}")
     void httpEndpointRemoved(String ipAddress, int httpPort, String path);
 
-    @Info
+    @Info("TCP endpoint removed from tcp://{0}:{1,number,#}{2}")
     void tcpEndpointRemoved(String ipAddress, int tcpPort, String path);
 
-    @Severe
+    @Severe("Error processing request")
     void error(Throwable e);
-
-    @Severe
-    void errorMessage(String msg);
 
 }

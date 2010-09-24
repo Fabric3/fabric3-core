@@ -44,13 +44,14 @@ import org.fabric3.api.annotation.monitor.Severe;
  * @version $Rev$ $Date$
  */
 public interface ServerMonitor {
-    @Severe
+
+    @Severe("Run error:")
     void runError(Exception e);
 
-    @Info
+    @Info("Fabric3 ready [Mode:{0}]")
     void started(String mode);
 
-    @Info
+    @Info("Fabric3 shutdown")
     void stopped();
 
 }

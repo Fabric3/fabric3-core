@@ -37,23 +37,26 @@
 */
 package org.fabric3.runtime.weblogic.ds;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface DataSourceResolverMonitor {
 
-    @Severe
+    @Severe("Error:")
     void error(Exception e);
-    
-    @Warning
+
+    @Warning(
+            "he configured datasource {0} was not found in JNDI. If this is an error, ensure that the datasource has a JNDI binding and is targeted to this managed server.")
     void dataSourceNotFound(String name);
 
-    @Debug
+    @Debug("Registering JNDI datasource: {0}")
     void registerDatasource(String name);
 
-    @Debug
+    @Debug("Removing JNDI datasource: {0}")
     void removeDatasource(String name);
 
 }

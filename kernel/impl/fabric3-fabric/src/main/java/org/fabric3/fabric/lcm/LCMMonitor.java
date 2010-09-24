@@ -44,6 +44,6 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface LCMMonitor {
 
-    @Warning
+    @Warning("An invalid autowire setting was specified for the domain: {0}")
     void invalidAutowireValue(String value);
 }

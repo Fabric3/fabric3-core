@@ -50,23 +50,16 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface HostMonitor {
 
-    @Severe
-    void error(String message, Throwable e);
+    @Severe("Error starting service listener: {0}")
+    void startError(URI address, Throwable e);
 
-    /**
-     * Callback when a service has been provisioned as a JMS endpoint
-     *
-     * @param uri the service URI
-     */
-    @Info
+    @Severe("Error starting service listener: {0}")
+    void stopError(URI address, Throwable e);
+
+    @Info("Provisioned JMS endpoint [{0}]")
     void registerListener(URI uri);
 
-    /**
-     * Callback when a service has been removed as a JMS endpoint
-     *
-     * @param uri the service URI
-     */
-    @Info
+    @Info("Removed JMS endpoint [{0}]")
     void unRegisterListener(URI uri);
 
 

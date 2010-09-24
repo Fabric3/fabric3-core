@@ -40,15 +40,15 @@ package org.fabric3.implementation.pojo.component;
 import javax.security.auth.Subject;
 
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.RequestContext;
 
-import org.fabric3.api.F3RequestContext;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * @version $Rev$ $Date$
  */
-public class PojoRequestContext implements F3RequestContext {
+public class PojoRequestContext implements RequestContext {
     public Subject getSecuritySubject() {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         return workContext.getSubject().getJaasSubject();
@@ -70,18 +70,4 @@ public class PojoRequestContext implements F3RequestContext {
         return null;
     }
 
-    public <T> T getHeader(Class<T> type, String name) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        return workContext.getHeader(type, name);
-    }
-
-    public void setHeader(String name, Object value) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        workContext.setHeader(name, value);
-    }
-
-    public void removeHeader(String name) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        workContext.removeHeader(name);
-    }
 }

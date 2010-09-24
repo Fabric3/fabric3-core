@@ -45,10 +45,10 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface ExecutorMonitor {
 
-    @Severe
+    @Severe("The following exception was raised")
     void threadError(Throwable t);
 
-    @Warning
+    @Warning("Thread {0} has exceeded the stall threshold. Elapsed time is {1} milliseconds. The thread stack is: \n {2}")
     void stalledThread(String threadName, long elapsedTime, String trace);
 
 }

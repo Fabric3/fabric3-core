@@ -44,6 +44,6 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface TransportServiceMonitor {
 
-    @Info
+    @Info("Transport not found: {0}")
     void transportNotFound(String name);
 }

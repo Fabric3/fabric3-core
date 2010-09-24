@@ -37,8 +37,8 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.annotation.monitor.*;
 
 /**
  * Receives federation callback events.
@@ -47,24 +47,24 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface WebLogicTopologyMonitor {
 
-    @Severe
+    @Severe("An error was encountered")
     void error(Throwable error);
 
     @Severe
     void errorMessage(String message, Throwable error);
 
-    @Info
+    @Info("Attempting to connect to admin server")
     void connectingToAdminServer();
 
-    @Info
+    @Info("Admin server is unavailable")
     void adminServerUnavailable();
 
-    @Info
+    @Info("Update request sent to admin server")
     void updating();
 
-    @Info
+    @Info("Update received from admin server")
     void updated();
 
-    @Info
+    @Info("No managed servers found")
     void noManagedServers();
 }

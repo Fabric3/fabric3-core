@@ -44,10 +44,10 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface ActivatorMonitor {
 
-    @Info
+    @Info("Web application activated: [{0}]")
     void activated(String path);
 
-@Info
+    @Info("Web application deactivated: [{0}]")
     void deactivated(String path);
 
 

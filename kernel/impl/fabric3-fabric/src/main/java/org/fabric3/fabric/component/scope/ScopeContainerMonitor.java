@@ -55,13 +55,15 @@ import org.fabric3.spi.component.InstanceDestructionException;
  */
 public interface ScopeContainerMonitor {
 
-    @Severe
+    @Severe("Error")
     void error(Exception e);
 
-    @Severe
+    @Severe("Error destroying component")
     void eagerInitializationError(URI componentId, Exception e);
 
-    @Severe
+    @Severe("Error destroying component")
     void destructionError(InstanceDestructionException e);
 
+    @Severe("Error electing zone leader")
+    void leaderElectionError(Exception e);
 }

@@ -149,10 +149,10 @@ public class ServiceListener implements MessageListener {
             }
         } catch (JMSException e) {
             // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
-            monitor.error("Error processing message. Redelivery will not be attempted", e);
+            monitor.redeliveryError(e);
         } catch (JmsBadMessageException e) {
             // The message is invalid and cannot be processed. Log the error.
-            monitor.error("Error processing message. Since the message is invalid, redelivery will not be attempted", e);
+            monitor.redeliveryError(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

@@ -29,6 +29,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-weblogic-api" />
     <orderEntry type="module" module-name="fabric3-weblogic-mock" />
+    <orderEntry type="module" module-name="fabric3-api" />
   </component>
 </module>
 

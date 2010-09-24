@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface BindingMonitor {
 
-    @Severe
+    @Severe("Error processing FTP file")
     void fileProcessingError(String servicePath, Throwable t);
 
 }

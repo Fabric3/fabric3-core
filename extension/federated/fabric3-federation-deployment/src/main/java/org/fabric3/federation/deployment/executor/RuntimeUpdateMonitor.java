@@ -49,13 +49,13 @@ public interface RuntimeUpdateMonitor {
      *
      * @param id the runtime id.
      */
-    @Debug
+    @Debug("Update request received from {0}")
     void updateRequest(String id);
 
-    @Debug
+    @Debug("Sending update to {0}")
     void sendingUpdate(String id);
 
-    @Debug
+    @Debug("Runtime is not updated. Unable to service request from {0}")
     void notUpdated(String id);
 
 }

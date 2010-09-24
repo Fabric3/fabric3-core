@@ -54,7 +54,7 @@ public interface DeploymentCommandExecutorMonitor {
     /**
      * Callback when a deployment is processed.
      */
-    @Info
+    @Info("Processing deployment")
     void processing();
 
     /**
@@ -62,7 +62,7 @@ public interface DeploymentCommandExecutorMonitor {
      *
      * @param e the error
      */
-    @Severe
+    @Severe("Deployment error")
     void error(Throwable e);
 
     /**

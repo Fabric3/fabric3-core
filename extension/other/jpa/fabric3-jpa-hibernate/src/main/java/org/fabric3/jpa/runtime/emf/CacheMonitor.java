@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface CacheMonitor {
 
-    @Severe
-    void error(String message, Throwable e);
+    @Severe("Error removing management bean for persistence unit: {0}")
+    void error(String unitName, Throwable e);
 
 }

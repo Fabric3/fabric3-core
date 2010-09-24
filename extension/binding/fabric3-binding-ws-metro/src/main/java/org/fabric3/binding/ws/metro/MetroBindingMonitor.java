@@ -39,7 +39,8 @@ package org.fabric3.binding.ws.metro;
 
 import java.net.URL;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitor for communications events.
@@ -48,16 +49,16 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface MetroBindingMonitor {
 
-    @Info
+    @Info("Web services endpoint provisioned at {0}")
     void endpointProvisioned(String path);
 
-    @Info
+    @Info("Web services endpoint removed from {0}")
     void endpointRemoved(String path);
 
-    @Info
+    @Info("Skipping WSDL parsing as it does not contain a service definition: {0}")
     void wsdlSkipped(URL location);
 
-    @Severe
+    @Severe("Error processing request:")
     void error(Throwable e);
 
 

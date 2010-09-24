@@ -65,9 +65,8 @@ public class Role implements Principal, Serializable {
 
         Role role = (Role) o;
 
-        if (name != null ? !name.equals(role.name) : role.name != null) return false;
+        return !(name != null ? !name.equals(role.name) : role.name != null);
 
-        return true;
     }
 
     @Override

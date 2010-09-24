@@ -44,10 +44,10 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface TxMonitor {
 
-    @Warning
+    @Warning("Transaction rolled back [{0}]")
     void rolledback(String threadName);
 
-    @Warning
+    @Warning("Transaction marked for rollback [{0}]")
     void markedForRollback(String threadName);
 
 

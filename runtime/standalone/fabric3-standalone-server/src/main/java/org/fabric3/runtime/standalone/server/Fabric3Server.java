@@ -69,7 +69,6 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.JmxConfiguration;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
@@ -77,6 +76,7 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.security.DelegatingJmxAuthenticator;
+import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.jmx.agent.rmi.RmiAgent;
 
@@ -228,7 +228,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 coordinator.shutdown();
             }
         } catch (ShutdownException ex) {
-            monitor.runError(ex);
+            monitor.shutdownError(ex);
         }
     }
 
@@ -296,16 +296,17 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
 
     public interface ServerMonitor {
-        @Severe
-        void runError(Exception e);
 
-        @Info
+        @Severe("Shutdown error")
+        void shutdownError(Exception e);
+
+        @Info("Fabric3 ready [Mode:{0}, JMX port:{1,number,#}]")
         void started(String mode, int jmxPort);
 
-        @Info
+        @Info("Fabric3 shutdown")
         void stopped();
 
-        @Info
+        @Info("Fabric3 exited abnormally, Caused by")
         void exited(Exception e);
 
     }

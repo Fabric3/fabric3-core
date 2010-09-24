@@ -44,7 +44,7 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface FSDomainReplayMonitor {
 
-    @Severe
+    @Severe("Error recovering domain")
     void error(Throwable e);
 
     @Severe

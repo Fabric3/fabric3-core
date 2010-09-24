@@ -43,7 +43,8 @@
  */
 package org.fabric3.contribution;
 
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Receives callback events from the ContributionService
@@ -52,15 +53,15 @@ import org.fabric3.api.annotation.monitor.*;
  */
 public interface ContributionServiceMonitor {
 
-    @Severe
+    @Severe("An error was encountered processing the contribution: {0}")
     void error(String message, Throwable e);
 
-    @Info
+    @Info("The following contribution warnings were reported: \n\n{0}")
     void contributionWarnings(String message);
 
-    @Info
+    @Info("{0} installed")
     void installed(String description);
 
-    @Info
+    @Info("{0} uninstalled")
     void uninstalled(String description);
 }

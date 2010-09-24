@@ -38,7 +38,8 @@
 package org.fabric3.federation.jgroups;
 
 import org.fabric3.api.annotation.monitor.Debug;
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
@@ -48,30 +49,30 @@ public interface TopologyServiceMonitor {
     @Severe
     void error(String message, Throwable t);
 
-    @Info
+    @Info("Joining domain as: {0}")
     void joiningDomain(String runtimeName);
 
-    @Debug
+    @Debug("Handling message from: {0}")
     void handleMessage(String runtimeName);
 
-    @Debug
+    @Debug("Received message from: {0}")
     void receiveMessage(String runtimeName);
 
-    @Debug
+    @Debug("Update request sent to: {0}")
     void updating(String s);
 
-    @Debug
+    @Debug("Completed update")
     void updated();
 
-    @Debug
+    @Debug("Unable to update the runtime until a controller becomes available")
     void updateDeferred();
 
-    @Debug
+    @Debug("Runtime removed from the domain: {0")
     void runtimeRemoved(String runtimeName);
 
-    @Debug
+    @Debug("Sending request for transport information to: {0}")
     void metadataUpdateRequest(String runtimeName);
 
-    @Debug
+    @Debug("Broadcasting availability to the domain")
     void broadcastAvailability();
 }

@@ -44,6 +44,6 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface NonBlockingMonitor {
 
-    @Severe
+    @Severe("Error in asynchronous request")
     void onError(Throwable e);
 }

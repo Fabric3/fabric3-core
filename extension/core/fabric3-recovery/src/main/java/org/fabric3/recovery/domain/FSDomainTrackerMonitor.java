@@ -41,6 +41,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 public interface FSDomainTrackerMonitor {
 
-    @Severe
+    @Severe("Error recording domain state")
     void error(Throwable e);
 }

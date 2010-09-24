@@ -45,8 +45,8 @@ package org.fabric3.runtime.webapp;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 
 /**
@@ -54,22 +54,22 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface WebAppMonitor {
 
-    @Info
+    @Info("Fabric3 ready")
     void started();
 
-    @Info
+    @Info("Fabric3 shutdown")
     void stopped();
 
-    @Info
+    @Info("Deployed composite {0}")
     void compositeDeployed(QName qName);
 
-    @Severe
+    @Severe("Error initializing the runtime:\n\n{0}")
     void runError(Throwable e);
 
-    @Severe
+    @Severe("The contribution contains the following errors:\n\n{0}")
     void contributionErrors(String s);
 
-    @Severe
+    @Severe("The following deployment errors were raised:\n\n{0}")
     void deploymentErrors(String s);
 
 }

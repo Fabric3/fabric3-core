@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.monitor.Monitorable;
@@ -86,29 +85,51 @@ public class JDKMonitorProxyService implements MonitorProxyService {
         channel.attach(streamHandler);
 
         ClassLoader loader = type.getClassLoader();
-        ResourceBundle bundle = locateBundle(type, "f3", loader);
 
         Map<String, DispatchInfo> levels = new HashMap<String, DispatchInfo>();
         for (Method method : type.getMethods()) {
-            MonitorLevel level = MonitorLevel.getAnnotatedLogLevel(method);
-            String key = type.getName() + "#" + method.getName();
-            String message = null;
-            if (bundle != null) {
-                try {
-                    message = bundle.getString(key);
-                } catch (MissingResourceException e) {
-                    // no resource, ignore
-                }
-            }
-            if (message == null && method.getParameterTypes().length == 0) {
-                // if there are no params, set the message to the key
-                message = key;
-            }
-            levels.put(method.getName(), new DispatchInfo(level, message));
+            DispatchInfo info = createDispatchInfo(type, loader, method);
+            levels.put(method.getName(), info);
         }
 
         MonitorHandler handler = new MonitorHandler(monitorable, streamHandler, levels);
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
+    }
+
+    private <T> DispatchInfo createDispatchInfo(Class<T> type, ClassLoader loader, Method method) {
+        DispatchInfo info = MonitorUtil.getDispatchInfo(method);
+        String message = info.getMessage();
+        if (Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage())) {
+            if (message.length() > 0) {
+                return info;
+            } else if (message.length() == 0) {
+                Class<?>[] types = method.getParameterTypes();
+                if (types.length == 1 && String.class.equals(types[0])) {
+                    // if there is no default message and the method takes a single String parameter, use the default formatting
+                    info.setMessage("{0}");
+                    return info;
+                } else if (types.length == 2 && String.class.equals(types[0]) && Throwable.class.isAssignableFrom(types[1])) {
+                    // if there is no default message and the method takes a String parameter and throwable, use the default formatting
+                    info.setMessage("{0}");
+                    return info;
+                }
+            }
+        }
+        String key = type.getName() + "#" + method.getName();
+        ResourceBundle bundle = locateBundle(type, "f3", loader);
+        if (bundle != null) {
+            try {
+                message = bundle.getString(key);
+            } catch (MissingResourceException e) {
+                // no resource, ignore
+            }
+        }
+        if (message.length() == 0 && method.getParameterTypes().length == 0) {
+            // if there are no params, set the message to the key
+            message = key;
+        }
+        info.setMessage(message);
+        return info;
     }
 
     private <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName, ClassLoader loader) {

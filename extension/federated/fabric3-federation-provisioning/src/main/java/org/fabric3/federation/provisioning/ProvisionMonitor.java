@@ -39,8 +39,10 @@ package org.fabric3.federation.provisioning;
 
 import java.net.URL;
 
+import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.api.annotation.monitor.*;
+import org.fabric3.api.annotation.monitor.Warning;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthorizationException;
 
@@ -50,30 +52,27 @@ import org.fabric3.spi.security.AuthorizationException;
 public interface ProvisionMonitor {
 
     @Severe
-    void httpsNotEnabled();
-
-    @Severe
     void errorMessage(String message);
 
     @Severe
     void error(String message, Throwable e);
 
-    @Severe
-    void error(String s);
+    @Severe("HTTPS must be enabled for secure provisioning")
+    void httpsNotEnabled();
 
-    @Warning
+    @Warning("Username not set for secure contribution provisioning")
     void warnUsername();
 
-    @Warning
+    @Warning("Password not set for secure contribution provisioning")
     void warnPassword();
 
-    @Info
+    @Info("Invalid authentication received when attempting to provision a contribution")
     void badAuthentication(AuthenticationException e);
 
-    @Info
+    @Info("Invalid authorization received when attempting to provision a contribution")
     void badAuthorization(AuthorizationException e);
 
-    @Debug
+    @Debug("Resolving contribution {0}")
     void resolving(URL url);
 
 }

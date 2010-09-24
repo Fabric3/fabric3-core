@@ -51,7 +51,7 @@ public interface RsWireAttacherMonitor {
      *
      * @param address the endpoint address
      */
-    @Info
+    @Info("REST endpoint provisioned at {0}")
     void provisionedEndpoint(URI address);
 
     /**
@@ -59,7 +59,7 @@ public interface RsWireAttacherMonitor {
      *
      * @param address the endpoint address
      */
-    @Info
+    @Info("REST endpoint removed at {0}")
     void removedEndpoint(URI address);
 
 }

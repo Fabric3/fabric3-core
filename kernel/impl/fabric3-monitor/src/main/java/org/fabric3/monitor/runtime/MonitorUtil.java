@@ -37,36 +37,57 @@
 */
 package org.fabric3.monitor.runtime;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.fabric3.api.annotation.monitor.MonitorEventType;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
- * Dispatch information for a monitor interface operation.
- *
  * @version $Rev$ $Date$
  */
-public class DispatchInfo {
-    private MonitorLevel level;
-    private String message;
-
-    public DispatchInfo(MonitorLevel level, String message) {
-        this.level = level;
-        this.message = message;
-    }
-
-    public MonitorLevel getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+public class MonitorUtil {
 
     /**
-     * Used to override the default message, e.g. when the default message needs to be localized.
      *
-     * @param message the localized message
+     *
+     * @param method monitor method
+     * @return the annotated <code>LogLevels</code> value
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public static DispatchInfo getDispatchInfo(Method method) {
+
+        MonitorLevel level = null;
+        String message = "";
+        MonitorEventType annotation = method.getAnnotation(MonitorEventType.class);
+        if (annotation != null) {
+            level = annotation.value();
+        }
+
+        if (level == null) {
+            for (Annotation methodAnnotation : method.getDeclaredAnnotations()) {
+                Class<? extends Annotation> annotationType = methodAnnotation.annotationType();
+
+                MonitorEventType monitorEventType = annotationType.getAnnotation(MonitorEventType.class);
+                if (monitorEventType != null) {
+                    level = monitorEventType.value();
+                    try {
+                        Method valueMethod = methodAnnotation.getClass().getMethod("value");
+                        message = (String) valueMethod.invoke(methodAnnotation);
+                    } catch (IllegalAccessException e) {
+                        throw new AssertionError(e);
+                    } catch (InvocationTargetException e) {
+                        throw new AssertionError(e);
+                    } catch (NoSuchMethodException e) {
+                        // ignore
+                    }
+                    return new DispatchInfo(level, message);
+                }
+            }
+        }
+        // default to debug
+        return new DispatchInfo(MonitorLevel.DEBUG, "");
     }
+
+
 }

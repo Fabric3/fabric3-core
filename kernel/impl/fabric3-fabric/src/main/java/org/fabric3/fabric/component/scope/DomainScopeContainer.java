@@ -164,7 +164,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
                 try {
                     super.startContext(workContext);
                 } catch (GroupInitializationException e) {
-                    monitor.error(e);
+                    monitor.leaderElectionError(e);
                 }
             }
             deferredContexts.clear();

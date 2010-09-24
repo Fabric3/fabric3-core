@@ -37,6 +37,8 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
+import java.net.URI;
+
 import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Severe;
 
@@ -45,24 +47,45 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface MessageContainerMonitor {
 
-    @Severe
-    void errorMessage(String message);
+    @Severe("No transaction for {0}")
+    void noTransaction(URI uri);
 
-    @Severe
-    void error(String message, Throwable e);
+    @Severe("All receivers are paused, possibly as a result of rejected work for {0}")
+    void pauseError(String message);
 
-    @Debug
+    @Severe("The number is below the minimum threshold, possibly as a result of rejected work for {0}")
+    void minimumError(String message);
+
+    @Severe("Listener threw an exception for {0}")
+    void listenerError(String uri, Throwable e);
+
+    @Severe("Error refreshing connection for destination {0} for {1}")
+    void connectionError(String destination, String uri, Throwable e);
+
+    @Severe("Error stopping connection for {0}")
+    void stopConnectionError(URI uri, Throwable e);
+
+    @Severe("Error receiving message for {0}")
+    void receiveError(URI uri, Throwable e);
+
+    @Severe("Error setting transaction timeout for {0}")
+    void timeoutError(URI uri, Throwable e);
+
+    @Severe("Error setting rollback for {0}")
+    void rollbackError(URI uri, Throwable e);
+
+    @Debug("Receiver scheduled: {0}")
     void scheduledReceiver(String name);
 
-    @Debug
+    @Debug("Number of receivers increased to {0}")
     void increaseReceivers(int count);
 
-    @Debug
+    @Debug("Number of receivers decreased to {0}")
     void decreaseReceivers(int count);
 
-    @Debug
-    void debugError(String message, Throwable e);
+    @Debug("Error starting connection {0}")
+    void startConnectionError(Throwable e);
 
-    @Debug
+    @Debug("Work has been rejected with the following exception")
     void reject(Exception e);
 }
