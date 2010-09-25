@@ -52,7 +52,9 @@ public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatc
 
     public MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException {
         LogbackDispatcher dispatcher = new LogbackDispatcher(name);
-        dispatcher.configure(configuration);
+        if (configuration != null) {
+            dispatcher.configure(configuration);
+        }
         return dispatcher;
     }
 }
