@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.Monitorable;
@@ -52,7 +53,7 @@ import org.fabric3.spi.channel.EventStreamHandler;
  *
  * @version $Rev$ $Date$
  */
-public class MonitorHandler implements InvocationHandler {
+public class MonitorHandler implements InvocationHandler, MonitorChannel {
     private static final Object[] EMPTY_DATA = new Object[0];
     private Monitorable monitorable;
     private String runtime;
@@ -90,17 +91,43 @@ public class MonitorHandler implements InvocationHandler {
             // monitoring is off
             return null;
         }
-        String thread = Thread.currentThread().getName();
-        currentMessage = format(currentMessage, args);
-        long time = System.currentTimeMillis();
-        if (args == null) {
-            args = EMPTY_DATA;
-        }
-        MonitorEvent event = new MonitorEventImpl(runtime, source, currentLevel, time, thread, currentMessage, args);
-        // events are passed as arrays
-        Object[] param = new Object[]{event};
-        streamHandler.handle(param);
+        dispatch(currentLevel, currentMessage, args);
         return null;
+    }
+
+    public void severe(String message, Object... args) {
+        if (off(MonitorLevel.SEVERE)) {
+            return;
+        }
+        dispatch(MonitorLevel.SEVERE, message, args);
+    }
+
+    public void warn(String message, Object... args) {
+        if (off(MonitorLevel.WARNING)) {
+            return;
+        }
+        dispatch(MonitorLevel.WARNING, message, args);
+    }
+
+    public void info(String message, Object... args) {
+        if (off(MonitorLevel.INFO)) {
+            return;
+        }
+        dispatch(MonitorLevel.INFO, message, args);
+    }
+
+    public void debug(String message, Object... args) {
+        if (off(MonitorLevel.DEBUG)) {
+            return;
+        }
+        dispatch(MonitorLevel.DEBUG, message, args);
+    }
+
+    public void trace(String message, Object... args) {
+        if (off(MonitorLevel.TRACE)) {
+            return;
+        }
+        dispatch(MonitorLevel.TRACE, message, args);
     }
 
     /**
@@ -127,5 +154,34 @@ public class MonitorHandler implements InvocationHandler {
         return message;
     }
 
+    /**
+     * Determines if monitoring is off for the current level
+     *
+     * @param currentLevel the level
+     * @return true if off
+     */
+    private boolean off(MonitorLevel currentLevel) {
+        return currentLevel.intValue() < monitorable.getLevel().intValue();
+    }
+
+    /**
+     * Dispatches the monitor event to the channel
+     *
+     * @param currentLevel the current monitor level
+     * @param message      the event message
+     * @param args         the event arguments or null
+     */
+    private void dispatch(MonitorLevel currentLevel, String message, Object[] args) {
+        String thread = Thread.currentThread().getName();
+        message = format(message, args);
+        long time = System.currentTimeMillis();
+        if (args == null) {
+            args = EMPTY_DATA;
+        }
+        MonitorEvent event = new MonitorEventImpl(runtime, source, currentLevel, time, thread, message, args);
+        // events are passed as arrays
+        Object[] param = new Object[]{event};
+        streamHandler.handle(param);
+    }
 
 }

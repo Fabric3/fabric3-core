@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.fabric3.api.MonitorChannel;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.monitor.Monitorable;
@@ -93,6 +94,9 @@ public class JDKMonitorProxyService implements MonitorProxyService {
         }
 
         MonitorHandler handler = new MonitorHandler(monitorable, streamHandler, levels);
+        if (MonitorChannel.class.equals(type)) {
+            return type.cast(handler);
+        }
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
 
