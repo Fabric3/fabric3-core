@@ -38,6 +38,7 @@
 package org.fabric3.monitor.runtime;
 
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -56,6 +57,7 @@ import org.fabric3.host.monitor.Monitorable;
  *
  * @version $Rev$ $Date$
  */
+@XmlRootElement
 public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
     private static final long serialVersionUID = 6943460067960488899L;
     private MonitorLevel level;
@@ -68,6 +70,8 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
     private Object[] data;
 
     /**
+     * Constructor.
+     *
      * @param runtime    the runtime which originated the event
      * @param source     the name of the {@link Monitorable} which originated the event
      * @param level      the event level
@@ -88,6 +92,11 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
         logbackLevel = LevelConverter.getLogbackLevel(level);
     }
 
+    /**
+     * No-args ctor for databinding.
+     */
+    public MonitorEventImpl() {
+    }
 
     /**
      * Returns the runtime which originated the event.
