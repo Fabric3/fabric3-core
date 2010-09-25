@@ -101,7 +101,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Severe("The following contribution errors were found")
+    @Severe("The following contribution errors were found:\n\n {0}")
     void contributionErrors(String description);
 
     /**
@@ -109,7 +109,7 @@ public interface ScannerMonitor {
      *
      * @param description a description of the errors
      */
-    @Severe("The following deployment errors were raised")
+    @Severe("The following deployment errors were raised:\n\n {0}")
     void deploymentErrors(String description);
 
 }
