@@ -332,11 +332,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return domainChannel;
     }
 
-    @ManagementOperation(description = "The runtime name")
-    public String getRuntimeName() {
-        return info.getRuntimeName();
-    }
-
     private Response send(Address address, Command command, long timeout) throws MessageException {
         try {
             Address sourceAddress = domainChannel.getAddress();

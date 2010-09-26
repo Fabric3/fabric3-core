@@ -103,6 +103,8 @@ public abstract class AbstractTopologyService {
         this.executor = executor;
         this.helper = helper;
         this.monitor = monitor;
+        runtimeName = info.getRuntimeName();
+
     }
 
     @Property(required = false)
@@ -129,6 +131,11 @@ public abstract class AbstractTopologyService {
     @Property(required = false)
     public void setDefaultBindAddress(String defaultBindAddress) {
         this.defaultBindAddress = defaultBindAddress;
+    }
+
+    @ManagementOperation(description = "The runtime name")
+    public String getRuntimeName() {
+        return runtimeName;
     }
 
     @ManagementOperation(description = "Default bind address")
@@ -175,7 +182,6 @@ public abstract class AbstractTopologyService {
         }
         LogFactory.getLog(JChannel.class).setLevel(logLevel);
         domainName = info.getDomain().getAuthority();
-        runtimeName = getRuntimeName();
 
         // setup runtime notifications
         Fabric3EventListener<JoinDomain> joinListener = getJoinListener();
@@ -189,8 +195,6 @@ public abstract class AbstractTopologyService {
     abstract Fabric3EventListener<JoinDomain> getJoinListener();
 
     abstract Fabric3EventListener<RuntimeStop> getStopListener();
-
-    abstract String getRuntimeName();
 
     protected void initializeChannel(Channel channel) {
         // turn off local message reception
@@ -246,12 +250,12 @@ public abstract class AbstractTopologyService {
                 ResponseCommand command = (ResponseCommand) deserialized;
                 executorRegistry.execute(command);
                 Response response = command.getResponse();
-                response.setRuntimeName(getRuntimeName());
+                response.setRuntimeName(runtimeName);
                 return helper.serialize(response);
             } catch (MessageException e) {
                 monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
-                ex.setRuntimeName(getRuntimeName());
+                ex.setRuntimeName(runtimeName);
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {
@@ -260,7 +264,7 @@ public abstract class AbstractTopologyService {
             } catch (ExecutionException e) {
                 monitor.error("Error handling message from: " + runtimeName, e);
                 RemoteSystemException ex = new RemoteSystemException(e);
-                ex.setRuntimeName(getRuntimeName());
+                ex.setRuntimeName(runtimeName);
                 try {
                     return helper.serialize(ex);
                 } catch (MessageException e1) {

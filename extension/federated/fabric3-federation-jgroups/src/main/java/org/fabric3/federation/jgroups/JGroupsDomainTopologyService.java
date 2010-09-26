@@ -285,11 +285,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return domainChannel;
     }
 
-    @ManagementOperation(description = "The runtime name")
-    public String getRuntimeName() {
-        return info.getRuntimeName();
-    }
-
     /**
      * Returns a list of zones in the given view
      *
