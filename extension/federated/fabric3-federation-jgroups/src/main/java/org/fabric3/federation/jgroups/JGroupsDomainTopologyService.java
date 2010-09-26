@@ -213,7 +213,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                     response.setRuntimeName(UUID.get(address));
                     responses.add(response);
                     if (failFast) {
-                        // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
+                        // abort sending to remaining runtimes as an error was encountered and fail-fast behavior is enforced
                         break;
                     }
                 } else if (o instanceof byte[]) {
@@ -222,7 +222,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                         Response response = (Response) deserialized;
                         responses.add(response);
                         if (failFast && response instanceof ErrorResponse) {
-                            // abort sending to remaining runtimes as an error was encounted and fail-fast behavior is enforced
+                            // abort sending to remaining runtimes as an error was encountered and fail-fast behavior is enforced
                             break;
                         }
                     } else {
@@ -287,7 +287,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
     @ManagementOperation(description = "The runtime name")
     public String getRuntimeName() {
-        return domainName + ":controller:" + info.getRuntimeId();
+        return info.getRuntimeName();
     }
 
     /**

@@ -116,12 +116,12 @@ public abstract class AbstractTopologyService {
     }
 
     @Property(required = false)
-    @ManagementOperation (description = "Default timeout")
+    @ManagementOperation(description = "Default timeout")
     public void setDefaultTimeout(long defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
     }
 
-    @ManagementOperation (description = "Default timeout")
+    @ManagementOperation(description = "Default timeout")
     public long getDefaultTimeout() {
         return defaultTimeout;
     }
@@ -131,7 +131,7 @@ public abstract class AbstractTopologyService {
         this.defaultBindAddress = defaultBindAddress;
     }
 
-    @ManagementOperation (description = "Default bind address")
+    @ManagementOperation(description = "Default bind address")
     public String getDefaultBindAddressSetting() {
         return defaultBindAddress;
     }
@@ -166,7 +166,7 @@ public abstract class AbstractTopologyService {
         return getDomainChannel().getReceivedBytes();
     }
 
-    
+
     @Init
     public void init() throws ChannelException {
         // set the bind address if it is specified in the system configuration and not specified at JVM startup 
@@ -193,7 +193,7 @@ public abstract class AbstractTopologyService {
     abstract String getRuntimeName();
 
     protected void initializeChannel(Channel channel) {
-        // turn off local mesage reception
+        // turn off local message reception
         channel.setOpt(Channel.LOCAL, false);
 
         TP transport = channel.getProtocolStack().getTransport();

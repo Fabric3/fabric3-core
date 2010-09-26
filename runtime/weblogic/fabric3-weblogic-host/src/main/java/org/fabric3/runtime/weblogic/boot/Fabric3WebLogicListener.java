@@ -142,14 +142,18 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             //  calculate config directories based on the mode the runtime is booted in
             String runtimeId;
             String runtimeDirName;
+            String runtimeName;
             if (RuntimeMode.CONTROLLER == runtimeMode) {
                 runtimeId = "controller";
+                runtimeName = "controller";
                 runtimeDirName = runtimeId;
             } else if (RuntimeMode.PARTICIPANT == runtimeMode) {
                 runtimeId = getRuntimeId(mBeanServer);
+                runtimeName = runtimeId;
                 runtimeDirName = "participant";
             } else {
                 runtimeId = getRuntimeId(mBeanServer);
+                runtimeName = runtimeId;
                 runtimeDirName = "vm";
             }
             File rootRuntimeDir = BootstrapHelper.getDirectory(installDirectory, "runtimes");
@@ -179,7 +183,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeId, runtimeMode, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, runtimeMode, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

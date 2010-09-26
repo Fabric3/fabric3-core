@@ -48,7 +48,7 @@ public interface DeploymentCommandExecutorMonitor {
     /**
      * Callback when a deployment is received.
      */
-    @Info
+    @Info("Deployment received")
     void received();
 
     /**

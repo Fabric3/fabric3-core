@@ -175,7 +175,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         } else {
             domainChannel = new JChannel();
         }
-        domainChannel.setName(getRuntimeName());
+        domainChannel.setName(info.getRuntimeName());
         initializeChannel(domainChannel);
 
         Fabric3MessageListener messageListener = new Fabric3MessageListener();
@@ -334,7 +334,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     @ManagementOperation(description = "The runtime name")
     public String getRuntimeName() {
-        return domainName + ":participant:" + zoneName + ":" + info.getRuntimeId();
+        return info.getRuntimeName();
     }
 
     private Response send(Address address, Command command, long timeout) throws MessageException {

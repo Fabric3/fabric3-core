@@ -95,11 +95,20 @@ public interface BootstrapService {
     URI parseDomainName(Document systemConfig) throws ParseException;
 
     /**
+     * Returns the configured zone name. If not configured, the default zone name will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the zone name
+     * @throws ParseException if there is an error parsing the zone name
+     */
+    String parseZoneName(Document systemConfig) throws ParseException;
+
+    /**
      * Returns the configured runtime mode. If not configured, {@link RuntimeMode#VM} will be returned.
      *
      * @param systemConfig the system configuration
-     * @return the domain name
-     * @throws ParseException if there is an error parsing the domain name
+     * @return the runtime mode
+     * @throws ParseException if there is an error parsing the runtime mode
      */
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException;
 
@@ -111,6 +120,17 @@ public interface BootstrapService {
      * @throws ParseException if there is an error parsing the JMX port range
      */
     JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException;
+
+    /**
+     * Returns the unique runtime name.
+     *
+     * @param domainName the domain name
+     * @param zoneName   the zone name
+     * @param runtimeId  the runtime id
+     * @param mode       the runtime mode
+     * @return the runtime name
+     */
+    String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode);
 
     /**
      * Creates a {@link MonitorEventDispatcher} for dispatching runtime events.

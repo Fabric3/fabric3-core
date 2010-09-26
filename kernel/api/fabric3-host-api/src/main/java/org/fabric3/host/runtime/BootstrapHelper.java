@@ -124,12 +124,12 @@ public final class BootstrapHelper {
     }
 
     /**
-     * Create a classloader from all the jar files or subdirectories in a directory. The classpath for the returned classloader will comprise all jar
-     * files and subdirectories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
+     * Create a classloader from all the jar files or sub-directories in a directory. The classpath for the returned classloader will comprise all jar
+     * files and sub-directories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
      *
      * @param parent    the parent for the new classloader
      * @param directory the directory to scan
-     * @return a classloader whose classpath includes all jar files and subdirectories of the supplied directory
+     * @return a classloader whose classpath includes all jar files and sub-directories of the supplied directory
      */
     public static ClassLoader createClassLoader(ClassLoader parent, File directory) {
         File[] jars = directory.listFiles(new FileFilter() {
@@ -184,16 +184,16 @@ public final class BootstrapHelper {
     /**
      * Creates the HostInfo for a runtime.
      *
-     * @param runtimeId     the runtime id
+     * @param runtimeName   the runtime name
      * @param runtimeMode   the runtime boot mode
      * @param domainName    the name of the domain the runtime is part of
      * @param runtimeDir    the base directory containing non-sharable, read-write runtime artifacts
      * @param configDir     the root configuration directory
-     * @param extensionsDir the sharable extensions directory      @return the host info
+     * @param extensionsDir the sharable extensions directory
      * @return the host info
      * @throws IOException if there is an error accessing a host info directory
      */
-    public static HostInfo createHostInfo(String runtimeId,
+    public static HostInfo createHostInfo(String runtimeName,
                                           RuntimeMode runtimeMode,
                                           URI domainName,
                                           File runtimeDir,
@@ -205,7 +205,7 @@ public final class BootstrapHelper {
         File tempDir = getDirectory(runtimeDir, "tmp");
         File dataDir = getDirectory(runtimeDir, "data");
         File deployDir = new File(runtimeDir, "deploy");
-        return new DefaultHostInfo(runtimeId,
+        return new DefaultHostInfo(runtimeName,
                                    runtimeMode,
                                    domainName,
                                    runtimeDir,

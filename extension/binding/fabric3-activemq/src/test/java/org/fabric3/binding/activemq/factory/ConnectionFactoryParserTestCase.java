@@ -88,9 +88,9 @@ public class ConnectionFactoryParserTestCase extends TestCase {
         super.setUp();
         registry = new MockConnectionFactoryManager();
         HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeId()).andReturn("broker");
+        EasyMock.expect(info.getRuntimeName()).andReturn("broker");
         EasyMock.replay(info);
-        parser = new ConnectionFactoryParser(registry, null, info);
+        parser = new ConnectionFactoryParser(registry, info);
 
         InputStream stream = new ByteArrayInputStream(XML.getBytes());
         reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);

@@ -50,9 +50,6 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.event.EventContext;
-import javax.naming.event.NamespaceChangeListener;
-import javax.naming.event.NamingEvent;
-import javax.naming.event.NamingExceptionEvent;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -63,12 +60,10 @@ import org.osoa.sca.annotations.Service;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
-import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
-import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
@@ -76,6 +71,9 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.RuntimeInstance;
+
+import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
+import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
 /**
  * Provides domain-wide controller communication using the WebLogic clustered JNDI tree.
@@ -118,6 +116,10 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 //            participantContext.removeNamingListener();
             participantContext.close();
         }
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
     }
 
     public List<String> getZones() {
@@ -286,26 +288,6 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
                 e.printStackTrace();
                 throw e;
             }
-        }
-    }
-
-
-    private class ParticipantContextListener implements NamespaceChangeListener {
-
-        public void namingExceptionThrown(NamingExceptionEvent evt) {
-            // no-op
-        }
-
-        public void objectAdded(NamingEvent evt) {
-            // TODO update zone metadata
-        }
-
-        public void objectRemoved(NamingEvent evt) {
-            // TODO update zone metadata
-        }
-
-        public void objectRenamed(NamingEvent evt) {
-
         }
     }
 

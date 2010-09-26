@@ -70,8 +70,8 @@ import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.JmxConfiguration;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.runtime.ParseException;
+import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 
@@ -85,6 +85,7 @@ import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
  */
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
+    private static final String DEFAULT_ZONE = "default.zone";
     private static final int DEFAULT_JMX_PORT = 1199;
     private DocumentLoader loader;
 
@@ -186,6 +187,22 @@ public class SystemConfigLoader {
             }
         } else if (nodes.getLength() == 0) {
             return DEFAULT_DOMAIN;
+        }
+        throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
+    }
+
+    public String parseZoneName(Document systemConfig) throws ParseException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("zoneName");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String name = node.getTextContent();
+            if (name != null) {
+                name = name.trim();
+            }
+            return name;
+        } else if (nodes.getLength() == 0) {
+            return DEFAULT_ZONE;
         }
         throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
     }

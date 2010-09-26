@@ -65,7 +65,7 @@ public class MavenHostInfoImpl implements MavenHostInfo {
         this.tempDir = tempDir;
     }
 
-    public String getRuntimeId() {
+    public String getRuntimeName() {
         return "maven";
     }
 

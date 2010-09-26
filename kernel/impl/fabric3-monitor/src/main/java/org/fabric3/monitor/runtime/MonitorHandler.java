@@ -56,14 +56,18 @@ import org.fabric3.spi.channel.EventStreamHandler;
 public class MonitorHandler implements InvocationHandler, MonitorChannel {
     private static final Object[] EMPTY_DATA = new Object[0];
     private Monitorable monitorable;
-    private String runtime;
+    private String runtimeName;
     private String source;
     private EventStreamHandler streamHandler;
     private MonitorLevel level;
     private String message;
     private Map<String, DispatchInfo> infos;
 
-    public MonitorHandler(Monitorable monitorable, EventStreamHandler streamHandler, Map<String, DispatchInfo> infos) {
+    public MonitorHandler(String runtimeName,
+                          Monitorable monitorable,
+                          EventStreamHandler streamHandler,
+                          Map<String, DispatchInfo> infos) {
+        this.runtimeName = runtimeName;
         this.monitorable = monitorable;
         this.source = monitorable.getName();
         this.streamHandler = streamHandler;
@@ -178,7 +182,7 @@ public class MonitorHandler implements InvocationHandler, MonitorChannel {
         if (args == null) {
             args = EMPTY_DATA;
         }
-        MonitorEvent event = new MonitorEventImpl(runtime, source, currentLevel, time, thread, message, args);
+        MonitorEvent event = new MonitorEventImpl(runtimeName, source, currentLevel, time, thread, message, args);
         // events are passed as arrays
         Object[] param = new Object[]{event};
         streamHandler.handle(param);

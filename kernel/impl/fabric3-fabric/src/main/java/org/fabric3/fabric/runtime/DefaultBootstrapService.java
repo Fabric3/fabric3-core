@@ -99,6 +99,10 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseDomainName(systemConfig);
     }
 
+    public String parseZoneName(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseZoneName(systemConfig);
+    }
+
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseRuntimeMode(systemConfig);
     }
@@ -106,6 +110,19 @@ public class DefaultBootstrapService implements BootstrapService {
     public JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseJmxConfiguration(systemConfig);
     }
+
+    public String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode) {
+        String runtimeName;
+        if (RuntimeMode.CONTROLLER == mode) {
+            runtimeName = domainName.getAuthority() + ":controller:" + runtimeId;
+        } else if (RuntimeMode.PARTICIPANT == mode) {
+            runtimeName = domainName.getAuthority() + ":participant:" + zoneName + ":" + runtimeId;
+        } else {
+            runtimeName = "vm";
+        }
+        return runtimeName;
+    }
+
 
     public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException {
         // set additive to true to use the root appender for the runtime log context hierarchy; otherwise set to false

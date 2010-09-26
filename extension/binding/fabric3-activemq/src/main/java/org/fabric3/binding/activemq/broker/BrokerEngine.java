@@ -58,7 +58,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
@@ -81,7 +80,6 @@ public class BrokerEngine {
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MonitorService monitorService;
     private MBeanServer mBeanServer;
-    private ZoneTopologyService topologyService;
 
     public BrokerEngine(@Reference HostInfo info) {
         tempDir = new File(info.getTempDir(), "activemq");
@@ -119,11 +117,6 @@ public class BrokerEngine {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
-        this.topologyService = topologyService;
-    }
-
-    @Reference(required = false)
     public void setMBeanServer(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
     }
@@ -135,13 +128,7 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // set the default broker name
-        if (topologyService != null) {
-            brokerName = topologyService.getRuntimeName().replace(":", ".");
-        } else {
-            // a non-clustered environment, default to the runtime id
-            brokerName = info.getRuntimeId();
-        }
-
+        brokerName = info.getRuntimeName().replace(":", ".");
         broker = new BrokerService();
         broker.setUseJmx(true);
         broker.setTmpDataDirectory(tempDir);

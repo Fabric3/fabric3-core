@@ -64,10 +64,12 @@ import org.fabric3.spi.channel.PassThroughHandler;
  * @version $Rev$ $Date$
  */
 public class JDKMonitorProxyService implements MonitorProxyService {
+    private String runtimeName;
     private ChannelManager channelManager;
     private Monitorable defaultMonitorable;
 
-    public JDKMonitorProxyService(Monitorable monitorable, ChannelManager channelManager) {
+    public JDKMonitorProxyService(String runtimeName, Monitorable monitorable, ChannelManager channelManager) {
+        this.runtimeName = runtimeName;
         this.defaultMonitorable = monitorable;
         this.channelManager = channelManager;
     }
@@ -93,7 +95,7 @@ public class JDKMonitorProxyService implements MonitorProxyService {
             levels.put(method.getName(), info);
         }
 
-        MonitorHandler handler = new MonitorHandler(monitorable, streamHandler, levels);
+        MonitorHandler handler = new MonitorHandler(runtimeName, monitorable, streamHandler, levels);
         if (MonitorChannel.class.equals(type)) {
             return type.cast(handler);
         }

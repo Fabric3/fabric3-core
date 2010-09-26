@@ -106,14 +106,14 @@ public class Fabric3Listener implements LifecycleListener {
 
     private void init(Server server) {
         try {
-            String runtimeName = System.getProperty(RUNTIME_NAME, "vm");
+            String runtimeId = System.getProperty(RUNTIME_NAME, "vm");
 
             // This class is loaded in <tomcat install>/lib. The Fabric3 runtime is installed at <tomcat install>/fabric3
             File installDirectory = new File(BootstrapHelper.getInstallDirectory(getClass()), "fabric3");
             File extensionsDir = new File(installDirectory, "extensions");
 
             //  calculate config directories based on the mode the runtime is booted in
-            File runtimeDir = getRuntimeDirectory(installDirectory, runtimeName);
+            File runtimeDir = getRuntimeDirectory(installDirectory, runtimeId);
             File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
 
             // create the classloaders for booting the runtime
@@ -131,8 +131,10 @@ public class Fabric3Listener implements LifecycleListener {
             Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
-
+            String zoneName = bootstrapService.parseZoneName(systemConfig);
             RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
+
+            String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, runtimeId, mode);
 
             // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir);

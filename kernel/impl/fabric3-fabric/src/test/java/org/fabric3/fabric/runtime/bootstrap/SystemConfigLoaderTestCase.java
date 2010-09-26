@@ -78,6 +78,12 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "   </web.server>" +
             "</config>";
 
+    private static final String ZONE_CONFIG = "<config>" +
+            "   <federation>" +
+            "      <zoneName>zone1</zoneName>" +
+            "   </federation>" +
+            "</config>";
+
     private static final String CONFIG_JMX_RANGE = "<config>" +
             "<runtime domain='mydomain' jmxPort='1111-2222'/>" +
             "   <web.server>" +
@@ -137,6 +143,22 @@ public class SystemConfigLoaderTestCase extends TestCase {
         URI uri = loader.parseDomainName(systemConfig);
         URI result = URI.create("fabric3://domain");
         assertEquals(result, uri);
+    }
+
+    public void testParseZoneName() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(ZONE_CONFIG.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        assertEquals("zone1", loader.parseZoneName(systemConfig));
+    }
+
+    public void testParseDefaultZoneName() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_DEFAULT.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        assertEquals("default.zone", loader.parseZoneName(systemConfig));
     }
 
     public void testParseJmxSecurity() throws Exception {

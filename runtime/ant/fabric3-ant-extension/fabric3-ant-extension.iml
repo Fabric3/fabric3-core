@@ -15,6 +15,8 @@
     <orderEntry type="module" module-name="fabric3-spi" />
     <orderEntry type="module" module-name="fabric3-ant-api" />
     <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="module" module-name="fabric3-test-spi" />
+    <orderEntry type="module" module-name="sca-spec" />
   </component>
 </module>
 

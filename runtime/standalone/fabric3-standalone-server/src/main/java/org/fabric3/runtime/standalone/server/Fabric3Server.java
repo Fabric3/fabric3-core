@@ -142,8 +142,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
 
+            String zoneName = bootstrapService.parseZoneName(systemConfig);
+
+            String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(params.name, mode, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

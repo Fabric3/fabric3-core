@@ -54,13 +54,6 @@ import org.fabric3.spi.command.ResponseCommand;
 public interface ZoneTopologyService {
 
     /**
-     * Returns the fully qualified runtime name which is unique to the domain.
-     *
-     * @return the fully qualified runtime name
-     */
-    String getRuntimeName();
-
-    /**
      * Returns true if the current runtime is the zone leader.
      *
      * @return true if the current runtime is the zone leader

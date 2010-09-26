@@ -58,11 +58,11 @@ import org.fabric3.host.RuntimeMode;
 public interface HostInfo {
 
     /**
-     * Returns the unique id associated with this runtime. Ids survive restarts.
+     * Returns the unique name associated with this runtime. Names survive restarts.
      *
-     * @return the unique runtime id
+     * @return the unique runtime name
      */
-    String getRuntimeId();
+    String getRuntimeName();
 
     /**
      * Returns the mode the runtime is booted in.

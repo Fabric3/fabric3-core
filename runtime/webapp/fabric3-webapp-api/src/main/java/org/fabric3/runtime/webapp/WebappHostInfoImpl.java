@@ -65,7 +65,7 @@ public class WebappHostInfoImpl implements WebappHostInfo {
         this.tempDirectory = tempDirectory;
     }
 
-    public String getRuntimeId() {
+    public String getRuntimeName() {
         return "webapp";
     }
 
