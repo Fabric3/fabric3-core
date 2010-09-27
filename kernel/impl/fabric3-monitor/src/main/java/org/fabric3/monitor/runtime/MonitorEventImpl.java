@@ -38,6 +38,7 @@
 package org.fabric3.monitor.runtime;
 
 import java.util.Map;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -98,46 +99,37 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
     public MonitorEventImpl() {
     }
 
-    /**
-     * Returns the runtime which originated the event.
-     *
-     * @return the runtime which originated the event
-     */
-
+    @XmlElement
     public String getRuntime() {
         return runtime;
     }
 
-    /**
-     * Returns the name of the {@link Monitorable} which originated the event.
-     *
-     * @return the Monitorable name
-     */
+    @XmlElement
     public String getSource() {
         return source;
     }
 
-    /**
-     * Returns the event level.
-     *
-     * @return the event level
-     */
+    @XmlElement
     public MonitorLevel getMonitorLevel() {
         return level;
     }
 
+    @XmlElement
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    @XmlElement
     public String getThreadName() {
         return threadName;
     }
 
+    @XmlElement
     public String getMessage() {
         return message;
     }
 
+    @XmlElement
     public Object[] getData() {
         return data;
     }
