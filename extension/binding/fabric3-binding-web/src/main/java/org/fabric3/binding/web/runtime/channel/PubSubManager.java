@@ -64,15 +64,17 @@ public interface PubSubManager {
      * Removes a publisher.
      *
      * @param path the relative path of the channel the subscriber listens to.
+     * @return returns the publisher or null if not found
      */
-    void unregisterPublisher(String path);
+    ChannelPublisher unregisterPublisher(String path);
 
     /**
      * Removes a subscriber.
      *
      * @param path the relative path of the channel the subscriber listens to.
+     * @return returns the subscriber or null if not found
      */
-    void unregisterSubscriber(String path);
+    ChannelSubscriber unregisterSubscriber(String path);
 
     /**
      * Returns the publisher for the given channel.

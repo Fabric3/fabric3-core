@@ -56,12 +56,12 @@ public class PubSubManagerImpl implements PubSubManager {
         subscribers.put(path, subscriber);
     }
 
-    public void unregisterPublisher(String path) {
-        publishers.remove(path);
+    public ChannelPublisher unregisterPublisher(String path) {
+        return publishers.remove(path);
     }
 
-    public void unregisterSubscriber(String path) {
-        subscribers.remove(path);
+    public ChannelSubscriber unregisterSubscriber(String path) {
+        return subscribers.remove(path);
     }
 
     public ChannelPublisher getPublisher(String path) {

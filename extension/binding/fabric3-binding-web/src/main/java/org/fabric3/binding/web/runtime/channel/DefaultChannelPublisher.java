@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import org.oasisopen.sca.ServiceRuntimeException;
+import java.io.Serializable;
 
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
@@ -50,13 +50,18 @@ import org.fabric3.spi.federation.ZoneTopologyService;
  * <p/>
  * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
  * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
+ * <p/>
+ * This publisher will replicate events to other runtimes in a zone if a {@link ZoneTopologyService} is available. This allows all browser clients to
+ * be notified of events emitted by all runtmes in a zone.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultChannelPublisher implements ChannelPublisher, MessageReceiver {
-    private EventStreamHandler next;
-    private ZoneTopologyService topologyService;
+public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHandler, MessageReceiver {
     private String channelName;
+    private ChannelMonitor monitor;
+    private ZoneTopologyService topologyService;
+
+    private EventStreamHandler next;
 
     /**
      * Constructor.
@@ -64,26 +69,28 @@ public class DefaultChannelPublisher implements ChannelPublisher, MessageReceive
      * @param channelName     the name of the channel the publisher sends messages to
      * @param topologyService the topology service for broadcasting events to other runtimes in the same zone. May be null, in which case events will
      *                        not be clustered.
+     * @param monitor         the monitor for reporting errors
      */
-    public DefaultChannelPublisher(String channelName, ZoneTopologyService topologyService) {
+    public DefaultChannelPublisher(String channelName, ZoneTopologyService topologyService, ChannelMonitor monitor) {
         this.channelName = channelName;
         this.topologyService = topologyService;
-    }
-
-    public void publish(EventWrapper wrapper) throws PublishException {
-        if (topologyService != null && topologyService.supportsDynamicChannels()) {
-            try {
-                topologyService.sendAsynchronous(channelName, wrapper);
-            } catch (MessageException e) {
-                throw new PublishException(e);
-            }
-        }
-        handle(wrapper);
+        this.monitor = monitor;
     }
 
     public void handle(Object event) {
+        if (!(event instanceof EventWrapper) && event instanceof Serializable) {
+            try {
+                replicate((Serializable) event);
+            } catch (MessageException e) {
+                monitor.replicationError(e);
+            }
+        }
         // pass the object to the head stream handler
         next.handle(event);
+    }
+
+    public void publish(EventWrapper wrapper) throws PublishException {
+        handle(wrapper);
     }
 
     public void setNext(EventStreamHandler next) {
@@ -95,9 +102,19 @@ public class DefaultChannelPublisher implements ChannelPublisher, MessageReceive
     }
 
     public void onMessage(Object object) {
-        if (!(object instanceof EventWrapper)) {
-            throw new ServiceRuntimeException("Unexpected message type " + EventWrapper.class.getName());
-        }
         handle(object);
     }
+
+    /**
+     * Replicates an event to other runtimes in a zone.
+     *
+     * @param event the event
+     * @throws MessageException if an error replicated the event is encountered
+     */
+    private void replicate(Serializable event) throws MessageException {
+        if (topologyService != null && topologyService.supportsDynamicChannels()) {
+            topologyService.sendAsynchronous(channelName, event);
+        }
+    }
+
 }

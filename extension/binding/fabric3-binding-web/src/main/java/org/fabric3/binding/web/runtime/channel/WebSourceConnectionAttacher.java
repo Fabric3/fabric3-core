@@ -174,7 +174,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
             String channelName = sourceUri.toString();
-            DefaultChannelPublisher publisher = new DefaultChannelPublisher(channelName, topologyService);
+            DefaultChannelPublisher publisher = new DefaultChannelPublisher(channelName, topologyService, monitor);
             if (topologyService != null && topologyService.supportsDynamicChannels()) {
                 try {
                     topologyService.openChannel(channelName, null, publisher);
@@ -182,7 +182,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
                     throw new ConnectionAttachException(e);
                 }
             }
-            channel.attach(publisher);
+            channel.addHandler(publisher);
             pubSubManager.register(path, publisher);
         } else {
             // clients are not allowed to publish to the channel
@@ -206,7 +206,8 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
             channel.unsubscribe(sourceUri);
             broadcasterManager.remove(path);
         } else {
-            pubSubManager.unregisterPublisher(path);
+            ChannelPublisher publisher = pubSubManager.unregisterPublisher(path);
+            channel.removeHandler(publisher);
         }
 
         // detach publisher and close cluster channel
