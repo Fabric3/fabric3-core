@@ -38,11 +38,17 @@
 package org.fabric3.spi.federation;
 
 /**
+ * Implementations receive messages over a channel.
  *
  * @version $Rev$ $Date$
  */
 public interface MessageReceiver {
 
+    /**
+     * Callback when a message is received.
+     *
+     * @param object the message
+     */
     void onMessage(Object object);
 
 }
