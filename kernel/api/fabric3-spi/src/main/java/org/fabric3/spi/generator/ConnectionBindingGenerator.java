@@ -59,11 +59,11 @@ public interface ConnectionBindingGenerator<BD extends BindingDefinition> {
      * Generates metadata used to attach an event connection to a transport that is the source of an event stream. The event connection may flow to a
      * channel or consumer.
      *
-     * @param producerBinding the binding
+     * @param binding the binding
      * @return the connection metadata
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<BD> producerBinding) throws GenerationException;
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<BD> binding) throws GenerationException;
 
     /**
      * Generates metadata used to attach an event connection to a transport that is the target of an event stream. The source of the connection may be
