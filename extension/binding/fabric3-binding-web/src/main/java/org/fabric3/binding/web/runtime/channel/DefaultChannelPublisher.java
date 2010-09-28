@@ -52,7 +52,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
  * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
  * <p/>
  * This publisher will replicate events to other runtimes in a zone if a {@link ZoneTopologyService} is available. This allows all browser clients to
- * be notified of events emitted by all runtmes in a zone.
+ * be notified of events emitted by all runtimes in a zone.
  *
  * @version $Rev$ $Date$
  */
