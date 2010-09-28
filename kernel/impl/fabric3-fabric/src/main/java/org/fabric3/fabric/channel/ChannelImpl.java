@@ -86,6 +86,28 @@ public class ChannelImpl implements Channel {
         tailHandler.setNext(fanOutHandler);
     }
 
+    public void removeHandler(EventStreamHandler handler) {
+        EventStreamHandler current = headHandler;
+        EventStreamHandler previous = null;
+        while (current != null) {
+            if (current == handler) {
+                if (headHandler == current) {
+                    headHandler = current.getNext();
+                }
+                if (tailHandler == current) {
+                    tailHandler = previous == null ? headHandler : previous;
+                }
+                if (previous != null) {
+                    previous.setNext(current.getNext());
+                }
+                inHandler.setNext(headHandler);
+                return;
+            }
+            previous = current;
+            current = current.getNext();
+        }
+    }
+
     public void attach(EventStreamHandler handler) {
         handler.setNext(inHandler);
     }

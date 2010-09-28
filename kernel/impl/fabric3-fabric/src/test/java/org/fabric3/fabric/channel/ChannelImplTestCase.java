@@ -35,73 +35,71 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.channel;
+package org.fabric3.fabric.channel;
 
 import java.net.URI;
 import javax.xml.namespace.QName;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.PassThroughHandler;
+
 /**
- * An SCA event channel. Responsible for transmitting events from event sources to event sinks.
+ * The default Channel implementation.
  *
  * @version $Rev$ $Date$
  */
-public interface Channel {
-    /**
-     * Returns the channel URI.
-     *
-     * @return the channel URI
-     */
-    URI getUri();
+public class ChannelImplTestCase extends TestCase {
+    private ChannelImpl channel;
+    private FanOutHandler fanOutHandler;
 
-    /**
-     * Returns the composite this channel was deployed with.
-     *
-     * @return the deployable composite
-     */
-    QName getDeployable();
+    public void testAddRemove() throws Exception {
+        BlockingHandler handler = new BlockingHandler();
+        BlockingHandler handler2 = new BlockingHandler();
+        channel.addHandler(handler);
+        channel.addHandler(handler2);
 
-    /**
-     * Adds a handler for transmitting events to the channel.
-     *
-     * @param handler the handler
-     */
-    void addHandler(EventStreamHandler handler);
+        EventStreamHandler head = new PassThroughHandler();
+        channel.attach(head);
 
-    /**
-     * Removes a handler.
-     *
-     * @param handler the handler
-     */
-    void removeHandler(EventStreamHandler handler);
+        channel.removeHandler(handler);
+        handler.setClosed(true);
 
-    /**
-     * Attach a single handler to the channel so that it can flow events.
-     *
-     * @param handler the handler to attach
-     */
-    public void attach(EventStreamHandler handler);
+        head.handle(new Object());
 
-    /**
-     * Attach a connection to the channel so that it can flow events.
-     *
-     * @param connection the connection to attach
-     */
-    void attach(ChannelConnection connection);
+        channel.removeHandler(handler2);
+        handler2.setClosed(true);
 
-    /**
-     * Subscribe to receive events from the channel.
-     *
-     * @param uri        the URI identifying the subscription
-     * @param connection the connection to receive events on
-     */
-    void subscribe(URI uri, ChannelConnection connection);
+        head.handle(new Object());
+        EasyMock.verify(fanOutHandler);
 
-    /**
-     * Unsubscribe from receiving events from the channel
-     *
-     * @param uri the subscription URI
-     * @return the unsubscribed connection
-     */
-    ChannelConnection unsubscribe(URI uri);
+    }
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        fanOutHandler = EasyMock.createMock(FanOutHandler.class);
+        fanOutHandler.handle(EasyMock.notNull());
+        EasyMock.expectLastCall().times(2);
+        EasyMock.replay(fanOutHandler);
+        channel = new ChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler);
+    }
+
+    private class BlockingHandler extends PassThroughHandler {
+        private boolean closed;
+
+        public void setClosed(boolean closed) {
+            this.closed = closed;
+        }
+
+        @Override
+        public void handle(Object event) {
+            if (closed) {
+                fail("Handler not properly removed");
+            }
+            super.handle(event);
+        }
+    }
 }
