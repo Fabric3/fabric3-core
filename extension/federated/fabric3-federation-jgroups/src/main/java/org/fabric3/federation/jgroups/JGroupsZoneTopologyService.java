@@ -281,9 +281,9 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             throw new ZoneChannelException("Channel already open:" + name);
         }
         try {
-            final Channel channel = new JChannel();
+            Channel channel = new JChannel();
             channels.put(name, channel);
-            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver);
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
             channel.setReceiver(delegatingReceiver);
             channel.connect(name);
         } catch (ChannelException e) {
@@ -305,7 +305,9 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             throw new MessageException("Channel not found: " + name);
         }
         try {
-            channel.send(null, null, message);
+            byte[] payload = helper.serialize(message);
+            Message jMessage = new Message(null, null, payload);
+            channel.send(jMessage);
         } catch (ChannelNotConnectedException e) {
             throw new MessageException(e);
         } catch (ChannelClosedException e) {

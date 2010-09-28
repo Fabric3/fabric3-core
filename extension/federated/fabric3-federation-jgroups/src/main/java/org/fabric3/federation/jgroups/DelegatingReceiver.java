@@ -43,6 +43,7 @@ import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.View;
 
+import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageReceiver;
 
 /**
@@ -51,16 +52,25 @@ import org.fabric3.spi.federation.MessageReceiver;
 public class DelegatingReceiver implements Receiver {
     private Channel channel;
     private MessageReceiver delegate;
+    private JGroupsHelper helper;
+    private TopologyServiceMonitor monitor;
 
-    public DelegatingReceiver(Channel channel, MessageReceiver delegate) {
+    public DelegatingReceiver(Channel channel, MessageReceiver delegate, JGroupsHelper helper, TopologyServiceMonitor monitor) {
         this.channel = channel;
         this.delegate = delegate;
+        this.helper = helper;
+        this.monitor = monitor;
     }
 
     @Override
     public void receive(Message message) {
         if (message.getSrc() != channel.getAddress()) {
-            delegate.onMessage(message.getObject());
+            try {
+                Object payload = helper.deserialize(message.getBuffer());
+                delegate.onMessage(payload);
+            } catch (MessageException e) {
+                monitor.error("Error deserializing message payload", e);
+            }
         }
     }
 
