@@ -134,8 +134,8 @@ public class Fabric3ContextListener implements ServletContextListener {
             Document systemConfig = bootstrapService.loadSystemConfig(source);
 
             // create and configure the monitor dispatchers
-            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig);
-            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig);
+            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig, info);
+            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig, info);
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(info, mBeanServer, runtimeDispatcher, appDispatcher);
             runtime = utils.createRuntime(webappClassLoader, runtimeConfig);
 

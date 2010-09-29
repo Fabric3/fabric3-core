@@ -40,6 +40,8 @@ package org.fabric3.host.monitor;
 
 import org.w3c.dom.Element;
 
+import org.fabric3.host.runtime.HostInfo;
+
 /**
  * Creates {@link MonitorEventDispatcher}s for a host.
  *
@@ -52,8 +54,9 @@ public interface MonitorEventDispatcherFactory {
      *
      * @param name          the logger name
      * @param configuration the dispatcher configuration
+     * @param hostInfo      the host info
      * @return the instance.
      * @throws MonitorConfigurationException if configuration error is encountered
      */
-    MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException;
+    MonitorEventDispatcher createInstance(String name, Element configuration, HostInfo hostInfo) throws MonitorConfigurationException;
 }

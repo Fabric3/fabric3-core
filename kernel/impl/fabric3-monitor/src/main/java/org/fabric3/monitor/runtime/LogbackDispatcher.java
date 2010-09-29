@@ -39,6 +39,7 @@ package org.fabric3.monitor.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,11 +59,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Dispatches to one or more Logback appenders. If a configuration is not set, a default one will be created that logs to the console.
@@ -71,6 +74,7 @@ import org.fabric3.host.monitor.MonitorEventDispatcher;
  */
 public class LogbackDispatcher implements MonitorEventDispatcher {
     private static final String DEFAULT_PATTERN = "[%level %thread %d{YY:MM:DD HH:mm:ss.SSS}] %msg%n%ex";
+    private HostInfo hostInfo;
     private boolean configured;
     private LoggerContext context;
     private Logger logger;
@@ -82,11 +86,12 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     /**
      * Constructor which delegates to a log context that uses a private appender configuration and does not send messages to parent appenders.
      *
-     * @param name the log context name
+     * @param name     the log context name
+     * @param hostInfo the host info
      */
-    public LogbackDispatcher(String name) {
+    public LogbackDispatcher(String name, HostInfo hostInfo) {
         // by default do not send log messages to parent appenders
-        this(name, false);
+        this(name, false, hostInfo);
     }
 
     /**
@@ -95,8 +100,10 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
      * @param name     the log context name
      * @param additive true if the log context should use parent appenders; otherwise the log context uses a private appender configuration and does
      *                 not send messages to parent appenders.
+     * @param hostInfo the host info
      */
-    public LogbackDispatcher(String name, boolean additive) {
+    public LogbackDispatcher(String name, boolean additive, HostInfo hostInfo) {
+        this.hostInfo = hostInfo;
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = context.getLogger(name);
         logger.setAdditive(additive);
@@ -104,6 +111,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
 
     public void configure(Element element) throws MonitorConfigurationException {
         try {
+            expandLogFileNames(element);
             // wrap the configuration in a document that LogBack accepts
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -142,6 +150,23 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
             throw new AssertionError("Event must implement " + ILoggingEvent.class.getName());
         }
         logger.callAppenders((ILoggingEvent) event);
+    }
+
+    /**
+     * Replace relative file names in appender configurations with absolute paths under the runtime data/logs directory.
+     *
+     * @param element the log configuration
+     */
+    private void expandLogFileNames(Element element) {
+        NodeList files = element.getElementsByTagName("file");
+        File dir = new File(hostInfo.getDataDir(), "log");
+        for (int i = 0; i < files.getLength(); i++) {
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            Element fileElement = (Element) files.item(i);
+            fileElement.setTextContent(new File(dir, fileElement.getTextContent()).getAbsolutePath());
+        }
     }
 
     /**

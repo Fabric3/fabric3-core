@@ -42,10 +42,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * @version $Rev$ $Date$
@@ -64,7 +66,8 @@ public class LogbackDispatcherTestCase extends TestCase {
     private DocumentBuilder builder;
 
     public void testConfiguration() throws Exception {
-        LogbackDispatcher dispatcher = new LogbackDispatcher("root");
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        LogbackDispatcher dispatcher = new LogbackDispatcher("root", info);
         Document doc = builder.parse(new ByteArrayInputStream(CONFIG.getBytes()));
         Element element = doc.getDocumentElement();
         dispatcher.configure(element);

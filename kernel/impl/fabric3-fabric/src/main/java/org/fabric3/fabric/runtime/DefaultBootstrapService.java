@@ -124,11 +124,12 @@ public class DefaultBootstrapService implements BootstrapService {
     }
 
 
-    public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig, HostInfo hostInfo)
+            throws MonitorConfigurationException {
         // set additive to true to use the root appender for the runtime log context hierarchy; otherwise set to false
         // for the application hierarchy in order for application events to be logged to the app monitor hierarchy
         boolean additive = !BootConstants.APP_MONITOR.equals(elementName);
-        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName, additive);
+        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName, additive, hostInfo);
         Element element = systemConfigLoader.getMonitorConfiguration(elementName, systemConfig);
         if (element != null) {
             dispatcher.configure(element);

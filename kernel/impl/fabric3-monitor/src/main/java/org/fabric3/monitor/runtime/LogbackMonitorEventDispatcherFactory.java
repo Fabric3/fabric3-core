@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Creates {@link MonitorEventDispatcher} instances which dispatch to Logback.
@@ -50,8 +51,8 @@ import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
  */
 public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
 
-    public MonitorEventDispatcher createInstance(String name, Element configuration) throws MonitorConfigurationException {
-        LogbackDispatcher dispatcher = new LogbackDispatcher(name);
+    public MonitorEventDispatcher createInstance(String name, Element configuration, HostInfo hostInfo) throws MonitorConfigurationException {
+        LogbackDispatcher dispatcher = new LogbackDispatcher(name, hostInfo);
         if (configuration != null) {
             dispatcher.configure(configuration);
         }

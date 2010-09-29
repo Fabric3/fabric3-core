@@ -47,6 +47,7 @@ import org.w3c.dom.Element;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.provision.MonitorComponentDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
@@ -57,9 +58,11 @@ import org.fabric3.spi.builder.component.ComponentBuilder;
 @EagerInit
 public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponentDefinition, MonitorComponent> {
     private MonitorEventDispatcherFactory factory;
+    private HostInfo hostInfo;
 
-    public MonitorComponentBuilder(@Reference MonitorEventDispatcherFactory factory) {
+    public MonitorComponentBuilder(@Reference MonitorEventDispatcherFactory factory, @Reference HostInfo hostInfo) {
         this.factory = factory;
+        this.hostInfo = hostInfo;
     }
 
     public MonitorComponent build(MonitorComponentDefinition definition) throws BuilderException {
@@ -67,7 +70,7 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
         QName deployable = definition.getDeployable();
         Element configuration = definition.getConfiguration();
         try {
-            MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration);
+            MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration, hostInfo);
             return new MonitorComponent(uri, deployable, dispatcher);
         } catch (MonitorConfigurationException e) {
             throw new MonitorComponentBuildException(e);

@@ -96,6 +96,7 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
     /**
      * No-args ctor for databinding.
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public MonitorEventImpl() {
     }
 

@@ -137,10 +137,11 @@ public interface BootstrapService {
      *
      * @param elementName  the element name of the monitor configuration
      * @param systemConfig the runtime system configuration
+     * @param hostInfo     the runtime host info
      * @return the dispatcher
      * @throws MonitorConfigurationException if there is an error creating the dispatcher
      */
-    MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig) throws MonitorConfigurationException;
+    MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig, HostInfo hostInfo) throws MonitorConfigurationException;
 
     /**
      * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.
