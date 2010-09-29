@@ -112,7 +112,7 @@ public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHan
     }
 
     public void onMessage(Object object) {
-        handle(object);
+        next.handle(object);
     }
 
     /**
