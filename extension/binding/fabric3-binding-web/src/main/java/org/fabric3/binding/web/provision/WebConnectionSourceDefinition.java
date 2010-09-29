@@ -55,12 +55,18 @@ public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefin
     private static final long serialVersionUID = -3299304017732795098L;
 
     private OperationsAllowed allowed;
+    private boolean replicate;
 
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
+    public WebConnectionSourceDefinition(OperationsAllowed allowed, boolean replicate) {
         this.allowed = allowed;
+        this.replicate = replicate;
     }
 
     public OperationsAllowed getAllowed() {
         return allowed;
+    }
+
+    public boolean isReplicate() {
+        return replicate;
     }
 }

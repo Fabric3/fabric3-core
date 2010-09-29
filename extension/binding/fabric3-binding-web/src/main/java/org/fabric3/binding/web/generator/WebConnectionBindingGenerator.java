@@ -63,7 +63,9 @@ public class WebConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<WebBindingDefinition> binding) {
         OperationsAllowed allowed = binding.getDefinition().getAllowed();
-        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition(allowed);
+        boolean replicate = binding.getDefinition().isReplicate();
+
+        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition(allowed, replicate);
         definition.setUri(binding.getParent().getUri());
         return definition;
     }

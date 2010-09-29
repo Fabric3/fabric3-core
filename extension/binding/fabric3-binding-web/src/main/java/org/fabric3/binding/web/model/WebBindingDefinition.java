@@ -52,11 +52,13 @@ public class WebBindingDefinition extends BindingDefinition {
 
     private OperationsAllowed allowed;
     private String wireFormat;
+    private boolean replicate;
 
-    public WebBindingDefinition(String name, OperationsAllowed allowed, String wireFormat) {
+    public WebBindingDefinition(String name, OperationsAllowed allowed, String wireFormat, boolean replicate) {
         super(name, null, BINDING_WEB);
         this.allowed = allowed;
         this.wireFormat = wireFormat;
+        this.replicate = replicate;
     }
 
     public OperationsAllowed getAllowed() {
@@ -65,5 +67,9 @@ public class WebBindingDefinition extends BindingDefinition {
 
     public String getWireFormat() {
         return wireFormat;
+    }
+
+    public boolean isReplicate() {
+        return replicate;
     }
 }

@@ -64,7 +64,7 @@ public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHan
     private EventStreamHandler next;
 
     /**
-     * Constructor.
+     * Creates a publisher that may replicate to other runtimes in a zone.
      *
      * @param channelName     the name of the channel the publisher sends messages to
      * @param topologyService the topology service for broadcasting events to other runtimes in the same zone. May be null, in which case events will
@@ -75,6 +75,16 @@ public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHan
         this.channelName = channelName;
         this.topologyService = topologyService;
         this.monitor = monitor;
+    }
+
+    /**
+     * Creates a non-replicating publisher.
+     *
+     * @param channelName the name of the channel the publisher sends messages to
+     * @param monitor     the monitor for reporting errors
+     */
+    public DefaultChannelPublisher(String channelName, ChannelMonitor monitor) {
+        this(channelName, null, monitor);
     }
 
     public void handle(Object event) {

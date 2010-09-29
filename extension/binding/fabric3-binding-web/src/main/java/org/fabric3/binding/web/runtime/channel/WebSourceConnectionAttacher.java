@@ -156,7 +156,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = source.getAllowed();
-
+        boolean replicate = source.isReplicate();
         // setup the subscriber infrastructure
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
@@ -174,8 +174,13 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
             String channelName = sourceUri.toString();
-            DefaultChannelPublisher publisher = new DefaultChannelPublisher(channelName, topologyService, monitor);
-            if (topologyService != null && topologyService.supportsDynamicChannels()) {
+            DefaultChannelPublisher publisher;
+            if (replicate) {
+                publisher = new DefaultChannelPublisher(channelName, topologyService, monitor);
+            } else {
+                publisher = new DefaultChannelPublisher(channelName, monitor);
+            }
+            if (topologyService != null && topologyService.supportsDynamicChannels() && replicate) {
                 try {
                     topologyService.openChannel(channelName, null, publisher);
                 } catch (ZoneChannelException e) {
