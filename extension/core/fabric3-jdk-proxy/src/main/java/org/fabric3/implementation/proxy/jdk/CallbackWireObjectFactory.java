@@ -96,9 +96,6 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         }
     }
 
-    public Class<T> getInterfaze() {
-        return interfaze;
-    }
 
     public void updateMappings(String callbackUri, Map<Method, InvocationChain> chains) {
         mappings.put(callbackUri, chains);
