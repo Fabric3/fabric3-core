@@ -462,7 +462,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
     private void raiseAmbiguousService(LogicalReference reference, Target target, LogicalCompositeComponent parent, InstantiationContext context) {
         String componentName = target.getComponent();
         URI referenceUri = reference.getUri();
-        String msg = "More than one service available on component: " + componentName + ". The wire from the reference" + referenceUri
+        String msg = "More than one service available on component: " + componentName + ". The wire from the reference " + referenceUri
                 + " must explicitly specify a target service.";
         URI parentUri = parent.getUri();
         URI contributionUri = reference.getParent().getDefinition().getContributionUri();
