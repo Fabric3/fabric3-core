@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.policy;
+package org.fabric3.fabric.generator.policy;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.policy.PolicyActivationException;
-import org.fabric3.spi.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyActivationException;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 
 /**
  * Default implementation of the policy registry.
@@ -131,28 +131,28 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         if (definition instanceof Intent) {
             Map<QName, Intent> subCache = getSubCache(Intent.class);
             QName name = definition.getName();
-            if (subCache.containsKey(name)){
+            if (subCache.containsKey(name)) {
                 throw new PolicyActivationException("Duplicate intent found:" + name);
             }
             subCache.put(name, (Intent) definition);
         } else if (definition instanceof PolicySet) {
             Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
             QName name = definition.getName();
-            if (subCache.containsKey(name)){
+            if (subCache.containsKey(name)) {
                 throw new PolicyActivationException("Duplicate policy set found:" + name);
             }
             subCache.put(name, (PolicySet) definition);
         } else if (definition instanceof BindingType) {
             Map<QName, BindingType> subCache = getSubCache(BindingType.class);
             QName name = definition.getName();
-            if (subCache.containsKey(name)){
+            if (subCache.containsKey(name)) {
                 throw new PolicyActivationException("Duplicate binding type found:" + name);
             }
             subCache.put(name, (BindingType) definition);
         } else if (definition instanceof ImplementationType) {
             Map<QName, ImplementationType> subCache = getSubCache(ImplementationType.class);
             QName name = definition.getName();
-            if (subCache.containsKey(name)){
+            if (subCache.containsKey(name)) {
                 throw new PolicyActivationException("Duplicate implementation type found:" + name);
             }
             subCache.put(name, (ImplementationType) definition);

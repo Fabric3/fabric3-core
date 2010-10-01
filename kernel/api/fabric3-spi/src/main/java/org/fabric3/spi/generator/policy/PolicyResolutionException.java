@@ -35,23 +35,39 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.policy;
+package org.fabric3.spi.generator.policy;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Execption thrown if unable to activate definition.
+ * Exception thrown in case of invalid policy configuration.
  *
  * @version $Rev$ $Date$
  */
-public class PolicyActivationException extends Fabric3Exception {
-    private static final long serialVersionUID = -7879956099570998326L;
+public class PolicyResolutionException extends GenerationException {
+    private static final long serialVersionUID = 8016179162459803135L;
 
     /**
-     * @param message    Message for the exception.
+     * Initializes the message and the identifier.
+     *
+     * @param message    Message of the exception.
+     * @param identifier Contextual information.
      */
-    public PolicyActivationException(String message) {
+    public PolicyResolutionException(String message, Object identifier) {
+        super(message, identifier.toString());
+    }
+
+    public PolicyResolutionException(String message) {
         super(message);
+    }
+
+    public PolicyResolutionException(Throwable cause) {
+        super(cause);
+    }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage() + ":" + getIdentifier();
     }
 
 }

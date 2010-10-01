@@ -43,7 +43,7 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * Resolves interaction intents and policy sets. Resolution is performed for bindings, which aggregates intents and policy sets configured on a

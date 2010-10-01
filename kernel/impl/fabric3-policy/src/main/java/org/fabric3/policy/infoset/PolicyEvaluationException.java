@@ -37,7 +37,7 @@
 */
 package org.fabric3.policy.infoset;
 
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * @version $Rev$ $Date$

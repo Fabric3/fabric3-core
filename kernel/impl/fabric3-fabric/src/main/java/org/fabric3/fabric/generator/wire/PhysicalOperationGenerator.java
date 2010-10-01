@@ -43,7 +43,7 @@ import java.util.Set;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.policy.PolicyResult;
+import org.fabric3.spi.generator.policy.PolicyResult;
 
 /**
  * Generates PhysicalOperationDefinitions which are used to instantiate interceptor chains for a wire, bound service, or bound reference on a

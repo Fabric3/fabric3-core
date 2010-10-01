@@ -57,6 +57,9 @@ import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.PolicyResolver;
+import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -69,10 +72,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
-import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.spi.policy.PolicyResolutionException;
-import org.fabric3.spi.policy.PolicyResolver;
-import org.fabric3.spi.policy.PolicyResult;
 
 /**
  * Default implementation of WireGenerator.
@@ -111,7 +110,7 @@ public class WireGeneratorImpl implements WireGenerator {
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
 
         List<LogicalOperation> operations = service.getOperations();
-        PolicyResult policyResult = resolvePolicies(operations, binding, targetBinding, null, component);
+        PolicyResult policyResult = policyResolver.resolvePolicies(operations, binding, targetBinding, null, component);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -142,7 +141,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<RemoteBindingDefinition> sourceBinding =
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, service);
         List<LogicalOperation> operations = service.getCallbackOperations();
-        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
+        PolicyResult policyResult = policyResolver.resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -169,7 +168,7 @@ public class WireGeneratorImpl implements WireGenerator {
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, reference);
 
         List<LogicalOperation> operations = reference.getOperations();
-        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
+        PolicyResult policyResult = policyResolver.resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -205,7 +204,7 @@ public class WireGeneratorImpl implements WireGenerator {
                 new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, reference);
 
         List<LogicalOperation> operations = reference.getCallbackOperations();
-        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, binding, component, null);
+        PolicyResult policyResult = policyResolver.resolvePolicies(operations, sourceBinding, binding, component, null);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -238,7 +237,8 @@ public class WireGeneratorImpl implements WireGenerator {
         }
     }
 
-    public <T extends ResourceReferenceDefinition> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference) throws GenerationException {
+    public <T extends ResourceReferenceDefinition> PhysicalWireDefinition generateResource(LogicalResourceReference<T> resourceReference)
+            throws GenerationException {
         T resourceDefinition = resourceReference.getDefinition();
         LogicalComponent<?> component = resourceReference.getParent();
 
@@ -289,7 +289,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
         LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, service);
 
-        PolicyResult policyResult = resolvePolicies(reference.getOperations(), sourceBinding, targetBinding, source, target);
+        PolicyResult policyResult = policyResolver.resolvePolicies(reference.getOperations(), sourceBinding, targetBinding, source, target);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -341,7 +341,7 @@ public class WireGeneratorImpl implements WireGenerator {
      * another deployable composite or when metadata for the bound service is created by another generator.
      *
      * @param wire the logical wire
-     * @return the physical wire definiton
+     * @return the physical wire definition
      * @throws GenerationException if an error occurs during generation
      */
     @SuppressWarnings({"unchecked"})
@@ -358,7 +358,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
 
         List<LogicalOperation> sourceOperations = reference.getOperations();
-        PolicyResult policyResult = resolvePolicies(sourceOperations, serviceBinding, serviceBinding, source, target);
+        PolicyResult policyResult = policyResolver.resolvePolicies(sourceOperations, serviceBinding, serviceBinding, source, target);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -406,7 +406,8 @@ public class WireGeneratorImpl implements WireGenerator {
                 new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
         LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
         LogicalComponent sourceComponent = service.getLeafComponent();
-        PolicyResult policyResult = resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
+        PolicyResult policyResult =
+                policyResolver.resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
         EffectivePolicy sourcePolicy = policyResult.getSourcePolicy();
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -447,7 +448,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         LogicalBinding<LocalBindingDefinition> sourceBinding =
                 new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
-        PolicyResult policyResult = resolvePolicies(operations, sourceBinding, referenceBinding, target, null);
+        PolicyResult policyResult = policyResolver.resolvePolicies(operations, sourceBinding, referenceBinding, target, null);
 
         EffectivePolicy targetPolicy = policyResult.getTargetPolicy();
 
@@ -466,18 +467,6 @@ public class WireGeneratorImpl implements WireGenerator {
 
         Set<PhysicalOperationDefinition> physicalOperations = operationGenerator.generateOperations(operations, true, policyResult);
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
-    }
-
-    private PolicyResult resolvePolicies(List<LogicalOperation> operations,
-                                         LogicalBinding<?> sourceBinding,
-                                         LogicalBinding<?> targetBinding,
-                                         LogicalComponent<?> source,
-                                         LogicalComponent<?> target) throws PolicyGenerationException {
-        try {
-            return policyResolver.resolvePolicies(operations, sourceBinding, targetBinding, source, target);
-        } catch (PolicyResolutionException e) {
-            throw new PolicyGenerationException(e);
-        }
     }
 
     private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName)

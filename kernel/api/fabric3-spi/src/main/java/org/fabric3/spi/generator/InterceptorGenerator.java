@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
 
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.policy.PolicyMetadata;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
 
 /**
  * Implementations are responsible for generating PhysicalInterceptorDefinitions which are used to create runtime component wires.

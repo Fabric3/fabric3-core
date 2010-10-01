@@ -54,8 +54,8 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
-import org.fabric3.spi.policy.PolicyRegistry;
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * @version $Rev$ $Date$

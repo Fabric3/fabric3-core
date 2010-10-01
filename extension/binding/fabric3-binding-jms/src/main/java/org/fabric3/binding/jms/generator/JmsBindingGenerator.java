@@ -69,7 +69,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.xsd.XSDType;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.

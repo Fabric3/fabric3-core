@@ -87,10 +87,10 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.plan.DeploymentPlan;
-import org.fabric3.spi.policy.PolicyActivationException;
-import org.fabric3.spi.policy.PolicyAttacher;
-import org.fabric3.spi.policy.PolicyRegistry;
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyActivationException;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * Base class for a domain.

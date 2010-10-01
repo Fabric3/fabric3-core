@@ -43,7 +43,7 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * Resolves implementation intents and policy sets. Resolution is performed by normalizing intents and policy sets for each operation associated with

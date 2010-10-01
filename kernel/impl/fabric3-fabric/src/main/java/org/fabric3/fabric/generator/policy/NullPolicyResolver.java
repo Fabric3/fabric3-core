@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.policy;
+package org.fabric3.fabric.generator.policy;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,11 +47,11 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.policy.EffectivePolicy;
-import org.fabric3.spi.policy.PolicyMetadata;
-import org.fabric3.spi.policy.PolicyResolutionException;
-import org.fabric3.spi.policy.PolicyResolver;
-import org.fabric3.spi.policy.PolicyResult;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyResolver;
+import org.fabric3.spi.generator.policy.PolicyResult;
 
 /**
  * No-op resolver used during bootstrap.

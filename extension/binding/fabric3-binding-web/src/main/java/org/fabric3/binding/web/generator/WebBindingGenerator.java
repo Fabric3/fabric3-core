@@ -63,7 +63,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Generates metadata for attaching a service to a websocket or comet connection.

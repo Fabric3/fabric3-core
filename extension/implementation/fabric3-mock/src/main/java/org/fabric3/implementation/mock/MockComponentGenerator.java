@@ -52,7 +52,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * @version $Rev$ $Date$

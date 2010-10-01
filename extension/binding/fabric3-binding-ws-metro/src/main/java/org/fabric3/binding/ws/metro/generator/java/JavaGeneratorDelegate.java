@@ -98,7 +98,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Generates source and target definitions for an endpoint defined by a Java-based service contract.

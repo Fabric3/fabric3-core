@@ -65,7 +65,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Generator for Spring components.

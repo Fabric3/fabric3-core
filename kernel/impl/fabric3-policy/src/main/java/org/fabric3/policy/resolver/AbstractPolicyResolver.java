@@ -48,8 +48,8 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
-import org.fabric3.spi.policy.PolicyRegistry;
-import org.fabric3.spi.policy.PolicyResolutionException;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * Base class for resolving policies.

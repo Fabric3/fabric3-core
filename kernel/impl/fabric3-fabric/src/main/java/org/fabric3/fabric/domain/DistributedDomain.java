@@ -54,8 +54,8 @@ import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
-import org.fabric3.spi.policy.PolicyAttacher;
-import org.fabric3.spi.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 
 /**
  * Implements a distributed domain containing user-defined services.

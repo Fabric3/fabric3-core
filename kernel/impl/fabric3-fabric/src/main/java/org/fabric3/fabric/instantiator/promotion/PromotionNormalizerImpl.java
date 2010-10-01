@@ -63,7 +63,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.util.UriHelper;
 
 /**

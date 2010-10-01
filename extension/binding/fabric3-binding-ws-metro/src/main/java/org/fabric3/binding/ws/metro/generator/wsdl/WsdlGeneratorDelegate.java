@@ -82,7 +82,7 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.Bindable;
-import org.fabric3.spi.policy.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 

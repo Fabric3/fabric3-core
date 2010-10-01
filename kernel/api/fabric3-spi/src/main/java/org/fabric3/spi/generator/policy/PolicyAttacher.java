@@ -35,34 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.policy;
+package org.fabric3.spi.generator.policy;
 
 import java.util.List;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.policy.PolicyAttacher;
-import org.fabric3.spi.policy.PolicyResolutionException;
 
 
 /**
- * No-op attacher used during bootstrap.
+ * Applies policy using external policy attachment.
  *
  * @version $Rev$ $Date$
  */
-public class NullPolicyAttacher implements PolicyAttacher {
+public interface PolicyAttacher {
 
-    public void attachPolicies(LogicalComponent<?> component, boolean incremental) {
-        // no-op
-    }
+    /**
+     * Attaches all active PolicySets (i.e. those that use external attachment) to the component hierarchy.
+     *
+     * @param component   the top-most component to evaluate external attachments against
+     * @param incremental true if the attachment is performed as part of an incremental deployment
+     * @throws PolicyResolutionException if an error occurs evaluating the policies
+     */
+    void attachPolicies(LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException;
 
-    public void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException {
-        // no-op
-    }
+    /**
+     * Attaches PolicySets (i.e. those that use external attachment) to the component hierarchy.
+     *
+     * @param policySets  the policy sets to attach
+     * @param component   the top-most component to evaluate external attachments against
+     * @param incremental true if the attachment is performed as part of an incremental deployment
+     * @throws PolicyResolutionException if an error occurs evaluating the policies
+     */
+    void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException;
 
-    public void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException {
-        // no-op
-    }
-
+    /**
+     * Detaches PolicySets (i.e. those that use external attachment) to the component hierarchy.
+     *
+     * @param policySets the policy sets to detach
+     * @param component  the top-most component to evaluate external attachments against
+     * @throws PolicyResolutionException if an error occurs evaluating the policies
+     */
+    void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException;
 
 }

@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.policy;
+package org.fabric3.fabric.generator.policy;
 
 import java.net.URI;
 import java.net.URL;
@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.generator.policy.DefaultPolicyRegistry;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.definitions.BindingType;

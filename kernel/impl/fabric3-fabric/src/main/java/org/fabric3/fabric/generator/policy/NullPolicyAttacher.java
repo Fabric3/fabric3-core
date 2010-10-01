@@ -35,39 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.policy;
+package org.fabric3.fabric.generator.policy;
 
-import org.fabric3.host.Fabric3Exception;
+import java.util.List;
+
+import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
+
 
 /**
- * Exception thrown in case of invalid policy configuration.
+ * No-op attacher used during bootstrap.
  *
  * @version $Rev$ $Date$
  */
-public class PolicyResolutionException extends Fabric3Exception {
-    private static final long serialVersionUID = 8016179162459803135L;
+public class NullPolicyAttacher implements PolicyAttacher {
 
-    /**
-     * Initializes the message and the identifier.
-     *
-     * @param message    Message of the exception.
-     * @param identifier Contextual information.
-     */
-    public PolicyResolutionException(String message, Object identifier) {
-        super(message, identifier.toString());
+    public void attachPolicies(LogicalComponent<?> component, boolean incremental) {
+        // no-op
     }
 
-    public PolicyResolutionException(String message) {
-        super(message);
+    public void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException {
+        // no-op
     }
 
-    public PolicyResolutionException(Throwable cause) {
-        super(cause);
+    public void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException {
+        // no-op
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage() + ":" + getIdentifier();
-    }
 
 }

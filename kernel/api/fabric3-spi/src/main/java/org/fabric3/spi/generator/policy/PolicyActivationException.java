@@ -35,37 +35,23 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.policy;
+package org.fabric3.spi.generator.policy;
 
-import java.util.List;
-
-import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalOperation;
-
+import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Attaches and resolves policy.
+ * Exception thrown if unable to activate definition.
  *
  * @version $Rev$ $Date$
  */
-public interface PolicyResolver {
+public class PolicyActivationException extends GenerationException {
+    private static final long serialVersionUID = -7879956099570998326L;
 
     /**
-     * Resolves all the interaction and implementation intents for the operations of a wire.
-     *
-     * @param operations    the operations to resolve policies for. This can be forward or callback operations.
-     * @param sourceBinding the source binding.
-     * @param targetBinding the target binding.
-     * @param source        the source component.
-     * @param target        the target component.
-     * @return Policy resolution result.
-     * @throws PolicyResolutionException If unable to resolve any policies.
+     * @param message Message for the exception.
      */
-    PolicyResult resolvePolicies(List<LogicalOperation> operations,
-                                 LogicalBinding<?> sourceBinding,
-                                 LogicalBinding<?> targetBinding,
-                                 LogicalComponent<?> source,
-                                 LogicalComponent<?> target) throws PolicyResolutionException;
+    public PolicyActivationException(String message) {
+        super(message);
+    }
 
 }

@@ -54,8 +54,8 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.policy.PolicyAttacher;
-import org.fabric3.spi.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 
 /**
  * @version $Rev$ $Date$
