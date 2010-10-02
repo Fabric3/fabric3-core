@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
+import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 
@@ -57,6 +58,7 @@ import org.fabric3.model.type.component.Implementation;
  */
 public class MonitorImplementation extends Implementation<ComponentType> {
     private static final long serialVersionUID = 3139588435544226827L;
+    public static final QName IMPLEMENTATION_MONITOR = new QName(Namespaces.IMPLEMENTATION, "monitor");
     private Element configuration;
 
     /**
@@ -71,7 +73,7 @@ public class MonitorImplementation extends Implementation<ComponentType> {
     }
 
     public QName getType() {
-        return null;
+        return IMPLEMENTATION_MONITOR;
     }
 
     public Element getConfiguration() {
