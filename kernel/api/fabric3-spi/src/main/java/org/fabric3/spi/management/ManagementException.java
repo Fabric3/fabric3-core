@@ -37,11 +37,7 @@
 */
 package org.fabric3.spi.management;
 
-import java.net.URI;
-
 import org.fabric3.host.Fabric3Exception;
-import org.fabric3.spi.ObjectFactory;
-import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
  * @version $Rev: 8369 $ $Date: 2009-12-04 17:26:32 +0100 (Fri, 04 Dec 2009) $

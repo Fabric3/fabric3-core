@@ -46,7 +46,7 @@ import java.util.Map;
 
 import org.easymock.IMocksControl;
 
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

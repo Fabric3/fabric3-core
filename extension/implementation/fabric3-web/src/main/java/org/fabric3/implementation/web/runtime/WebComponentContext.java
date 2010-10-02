@@ -48,7 +48,7 @@ import org.osoa.sca.ServiceReference;
 
 import org.fabric3.container.web.spi.WebRequestTunnel;
 import org.fabric3.host.Fabric3RuntimeException;
-import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Implementation of ComponentContext for Web components.

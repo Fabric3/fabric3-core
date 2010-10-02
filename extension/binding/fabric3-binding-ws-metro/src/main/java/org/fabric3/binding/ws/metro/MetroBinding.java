@@ -44,15 +44,13 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.fabric3.spi.VoidService;
-
 /**
  * Reports the status of the Metro binding extension and sets the log level for the underlying Metro stack.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class MetroBinding implements VoidService {
+public class MetroBinding {
     private Level logLevel = Level.WARNING;
 
     @Property(required = false)

@@ -71,7 +71,6 @@ import org.fabric3.management.contribution.ContributionRemoveException;
 import org.fabric3.management.contribution.ContributionUninstallException;
 import org.fabric3.management.contribution.ErrorInfo;
 import org.fabric3.management.contribution.InvalidContributionException;
-import org.fabric3.spi.VoidService;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.host.ServletHost;
@@ -81,7 +80,7 @@ import org.fabric3.spi.host.ServletHost;
  */
 @EagerInit
 @Management(name = "ContributionService", group = "deployment", description = "Manages contributions in a domain")
-public class ContributionServiceMBean implements VoidService {
+public class ContributionServiceMBean {
     private static final String REPOSITORY = "/admin/repository";
     private static final String PROFILE = "/admin/profile";
 
@@ -94,9 +93,9 @@ public class ContributionServiceMBean implements VoidService {
     private String profileAddress;
 
     public ContributionServiceMBean(@Reference ServletHost servletHost,
-                                        @Reference ContributionService contributionService,
-                                        @Reference MetaDataStore metaDataStore,
-                                        @Monitor ContributionServiceMBeanMonitor monitor) {
+                                    @Reference ContributionService contributionService,
+                                    @Reference MetaDataStore metaDataStore,
+                                    @Monitor ContributionServiceMBeanMonitor monitor) {
         this.servletHost = servletHost;
         this.contributionService = contributionService;
         this.metaDataStore = metaDataStore;

@@ -58,7 +58,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;

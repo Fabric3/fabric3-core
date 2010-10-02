@@ -48,8 +48,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * A BeanFactory implementation that tracks wire and event stream proxies configured for a Spring component. This factory is used by a parent of the

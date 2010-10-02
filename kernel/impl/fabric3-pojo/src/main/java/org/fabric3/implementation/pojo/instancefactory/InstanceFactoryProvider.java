@@ -46,7 +46,7 @@ package org.fabric3.implementation.pojo.instancefactory;
 import java.lang.reflect.Type;
 
 import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

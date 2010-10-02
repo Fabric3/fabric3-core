@@ -39,8 +39,8 @@ package org.fabric3.jpa.runtime.proxy;
 
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates MultiThreadedSessionProxy instances.

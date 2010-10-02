@@ -59,7 +59,7 @@ import org.fabric3.binding.net.NetBindingMonitor;
 import org.fabric3.binding.net.config.HttpConfig;
 import org.fabric3.binding.net.provision.HttpTargetDefinition;
 import org.fabric3.binding.net.runtime.OneWayClientHandler;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.MessageEncoder;
 import org.fabric3.spi.binding.format.ParameterEncoder;

@@ -41,7 +41,7 @@ package org.fabric3.implementation.pojo.builder;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 
 /**

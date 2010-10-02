@@ -52,8 +52,8 @@ import javax.management.ReflectionException;
 import javax.security.auth.Subject;
 
 import org.fabric3.api.Role;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;

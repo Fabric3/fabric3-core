@@ -39,7 +39,7 @@ package org.fabric3.spi.management;
 
 import java.net.URI;
 
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**

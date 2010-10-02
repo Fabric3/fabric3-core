@@ -60,7 +60,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
@@ -74,7 +73,6 @@ import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.VoidService;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.Fabric3Event;
@@ -93,7 +91,6 @@ import org.fabric3.spi.event.RuntimeStart;
  * Detected changes and additions from the previous interval are then compared using a checksum to see if they have changed again. If so, they remain
  * cached. If they have not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
  */
-@Service(VoidService.class)
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
     private final Map<String, FileSystemResource> cache = new HashMap<String, FileSystemResource>();

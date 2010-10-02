@@ -40,8 +40,8 @@ package org.fabric3.implementation.pojo.injection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates a list of objects from a collection of ObjectFactory instances.

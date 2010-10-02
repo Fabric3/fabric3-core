@@ -54,7 +54,7 @@ import org.fabric3.fabric.builder.transform.TransformerInterceptorFactory;
 import org.fabric3.fabric.wire.InvocationChainImpl;
 import org.fabric3.fabric.wire.WireImpl;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;

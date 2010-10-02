@@ -41,16 +41,35 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi;
+package org.fabric3.spi.objectfactory;
 
-import org.osoa.sca.annotations.Service;
 
 /**
- * Empty interface for a service component that has no operations. This can be used as a default service interface by components that do not wish the
- * base class to be used as the interface as specified by the defaulting rules.
+ * Implementations inject an ObjectFactory value on an object instance
  *
  * @version $Rev$ $Date$
  */
-@Service
-public interface VoidService {
+public interface Injector<T> {
+
+    /**
+     * Inject a value on the given instance.
+     *
+     * @param instance the instance to inject on.
+     * @throws ObjectCreationException if an error is raised during injection
+     */
+    void inject(T instance) throws ObjectCreationException;
+
+    /**
+     * Adds or updates the injector with an ObjectFactory used to inject the pre-configured value.
+     *
+     * @param objectFactory the ObjectFactory
+     * @param key           an ObjectFactory key. The key corresponds to the key used in Map-based wiring.
+     */
+    void setObjectFactory(ObjectFactory<?> objectFactory, Object key);
+
+    /**
+     * Clears the currently set ObjectFactory. Used when a multiplicity reference is reinjected.
+     */
+    void clearObjectFactory();
+
 }

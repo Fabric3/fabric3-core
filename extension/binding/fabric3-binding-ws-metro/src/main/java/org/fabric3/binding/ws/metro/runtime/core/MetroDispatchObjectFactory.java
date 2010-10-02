@@ -52,8 +52,8 @@ import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.wss.SecurityEnvironment;
 
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.

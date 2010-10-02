@@ -41,22 +41,41 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi;
+package org.fabric3.spi.objectfactory;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
+ * Denotes an error creating a new object instance.
  *
  * @version $Rev$ $Date$
  */
-public class SingletonObjectFactory<T> implements ObjectFactory<T> {
-    private final T instance;
+public class ObjectCreationException extends Fabric3Exception {
+    private static final long serialVersionUID = -6423113430265944499L;
 
-    public SingletonObjectFactory(T instance) {
-        this.instance = instance;
+    public ObjectCreationException() {
+        super();
     }
 
-    public T getInstance() {
-        return instance;
+    public ObjectCreationException(String message) {
+        super(message);
+    }
+
+    public ObjectCreationException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public ObjectCreationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ObjectCreationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
+    public ObjectCreationException(Throwable cause) {
+        super(cause);
     }
 
 }
+

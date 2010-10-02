@@ -53,7 +53,7 @@ import org.w3c.dom.Node;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 

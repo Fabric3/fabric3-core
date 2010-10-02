@@ -47,7 +47,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.net.provision.HttpSourceDefinition;
 import org.fabric3.binding.net.runtime.TransportService;
 import org.fabric3.binding.net.runtime.WireHolder;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.ParameterEncoder;
 import org.fabric3.spi.binding.format.ParameterEncoderFactory;

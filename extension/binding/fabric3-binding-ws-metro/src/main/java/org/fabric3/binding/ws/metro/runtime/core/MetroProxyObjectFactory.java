@@ -66,8 +66,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**

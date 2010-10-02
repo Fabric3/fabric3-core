@@ -40,9 +40,9 @@ package org.fabric3.implementation.web.runtime;
 import javax.servlet.http.HttpSession;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Injects an instance (e.g. a reference proxy) into an HTTP session object.

@@ -44,8 +44,8 @@ import javax.naming.NamingException;
 
 import org.apache.AnnotationProcessor;
 
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Injects a servlet instance with reference proxies, properties, resources, and SCA APIs.

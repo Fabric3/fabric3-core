@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Common interface for all multiplicity object factories.

@@ -47,7 +47,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.component.Component;
 
 /**

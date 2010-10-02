@@ -47,12 +47,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Injects a value created by an {@link org.fabric3.spi.ObjectFactory} using a given method.
+ * Injects a value created by an {@link ObjectFactory} using a given method.
  *
  * @version $Rev$ $Date$
  */

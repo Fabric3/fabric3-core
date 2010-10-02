@@ -42,8 +42,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.fabric3.spi.Injector;
-import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Injects reference proxies into an HTTP session when it is created.

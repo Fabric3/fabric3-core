@@ -46,7 +46,7 @@ import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;

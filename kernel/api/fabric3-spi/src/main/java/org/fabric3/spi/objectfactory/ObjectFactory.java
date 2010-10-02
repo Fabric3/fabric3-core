@@ -41,10 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi;
+package org.fabric3.spi.objectfactory;
 
 /**
- * Implementations create new instances of a particular type
+ * Creates new instances of a type.
  *
  * @version $Rev$ $Date$
  */

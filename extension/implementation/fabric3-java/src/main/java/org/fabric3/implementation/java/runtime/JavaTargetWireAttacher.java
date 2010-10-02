@@ -46,7 +46,7 @@ import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.pojo.component.InvokerInterceptor;
 import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
-import org.fabric3.spi.ObjectFactory;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;

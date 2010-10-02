@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.pojo.instancefactory;
 
-import org.fabric3.spi.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 
