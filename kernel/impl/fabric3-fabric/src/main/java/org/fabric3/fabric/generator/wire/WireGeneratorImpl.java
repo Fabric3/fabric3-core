@@ -414,7 +414,7 @@ public class WireGeneratorImpl implements WireGenerator {
         Set<PhysicalOperationDefinition> callbackOperations;
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (referenceCallbackContract.getClass().equals(callbackContract.getClass())) {
-            List<LogicalOperation> operations = callbackService.getOperations();
+            List<LogicalOperation> operations = service.getCallbackOperations();
             callbackOperations = operationGenerator.generateOperations(operations, false, policyResult);
         } else {
             List<LogicalOperation> targetOperations = callbackService.getOperations();
