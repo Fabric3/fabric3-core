@@ -51,6 +51,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
@@ -179,11 +180,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
     public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
         InstanceWrapper wrapper = instanceWrappers.get(component);
-        if (wrapper != EMPTY) {
-            if (wrapper == null) {
-                // indicates some type of synchronization error
-                throw new InstanceInitializationException("Instance wrapper not found for " + component.getUri());
-            }
+        if (wrapper != EMPTY && wrapper != null) {
             return wrapper;
         }
         CountDownLatch latch;
@@ -194,7 +191,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             if (latch != null) {
                 try {
                     // wait on the instantiation
-                    latch.await();
+                    latch.await(5, TimeUnit.MINUTES);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
