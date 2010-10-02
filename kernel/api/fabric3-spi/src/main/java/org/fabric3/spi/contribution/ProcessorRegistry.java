@@ -50,7 +50,7 @@ public interface ProcessorRegistry {
     /**
      * Register a ContributionProcessor using the content type as the key
      *
-     * @param processor the processor to registrer
+     * @param processor the processor to register
      */
     void register(ContributionProcessor processor);
 
@@ -64,7 +64,7 @@ public interface ProcessorRegistry {
     /**
      * Register a ResourceProcessor using the content type as the key
      *
-     * @param processor the processor to registrer
+     * @param processor the processor to register
      */
     void register(ResourceProcessor processor);
 
