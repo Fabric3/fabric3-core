@@ -37,35 +37,80 @@
 */
 package org.fabric3.spi.generator.policy;
 
-import java.util.List;
-
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalWire;
 
 
 /**
- * Attaches and resolves policy.
+ * Resolves applicable policy sets by expanding interaction and implementation intents and combining them with explicitly configured policy sets.
  *
  * @version $Rev$ $Date$
  */
 public interface PolicyResolver {
 
     /**
-     * Resolves all the interaction and implementation intents for the operations of a wire.
+     * Resolves policies for a bound service or reference.
      *
-     * @param operations    the operations to resolve policies for. This can be forward or callback operations.
-     * @param sourceBinding the source binding.
-     * @param targetBinding the target binding.
-     * @param source        the source component.
-     * @param target        the target component.
-     * @return Policy resolution result.
-     * @throws PolicyResolutionException If unable to resolve any policies.
+     * @param binding the service or reference binding
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
      */
-    PolicyResult resolvePolicies(List<LogicalOperation> operations,
-                                 LogicalBinding<?> sourceBinding,
-                                 LogicalBinding<?> targetBinding,
-                                 LogicalComponent<?> source,
-                                 LogicalComponent<?> target) throws PolicyResolutionException;
+    PolicyResult resolvePolicies(LogicalBinding<?> binding) throws PolicyResolutionException;
+
+    /**
+     * Resolves callback policies for a bound service or reference.
+     *
+     * @param binding the service or reference binding
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolveCallbackPolicies(LogicalBinding<?> binding) throws PolicyResolutionException;
+
+    /**
+     * Resolves policies for a local consumer.
+     *
+     * @param consumer the consumer
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolvePolicies(LogicalConsumer consumer) throws PolicyResolutionException;
+
+    /**
+     * Resolves policies for a local wire.
+     *
+     * @param wire the wire
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolveLocalPolicies(LogicalWire wire) throws PolicyResolutionException;
+
+    /**
+     * Resolves callback policies for a local wire.
+     *
+     * @param wire the wire
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolveLocalCallbackPolicies(LogicalWire wire) throws PolicyResolutionException;
+
+    /**
+     * Resolves policies for a remote wire.
+     *
+     * @param wire the wire
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolveRemotePolicies(LogicalWire wire) throws PolicyResolutionException;
+
+    /**
+     * Resolves callback policies for a remote wire.
+     *
+     * @param wire the wire
+     * @return the resolved policy
+     * @throws PolicyResolutionException if an error resolving policy occurs
+     */
+    PolicyResult resolveRemoteCallbackPolicies(LogicalWire wire) throws PolicyResolutionException;
+
 
 }

@@ -57,6 +57,7 @@ public class PhysicalEventStreamDefinition implements Serializable {
     private String name;
     private List<String> eventTypes = new ArrayList<String>();
     private List<PhysicalEventFilterDefinition> filters = new ArrayList<PhysicalEventFilterDefinition>();
+    private List<PhysicalHandlerDefinition> handlers = new ArrayList<PhysicalHandlerDefinition>();
 
     public PhysicalEventStreamDefinition(String name) {
         this.name = name;
@@ -115,4 +116,13 @@ public class PhysicalEventStreamDefinition implements Serializable {
     public void addFilterDefinition(PhysicalEventFilterDefinition definition) {
         filters.add(definition);
     }
+
+    public List<PhysicalHandlerDefinition> getHandlers() {
+        return handlers;
+    }
+
+    public void addHandlerDefinition(PhysicalHandlerDefinition definition) {
+        handlers.add(definition);
+    }
+
 }

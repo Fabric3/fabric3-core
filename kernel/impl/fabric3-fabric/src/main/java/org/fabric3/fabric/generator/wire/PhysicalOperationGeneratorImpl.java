@@ -171,7 +171,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<PhysicalInterceptorDefinition>();
         for (PolicySet policy : policies) {
             QName expressionName = policy.getExpressionName();
-            InterceptorGenerator generator = generatorRegistry.getInterceptorDefinitionGenerator(expressionName);
+            InterceptorGenerator generator = generatorRegistry.getInterceptorGenerator(expressionName);
             PhysicalInterceptorDefinition pid = generator.generate(policy.getExpression(), metadata, operation);
             if (pid != null) {
                 URI contributionClassLoaderId = operation.getParent().getParent().getDefinition().getContributionUri();

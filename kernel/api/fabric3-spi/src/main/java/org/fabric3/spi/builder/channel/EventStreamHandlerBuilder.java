@@ -34,38 +34,27 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.generator;
+*/
+package org.fabric3.spi.builder.channel;
 
-import org.w3c.dom.Element;
-
-import org.fabric3.spi.generator.policy.PolicyMetadata;
-import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Generates {@link PhysicalInterceptorDefinition}s used to attach policy interceptors to a wire.
+ * Creates an {@link EventStreamHandler} from a {@link PhysicalHandlerDefinition}.
  *
  * @version $Rev$ $Date$
  */
-public interface InterceptorGenerator {
+public interface EventStreamHandlerBuilder<PHD extends PhysicalHandlerDefinition> {
 
     /**
-     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a
-     * wire.
+     * Creates the handler.
      *
-     * @param policy    policy set definition
-     * @param metadata  intent or policy metadata keyed by policy/intent qualified name
-     * @param operation operation the interceptor is generated for
-     * @return the definition
-     * @throws GenerationException if an exception occurs during generation
+     * @param definition the handler definition.
+     * @return the handler
+     * @throws BuilderException if there is an error creating the handler
      */
-    PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) throws GenerationException;
+    EventStreamHandler build(PHD definition) throws BuilderException;
 
 }

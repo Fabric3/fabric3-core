@@ -40,6 +40,7 @@ package org.fabric3.fabric.generator.channel;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -52,9 +53,14 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
+import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.generator.policy.PolicyResolver;
+import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -64,6 +70,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
@@ -71,9 +78,11 @@ import org.fabric3.spi.model.type.java.JavaType;
  */
 public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private GeneratorRegistry generatorRegistry;
+    private PolicyResolver resolver;
 
-    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
+    public ConnectionGeneratorImpl(@Reference GeneratorRegistry generatorRegistry, @Reference PolicyResolver resolver) {
         this.generatorRegistry = generatorRegistry;
+        this.resolver = resolver;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -122,8 +131,22 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI classLoaderId = component.getDefinition().getContributionUri();
         targetDefinition.setClassLoaderId(classLoaderId);
 
-        // TODO handle policies
+        PolicyResult result = resolver.resolvePolicies(consumer);
         List<PhysicalEventStreamDefinition> eventStreams = generate(consumer);
+        List<PolicySet> policies = result.getInterceptedPolicySets().values().iterator().next();
+        PolicyMetadata metadata = result.getMetadata().values().iterator().next();
+        for (PolicySet set : policies) {
+            QName expressionName = set.getExpressionName();
+            EventStreamHandlerGenerator handlerGenerator = generatorRegistry.getEventStreamHandlerGenerator(expressionName);
+            PhysicalHandlerDefinition definition = handlerGenerator.generate(set.getExpression(), metadata);
+            if (definition != null) {
+                definition.setPolicyClassLoaderId(set.getContributionUri());
+                for (PhysicalEventStreamDefinition streamDefinition : eventStreams) {
+                    streamDefinition.addHandlerDefinition(definition);
+                }
+            }
+        }
+
         if (consumer.isConcreteBound()) {
             for (LogicalBinding<?> binding : consumer.getBindings()) {
                 ConnectionBindingGenerator bindingGenerator = getGenerator(binding);

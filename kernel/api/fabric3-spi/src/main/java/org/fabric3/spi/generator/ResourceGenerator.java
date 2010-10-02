@@ -42,7 +42,7 @@ import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * Generates physical resource definitions from a resource definition declared in a composite.
+ * Generates {@link PhysicalResourceDefinition}s from a resource definition declared in a composite.
  *
  * @version $Rev$ $Date$
  */

@@ -44,14 +44,15 @@ import java.util.Set;
 
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.generator.policy.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.generator.policy.PolicyResult;
+import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * No-op resolver used during bootstrap.
@@ -61,11 +62,34 @@ import org.fabric3.spi.generator.policy.PolicyResult;
 public class NullPolicyResolver implements PolicyResolver {
     private static final PolicyResult EMPTY_RESULT = new NullPolicyResult();
 
-    public PolicyResult resolvePolicies(List<LogicalOperation> operations,
-                                        LogicalBinding<?> sourceBinding,
-                                        LogicalBinding<?> targetBinding,
-                                        LogicalComponent<?> source,
-                                        LogicalComponent<?> target) throws PolicyResolutionException {
+    public PolicyResult resolvePolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolveCallbackPolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolvePolicies(
+            LogicalConsumer consumer
+    )
+            throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolveLocalPolicies(LogicalWire wire) throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolveLocalCallbackPolicies(LogicalWire wire) throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolveRemotePolicies(LogicalWire wire) throws PolicyResolutionException {
+        return EMPTY_RESULT;
+    }
+
+    public PolicyResult resolveRemoteCallbackPolicies(LogicalWire wire) throws PolicyResolutionException {
         return EMPTY_RESULT;
     }
 
@@ -76,8 +100,16 @@ public class NullPolicyResolver implements PolicyResolver {
             return Collections.emptySet();
         }
 
+        public Map<LogicalOperation, List<PolicySet>> getInterceptedPolicySets() {
+            return Collections.emptyMap();
+        }
+
         public List<PolicySet> getInterceptedPolicySets(LogicalOperation operation) {
             return Collections.emptyList();
+        }
+
+        public Map<LogicalOperation, PolicyMetadata> getMetadata() {
+            return Collections.emptyMap();
         }
 
         public PolicyMetadata getMetadata(LogicalOperation operation) {

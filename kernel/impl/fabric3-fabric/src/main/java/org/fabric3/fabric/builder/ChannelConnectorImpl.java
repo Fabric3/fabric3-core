@@ -50,16 +50,19 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.EventFilter;
 import org.fabric3.spi.builder.channel.EventFilterBuilder;
+import org.fabric3.spi.builder.channel.EventStreamHandlerBuilder;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.transform.TransformerRegistry;
 
@@ -75,6 +78,8 @@ public class ChannelConnectorImpl implements ChannelConnector {
             targetAttachers;
     private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
             filterBuilders;
+    private Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>>
+            handlerBuilders;
 
     private ClassLoaderRegistry classLoaderRegistry;
     private TransformerRegistry transformerRegistry;
@@ -92,19 +97,24 @@ public class ChannelConnectorImpl implements ChannelConnector {
         this.transformerRegistry = transformerRegistry;
     }
 
-    @Reference
+    @Reference(required = false)
     public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
         this.sourceAttachers = sourceAttachers;
     }
 
-    @Reference
+    @Reference(required = false)
     public void setTargetAttachers(Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers) {
         this.targetAttachers = targetAttachers;
     }
 
-    @Reference
+    @Reference(required = false)
     public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders) {
         this.filterBuilders = filterBuilders;
+    }
+
+    @Reference(required = false)
+    public void setHandlerBuilders(Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>> handlerBuilders) {
+        this.handlerBuilders = handlerBuilders;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -156,6 +166,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
             EventStream stream = new EventStreamImpl(streamDefinition);
             addTransformer(streamDefinition, stream, loader);
             addFilters(streamDefinition, stream);
+            addHandlers(streamDefinition, stream);
             connection.addEventStream(stream);
         }
         return connection;
@@ -195,13 +206,28 @@ public class ChannelConnectorImpl implements ChannelConnector {
      */
     @SuppressWarnings({"unchecked"})
     private void addFilters(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws BuilderException {
-        for (PhysicalEventFilterDefinition filterDefinition : streamDefinition.getFilters()) {
-            EventFilterBuilder filterBuilder = filterBuilders.get(filterDefinition.getClass());
-            EventFilter filter = filterBuilder.build(filterDefinition);
+        for (PhysicalEventFilterDefinition definition : streamDefinition.getFilters()) {
+            EventFilterBuilder builder = filterBuilders.get(definition.getClass());
+            EventFilter filter = builder.build(definition);
             FilterHandler handler = new FilterHandler(filter);
             stream.addHandler(handler);
         }
     }
 
+    /**
+     * Adds event stream handlers if they are defined for the stream.
+     *
+     * @param streamDefinition the stream definition
+     * @param stream           the stream being created
+     * @throws BuilderException if there is an error adding a handler
+     */
+    @SuppressWarnings({"unchecked"})
+    private void addHandlers(PhysicalEventStreamDefinition streamDefinition, EventStream stream) throws BuilderException {
+        for (PhysicalHandlerDefinition definition : streamDefinition.getHandlers()) {
+            EventStreamHandlerBuilder builder = handlerBuilders.get(definition.getClass());
+            EventStreamHandler handler = builder.build(definition);
+            stream.addHandler(handler);
+        }
+    }
 
 }

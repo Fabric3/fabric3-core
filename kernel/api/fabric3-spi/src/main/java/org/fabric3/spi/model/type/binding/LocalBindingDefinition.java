@@ -35,67 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.tx;
+package org.fabric3.spi.model.type.binding;
 
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.host.Namespaces;
+import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * Implements transaction policy for a wire operation.
+ * Represents binding information for a wire between collocated components.
  *
  * @version $Rev$ $Date$
  */
-public class TxInterceptor extends AbstractTxSupport implements Interceptor {
-    private Interceptor next;
+public final class LocalBindingDefinition extends BindingDefinition {
+    private static final long serialVersionUID = 8531584350454081265L;
 
-    public TxInterceptor(TransactionManager tm, TxAction action, TxMonitor monitor) {
-        super(tm, action, monitor);
+    public static final LocalBindingDefinition INSTANCE = new LocalBindingDefinition();
+
+    private LocalBindingDefinition() {
+        super(null, new QName(Namespaces.BINDING, "binding.local"));
     }
 
-    public Interceptor getNext() {
-        return next;
-    }
 
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
-
-    public Message invoke(Message message) {
-
-        Transaction transaction = getTransaction();
-
-        if (txAction == TxAction.BEGIN) {
-            if (transaction == null) {
-                begin();
-            }
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            suspend();
-        }
-
-        Message ret;
-        try {
-            ret = next.invoke(message);
-        } catch (RuntimeException e) {
-            if (txAction == TxAction.BEGIN && transaction == null) {
-                rollback();
-            } else if (txAction == TxAction.SUSPEND && transaction != null) {
-                setRollbackOnly();
-            }
-            throw e;
-        }
-
-        if (txAction == TxAction.BEGIN && transaction == null && !ret.isFault()) {
-            commit();
-        } else if (txAction == TxAction.BEGIN && transaction == null && ret.isFault()) {
-            rollback();
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            resume(transaction);
-        }
-
-        return ret;
-
-    }
 }

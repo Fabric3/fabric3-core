@@ -41,31 +41,37 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.model.physical;
 
-import org.w3c.dom.Element;
-
-import org.fabric3.spi.generator.policy.PolicyMetadata;
-import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import java.io.Serializable;
+import java.net.URI;
 
 /**
- * Generates {@link PhysicalInterceptorDefinition}s used to attach policy interceptors to a wire.
+ * Metadata for attaching a handler to an event stream.
  *
  * @version $Rev$ $Date$
  */
-public interface InterceptorGenerator {
+public class PhysicalHandlerDefinition implements Serializable {
+    private static final long serialVersionUID = 660389044446376070L;
+    private URI policyClassLoaderId;
 
     /**
-     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a
-     * wire.
+     * Returns the classloader id for the contribution containing the handler. This may be the same as the wire classloader id if the policy is
+     * contained in the same user contribution as the source component of the wire.
      *
-     * @param policy    policy set definition
-     * @param metadata  intent or policy metadata keyed by policy/intent qualified name
-     * @param operation operation the interceptor is generated for
-     * @return the definition
-     * @throws GenerationException if an exception occurs during generation
+     * @return the classloader id for the policy
      */
-    PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) throws GenerationException;
+    public URI getPolicyClassLoaderId() {
+        return policyClassLoaderId;
+    }
 
+    /**
+     * Sets the classloader id for the contribution containing the handler. This may be the same as the wire classloader id if the policy is contained
+     * in the same user contribution as the source component of the wire.
+     *
+     * @param id classloader id for the policy
+     */
+    public void setPolicyClassLoaderId(URI id) {
+        this.policyClassLoaderId = id;
+    }
 }

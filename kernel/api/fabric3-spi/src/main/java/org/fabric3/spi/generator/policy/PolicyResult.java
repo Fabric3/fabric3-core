@@ -38,13 +38,14 @@
 package org.fabric3.spi.generator.policy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
- * Result of resolving intents and policy sets configured on a wire.
+ * Result of resolving intents and policy sets for a wire or event stream.
  * <p/>
  * <p/>
  * The policies are resolved for the source and target bindings as well as the source and target component implementation types. A wire can be between
@@ -99,12 +100,26 @@ public interface PolicyResult {
     Set<PolicySet> getInterceptedEndpointPolicySets();
 
     /**
+     * Returns policy sets that are enforced by an interceptor.
+     *
+     * @return the policy sets
+     */
+    Map<LogicalOperation, List<PolicySet>> getInterceptedPolicySets();
+
+    /**
      * Returns policy sets that are enforced by an interceptor for an operation.
      *
      * @param operation operation against which interceptors are defined.
      * @return the policy sets
      */
     List<PolicySet> getInterceptedPolicySets(LogicalOperation operation);
+
+    /**
+     * Returns metadata for the intents and policy sets for a given operation.
+     *
+     * @return metadata for the intents and policy sets
+     */
+    Map<LogicalOperation, PolicyMetadata> getMetadata();
 
     /**
      * Returns metadata for the intents and policy sets for a given operation.

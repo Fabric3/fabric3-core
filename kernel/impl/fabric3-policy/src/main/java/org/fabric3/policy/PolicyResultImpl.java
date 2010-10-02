@@ -75,6 +75,10 @@ public class PolicyResultImpl implements PolicyResult {
         return interceptedEndpointPolicySets;
     }
 
+    public Map<LogicalOperation, List<PolicySet>> getInterceptedPolicySets() {
+        return interceptedPolicySets;
+    }
+
     public List<PolicySet> getInterceptedPolicySets(LogicalOperation operation) {
         List<PolicySet> sets = interceptedPolicySets.get(operation);
         if (sets == null) {
@@ -90,6 +94,10 @@ public class PolicyResultImpl implements PolicyResult {
             metadataMap.put(operation, metadata);
         }
         return metadata;
+    }
+
+    public Map<LogicalOperation, PolicyMetadata> getMetadata() {
+        return metadataMap;
     }
 
     void addSourceEndpointIntents(Set<Intent> intents) {

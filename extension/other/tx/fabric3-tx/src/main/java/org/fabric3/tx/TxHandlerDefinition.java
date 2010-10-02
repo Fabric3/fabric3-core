@@ -37,65 +37,24 @@
 */
 package org.fabric3.tx;
 
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Implements transaction policy for a wire operation.
+ * Used to build a transactional event stream handler.
  *
  * @version $Rev$ $Date$
  */
-public class TxInterceptor extends AbstractTxSupport implements Interceptor {
-    private Interceptor next;
+public class TxHandlerDefinition extends PhysicalHandlerDefinition {
+    private static final long serialVersionUID = 6023092372611218345L;
 
-    public TxInterceptor(TransactionManager tm, TxAction action, TxMonitor monitor) {
-        super(tm, action, monitor);
+    private final TxAction txAction;
+
+    public TxHandlerDefinition(TxAction txAction) {
+        this.txAction = txAction;
     }
 
-    public Interceptor getNext() {
-        return next;
+    public final TxAction getAction() {
+        return txAction;
     }
 
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
-
-    public Message invoke(Message message) {
-
-        Transaction transaction = getTransaction();
-
-        if (txAction == TxAction.BEGIN) {
-            if (transaction == null) {
-                begin();
-            }
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            suspend();
-        }
-
-        Message ret;
-        try {
-            ret = next.invoke(message);
-        } catch (RuntimeException e) {
-            if (txAction == TxAction.BEGIN && transaction == null) {
-                rollback();
-            } else if (txAction == TxAction.SUSPEND && transaction != null) {
-                setRollbackOnly();
-            }
-            throw e;
-        }
-
-        if (txAction == TxAction.BEGIN && transaction == null && !ret.isFault()) {
-            commit();
-        } else if (txAction == TxAction.BEGIN && transaction == null && ret.isFault()) {
-            rollback();
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            resume(transaction);
-        }
-
-        return ret;
-
-    }
 }

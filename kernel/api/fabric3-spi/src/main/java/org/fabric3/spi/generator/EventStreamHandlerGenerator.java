@@ -46,26 +46,23 @@ package org.fabric3.spi.generator;
 import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.policy.PolicyMetadata;
-import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Generates {@link PhysicalInterceptorDefinition}s used to attach policy interceptors to a wire.
+ * Generates {@link PhysicalHandlerDefinition}s used to attach policy handlers to an event stream.
  *
  * @version $Rev$ $Date$
  */
-public interface InterceptorGenerator {
+public interface EventStreamHandlerGenerator {
 
     /**
-     * Generates an interceptor definition from the policy set extension. Implementations may return null if an interceptor should not be added to a
-     * wire.
+     * Generates a handler definition from the policy set extension. Implementations may return null if an handler should not be added to the stream.
      *
-     * @param policy    policy set definition
-     * @param metadata  intent or policy metadata keyed by policy/intent qualified name
-     * @param operation operation the interceptor is generated for
+     * @param policy   policy set definition
+     * @param metadata intent or policy metadata keyed by policy/intent qualified name
      * @return the definition
      * @throws GenerationException if an exception occurs during generation
      */
-    PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) throws GenerationException;
+    PhysicalHandlerDefinition generate(Element policy, PolicyMetadata metadata) throws GenerationException;
 
 }

@@ -46,7 +46,7 @@ package org.fabric3.spi.generator;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Generates a {@link Deployment} from the set of logical components.
+ * Generates a {@link Deployment} from the current logical state of the domain.
  *
  * @version $Rev$ $Date$
  */
@@ -56,8 +56,8 @@ public interface Generator {
      * Performs the generation.
      *
      * @param domain      the logical domain composite
-     * @param incremental true if generation should be incremental, i.e. commands are generated only for new components and wires as opposed to all
-     *                    components (new and existing ones)
+     * @param incremental true if generation should be incremental, i.e. commands are generated only for new components, channels, wires, and event
+     *                    streams as opposed to all components (new and existing ones)
      * @return the deployment
      * @throws GenerationException If unable to generate the deployment
      */

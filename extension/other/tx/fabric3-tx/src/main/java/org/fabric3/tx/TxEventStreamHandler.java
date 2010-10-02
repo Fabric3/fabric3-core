@@ -40,31 +40,21 @@ package org.fabric3.tx;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Implements transaction policy for a wire operation.
+ * Implements transactional policy for an event stream.
  *
  * @version $Rev$ $Date$
  */
-public class TxInterceptor extends AbstractTxSupport implements Interceptor {
-    private Interceptor next;
+public class TxEventStreamHandler extends AbstractTxSupport implements EventStreamHandler {
+    private EventStreamHandler next;
 
-    public TxInterceptor(TransactionManager tm, TxAction action, TxMonitor monitor) {
+    public TxEventStreamHandler(TransactionManager tm, TxAction action, TxMonitor monitor) {
         super(tm, action, monitor);
     }
 
-    public Interceptor getNext() {
-        return next;
-    }
-
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
-
-    public Message invoke(Message message) {
-
+    public void handle(Object event) {
         Transaction transaction = getTransaction();
 
         if (txAction == TxAction.BEGIN) {
@@ -75,9 +65,8 @@ public class TxInterceptor extends AbstractTxSupport implements Interceptor {
             suspend();
         }
 
-        Message ret;
         try {
-            ret = next.invoke(message);
+            next.handle(event);
         } catch (RuntimeException e) {
             if (txAction == TxAction.BEGIN && transaction == null) {
                 rollback();
@@ -87,15 +76,19 @@ public class TxInterceptor extends AbstractTxSupport implements Interceptor {
             throw e;
         }
 
-        if (txAction == TxAction.BEGIN && transaction == null && !ret.isFault()) {
+        if (txAction == TxAction.BEGIN && transaction == null) {
             commit();
-        } else if (txAction == TxAction.BEGIN && transaction == null && ret.isFault()) {
-            rollback();
         } else if (txAction == TxAction.SUSPEND && transaction != null) {
             resume(transaction);
         }
-
-        return ret;
-
     }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
 }

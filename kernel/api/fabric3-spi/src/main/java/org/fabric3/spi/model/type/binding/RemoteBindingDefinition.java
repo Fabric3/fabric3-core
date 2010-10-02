@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.wire;
+package org.fabric3.spi.model.type.binding;
 
 import javax.xml.namespace.QName;
 

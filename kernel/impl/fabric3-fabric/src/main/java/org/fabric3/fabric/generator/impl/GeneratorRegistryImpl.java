@@ -58,6 +58,7 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
@@ -76,6 +77,8 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
             new ConcurrentHashMap<Class<?>, ConnectionBindingGenerator<?>>();
 
     private Map<QName, InterceptorGenerator> interceptorGenerators = new ConcurrentHashMap<QName, InterceptorGenerator>();
+
+    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new ConcurrentHashMap<QName, EventStreamHandlerGenerator>();
 
     private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators =
             new ConcurrentHashMap<Class<?>, ResourceReferenceGenerator<?>>();
@@ -110,6 +113,11 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     @Reference(required = false)
     public void setResourceGenerators(Map<Class<?>, ResourceGenerator<?>> resourceGenerators) {
         this.resourceGenerators = resourceGenerators;
+    }
+
+    @Reference(required = false)
+    public void setHandlerGenerators(Map<QName, EventStreamHandlerGenerator> handlerGenerators) {
+        this.handlerGenerators = handlerGenerators;
     }
 
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
@@ -163,8 +171,16 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         return generator;
     }
 
-    public InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException {
+    public InterceptorGenerator getInterceptorGenerator(QName extensionName) throws GeneratorNotFoundException {
         InterceptorGenerator generator = interceptorGenerators.get(extensionName);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(extensionName);
+        }
+        return generator;
+    }
+
+    public EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException {
+        EventStreamHandlerGenerator generator = handlerGenerators.get(extensionName);
         if (generator == null) {
             throw new GeneratorNotFoundException(extensionName);
         }

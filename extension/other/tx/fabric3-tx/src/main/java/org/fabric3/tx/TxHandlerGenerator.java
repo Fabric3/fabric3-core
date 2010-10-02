@@ -35,26 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.wire;
+package org.fabric3.tx;
 
-import javax.xml.namespace.QName;
+import org.osoa.sca.annotations.EagerInit;
+import org.w3c.dom.Element;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.generator.EventStreamHandlerGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Represents binding information for a wire between collocated components.
+ * Generates metadta for a transactional event stream handler.
  *
  * @version $Rev$ $Date$
  */
-public final class LocalBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 8531584350454081265L;
+@EagerInit
+public class TxHandlerGenerator implements EventStreamHandlerGenerator {
 
-    public static final LocalBindingDefinition INSTANCE = new LocalBindingDefinition();
-
-    private LocalBindingDefinition() {
-        super(null, new QName(Namespaces.BINDING, "binding.local"));
+    public PhysicalHandlerDefinition generate(Element policy, PolicyMetadata metadata) throws GenerationException {
+        String action = policy.getAttribute("action");
+        return new TxHandlerDefinition(TxAction.valueOf(action));
     }
-
-
 }

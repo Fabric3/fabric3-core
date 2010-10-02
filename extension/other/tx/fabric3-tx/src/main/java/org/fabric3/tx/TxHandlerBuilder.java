@@ -37,65 +37,32 @@
 */
 package org.fabric3.tx;
 
-import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.channel.EventStreamHandlerBuilder;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Implements transaction policy for a wire operation.
+ * Creates a {@link TxEventStreamHandler} for an event stream.
  *
  * @version $Rev$ $Date$
  */
-public class TxInterceptor extends AbstractTxSupport implements Interceptor {
-    private Interceptor next;
+public class TxHandlerBuilder implements EventStreamHandlerBuilder<TxHandlerDefinition> {
+    private TransactionManager transactionManager;
+    private TxMonitor monitor;
 
-    public TxInterceptor(TransactionManager tm, TxAction action, TxMonitor monitor) {
-        super(tm, action, monitor);
+    public TxHandlerBuilder(@Reference TransactionManager transactionManager, @Monitor TxMonitor monitor) {
+        this.transactionManager = transactionManager;
+        this.monitor = monitor;
     }
 
-    public Interceptor getNext() {
-        return next;
+    public EventStreamHandler build(TxHandlerDefinition interceptorDefinition) throws BuilderException {
+        return new TxEventStreamHandler(transactionManager, interceptorDefinition.getAction(), monitor);
     }
 
-    public void setNext(Interceptor next) {
-        this.next = next;
-    }
 
-    public Message invoke(Message message) {
-
-        Transaction transaction = getTransaction();
-
-        if (txAction == TxAction.BEGIN) {
-            if (transaction == null) {
-                begin();
-            }
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            suspend();
-        }
-
-        Message ret;
-        try {
-            ret = next.invoke(message);
-        } catch (RuntimeException e) {
-            if (txAction == TxAction.BEGIN && transaction == null) {
-                rollback();
-            } else if (txAction == TxAction.SUSPEND && transaction != null) {
-                setRollbackOnly();
-            }
-            throw e;
-        }
-
-        if (txAction == TxAction.BEGIN && transaction == null && !ret.isFault()) {
-            commit();
-        } else if (txAction == TxAction.BEGIN && transaction == null && ret.isFault()) {
-            rollback();
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            resume(transaction);
-        }
-
-        return ret;
-
-    }
 }

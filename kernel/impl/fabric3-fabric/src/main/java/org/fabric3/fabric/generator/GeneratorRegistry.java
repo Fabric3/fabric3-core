@@ -52,6 +52,7 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
@@ -118,6 +119,8 @@ public interface GeneratorRegistry {
      * @return interceptor generator
      * @throws GeneratorNotFoundException if no generator is registered for the policy extension type
      */
-    InterceptorGenerator getInterceptorDefinitionGenerator(QName extensionName) throws GeneratorNotFoundException;
+    InterceptorGenerator getInterceptorGenerator(QName extensionName) throws GeneratorNotFoundException;
+
+    EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException;
 
 }
