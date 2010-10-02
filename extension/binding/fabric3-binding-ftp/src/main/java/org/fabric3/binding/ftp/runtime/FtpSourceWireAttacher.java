@@ -37,22 +37,18 @@
 */
 package org.fabric3.binding.ftp.runtime;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLDecoder;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSourceDefinition;
-import org.fabric3.transport.ftp.spi.FtpLetContainer;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.expression.ExpressionExpander;
-import org.fabric3.spi.expression.ExpressionExpansionException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
+import org.fabric3.transport.ftp.spi.FtpLetContainer;
 
 /**
  * @version $Rev$ $Date$
@@ -60,27 +56,22 @@ import org.fabric3.spi.wire.Wire;
 public class FtpSourceWireAttacher implements SourceWireAttacher<FtpSourceDefinition> {
 
     private FtpLetContainer ftpLetContainer;
-    private ExpressionExpander expander;
     private BindingMonitor monitor;
 
     /**
      * Injects the references.
      *
      * @param ftpLetContainer FtpLet container.  The FtpLet container is optional. If it is not available, only reference bindings will be supported.
-     * @param expander        the expander for '${..}' expressions.
      * @param monitor         the binding monitor for reporting events.
      */
-    public FtpSourceWireAttacher(@Reference(required = false) FtpLetContainer ftpLetContainer,
-                                 @Reference ExpressionExpander expander,
-                                 @Monitor BindingMonitor monitor) {
+    public FtpSourceWireAttacher(@Reference(required = false) FtpLetContainer ftpLetContainer, @Monitor BindingMonitor monitor) {
         this.ftpLetContainer = ftpLetContainer;
-        this.expander = expander;
         this.monitor = monitor;
     }
 
     public void attach(FtpSourceDefinition source, PhysicalTargetDefinition target, final Wire wire) throws WiringException {
         URI uri = source.getUri();
-        String servicePath = expandUri(uri).getSchemeSpecificPart();
+        String servicePath = uri.getSchemeSpecificPart();
         if (servicePath.startsWith("//")) {
             servicePath = servicePath.substring(2);
         }
@@ -104,25 +95,6 @@ public class FtpSourceWireAttacher implements SourceWireAttacher<FtpSourceDefini
     public void attachObjectFactory(FtpSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition definition)
             throws WiringException {
         throw new UnsupportedOperationException();
-    }
-
-
-    /**
-     * Expands the target URI if it contains an expression of the form ${..}.
-     *
-     * @param uri the target uri to expand
-     * @return the expanded URI with sourced values for any expressions
-     * @throws WiringException if there is an error expanding an expression
-     */
-    private URI expandUri(URI uri) throws WiringException {
-        try {
-            String decoded = URLDecoder.decode(uri.toString(), "UTF-8");
-            return URI.create(expander.expand(decoded));
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        } catch (ExpressionExpansionException e) {
-            throw new WiringException(e);
-        }
     }
 
 

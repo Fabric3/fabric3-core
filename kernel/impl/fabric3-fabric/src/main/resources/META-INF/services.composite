@@ -32,21 +32,10 @@
         <f3-impl:implementation.system class="org.fabric3.fabric.classloader.SerializationServiceImpl"/>
     </component>
 
-    <component name="ExpressionExpander">
-        <f3-impl:implementation.system class="org.fabric3.fabric.expression.ExpressionExpanderImpl"/>
-    </component>
-
     <component name="TransportService">
         <f3-impl:implementation.system class="org.fabric3.fabric.transport.TransportService"/>
     </component>
 
-    <component name="SystemPropertyEvaluator" f3-core:key="101">
-        <f3-impl:implementation.system class="org.fabric3.fabric.expression.SystemPropertyEvaluator"/>
-    </component>
-
-    <component name="EnvironmentPropertyEvaluator" f3-core:key="102">
-        <f3-impl:implementation.system class="org.fabric3.fabric.expression.EnvironmentPropertyEvaluator"/>
-    </component>
 
     <component name="KeyStoreManager">
         <f3-impl:implementation.system class="org.fabric3.fabric.security.KeyStoreManagerImpl"/>

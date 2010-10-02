@@ -37,25 +37,20 @@
 */
 package org.fabric3.binding.ftp.runtime;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.commons.net.SocketFactory;
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.binding.ftp.provision.FtpTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.expression.ExpressionExpander;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.expression.ExpressionExpansionException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -63,18 +58,16 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class FtpTargetWireAttacher implements TargetWireAttacher<FtpTargetDefinition> {
-    private ExpressionExpander expander;
     private FtpInterceptorMonitor monitor;
 
-    public FtpTargetWireAttacher(@Reference ExpressionExpander expander, @Monitor FtpInterceptorMonitor monitor) {
-        this.expander = expander;
+    public FtpTargetWireAttacher(@Monitor FtpInterceptorMonitor monitor) {
         this.monitor = monitor;
     }
 
     public void attach(PhysicalSourceDefinition source, FtpTargetDefinition target, Wire wire) throws WiringException {
 
         InvocationChain invocationChain = wire.getInvocationChains().iterator().next();
-        URI uri = expandUri(target.getUri());
+        URI uri = target.getUri();
         try {
             String host = uri.getHost();
             int port = uri.getPort() == -1 ? 23 : uri.getPort();
@@ -83,7 +76,7 @@ public class FtpTargetWireAttacher implements TargetWireAttacher<FtpTargetDefini
             String remotePath = uri.getPath();
             String tmpFileSuffix = target.getTmpFileSuffix();
 
-            FtpSecurity security = expandFtpSecurity(target.getSecurity());
+            FtpSecurity security = target.getSecurity();
             boolean active = target.isActive();
             int connectTimeout = target.getConectTimeout();
             SocketFactory factory = new ExpiringSocketFactory(connectTimeout);
@@ -109,37 +102,5 @@ public class FtpTargetWireAttacher implements TargetWireAttacher<FtpTargetDefini
         throw new AssertionError();
     }
 
-    /**
-     * Expands the target URI if it contains an expression of the form ${..}.
-     *
-     * @param uri the target uri to expand
-     * @return the expanded URI with sourced values for any expressions
-     * @throws WiringException if there is an error expanding an expression
-     */
-    private URI expandUri(URI uri) throws WiringException {
-        try {
-            String decoded = URLDecoder.decode(uri.toString(), "UTF-8");
-            return URI.create(expander.expand(decoded));
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        } catch (ExpressionExpansionException e) {
-            throw new WiringException(e);
-        }
-    }
-
-    /**
-     * Expands the FTP security if it contains an expression of the form ${..}.
-     *
-     * @param ftpSecurity FTP security which contains FTP authentication details
-     * @return the expanded ftp security
-     * @throws WiringException if there is an error expanding an expression
-     */
-    private FtpSecurity expandFtpSecurity(FtpSecurity ftpSecurity) throws WiringException {
-        try {
-            return new FtpSecurity(expander.expand(ftpSecurity.getUser()), expander.expand(ftpSecurity.getPassword()));
-        } catch (ExpressionExpansionException e) {
-            throw new WiringException(e);
-        }
-    }
 
 }

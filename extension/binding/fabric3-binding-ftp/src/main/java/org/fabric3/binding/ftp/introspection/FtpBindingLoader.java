@@ -37,10 +37,8 @@
 */
 package org.fabric3.binding.ftp.introspection;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -93,8 +91,7 @@ public class FtpBindingLoader implements TypeLoader<FtpBindingDefinition> {
                 uri = "ftp://" + uri;
             }
             TransferMode tMode = transferMode != null ? TransferMode.valueOf(transferMode) : TransferMode.PASSIVE;
-            // encode the URI since there may be expressions (e.g. "${..}") contained in it
-            URI endpointUri = new URI(URLEncoder.encode(uri, "UTF-8"));
+            URI endpointUri = new URI(uri);
             bd = new FtpBindingDefinition(endpointUri, tMode);
 
             String tmpFileSuffix = reader.getAttributeValue(null, "tmpFileSuffix");
@@ -128,9 +125,6 @@ public class FtpBindingLoader implements TypeLoader<FtpBindingDefinition> {
 
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The FTP binding URI is not valid: " + uri, reader);
-            introspectionContext.addError(failure);
-        } catch (UnsupportedEncodingException e) {
-            InvalidValue failure = new InvalidValue("Invalid encoding for URI: " + uri + "\n" + e, reader);
             introspectionContext.addError(failure);
         }
 
