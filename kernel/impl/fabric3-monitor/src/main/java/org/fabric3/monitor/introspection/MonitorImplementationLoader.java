@@ -45,6 +45,7 @@ package org.fabric3.monitor.introspection;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -54,6 +55,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.contract.DataType;
@@ -64,7 +66,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.host.monitor.MonitorEvent;
 
 /**
  * Loads information for a monitor implementation
@@ -84,19 +85,25 @@ public class MonitorImplementationLoader implements TypeLoader<MonitorImplementa
 
     public MonitorImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         validateAttributes(reader, introspectionContext);
-        reader.next();
         Element configuration = null;
-        if (reader.getName().getLocalPart().contains("configuration")) {
-            // configuration is optional
-            Document document = helper.transform(reader);
-            if (document != null) {
-                NodeList list = document.getElementsByTagName("configuration");
-                if (list.getLength() == 1) {
-                    configuration = (Element) list.item(0);
+        while (true) {
+            int event = reader.next();
+            if (XMLStreamConstants.END_ELEMENT == event && "implementation.monitor".equals(reader.getName().getLocalPart())) {
+                break;
+            } else if (XMLStreamConstants.START_ELEMENT == event && "configuration".equals(reader.getName().getLocalPart())) {
+                if (reader.getName().getLocalPart().contains("configuration")) {
+                    // configuration is optional
+                    Document document = helper.transform(reader);
+                    if (document != null) {
+                        NodeList list = document.getElementsByTagName("configuration");
+                        if (list.getLength() == 1) {
+                            configuration = (Element) list.item(0);
+                        }
+                    }
                 }
             }
-            LoaderUtil.skipToEndElement(reader);
         }
+//        LoaderUtil.skipToEndElement(reader);
         ComponentType type = new ComponentType();
         type.add(new ConsumerDefinition("monitor", consumerTypes));
         return new MonitorImplementation(type, configuration);
