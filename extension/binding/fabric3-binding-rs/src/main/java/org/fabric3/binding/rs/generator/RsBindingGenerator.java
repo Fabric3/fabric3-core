@@ -108,6 +108,10 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
         if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
             return AuthenticationType.BASIC;
         }
+        intents = binding.getParent().getParent().getDefinition().getImplementation().getIntents();
+        if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
+            return AuthenticationType.BASIC;
+        }
         for (LogicalOperation operation : operations) {
             intents = operation.getIntents();
             if (intents.contains(F3_AUTHORIZATION) || intents.contains(SCA_AUTHORIZATION)) {
