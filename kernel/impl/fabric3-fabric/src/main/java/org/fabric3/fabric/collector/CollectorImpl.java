@@ -103,6 +103,10 @@ public class CollectorImpl implements Collector {
             if (LogicalState.NEW == channel.getState()) {
                 channel.setState(LogicalState.PROVISIONED);
             }
+            for (LogicalBinding<?> binding : channel.getBindings()) {
+                if (LogicalState.NEW == binding.getState())
+                    binding.setState(LogicalState.PROVISIONED);
+            }
         }
         for (LogicalResource resource : composite.getResources()) {
             if (LogicalState.NEW == resource.getState()) {
@@ -165,9 +169,14 @@ public class CollectorImpl implements Collector {
             if (deployable.equals(channel.getDeployable())) {
                 channel.setState(LogicalState.MARKED);
             }
-        }
-        for (LogicalResource resource : composite.getResources()) {
-            resource.setState(LogicalState.MARKED);
+            for (LogicalBinding<?> binding : channel.getBindings()) {
+                if (deployable.equals(binding.getDeployable())) {
+                    binding.setState(LogicalState.PROVISIONED);
+                }
+            }
+            for (LogicalResource resource : composite.getResources()) {
+                resource.setState(LogicalState.MARKED);
+            }
         }
     }
 
