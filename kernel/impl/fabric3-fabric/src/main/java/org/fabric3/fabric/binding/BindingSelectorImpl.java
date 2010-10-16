@@ -147,7 +147,11 @@ public class BindingSelectorImpl implements BindingSelector {
                 target.getBindings().clear();
                 provider.bind(wire);
                 wire.setSourceBinding(source.getBindings().get(0));
-                wire.setTargetBinding(target.getBindings().get(0));
+                if (!target.getBindings().isEmpty()){
+                    wire.setTargetBinding(target.getBindings().get(0));
+                } else {
+                    wire.setTargetBinding(target.getLeafService().getBindings().get(0));
+                }
                 return;
             }
             results.add(result);
