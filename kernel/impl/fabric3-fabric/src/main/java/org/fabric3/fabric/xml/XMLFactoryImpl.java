@@ -49,7 +49,9 @@ import org.fabric3.spi.xml.XMLFactoryInstantiationException;
 
 /**
  * An implementation of XMLFactory that uses WoodStox StAX parser for input & output factories. Alternately the runtime can be configured to use a
- * different input and ouput factories as properties in the scdl file. This implementation sets the TCCL during stAX implementation discovery.
+ * different input and output factories as properties in the scdl file. This implementation sets the TCCL during stAX implementation discovery.
+ *
+ * @version $Rev $Date
  */
 public final class XMLFactoryImpl implements XMLFactory {
 
