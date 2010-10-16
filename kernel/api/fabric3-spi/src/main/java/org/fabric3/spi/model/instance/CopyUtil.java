@@ -276,6 +276,7 @@ public class CopyUtil {
             LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to, binding.getDeployable());
             copy.setState(binding.getState());
             to.addBinding(copy);
+            copy.setAssigned(true);
             copy.addIntents(binding.getIntents());
             copy.addPolicySets(binding.getPolicySets());
         }
@@ -342,10 +343,19 @@ public class CopyUtil {
             LogicalBinding fromTargetBinding = wire.getTargetBinding();
             LogicalBinding toTargetBinding = null;
             if (fromTargetBinding != null) {
-                for (LogicalBinding<?> binding : toTarget.getBindings()) {
-                    if (fromTargetBinding.getDefinition().getName().equals(binding.getDefinition().getName())) {
-                        toTargetBinding = binding;
-                        break;
+                if (!toTarget.getBindings().isEmpty()) {
+                    for (LogicalBinding<?> binding : toTarget.getBindings()) {
+                        if (fromTargetBinding.getDefinition().getName().equals(binding.getDefinition().getName())) {
+                            toTargetBinding = binding;
+                            break;
+                        }
+                    }
+                } else {
+                    for (LogicalBinding<?> binding : toTarget.getLeafService().getBindings()) {
+                        if (fromTargetBinding.getDefinition().getName().equals(binding.getDefinition().getName())) {
+                            toTargetBinding = binding;
+                            break;
+                        }
                     }
                 }
             }
