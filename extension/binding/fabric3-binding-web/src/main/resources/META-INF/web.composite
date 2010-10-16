@@ -16,6 +16,11 @@ Public License. See the accompanying license file for details.
            name="WebBindingExtension"
            autowire="true">
 
+    <component name="LogLevelSetter">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.log.LogLevelSetter"/>
+        <property name="monitorLevel" source="$systemConfig//web.binding/@logging"/>
+    </component>
+
     <component name="WebBindingGenerator" f3-core:key="org.fabric3.binding.web.model.WebBindingDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.web.generator.WebBindingGenerator"/>
     </component>
