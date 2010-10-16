@@ -99,7 +99,7 @@ public class LocalDeployer implements Deployer {
     }
 
     /**
-     * Executes the commands, peforming a rollback on error.
+     * Executes the commands, performing a rollback on error.
      *
      * @param commands the commands
      * @throws DeploymentException if a deployment error occurs
