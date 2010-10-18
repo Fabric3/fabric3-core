@@ -61,8 +61,6 @@ import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
@@ -81,7 +79,6 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     private BroadcasterManager broadcasterManager;
     private PubSubManager pubSubManager;
     private ServletHost servletHost;
-    private ZoneTopologyService topologyService;
 
     private AtmosphereServlet gatewayServlet;
     private long timeout = 1000 * 10 * 60;
@@ -97,11 +94,6 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
-    }
-
-    @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
-        this.topologyService = topologyService;
     }
 
     /**
@@ -156,7 +148,6 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         String path = UriHelper.getBaseName(sourceUri);
         OperationsAllowed allowed = source.getAllowed();
-        boolean replicate = source.isReplicate();
         // setup the subscriber infrastructure
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
@@ -173,20 +164,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         // create the publisher responsible for flowing events from clients to the channel
         if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
-            String channelName = sourceUri.toString();
-            DefaultChannelPublisher publisher;
-            if (replicate) {
-                publisher = new DefaultChannelPublisher(channelName, topologyService, monitor);
-            } else {
-                publisher = new DefaultChannelPublisher(channelName, monitor);
-            }
-            if (topologyService != null && topologyService.supportsDynamicChannels() && replicate) {
-                try {
-                    topologyService.openChannel(channelName, null, publisher);
-                } catch (ZoneChannelException e) {
-                    throw new ConnectionAttachException(e);
-                }
-            }
+            DefaultChannelPublisher publisher = new DefaultChannelPublisher();
             channel.addHandler(publisher);
             pubSubManager.register(path, publisher);
         } else {
@@ -217,15 +195,6 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
 
         // detach publisher and close cluster channel
         pubSubManager.unregisterPublisher(path);
-        if (OperationsAllowed.PUBLISH == allowed || OperationsAllowed.ALL == allowed) {
-            if (topologyService != null && topologyService.supportsDynamicChannels()) {
-                try {
-                    topologyService.closeChannel(source.getSourceUri().toString());
-                } catch (ZoneChannelException e) {
-                    throw new ConnectionAttachException(e);
-                }
-            }
-        }
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
         monitor.removedChannelEndpoint(prefix + path);
     }

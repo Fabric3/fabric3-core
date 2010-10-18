@@ -59,13 +59,15 @@ public class PhysicalChannelDefinition implements Serializable {
     private URI uri;
     private QName deployable;
     private boolean synchronous;
+    private boolean replicate;
     private List<PhysicalConnectionSourceDefinition> sourceDefinitions = new ArrayList<PhysicalConnectionSourceDefinition>();
     private List<PhysicalConnectionTargetDefinition> targetDefinitions = new ArrayList<PhysicalConnectionTargetDefinition>();
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean synchronous) {
+    public PhysicalChannelDefinition(URI uri, QName deployable, boolean synchronous, boolean replicate) {
         this.uri = uri;
         this.deployable = deployable;
         this.synchronous = synchronous;
+        this.replicate = replicate;
     }
 
     /**
@@ -93,6 +95,15 @@ public class PhysicalChannelDefinition implements Serializable {
      */
     public boolean isSynchronous() {
         return synchronous;
+    }
+
+    /**
+     * Returns true if the channel replicates events to all channel instances in a zone.
+     *
+     * @return true if the channel replicates events to all channel instances in a zone
+     */
+    public boolean isReplicate() {
+        return replicate;
     }
 
     /**

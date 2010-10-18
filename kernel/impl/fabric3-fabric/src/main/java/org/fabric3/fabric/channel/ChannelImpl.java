@@ -59,12 +59,20 @@ public class ChannelImpl implements Channel {
     private EventStreamHandler inHandler;
     private FanOutHandler fanOutHandler;
 
-    public ChannelImpl(URI uri, QName deployable, FanOutHandler handler) {
+    public ChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler) {
         this.uri = uri;
         this.deployable = deployable;
         inHandler = new PassThroughHandler();
-        fanOutHandler = handler;
-        inHandler.setNext(fanOutHandler);
+        this.fanOutHandler = fanOutHandler;
+        inHandler.setNext(this.fanOutHandler);
+    }
+
+    public ChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler) {
+        this.uri = uri;
+        this.deployable = deployable;
+        this.inHandler = inHandler;
+        this.fanOutHandler = fanOutHandler;
+        this.inHandler.setNext(fanOutHandler);
     }
 
     public URI getUri() {

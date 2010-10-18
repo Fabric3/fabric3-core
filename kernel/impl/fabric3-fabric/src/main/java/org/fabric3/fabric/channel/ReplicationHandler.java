@@ -34,42 +34,55 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.web.generator;
+*/
+package org.fabric3.fabric.channel;
 
-import org.osoa.sca.annotations.EagerInit;
+import java.io.Serializable;
 
-import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.binding.web.model.WebBindingDefinition;
-import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
-import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * Generates a {@link PhysicalConnectionSourceDefinition} for attaching a channel to a websocket or comet connection.
+ * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events
+ * through to downstream handlers.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-@EagerInit
-public class WebConnectionBindingGenerator implements ConnectionBindingGenerator<WebBindingDefinition> {
+public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
+    private String channelName;
+    private ZoneTopologyService topologyService;
+    private EventStreamHandler next;
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<WebBindingDefinition> binding) {
-        OperationsAllowed allowed = binding.getDefinition().getAllowed();
-
-        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition(allowed);
-        definition.setUri(binding.getParent().getUri());
-        return definition;
+    public ReplicationHandler(String channelName, ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
+        this.channelName = channelName;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalBinding<WebBindingDefinition> binding) {
-        throw new UnsupportedOperationException();
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
+    public void handle(Object event) {
+        if (!(event instanceof EventWrapper) && event instanceof Serializable) {
+            try {
+                topologyService.sendAsynchronous(channelName, (Serializable) event);
+            } catch (MessageException e) {
+                e.printStackTrace();
+                // monitor.replicationError(e);
+            }
+        }
+        // pass the object to the head stream handler
+        next.handle(event);
+    }
+
+    public void onMessage(Object event) {
+        next.handle(event);
     }
 }

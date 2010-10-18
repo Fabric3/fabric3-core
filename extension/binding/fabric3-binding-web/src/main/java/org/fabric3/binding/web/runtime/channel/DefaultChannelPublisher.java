@@ -37,64 +37,21 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import java.io.Serializable;
-
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageReceiver;
-import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
  * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
  * <p/>
  * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
  * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
- * <p/>
- * This publisher will replicate events to other runtimes in a zone if a {@link ZoneTopologyService} is available. This allows all browser clients to
- * be notified of events emitted by all runtimes in a zone.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHandler, MessageReceiver {
-    private String channelName;
-    private ChannelMonitor monitor;
-    private ZoneTopologyService topologyService;
-
+public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHandler {
     private EventStreamHandler next;
 
-    /**
-     * Creates a publisher that may replicate to other runtimes in a zone.
-     *
-     * @param channelName     the name of the channel the publisher sends messages to
-     * @param topologyService the topology service for broadcasting events to other runtimes in the same zone. May be null, in which case events will
-     *                        not be clustered.
-     * @param monitor         the monitor for reporting errors
-     */
-    public DefaultChannelPublisher(String channelName, ZoneTopologyService topologyService, ChannelMonitor monitor) {
-        this.channelName = channelName;
-        this.topologyService = topologyService;
-        this.monitor = monitor;
-    }
-
-    /**
-     * Creates a non-replicating publisher.
-     *
-     * @param channelName the name of the channel the publisher sends messages to
-     * @param monitor     the monitor for reporting errors
-     */
-    public DefaultChannelPublisher(String channelName, ChannelMonitor monitor) {
-        this(channelName, null, monitor);
-    }
-
     public void handle(Object event) {
-        if (!(event instanceof EventWrapper) && event instanceof Serializable) {
-            try {
-                replicate((Serializable) event);
-            } catch (MessageException e) {
-                monitor.replicationError(e);
-            }
-        }
         // pass the object to the head stream handler
         next.handle(event);
     }
@@ -109,22 +66,6 @@ public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHan
 
     public EventStreamHandler getNext() {
         return next;
-    }
-
-    public void onMessage(Object object) {
-        next.handle(object);
-    }
-
-    /**
-     * Replicates an event to other runtimes in a zone.
-     *
-     * @param event the event
-     * @throws MessageException if an error replicated the event is encountered
-     */
-    private void replicate(Serializable event) throws MessageException {
-        if (topologyService != null && topologyService.supportsDynamicChannels()) {
-            topologyService.sendAsynchronous(channelName, event);
-        }
     }
 
 }

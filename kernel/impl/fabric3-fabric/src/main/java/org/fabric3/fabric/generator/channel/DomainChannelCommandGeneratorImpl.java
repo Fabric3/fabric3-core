@@ -37,8 +37,11 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -109,8 +112,11 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
     }
 
     private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) {
+        URI uri = channel.getUri();
+        QName deployable = channel.getDeployable();
         boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(channel.getUri(), channel.getDeployable(), sync);
+        boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicate);
         definitions.add(definition);
     }
 }

@@ -56,6 +56,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.channel.AsyncFanOutHandler;
 import org.fabric3.fabric.channel.ChannelImpl;
 import org.fabric3.fabric.channel.FanOutHandler;
+import org.fabric3.fabric.channel.ReplicationHandler;
 import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.spi.channel.Channel;
@@ -64,6 +65,8 @@ import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.federation.ZoneChannelException;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -76,6 +79,8 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     private ChannelManager channelManager;
     private ExecutorService executorService;
     private CommandExecutorRegistry executorRegistry;
+    private ZoneTopologyService topologyService;
+    private boolean replicationCapable;
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
@@ -84,6 +89,15 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
         this.channelManager = channelManager;
         this.executorService = executorService;
         this.executorRegistry = executorRegistry;
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(List<ZoneTopologyService> services) {
+        // use a collection to force reinjection
+        if (services != null && !services.isEmpty()) {
+            this.topologyService = services.get(0);
+            replicationCapable = topologyService.supportsDynamicChannels();
+        }
     }
 
     @Init
@@ -97,13 +111,25 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
             for (PhysicalChannelDefinition definition : definitions) {
                 URI uri = definition.getUri();
                 QName deployable = definition.getDeployable();
-                FanOutHandler handler;
+                FanOutHandler fanOutHandler;
                 if (definition.isSynchronous()) {
-                    handler = new SyncFanOutHandler();
+                    fanOutHandler = new SyncFanOutHandler();
                 } else {
-                    handler = new AsyncFanOutHandler(executorService);
+                    fanOutHandler = new AsyncFanOutHandler(executorService);
                 }
-                Channel channel = new ChannelImpl(uri, deployable, handler);
+                Channel channel;
+                if (definition.isReplicate() && replicationCapable) {
+                    String channelName = uri.toString();
+                    ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService);
+                    channel = new ChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
+                    try {
+                        topologyService.openChannel(channelName, null, replicationHandler);
+                    } catch (ZoneChannelException e) {
+                        throw new ExecutionException(e);
+                    }
+                } else {
+                    channel = new ChannelImpl(uri, deployable, fanOutHandler);
+                }
                 channelManager.register(channel);
             }
         } catch (RegistrationException e) {

@@ -85,12 +85,7 @@ public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
                 context.addError(error);
             }
         }
-        String replicateVal = reader.getAttributeValue(null, "replicate");
-        boolean replicate = true;
-        if (replicateVal != null) {
-            replicate = Boolean.parseBoolean(replicateVal);
-        }
-        WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed, wireFormat, replicate);
+        WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed, wireFormat);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return definition;
@@ -99,7 +94,7 @@ public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"allowed".equals(name) && !"replicate".equals(name)) {
+            if (!"allowed".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
