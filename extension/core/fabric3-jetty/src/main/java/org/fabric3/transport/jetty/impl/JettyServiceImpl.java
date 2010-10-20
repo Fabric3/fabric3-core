@@ -60,7 +60,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
@@ -120,7 +119,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private Server server;
     private ManagedServletHandler servletHandler;
     private SelectChannelConnector httpConnector;
-    private SslSocketConnector sslConnector;
+    private ContextAwareSslConnector sslConnector;
 
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
@@ -416,6 +415,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             httpConnector = new ContextAwareConnector();
             httpConnector.setPort(selectedHttp);
             sslConnector = new ContextAwareSslConnector();
+            sslConnector.setAllowRenegotiate(true);
             sslConnector.setPort(selectedHttps);
             sslConnector.setKeystore(keystore);
             sslConnector.setKeyPassword(keyPassword);

@@ -45,6 +45,7 @@ package org.fabric3.transport.jetty.impl;
 
 import java.io.IOException;
 
+import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
 
 import org.fabric3.spi.threadpool.ExecutionContext;
@@ -56,10 +57,10 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
  *
  * @version $Rev: 7893 $ $Date: 2009-11-23 09:00:27 +0100 (Mon, 23 Nov 2009) $
  */
-public class ContextAwareSslConnector extends SslSocketConnector {
+public class ContextAwareSslConnector extends SslSelectChannelConnector {
 
     @Override
-    public void accept(int acceptorID) throws IOException, InterruptedException {
+    public void accept(int acceptorID) throws IOException {
         ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
         if (context == null) {
             // no execution context set, ignore
