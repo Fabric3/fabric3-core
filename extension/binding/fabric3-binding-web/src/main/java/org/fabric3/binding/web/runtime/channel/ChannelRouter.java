@@ -75,7 +75,7 @@ public class ChannelRouter extends HttpServlet {
         ChannelSubscriber subscriber = pubSubManager.getSubscriber(path);
         if (subscriber == null) {
             // TODO return 404
-            throw new AssertionError("Path not found");
+            throw new AssertionError("Path not found: " + path);
         }
         try {
             subscriber.subscribe(request);
