@@ -106,7 +106,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                                  @Reference WsdlSynthesizer wsdlSynthesizer,
                                  @Reference WsdlPolicyAttacher policyAttacher,
                                  @Reference Wsdl4JFactory wsdlFactory,
-                                 @Reference TargetUrlResolver targetUrlResolver) throws WSDLException {
+                                 @Reference TargetUrlResolver targetUrlResolver) {
         this.wsdlResolver = wsdlResolver;
         this.endpointResolver = endpointResolver;
         this.wsdlSynthesizer = wsdlSynthesizer;

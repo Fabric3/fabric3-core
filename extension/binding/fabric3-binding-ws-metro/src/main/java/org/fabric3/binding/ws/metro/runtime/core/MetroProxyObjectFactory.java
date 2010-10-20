@@ -148,7 +148,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
             wsdlLocation = calculateDefaultWsdlLocation();
         }
 
-        // Metro requires library classes to be visibile to the application classloader. If executing in an environment that supports classloader
+        // Metro requires library classes to be visible to the application classloader. If executing in an environment that supports classloader
         // isolation, dynamically update the application classloader by setting a parent to the Metro classloader.
         ClassLoader seiClassLoader = seiClass.getClassLoader();
         if (seiClassLoader instanceof MultiParentClassLoader) {
@@ -197,7 +197,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
      * only the port interface is provided (i.e. the Java interface for the reference). When creating a proxy, Metro requires the service name for the
      * portType to be specified. Since WCF uses different defaulting rules, it is not possible to calculate the service name according to JAX-WS
      * rules. When the JAX-WS API is used directly, this is not a problem as the service proxy is created by using a generated service client class
-     * marked with the <code>WebServiceClient</code> annotation which explicitly dclares the service name. However, in SCA, the portType interface is
+     * marked with the <code>WebServiceClient</code> annotation which explicitly declares the service name. However, in SCA, the portType interface is
      * provided, not the generated service client class.
      * <p/>
      * Rather than requiring users to explicitly declare the service in this case, the target WSDL is introspected for a service name. This will only
