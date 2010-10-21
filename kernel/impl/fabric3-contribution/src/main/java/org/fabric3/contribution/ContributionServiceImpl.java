@@ -487,6 +487,9 @@ public class ContributionServiceImpl implements ContributionService {
             processorRegistry.indexContribution(contribution, context);
             if (context.hasErrors()) {
                 throw new InvalidContributionException(context.getErrors(), context.getWarnings());
+            } else if (context.hasWarnings()) {
+                // there were just warnings, report them
+                monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
             }
             metaDataStore.store(contribution);
             context = new DefaultIntrospectionContext(contributionUri, loader);

@@ -104,7 +104,10 @@ public class XmlResourceProcessor implements ResourceProcessor {
             indexerRegistry.index(resource, reader, context);
             contribution.addResource(resource);
         } catch (XMLStreamException e) {
-            throw new InstallException(e);
+            // artifact is invalid, issue a warning
+            InvalidXmlArtifact warning =
+                    new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), reader);
+            context.addWarning(warning);
         } catch (IOException e) {
             throw new InstallException(e);
         } finally {
