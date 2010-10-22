@@ -124,7 +124,7 @@ public interface IntrospectionContext {
     void addWarnings(List<ValidationFailure> warnings);
 
     /**
-     * Returns the classloader of the contributon being installed.
+     * Returns the classloader of the contribution being installed.
      *
      * @return the contribution classloader
      */
