@@ -143,7 +143,7 @@
     <orderEntry type="library" name="Maven: org.codehaus.fabric3:fabric3-federation-provisioning:1.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="fabric3-federation-allocation" />
     <orderEntry type="library" name="Maven: org.codehaus.fabric3:fabric3-federation-jgroups:1.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: jgroups:jgroups:2.8.0.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.jgroups:jgroups:2.10.0.GA" level="project" />
     <orderEntry type="module" module-name="fabric3-standalone-admin" />
     <orderEntry type="module" module-name="fabric3-sca-intents" />
   </component>
