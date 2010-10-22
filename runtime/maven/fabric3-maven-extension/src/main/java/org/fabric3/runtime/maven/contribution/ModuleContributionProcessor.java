@@ -168,7 +168,6 @@ public class ModuleContributionProcessor implements ContributionProcessor {
                     String contentType = contentTypeResolver.getContentType(entryUrl);
                     // skip entry if we don't recognize the content type
                     if (contentType == null) {
-                        context.addWarning(new ContributionIndexingFailure(file));
                         continue;
                     }
                     action.process(contribution, contentType, entryUrl);

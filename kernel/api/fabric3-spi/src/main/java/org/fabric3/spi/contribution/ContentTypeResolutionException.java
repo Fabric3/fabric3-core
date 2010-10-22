@@ -52,16 +52,6 @@ public class ContentTypeResolutionException extends Fabric3Exception {
      *
      * @param message    the error message
      * @param identifier an error identifier
-     */
-    public ContentTypeResolutionException(String message, String identifier) {
-        super(message, identifier);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param message    the error message
-     * @param identifier an error identifier
      * @param cause      an exception thrown during resolution
      */
     public ContentTypeResolutionException(String message, String identifier, Throwable cause) {

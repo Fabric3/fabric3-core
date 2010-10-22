@@ -62,7 +62,7 @@ public class ContributionIndexingFailure extends ValidationFailure {
     /**
      * Retrieves the message for the failure that includes both the standard ValidationFailure message along with details of the exception.
      *
-     * @return the mesasge.
+     * @return the message.
      */
     public String getMessage() {
         if (ex == null) {
