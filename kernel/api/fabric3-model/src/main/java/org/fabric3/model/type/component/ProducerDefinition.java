@@ -73,9 +73,9 @@ public class ProducerDefinition extends AbstractPolicyAware {
     }
 
     /**
-     * Returns the reference name.
+     * Returns the producer name.
      *
-     * @return the reference name
+     * @return the producer name
      */
     public String getName() {
         return name;
