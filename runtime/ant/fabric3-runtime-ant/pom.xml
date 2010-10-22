@@ -169,7 +169,7 @@ licensed under the Apache 2.0 license.
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>com.springsource.javax.transaction</artifactId>
-            <version>1.1.0</version>
+            <version>${jta.version}</version>
         </dependency>
 
         <!-- use the JSP implementation provided by Jetty as the javax.servlet.jsp:jsp-api:2.1 module is is incompatible with Jetty -->
