@@ -55,10 +55,6 @@ public class ContributionIndexingFailure extends ValidationFailure {
         this.ex = ex;
     }
 
-    public ContributionIndexingFailure(File file) {
-        this.file = file;
-    }
-
     /**
      * Retrieves the message for the failure that includes both the standard ValidationFailure message along with details of the exception.
      *
