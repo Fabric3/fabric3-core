@@ -16,9 +16,9 @@ Public License. See the accompanying license file for details.
         <version>1.7-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-cache-spi</artifactId>
-    <name>Fabric3 Cache SPI Extension</name>
-    <description>Contains SPI interfaces for cache extensions</description>
+    <artifactId>fabric3-cache</artifactId>
+    <name>Fabric3 Cache Extension</name>
+    <description>The Fabric3 Cache Framework</description>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -27,13 +27,6 @@ Public License. See the accompanying license file for details.
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
-            <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>
 
