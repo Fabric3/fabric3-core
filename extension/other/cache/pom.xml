@@ -30,7 +30,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-        <module>fabric3-cache-spi</module>
+        <module>fabric3-cache</module>
         <module>fabric3-cache-infinispan</module>
 	</modules>
     
