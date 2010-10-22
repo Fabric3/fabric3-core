@@ -56,8 +56,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.transport.jetty.impl.JettyServiceImpl;
 import org.fabric3.transport.jetty.impl.TransportMonitor;
 
@@ -191,7 +193,10 @@ public class JettyServiceImplTestCase extends TestCase {
             }
         });
         replay(executorService);
-        service = new JettyServiceImpl(monitor);
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeName()).andReturn("runtime").atLeastOnce();
+        EasyMock.replay(info);
+        service = new JettyServiceImpl(monitor, info);
 
     }
 

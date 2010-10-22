@@ -59,6 +59,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -74,6 +75,7 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.security.AuthenticationService;
@@ -100,6 +102,7 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private ExecutorService executorService;
     private ManagementService managementService;
+    private HostInfo hostInfo;
     private TransportMonitor monitor;
 
     private KeyStoreManager keyStoreManager;
@@ -135,9 +138,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Constructor
     public JettyServiceImpl(@Reference ExecutorService executorService,
                             @Reference ManagementService managementService,
+                            @Reference HostInfo hostInfo,
                             @Monitor TransportMonitor monitor) {
         this.executorService = executorService;
         this.managementService = managementService;
+        this.hostInfo = hostInfo;
         this.monitor = monitor;
         // Re-route the Jetty logger to use a monitor
         JettyLogger.setMonitor(monitor);
@@ -154,8 +159,9 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    public JettyServiceImpl(TransportMonitor monitor) {
+    public JettyServiceImpl(TransportMonitor monitor, HostInfo hostInfo) {
         this.monitor = monitor;
+        this.hostInfo = hostInfo;
     }
 
     @Reference(required = false)
@@ -495,6 +501,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         statisticsHandler.setHandler(rootHandler);
         contextHandler = new ServletContextHandler(rootHandler, ROOT);
         sessionManager = new ManagedHashSessionManager();
+        HashSessionIdManager sessionIdManager = new HashSessionIdManager();
+        sessionIdManager.setWorkerName(hostInfo.getRuntimeName());
+        server.setSessionIdManager(sessionIdManager);
+        sessionManager.setIdManager(sessionIdManager);
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
         servletHandler = new ManagedServletHandler();
         sessionHandler.setHandler(servletHandler);
