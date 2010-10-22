@@ -18,7 +18,16 @@
     <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
+    <orderEntry type="library" name="Maven: org.infinispan:infinispan-core:4.1.0.FINAL" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:river:1.2.3.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:marshalling-api:1.2.3.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:jboss-common-core:2.2.14.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging-spi:2.0.5.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.rhq.helpers:rhq-pluginAnnotations:1.4.0.B01" level="project" />
+    <orderEntry type="library" name="Maven: i18nlog:i18nlog:1.0.9" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.16" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.transaction:com.springsource.javax.transaction:1.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jgroups:jgroups:2.10.0.GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
   </component>

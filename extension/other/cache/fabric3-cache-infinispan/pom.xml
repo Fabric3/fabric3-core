@@ -19,7 +19,7 @@ Public License. See the accompanying license file for details.
     <artifactId>fabric3-cache-infinispan</artifactId>
     <name>Fabric3 Cache Infinispan Extension</name>
     <description>Infinispan-based cache</description>
-    <packaging>jar</packaging>
+    <packaging>sca-contribution-jar</packaging>
 
     <dependencies>
 
@@ -31,9 +31,31 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>4.1.0.FINAL</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jgroups</groupId>
+                    <artifactId>jgroups</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.javaee</groupId>
+                    <artifactId>jboss-transaction-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>com.springsource.javax.transaction</artifactId>
             <version>${jta.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <version>2.10.0.GA</version>
             <scope>provided</scope>
         </dependency>
 
@@ -50,5 +72,15 @@ Public License. See the accompanying license file for details.
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.fabric3</groupId>
+                <artifactId>fabric3-contribution-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
