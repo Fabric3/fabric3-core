@@ -30,5 +30,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
+        <module>fabric3-cache-spi</module>
+        <module>fabric3-cache-infinispan</module>
 	</modules>
+    
 </project>
