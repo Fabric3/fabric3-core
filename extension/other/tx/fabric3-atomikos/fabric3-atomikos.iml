@@ -17,7 +17,7 @@
     <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-atomikos-library:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-atomikos-library" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atomikos:transactions-api:3.6.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atomikos:atomikos-util:3.6.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atomikos:transactions:3.6.5" level="project" />
