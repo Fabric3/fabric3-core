@@ -39,5 +39,6 @@
         <module>profile-spring</module>
         <module>profile-ftp</module>
         <module>profile-net</module>
+        <module>profile-infinispan</module>
     </modules>
 </project>
