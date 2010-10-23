@@ -28,6 +28,7 @@
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3:fabric3-tx</include>
+                <include>org.codehaus.fabric3:fabric3-atomikos-library</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
                 <include>org.codehaus.fabric3:fabric3-timer</include>
                 <include>org.codehaus.fabric3:fabric3-datasource</include>

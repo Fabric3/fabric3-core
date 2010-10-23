@@ -14,17 +14,13 @@ Public License. See the accompanying license file for details.
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:capabilities="transaction"
               f3-core:extension="true"
-              f3-core:description="JTA extension">
+              f3-core:description="Atomikos library extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
 
     <!-- JMS is required as Atomikos delegates to ClassLoadingHelper to instantiate JMS connection factories, which uses the TCCL or its classloader.
           -->
     <import.java package="javax.jms" version="1.1.0"/>
-    <import.java package="com.atomikos.*" version="3.6.5"/>
-
-    <import.java package="org.fabric3.spi.*" version="1.7"/>
-    <import.java package="org.fabric3.datasource.spi"/>
-    <deployable composite="transaction:AtomikosExtension"/>
+    <export.java package="com.atomikos.*" version="3.6.5"/>
     <f3-core:provides name="datasource"/>
 </contribution>

@@ -32,6 +32,7 @@ Public License. See the accompanying license file for details.
                 <include>org.codehaus.fabric3:fabric3-databinding-jaxb</include>
                 <include>org.codehaus.fabric3:fabric3-jaxb</include>
                 <include>org.codehaus.fabric3:fabric3-tx</include>
+                <include>org.codehaus.fabric3:fabric3-atomikos-library</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos-jms</include>
                 <include>org.codehaus.fabric3:fabric3-datasource</include>

@@ -1,0 +1,73 @@
+                       Fabric3 License
+
+
+ Fabric3 software and its included text (“Fabric3”) constitute the
+ proprietary intellectual property of  Metaform Systems Limited,
+ a UK corporation (“Metaform”), copyright 2008 as denoted by the
+ © symbol on all legal notices.
+
+ Fabric3 is a trademark of Metaform.  No commercial use of this
+ trademark may be made without prior written permission of Metaform.
+
+ By downloading the software, you represent that you agree to the
+ terms of this license.
+
+ Use of Fabric3: You may extract, compile and execute this program
+ for any purpose, including commercial, without paying anything to
+ Metaform, provided that the terms of this license are observed and
+ the legal notices are maintained intact and honored.
+
+ Source code versions of Fabric3 are available for download from
+ Metaform at www.fabric3.org, also free of charge.
+
+ Modification of Fabric3, in source or binary form, is permitted,
+ but only under the following conditions:
+
+ (i) You may perform local modifications and individual patches to
+ Fabric3, provided that such changes are only utilized to accomplish
+ bug fixes and minor adaptations to allow running the software on
+ exiting operating systems (“Patches”). Submission of these Patches
+ to Metaform for possible inclusion in future Fabric3 versions is
+ encouraged, with the understanding that they will be treated as
+ the intellectual property of Metaform for purposes of future licensing
+ and provided that the submission does not include any software which
+ infringes third party rights;
+
+ (ii) Other than Patches, no other local modification of Fabric3 is
+ permitted and Metaform reserves the sole right to create non-Patch
+ modifications of Fabric3, including (without limitation) new versions
+ and/or derivations of the software;
+
+ (iii) non-Patch modifications of Fabric3 may be undertaken with the
+ active participation of Metaform and you should contact Metaform to
+ discuss arranging for such services if you would like to utilize
+ modified software;
+
+ and
+
+ (iv) no re-distribution of Fabric3 is permitted in any form, except
+ copies may be shared internally by you in such limited quantities as
+ reasonably necessary to meet your specific needs, consistent with this
+ license. For purposes of this license, “you” means an individual or
+ legal entity.
+
+ Fabric3 may be used in conjunction with the software bundled in the
+ download and zip file, but this license does not in any way serve
+ to modify the licenses of those separate software programs, including
+ any so-called “open source” licenses such as Apache or GPL,
+ and vice versa.  Accordingly, your permitted uses of such separate
+ programs shall be governed by their respective license terms, whether
+ or not you utilize such programs individually or in conjunction with
+ Fabric3.
+
+ This software is made available “as is” and METAFORM DISCLAIMS ALL
+ WARRANTIES, EXPRESS OR IMPLIED, WITH REGARD TO THIS SOFTWARE,
+ INCLUDING WITHOUT LIMITATION ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ AND FITNESS FOR A PARTICULAR PURPOSE, AND IN NO EVENT SHALL METAFORM
+ OR ITS OFFICERS, EMPLOYEES, DIRECTORS OR SHAREHOLDERS BE LIABLE FOR
+ ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+ RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+ CONTRACT, TORT (INCLUDING NEGLIGENCE) OR STRICT LIABILITY, ARISING OUT
+ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+ Other licensing terms are available by mutual agreement.
