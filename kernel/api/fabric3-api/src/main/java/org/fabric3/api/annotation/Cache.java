@@ -38,9 +38,17 @@
 package org.fabric3.api.annotation;
 
 /**
- * 
+ * Annotation used to indicate a cache should be provided to an implementation by the runtime.
  *
  * @version $Rev$ $Date$
  */
 public @interface Cache {
+
+    /**
+     * Denotes the name of the cache to be provided.
+     *
+     * @return the name of the cache to be provided or the default cache if not specified
+     */
+    public abstract String value() default "default";
+
 }
