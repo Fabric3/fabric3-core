@@ -25,7 +25,6 @@
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging-spi:2.0.5.GA" level="project" />
     <orderEntry type="library" name="Maven: org.rhq.helpers:rhq-pluginAnnotations:1.4.0.B01" level="project" />
     <orderEntry type="library" name="Maven: i18nlog:i18nlog:1.0.9" level="project" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.16" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.transaction:com.springsource.javax.transaction:1.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jgroups:jgroups:2.10.0.GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
