@@ -40,14 +40,14 @@ package org.fabric3.contribution.scanner.spi;
 import java.io.File;
 
 /**
- * A registry for FileSystemResourceFactory instances
+ * A registry for FileSystemResourceFactory instances.
  *
  * @version $Rev$ $Date$
  */
 public interface FileSystemResourceFactoryRegistry {
 
     /**
-     * Registers the factory
+     * Registers the factory.
      *
      * @param factory the factory to register
      */

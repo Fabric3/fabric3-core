@@ -40,7 +40,7 @@ package org.fabric3.contribution.scanner.spi;
 import java.io.IOException;
 
 /**
- * Base file system resource implementation
+ * Base file system resource implementation.
  *
  * @version $Rev$ $Date$
  */

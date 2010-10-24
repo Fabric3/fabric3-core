@@ -123,11 +123,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     }
 
     @Property(required = false)
-    public void setPath(String dir) {
-        this.path = new File(dir);
-    }
-
-    @Property(required = false)
     public void setDelay(long delay) {
         this.delay = delay;
     }

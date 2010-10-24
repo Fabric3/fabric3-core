@@ -47,7 +47,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Represents a file that is to be contributed to a domain
+ * Represents a file that is to be contributed to a domain.
  *
  * @version $Rev$ $Date$
  */

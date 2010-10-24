@@ -52,7 +52,7 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
- * Creates a FileResource for SCA contribution jars
+ * Creates a FileResource for contribution jars
  *
  * @version $Rev$ $Date$
  */

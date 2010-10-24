@@ -40,17 +40,17 @@ package org.fabric3.contribution.scanner.spi;
 import java.io.File;
 
 /**
- * Implementations create DeploymentResources for a given file
+ * Creates {@link FileSystemResource}s for a deployable artifact.
  *
  * @version $Rev$ $Date$
  */
 public interface FileSystemResourceFactory {
 
     /**
-     * Creates a deployment resource for the given file
+     * Creates a {@link FileSystemResource} or returns null if this factory does not create resources for the given artifact type.
      *
-     * @param file the file to create the resource for
-     * @return the deployment resource
+     * @param file the file to create the resource for or null
+     * @return the deployment artifact
      */
     FileSystemResource createResource(File file);
 
