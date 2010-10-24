@@ -43,8 +43,6 @@
  */
 package org.fabric3.host;
 
-import javax.xml.namespace.QName;
-
 /**
  * Definitions of constants.
  *
@@ -57,8 +55,5 @@ public interface Constants {
     String FOLDER_CONTENT_TYPE = "application/vnd.fabric3.folder";
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
     String DEFINITIONS_TYPE = "text/vnd.fabric3.definitions+xml";
-
-    QName COMPOSITE_TYPE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "composite");
-
 
 }

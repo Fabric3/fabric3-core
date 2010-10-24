@@ -67,7 +67,7 @@ public class WebComponentType extends ComponentType {
      * Sets a mapping from artifact id to injection site/injectable attribute pair.
      *
      * @param artifactId the artifact id
-     * @param site       the injeciton site
+     * @param site       the injection site
      * @param attribute  the injectable attribute
      */
     public void addMapping(String artifactId, InjectionSite site, Injectable attribute) {

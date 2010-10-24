@@ -49,10 +49,6 @@ public class WebApplicationActivationException extends Fabric3Exception {
         super(message);
     }
 
-    public WebApplicationActivationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public WebApplicationActivationException(Throwable cause) {
         super(cause);
     }

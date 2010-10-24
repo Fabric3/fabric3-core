@@ -62,17 +62,15 @@ public class Deployable implements Serializable {
     }
 
     private QName name;
-    private QName type;
     private List<RuntimeMode> runtimeModes;
 
 
-    public Deployable(QName name, QName type) {
-        this(name, type, DEFAULT_MODES);
+    public Deployable(QName name) {
+        this(name, DEFAULT_MODES);
     }
 
-    public Deployable(QName name, QName type, List<RuntimeMode> runtimeModes) {
+    public Deployable(QName name, List<RuntimeMode> runtimeModes) {
         this.name = name;
-        this.type = type;
         this.runtimeModes = runtimeModes;
     }
 
@@ -83,15 +81,6 @@ public class Deployable implements Serializable {
      */
     public QName getName() {
         return name;
-    }
-
-    /**
-     * Returns the deployable type.
-     *
-     * @return the deployable type
-     */
-    public QName getType() {
-        return type;
     }
 
     /**

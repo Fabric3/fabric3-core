@@ -50,7 +50,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.Constants;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
@@ -142,7 +141,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         qName = new QName(null, name);
                     }
                     List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
-                    Deployable deployable = new Deployable(qName, Constants.COMPOSITE_TYPE, runtimeModes);
+                    Deployable deployable = new Deployable(qName, runtimeModes);
                     manifest.addDeployable(deployable);
                 } else {
                     Object o;
