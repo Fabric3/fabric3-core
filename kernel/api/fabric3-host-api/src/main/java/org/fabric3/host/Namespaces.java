@@ -69,5 +69,8 @@ public interface Namespaces {
      */
     String OTHER = "urn:fabric3.org:other";
 
-
+    /**
+     * Namespace URI for synthesized artifacts. Generally not visible to end-user applications.
+     */
+    String SYNTHESIZED = "urn:fabric3.org:synthesized";
 }
