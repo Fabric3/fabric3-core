@@ -121,7 +121,7 @@ public class LocalDeployer implements Deployer {
      * Rolls back the runtime state after a failed deployment by executing a collection of compensating commands.
      *
      * @param commands the deployment commands that failed
-     * @param marker   the deployment command index where the failure occured
+     * @param marker   the deployment command index where the failure occurred
      */
     private void rollback(List<CompensatableCommand> commands, int marker) {
         try {
