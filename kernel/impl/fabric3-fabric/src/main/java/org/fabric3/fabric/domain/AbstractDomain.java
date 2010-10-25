@@ -180,18 +180,18 @@ public abstract class AbstractDomain implements Domain {
                 throw new DeploymentPlanNotFoundException("Deployment plan not found: " + planName);
             }
         }
-        instantiateAndDeploy(wrapper, plan);
         for (DomainListener listener : listeners) {
             listener.onInclude(deployable, plan.getName());
         }
+        instantiateAndDeploy(wrapper, plan);
     }
 
     public synchronized void include(Composite composite) throws DeploymentException {
-        instantiateAndDeploy(composite, SYNTHETIC_PLAN);
         QName name = composite.getName();
         for (DomainListener listener : listeners) {
             listener.onInclude(name, SYNTHETIC_PLAN_NAME);
         }
+        instantiateAndDeploy(composite, SYNTHETIC_PLAN);
     }
 
     public synchronized void include(List<URI> uris) throws DeploymentException {
@@ -208,8 +208,6 @@ public abstract class AbstractDomain implements Domain {
                 plans.put(uri, defaultPlan);
             }
             DeploymentPlan merged = merge(plans.values());
-            instantiateAndDeploy(deployables, contributions, merged, false);
-
             // notify listeners
             for (Composite deployable : deployables) {
                 QName name = deployable.getName();
@@ -219,14 +217,15 @@ public abstract class AbstractDomain implements Domain {
                     listener.onInclude(name, plan.getName());
                 }
             }
+            instantiateAndDeploy(deployables, contributions, merged, false);
         } else {
-            instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, false);
             // notify listeners
             for (Composite deployable : deployables) {
                 for (DomainListener listener : listeners) {
                     listener.onInclude(deployable.getName(), SYNTHETIC_PLAN_NAME);
                 }
             }
+            instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, false);
         }
     }
 
@@ -239,6 +238,9 @@ public abstract class AbstractDomain implements Domain {
         Contribution contribution = metadataStore.find(DeploymentPlan.class, deployableSymbol).getResource().getContribution();
         if (!contribution.getLockOwners().contains(deployable)) {
             throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
+        }
+        for (DomainListener listener : listeners) {
+            listener.onUndeploy(deployable);
         }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
@@ -266,9 +268,6 @@ public abstract class AbstractDomain implements Domain {
         }
         contribution.releaseLock(deployable);
         logicalComponentManager.replaceRootComponent(domain);
-        for (DomainListener listener : listeners) {
-            listener.onUndeploy(deployable);
-        }
     }
 
     public synchronized void activateDefinitions(URI uri) throws DeploymentException {
