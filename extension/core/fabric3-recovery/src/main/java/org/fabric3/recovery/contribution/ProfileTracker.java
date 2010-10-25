@@ -283,8 +283,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
 
     }
 
-    private InvalidRepositoryIndexException createException(String message, XMLStreamReader reader, Exception e)
-            throws InvalidRepositoryIndexException {
+    private InvalidRepositoryIndexException createException(String message, XMLStreamReader reader, Exception e) {
         Location location = reader.getLocation();
         String msg = message + "[" + location.getLineNumber() + "," + location.getColumnNumber() + "]";
         if (e == null) {
