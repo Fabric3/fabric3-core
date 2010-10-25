@@ -142,7 +142,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
 
     public void stop() {
         // stop appenders
-        context.stop();
+        logger.detachAndStopAllAppenders();
     }
 
     public void onEvent(MonitorEvent event) {
