@@ -61,7 +61,7 @@ public class ConnectionCommand implements CompensatableCommand {
     public ConnectionCommand getCompensatingCommand() {
         ConnectionCommand compensating = new ConnectionCommand();
         if (!attachCommands.isEmpty()){
-            ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size()-1);
+            ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size());
             while(iter.hasPrevious()){
                 AttachWireCommand command = iter.previous();
                 DetachWireCommand compensatingWireCommand = command.getCompensatingCommand();
@@ -69,7 +69,7 @@ public class ConnectionCommand implements CompensatableCommand {
             }
         }
         if (!detachCommands.isEmpty()){
-            ListIterator<DetachWireCommand> iter = detachCommands.listIterator(detachCommands.size()-1);
+            ListIterator<DetachWireCommand> iter = detachCommands.listIterator(detachCommands.size());
             while(iter.hasPrevious()){
                 DetachWireCommand command = iter.previous();
                 AttachWireCommand compensatingWireCommand = command.getCompensatingCommand();
