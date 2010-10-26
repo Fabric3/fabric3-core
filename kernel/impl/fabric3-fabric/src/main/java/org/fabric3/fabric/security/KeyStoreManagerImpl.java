@@ -182,6 +182,11 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
             }
         } else {
             keystoreFile = new File(keyStoreLocation);
+            if (!keystoreFile.isAbsolute()) {
+                File dir = info.getBaseDir();
+                keystoreFile = new File(dir, "config" + File.separator + keyStoreLocation);
+                keyStoreLocation = keystoreFile.getAbsolutePath();
+            }
         }
         if (keyStorePassword != null) {
             System.setProperty(keyStorePasswordProperty, keyStorePassword);

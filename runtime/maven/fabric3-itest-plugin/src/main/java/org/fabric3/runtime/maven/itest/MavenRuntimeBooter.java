@@ -167,7 +167,9 @@ public class MavenRuntimeBooter {
         }
         tempDir.mkdir();
 
-        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(URI.create(DOMAIN), moduleDependencies, tempDir);
+        URI domain = URI.create(DOMAIN);
+        File baseDir = new File(outputDirectory, "test-classes");
+        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, moduleDependencies, baseDir, tempDir);
 
         // TODO Add better host JMX support from the next release
         Agent agent = new DefaultAgent();

@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -99,13 +98,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * Optional parameter for thread pool size.
-     *
-     * @parameter
-     */
-    public int numWorkers = 10;
-
-    /**
      * The optional target namespace of the composite to activate.
      *
      * @parameter
@@ -113,14 +105,14 @@ public class Fabric3ITestMojo extends AbstractMojo {
     public String compositeNamespace = "org.codehaus.fabric3";
 
     /**
-     * The local name of the composite to activate, which may be null if testScdl is defined.
+     * The local name of the composite to activate.
      *
      * @parameter
      */
     public String compositeName = "TestComposite";
 
     /**
-     * test composite .
+     * The project build directory.
      *
      * @parameter expression="${project.build.directory}"
      */
@@ -146,14 +138,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @parameter expression="${trimStackTrace}" default-value="true"
      */
     public boolean trimStackTrace;
-
-    /**
-     * The directory containing generated test classes of the project being tested.
-     *
-     * @parameter expression="${project.build.testOutputDirectory}"
-     * @required
-     */
-    public File testClassesDirectory;
 
     /**
      * The version of the runtime to use.
@@ -182,13 +166,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @parameter
      */
     public Dependency[] shared;
-
-    /**
-     * @parameter expression="${project.testClasspathElements}"
-     * @required
-     * @readonly
-     */
-    public List<String> testClassPath;
 
     /**
      * Location of the local repository.
@@ -272,7 +249,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
             } catch (Exception e) {
                 // ignore
             }
-
         }
     }
 

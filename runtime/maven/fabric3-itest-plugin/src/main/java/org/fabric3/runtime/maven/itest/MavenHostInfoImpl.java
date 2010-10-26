@@ -59,10 +59,12 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     private final URI domain;
     private final Set<URL> dependencyUrls;
     private final File tempDir;
+    private File baseDir;
 
-    public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File tempDir) {
+    public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File baseDir, File tempDir) {
         this.domain = domain;
         this.dependencyUrls = dependencyUrls;
+        this.baseDir = baseDir;
         this.tempDir = tempDir;
     }
 
@@ -71,7 +73,7 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     }
 
     public File getBaseDir() {
-        return null;
+        return baseDir;
     }
 
     public File getTempDir() {
