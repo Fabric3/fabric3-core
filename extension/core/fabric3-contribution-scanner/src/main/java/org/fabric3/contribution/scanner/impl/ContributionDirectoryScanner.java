@@ -43,6 +43,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,16 +81,15 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
 
 /**
- * Periodically scans a directory for new, updated, or removed contributions. New contributions are added to the domain and any deployable components
- * activated. Updated components will trigger re-activation of previously deployed components. Removal will remove the contribution from the domain
- * and de-activate any associated deployed components.
+ * Periodically scans deployment directories for new, updated, or removed contributions. New contributions are added to the domain and any deployable
+ * components activated. Updated components will trigger a redeployment. Removal will perform an undeployment.
  * <p/>
- * The scanner watches the deployment directory at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a consistent
- * metadata view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files
- * are determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by
- * comparing the current directory state with that of the previous pass. Detected changes and additions are cached for the following interval.
- * Detected changes and additions from the previous interval are then compared using a checksum to see if they have changed again. If so, they remain
- * cached. If they have not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
+ * The scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a consistent view
+ * across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are determined
+ * by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
+ * current directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and
+ * additions from the previous interval are then compared using a checksum to see if they have changed again. If so, they remain cached. If they have
+ * not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
  */
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
@@ -103,7 +103,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private Set<File> ignored = new HashSet<File>();
 
     private FileSystemResourceFactoryRegistry registry;
-    private File path;
+    private List<File> paths;
 
     private long delay = 2000;
     private ScheduledExecutorService executor;
@@ -118,7 +118,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         this.contributionService = contributionService;
         this.domain = domain;
         this.eventService = eventService;
-        path = hostInfo.getDeployDirectory();
+        paths = hostInfo.getDeployDirectories();
         this.monitor = monitor;
     }
 
@@ -145,7 +145,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     public void onEvent(Fabric3Event event) {
         if (event instanceof ExtensionsInitialized) {
             // process existing files in recovery mode
-            File[] files = path.listFiles();
+            List<File> files = new ArrayList<File>();
+            for (File path : paths) {
+                File[] pathFiles = path.listFiles();
+                if (pathFiles != null) {
+                    Collections.addAll(files, pathFiles);
+                }
+            }
             recover(files);
         } else if (event instanceof RuntimeStart) {
             executor = Executors.newSingleThreadScheduledExecutor();
@@ -154,12 +160,22 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     }
 
     public synchronized void run() {
-        if (!path.isDirectory()) {
+        List<File> files = new ArrayList<File>();
+        for (File path : paths) {
+            if (!path.isDirectory()) {
+                // there is no extension directory, return without processing
+                continue;
+            }
+            File[] pathFiles = path.listFiles();
+            if (pathFiles != null) {
+                Collections.addAll(files, pathFiles);
+            }
+        }
+        if (files.isEmpty()) {
             // there is no extension directory, return without processing
             return;
         }
         try {
-            File[] files = path.listFiles();
             processRemovals(files);
             processFiles(files);
             processIgnored();
@@ -171,7 +187,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private synchronized void recover(File[] files) {
+    private synchronized void recover(List<File> files) {
         try {
             List<File> contributions = new ArrayList<File>();
             for (File file : files) {
@@ -212,7 +228,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private synchronized void processFiles(File[] files) {
+    private synchronized void processFiles(List<File> files) {
         boolean wait = false;
         for (File file : files) {
             try {
@@ -265,7 +281,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private void sortAndProcessChanges(File[] files) {
+    private void sortAndProcessChanges(List<File> files) {
         try {
             List<File> updates = new ArrayList<File>();
             List<File> additions = new ArrayList<File>();
@@ -396,8 +412,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private synchronized void processRemovals(File[] files) {
-        Map<String, File> index = new HashMap<String, File>(files.length);
+    private synchronized void processRemovals(List<File> files) {
+        Map<String, File> index = new HashMap<String, File>(files.size());
         for (File file : files) {
             index.put(file.getName(), file);
         }

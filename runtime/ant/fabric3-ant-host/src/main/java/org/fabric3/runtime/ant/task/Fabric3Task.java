@@ -163,8 +163,10 @@ public class Fabric3Task extends Task {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
+            List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo("ant", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo("ant", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 

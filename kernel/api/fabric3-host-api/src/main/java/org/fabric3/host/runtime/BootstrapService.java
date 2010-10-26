@@ -45,6 +45,7 @@ package org.fabric3.host.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.w3c.dom.Document;
 
@@ -120,6 +121,15 @@ public interface BootstrapService {
      * @throws ParseException if there is an error parsing the JMX port range
      */
     JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException;
+
+    /**
+     * Returns configured deployment directories or an empty collection.
+     *
+     * @param systemConfig the system configuration
+     * @return the deployment directories
+     * @throws ParseException if there is an error parsing the deployment directories
+     */
+    List<File> parseDeployDirectories(Document systemConfig) throws ParseException;
 
     /**
      * Returns the unique runtime name.

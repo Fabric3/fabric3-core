@@ -45,6 +45,7 @@ package org.fabric3.host.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.fabric3.host.RuntimeMode;
 
@@ -128,11 +129,11 @@ public interface HostInfo {
     File getExtensionsRepositoryDirectory();
 
     /**
-     * Returns the runtime deploy directory.
+     * Returns the runtime deploy directories.
      *
-     * @return the runtime deploy directory or null if the runtime does not support file system-based deployment
+     * @return the runtime deploy directories or null if the runtime does not support file system-based deployment
      */
-    File getDeployDirectory();
+    List<File> getDeployDirectories();
 
     /**
      * True if the host environment supports classloader isolation.

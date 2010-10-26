@@ -136,8 +136,10 @@ public class Fabric3Listener implements LifecycleListener {
 
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, runtimeId, mode);
 
+            List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

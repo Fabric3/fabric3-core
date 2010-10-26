@@ -75,11 +75,9 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     }
 
     public void detach(SingletonSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new UnsupportedOperationException();
     }
 
     public void detachObjectFactory(SingletonSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new UnsupportedOperationException();
     }
 
     public void attachObjectFactory(SingletonSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)

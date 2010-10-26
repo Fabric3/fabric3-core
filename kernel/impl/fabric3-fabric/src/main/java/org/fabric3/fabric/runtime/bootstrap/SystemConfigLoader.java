@@ -311,6 +311,24 @@ public class SystemConfigLoader {
     }
 
     /**
+     * Returns configured deployment directories or an empty collection.
+     *
+     * @param systemConfig the system configuration
+     * @return the deployment directories
+     */
+    public List<File> parseDeployDirectories(Document systemConfig) {
+        List<File> files = new ArrayList<File>();
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("deploy.directory");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element element = (Element) nodes.item(i);
+            File file = new File(element.getTextContent());
+            files.add(file);
+        }
+        return files;
+    }
+
+    /**
      * Adds appender references to the monitor configuration
      *
      * @param systemConfig the system configuration

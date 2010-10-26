@@ -45,6 +45,7 @@ package org.fabric3.fabric.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -109,6 +110,10 @@ public class DefaultBootstrapService implements BootstrapService {
 
     public JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseJmxConfiguration(systemConfig);
+    }
+
+    public List<File> parseDeployDirectories(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseDeployDirectories(systemConfig);
     }
 
     public String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode) {

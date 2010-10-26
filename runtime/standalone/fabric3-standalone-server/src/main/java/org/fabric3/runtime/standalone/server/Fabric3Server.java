@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -146,8 +147,10 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
 
+            List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

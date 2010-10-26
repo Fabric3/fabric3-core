@@ -51,6 +51,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
@@ -184,12 +186,13 @@ public final class BootstrapHelper {
     /**
      * Creates the HostInfo for a runtime.
      *
-     * @param runtimeName   the runtime name
-     * @param runtimeMode   the runtime boot mode
-     * @param domainName    the name of the domain the runtime is part of
-     * @param runtimeDir    the base directory containing non-sharable, read-write runtime artifacts
-     * @param configDir     the root configuration directory
-     * @param extensionsDir the sharable extensions directory
+     * @param runtimeName       the runtime name
+     * @param runtimeMode       the runtime boot mode
+     * @param domainName        the name of the domain the runtime is part of
+     * @param runtimeDir        the base directory containing non-sharable, read-write runtime artifacts
+     * @param configDir         the root configuration directory
+     * @param extensionsDir     the sharable extensions directory
+     * @param deployDirectories additional deploy directories. These may be absolute or relative to the runtime directory.
      * @return the host info
      * @throws IOException if there is an error accessing a host info directory
      */
@@ -198,13 +201,26 @@ public final class BootstrapHelper {
                                           URI domainName,
                                           File runtimeDir,
                                           File configDir,
-                                          File extensionsDir) throws IOException {
+                                          File extensionsDir,
+                                          List<File> deployDirectories) throws IOException {
         File repositoryDir = getDirectory(runtimeDir, "repository");
         File userRepositoryDir = new File(repositoryDir, "user");
         File runtimeRepositoryDir = new File(repositoryDir, "runtime");
         File tempDir = getDirectory(runtimeDir, "tmp");
         File dataDir = getDirectory(runtimeDir, "data");
         File deployDir = new File(runtimeDir, "deploy");
+        List<File> deployDirs = new ArrayList<File>();
+        for (File directory : deployDirectories) {
+            if (!directory.isAbsolute()) {
+                directory = new File(runtimeDir, directory.getName());
+            }
+            if (!deployDir.equals(directory) && !deployDirs.contains(directory)) {
+                //avoid duplicates
+                deployDirs.add(directory);
+            }
+        }
+        deployDirs.add(deployDir);
+
         return new DefaultHostInfo(runtimeName,
                                    runtimeMode,
                                    domainName,
@@ -213,9 +229,9 @@ public final class BootstrapHelper {
                                    extensionsDir,
                                    runtimeRepositoryDir,
                                    configDir,
-                                   tempDir,
                                    dataDir,
-                                   deployDir);
+                                   tempDir,
+                                   deployDirs);
     }
 
 }

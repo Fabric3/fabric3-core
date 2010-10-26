@@ -182,8 +182,11 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
+            List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
+
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, runtimeMode, domainName, runtimeDir, configDir, extensionsDir);
+            HostInfo hostInfo =
+                    BootstrapHelper.createHostInfo(runtimeName, runtimeMode, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

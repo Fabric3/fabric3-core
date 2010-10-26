@@ -44,7 +44,9 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
@@ -106,6 +108,13 @@ public class SystemConfigLoaderTestCase extends TestCase {
                     "   </appender>" +
                     "</configuration>" +
                     "</runtime.monitor>";
+
+    private static final String DEPLOY_DIRS = "<config>" +
+            "   <deploy.directories>" +
+            "       <deploy.directory>foo</deploy.directory>" +
+            "       <deploy.directory>bar</deploy.directory>" +
+            "   </deploy.directories>" +
+            "</config>";
 
     public void testGetMonitorConfiguration() throws Exception {
         SystemConfigLoader loader = new SystemConfigLoader();
@@ -202,5 +211,17 @@ public class SystemConfigLoaderTestCase extends TestCase {
         JmxConfiguration configuration = loader.parseJmxConfiguration(systemConfig);
         assertEquals(1199, configuration.getMinimum());
         assertEquals(1199, configuration.getMaximum());
+    }
+
+
+    public void testParseDeployDirectories() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(DEPLOY_DIRS.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        List<File> dirs = loader.parseDeployDirectories(systemConfig);
+        assertEquals(2, dirs.size());
+        assertTrue(dirs.get(0).getName().equals("foo") || dirs.get(0).getName().equals("bar"));
+        assertTrue(dirs.get(1).getName().equals("foo") || dirs.get(1).getName().equals("bar"));
     }
 }

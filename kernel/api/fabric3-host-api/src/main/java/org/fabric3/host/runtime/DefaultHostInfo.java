@@ -45,6 +45,7 @@ package org.fabric3.host.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.fabric3.host.RuntimeMode;
 
@@ -63,23 +64,23 @@ public class DefaultHostInfo implements HostInfo {
     private File runtimeDirectory;
     private final File configDirectory;
     private final File tempDirectory;
+    private List<File> deployDirectories;
     private File dataDirectory;
-    private File deployDirectory;
 
     /**
      * Constructor.
      *
-     * @param runtimeName      the runtime name
-     * @param runtimeMode      the mode the runtime is started in
-     * @param domain           the SCA domain this runtime belongs to
-     * @param baseDir          directory containing the standalone installation
-     * @param userDirectory    user repository directory
-     * @param sharedDirectory  the shared extensions repository directory
-     * @param runtimeDirectory the private extensions repository directory
-     * @param configDir        directory containing the standalone configuration
-     * @param tempDirectory    the directory for writing temporary files
-     * @param dataDirectory    the directory for writing persistent data that survives restarts
-     * @param deployDirectory  the directory for file system-based deployments
+     * @param runtimeName       the runtime name
+     * @param runtimeMode       the mode the runtime is started in
+     * @param domain            the SCA domain this runtime belongs to
+     * @param baseDir           directory containing the standalone installation
+     * @param userDirectory     user repository directory
+     * @param sharedDirectory   the shared extensions repository directory
+     * @param runtimeDirectory  the private extensions repository directory
+     * @param configDir         directory containing the standalone configuration
+     * @param dataDirectory     directory for storing persistent data
+     * @param tempDirectory     the directory for writing temporary files
+     * @param deployDirectories the directory for file system-based deployments
      */
     public DefaultHostInfo(String runtimeName,
                            RuntimeMode runtimeMode,
@@ -89,9 +90,9 @@ public class DefaultHostInfo implements HostInfo {
                            File sharedDirectory,
                            File runtimeDirectory,
                            File configDir,
-                           File tempDirectory,
                            File dataDirectory,
-                           File deployDirectory) {
+                           File tempDirectory,
+                           List<File> deployDirectories) {
         this.runtimeName = runtimeName;
         this.runtimeMode = runtimeMode;
         this.domain = domain;
@@ -100,9 +101,9 @@ public class DefaultHostInfo implements HostInfo {
         this.sharedDirectory = sharedDirectory;
         this.runtimeDirectory = runtimeDirectory;
         this.configDirectory = configDir;
-        this.tempDirectory = tempDirectory;
         this.dataDirectory = dataDirectory;
-        this.deployDirectory = deployDirectory;
+        this.tempDirectory = tempDirectory;
+        this.deployDirectories = deployDirectories;
     }
 
     public String getRuntimeName() {
@@ -149,8 +150,8 @@ public class DefaultHostInfo implements HostInfo {
         return configDirectory;
     }
 
-    public File getDeployDirectory() {
-        return deployDirectory;
+    public List<File> getDeployDirectories() {
+        return deployDirectories;
     }
 
 }

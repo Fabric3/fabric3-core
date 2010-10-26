@@ -45,6 +45,7 @@ package org.fabric3.runtime.webapp;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.fabric3.host.RuntimeMode;
@@ -106,7 +107,7 @@ public class WebappHostInfoImpl implements WebappHostInfo {
         return null;
     }
 
-    public File getDeployDirectory() {
+    public List<File> getDeployDirectories() {
         return null;
     }
 
