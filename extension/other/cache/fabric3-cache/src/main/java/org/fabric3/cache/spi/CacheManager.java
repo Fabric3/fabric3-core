@@ -38,6 +38,8 @@
 package org.fabric3.cache.spi;
 
 /**
+ * Responsible for managing caches on a runtime.
+ *
  * @version $Rev$ $Date$
  */
 public interface CacheManager {
