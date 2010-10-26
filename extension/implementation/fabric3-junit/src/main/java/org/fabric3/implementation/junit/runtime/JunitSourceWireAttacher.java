@@ -100,11 +100,9 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
     }
 
     public void detach(JUnitSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new UnsupportedOperationException();
     }
 
     public void detachObjectFactory(JUnitSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new UnsupportedOperationException();
     }
 
 

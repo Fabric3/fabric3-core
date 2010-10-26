@@ -59,12 +59,10 @@ public class MockSourceWireAttacher implements SourceWireAttacher<MockSourceDefi
     }
 
     public void detach(MockSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
     }
 
 
     public void detachObjectFactory(MockSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-        throw new AssertionError();
     }
 
 }
