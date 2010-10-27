@@ -35,27 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.spi;
+package cache.infinispan.runtime;
+
+import cache.infinispan.provision.InfinispanCacheConfiguration;
+
+import org.fabric3.cache.spi.CacheManager;
 
 /**
- * Responsible for managing caches on a runtime.
+ * Manages Infinispan caches on a runtime.
  *
  * @version $Rev$ $Date$
  */
-public interface CacheManager<T extends CacheConfiguration> {
-            
-    /**
-     * Creates a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void create(T configuration);
+public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfiguration> {
 
-    /**
-     * Removes a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void remove(T configuration);
+    public void create(InfinispanCacheConfiguration configuration) {
+        throw new UnsupportedOperationException();
+    }
 
+    public void remove(InfinispanCacheConfiguration configuration) {
+        throw new UnsupportedOperationException();
+    }
 }

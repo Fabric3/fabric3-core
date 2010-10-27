@@ -35,27 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.spi;
+package org.fabric3.cache.model;
+
+import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * Responsible for managing caches on a runtime.
+ * A set of cache configurations defined in a composite.
  *
  * @version $Rev$ $Date$
  */
-public interface CacheManager<T extends CacheConfiguration> {
-            
-    /**
-     * Creates a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void create(T configuration);
-
-    /**
-     * Removes a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void remove(T configuration);
-
+public class CacheResource extends ResourceDefinition {
+    private static final long serialVersionUID = 319475664996240639L;
 }

@@ -37,25 +37,14 @@
 */
 package org.fabric3.cache.spi;
 
+import java.io.Serializable;
+
 /**
- * Responsible for managing caches on a runtime.
+ * Base cache configuration object.
  *
  * @version $Rev$ $Date$
  */
-public interface CacheManager<T extends CacheConfiguration> {
-            
-    /**
-     * Creates a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void create(T configuration);
+public class CacheConfiguration implements Serializable {
 
-    /**
-     * Removes a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void remove(T configuration);
-
+    private static final long serialVersionUID = -6743311265670833364L;
 }

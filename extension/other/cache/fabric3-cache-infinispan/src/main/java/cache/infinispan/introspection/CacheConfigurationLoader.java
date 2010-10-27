@@ -35,27 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.spi;
+package cache.infinispan.introspection;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import cache.infinispan.provision.InfinispanCacheConfiguration;
+
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
- * Responsible for managing caches on a runtime.
+ * Loads an implementation-specific cache configurations specified as part of the cache element.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9405 $ $Date: 2010-08-29 00:39:03 +0200 (Sun, 29 Aug 2010) $
  */
-public interface CacheManager<T extends CacheConfiguration> {
-            
-    /**
-     * Creates a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void create(T configuration);
+public class CacheConfigurationLoader implements TypeLoader<InfinispanCacheConfiguration> {
 
-    /**
-     * Removes a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void remove(T configuration);
+    public InfinispanCacheConfiguration load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        throw new UnsupportedOperationException();
+    }
 
 }

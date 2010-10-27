@@ -35,27 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.spi;
+package org.fabric3.cache.introspection;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.cache.model.CacheResource;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
- * Responsible for managing caches on a runtime.
+ * Loads cache configurations specified in a composite. The format of the caches element is:
+ * <pre>
+ *      &lt;caches&gt;
+ *          &lt;cache name="MyCache"&gt;
+ *              &lt;!-- cache-specific configuration --&gt
+ *           &lt;/cache&gt;
+ *      &lt;/caches&gt;
+ * </pre>
  *
  * @version $Rev$ $Date$
  */
-public interface CacheManager<T extends CacheConfiguration> {
-            
-    /**
-     * Creates a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void create(T configuration);
+@EagerInit
+public class CacheResourceLoader implements TypeLoader<CacheResource> {
 
-    /**
-     * Removes a cache.
-     *
-     * @param configuration the cache configuration
-     */
-    void remove(T configuration);
+    public CacheResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        throw new UnsupportedOperationException();
+    }
 
 }
