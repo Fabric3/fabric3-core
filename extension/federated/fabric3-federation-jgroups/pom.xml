@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-federation-jgroups</artifactId>
-    <name>Fabric3 JGroups Federation Extension</name>
-    <description>Fabric3 JGroups Federation Extension.</description>
+    <name>Fabric3 JGroups Federation Implementation Extension</name>
+    <description>Fabric3 JGroups Federation Implementation Extension.</description>
     <packaging>sca-contribution-jar</packaging>
 
     <dependencies>
@@ -38,18 +38,19 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jgroups</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
              <groupId>org.codehaus.fabric3</groupId>
              <artifactId>fabric3-federation-deployment</artifactId>
              <version>${project.version}</version>
              <scope>provided</scope>
          </dependency>
         
-        <dependency>
-            <groupId>org.jgroups</groupId>
-            <artifactId>jgroups</artifactId>
-            <version>2.10.0.GA</version>
-        </dependency>
-
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -71,17 +72,4 @@ Public License. See the accompanying license file for details.
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>jboss</id>
-            <name>JBoss Inc. Repository</name>
-            <url>http://repository.jboss.com/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
 </project>

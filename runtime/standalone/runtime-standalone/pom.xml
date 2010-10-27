@@ -243,6 +243,13 @@ licensed under the Apache 2.0 license.
             <version>${project.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jgroups</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-federation-jgroups</artifactId>
