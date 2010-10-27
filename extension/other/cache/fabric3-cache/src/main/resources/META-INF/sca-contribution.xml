@@ -14,6 +14,6 @@ Public License. See the accompanying license file for details.
               f3-core:extension="true"
               f3-core:description="Cache extension">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
-    <export.java package="org.fabric3.cache.spi" version="1.7"/>
+    <export.java package="org.fabric3.org.fabric3.cache.spi" version="1.7"/>
 
 </contribution>

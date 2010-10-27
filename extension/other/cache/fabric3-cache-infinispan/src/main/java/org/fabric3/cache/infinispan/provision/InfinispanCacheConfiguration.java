@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package cache.infinispan.provision;
+package org.fabric3.cache.infinispan.provision;
 
 import org.fabric3.cache.spi.CacheConfiguration;
 
