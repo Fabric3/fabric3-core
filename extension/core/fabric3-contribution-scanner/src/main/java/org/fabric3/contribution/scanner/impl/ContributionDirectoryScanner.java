@@ -266,6 +266,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     cache.put(name, resource);
                     wait = true;
                 } else {
+                    ignored.remove(file); // file may have been ignored previously, e.g. it was missing a manifest and is now updated with one
                     // already cached from a previous run
                     if (cached.isChanged()) {
                         // contents are still being updated, wait until next run
