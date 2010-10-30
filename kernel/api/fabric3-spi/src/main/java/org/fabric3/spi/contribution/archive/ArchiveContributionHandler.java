@@ -42,18 +42,11 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Responsible for handling the specifics of an archive-based contribution.
+ * Iterates contained artifacts in an archive contribution type during introspection.
  *
  * @version $Rev$ $Date$
  */
 public interface ArchiveContributionHandler {
-
-    /**
-     * Returns the content type of the contribution that this handler can process
-     *
-     * @return the content type.
-     */
-    String getContentType();
 
     /**
      * Returns true if the implementation can process the contribution archive.

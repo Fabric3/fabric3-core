@@ -192,7 +192,6 @@ public class Contribution implements Serializable {
      */
     public void addResource(Resource resource) {
         resources.add(resource);
-        resource.setContribution(this);
     }
 
     /**

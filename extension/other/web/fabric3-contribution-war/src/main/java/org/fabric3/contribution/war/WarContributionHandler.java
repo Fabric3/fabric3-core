@@ -46,10 +46,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
@@ -75,15 +73,6 @@ public class WarContributionHandler implements ArchiveContributionHandler {
     public WarContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
         this.contentTypeResolver = contentTypeResolver;
-    }
-
-    @Init
-    public void init() {
-        contentTypeResolver.register("war", Constants.ZIP_CONTENT_TYPE);
-    }
-
-    public String getContentType() {
-        return Constants.ZIP_CONTENT_TYPE;
     }
 
     public boolean canProcess(Contribution contribution) {
@@ -117,7 +106,6 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
-
     }
 
     public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
@@ -134,16 +122,16 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                 if (entry.isDirectory()) {
                     continue;
                 }
-
-                URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + entry.getName());
-                // hack to return the correct content type
-                String contentType = contentTypeResolver.getContentType(new URL(location, entry.getName()));
-
-                // String contentType = contentTypeResolver.getContentType(entryUrl);
-                // skip entry if we don't recognize the content type
-                if (contentType == null) {
+                if (entry.getName().contains("META-INF/sca-contribution.xml")) {
+                    // don't index the manifest
                     continue;
                 }
+                String contentType = contentTypeResolver.getContentType(new URL(location, entry.getName()));
+                if (contentType == null) {
+                    // skip entry if we don't recognize the content type
+                    continue;
+                }
+                URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + entry.getName());
                 action.process(contribution, contentType, entryUrl);
             }
         } catch (ContentTypeResolutionException e) {

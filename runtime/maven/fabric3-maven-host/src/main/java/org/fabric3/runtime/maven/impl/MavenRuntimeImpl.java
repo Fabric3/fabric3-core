@@ -50,25 +50,25 @@ import javax.xml.namespace.QName;
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 
 import org.fabric3.fabric.runtime.AbstractRuntime;
-import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
-import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
-import org.fabric3.runtime.maven.ContextStartException;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.runtime.maven.ContextStartException;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven.repository.MavenRepository;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
+
+import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
+import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 
 /**
  * Default Maven runtime implementation.
@@ -116,7 +116,7 @@ public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
             repository.init();
             return repository;
         } catch (RepositoryException e) {
-           throw new InitializationException(e);
+            throw new InitializationException(e);
         }
     }
 }

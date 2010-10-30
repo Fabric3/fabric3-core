@@ -50,10 +50,6 @@ package org.fabric3.host;
  */
 public interface Constants {
 
-    String ZIP_CONTENT_TYPE = "application/zip";
-    String JAR_MANIFEST = "text/vnd.fabric3.jar-manifest";
-    String FOLDER_CONTENT_TYPE = "application/vnd.fabric3.folder";
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
-    String DEFINITIONS_TYPE = "text/vnd.fabric3.definitions+xml";
 
 }

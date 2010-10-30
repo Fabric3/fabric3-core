@@ -71,7 +71,7 @@ public class DeploymentPlanIndexerTestCase extends TestCase {
     private XMLStreamReader reader;
 
     public void testIndexer() throws Exception {
-        Resource resource = new Resource(null, "test");
+        Resource resource = new Resource(null, null, "test");
         IntrospectionContext context = new DefaultIntrospectionContext();
         indexer.index(resource, reader, context);
         ResourceElement<?, ?> element = resource.getResourceElements().get(0);

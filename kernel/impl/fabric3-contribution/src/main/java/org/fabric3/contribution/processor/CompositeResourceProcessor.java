@@ -89,10 +89,11 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         return Constants.COMPOSITE_CONTENT_TYPE;
     }
 
-    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, IntrospectionContext context) throws InstallException {
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
+            Source source = resource.getSource();
             stream = source.openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             reader.nextTag();
@@ -101,14 +102,12 @@ public class CompositeResourceProcessor implements ResourceProcessor {
                 context.addError(new MissingAttribute("Composite name not specified", reader));
                 return;
             }
-            Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
             QName compositeName = new QName(targetNamespace, name);
             QNameSymbol symbol = new QNameSymbol(compositeName);
             ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
             resource.addResourceElement(element);
-            validateUnique(contribution, resource, element, reader, context);
-            contribution.addResource(resource);
+            validateUnique(resource, element, reader, context);
         } catch (XMLStreamException e) {
             throw new InstallException(e);
         } catch (IOException e) {
@@ -168,11 +167,11 @@ public class CompositeResourceProcessor implements ResourceProcessor {
 
     }
 
-    private void validateUnique(Contribution contribution,
-                                Resource resource,
+    private void validateUnique(Resource resource,
                                 ResourceElement<QNameSymbol, Composite> element,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) {
+        Contribution contribution = resource.getContribution();
         for (Resource entry : contribution.getResources()) {
             if (resource.getContentType().equals(entry.getContentType())) {
                 for (ResourceElement<?, ?> elementEntry : entry.getResourceElements()) {

@@ -50,7 +50,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
-import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceProcessor;
@@ -91,7 +90,8 @@ public class XmlResourceProcessor implements ResourceProcessor {
         return "application/xml";
     }
 
-    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, IntrospectionContext context) throws InstallException {
+        Source source = resource.getSource();
         XMLStreamReader reader = null;
         InputStream stream = null;
         try {
@@ -100,9 +100,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
             if (skipToFirstTag(reader)) {
                 return;
             }
-            Resource resource = new Resource(source, "application/xml");
             indexerRegistry.index(resource, reader, context);
-            contribution.addResource(resource);
         } catch (XMLStreamException e) {
             // artifact is invalid, issue a warning
             InvalidXmlArtifact warning =

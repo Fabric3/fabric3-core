@@ -425,7 +425,7 @@ public class ContributionServiceImpl implements ContributionService {
         return uris;
     }
 
-    private void uninstall(Contribution contribution) throws UninstallException, ContributionNotFoundException {
+    private void uninstall(Contribution contribution) throws UninstallException {
         URI uri = contribution.getUri();
         if (contribution.getState() != ContributionState.INSTALLED) {
             throw new UninstallException("Contribution not installed: " + uri);

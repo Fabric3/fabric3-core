@@ -37,8 +37,10 @@
 */
 package org.fabric3.contribution;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osoa.sca.annotations.EagerInit;
 
@@ -52,26 +54,23 @@ import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Default implementation of ProcessorRegistry
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class ProcessorRegistryImpl implements ProcessorRegistry {
-    private Map<String, ContributionProcessor> contributionProcessorCache = new HashMap<String, ContributionProcessor>();
-    private Map<String, ResourceProcessor> resourceProcessorCache = new HashMap<String, ResourceProcessor>();
+    private List<ContributionProcessor> contributionProcessorCache = new ArrayList<ContributionProcessor>();
+    private Map<String, ResourceProcessor> resourceProcessorCache = new ConcurrentHashMap<String, ResourceProcessor>();
 
     public ProcessorRegistryImpl() {
     }
 
     public void register(ContributionProcessor processor) {
-        for (String contentType : processor.getContentTypes()) {
-            contributionProcessorCache.put(contentType, processor);
-        }
+        contributionProcessorCache.add(processor);
     }
 
-    public void unregisterContributionProcessor(String contentType) {
-        contributionProcessorCache.remove(contentType);
+    public void unregisterContributionProcessor(ContributionProcessor processor) {
+        contributionProcessorCache.remove(processor);
     }
 
     public void register(ResourceProcessor processor) {
@@ -83,23 +82,12 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
-        String contentType = contribution.getContentType();
-        ContributionProcessor processor = contributionProcessorCache.get(contentType);
-        if (processor == null) {
-            String source = contribution.getUri().toString();
-            throw new UnsupportedContentTypeException("Type " + contentType + " in contribution " + source + " not supported", contentType);
-        }
+        ContributionProcessor processor = getContributionProcessor(contribution);
         processor.processManifest(contribution, context);
-
     }
 
     public void indexContribution(Contribution contribution, IntrospectionContext context) throws InstallException {
-        String contentType = contribution.getContentType();
-        ContributionProcessor processor = contributionProcessorCache.get(contentType);
-        if (processor == null) {
-            String source = contribution.getUri().toString();
-            throw new UnsupportedContentTypeException("Type " + contentType + "in contribution " + source + " not supported", contentType);
-        }
+        ContributionProcessor processor = getContributionProcessor(contribution);
         processor.index(contribution, context);
     }
 
@@ -109,16 +97,13 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
             // unknown type, skip
             return;
         }
-        processor.index(contribution, source, context);
+        Resource resource = new Resource(contribution, source, contentType);
+        processor.index(resource, context);
+        contribution.addResource(resource);
     }
 
     public void processContribution(Contribution contribution, IntrospectionContext context) throws InstallException {
-        String contentType = contribution.getContentType();
-        ContributionProcessor processor = contributionProcessorCache.get(contentType);
-        if (processor == null) {
-            String source = contribution.getUri().toString();
-            throw new UnsupportedContentTypeException("Type " + contentType + "in contribution " + source + " not supported", contentType);
-        }
+        ContributionProcessor processor = getContributionProcessor(contribution);
         processor.process(contribution, context);
     }
 
@@ -128,6 +113,16 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
             return;
         }
         processor.process(resource, context);
+    }
+
+    public ContributionProcessor getContributionProcessor(Contribution contribution) throws UnsupportedContentTypeException {
+        for (ContributionProcessor processor : contributionProcessorCache) {
+            if (processor.canProcess(contribution)) {
+                return processor;
+            }
+        }
+        String source = contribution.getUri().toString();
+        throw new UnsupportedContentTypeException("Processor not found for contribution " + source + " not supported", source);
     }
 
 }

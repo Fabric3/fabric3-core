@@ -89,7 +89,7 @@ public class WarContributionListener implements ContributionServiceListener {
         Composite composite = createComposite(contribution);
 
         Source source = contribution.getSource();
-        Resource resource = createResource(composite, source);
+        Resource resource = createResource(contribution, composite, source);
         contribution.addResource(resource);
 
         QName name = composite.getName();
@@ -144,10 +144,10 @@ public class WarContributionListener implements ContributionServiceListener {
         return localPart;
     }
 
-    private Resource createResource(Composite composite, Source source) {
+    private Resource createResource(Contribution contribution, Composite composite, Source source) {
         QNameSymbol symbol = new QNameSymbol(composite.getName());
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
-        Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
+        Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         resource.addResourceElement(element);
         resource.setProcessed(true);
         return resource;

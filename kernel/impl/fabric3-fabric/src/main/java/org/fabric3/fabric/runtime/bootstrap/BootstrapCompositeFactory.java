@@ -135,7 +135,7 @@ public class BootstrapCompositeFactory {
      */
     private static void addResource(Contribution contribution, Composite composite, URL scdlLocation) {
         Source source = new UrlSource(scdlLocation);
-        Resource resource = new Resource(source, Constants.COMPOSITE_CONTENT_TYPE);
+        Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         QName compositeName = composite.getName();
         QNameSymbol symbol = new QNameSymbol(compositeName);
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);

@@ -55,6 +55,10 @@
         <f3-impl:implementation.system class="org.fabric3.contribution.archive.ZipContributionHandler"/>
     </component>
 
+    <component name="ExplodedArchiveContributionHandler">
+        <f3-impl:implementation.system class="org.fabric3.contribution.archive.ExplodedArchiveContributionHandler"/>
+    </component>
+
     <component name="XmlResourceProcessor">
         <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlResourceProcessor"/>
     </component>

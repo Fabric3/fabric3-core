@@ -67,7 +67,7 @@ public abstract class AbstractContributionProcessor implements ContributionProce
     }
 
     /**
-     * Initialize the processor and registers with the contribution processor registry.
+     * Initialize the processor and registers with the processor registry.
      */
     @Init
     public void start() {
@@ -75,13 +75,11 @@ public abstract class AbstractContributionProcessor implements ContributionProce
     }
 
     /**
-     * Shuts the processor down and unregisters from the contribution processor registry.
+     * Shuts the processor down and unregisters from the processor registry.
      */
     @Destroy
     public void stop() {
-        for (String contentType : getContentTypes()) {
-            registry.unregisterContributionProcessor(contentType);
-        }
+        registry.unregisterContributionProcessor(this);
     }
 
 }

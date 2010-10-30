@@ -39,8 +39,6 @@ package org.fabric3.contribution.archive;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 
@@ -59,14 +57,9 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 @EagerInit
 public class SyntheticDirectoryContributionProcessor extends AbstractContributionProcessor {
     private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";
-    private static final List<String> CONTENT_TYPES = new ArrayList<String>();
 
-    static {
-        CONTENT_TYPES.add(CONTENT_TYPE);
-    }
-
-    public List<String> getContentTypes() {
-        return CONTENT_TYPES;
+    public boolean canProcess(Contribution contribution) {
+        return CONTENT_TYPE.equals(contribution.getContentType());
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {

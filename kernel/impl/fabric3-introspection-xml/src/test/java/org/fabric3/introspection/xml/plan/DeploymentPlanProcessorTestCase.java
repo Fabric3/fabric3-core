@@ -73,7 +73,7 @@ public class DeploymentPlanProcessorTestCase extends TestCase {
     private XMLStreamReader reader;
 
     public void testProcess() throws Exception {
-        Resource resource = new Resource(null, "test");
+        Resource resource = new Resource(null, null, "test");
         QName qName = new QName(DeploymentPlanConstants.PLAN_NAMESPACE, "testPlan");
         QNameSymbol symbol = new QNameSymbol(qName);
         ResourceElement<QNameSymbol, DeploymentPlan> element = new ResourceElement<QNameSymbol, DeploymentPlan>(symbol);

@@ -46,7 +46,6 @@ import java.net.URL;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.Constants;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
@@ -64,23 +63,25 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 
 /**
  * Handles exploded archives on a filesystem.
+ *
+ * @version $Rev$ $Date$
  */
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
     private final ContentTypeResolver contentTypeResolver;
-
 
     public ExplodedArchiveContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
         this.contentTypeResolver = contentTypeResolver;
     }
 
-    public String getContentType() {
-        return Constants.FOLDER_CONTENT_TYPE;
-    }
-
     public boolean canProcess(Contribution contribution) {
-        return Constants.FOLDER_CONTENT_TYPE.equals(contribution.getContentType());
+        URL location = contribution.getLocation();
+        if (location == null || !"file".equals(location.getProtocol())) {
+            return false;
+        }
+        File file = new File(location.getFile());
+        return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip"));
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
@@ -109,22 +110,25 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
-
     }
 
     public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
-        iterateArtifactsResursive(contribution, action, root);
+        iterateArtifactsRecursive(contribution, action, root);
     }
 
-    protected void iterateArtifactsResursive(Contribution contribution, Action action, File dir) throws InstallException {
+    protected void iterateArtifactsRecursive(Contribution contribution, Action action, File dir) throws InstallException {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsResursive(contribution, action, file);
+                iterateArtifactsRecursive(contribution, action, file);
             } else {
                 try {
+                    if (file.getName().contains("META-INF/sca-contribution.xml")) {
+                        // don't index the manifest
+                        continue;
+                    }
                     URL entryUrl = file.toURI().toURL();
                     String contentType = contentTypeResolver.getContentType(entryUrl);
                     // skip entry if we don't recognize the content type

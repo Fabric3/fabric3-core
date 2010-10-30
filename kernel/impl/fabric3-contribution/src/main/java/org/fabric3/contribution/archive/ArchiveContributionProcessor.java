@@ -38,7 +38,6 @@
 package org.fabric3.contribution.archive;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
@@ -58,21 +57,20 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  */
 public class ArchiveContributionProcessor extends AbstractContributionProcessor {
-
-    private static final List<String> CONTENT_TYPES = initializeContentTypes();
     private List<ArchiveContributionHandler> handlers;
 
     @Reference
     public void setHandlers(List<ArchiveContributionHandler> handlers) {
         this.handlers = handlers;
-        int size = handlers.size();
-        for (int i = 0; i < size; i++) {
-            CONTENT_TYPES.add(handlers.get(i).getContentType());
-        }
     }
 
-    public List<String> getContentTypes() {
-        return CONTENT_TYPES;
+    public boolean canProcess(Contribution contribution) {
+        for (ArchiveContributionHandler handler : handlers) {
+            if (handler.canProcess(contribution)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
@@ -116,10 +114,4 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         throw new UnsupportedContentTypeException("Contribution type not supported: " + source, source);
     }
 
-
-    private static List<String> initializeContentTypes() {
-        List<String> list = new ArrayList<String>();
-        list.add("application/octet-stream");
-        return list;
-    }
 }

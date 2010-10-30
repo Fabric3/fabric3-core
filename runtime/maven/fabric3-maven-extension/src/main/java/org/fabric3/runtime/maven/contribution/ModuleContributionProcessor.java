@@ -43,16 +43,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -74,7 +72,7 @@ import org.fabric3.spi.introspection.xml.LoaderException;
  */
 @EagerInit
 public class ModuleContributionProcessor implements ContributionProcessor {
-    public static final List<String> CONTENT_TYPES = initializeContentTypes();
+    private static final String MAVEN_CONTENT_TYPE = "application/vnd.fabric3.maven-project";
 
     private ProcessorRegistry registry;
     private ContentTypeResolver contentTypeResolver;
@@ -88,8 +86,8 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         this.loader = loader;
     }
 
-    public List<String> getContentTypes() {
-        return CONTENT_TYPES;
+    public boolean canProcess(Contribution contribution) {
+        return MAVEN_CONTENT_TYPE.equals(contribution.getContentType());
     }
 
     @Init
@@ -121,7 +119,7 @@ public class ModuleContributionProcessor implements ContributionProcessor {
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
             Source source = new UrlSource(manifestUrl);
-             manifest = loader.load(source, ContributionManifest.class, childContext);
+            manifest = loader.load(source, ContributionManifest.class, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }
@@ -182,11 +180,4 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         }
 
     }
-
-    private static List<String> initializeContentTypes() {
-        List<String> list = new ArrayList<String>(1);
-        list.add("application/vnd.fabric3.maven-project");
-        return list;
-    }
-
 }

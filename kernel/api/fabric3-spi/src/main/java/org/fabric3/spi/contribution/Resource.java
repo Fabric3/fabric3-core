@@ -55,7 +55,8 @@ public class Resource {
 
     private boolean processed;
 
-    public Resource(Source source, String contentType) {
+    public Resource(Contribution contribution, Source source, String contentType) {
+        this.contribution = contribution;
         this.source = source;
         this.contentType = contentType;
     }
@@ -67,15 +68,6 @@ public class Resource {
      */
     public Contribution getContribution() {
         return contribution;
-    }
-
-    /**
-     * Sets the contribution this resource is contained in.
-     *
-     * @param contribution the contribution this resource is contained in
-     */
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
     }
 
     /**

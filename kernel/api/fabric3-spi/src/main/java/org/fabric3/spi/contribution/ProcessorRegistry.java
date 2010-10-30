@@ -42,7 +42,7 @@ import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * The system registry of contribution processors.
+ * Manages and dispatches to {@link ContributionProcessor}s and {@link ResourceProcessor}s when introspecting a contribution.
  *
  * @version $Rev$ $Date$
  */
@@ -57,9 +57,9 @@ public interface ProcessorRegistry {
     /**
      * Unregister a ContributionProcessor for a content type
      *
-     * @param contentType the content
+     * @param processor the processor to unregister
      */
-    void unregisterContributionProcessor(String contentType);
+    void unregisterContributionProcessor(ContributionProcessor processor);
 
     /**
      * Register a ResourceProcessor using the content type as the key
@@ -96,7 +96,7 @@ public interface ProcessorRegistry {
     /**
      * Dispatches to a {@link ResourceProcessor} to index a resource contained in a contribution.
      *
-     * @param contribution the cntaining contribution
+     * @param contribution the containing contribution
      * @param contentType  the content type of the resource to process
      * @param source       provides an input stream reading the contents of the resource
      * @param context      the context to which validation errors and warnings are reported

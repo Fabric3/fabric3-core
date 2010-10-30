@@ -70,7 +70,7 @@ public class DefinitionsIndexerTestCase extends TestCase {
 
     @SuppressWarnings({"SuspiciousMethodCalls"})
     public void testIndex() throws Exception {
-        Resource resource = new Resource(null, "foo");
+        Resource resource = new Resource(null, null, "foo");
         IntrospectionContext context = new DefaultIntrospectionContext();
         loader.index(resource, reader, context);
 

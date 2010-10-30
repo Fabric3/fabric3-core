@@ -75,8 +75,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 public class WarContributionProcessor implements ContributionProcessor {
     private static final String WAR_MIME_TYPE = "application/vnd.fabric3.war";
 
-    private static final List<String> CONTENT_TYPES = initializeContentTypes();
-
     private WebappHostInfo info;
     private ProcessorRegistry registry;
     private ContentTypeResolver contentTypeResolver;
@@ -92,8 +90,8 @@ public class WarContributionProcessor implements ContributionProcessor {
         this.loader = loader;
     }
 
-    public List<String> getContentTypes() {
-        return CONTENT_TYPES;
+    public boolean canProcess(Contribution contribution) {
+        return WAR_MIME_TYPE.equals(contribution.getContentType());
     }
 
     @Init
@@ -174,12 +172,6 @@ public class WarContributionProcessor implements ContributionProcessor {
             String contentType = contentTypeResolver.getContentType(entryUrl);
             action.process(contribution, contentType, entryUrl);
         }
-    }
-
-    private static List<String> initializeContentTypes() {
-        List<String> list = new ArrayList<String>(1);
-        list.add(WAR_MIME_TYPE);
-        return list;
     }
 
 }

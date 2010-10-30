@@ -40,8 +40,6 @@ package org.fabric3.contribution.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -69,7 +67,8 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 @EagerInit
 public class XmlContributionProcessor implements ContributionProcessor {
-    private static final List<String> CONTENT_TYPES = initializeContentTypes();
+    private static final String CONTENT_TYPE = "application/xml";
+
     private XMLInputFactory xmlFactory;
     private ProcessorRegistry processorRegistry;
     private XmlProcessorRegistry xmlProcessorRegistry;
@@ -90,8 +89,8 @@ public class XmlContributionProcessor implements ContributionProcessor {
         processorRegistry.register(this);
     }
 
-    public List<String> getContentTypes() {
-        return CONTENT_TYPES;
+    public boolean canProcess(Contribution contribution) {
+        return CONTENT_TYPE.equals(contribution.getContentType());
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
@@ -108,7 +107,7 @@ public class XmlContributionProcessor implements ContributionProcessor {
             reader.nextTag();
             URL url = contribution.getLocation();
             Source source = new UrlSource(url);
-            Resource resource = new Resource(source, "application/xml");
+            Resource resource = new Resource(contribution, source, "application/xml");
             xmlIndexerRegistry.index(resource, reader, context);
             contribution.addResource(resource);
         } catch (IOException e) {
@@ -163,9 +162,4 @@ public class XmlContributionProcessor implements ContributionProcessor {
         }
     }
 
-    private static List<String> initializeContentTypes() {
-        List<String> list = new ArrayList<String>(1);
-        list.add("application/xml");
-        return list;
-    }
 }

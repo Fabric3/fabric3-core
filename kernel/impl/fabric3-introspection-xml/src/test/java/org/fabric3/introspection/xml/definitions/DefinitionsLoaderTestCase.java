@@ -221,7 +221,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
         loaderRegistry.registerLoader(DefinitionsLoader.INTENT, intentLoader);
 
         // setup indexed resource
-        resource = new Resource(null, "application/xml");
+        resource = new Resource(null, null, "application/xml");
         // setup up indexed resource elements
         ResourceElement<QNameSymbol, ?> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(new QNameSymbol(INTERCEPTED_INTENT));
         resource.addResourceElement(element);

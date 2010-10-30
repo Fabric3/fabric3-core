@@ -38,11 +38,10 @@
 package org.fabric3.spi.contribution;
 
 import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Implmentations process a contribution resource for a MIME type.
+ * Processes a contribution resource.
  *
  * @version $Rev$ $Date$
  */
@@ -58,12 +57,11 @@ public interface ResourceProcessor {
     /**
      * Indexes the resource.
      *
-     * @param contribution the containing contribution
-     * @param source       provides an input stream reading the contents of the resource
-     * @param context      the context to which validation errors and warnings are reported
+     * @param resource the resource to index
+     * @param context  the context to which validation errors and warnings are reported
      * @throws InstallException if an error occurs during indexing
      */
-    void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException;
+    void index(Resource resource, IntrospectionContext context) throws InstallException;
 
     /**
      * Loads the the Resource.

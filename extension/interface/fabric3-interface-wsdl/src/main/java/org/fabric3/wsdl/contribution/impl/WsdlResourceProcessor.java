@@ -53,7 +53,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -71,7 +70,6 @@ import org.w3c.dom.Element;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.stream.Source;
-import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
@@ -87,6 +85,8 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.fabric3.wsdl.processor.WsdlContractProcessor;
 
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
 /**
  * Indexes and processes a WSDL document, referenced schemas, and introspected service contracts deriving from port types in a contribution. This
  * implementation uses the WSDL4J to represent the document.
@@ -98,7 +98,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private static final QName SCHEMA_NAME = new QName(W3C_XML_SCHEMA_NS_URI, "schema");
     private static final QName IMPORT_NAME = new QName(W3C_XML_SCHEMA_NS_URI, "import");
     private static final QName SCHEMA_LOCATION = new QName("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
-    private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl", "definitions");
     private static final QName CALLBACK_ATTRIBUTE = new QName(Constants.SCA_NS, "callback");
     private static final String MIME_TYPE = "text/wsdl+xml";
 
@@ -136,18 +135,13 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         return MIME_TYPE;
     }
 
-    public QName getType() {
-        return DEFINITIONS;
-    }
-
-    public void index(Contribution contribution, Source source, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, IntrospectionContext context) throws InstallException {
         InputStream stream = null;
         try {
+            Source source = resource.getSource();
             stream = source.openStream();
             // eagerly process the WSDL since port types need to be available during contribution processing.
-            Resource resource = new Resource(source, MIME_TYPE);
             parse(resource, context);
-            contribution.addResource(resource);
         } catch (IOException e) {
             throw new InstallException(e);
         } finally {
@@ -164,7 +158,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
 
     public void process(Resource resource, IntrospectionContext context) throws InstallException {
         // Process callbacks here (as opposed to eagerly in #index(..) since the SCA callback attribute may reference a portType in another document.
-        // Processing at this point guarentees the callback portType will be indexed and referenceable.
+        // Processing at this point guarantees the callback portType will be indexed and referenceable.
         for (ResourceElement<?, ?> element : resource.getResourceElements()) {
             if (element.getSymbol() instanceof WsdlServiceContractSymbol) {
                 WsdlServiceContract contract = (WsdlServiceContract) element.getValue();
@@ -317,7 +311,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      *
      * @param definition      the WSDL
      * @param targetNamespace the schema target namespace
-     * @param schemaLocation  the dereferenceable schema location
+     * @param schemaLocation  the de-referenceable schema location
      * @throws InstallException if an unexpected error parsing the schema occurs
      */
     private void populateSchemaTypes(Definition definition, String targetNamespace, String schemaLocation) throws InstallException {

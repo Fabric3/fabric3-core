@@ -40,6 +40,7 @@ package org.fabric3.host.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.fabric3.host.util.FileHelper;
 
@@ -65,7 +66,9 @@ public class UrlSource implements Source {
     }
 
     public InputStream openStream() throws IOException {
-        return url.openStream();
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        return connection.getInputStream();
     }
 
     public Source getImportSource(String parentLocation, String importLocation) throws IOException {
