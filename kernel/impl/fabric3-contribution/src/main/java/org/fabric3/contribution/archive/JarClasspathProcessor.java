@@ -51,11 +51,11 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.oasisopen.sca.annotation.Property;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
-import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.IOHelper;
@@ -64,12 +64,12 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
  * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome
- * using one of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded
- * jars will be copied to a temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file
- * will be extracted to the filesystem and placed on the classpath using a file: URL instead.
+ * using one of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded jars will be
+ * copied to a temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file will be
+ * extracted to the filesystem and placed on the classpath using a file: URL instead.
  * <p/>
  * The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read lock on jar files when accessing resources
- * from a jar: URL and does not release it. This results holding open temporary file handles and not being able to delete those files until the JVM
+ * from a jar: URL and does not release it. This results in holding open temporary file handles and not being able to delete those files until the JVM
  * terminates. This issue does not occur on Unix systems.
  *
  * @version $Rev$ $Date$
@@ -103,7 +103,7 @@ public class JarClasspathProcessor implements ClasspathProcessor {
 
     public boolean canProcess(URL url) {
         String name = url.getFile().toLowerCase();
-        return name.endsWith(".jar") || name.endsWith(".zip");
+        return name.endsWith(".jar") || name.endsWith(".zip") || name.endsWith("/classes") || name.endsWith("/classes/");
     }
 
     public List<URL> process(URL url) throws IOException {

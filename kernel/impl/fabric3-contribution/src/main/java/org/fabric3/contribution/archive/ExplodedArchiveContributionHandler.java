@@ -81,7 +81,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             return false;
         }
         File file = new File(location.getFile());
-        return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip"));
+        return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || file.getName().endsWith("classes"));
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
