@@ -172,7 +172,8 @@ public class ContributionServiceImpl implements ContributionService {
 
     public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
         Contribution contribution = find(uri);
-        return contribution.getLockOwners();
+        List<QName> owners= contribution.getLockOwners();
+        return new ArrayList<QName>(owners);
     }
 
     public URI store(ContributionSource contributionSource) throws StoreException {
