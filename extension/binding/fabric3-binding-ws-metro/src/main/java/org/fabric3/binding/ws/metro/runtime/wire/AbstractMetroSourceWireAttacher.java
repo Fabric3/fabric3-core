@@ -60,20 +60,6 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
         this.endpointService = endpointService;
     }
 
-    public void detach(T source, PhysicalTargetDefinition target) throws WiringException {
-        try {
-            ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
-            URI servicePath = endpointDefinition.getServicePath();
-            String path = servicePath.toString();
-            if (!path.startsWith("/")) {
-                path = "/" + path;
-            }
-            endpointService.unregisterService(path);
-        } catch (EndpointException e) {
-            throw new WiringException(e);
-        }
-    }
-
     public void detachObjectFactory(T source, PhysicalTargetDefinition target) {
     }
 

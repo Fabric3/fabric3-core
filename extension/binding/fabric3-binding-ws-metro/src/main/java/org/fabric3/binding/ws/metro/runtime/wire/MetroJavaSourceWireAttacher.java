@@ -159,6 +159,28 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
         }
     }
 
+    public void detach(MetroJavaSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+        try {
+            ServiceEndpointDefinition endpointDefinition = source.getEndpointDefinition();
+            URI servicePath = endpointDefinition.getServicePath();
+            String path = servicePath.toString();
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            artifactCache.remove(servicePath);
+            String wsdl = source.getWsdl();
+            if (wsdl != null) {
+                removeCachedSchemas(servicePath, source);
+            }
+
+            endpointService.unregisterService(path);
+        } catch (CacheException e) {
+            throw new WiringException(e);
+        } catch (EndpointException e) {
+            throw new WiringException(e);
+        }
+    }
+
 
     private List<URL> cacheSchemas(URI servicePath, MetroJavaSourceDefinition source) throws CacheException {
         List<URL> schemas = new ArrayList<URL>();
@@ -169,6 +191,13 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             schemas.add(url);
         }
         return schemas;
+    }
+
+    private void removeCachedSchemas(URI servicePath, MetroJavaSourceDefinition source) throws CacheException {
+        for (Map.Entry<String, String> entry : source.getSchemas().entrySet()) {
+            URI uri = URI.create(servicePath + "/" + entry.getKey());
+            artifactCache.remove(uri);
+        }
     }
 
 }
