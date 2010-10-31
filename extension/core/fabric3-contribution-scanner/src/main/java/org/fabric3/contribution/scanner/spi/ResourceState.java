@@ -35,55 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution.scanner.scanner.resource;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import junit.framework.TestCase;
-
-import org.fabric3.contribution.scanner.spi.FileResource;
+package org.fabric3.contribution.scanner.spi;
 
 /**
+ * Enumerates the states a {@link FileSystemResource} may be in.
+ *
  * @version $Rev$ $Date$
  */
-public class FileResourceTestCase extends TestCase {
-    private File file;
+public enum ResourceState {
 
-    public void testChanged() throws Exception {
-        FileResource resource = new FileResource(file);
-        resource.checkpoint();
-        assertFalse(resource.isChanged());
-        Thread.sleep(1000);
-        writeFile("testtest");
-        assertTrue(resource.isChanged());
-    }
+    DETECTED,
+    ADDED,
+    UPDATED,
+    ERROR,
+    PROCESSED
 
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        writeFile("test");
-    }
-
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        if (file.exists()) {
-            file.delete();
-        }
-    }
-
-    private void writeFile(String contents) throws IOException {
-        FileOutputStream stream = null;
-        try {
-            file = new File("fileresourcetest.txt");
-            stream = new FileOutputStream(file);
-            stream.write(contents.getBytes());
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-    }
 }

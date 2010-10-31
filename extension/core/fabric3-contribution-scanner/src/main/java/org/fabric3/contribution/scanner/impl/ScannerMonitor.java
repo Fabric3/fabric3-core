@@ -64,14 +64,6 @@ public interface ScannerMonitor {
     void removed(String name);
 
     /**
-     * Called when a contribution is updated
-     *
-     * @param name the name of the contribution
-     */
-    @Info("Updated {0}")
-    void updated(String name);
-
-    /**
      * Called when a file type is not recognized and ignored.
      *
      * @param name the file name

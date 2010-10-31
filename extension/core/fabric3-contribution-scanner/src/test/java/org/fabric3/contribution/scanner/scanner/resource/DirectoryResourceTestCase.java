@@ -50,19 +50,17 @@ import org.fabric3.contribution.scanner.spi.FileSystemResource;
  */
 public class DirectoryResourceTestCase extends TestCase {
 
-    /**
-     * Tests tracking changes. Simulates an underlying file remaining unchanged for the first check and changing for the second.
-     */
     public void testChanges() throws Exception {
         DirectoryResource resource = new DirectoryResource(new File("test"));
         FileSystemResource fileSystemResource = EasyMock.createMock(FileSystemResource.class);
-        fileSystemResource.reset();
-        EasyMock.expect(fileSystemResource.getChecksum()).andReturn("test".getBytes());
-        EasyMock.expect(fileSystemResource.getChecksum()).andReturn("test".getBytes());
-        EasyMock.expect(fileSystemResource.getChecksum()).andReturn("test2".getBytes());
+        long time = System.currentTimeMillis()+ 200000;
+        EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time);
+        EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time);
+        EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time + 1000);
         EasyMock.replay(fileSystemResource);
+        assertFalse(resource.isChanged());
         resource.addResource(fileSystemResource);
-        resource.reset();
+        assertTrue(resource.isChanged());
         assertFalse(resource.isChanged());
         assertTrue(resource.isChanged());
         EasyMock.verify(fileSystemResource);

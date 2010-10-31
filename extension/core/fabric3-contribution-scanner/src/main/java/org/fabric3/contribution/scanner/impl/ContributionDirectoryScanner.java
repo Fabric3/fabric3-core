@@ -38,11 +38,10 @@
 package org.fabric3.contribution.scanner.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,10 +64,12 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
+import org.fabric3.contribution.scanner.spi.ResourceState;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
+import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
@@ -88,19 +89,18 @@ import org.fabric3.spi.event.RuntimeStart;
  * across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are determined
  * by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
  * current directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and
- * additions from the previous interval are then compared using a checksum to see if they have changed again. If so, they remain cached. If they have
+ * additions from the previous interval are then compared using a timestamp to see if they have changed again. If so, they remain cached. If they have
  * not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
  */
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
-    private final Map<String, FileSystemResource> cache = new HashMap<String, FileSystemResource>();
-    private final Map<String, FileSystemResource> errorCache = new HashMap<String, FileSystemResource>();
-    private final ContributionService contributionService;
-    private final EventService eventService;
-    private final ScannerMonitor monitor;
-    private final Domain domain;
-    private Map<String, URI> processed = new HashMap<String, URI>();
+    private ContributionService contributionService;
+    private EventService eventService;
+    private ScannerMonitor monitor;
+    private Domain domain;
+
     private Set<File> ignored = new HashSet<File>();
+    private Map<String, FileSystemResource> cache = new HashMap<String, FileSystemResource>();
 
     private FileSystemResourceFactoryRegistry registry;
     private List<File> paths;
@@ -152,7 +152,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     Collections.addAll(files, pathFiles);
                 }
             }
-            recover(files);
+            processFiles(files, true);
         } else if (event instanceof RuntimeStart) {
             executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleWithFixedDelay(this, 10, delay, TimeUnit.MILLISECONDS);
@@ -171,13 +171,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 Collections.addAll(files, pathFiles);
             }
         }
+        processRemovals(files);
         if (files.isEmpty()) {
             // there is no extension directory, return without processing
             return;
         }
         try {
-            processRemovals(files);
-            processFiles(files);
+            processFiles(files, false);
             processIgnored();
         } catch (RuntimeException e) {
             monitor.error(e);
@@ -187,171 +187,150 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
-    private synchronized void recover(List<File> files) {
-        try {
-            List<File> contributions = new ArrayList<File>();
-            for (File file : files) {
-                String name = file.getName();
-                FileSystemResource resource = null;
-                FileSystemResource cached = errorCache.get(name);
-                if (cached != null) {
-                    resource = registry.createResource(file);
-                    assert resource != null;
-                    resource.reset();
-                    if (Arrays.equals(cached.getChecksum(), resource.getChecksum())) {
-                        // corrupt file from a previous run, continue
-                        continue;
-                    } else {
-                        // file has changed since the error was reported, retry
-                        errorCache.remove(name);
-                    }
-                }
-                cached = cache.get(name);
-                if (cached == null) {
-                    // the file has been added
-                    if (resource == null) {
-                        resource = registry.createResource(file);
-                    }
-                    if (resource == null) {
-                        // not a known type, ignore
-                        continue;
-                    }
-                    resource.reset();
-                    // cache the resource and wait to the next run to see if it has changed
-                    cache.put(name, resource);
-                    contributions.add(file);
-                }
-            }
-            processAdditions(contributions, true);
-        } catch (IOException e) {
-            monitor.error(e);
-        }
-    }
-
-    private synchronized void processFiles(List<File> files) {
+    /**
+     * Processes the contents of deployment directories and updates the state of cached resources based on those contents.
+     *
+     * @param files   the files in the deployment directories
+     * @param recover true if processing is performed during recovery
+     */
+    private synchronized void processFiles(List<File> files, boolean recover) {
         boolean wait = false;
         for (File file : files) {
-            try {
-                String name = file.getName();
-                FileSystemResource resource = null;
-                FileSystemResource cached = errorCache.get(name);
-                if (cached != null) {
-                    resource = registry.createResource(file);
-                    assert resource != null;
-                    resource.reset();
-                    if (Arrays.equals(cached.getChecksum(), resource.getChecksum())) {
+            String name = file.getName();
+            FileSystemResource cached = cache.get(name);
+            if (cached == null) {
+                cached = registry.createResource(file);
+                if (cached == null) {
+                    // not a known type, ignore
+                    if (!name.startsWith(".") && !name.endsWith(".txt") && !ignored.contains(file)) {
+                        monitor.ignored(name);
+                    }
+                    ignored.add(file);
+                    continue;
+                }
+                cache.put(name, cached);
+                if (recover) {
+                    // recover, do not wait to install
+                    cached.setState(ResourceState.ADDED);
+                } else {
+                    // file may have been ignored previously as it was incomplete such as missing a manifest; remove it from the ignored list
+                    ignored.remove(file);
+                    wait = true;
+                    continue;
+                }
+            } else {
+                if (cached.getState() == ResourceState.ERROR) {
+                    FileSystemResource resource = registry.createResource(file);
+                    if (cached.getTimestamp() == resource.getTimestamp()) {
                         // corrupt file from a previous run, continue
                         continue;
                     } else {
                         // file has changed since the error was reported, retry
-                        errorCache.remove(name);
+                        cached.setState(ResourceState.DETECTED);
                     }
-                }
-                cached = cache.get(name);
-                if (cached == null) {
-                    // the file has been added
-                    if (resource == null) {
-                        resource = registry.createResource(file);
-                    }
-                    if (resource == null) {
-                        // not a known type, ignore
-                        if (!name.startsWith(".") && !name.endsWith(".txt") && !ignored.contains(file)) {
-                            monitor.ignored(name);
-                        }
-                        ignored.add(file);
-                        continue;
-                    }
-                    resource.reset();
-                    // cache the resource and wait to the next run to see if it has changed
-                    cache.put(name, resource);
-                    wait = true;
-                } else {
-                    ignored.remove(file); // file may have been ignored previously, e.g. it was missing a manifest and is now updated with one
-                    // already cached from a previous run
+                } else if (cached.getState() == ResourceState.DETECTED) {
                     if (cached.isChanged()) {
-                        // contents are still being updated, wait until next run
                         wait = true;
+                        continue;
+                    } else {
+                        cached.setState(ResourceState.ADDED);
+                    }
+                } else if (cached.getState() == ResourceState.PROCESSED) {
+                    if (cached.isChanged()) {
+                        cached.setState(ResourceState.UPDATED);
                     }
                 }
-            } catch (IOException e) {
-                monitor.error(e);
             }
         }
-        if (!wait) {
-            sortAndProcessChanges(files);
-        }
-    }
-
-    private void sortAndProcessChanges(List<File> files) {
         try {
-            List<File> updates = new ArrayList<File>();
-            List<File> additions = new ArrayList<File>();
-            for (File file : files) {
-                // check if it is in the store
-                String name = file.getName();
-                boolean isProcessed = processed.containsKey(name);
-                boolean isError = errorCache.containsKey(name);
-                if (!isError && isProcessed && !ignored.contains(file)) {
-                    // updated
-                    updates.add(file);
-                } else if (!isError && !isProcessed && !ignored.contains(file)) {
-                    // an addition
-                    additions.add(file);
+            if (recover) {
+                processAdditions(true);
+            } else {
+                if (!wait) {
+                    processUpdates();
+                    processAdditions(false);
                 }
             }
-            processUpdates(updates);
-            processAdditions(additions, false);
-        } catch (IOException e) {
-            monitor.error(e);
         } catch (DeploymentException e) {
             monitor.error(e);
         }
     }
 
-    private synchronized void processUpdates(List<File> files) throws IOException, DeploymentException {
-        for (File file : files) {
-            String name = file.getName();
-            URI artifactUri = processed.get(name);
-            URL location = file.toURI().normalize().toURL();
-            FileSystemResource cached = cache.remove(name);
-            long timestamp = file.lastModified();
-            long previousTimestamp = contributionService.getContributionTimestamp(artifactUri);
-            if (timestamp > previousTimestamp) {
-                try {
-                    ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, false);
-                    // undeploy any deployed composites in the reverse order that they were deployed in
-                    List<QName> deployables = contributionService.getDeployedComposites(artifactUri);
-                    ListIterator<QName> iter = deployables.listIterator(deployables.size());
-                    while (iter.hasPrevious()) {
-                        QName deployable = iter.previous();
-                        domain.undeploy(deployable);
-                    }
-                    contributionService.remove(artifactUri);
-                    contributionService.contribute(source);
-                } catch (ContributionException e) {
-                    errorCache.put(name, cached);
-                    monitor.error(e);
-                }
-                monitor.updated(artifactUri.toString());
+    /**
+     * Processes updated resources in the deployment directories.
+     *
+     * @throws DeploymentException if there is an error during processing
+     */
+    private synchronized void processUpdates() throws DeploymentException {
+        List<ContributionSource> sources = new ArrayList<ContributionSource>();
+        List<FileSystemResource> updatedResources = new ArrayList<FileSystemResource>();
+        List<URI> uris = new ArrayList<URI>();
+        for (FileSystemResource resource : cache.values()) {
+            if (resource.getState() != ResourceState.UPDATED) {
+                continue;
             }
-            // TODO undeploy and redeploy
+            try {
+                String name = resource.getName();
+                URI artifactUri = new URI(name);
+                URL location = resource.getLocation();
+                long timestamp = resource.getTimestamp();
+                // undeploy any deployed composites in the reverse order that they were deployed in
+                List<QName> deployables = contributionService.getDeployedComposites(artifactUri);
+                ListIterator<QName> iter = deployables.listIterator(deployables.size());
+                while (iter.hasPrevious()) {
+                    QName deployable = iter.previous();
+                    domain.undeploy(deployable);
+                }
+                ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, false);
+                sources.add(source);
+                updatedResources.add(resource);
+                uris.add(artifactUri);
+            } catch (ContributionException e) {
+                resource.setState(ResourceState.ERROR);
+                monitor.error(e);
+            } catch (URISyntaxException e) {
+                resource.setState(ResourceState.ERROR);
+                monitor.error(e);
+            }
+        }
+        try {
+            contributionService.uninstall(uris);
+            contributionService.remove(uris);
+            List<URI> contributions = contributionService.contribute(sources);
+            domain.include(contributions);
+            for (FileSystemResource resource : updatedResources) {
+                resource.setState(ResourceState.PROCESSED);
+                resource.checkpoint();
+            }
+        } catch (RemoveException e) {
+            throw new DeploymentException(e);
+        } catch (ContributionException e) {
+            // TODO do something better than this
+            monitor.error(e);
         }
     }
 
-    private synchronized void processAdditions(List<File> files, boolean recover) throws IOException {
+    /**
+     * Processes added resources in the deployment directories.
+     *
+     * @param recover true if files are being added in recovery mode
+     */
+    private synchronized void processAdditions(boolean recover) {
         List<ContributionSource> sources = new ArrayList<ContributionSource>();
         List<FileSystemResource> addedResources = new ArrayList<FileSystemResource>();
-        for (File file : files) {
-            String name = file.getName();
-            FileSystemResource cached = cache.remove(name);
-            addedResources.add(cached);
-            URL location = file.toURI().normalize().toURL();
-            long timestamp = file.lastModified();
+        for (FileSystemResource resource : cache.values()) {
+            if (resource.getState() != ResourceState.ADDED) {
+                continue;
+            }
+            String name = resource.getName();
+            URL location = resource.getLocation();
+            long timestamp = resource.getTimestamp();
             try {
                 ContributionSource source = new FileContributionSource(URI.create(name), location, timestamp, false);
                 sources.add(source);
+                addedResources.add(resource);
             } catch (NoClassDefFoundError e) {
-                errorCache.put(name, cached);
+                resource.setState(ResourceState.ERROR);
                 monitor.error(e);
             }
         }
@@ -363,49 +342,48 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 if (!recover) {
                     domain.include(addedUris);
                 }
-                for (URI uri : addedUris) {
-                    String name = uri.toString();
-                    // URI is the file name
-                    processed.put(name, uri);
-                    monitor.processed(name);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.PROCESSED);
+                    resource.checkpoint();
+                    monitor.processed(resource.getName());
                 }
             } catch (ValidationException e) {
                 // print out the validation errors
                 monitor.contributionErrors(e.getMessage());
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
             } catch (AssemblyException e) {
                 // print out the deployment errors
                 monitor.deploymentErrors(e.getMessage());
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
             } catch (ContributionException e) {
                 monitor.error(e);
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
             } catch (DeploymentException e) {
                 monitor.error(e);
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
             } catch (NoClassDefFoundError e) {
                 monitor.error(e);
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
                 // don't re-throw the error since the contribution can be safely ignored
             } catch (Error e) {
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
                 // re-throw the exception as the runtime may be in an unstable state
                 throw e;
             } catch (RuntimeException e) {
-                for (FileSystemResource cached : addedResources) {
-                    errorCache.put(cached.getName(), cached);
+                for (FileSystemResource resource : addedResources) {
+                    resource.setState(ResourceState.ERROR);
                 }
                 // re-throw the exception as the runtime may be in an unstable state
                 throw e;
@@ -413,19 +391,25 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
     }
 
+    /**
+     * process removed files, which results in undeployment.
+     *
+     * @param files the current contents of the deployment directories
+     */
     private synchronized void processRemovals(List<File> files) {
         Map<String, File> index = new HashMap<String, File>(files.size());
         for (File file : files) {
             index.put(file.getName(), file);
         }
 
-        List<String> removed = new ArrayList<String>();
-        for (Map.Entry<String, URI> entry : processed.entrySet()) {
-            String filename = entry.getKey();
-            URI uri = entry.getValue();
-            if (index.get(filename) == null) {
+        for (Iterator<FileSystemResource> iterator = cache.values().iterator(); iterator.hasNext();) {
+            FileSystemResource entry = iterator.next();
+            String name = entry.getName();
+            URI uri = URI.create(name);
+            if (index.get(name) == null) {
                 // artifact was removed
                 try {
+                    iterator.remove();
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
                         // undeploy any deployed composites in the reverse order that they were deployed in
@@ -438,17 +422,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                         contributionService.uninstall(uri);
                         contributionService.remove(uri);
                     }
-                    removed.add(filename);
-                    monitor.removed(filename);
+                    monitor.removed(name);
                 } catch (ContributionException e) {
-                    monitor.removalError(filename, e);
+                    monitor.removalError(name, e);
                 } catch (DeploymentException e) {
-                    monitor.removalError(filename, e);
+                    monitor.removalError(name, e);
                 }
             }
-        }
-        for (String removedName : removed) {
-            processed.remove(removedName);
         }
     }
 

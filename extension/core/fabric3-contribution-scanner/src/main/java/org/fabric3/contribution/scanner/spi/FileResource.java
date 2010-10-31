@@ -37,17 +37,12 @@
 */
 package org.fabric3.contribution.scanner.spi;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
- * Represents a file that is to be contributed to a domain.
+ * A file-based resource.
  *
  * @version $Rev$ $Date$
  */
@@ -62,6 +57,10 @@ public class FileResource extends AbstractResource {
         return file.getName();
     }
 
+    public long getTimestamp() {
+        return file.lastModified();
+    }
+
     public URL getLocation() {
         try {
             return file.toURI().normalize().toURL();
@@ -70,33 +69,4 @@ public class FileResource extends AbstractResource {
         }
     }
 
-    public long getTimestamp() {
-        return file.lastModified();
-    }
-
-    public void reset() throws IOException {
-        checksumValue = checksum();
-    }
-
-    protected byte[] checksum() throws IOException {
-        BufferedInputStream is = null;
-        try {
-            MessageDigest checksum = MessageDigest.getInstance("MD5");
-            is = new BufferedInputStream(new FileInputStream(file));
-            byte[] bytes = new byte[1024];
-            int len;
-
-            while ((len = is.read(bytes)) >= 0) {
-                checksum.update(bytes, 0, len);
-            }
-            return checksum.digest();
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(e);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-
-    }
 }

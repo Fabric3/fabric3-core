@@ -37,38 +37,35 @@
 */
 package org.fabric3.contribution.scanner.spi;
 
-import java.io.IOException;
-
 /**
  * Base file system resource implementation.
  *
  * @version $Rev$ $Date$
  */
 public abstract class AbstractResource implements FileSystemResource {
-    protected byte[] checksumValue;
+    private ResourceState state = ResourceState.DETECTED;
+    private long checkPoint = -1;
 
-    public boolean isChanged() throws IOException {
-        byte[] newValue = checksum();
-        if (checksumValue == null || checksumValue.length != newValue.length) {
-            checksumValue = newValue;
-            return true;
+    public ResourceState getState() {
+        return state;
+    }
+
+    public void setState(ResourceState state) {
+        this.state = state;
+    }
+
+    public boolean isChanged() {
+        long current = getTimestamp();
+        if (checkPoint == -1) {
+            checkPoint = current;
         }
-        for (int i = 0; i < newValue.length; i++) {
-            if (newValue[i] != checksumValue[i]) {
-                checksumValue = newValue;
-                return true;
-            }
-        }
-        return false;
+        boolean val = checkPoint != current;
+        checkPoint = current;
+        return val;
     }
 
-    public byte[] getChecksum() {
-        return checksumValue;
+    public void checkpoint() {
+        checkPoint = getTimestamp();
     }
 
-    public void reset() throws IOException {
-        checksumValue = checksum();
-    }
-
-    protected abstract byte[] checksum() throws IOException;
 }

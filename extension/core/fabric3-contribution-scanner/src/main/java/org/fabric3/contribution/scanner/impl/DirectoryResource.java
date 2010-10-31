@@ -38,11 +38,8 @@
 package org.fabric3.contribution.scanner.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +47,7 @@ import org.fabric3.contribution.scanner.spi.AbstractResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 
 /**
- * Represents a directory that is to be contributed to a domain
+ * A directory resource.
  *
  * @version $Rev$ $Date$
  */
@@ -68,6 +65,17 @@ public class DirectoryResource extends AbstractResource {
         return root.getName();
     }
 
+    public long getTimestamp() {
+        long latest = root.lastModified();
+        for (FileSystemResource resource : resources) {
+            long timestamp = resource.getTimestamp();
+            if (timestamp > latest) {
+                latest = timestamp;
+            }
+        }
+        return latest;
+    }
+
     public URL getLocation() {
         try {
             return root.toURI().normalize().toURL();
@@ -76,31 +84,9 @@ public class DirectoryResource extends AbstractResource {
         }
     }
 
-    public long getTimestamp() {
-        return root.lastModified();
-    }
-
     public void addResource(FileSystemResource resource) {
         resources.add(resource);
     }
 
-    public void reset() throws IOException {
-        for (FileSystemResource resource : resources) {
-            resource.reset();
-        }
-        checksumValue = checksum();
-    }
-
-    protected byte[] checksum() {
-        try {
-            MessageDigest checksum = MessageDigest.getInstance("MD5");
-            for (FileSystemResource resource : resources) {
-                checksum.update(resource.getChecksum());
-            }
-            return checksum.digest();
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError();
-        }
-    }
 
 }

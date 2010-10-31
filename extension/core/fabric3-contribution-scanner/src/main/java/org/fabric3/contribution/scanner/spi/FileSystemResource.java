@@ -37,26 +37,60 @@
 */
 package org.fabric3.contribution.scanner.spi;
 
-import java.io.IOException;
 import java.net.URL;
 
 /**
- * Tracks changes to a file system resource.
+ * A resource on the file system such as a file or directory.
  *
  * @version $Rev$ $Date$
  */
 public interface FileSystemResource {
 
+    /**
+     * Returns the resource name.
+     *
+     * @return the resource name
+     */
     String getName();
 
+    /**
+     * Returns the resource location.
+     *
+     * @return the resource location
+     */
     URL getLocation();
 
-    boolean isChanged() throws IOException;
-
-    byte[] getChecksum();
-
+    /**
+     * Returns the resource timestamp.
+     *
+     * @return the resource timestamp
+     */
     long getTimestamp();
 
-    public void reset() throws IOException;
+    /**
+     * Returns the current state of the resource.
+     *
+     * @return the current state of the resource
+     */
+    ResourceState getState();
+
+    /**
+     * Sets the current state of the resource.
+     *
+     * @param state the resource state
+     */
+    void setState(ResourceState state);
+
+    /**
+     * Sets a check-point for tracking when the resource has changed.
+     */
+    public void checkpoint();
+
+    /**
+     * Returns true if the resource was modified since the last time it was check-pointed.
+     *
+     * @return true if the resource was modified since the last time it was check-pointed
+     */
+    boolean isChanged();
 
 }
