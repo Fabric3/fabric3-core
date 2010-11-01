@@ -43,6 +43,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.contribution.scanner.impl.ContributionTrackerImpl;
+import org.fabric3.contribution.scanner.impl.ContributionTrackerMonitor;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
@@ -51,15 +52,16 @@ import org.fabric3.host.runtime.HostInfo;
 public class ContributionTrackerImplTestCase extends TestCase {
     private HostInfo info;
     private MockXMLFactory factory;
+    private ContributionTrackerMonitor monitor;
 
     public void testWriteRead() throws Exception {
-        ContributionTrackerImpl tracker = new ContributionTrackerImpl(factory, info);
+        ContributionTrackerImpl tracker = new ContributionTrackerImpl(factory, info, monitor);
         tracker.init();
 
         tracker.addResource("resource1");
         tracker.addResource("resource2");
 
-        ContributionTrackerImpl tracker2 = new ContributionTrackerImpl(factory, info);
+        ContributionTrackerImpl tracker2 = new ContributionTrackerImpl(factory, info, monitor);
         tracker2.init();
 
         assertTrue(tracker2.isTracked("resource1"));
@@ -75,6 +77,8 @@ public class ContributionTrackerImplTestCase extends TestCase {
         EasyMock.expect(info.getDataDir()).andReturn(file).atLeastOnce();
         EasyMock.replay(info);
         factory = new MockXMLFactory();
+        monitor = EasyMock.createMock(ContributionTrackerMonitor.class);
+        EasyMock.replay(monitor);
     }
 
     @Override
