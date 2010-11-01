@@ -66,10 +66,12 @@ import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 import org.fabric3.contribution.scanner.spi.ResourceState;
 import org.fabric3.host.contribution.ContributionException;
+import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.RemoveException;
+import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
@@ -230,8 +232,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 }
             } else {
                 if (cached.getState() == ResourceState.ERROR) {
-                    FileSystemResource resource = registry.createResource(file);
-                    if (cached.getTimestamp() == resource.getTimestamp()) {
+                    if (!cached.isChanged()) {
                         // corrupt file from a previous run, continue
                         continue;
                     } else {
@@ -252,26 +253,20 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 }
             }
         }
-        try {
-            if (recover) {
-                processAdditions(true);
-            } else {
-                if (!wait) {
-                    processUpdates();
-                    processAdditions(false);
-                }
+        if (recover) {
+            processAdditions(true);
+        } else {
+            if (!wait) {
+                processUpdates();
+                processAdditions(false);
             }
-        } catch (DeploymentException e) {
-            monitor.error(e);
         }
     }
 
     /**
      * Processes updated resources in the deployment directories.
-     *
-     * @throws DeploymentException if there is an error during processing
      */
-    private synchronized void processUpdates() throws DeploymentException {
+    private synchronized void processUpdates() {
         List<ContributionSource> sources = new ArrayList<ContributionSource>();
         List<FileSystemResource> updatedResources = new ArrayList<FileSystemResource>();
         List<URI> uris = new ArrayList<URI>();
@@ -289,7 +284,12 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 ListIterator<QName> iter = deployables.listIterator(deployables.size());
                 while (iter.hasPrevious()) {
                     QName deployable = iter.previous();
-                    domain.undeploy(deployable);
+                    try {
+                        domain.undeploy(deployable);
+                    } catch (DeploymentException e) {
+                        monitor.error(e);
+                        return;
+                    }
                 }
                 ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, false);
                 sources.add(source);
@@ -311,11 +311,32 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             for (FileSystemResource resource : updatedResources) {
                 resource.setState(ResourceState.PROCESSED);
                 resource.checkpoint();
+                monitor.processed(resource.getName());
             }
-        } catch (RemoveException e) {
-            throw new DeploymentException(e);
         } catch (ContributionException e) {
-            // TODO do something better than this
+            for (FileSystemResource resource : updatedResources) {
+                resource.setState(ResourceState.ERROR);
+            }
+            monitor.error(e);
+        } catch (DeploymentException e) {
+            for (FileSystemResource resource : updatedResources) {
+                resource.setState(ResourceState.ERROR);
+            }
+            // back out installation
+            revertInstallation(uris);
+            monitor.error(e);
+        }
+    }
+
+    private void revertInstallation(List<URI> uris) {
+        try {
+            contributionService.uninstall(uris);
+            contributionService.remove(uris);
+        } catch (UninstallException e) {
+             monitor.error(e);
+        } catch (ContributionNotFoundException e) {
+            monitor.error(e);
+        } catch (RemoveException e) {
             monitor.error(e);
         }
     }
