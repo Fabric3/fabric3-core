@@ -185,7 +185,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         }
         processRemovals(files);
         if (files.isEmpty()) {
-            // there is no extension directory, return without processing
+            // there are no files to process
             return;
         }
         try {
@@ -206,7 +206,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
      * @param recover true if processing is performed during recovery
      */
     private synchronized void processFiles(List<File> files, boolean recover) {
-        boolean wait = false;
         for (File file : files) {
             String name = file.getName();
             FileSystemResource cached = cache.get(name);
@@ -227,28 +226,30 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 } else {
                     // file may have been ignored previously as it was incomplete such as missing a manifest; remove it from the ignored list
                     ignored.remove(file);
-                    wait = true;
                     continue;
                 }
             } else {
                 if (cached.getState() == ResourceState.ERROR) {
-                    if (!cached.isChanged()) {
+                    if (cached.isChanged()) {
+                        // file has changed since the error was reported, set to detected
+                        cached.setState(ResourceState.DETECTED);
+                        cached.checkpoint();
+                    } else {
                         // corrupt file from a previous run, continue
                         continue;
-                    } else {
-                        // file has changed since the error was reported, retry
-                        cached.setState(ResourceState.DETECTED);
                     }
                 } else if (cached.getState() == ResourceState.DETECTED) {
                     if (cached.isChanged()) {
-                        wait = true;
+                        // updates may still be pending, wait until the next pass
                         continue;
                     } else {
                         cached.setState(ResourceState.ADDED);
+                        cached.checkpoint();
                     }
                 } else if (cached.getState() == ResourceState.PROCESSED) {
                     if (cached.isChanged()) {
                         cached.setState(ResourceState.UPDATED);
+                        cached.checkpoint();
                     }
                 }
             }
@@ -256,10 +257,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         if (recover) {
             processAdditions(true);
         } else {
-            if (!wait) {
-                processUpdates();
-                processAdditions(false);
-            }
+            processUpdates();
+            processAdditions(false);
         }
     }
 
@@ -290,6 +289,11 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                         monitor.error(e);
                         return;
                     }
+                }
+                // if the resource has changed, wait until the next pass as updates may still be in progress
+                if (resource.isChanged()) {
+                    resource.checkpoint();
+                    continue;
                 }
                 ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, false);
                 sources.add(source);
@@ -333,7 +337,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             contributionService.uninstall(uris);
             contributionService.remove(uris);
         } catch (UninstallException e) {
-             monitor.error(e);
+            monitor.error(e);
         } catch (ContributionNotFoundException e) {
             monitor.error(e);
         } catch (RemoveException e) {
@@ -351,7 +355,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         List<FileSystemResource> addedResources = new ArrayList<FileSystemResource>();
 
         for (FileSystemResource resource : cache.values()) {
-            if (resource.getState() != ResourceState.ADDED) {
+            if (resource.getState() != ResourceState.ADDED || resource.isChanged()) {
+                resource.checkpoint();
                 continue;
             }
             String name = resource.getName();
