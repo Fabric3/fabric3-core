@@ -95,29 +95,31 @@ import org.fabric3.spi.event.RuntimeStart;
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
     private ContributionService contributionService;
+    private FileSystemResourceFactoryRegistry registry;
     private EventService eventService;
+    private ContributionTracker tracker;
     private ScannerMonitor monitor;
     private Domain domain;
+    private List<File> paths;
+    private long delay = 2000;
 
+    private ScheduledExecutorService executor;
     private Set<File> ignored = new HashSet<File>();
     private Map<String, FileSystemResource> cache = new HashMap<String, FileSystemResource>();
+    List<URI> notSeen = new ArrayList<URI>(); // contributions added when the runtime was offline and hence not previously seen by the scanner
 
-    private FileSystemResourceFactoryRegistry registry;
-    private List<File> paths;
-
-    private long delay = 2000;
-    private ScheduledExecutorService executor;
-
-    public ContributionDirectoryScanner(@Reference FileSystemResourceFactoryRegistry registry,
-                                        @Reference ContributionService contributionService,
+    public ContributionDirectoryScanner(@Reference ContributionService contributionService,
                                         @Reference(name = "assembly") Domain domain,
+                                        @Reference FileSystemResourceFactoryRegistry registry,
                                         @Reference EventService eventService,
+                                        @Reference ContributionTracker tracker,
                                         @Reference HostInfo hostInfo,
                                         @Monitor ScannerMonitor monitor) {
         this.registry = registry;
         this.contributionService = contributionService;
         this.domain = domain;
         this.eventService = eventService;
+        this.tracker = tracker;
         paths = hostInfo.getDeployDirectories();
         this.monitor = monitor;
     }
@@ -131,7 +133,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     @Init
     public void init() {
         eventService.subscribe(ExtensionsInitialized.class, this);
-        // register to be notified when the runtime starts so the scanner thread can be initialized
+        // Register to be notified when the runtime starts to perform the following:
+        //  1. Contributions installed to deployment directories when the runtime is offline are deployed to the domain
+        //  2. The scanner thread is initialized
         eventService.subscribe(RuntimeStart.class, this);
     }
 
@@ -154,6 +158,12 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             }
             processFiles(files, true);
         } else if (event instanceof RuntimeStart) {
+            try {
+                domain.include(notSeen);
+            } catch (DeploymentException e) {
+                monitor.error(e);
+            }
+            notSeen.clear();
             executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleWithFixedDelay(this, 10, delay, TimeUnit.MILLISECONDS);
         }
@@ -318,21 +328,29 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private synchronized void processAdditions(boolean recover) {
         List<ContributionSource> sources = new ArrayList<ContributionSource>();
         List<FileSystemResource> addedResources = new ArrayList<FileSystemResource>();
+
         for (FileSystemResource resource : cache.values()) {
             if (resource.getState() != ResourceState.ADDED) {
                 continue;
             }
             String name = resource.getName();
+
             URL location = resource.getLocation();
             long timestamp = resource.getTimestamp();
-            try {
-                ContributionSource source = new FileContributionSource(URI.create(name), location, timestamp, false);
-                sources.add(source);
-                addedResources.add(resource);
-            } catch (NoClassDefFoundError e) {
-                resource.setState(ResourceState.ERROR);
-                monitor.error(e);
+            URI uri = URI.create(name);
+            ContributionSource source = new FileContributionSource(uri, location, timestamp, false);
+            sources.add(source);
+            addedResources.add(resource);
+
+            boolean seen = tracker.isTracked(name);
+            if (!seen && recover) {
+                // the contribution was not seen previously, schedule it to be deployed when the domain recovers
+                notSeen.add(uri);
             }
+
+            // track the addition
+            tracker.addResource(name);
+
         }
         if (!sources.isEmpty()) {
             try {
@@ -360,20 +378,11 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     resource.setState(ResourceState.ERROR);
                 }
             } catch (ContributionException e) {
-                monitor.error(e);
-                for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
-                }
+                handleError(e, addedResources);
             } catch (DeploymentException e) {
-                monitor.error(e);
-                for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
-                }
+                handleError(e, addedResources);
             } catch (NoClassDefFoundError e) {
-                monitor.error(e);
-                for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
-                }
+                handleError(e, addedResources);
                 // don't re-throw the error since the contribution can be safely ignored
             } catch (Error e) {
                 for (FileSystemResource resource : addedResources) {
@@ -405,10 +414,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         for (Iterator<FileSystemResource> iterator = cache.values().iterator(); iterator.hasNext();) {
             FileSystemResource entry = iterator.next();
             String name = entry.getName();
+
             URI uri = URI.create(name);
             if (index.get(name) == null) {
                 // artifact was removed
                 try {
+                    // track the removal
+                    tracker.removeResource(name);
                     iterator.remove();
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
@@ -438,6 +450,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             if (!file.exists()) {
                 iter.remove();
             }
+        }
+    }
+
+    private void handleError(Throwable e, List<FileSystemResource> addedResources) {
+        monitor.error(e);
+        for (FileSystemResource resource : addedResources) {
+            resource.setState(ResourceState.ERROR);
         }
     }
 

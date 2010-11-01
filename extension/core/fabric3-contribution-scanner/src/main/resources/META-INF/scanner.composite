@@ -22,6 +22,10 @@ Public License. See the accompanying license file for details.
         <reference name="assembly" target="ApplicationDomain"/>
     </component>
 
+    <component name="ContributionTracker">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.ContributionTrackerImpl"/>
+    </component>
+
     <component name="FileSystemResourceFactoryRegistry">
         <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.FileSystemResourceFactoryRegistryImpl"/>
     </component>

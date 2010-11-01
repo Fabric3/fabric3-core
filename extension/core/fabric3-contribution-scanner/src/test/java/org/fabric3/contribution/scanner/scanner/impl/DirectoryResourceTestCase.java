@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution.scanner.scanner.resource;
+package org.fabric3.contribution.scanner.scanner.impl;
 
 import java.io.File;
 
@@ -53,7 +53,7 @@ public class DirectoryResourceTestCase extends TestCase {
     public void testChanges() throws Exception {
         DirectoryResource resource = new DirectoryResource(new File("test"));
         FileSystemResource fileSystemResource = EasyMock.createMock(FileSystemResource.class);
-        long time = System.currentTimeMillis()+ 200000;
+        long time = System.currentTimeMillis() + 200000;
         EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time);
         EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time);
         EasyMock.expect(fileSystemResource.getTimestamp()).andReturn(time + 1000);
