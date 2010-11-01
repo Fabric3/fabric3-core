@@ -50,6 +50,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -172,7 +173,7 @@ public class ContributionServiceImpl implements ContributionService {
 
     public List<QName> getDeployedComposites(URI uri) throws ContributionNotFoundException {
         Contribution contribution = find(uri);
-        List<QName> owners= contribution.getLockOwners();
+        List<QName> owners = contribution.getLockOwners();
         return new ArrayList<QName>(owners);
     }
 
@@ -293,7 +294,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
         return profileContributions;
     }
-    
+
     public void registerProfile(URI profileUri, List<URI> contributionUris) throws DuplicateProfileException {
         if (profileExists(profileUri)) {
             throw new DuplicateProfileException("Profile already installed: " + profileUri);
@@ -405,14 +406,19 @@ public class ContributionServiceImpl implements ContributionService {
         } catch (DependencyException e) {
             throw new InstallException(e);
         }
-        for (Contribution contribution : contributions) {
-            ClassLoader loader = contributionLoader.load(contribution);
-            // continue processing the contributions. As they are ordered, dependencies will resolve correctly
-            processContents(contribution, loader);
-            contribution.setState(ContributionState.INSTALLED);
-            for (ContributionServiceListener listener : listeners) {
-                listener.onInstall(contribution);
+        try {
+            for (Contribution contribution : contributions) {
+                ClassLoader loader = contributionLoader.load(contribution);
+                // continue processing the contributions. As they are ordered, dependencies will resolve correctly
+                processContents(contribution, loader);
+                contribution.setState(ContributionState.INSTALLED);
+                for (ContributionServiceListener listener : listeners) {
+                    listener.onInstall(contribution);
+                }
             }
+        } catch (InstallException e) {
+            revertInstall(contributions);
+            throw e;
         }
         List<URI> uris = new ArrayList<URI>(contributions.size());
         for (Contribution contribution : contributions) {
@@ -424,6 +430,26 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
         return uris;
+    }
+
+    private void revertInstall(List<Contribution> contributions) {
+        ListIterator<Contribution> iterator = contributions.listIterator(contributions.size());
+        while (iterator.hasPrevious()) {
+            Contribution contribution = iterator.previous();
+            try {
+                if (ContributionState.INSTALLED == contribution.getState()) {
+                    uninstall(contribution);
+                }
+                contributionLoader.unload(contribution);
+                remove(contribution.getUri());
+            } catch (UninstallException ex) {
+                monitor.error("Error reverting installation: " + contribution.getUri(), ex);
+            } catch (ContributionNotFoundException ex) {
+                monitor.error("Error reverting installation: " + contribution.getUri(), ex);
+            } catch (RemoveException ex) {
+                monitor.error("Error reverting installation: " + contribution.getUri(), ex);
+            }
+        }
     }
 
     private void uninstall(Contribution contribution) throws UninstallException {
