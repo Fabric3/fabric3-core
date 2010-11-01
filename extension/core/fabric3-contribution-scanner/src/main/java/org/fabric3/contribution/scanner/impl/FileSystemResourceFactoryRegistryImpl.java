@@ -61,6 +61,7 @@ public class FileSystemResourceFactoryRegistryImpl implements FileSystemResource
         for (FileSystemResourceFactory factory : factories) {
             FileSystemResource resource = factory.createResource(file);
             if (resource != null) {
+                resource.checkpoint();
                 return resource;
             }
         }
