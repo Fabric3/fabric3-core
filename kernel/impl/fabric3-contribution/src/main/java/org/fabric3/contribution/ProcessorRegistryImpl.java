@@ -122,7 +122,7 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
             }
         }
         String source = contribution.getUri().toString();
-        throw new UnsupportedContentTypeException("Processor not found for contribution " + source + " not supported", source);
+        throw new UnsupportedContentTypeException("Processor not found for contribution " + source);
     }
 
 }

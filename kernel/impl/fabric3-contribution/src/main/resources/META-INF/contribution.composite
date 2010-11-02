@@ -71,6 +71,10 @@
         <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlContributionProcessor"/>
     </component>
 
+    <component name="SymLinkContributionProcessor">
+        <f3-impl:implementation.system class="org.fabric3.contribution.processor.SymLinkContributionProcessor"/>
+    </component>
+
     <component name="XmlIndexerRegistry">
         <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlIndexerRegistryImpl"/>
     </component>

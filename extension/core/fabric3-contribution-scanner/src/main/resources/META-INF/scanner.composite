@@ -38,6 +38,10 @@ Public License. See the accompanying license file for details.
         <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.XmlResourceFactory"/>
     </component>
 
+    <component name="SymLinkResourceFactory">
+        <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.SymLinkResourceFactory"/>
+    </component>
+
     <component name="ExplodedJarResourceFactory">
         <f3-impl:implementation.system class="org.fabric3.contribution.scanner.impl.ExplodedJarResourceFactory"/>
     </component>

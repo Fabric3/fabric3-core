@@ -111,7 +111,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
             }
         }
         String source = contribution.getUri().toString();
-        throw new UnsupportedContentTypeException("Contribution type not supported: " + source, source);
+        throw new UnsupportedContentTypeException("Contribution type not supported: " + source);
     }
 
 }

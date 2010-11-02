@@ -35,26 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution;
+package org.fabric3.contribution.scanner.impl;
 
-import org.fabric3.host.contribution.InstallException;
+import java.io.File;
+
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.contribution.scanner.spi.FileResource;
+import org.fabric3.contribution.scanner.spi.FileSystemResource;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
- * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain. The Content-Type value supplied will be returned as the
- * message text for this exception.
+ * Factory for symbolic link contributions (.contribution files).
  *
  * @version $Rev$ $Date$
  */
-public class UnsupportedContentTypeException extends InstallException {
-    private static final long serialVersionUID = -1831797280021355672L;
+@EagerInit
+public class SymLinkResourceFactory implements FileSystemResourceFactory {
 
-    /**
-     * Constructor specifying the Content-Type value that is not supported and an identifier to use with this exception (typically the resource being
-     * processed).
-     *
-     * @param message    the error message
-     */
-    public UnsupportedContentTypeException(String message) {
-        super(message);
+    public SymLinkResourceFactory(@Reference FileSystemResourceFactoryRegistry registry) {
+        registry.register(this);
+    }
+
+    public FileSystemResource createResource(File file) {
+        if (!file.getName().toLowerCase().endsWith(".contribution")) {
+            return null;
+        }
+        return new FileResource(file);
     }
 }

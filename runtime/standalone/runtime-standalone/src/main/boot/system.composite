@@ -58,4 +58,8 @@
         <f3-impl:implementation.system class="org.fabric3.contribution.archive.SyntheticDirectoryClasspathProcessor"/>
     </component>
 
+    <component name="SymLinkClasspathProcessor">
+        <f3-impl:implementation.system class="org.fabric3.contribution.processor.SymLinkClasspathProcessor"/>
+    </component>
+    
 </composite>

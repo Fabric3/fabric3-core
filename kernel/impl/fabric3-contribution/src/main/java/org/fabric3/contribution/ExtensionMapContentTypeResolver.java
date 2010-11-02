@@ -54,7 +54,6 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
  * @version $Revision$ $Date$
  */
 public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
-    private static final String UNKNOWN_CONTENT = "content/unknown";
 
     // file extension to content type map
     private Map<String, String> extensionMap = new HashMap<String, String>();
@@ -68,6 +67,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         extensionMap.put("jar","application/zip");
         extensionMap.put("definitions","text/vnd.fabric3.definitions+xml");
         extensionMap.put("wsdl","text/wsdl+xml");
+        extensionMap.put("contribution","text/vnd.fabric3.contribution");
     }
 
     public String getContentType(URL contentUrl) throws ContentTypeResolutionException {
@@ -86,7 +86,7 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
                 contentType = connection.getContentType();
             }
 
-            if (contentType == null || UNKNOWN_CONTENT.equals(contentType) || "application/octet-stream".equals(contentType)) {
+            if (contentType == null ||  "application/octet-stream".equals(contentType)) {
                 return null;
             }
 
