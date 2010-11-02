@@ -41,7 +41,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.stream.Source;
@@ -64,6 +66,7 @@ public class Contribution implements Serializable {
     private boolean persistent;
     private ContributionManifest manifest = new ContributionManifest();
     private List<Resource> resources = new ArrayList<Resource>();
+    private Map<Object, Object> metadata = new HashMap<Object, Object>();
     private List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
     private List<URI> resolvedExtensionProviders = new ArrayList<URI>();
 
@@ -274,6 +277,37 @@ public class Contribution implements Serializable {
     public List<URI> getResolvedExtensionProviders() {
         return resolvedExtensionProviders;
     }
+
+    /**
+     * Adds metadata to the context.
+     *
+     * @param key   the metadata key
+     * @param value the metadata value
+     */
+    public void addMetaData(Object key, Object value) {
+        metadata.put(key, value);
+    }
+
+    /**
+     * Removes metadata to the context.
+     *
+     * @param key the metadata key
+     */
+    public void removeMetaData(Object key) {
+        metadata.remove(key);
+    }
+
+    /**
+     * Returns metadata stored metadata.
+     *
+     * @param type the expected metadata type
+     * @param key  the metadata key
+     * @return the metadata value or null if not found
+     */
+    public <T> T getMetaData(Class<T> type, Object key) {
+        return type.cast(metadata.get(key));
+    }
+
 
     /**
      * Acquires a lock for the contribution. If a contribution is locked, it cannot be uninstalled. Locks may be acquired by multiple owners, for
