@@ -71,6 +71,15 @@ public class Resource {
     }
 
     /**
+     * Overrides the contribution this resource is contained in.
+     *
+     * @param contribution the containing contribution
+     */
+    public void setContribution(Contribution contribution) {
+        this.contribution = contribution;
+    }
+
+    /**
      * Returns the resource content type
      *
      * @return the resource content type
