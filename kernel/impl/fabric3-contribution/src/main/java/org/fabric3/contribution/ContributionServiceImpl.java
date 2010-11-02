@@ -607,9 +607,6 @@ public class ContributionServiceImpl implements ContributionService {
         if (type == null) {
             try {
                 type = contentTypeResolver.getContentType(locationUrl);
-                if (type == null) {
-                    throw new StoreException("Unknown contribution type: " + contributionUri);
-                }
             } catch (ContentTypeResolutionException e) {
                 throw new StoreException(e);
             }

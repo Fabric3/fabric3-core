@@ -40,8 +40,6 @@ package org.fabric3.runtime.webapp.contribution;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.servlet.ServletContext;
 
@@ -170,6 +168,9 @@ public class WarContributionProcessor implements ContributionProcessor {
         for (String path : paths) {
             URL entryUrl = context.getResource(path);
             String contentType = contentTypeResolver.getContentType(entryUrl);
+            if (contentType == null) {
+                continue;
+            }
             action.process(contribution, contentType, entryUrl);
         }
     }
