@@ -42,7 +42,7 @@ package org.fabric3.contribution.scanner.spi;
  *
  * @version $Rev$ $Date$
  */
-public enum ResourceState {
+public enum FileSystemResourceState {
 
     DETECTED,
     ADDED,

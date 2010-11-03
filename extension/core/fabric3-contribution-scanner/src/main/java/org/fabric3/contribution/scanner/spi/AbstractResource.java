@@ -43,14 +43,14 @@ package org.fabric3.contribution.scanner.spi;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractResource implements FileSystemResource {
-    private ResourceState state = ResourceState.DETECTED;
+    private FileSystemResourceState state = FileSystemResourceState.DETECTED;
     private long checkPoint = -1;
 
-    public ResourceState getState() {
+    public FileSystemResourceState getState() {
         return state;
     }
 
-    public void setState(ResourceState state) {
+    public void setState(FileSystemResourceState state) {
         this.state = state;
     }
 

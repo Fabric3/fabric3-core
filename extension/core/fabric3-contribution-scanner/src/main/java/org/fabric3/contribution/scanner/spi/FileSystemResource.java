@@ -72,14 +72,14 @@ public interface FileSystemResource {
      *
      * @return the current state of the resource
      */
-    ResourceState getState();
+    FileSystemResourceState getState();
 
     /**
      * Sets the current state of the resource.
      *
      * @param state the resource state
      */
-    void setState(ResourceState state);
+    void setState(FileSystemResourceState state);
 
     /**
      * Sets a check-point for tracking when the resource has changed.

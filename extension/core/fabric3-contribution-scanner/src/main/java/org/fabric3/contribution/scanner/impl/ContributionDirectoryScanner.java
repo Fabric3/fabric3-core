@@ -64,7 +64,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
-import org.fabric3.contribution.scanner.spi.ResourceState;
+import org.fabric3.contribution.scanner.spi.FileSystemResourceState;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
@@ -222,33 +222,33 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 cache.put(name, cached);
                 if (recover) {
                     // recover, do not wait to install
-                    cached.setState(ResourceState.ADDED);
+                    cached.setState(FileSystemResourceState.ADDED);
                 } else {
                     // file may have been ignored previously as it was incomplete such as missing a manifest; remove it from the ignored list
                     ignored.remove(file);
                     continue;
                 }
             } else {
-                if (cached.getState() == ResourceState.ERROR) {
+                if (cached.getState() == FileSystemResourceState.ERROR) {
                     if (cached.isChanged()) {
                         // file has changed since the error was reported, set to detected
-                        cached.setState(ResourceState.DETECTED);
+                        cached.setState(FileSystemResourceState.DETECTED);
                         cached.checkpoint();
                     } else {
                         // corrupt file from a previous run, continue
                         continue;
                     }
-                } else if (cached.getState() == ResourceState.DETECTED) {
+                } else if (cached.getState() == FileSystemResourceState.DETECTED) {
                     if (cached.isChanged()) {
                         // updates may still be pending, wait until the next pass
                         continue;
                     } else {
-                        cached.setState(ResourceState.ADDED);
+                        cached.setState(FileSystemResourceState.ADDED);
                         cached.checkpoint();
                     }
-                } else if (cached.getState() == ResourceState.PROCESSED) {
+                } else if (cached.getState() == FileSystemResourceState.PROCESSED) {
                     if (cached.isChanged()) {
-                        cached.setState(ResourceState.UPDATED);
+                        cached.setState(FileSystemResourceState.UPDATED);
                         cached.checkpoint();
                     }
                 }
@@ -270,7 +270,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         List<FileSystemResource> updatedResources = new ArrayList<FileSystemResource>();
         List<URI> uris = new ArrayList<URI>();
         for (FileSystemResource resource : cache.values()) {
-            if (resource.getState() != ResourceState.UPDATED) {
+            if (resource.getState() != FileSystemResourceState.UPDATED) {
                 continue;
             }
             try {
@@ -300,10 +300,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 updatedResources.add(resource);
                 uris.add(artifactUri);
             } catch (ContributionException e) {
-                resource.setState(ResourceState.ERROR);
+                resource.setState(FileSystemResourceState.ERROR);
                 monitor.error(e);
             } catch (URISyntaxException e) {
-                resource.setState(ResourceState.ERROR);
+                resource.setState(FileSystemResourceState.ERROR);
                 monitor.error(e);
             }
         }
@@ -313,18 +313,18 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             List<URI> contributions = contributionService.contribute(sources);
             domain.include(contributions);
             for (FileSystemResource resource : updatedResources) {
-                resource.setState(ResourceState.PROCESSED);
+                resource.setState(FileSystemResourceState.PROCESSED);
                 resource.checkpoint();
                 monitor.processed(resource.getName());
             }
         } catch (ContributionException e) {
             for (FileSystemResource resource : updatedResources) {
-                resource.setState(ResourceState.ERROR);
+                resource.setState(FileSystemResourceState.ERROR);
             }
             monitor.error(e);
         } catch (DeploymentException e) {
             for (FileSystemResource resource : updatedResources) {
-                resource.setState(ResourceState.ERROR);
+                resource.setState(FileSystemResourceState.ERROR);
             }
             // back out installation
             revertInstallation(uris);
@@ -355,7 +355,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         List<FileSystemResource> addedResources = new ArrayList<FileSystemResource>();
 
         for (FileSystemResource resource : cache.values()) {
-            if (resource.getState() != ResourceState.ADDED || resource.isChanged()) {
+            if (resource.getState() != FileSystemResourceState.ADDED || resource.isChanged()) {
                 resource.checkpoint();
                 continue;
             }
@@ -387,7 +387,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     domain.include(addedUris);
                 }
                 for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.PROCESSED);
+                    resource.setState(FileSystemResourceState.PROCESSED);
                     resource.checkpoint();
                     monitor.processed(resource.getName());
                 }
@@ -395,13 +395,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 // print out the validation errors
                 monitor.contributionErrors(e.getMessage());
                 for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
+                    resource.setState(FileSystemResourceState.ERROR);
                 }
             } catch (AssemblyException e) {
                 // print out the deployment errors
                 monitor.deploymentErrors(e.getMessage());
                 for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
+                    resource.setState(FileSystemResourceState.ERROR);
                 }
             } catch (ContributionException e) {
                 handleError(e, addedResources);
@@ -412,13 +412,13 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 // don't re-throw the error since the contribution can be safely ignored
             } catch (Error e) {
                 for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
+                    resource.setState(FileSystemResourceState.ERROR);
                 }
                 // re-throw the exception as the runtime may be in an unstable state
                 throw e;
             } catch (RuntimeException e) {
                 for (FileSystemResource resource : addedResources) {
-                    resource.setState(ResourceState.ERROR);
+                    resource.setState(FileSystemResourceState.ERROR);
                 }
                 // re-throw the exception as the runtime may be in an unstable state
                 throw e;
@@ -482,7 +482,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private void handleError(Throwable e, List<FileSystemResource> addedResources) {
         monitor.error(e);
         for (FileSystemResource resource : addedResources) {
-            resource.setState(ResourceState.ERROR);
+            resource.setState(FileSystemResourceState.ERROR);
         }
     }
 
