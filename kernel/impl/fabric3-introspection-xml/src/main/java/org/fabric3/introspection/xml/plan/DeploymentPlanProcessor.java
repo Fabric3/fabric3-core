@@ -53,6 +53,7 @@ import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
 import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
@@ -169,7 +170,7 @@ public class DeploymentPlanProcessor implements XmlResourceElementLoader {
             // this is a programming error if this happens as the indexer did not set the resource element properly
             throw new AssertionError("Deployment plan not found: " + name);
         }
-        resource.setProcessed(true);
+        resource.setState(ResourceState.PROCESSED);
     }
 
 

@@ -59,6 +59,7 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.archive.Action;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -101,7 +102,7 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         try {
             Thread.currentThread().setContextClassLoader(loader);
             for (Resource resource : contribution.getResources()) {
-                if (!resource.isProcessed()) {
+                if (ResourceState.UNPROCESSED == resource.getState()) {
                     registry.processResource(resource, context);
                 }
             }

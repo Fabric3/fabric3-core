@@ -75,6 +75,7 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceProcessor;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.PortTypeSymbol;
@@ -186,7 +187,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                 }
             }
         }
-        resource.setProcessed(true);
+        resource.setState(ResourceState.PROCESSED);
     }
 
     /**

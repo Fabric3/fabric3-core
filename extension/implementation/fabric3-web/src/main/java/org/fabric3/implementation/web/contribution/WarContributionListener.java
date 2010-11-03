@@ -55,6 +55,7 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
@@ -149,7 +150,7 @@ public class WarContributionListener implements ContributionServiceListener {
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
         Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         resource.addResourceElement(element);
-        resource.setProcessed(true);
+        resource.setState(ResourceState.PROCESSED);
         return resource;
     }
 

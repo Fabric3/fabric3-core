@@ -58,6 +58,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -140,7 +141,7 @@ public class BootstrapCompositeFactory {
         QNameSymbol symbol = new QNameSymbol(compositeName);
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
         resource.addResourceElement(element);
-        resource.setProcessed(true);
+        resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);
     }
 

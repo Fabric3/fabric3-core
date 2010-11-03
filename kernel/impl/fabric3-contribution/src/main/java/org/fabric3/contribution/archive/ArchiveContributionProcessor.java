@@ -47,6 +47,7 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.archive.Action;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -95,7 +96,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         try {
             Thread.currentThread().setContextClassLoader(loader);
             for (Resource resource : contribution.getResources()) {
-                if (!resource.isProcessed()) {
+                if (ResourceState.UNPROCESSED == resource.getState()) {
                     registry.processResource(resource, context);
                 }
             }

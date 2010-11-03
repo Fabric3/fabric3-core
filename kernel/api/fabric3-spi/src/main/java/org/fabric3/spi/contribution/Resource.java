@@ -53,7 +53,7 @@ public class Resource {
     private String contentType;
     private Contribution contribution;
 
-    private boolean processed;
+    private ResourceState state = ResourceState.UNPROCESSED;
 
     public Resource(Contribution contribution, Source source, String contentType) {
         this.contribution = contribution;
@@ -117,20 +117,20 @@ public class Resource {
     }
 
     /**
-     * Returns true if the resource has been fully processed.
+     * Returns resource state.
      *
-     * @return true if the resource has been fully processed
+     * @return the resource state
      */
-    public boolean isProcessed() {
-        return processed;
+    public ResourceState getState() {
+        return state;
     }
 
     /**
-     * Sets if the resource has been processed.
+     * Sets the resource state.
      *
-     * @param processed if the resource has been processed
+     * @param state the resource state
      */
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
+    public void setState(ResourceState state) {
+        this.state = state;
     }
 }

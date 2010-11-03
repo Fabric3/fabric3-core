@@ -53,6 +53,7 @@ import org.fabric3.host.stream.Source;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceProcessor;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -133,11 +134,11 @@ public class XmlResourceProcessor implements ResourceProcessor {
             stream = resource.getSource().openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             if (skipToFirstTag(reader)) {
-                resource.setProcessed(true);
+                resource.setState(ResourceState.PROCESSED);
                 return;
             }
             elementLoaderRegistry.load(reader, resource, context);
-            resource.setProcessed(true);
+            resource.setState(ResourceState.PROCESSED);
         } catch (XMLStreamException e) {
             throw new InstallException(e);
         } catch (IOException e) {

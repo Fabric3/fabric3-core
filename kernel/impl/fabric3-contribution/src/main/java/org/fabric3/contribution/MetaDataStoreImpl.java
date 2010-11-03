@@ -62,6 +62,7 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.UnresolvedImportException;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -138,9 +139,9 @@ public class MetaDataStoreImpl implements MetaDataStore {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                     if (element.getSymbol().equals(symbol)) {
-                        if (!resource.isProcessed()) {
+                        if (ResourceState.PROCESSED != resource.getState()) {
                             // this is a programming error as resolve(Symbol) should only be called after contribution resources have been processed
-                            throw new AssertionError("Attempt to resolve a resource before it is processed");
+                            throw new AssertionError("Attempt to resolve a resource before it is processed or is in error");
                         }
                         return (ResourceElement<S, V>) element;
                     }
@@ -361,10 +362,10 @@ public class MetaDataStoreImpl implements MetaDataStore {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
-                    if (!resource.isProcessed() && context == null) {
+                    if (ResourceState.PROCESSED != resource.getState() && context == null) {
                         String identifier = resource.getSource().getSystemId();
                         throw new AssertionError("Resource not resolved: " + identifier);
-                    } else if (!resource.isProcessed() && context != null) {
+                    } else if (ResourceState.UNPROCESSED == resource.getState() && context != null) {
                         try {
                             processorRegistry.processResource(resource, context);
                         } catch (ContributionException e) {
