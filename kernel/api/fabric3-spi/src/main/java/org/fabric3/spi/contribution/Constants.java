@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host;
+package org.fabric3.spi.contribution;
 
 /**
  * Definitions of constants.
@@ -51,5 +51,7 @@ package org.fabric3.host;
 public interface Constants {
 
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
+
+    String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded+xml";
 
 }

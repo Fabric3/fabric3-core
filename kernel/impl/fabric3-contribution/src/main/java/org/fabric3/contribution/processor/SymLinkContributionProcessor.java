@@ -51,6 +51,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -117,7 +118,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         URI contributionUri = URI.create(file.getName());
         Source source = new UrlSource(url);
         long timestamp = System.currentTimeMillis();
-        return new Contribution(contributionUri, source, url, timestamp, null, false);
+        return new Contribution(contributionUri, source, url, timestamp, Constants.EXPLODED_CONTENT_TYPE, false);
     }
 
 }

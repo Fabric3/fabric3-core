@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.host.Constants;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.stream.Source;

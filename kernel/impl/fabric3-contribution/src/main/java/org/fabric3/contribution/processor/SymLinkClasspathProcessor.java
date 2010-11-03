@@ -86,6 +86,18 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
         List<URL> classpath = new ArrayList<URL>();
         File root = deReferenceFile(url);
         classpath.add(root.toURI().toURL());
+        File metaInfLib = new File(root, "META-INF" + File.separator + "lib");
+        if (metaInfLib.exists()) {
+            classpath.add(metaInfLib.toURI().toURL());
+        }
+        File webInfLib = new File(root, "WEB-INF" + File.separator + "lib");
+        if (webInfLib.exists()) {
+            classpath.add(webInfLib.toURI().toURL());
+        }
+        File webInfClasses = new File(root, "WEB-INF" + File.separator + "classes");
+        if (webInfClasses.exists()) {
+            classpath.add(webInfClasses.toURI().toURL());
+        }
         return classpath;
     }
 

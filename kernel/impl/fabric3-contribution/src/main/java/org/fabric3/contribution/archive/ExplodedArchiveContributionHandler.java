@@ -61,6 +61,8 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
 
+import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
+
 /**
  * Handles exploded archives on a filesystem.
  *
@@ -81,14 +83,21 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             return false;
         }
         File file = new File(location.getFile());
-        return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || file.getName().endsWith("classes"));
+        String contentType = contribution.getContentType();
+        return file.isDirectory()
+                && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
         ContributionManifest manifest;
         try {
-            URL sourceUrl = contribution.getLocation();
-            URL manifestUrl = new URL(sourceUrl.toString() + "/META-INF/sca-contribution.xml");
+            String sourceUrl = contribution.getLocation().toString();
+
+            URL manifestUrl = new URL(sourceUrl + "/META-INF/sca-contribution.xml");
+            File file = new File(manifestUrl.toExternalForm());
+            if (!file.exists()){
+                manifestUrl = new URL(sourceUrl + "/WEB-INF/sca-contribution.xml");
+            }
             ClassLoader cl = getClass().getClassLoader();
             URI uri = contribution.getUri();
             IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
