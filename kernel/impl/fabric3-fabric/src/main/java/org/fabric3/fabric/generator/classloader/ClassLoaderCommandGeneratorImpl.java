@@ -158,8 +158,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      * @return the PhysicalClassLoaderDefinitions grouped by zone
      * @throws GenerationException if a generation error occurs
      */
-    private Map<String, List<PhysicalClassLoaderDefinition>> createContributionDefinitions(Map<String, List<Contribution>> contributionsPerZone)
-            throws GenerationException {
+    private Map<String, List<PhysicalClassLoaderDefinition>> createContributionDefinitions(Map<String, List<Contribution>> contributionsPerZone) {
         Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = new HashMap<String, List<PhysicalClassLoaderDefinition>>();
         for (Map.Entry<String, List<Contribution>> entry : contributionsPerZone.entrySet()) {
             String zone = entry.getKey();
