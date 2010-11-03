@@ -52,6 +52,6 @@ public interface Constants {
 
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
 
-    String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded+xml";
+    String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded";
 
 }
