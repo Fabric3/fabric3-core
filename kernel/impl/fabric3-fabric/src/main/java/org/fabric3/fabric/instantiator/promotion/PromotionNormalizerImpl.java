@@ -74,7 +74,7 @@ import org.fabric3.spi.util.UriHelper;
  * <p/>
  * <li>The list is iterated in order, starting with the service nearest the domain level.
  * <p/>
- * <li>For each entry, bindings are added or replaced (according to the overide setting for the service), policies added, a service contract set if
+ * <li>For each entry, bindings are added or replaced (according to the override setting for the service), policies added, a service contract set if
  * not defined, and the leaf component set as the leaf parent. <li>
  * <p/>
  * </ul> The reference promotion algorithm works as follows: <li> A reverse-ordered list of references is constructed by walking the reference
@@ -82,7 +82,7 @@ import org.fabric3.spi.util.UriHelper;
  * <p/>
  * <li>The list is iterated in order, starting with the reference nearest the domain level.
  * <p/>
- * <li>For each entry, bindings are added or replaced (according to the overide setting for the reference), policies added and a service contract set
+ * <li>For each entry, bindings are added or replaced (according to the override setting for the reference), policies added and a service contract set
  * if not defined
  * <p/>
  * <li>The list is iterated a second time and wires for references are examined with their targets pushed down to the next (child) level in the
