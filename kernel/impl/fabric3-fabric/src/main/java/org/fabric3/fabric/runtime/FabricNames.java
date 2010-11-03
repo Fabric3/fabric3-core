@@ -50,7 +50,4 @@ public interface FabricNames {
 
     URI EVENT_SERVICE_URI = URI.create(Names.RUNTIME_NAME + "/EventService");
 
-    URI METADATA_STORE_URI = URI.create(Names.RUNTIME_NAME + "/MetaDataStore");
-
-
 }
