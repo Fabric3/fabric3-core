@@ -51,10 +51,10 @@ import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceProcessor;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -108,6 +108,10 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
     }
 
     public void processResource(Resource resource, IntrospectionContext context) throws InstallException {
+        if (ResourceState.ERROR == resource.getState()) {
+            // skip processing as the resource is in the error state
+            return;
+        }
         ResourceProcessor processor = resourceProcessorCache.get(resource.getContentType());
         if (processor == null) {
             return;

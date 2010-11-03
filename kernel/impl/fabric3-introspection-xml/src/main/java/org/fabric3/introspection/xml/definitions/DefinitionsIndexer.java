@@ -53,6 +53,7 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;

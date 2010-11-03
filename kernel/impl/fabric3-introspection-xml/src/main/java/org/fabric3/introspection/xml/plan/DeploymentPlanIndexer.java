@@ -44,9 +44,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.contribution.InstallException;
-import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
-import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
@@ -55,6 +52,9 @@ import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.plan.DeploymentPlan;
+
+import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
+import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;
 
 /**
  * Indexes a deployment plan.
@@ -80,7 +80,7 @@ public class DeploymentPlanIndexer implements XmlIndexer {
         return PLAN;
     }
 
-    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) throws InstallException {
+    public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) {
         QName qname = reader.getName();
         assert PLAN.equals(qname);
         String name = reader.getAttributeValue(null, "name");
