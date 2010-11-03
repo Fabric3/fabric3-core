@@ -61,7 +61,7 @@ public interface ComponentManager {
      * Registers a component which will be managed by the runtime
      *
      * @param component the component
-     * @throws RegistrationException when an error ocurrs registering the component
+     * @throws RegistrationException when an error occurs registering the component
      */
     void register(Component component) throws RegistrationException;
 
