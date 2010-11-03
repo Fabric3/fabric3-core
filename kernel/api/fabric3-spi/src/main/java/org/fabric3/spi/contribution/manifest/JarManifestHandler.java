@@ -43,10 +43,19 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
+ * Processes specific headers in a MANIFEST.MF file.
+ *
  * @version $Rev$ $Date$
  */
 public interface JarManifestHandler {
 
+    /**
+     * Process headers.
+     *
+     * @param contributionManifest the contribution manifest
+     * @param jarManifest          the jar manifest
+     * @param context              the introspection context
+     */
     void processManifest(ContributionManifest contributionManifest, Manifest jarManifest, IntrospectionContext context);
 
 }

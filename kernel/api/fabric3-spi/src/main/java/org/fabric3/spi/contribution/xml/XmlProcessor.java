@@ -45,21 +45,21 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Processes an XML-based contribution
+ * Processes an XML-based contribution.
  *
  * @version $Rev$ $Date$
  */
 public interface XmlProcessor {
 
     /**
-     * Returns the QName for the type of XML contribution handled by this processor
+     * Returns the QName for the type of XML contribution handled by this processor.
      *
      * @return the QName
      */
     QName getType();
 
     /**
-     * Processes the XML contribution
+     * Processes the XML contribution.
      *
      * @param contribution the contribution metadata to update
      * @param reader       the reader positioned at the first element of the document

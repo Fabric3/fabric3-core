@@ -42,7 +42,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * A registry of classpath processors
+ * A registry of classpath processors.
  *
  * @version $Rev$ $Date$
  */
