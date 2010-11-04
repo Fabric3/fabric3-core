@@ -39,6 +39,7 @@ package org.fabric3.spi.contribution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +63,7 @@ public class ContributionManifest implements Serializable {
     private List<Deployable> deployables = new ArrayList<Deployable>();
     private List<String> extensionPoints = new ArrayList<String>();
     private List<String> extend = new ArrayList<String>();
+    private List<String> scanExcludes = Collections.emptyList();
 
     /**
      * Returns the contribution description.
@@ -226,4 +228,21 @@ public class ContributionManifest implements Serializable {
         deployables.add(deployable);
     }
 
+    /**
+     * Returns file and directory patterns to exclude when the contribution is scanned.
+     *
+     * @return file and directory patterns to exclude when the contribution is scanned
+     */
+    public List<String> getScanExcludes() {
+        return scanExcludes;
+    }
+
+    /**
+     * Sets file and directory patterns to exclude when the contribution is scanned.
+     *
+     * @param excludes file and directory patterns to exclude when the contribution is scanned
+     */
+    public void setScanExcludes(List<String> excludes) {
+        this.scanExcludes = excludes;
+    }
 }

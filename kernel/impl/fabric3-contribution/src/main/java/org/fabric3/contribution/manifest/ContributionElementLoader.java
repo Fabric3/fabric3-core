@@ -39,6 +39,7 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -50,7 +51,6 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -60,12 +60,14 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.fabric3.host.Namespaces.CORE;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
@@ -77,6 +79,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ContributionElementLoader implements TypeLoader<ContributionManifest> {
     private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA_NS, "deployable");
+    private static final QName SCAN = new QName(CORE, "scan");
 
     private final LoaderRegistry registry;
 
@@ -102,10 +105,10 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             throw new AssertionError("Loader not positioned on the <contribution> element: " + element);
         }
         validateContributionAttributes(reader, context);
-        boolean extension = Boolean.valueOf(reader.getAttributeValue(Namespaces.CORE, "extension"));
+        boolean extension = Boolean.valueOf(reader.getAttributeValue(CORE, "extension"));
         manifest.setExtension(extension);
 
-        String description = reader.getAttributeValue(Namespaces.CORE, "description");
+        String description = reader.getAttributeValue(CORE, "description");
         manifest.setDescription(description);
 
         parseCapabilities(reader, manifest);
@@ -143,6 +146,17 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
                     Deployable deployable = new Deployable(qName, runtimeModes);
                     manifest.addDeployable(deployable);
+                } else if (SCAN.equals(element)) {
+                    validateScanAttributes(reader, context);
+                    String excludeAttr = reader.getAttributeValue(null, "exclude");
+                    if (excludeAttr == null) {
+                        MissingAttribute error = new MissingAttribute("The exclude attribure must be set on the scan element", reader);
+                        context.addError(error);
+                        continue;
+                    }
+                    String[] excludes = excludeAttr.split(",");
+                    manifest.setScanExcludes(Arrays.asList(excludes));
+
                 } else {
                     Object o;
                     try {
@@ -180,7 +194,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
 
     private void parseCapabilities(XMLStreamReader reader, ContributionManifest manifest) {
 
-        String requiresAttr = reader.getAttributeValue(Namespaces.CORE, "required-capabilities");
+        String requiresAttr = reader.getAttributeValue(CORE, "required-capabilities");
         if (requiresAttr != null) {
             String[] requires = requiresAttr.trim().split(" ");
             for (String require : requires) {
@@ -188,7 +202,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             }
         }
 
-        String providesAttr = reader.getAttributeValue(Namespaces.CORE, "capabilities");
+        String providesAttr = reader.getAttributeValue(CORE, "capabilities");
         if (providesAttr != null) {
             String[] provides = providesAttr.trim().split(" ");
             for (String provide : provides) {
@@ -236,6 +250,15 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"composite".equals(name) && !"modes".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
+    }
+
+    private void validateScanAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"exclude".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
