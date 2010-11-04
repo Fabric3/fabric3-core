@@ -150,7 +150,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     validateScanAttributes(reader, context);
                     String excludeAttr = reader.getAttributeValue(null, "exclude");
                     if (excludeAttr == null) {
-                        MissingAttribute error = new MissingAttribute("The exclude attribure must be set on the scan element", reader);
+                        MissingAttribute error = new MissingAttribute("The exclude attribute must be set on the scan element", reader);
                         context.addError(error);
                         continue;
                     }
