@@ -46,6 +46,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.Manifest;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -89,7 +90,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".jar") || sourceUrl.endsWith(".zip");
     }
 
-    public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
         URL sourceUrl = contribution.getLocation();
         try {
             URL manifestUrl = new URL("jar:" + sourceUrl.toExternalForm() + "!/META-INF/sca-contribution.xml");
@@ -145,6 +146,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
 
     public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
         URL location = contribution.getLocation();
+        ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
         try {
             zipStream = new ZipInputStream(location.openStream());
@@ -161,6 +163,10 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                     // don't index the manifest
                     continue;
                 }
+                if (exclude(manifest, entry)) {
+                    continue;
+                }
+
                 String contentType = contentTypeResolver.getContentType(new URL(location, entry.getName()));
                 if (contentType == null) {
                     // skip entry if we don't recognize the content type
@@ -186,4 +192,14 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
 
     }
+
+    private boolean exclude(ContributionManifest manifest, ZipEntry entry) {
+        for (Pattern pattern : manifest.getScanExcludes()) {
+            if (pattern.matcher(entry.getName()).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

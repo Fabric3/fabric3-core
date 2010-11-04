@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-contribution-war</artifactId>
     <name>Fabric3 WAR Contribution Extension</name>
-    <description>Support for processing and loading  WAR contributions</description>
+    <description>Support for processing and loading WAR contributions</description>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -34,6 +34,16 @@ Public License. See the accompanying license file for details.
             <artifactId>stax-api</artifactId>
             <version>${stax.api.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
         </dependency>
 
     </dependencies>

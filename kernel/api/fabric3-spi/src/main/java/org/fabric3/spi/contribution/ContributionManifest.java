@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.fabric3.host.contribution.Deployable;
 
@@ -51,7 +52,6 @@ import org.fabric3.host.contribution.Deployable;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({"SerializableHasSerializationMethods"})
 public class ContributionManifest implements Serializable {
     private static final long serialVersionUID = -4968254313720890686L;
     private String description;
@@ -63,7 +63,7 @@ public class ContributionManifest implements Serializable {
     private List<Deployable> deployables = new ArrayList<Deployable>();
     private List<String> extensionPoints = new ArrayList<String>();
     private List<String> extend = new ArrayList<String>();
-    private List<String> scanExcludes = Collections.emptyList();
+    private List<Pattern> scanExcludes = Collections.emptyList();
 
     /**
      * Returns the contribution description.
@@ -233,7 +233,7 @@ public class ContributionManifest implements Serializable {
      *
      * @return file and directory patterns to exclude when the contribution is scanned
      */
-    public List<String> getScanExcludes() {
+    public List<Pattern> getScanExcludes() {
         return scanExcludes;
     }
 
@@ -242,7 +242,7 @@ public class ContributionManifest implements Serializable {
      *
      * @param excludes file and directory patterns to exclude when the contribution is scanned
      */
-    public void setScanExcludes(List<String> excludes) {
+    public void setScanExcludes(List<Pattern> excludes) {
         this.scanExcludes = excludes;
     }
 }

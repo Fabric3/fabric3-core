@@ -38,6 +38,7 @@
 package org.fabric3.contribution.manifest;
 
 import java.io.ByteArrayInputStream;
+import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -61,10 +62,11 @@ public class ContributionElementLoaderExcludesTestCase extends TestCase {
         reader.next();
         ContributionManifest manifest = loader.load(reader, null);
         assertEquals(2, manifest.getScanExcludes().size());
-        String exclude1 = manifest.getScanExcludes().get(0);
-        String exclude2 = manifest.getScanExcludes().get(0);
-        assertTrue("foo".equals(exclude1) || "bar".equals(exclude2));
-        assertTrue("foo".equals(exclude2) || "bar".equals(exclude2));
+        Pattern exclude1 = manifest.getScanExcludes().get(0);
+        Pattern exclude2 = manifest.getScanExcludes().get(0);
+
+        assertTrue(exclude1.matcher("foo").matches() || exclude1.matcher("bar").matches());
+        assertTrue(exclude2.matcher("foo").matches() || exclude2.matcher("bar").matches());
     }
 
     protected void setUp() throws Exception {

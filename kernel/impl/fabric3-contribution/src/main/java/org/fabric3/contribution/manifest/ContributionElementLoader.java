@@ -39,8 +39,8 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -155,7 +155,11 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         continue;
                     }
                     String[] excludes = excludeAttr.split(",");
-                    manifest.setScanExcludes(Arrays.asList(excludes));
+                    List<Pattern> patterns = new ArrayList<Pattern>();
+                    for (String exclude : excludes) {
+                        patterns.add(Pattern.compile(exclude));
+                    }
+                    manifest.setScanExcludes(patterns);
 
                 } else {
                     Object o;

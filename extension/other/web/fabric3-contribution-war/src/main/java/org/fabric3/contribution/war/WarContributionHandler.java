@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -80,7 +81,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         return sourceUrl.endsWith(".war");
     }
 
-    public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
         ContributionManifest manifest;
         try {
             URL sourceUrl = contribution.getLocation();
@@ -110,6 +111,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
 
     public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
         URL location = contribution.getLocation();
+        ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
         try {
             zipStream = new ZipInputStream(location.openStream());
@@ -122,8 +124,11 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                if (entry.getName().contains("META-INF/sca-contribution.xml")) {
+                if (entry.getName().contains("WEB-INF/sca-contribution.xml")) {
                     // don't index the manifest
+                    continue;
+                }
+                if (exclude(manifest, entry)) {
                     continue;
                 }
                 String contentType = contentTypeResolver.getContentType(new URL(location, entry.getName()));
@@ -150,5 +155,14 @@ public class WarContributionHandler implements ArchiveContributionHandler {
             }
         }
 
+    }
+
+    private boolean exclude(ContributionManifest manifest, ZipEntry entry) {
+        for (Pattern pattern : manifest.getScanExcludes()) {
+            if (pattern.matcher(entry.getName()).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

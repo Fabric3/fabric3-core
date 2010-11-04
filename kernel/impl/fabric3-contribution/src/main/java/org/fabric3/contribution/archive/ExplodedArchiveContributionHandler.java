@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -88,14 +89,14 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                 && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
-    public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
+    public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
         ContributionManifest manifest;
         try {
             String sourceUrl = contribution.getLocation().toString();
 
             URL manifestUrl = new URL(sourceUrl + "/META-INF/sca-contribution.xml");
             File file = new File(manifestUrl.toExternalForm());
-            if (!file.exists()){
+            if (!file.exists()) {
                 manifestUrl = new URL(sourceUrl + "/WEB-INF/sca-contribution.xml");
             }
             ClassLoader cl = getClass().getClassLoader();
@@ -123,18 +124,18 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
 
     public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
-        assert root.isDirectory();
-        iterateArtifactsRecursive(contribution, action, root);
+        iterateArtifactsRecursive(contribution, action, root, root);
     }
 
-    protected void iterateArtifactsRecursive(Contribution contribution, Action action, File dir) throws InstallException {
+    protected void iterateArtifactsRecursive(Contribution contribution, Action action, File dir, File root) throws InstallException {
         File[] files = dir.listFiles();
+        ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsRecursive(contribution, action, file);
+                iterateArtifactsRecursive(contribution, action, file, root);
             } else {
                 try {
-                    if (file.getName().contains("META-INF/sca-contribution.xml")) {
+                    if (file.getName().equals("sca-contribution.xml")) {
                         // don't index the manifest
                         continue;
                     }
@@ -142,6 +143,9 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                     String contentType = contentTypeResolver.getContentType(entryUrl);
                     // skip entry if we don't recognize the content type
                     if (contentType == null) {
+                        continue;
+                    }
+                    if (exclude(manifest, file, root)) {
                         continue;
                     }
                     action.process(contribution, contentType, entryUrl);
@@ -156,5 +160,17 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
 
     }
+
+    private boolean exclude(ContributionManifest manifest, File file, File root) {
+        for (Pattern pattern : manifest.getScanExcludes()) {
+            // construct a file name relative to the root directory as excludes are relative to the archive root  
+            String relativePathName = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
+            if (pattern.matcher(relativePathName).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
