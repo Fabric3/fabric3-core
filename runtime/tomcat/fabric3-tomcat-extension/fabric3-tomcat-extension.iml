@@ -16,20 +16,20 @@
     <orderEntry type="module-library" exported="">
       <library name="javax.servlet:servlet-api:2.4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.apache.tomcat:catalina:6.0.20">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/tomcat/catalina/6.0.20/catalina-6.0.20.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/catalina/6.0.20/catalina-6.0.20.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
@@ -41,7 +41,7 @@
     <orderEntry type="module-library">
       <library name="org:apache:tomcat:coyote:6.0.20">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/tomcat/coyote/6.0.20/coyote-6.0.20.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/coyote/6.0.20/coyote-6.0.20.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>

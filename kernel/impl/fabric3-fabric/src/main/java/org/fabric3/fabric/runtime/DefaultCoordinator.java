@@ -38,15 +38,16 @@
 package org.fabric3.fabric.runtime;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
-import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
-import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
-import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
-import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
 import org.fabric3.host.contribution.ContributionException;
+import org.fabric3.host.contribution.ContributionNotFoundException;
+import org.fabric3.host.contribution.ContributionOrder;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.BootConfiguration;
@@ -61,6 +62,11 @@ import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
+
+import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
+import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
+import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
+import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
 
 /**
  * Default implementation of the RuntimeCoordinator.
@@ -125,11 +131,34 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      * @throws InitializationException if an error loading runtime extensions
      */
     private void loadExtensions() throws InitializationException {
-        // install extensions
         List<ContributionSource> contributions = configuration.getExtensionContributions();
-        List<URI> uris = installContributions(contributions);
-        // deploy extensions
-        deploy(uris);
+        ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
+        Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
+        try {
+            // process manifests and order the contributions
+            ContributionOrder order = contributionService.processManifests(contributions);
+            for (URI uri : order.getBaseContributions()) {
+                contributionService.processContents(uri);
+            }
+            // base contributions are deployed in batch since they only rely on boot runtime capabilities
+            domain.include(order.getBaseContributions());
+
+            // Isolated contributions must be introspected and deployed individually as they rely on capabilities provided by another contribution.
+            // In this case, the providing contribution must be installed and deployed first, precluding batch deployment
+            for (URI uri : order.getIsolatedContributions()) {
+                contributionService.processContents(uri);
+                domain.include(Collections.singletonList(uri));
+            }
+        } catch (InstallException e) {
+            throw new InitializationException(e);
+        } catch (StoreException e) {
+            throw new InitializationException(e);
+        } catch (ContributionNotFoundException e) {
+            throw new InitializationException(e);
+        } catch (DeploymentException e) {
+            state = RuntimeState.ERROR;
+            throw new ExtensionInitializationException("Error deploying extensions", e);
+        }
     }
 
     /**
@@ -162,27 +191,11 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
             // install the contributions
-            return contributionService.contribute(sources);
+            List<URI> stored = contributionService.store(sources);
+            return contributionService.install(stored);
         } catch (ContributionException e) {
             state = RuntimeState.ERROR;
             throw new ExtensionInitializationException("Error contributing extensions", e);
         }
     }
-
-    /**
-     * Deploys a collection of contributions.
-     *
-     * @param contributionUris the contribution URIs
-     * @throws InitializationException if a deployment exception occurs
-     */
-    private void deploy(List<URI> contributionUris) throws InitializationException {
-        try {
-            Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
-            domain.include(contributionUris);
-        } catch (DeploymentException e) {
-            state = RuntimeState.ERROR;
-            throw new ExtensionInitializationException("Error deploying extensions", e);
-        }
-    }
-
 }

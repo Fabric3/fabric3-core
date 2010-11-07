@@ -12,8 +12,6 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true"
-              f3-core:required-capabilities="transaction"
-              f3-core:capabilities="jpa hibernate"
               f3-core:description="Hibernate JPA extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
@@ -24,6 +22,10 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="1.7"/>
     <import.java package="org.fabric3.datasource.spi"/>
     <export.java package="org.fabric3.jpa.api" version="1.7"/>
+    <f3-core:requires.capability name="transaction"/>
+    <f3-core:provides.capability name="jpa"/>
+    <f3-core:provides.capability name="hibernate"/>
+
     <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateControllerExtension" modes = "controller vm"/>
     <deployable xmlns:jpa="urn:fabric3.org:jpa" composite="jpa:HibernateParticipantExtension" modes = "participant vm"/>
 </contribution>

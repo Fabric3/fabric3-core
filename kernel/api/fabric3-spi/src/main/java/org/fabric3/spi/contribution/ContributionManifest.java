@@ -58,8 +58,8 @@ public class ContributionManifest implements Serializable {
     private boolean extension;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
-    private Set<String> requiredCapabilities = new HashSet<String>();
-    private Set<String> providedCapabilities = new HashSet<String>();
+    private Set<Capability> requiredCapabilities = new HashSet<Capability>();
+    private Set<Capability> providedCapabilities = new HashSet<Capability>();
     private List<Deployable> deployables = new ArrayList<Deployable>();
     private List<String> extensionPoints = new ArrayList<String>();
     private List<String> extend = new ArrayList<String>();
@@ -142,7 +142,7 @@ public class ContributionManifest implements Serializable {
      *
      * @param capability a capability required by the contribution
      */
-    public void addRequiredCapability(String capability) {
+    public void addRequiredCapability(Capability capability) {
         requiredCapabilities.add(capability);
     }
 
@@ -151,7 +151,7 @@ public class ContributionManifest implements Serializable {
      *
      * @return a list of capabilities required by this contribution
      */
-    public Set<String> getRequiredCapabilities() {
+    public Set<Capability> getRequiredCapabilities() {
         return requiredCapabilities;
     }
 
@@ -160,7 +160,7 @@ public class ContributionManifest implements Serializable {
      *
      * @param capability a capability provided by this contribution
      */
-    public void addProvidedCapability(String capability) {
+    public void addProvidedCapability(Capability capability) {
         providedCapabilities.add(capability);
     }
 
@@ -169,7 +169,7 @@ public class ContributionManifest implements Serializable {
      *
      * @return a list of capabilities provided by this contribution
      */
-    public Set<String> getProvidedCapabilities() {
+    public Set<Capability> getProvidedCapabilities() {
         return providedCapabilities;
     }
 

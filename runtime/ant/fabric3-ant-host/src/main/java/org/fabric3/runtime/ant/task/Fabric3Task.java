@@ -247,7 +247,8 @@ public class Fabric3Task extends Task {
         try {
             ContributionService contributionService = runtime.getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
             Domain domain = runtime.getComponent(Domain.class, Names.APPLICATION_DOMAIN_URI);
-            List<URI> installed = contributionService.contribute(sources);
+            List<URI> uris = contributionService.store(sources);
+            List<URI> installed = contributionService.install(uris);
             for (URI contribution : installed) {
                 log("Installed: " + contribution);
             }

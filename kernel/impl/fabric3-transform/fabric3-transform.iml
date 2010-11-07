@@ -15,24 +15,24 @@
     <orderEntry type="module-library">
       <library name="org.codehaus.woodstox:wstx-asl:3.2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.2/wstx-asl-3.2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="javax.xml.bind:jaxb-api:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

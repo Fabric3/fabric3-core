@@ -40,9 +40,11 @@ package org.fabric3.contribution;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionState;
@@ -95,7 +97,7 @@ public class DependencyServiceImpl implements DependencyService {
             for (Import imprt : manifest.getImports()) {
                 // See if the import is already stored
                 // note that extension imports do not need to be checked since we assume extensions are installed prior
-                List<Vertex<Contribution>> sinks = findTargetVertex(dag, uri, imprt);
+                List<Vertex<Contribution>> sinks = findTargetVertices(dag, uri, imprt);
                 if (sinks.isEmpty()) {
                     List<Contribution> resolvedContributions = store.resolve(uri, imprt);
                     for (Contribution resolved : resolvedContributions) {
@@ -106,6 +108,29 @@ public class DependencyServiceImpl implements DependencyService {
                     }
                     if (resolvedContributions.isEmpty()) {
                         throw new UnresolvableImportException("Unable to resolve import " + imprt + " in " + uri, imprt);
+                    }
+
+                } else {
+                    for (Vertex<Contribution> sink : sinks) {
+                        Edge<Contribution> edge = new EdgeImpl<Contribution>(source, sink);
+                        dag.add(edge);
+                    }
+                }
+            }
+
+            for (Capability capability : manifest.getRequiredCapabilities()) {
+                // See if a previously installed contribution supplies the capability
+                List<Vertex<Contribution>> sinks = findCapabilityVertices(capability, uri, dag);
+                if (sinks.isEmpty()) {
+                    Set<Contribution> resolvedContributions = store.resolveCapability(capability.getName());
+                    for (Contribution resolved : resolvedContributions) {
+                        if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
+                            throw new DependencyException("Contribution " + contribution.getUri() + " requires a capability provided by "
+                                    + resolved.getUri() + " which is not installed");
+                        }
+                    }
+                    if (resolvedContributions.isEmpty()) {
+                        throw new UnresolvableCapabilityException("Unable to resolve capability " + capability + " required by " + uri);
                     }
 
                 } else {
@@ -150,7 +175,7 @@ public class DependencyServiceImpl implements DependencyService {
                 for (Contribution entry : contributions) {
                     if (entry.getUri().equals(wire.getExportContributionUri())) {
                         Import imprt = wire.getImport();
-                        List<Vertex<Contribution>> sinks = findTargetVertex(dag, uri, imprt);
+                        List<Vertex<Contribution>> sinks = findTargetVertices(dag, uri, imprt);
                         if (sinks.isEmpty()) {
                             // this should not happen
                             throw new AssertionError("Unable to resolve import " + imprt + " in " + uri);
@@ -184,19 +209,18 @@ public class DependencyServiceImpl implements DependencyService {
     }
 
     /**
-     * Finds the Vertex in the graph with a matching export
+     * Finds vertices in the graph with a matching export.
      *
      * @param dag             the graph to resolve against
      * @param contributionUri the importing contribution URI
      * @param imprt           the import to resolve
      * @return the matching Vertex or null
      */
-    private List<Vertex<Contribution>> findTargetVertex(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
+    private List<Vertex<Contribution>> findTargetVertices(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
         List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
         for (Vertex<Contribution> vertex : dag.getVertices()) {
             Contribution contribution = vertex.getEntity();
             ContributionManifest manifest = contribution.getManifest();
-            assert manifest != null;
             URI location = imprt.getLocation();
             for (Export export : manifest.getExports()) {
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
@@ -216,6 +240,26 @@ public class DependencyServiceImpl implements DependencyService {
                         break;
                     }
                 }
+            }
+        }
+        return vertices;
+    }
+
+    /**
+     * Finds vertices in the graph providing the given capability.
+     *
+     * @param capability      the capability
+     * @param contributionUri the current contribution URI; used to avoid creating a cycle
+     * @param dag             the graph
+     * @return the vertices
+     */
+    private List<Vertex<Contribution>> findCapabilityVertices(Capability capability, URI contributionUri, DirectedGraph<Contribution> dag) {
+        List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
+        for (Vertex<Contribution> vertex : dag.getVertices()) {
+            Contribution contribution = vertex.getEntity();
+            if (contribution.getManifest().getProvidedCapabilities().contains(capability) && !contributionUri.equals(contribution.getUri())) {
+                vertices.add(vertex);
+                break;
             }
         }
         return vertices;

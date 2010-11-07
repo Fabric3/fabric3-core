@@ -162,7 +162,7 @@ public class MavenRuntimeBooter {
             try {
                 FileHelper.cleanDirectory(tempDir);
             } catch (IOException e) {
-                throw new MojoExecutionException("Error cleaning temporary directory", e);
+                log.warn("Error cleaning temporary directory: " + e.getMessage());
             }
         }
         tempDir.mkdir();

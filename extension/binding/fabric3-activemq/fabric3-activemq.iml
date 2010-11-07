@@ -15,7 +15,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -24,7 +24,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -33,18 +33,18 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -53,7 +53,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -62,7 +62,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -71,7 +71,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/activemq/activeio-core/3.1.0/activeio-core-3.1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activeio-core/3.1.0/activeio-core-3.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -80,7 +80,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -89,7 +89,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-j2ee-management_1.0_spec/1.0/geronimo-j2ee-management_1.0_spec-1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/geronimo/specs/geronimo-j2ee-management_1.0_spec/1.0/geronimo-j2ee-management_1.0_spec-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -98,7 +98,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -107,22 +107,22 @@
     <orderEntry type="module-library">
       <library name="activemq-pool-5.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="javax.transaction:com.springsource.javax:transaction:1.1.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

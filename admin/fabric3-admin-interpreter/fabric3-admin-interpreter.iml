@@ -15,7 +15,7 @@
     <orderEntry type="module-library">
       <library name="org.antlr:antlr-runtime:3.0.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

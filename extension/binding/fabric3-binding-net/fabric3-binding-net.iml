@@ -15,11 +15,11 @@
     <orderEntry type="module-library">
       <library name="netty:netty:3.1.0.BETA1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/jboss/netty/netty/3.1.0.BETA1/netty-3.1.0.BETA1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.1.0.BETA1/netty-3.1.0.BETA1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/jboss/netty/netty/3.1.0.BETA1/netty-3.1.0.BETA1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.1.0.BETA1/netty-3.1.0.BETA1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -16,7 +16,7 @@
     <orderEntry type="module-library">
       <library name="org.apache.tomcat:catalina:6.0.20">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/tomcat/catalina/6.0.20/catalina-6.0.20.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/catalina/6.0.20/catalina-6.0.20.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>

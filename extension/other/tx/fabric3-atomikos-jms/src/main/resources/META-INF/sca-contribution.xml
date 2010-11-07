@@ -12,8 +12,6 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:transaction="urn:fabric3.org:transaction"
               xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:required-capabilities="transaction"
-              f3-core:capabilities="jms"
               f3-core:extension="true">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
@@ -26,4 +24,6 @@ Public License. See the accompanying license file for details.
     <import.java package="com.atomikos.beans" version="3.5.2"/>
     <deployable composite="transaction:AtomikosJmsExtension"/>
     <f3-core:provides name="jms"/>
+    <f3-core:requires.capability name="transaction"/>
+    <f3-core:provides.capability name="jms"/>
 </contribution>

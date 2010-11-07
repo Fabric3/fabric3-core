@@ -54,8 +54,10 @@ import javax.xml.namespace.QName;
 import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.RuntimeConfiguration;
+
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
+
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.domain.DeploymentException;
@@ -90,7 +92,8 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             ContributionService contributionService = getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
             URI contributionUri = new URI("file", qName.getLocalPart(), null);
             WarContributionSource source = new WarContributionSource(contributionUri);
-            contributionService.contribute(source);
+            URI uri = contributionService.store(source);
+            contributionService.install(uri);
             // activate the deployable composite in the domain
             domain.include(qName);
         } catch (MalformedURLException e) {

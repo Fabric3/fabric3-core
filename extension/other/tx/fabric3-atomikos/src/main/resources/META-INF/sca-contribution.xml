@@ -12,7 +12,6 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:transaction="urn:fabric3.org:transaction"
               xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:capabilities="transaction"
               f3-core:extension="true"
               f3-core:description="JTA extension">
     <import.java package="javax.transaction" version="1.1.0"/>
@@ -27,4 +26,5 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.datasource.spi"/>
     <deployable composite="transaction:AtomikosExtension"/>
     <f3-core:provides name="datasource"/>
+    <f3-core:provides.capability name="transaction"/>
 </contribution>

@@ -19,63 +19,63 @@
     <orderEntry type="module-library">
       <library name="stax:stax-api:1.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0/stax-api-1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0/stax-api-1.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0/stax-api-1.0-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0/stax-api-1.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0/stax-api-1.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0/stax-api-1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="junit:junit:3.8.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.easymock:easymockclassextension:2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymockclassextension/2.2/easymockclassextension-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.easymock:easymock:2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

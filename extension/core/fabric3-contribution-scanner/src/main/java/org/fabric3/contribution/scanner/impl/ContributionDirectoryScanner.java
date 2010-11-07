@@ -310,7 +310,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         try {
             contributionService.uninstall(uris);
             contributionService.remove(uris);
-            List<URI> contributions = contributionService.contribute(sources);
+            List<URI> stored = contributionService.store(sources);
+            List<URI> contributions = contributionService.install(stored);
             domain.include(contributions);
             for (FileSystemResource resource : updatedResources) {
                 resource.setState(FileSystemResourceState.PROCESSED);
@@ -381,7 +382,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         if (!sources.isEmpty()) {
             try {
                 // Install contributions, which will be ordered transitively by import dependencies
-                List<URI> addedUris = contributionService.contribute(sources);
+                List<URI> stored = contributionService.store(sources);
+                List<URI> addedUris = contributionService.install(stored);
                 // Include the contributions if this is not a recovery operation (recovery will handle inclusion separately)
                 if (!recover) {
                     domain.include(addedUris);

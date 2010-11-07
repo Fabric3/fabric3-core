@@ -115,13 +115,12 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * Evaluates contributions for required capabilities, resolving those capabilities to extensions.
      *
      * @param contributions the contributions  to evaluate
-     * @param commands      the list of commands to update with un/provison extension commands
+     * @param commands      the list of commands to update with un/provision extension commands
      * @param type          the generation type
-     * @throws GenerationException if an exception occurs
      */
     private void evaluateContributions(Map<String, List<Contribution>> contributions,
                                        Map<String, CompensatableCommand> commands,
-                                       GenerationType type) throws GenerationException {
+                                       GenerationType type) {
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             String zone = entry.getKey();
             if (LogicalComponent.LOCAL_ZONE.equals(zone)) {
@@ -155,13 +154,12 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * Evaluates components for required capabilities, resolving those capabilities to extensions.
      *
      * @param components the components  to evaluate
-     * @param commands   the list of commands to update with un/provison extension commands
+     * @param commands   the list of commands to update with un/provision extension commands
      * @param type       the generation  type
-     * @throws GenerationException if an exception occurs
      */
     private void evaluateComponents(List<LogicalComponent<?>> components,
                                     Map<String, CompensatableCommand> commands,
-                                    GenerationType type) throws GenerationException {
+                                    GenerationType type) {
         for (LogicalComponent<?> component : components) {
             String zone = component.getZone();
             if (LogicalComponent.LOCAL_ZONE.equals(zone)) {
@@ -182,9 +180,8 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param component the component
      * @param command   the command to update
      * @param type      the generation type
-     * @throws GenerationException if an exception during evaluation is encountered
      */
-    private void evaluateComponent(LogicalComponent<?> component, AbstractExtensionsCommand command, GenerationType type) throws GenerationException {
+    private void evaluateComponent(LogicalComponent<?> component, AbstractExtensionsCommand command, GenerationType type) {
         Implementation<?> impl = component.getDefinition().getImplementation();
         ComponentType componentType = impl.getComponentType();
         Set<Contribution> extensions = new HashSet<Contribution>();
@@ -241,7 +238,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param contributions      the contributions  to evaluate
      * @param deploymentCommands the current deployment commands to introspect for policy interceptors
      * @param type               the generation type
-     * @param commands           the list of commands to update with un/provison extension commands
+     * @param commands           the list of commands to update with un/provision extension commands
      * @throws GenerationException if an exception occurs
      */
     private void evaluatePolicies(Map<String, CompensatableCommand> commands,
@@ -365,6 +362,4 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
         }
         return command;
     }
-
-
 }

@@ -15,96 +15,96 @@
     <orderEntry type="module-library" exported="">
       <library name="net.sf.ehcache:ehcache:1.2.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="commons-logging:commons-logging:1.0.4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="commons-collections:commons-collections:2.1.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="asm:asm-attrs:1.5.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm-attrs/1.5.3/asm-attrs-1.5.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="cglib:cglib:2.1_3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib/2.1_3/cglib-2.1_3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.1_3/cglib-2.1_3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib/2.1_3/cglib-2.1_3-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.1_3/cglib-2.1_3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib/2.1_3/cglib-2.1_3-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.1_3/cglib-2.1_3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="asm:asm:1.5.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/asm/asm/1.5.3/asm-1.5.3.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm/1.5.3/asm-1.5.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/asm/asm/1.5.3/asm-1.5.3-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm/1.5.3/asm-1.5.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/asm/asm/1.5.3/asm-1.5.3-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/asm/asm/1.5.3/asm-1.5.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="org.hibernate:hibernate-annotations:3.4.0.ga">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate-annotations/3.4.0.GA/hibernate-annotations-3.4.0.GA-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="jboss:javassist:3.4.GA">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javassist/javassist/3.4.GA/javassist-3.4.GA.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javassist/javassist/3.4.GA/javassist-3.4.GA.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -113,31 +113,31 @@
     <orderEntry type="module-library" exported="">
       <library name="jboss:jboss-common-core:2.0.4.GA">
         <CLASSES>
-          <root url="jar://$M2_REPO$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/jboss/jboss-common-core/2.0.4.GA/jboss-common-core-2.0.4.GA-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

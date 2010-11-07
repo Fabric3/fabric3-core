@@ -87,7 +87,8 @@ public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
         // contribute the Maven project to the application domain
         ContributionService contributionService = getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
         Domain domain = getComponent(Domain.class, APPLICATION_DOMAIN_URI);
-        contributionService.contribute(source);
+        URI uri = contributionService.store(source);
+        contributionService.install(uri);
         // activate the deployable composite in the domain
         domain.include(qName);
     }

@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -56,13 +57,12 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
-import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionLockedException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
+import org.fabric3.host.contribution.ContributionOrder;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.Deployable;
@@ -77,9 +77,11 @@ import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -97,7 +99,6 @@ import org.fabric3.spi.introspection.validation.ValidationUtils;
  *
  * @version $Rev$ $Date$
  */
-@Service(ContributionService.class)
 @EagerInit
 public class ContributionServiceImpl implements ContributionService {
     private ProcessorRegistry processorRegistry;
@@ -186,35 +187,23 @@ public class ContributionServiceImpl implements ContributionService {
         return contribution.getUri();
     }
 
-    public void install(URI uri) throws InstallException, ContributionNotFoundException {
+    public List<URI> store(List<ContributionSource> contributionSources) throws StoreException {
         List<URI> uris = new ArrayList<URI>();
-        uris.add(uri);
-        install(uris);
+        for (ContributionSource contributionSource : contributionSources) {
+            URI uri = store(contributionSource);
+            uris.add(uri);
+        }
+        return uris;
     }
 
-    public void install(List<URI> uris) throws InstallException, ContributionNotFoundException {
+    public void install(URI uri) throws InstallException, ContributionNotFoundException {
+        install(Collections.singletonList(uri));
+    }
+
+    public List<URI> install(List<URI> uris) throws InstallException, ContributionNotFoundException {
         List<Contribution> contributions = new ArrayList<Contribution>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = find(uri);
-            contributions.add(contribution);
-        }
-        installInOrder(contributions);
-    }
-
-    public URI contribute(ContributionSource contributionSource) throws ContributionException {
-        List<ContributionSource> contributionSources = new ArrayList<ContributionSource>();
-        contributionSources.add(contributionSource);
-        return contribute(contributionSources).get(0);
-    }
-
-    public List<URI> contribute(List<ContributionSource> contributionSources) throws ContributionException {
-        List<Contribution> contributions = new ArrayList<Contribution>(contributionSources.size());
-        for (ContributionSource contributionSource : contributionSources) {
-            // store the contributions
-            Contribution contribution = persist(contributionSource);
-            for (ContributionServiceListener listener : listeners) {
-                listener.onStore(contribution);
-            }
             contributions.add(contribution);
         }
         return installInOrder(contributions);
@@ -368,6 +357,80 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
 
+    public ContributionOrder processManifests(List<ContributionSource> contributionSources) throws InstallException, StoreException {
+        List<Contribution> contributions = new ArrayList<Contribution>();
+        for (ContributionSource contributionSource : contributionSources) {
+            // store the contributions
+            Contribution contribution = persist(contributionSource);
+            metaDataStore.store(contribution);
+            for (ContributionServiceListener listener : listeners) {
+                listener.onStore(contribution);
+            }
+            contributions.add(contribution);
+        }
+        return introspectManifests(contributions);
+    }
+
+    public void processContents(URI uri) throws InstallException, ContributionNotFoundException {
+        Contribution contribution = find(uri);
+        try {
+            ClassLoader loader = contributionLoader.load(contribution);
+            // continue processing the contributions. As they are ordered, dependencies will resolve correctly
+            processContents(contribution, loader);
+            contribution.setState(ContributionState.INSTALLED);
+            for (ContributionServiceListener listener : listeners) {
+                listener.onInstall(contribution);
+            }
+        } catch (InstallException e) {
+            try {
+                revertInstall(Collections.singletonList(contribution));
+            } catch (RuntimeException ex) {
+                monitor.error("Error reverting deployment", ex);
+            }
+            throw e;
+        }
+        String description = contribution.getManifest().getDescription();
+        if (description != null) {
+            monitor.installed(description);
+        }
+    }
+
+    private ContributionOrder introspectManifests(List<Contribution> contributions) throws InstallException {
+        ContributionOrder order = new ContributionOrder();
+        for (Contribution contribution : contributions) {
+            if (ContributionState.STORED != contribution.getState()) {
+                throw new ContributionAlreadyInstalledException("Contribution is already installed: " + contribution.getUri());
+            }
+        }
+        for (Contribution contribution : contributions) {
+            // process any SCA manifest information, including imports and exports
+            processManifest(contribution);
+        }
+        // order the contributions based on their dependencies
+        try {
+            contributions = dependencyService.order(contributions);
+        } catch (DependencyException e) {
+            throw new InstallException(e);
+        }
+        for (Contribution contribution : contributions) {
+            boolean requiresLoad = false;
+            ContributionManifest manifest = contribution.getManifest();
+            for (Capability capability : manifest.getRequiredCapabilities()) {
+                if (capability.requiresLoad()) {
+                    requiresLoad = true;
+                    break;
+                }
+            }
+            if (requiresLoad) {
+                order.addIsolatedContribution(contribution.getUri());
+            } else {
+                order.addBaseContribution(contribution.getUri());
+            }
+        }
+        return order;
+    }
+
+
     /**
      * Resolves a contribution by its URI.
      *
@@ -417,7 +480,11 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             }
         } catch (InstallException e) {
-            revertInstall(contributions);
+            try {
+                revertInstall(contributions);
+            } catch (RuntimeException ex) {
+                monitor.error("Error reverting deployment", ex);
+            }
             throw e;
         }
         List<URI> uris = new ArrayList<URI>(contributions.size());

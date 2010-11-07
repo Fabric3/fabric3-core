@@ -54,6 +54,7 @@ import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;
@@ -311,7 +312,8 @@ public class MetaDataStoreImpl implements MetaDataStore {
     public Set<Contribution> resolveCapability(String capability) {
         Set<Contribution> extensions = new HashSet<Contribution>();
         for (Contribution entry : cache.values()) {
-            if (entry.getManifest().getProvidedCapabilities().contains(capability) && !extensions.contains(entry)) {
+            Capability key = new Capability(capability);
+            if (entry.getManifest().getProvidedCapabilities().contains(key) && !extensions.contains(entry)) {
                 extensions.add(entry);
                 resolveCapabilities(entry, extensions);
             }
@@ -320,8 +322,8 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     private Set<Contribution> resolveCapabilities(Contribution contribution, Set<Contribution> extensions) {
-        Set<String> required = contribution.getManifest().getRequiredCapabilities();
-        for (String capability : required) {
+        Set<Capability> required = contribution.getManifest().getRequiredCapabilities();
+        for (Capability capability : required) {
             for (Contribution entry : cache.values()) {
                 if (entry.getManifest().getProvidedCapabilities().contains(capability) && !extensions.contains(entry)) {
                     extensions.add(entry);

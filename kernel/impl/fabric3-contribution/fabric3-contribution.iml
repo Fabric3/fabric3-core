@@ -15,13 +15,13 @@
     <orderEntry type="module-library">
       <library name="stax:stax-api:1.0.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

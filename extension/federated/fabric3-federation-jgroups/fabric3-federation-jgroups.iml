@@ -16,52 +16,52 @@
     <orderEntry type="module-library">
       <library name="org.codehaus.woodstox:wstx-asl:3.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/wstx-asl/3.2.0/wstx-asl-3.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="stax:stax-api:1.0.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="junit:junit:3.8.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/3.8.2/junit-3.8.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.2/junit-3.8.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.easymock:easymock:2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/easymock/easymock/2.2/easymock-2.2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/easymock/easymock/2.2/easymock-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -69,11 +69,11 @@
     <orderEntry type="module-library">
       <library name="jgroups:jgroups:2.8.0.GA">
         <CLASSES>
-          <root url="jar://$M2_REPO$/jgroups/jgroups/2.8.0.GA/jgroups-2.8.0.GA.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.GA/jgroups-2.8.0.GA.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$M2_REPO$/jgroups/jgroups/2.8.0.GA/jgroups-2.8.0.GA-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.GA/jgroups-2.8.0.GA-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

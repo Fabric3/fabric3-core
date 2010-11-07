@@ -53,6 +53,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
@@ -80,6 +81,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
     private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA_NS, "deployable");
     private static final QName SCAN = new QName(CORE, "scan");
+    private static final QName PROVIDES_CAPABILITY = new QName(CORE, "provides.capability");
+    private static final QName REQUIRES_CAPABILITY = new QName(CORE, "requires.capability");
 
     private final LoaderRegistry registry;
 
@@ -111,7 +114,6 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         String description = reader.getAttributeValue(CORE, "description");
         manifest.setDescription(description);
 
-        parseCapabilities(reader, manifest);
         while (true) {
             int event = reader.next();
             switch (event) {
@@ -146,6 +148,10 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
                     Deployable deployable = new Deployable(qName, runtimeModes);
                     manifest.addDeployable(deployable);
+                } else if (REQUIRES_CAPABILITY.equals(element)) {
+                    parseRequiredCapabilities(manifest, reader, context);
+                } else if (PROVIDES_CAPABILITY.equals(element)) {
+                    parseProvidedCapabilities(manifest, reader, context);
                 } else if (SCAN.equals(element)) {
                     validateScanAttributes(reader, context);
                     String excludeAttr = reader.getAttributeValue(null, "exclude");
@@ -196,23 +202,27 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         }
     }
 
-    private void parseCapabilities(XMLStreamReader reader, ContributionManifest manifest) {
-
-        String requiresAttr = reader.getAttributeValue(CORE, "required-capabilities");
-        if (requiresAttr != null) {
-            String[] requires = requiresAttr.trim().split(" ");
-            for (String require : requires) {
-                manifest.addRequiredCapability(require);
-            }
+    private void parseProvidedCapabilities(ContributionManifest manifest, XMLStreamReader reader, IntrospectionContext context) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute error = new MissingAttribute("Capability name must be specified", reader);
+            context.addError(error);
+            return;
         }
+        Capability capability = new Capability(name);
+        manifest.addProvidedCapability(capability);
+    }
 
-        String providesAttr = reader.getAttributeValue(CORE, "capabilities");
-        if (providesAttr != null) {
-            String[] provides = providesAttr.trim().split(" ");
-            for (String provide : provides) {
-                manifest.addProvidedCapability(provide);
-            }
+    private void parseRequiredCapabilities(ContributionManifest manifest, XMLStreamReader reader, IntrospectionContext context) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            MissingAttribute error = new MissingAttribute("Capability name must be specified", reader);
+            context.addError(error);
+            return;
         }
+        boolean loaded = Boolean.valueOf(reader.getAttributeValue(null, "loaded"));
+        Capability capability = new Capability(name, loaded);
+        manifest.addRequiredCapability(capability);
     }
 
     private List<RuntimeMode> parseRuntimeModes(XMLStreamReader reader, IntrospectionContext context) {

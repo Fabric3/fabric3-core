@@ -15,46 +15,46 @@
     <orderEntry type="module-library">
       <library name="javax.xml.bind:jasxb-api:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="javax.xml.stream:stax-api:1.0-2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="javax.activation:activation:1.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1-javadoc.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/javax/activation/activation/1.1/activation-1.1-sources.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="com.springsource.org.objectweb.asm:3.1.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/objectweb/asm/com.springsource.org.objectweb.asm/3.1.0/com.springsource.org.objectweb.asm-3.1.0.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/objectweb/asm/com.springsource.org.objectweb.asm/3.1.0/com.springsource.org.objectweb.asm-3.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
@@ -65,8 +65,8 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$M2_REPO$/com/sun/xml/ws/webservices-rt/2.0-b24/webservices-rt-2.0-b24.jar!/" />
-          <root url="jar://$M2_REPO$/javax/xml/webservices-api/2.0-b24/webservices-api-2.0-b24.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/ws/webservices-rt/2.0-b24/webservices-rt-2.0-b24.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/webservices-api/2.0-b24/webservices-api-2.0-b24.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>

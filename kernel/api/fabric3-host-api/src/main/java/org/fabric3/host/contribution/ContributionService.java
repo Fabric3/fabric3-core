@@ -117,6 +117,15 @@ public interface ContributionService {
     URI store(ContributionSource source) throws StoreException;
 
     /**
+     * Persistently stores a collection of contributions in the domain.
+     *
+     * @param sources the contribution sources
+     * @return URIs that uniquely identify the contribution within the domain
+     * @throws StoreException if there is an error storing the contribution
+     */
+    List<URI> store(List<ContributionSource> sources) throws StoreException;
+
+    /**
      * Installs a stored contribution.
      *
      * @param uri the contribution URI
@@ -129,28 +138,30 @@ public interface ContributionService {
      * Installs a list of stored contributions.
      *
      * @param uris the contribution URIs
+     * @return the list of installed URIs ordered by dependencies
      * @throws InstallException              if there an error reading, introspecting or loading the contribution
      * @throws ContributionNotFoundException if a contribution is not found
      */
-    void install(List<URI> uris) throws InstallException, ContributionNotFoundException;
+    List<URI> install(List<URI> uris) throws InstallException, ContributionNotFoundException;
 
     /**
-     * Stores and installs an artifact.
+     * Persistently stores a collection of contributions and processes their manifests.
      *
-     * @param source the contribution source
-     * @return a URI that uniquely identifies this contribution within the domain
-     * @throws ContributionException if there an error reading, introspecting or loading the contribution
+     * @param sources the contribution sources
+     * @return metadata representing the dependency ordering of the contributions
+     * @throws StoreException   if there is an error storing the contribution
+     * @throws InstallException if there an error reading, introspecting or loading the contribution
      */
-    URI contribute(ContributionSource source) throws ContributionException;
+    ContributionOrder processManifests(List<ContributionSource> sources) throws StoreException, InstallException;
 
     /**
-     * Stores and installs a collection of artifacts to a domain. Artifacts will be ordered by import dependencies.
+     * Introspects the contents of a contribution.
      *
-     * @param sources the artifacts to contribute
-     * @return a list of contributed URIs.
-     * @throws ContributionException if an error is encountered contributing the artifacts
+     * @param uri the contribution URI
+     * @throws InstallException              if there is an error introspecting the contribution
+     * @throws ContributionNotFoundException if the contribution is not found
      */
-    List<URI> contribute(List<ContributionSource> sources) throws ContributionException;
+    void processContents(URI uri) throws InstallException, ContributionNotFoundException;
 
     /**
      * Uninstalls a contribution.
@@ -211,7 +222,7 @@ public interface ContributionService {
      * @return the list of contributions contained in the profile
      */
     List<URI> getSortedContributionsInProfile(URI uri);
-    
+
     /**
      * Registers a profile.
      *
