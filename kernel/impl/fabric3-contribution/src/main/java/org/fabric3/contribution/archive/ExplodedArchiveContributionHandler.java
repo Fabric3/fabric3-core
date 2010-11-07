@@ -164,7 +164,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
     private boolean exclude(ContributionManifest manifest, File file, File root) {
         for (Pattern pattern : manifest.getScanExcludes()) {
             // construct a file name relative to the root directory as excludes are relative to the archive root  
-            String relativePathName = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
+            String relativePathName = file.toURI().toString().substring(root.toURI().toString().length());
             if (pattern.matcher(relativePathName).matches()) {
                 return true;
             }
