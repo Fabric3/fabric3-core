@@ -18,6 +18,8 @@ licensed under the Apache 2.0 license.
 
     <component f3-core:key="sca:binding.jms" name="JMSBindingLoader">
         <f3-impl:implementation.system class="org.fabric3.binding.jms.loader.JmsBindingLoader"/>
+        <property name="defaultResponseTimeout" source="$systemConfig//jms/@response.timeout"/>
+        <property name="defaultTransactionTimeout" source="$systemConfig//jms/@transaction.timeout"/>
     </component>
 
     <component name="JmsBindingGenerator" f3-core:key="org.fabric3.binding.jms.model.JmsBindingDefinition">

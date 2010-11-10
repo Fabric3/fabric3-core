@@ -52,6 +52,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.oasisopen.sca.annotation.Property;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -127,6 +128,21 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
 
     private LoaderHelper loaderHelper;
+    private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes
+    private int defaultTransactionTimeout = 30; // in seconds
+    private int defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;  // set the timeout in milliseconds to half that of the trx timeout
+
+
+    @Property(required = false)
+    public void setDefaultResponseTimeout(int defaultResponseTimeout) {
+        this.defaultResponseTimeout = defaultResponseTimeout;
+    }
+
+    @Property(required = false)
+    public void setDefaultTransactionTimeout(int defaultTransactionTimeout) {
+        this.defaultTransactionTimeout = defaultTransactionTimeout;
+        defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;
+    }
 
     /**
      * Constructor.
@@ -271,37 +287,40 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             }
         }
         String trxTimeout = reader.getAttributeValue(null, "transaction.timeout");
+        int trxVal = defaultTransactionTimeout;
         if (trxTimeout != null) {
             try {
-                int val = Integer.parseInt(trxTimeout);
-                metadata.setTransactionTimeout(val);
+                trxVal = Integer.parseInt(trxTimeout);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid transaction.timeout attribute", reader, e);
                 context.addError(error);
             }
         }
+        metadata.setTransactionTimeout(trxVal);
 
         String receiveTimeout = reader.getAttributeValue(null, "receive.timeout");
+        int receiveVal = defaultReceiveTimeout;
         if (receiveTimeout != null) {
             try {
-                int val = Integer.parseInt(receiveTimeout);
-                metadata.setReceiveTimeout(val);
+                receiveVal = Integer.parseInt(receiveTimeout);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid receive.timeout attribute", reader, e);
                 context.addError(error);
             }
         }
+        metadata.setReceiveTimeout(receiveVal);
 
         String responseTimeout = reader.getAttributeValue(null, "response.timeout");
+        int responseVal = defaultResponseTimeout;
         if (responseTimeout != null) {
             try {
-                int val = Integer.parseInt(responseTimeout);
-                metadata.setResponseTimeout(val);
+                 responseVal = Integer.parseInt(responseTimeout);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid response.timeout attribute", reader, e);
                 context.addError(error);
             }
         }
+        metadata.setResponseTimeout(responseVal);
 
         String maxMessagesProcess = reader.getAttributeValue(null, "max.messages");
         if (maxMessagesProcess != null) {
@@ -345,8 +364,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(error);
             }
         }
-
-
     }
 
     private ResponseDefinition loadResponse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
