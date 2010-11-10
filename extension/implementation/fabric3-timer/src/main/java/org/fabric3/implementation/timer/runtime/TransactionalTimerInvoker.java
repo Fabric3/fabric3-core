@@ -64,10 +64,12 @@ public class TransactionalTimerInvoker implements Runnable {
     private TimerComponent component;
     private ScopeContainer scopeContainer;
     private TransactionManager tm;
+    private InvokerMonitor monitor;
 
-    public TransactionalTimerInvoker(TimerComponent component, TransactionManager tm) {
+    public TransactionalTimerInvoker(TimerComponent component, TransactionManager tm, InvokerMonitor monitor) {
         this.component = component;
         this.tm = tm;
+        this.monitor = monitor;
         this.scopeContainer = component.getScopeContainer();
     }
 
@@ -80,6 +82,7 @@ public class TransactionalTimerInvoker implements Runnable {
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
         } catch (InstanceLifecycleException e) {
+            monitor.initError(e);
             throw new InvocationRuntimeException(e);
         }
 
@@ -90,21 +93,27 @@ public class TransactionalTimerInvoker implements Runnable {
             ((Runnable) instance).run();
             tm.commit();
         } catch (HeuristicRollbackException e) {
+            monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);
         } catch (RollbackException e) {
+            monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);
         } catch (SystemException e) {
+            monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);
         } catch (HeuristicMixedException e) {
+            monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);
         } catch (NotSupportedException e) {
+            monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);
         } catch (RuntimeException e) {
+            monitor.executeError(e);
             try {
                 tm.rollback();
             } catch (SystemException ex) {
@@ -116,6 +125,7 @@ public class TransactionalTimerInvoker implements Runnable {
             try {
                 scopeContainer.returnWrapper(component, workContext, wrapper);
             } catch (InstanceDestructionException e) {
+                monitor.disposeError(e);
                 //noinspection ThrowFromFinallyBlock
                 throw new InvocationRuntimeException(e);
             }

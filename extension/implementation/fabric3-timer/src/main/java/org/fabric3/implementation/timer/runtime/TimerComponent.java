@@ -69,6 +69,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private TimerService timerService;
     private ScheduledFuture<?> future;
     private ZoneTopologyService topologyService;
+    private InvokerMonitor monitor;
     private Scope scope;
     private HostInfo info;
     private ClassLoader classLoader;
@@ -84,12 +85,14 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           TimerService timerService,
                           TransactionManager tm,
                           ZoneTopologyService topologyService,
-                          HostInfo info) {
+                          HostInfo info,
+                          InvokerMonitor monitor) {
         super(componentId, factoryProvider, scopeContainer, deployable, false, -1, -1);
         this.data = data;
         this.transactional = transactional;
         this.timerService = timerService;
         this.topologyService = topologyService;
+        this.monitor = monitor;
         this.scope = scopeContainer.getScope();
         this.tm = tm;
         this.info = info;
@@ -143,9 +146,9 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private void schedule() {
         Runnable invoker;
         if (transactional) {
-            invoker = new TransactionalTimerInvoker(this, tm);
+            invoker = new TransactionalTimerInvoker(this, tm, monitor);
         } else {
-            invoker = new NonTransactionalTimerInvoker(this);
+            invoker = new NonTransactionalTimerInvoker(this, monitor);
         }
         String name = data.getPoolName();
         long delay = data.getInitialDelay();
@@ -163,14 +166,11 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                 Object interval = classLoader.loadClass(data.getIntervalClass()).newInstance();
                 task = new TimerTask(interval, invoker);
             } catch (InstantiationException e) {
-                // TODO send to monitor
-                e.printStackTrace();
+                monitor.executeError(e);
             } catch (IllegalAccessException e) {
-                // TODO send to monitor
-                e.printStackTrace();
+                monitor.executeError(e);
             } catch (ClassNotFoundException e) {
-                // TODO send to monitor
-                e.printStackTrace();
+                monitor.executeError(e);
             }
             future = timerService.scheduleRecurring(data.getPoolName(), task);
             break;
@@ -189,7 +189,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
             try {
                 this.method = interval.getClass().getMethod("nextInterval");
             } catch (NoSuchMethodException e) {
-                // TODO send to monitor
+                monitor.executeError(e);
             }
             this.interval = interval;
             this.delegate = delegate;

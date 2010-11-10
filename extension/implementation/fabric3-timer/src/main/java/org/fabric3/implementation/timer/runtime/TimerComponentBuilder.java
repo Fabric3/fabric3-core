@@ -44,6 +44,7 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
@@ -72,6 +73,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     private TransactionManager tm;
     private HostInfo info;
     private ZoneTopologyService topologyService;
+    private InvokerMonitor monitor;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                  @Reference InstanceFactoryBuilder factoryBuilder,
@@ -81,13 +83,15 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                  @Reference TransactionManager tm,
                                  @Reference ManagementService managementService,
                                  @Reference IntrospectionHelper helper,
-                                 @Reference HostInfo info) {
+                                 @Reference HostInfo info,
+                                 @Monitor InvokerMonitor monitor) {
         super(classLoaderRegistry, propertyBuilder, managementService, helper);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
         this.timerService = timerService;
         this.tm = tm;
         this.info = info;
+        this.monitor = monitor;
     }
 
     @Reference(required = false)
@@ -119,7 +123,8 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                                       timerService,
                                                       tm,
                                                       topologyService,
-                                                      info);
+                                                      info,
+                                                      monitor);
         buildContexts(component, provider);
         export(definition, classLoader, component);
         return component;

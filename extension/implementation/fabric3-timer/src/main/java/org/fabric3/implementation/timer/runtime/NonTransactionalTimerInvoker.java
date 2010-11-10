@@ -53,10 +53,12 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  */
 public class NonTransactionalTimerInvoker implements Runnable {
     private TimerComponent component;
+    private InvokerMonitor monitor;
     private ScopeContainer scopeContainer;
 
-    public NonTransactionalTimerInvoker(TimerComponent component) {
+    public NonTransactionalTimerInvoker(TimerComponent component, InvokerMonitor monitor) {
         this.component = component;
+        this.monitor = monitor;
         this.scopeContainer = component.getScopeContainer();
     }
 
@@ -69,6 +71,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
         } catch (InstanceLifecycleException e) {
+            monitor.initError(e);
             throw new InvocationRuntimeException(e);
         }
 
@@ -77,6 +80,9 @@ public class NonTransactionalTimerInvoker implements Runnable {
             WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
             try {
                 ((Runnable) instance).run();
+            } catch (RuntimeException e) {
+                monitor.executeError(e);
+                throw e;
             } finally {
                 WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             }
@@ -84,6 +90,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
             try {
                 scopeContainer.returnWrapper(component, workContext, wrapper);
             } catch (InstanceDestructionException e) {
+                monitor.disposeError(e);
                 //noinspection ThrowFromFinallyBlock
                 throw new InvocationRuntimeException(e);
             }
