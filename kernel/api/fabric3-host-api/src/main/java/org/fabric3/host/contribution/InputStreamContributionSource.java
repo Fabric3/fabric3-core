@@ -35,15 +35,14 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.controller;
+package org.fabric3.host.contribution;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.InputStreamSource;
+import org.fabric3.host.stream.Source;
 
 /**
  * A contribution artifact that is sourced from an InputStream.
@@ -53,7 +52,6 @@ import org.fabric3.host.stream.InputStreamSource;
 public class InputStreamContributionSource implements ContributionSource {
     private URI uri;
     private Source source;
-    private boolean extension;
 
     public InputStreamContributionSource(URI uri, InputStream stream) {
         this.uri = uri;
@@ -69,7 +67,7 @@ public class InputStreamContributionSource implements ContributionSource {
     }
 
     public boolean isExtension() {
-        return extension;
+        return false;
     }
 
     public Source getSource() {

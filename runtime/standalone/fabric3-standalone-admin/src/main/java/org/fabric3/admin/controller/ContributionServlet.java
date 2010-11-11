@@ -50,6 +50,7 @@ import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.DuplicateContributionException;
+import org.fabric3.host.contribution.InputStreamContributionSource;
 
 /**
  * @version $Rev$ $Date$
