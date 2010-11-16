@@ -308,15 +308,19 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             }
         }
         try {
-            contributionService.uninstall(uris);
-            contributionService.remove(uris);
-            List<URI> stored = contributionService.store(sources);
-            List<URI> contributions = contributionService.install(stored);
-            domain.include(contributions);
-            for (FileSystemResource resource : updatedResources) {
-                resource.setState(FileSystemResourceState.PROCESSED);
-                resource.checkpoint();
-                monitor.processed(resource.getName());
+            if (!uris.isEmpty()) {
+                contributionService.uninstall(uris);
+                contributionService.remove(uris);
+            }
+            if (!sources.isEmpty()) {
+                List<URI> stored = contributionService.store(sources);
+                List<URI> contributions = contributionService.install(stored);
+                domain.include(contributions);
+                for (FileSystemResource resource : updatedResources) {
+                    resource.setState(FileSystemResourceState.PROCESSED);
+                    resource.checkpoint();
+                    monitor.processed(resource.getName());
+                }
             }
         } catch (ContributionException e) {
             for (FileSystemResource resource : updatedResources) {
