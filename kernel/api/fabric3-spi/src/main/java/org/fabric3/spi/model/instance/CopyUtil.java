@@ -68,7 +68,6 @@ public class CopyUtil {
         return copy(composite, composite.getParent());
     }
 
-
     /**
      * Performs the copy using depth-first traversal.
      *
@@ -276,7 +275,7 @@ public class CopyUtil {
             LogicalBinding<?> copy = new LogicalBinding(binding.getDefinition(), to, binding.getDeployable());
             copy.setState(binding.getState());
             to.addBinding(copy);
-            copy.setAssigned(true);
+            copy.setAssigned(binding.isAssigned());
             copy.addIntents(binding.getIntents());
             copy.addPolicySets(binding.getPolicySets());
         }
