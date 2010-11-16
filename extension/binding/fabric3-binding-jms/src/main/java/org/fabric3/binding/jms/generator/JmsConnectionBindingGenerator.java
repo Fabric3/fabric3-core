@@ -55,7 +55,10 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
@@ -77,6 +80,11 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         URI uri = binding.getDefinition().getTargetUri();
+        Bindable parent = binding.getParent();
+        if (parent instanceof LogicalConsumer || parent instanceof LogicalChannel) {
+            // consumers and channels do not have configured target URIs; use the parent URI for the JMS endpoint name
+            uri = parent.getUri();
+        }
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);

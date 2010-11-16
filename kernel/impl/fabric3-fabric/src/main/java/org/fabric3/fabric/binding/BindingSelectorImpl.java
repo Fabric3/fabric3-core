@@ -49,19 +49,21 @@ import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
+import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
+
 /**
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an
  * explicit binding, its configuration will be used to construct the reference binding. If a service does not have an explicit binding, the wire uses
- * binding.sca. The BindingSelector will select an appropriate remote transport and create binding configuraton for both sides of the wire.
+ * binding.sca. The BindingSelector will select an appropriate remote transport and create binding configuration for both sides of the wire.
  *
  * @version $Rev$ $Date$
  */
@@ -124,6 +126,12 @@ public class BindingSelectorImpl implements BindingSelector {
                     // producer and channel are local, no need for a binding
                     continue;
                 }
+                for (LogicalBinding<?> binding : channel.getBindings()) {
+                    // if the channel has an explicit binding, do not use binding.sca
+                    if (!binding.isAssigned()) {
+                        return;
+                    }
+                }
                 selectBinding(producer, channel);
             }
         }
@@ -147,7 +155,7 @@ public class BindingSelectorImpl implements BindingSelector {
                 target.getBindings().clear();
                 provider.bind(wire);
                 wire.setSourceBinding(source.getBindings().get(0));
-                if (!target.getBindings().isEmpty()){
+                if (!target.getBindings().isEmpty()) {
                     wire.setTargetBinding(target.getBindings().get(0));
                 } else {
                     wire.setTargetBinding(target.getLeafService().getBindings().get(0));

@@ -49,12 +49,12 @@ import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -84,6 +84,9 @@ public class AbstractChannelCommandGenerator {
     protected void generateDefinitions(LogicalChannel channel, ChannelConnectionCommand connectionCommand, boolean incremental)
             throws GenerationException {
         for (LogicalBinding<?> binding : channel.getBindings()) {
+            if (binding.getState() == LogicalState.PROVISIONED && incremental) {
+                continue;
+            }
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
             PhysicalConnectionSourceDefinition source = bindingGenerator.generateConnectionSource(binding);
             PhysicalConnectionTargetDefinition target = new ChannelTargetDefinition(channel.getUri());
