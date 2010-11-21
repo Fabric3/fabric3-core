@@ -41,55 +41,27 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.binding.web.provision;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.fabric.command.ChannelConnectionCommand;
-import org.fabric3.fabric.generator.CommandGenerator;
-import org.fabric3.fabric.generator.GeneratorRegistry;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.binding.web.common.OperationsAllowed;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
- * Generates commands to attach/detach a channel from a binding transport.
+ * Used to provision Atmosphere infrastructure for a channel configured with the web binding.
  *
  * @version $Revision$ $Date$
  */
-@EagerInit
-public class BoundChannelCommandGenerator extends AbstractChannelCommandGenerator implements CommandGenerator {
-    private int order;
+public class WebChannelBindingDefinition extends PhysicalChannelBindingDefinition {
+    private static final long serialVersionUID = 4552388955256225321L;
 
-    public BoundChannelCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
-        super(generatorRegistry);
-        this.order = order;
+    private OperationsAllowed allowed;
+
+    public WebChannelBindingDefinition(OperationsAllowed allowed) {
+        this.allowed = allowed;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
-    public ChannelConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (!(component instanceof LogicalCompositeComponent)) {
-            return null;
-        }
-        LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-        ChannelConnectionCommand connectionCommand = new ChannelConnectionCommand();
-        for (LogicalChannel channel : composite.getChannels()) {
-            if (!channel.isConcreteBound()) {
-                continue;
-            }
-            generateDefinitions(channel, connectionCommand, incremental);
-        }
-
-        if (connectionCommand.getAttachCommands().isEmpty() && connectionCommand.getDetachCommands().isEmpty()) {
-            return null;
-        }
-        return connectionCommand;
+    public OperationsAllowed getAllowed() {
+        return allowed;
     }
 
 }

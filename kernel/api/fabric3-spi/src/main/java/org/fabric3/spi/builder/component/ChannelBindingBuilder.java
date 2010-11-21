@@ -41,74 +41,34 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.spi.builder.component;
 
-import java.io.Serializable;
-import java.net.URI;
-import javax.xml.namespace.QName;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
- * Used to provision a channel on a runtime.
+ * Builds and disposes channel binding infrastructure.
  *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
+ * @version $Rev$ $Date$
  */
-public class PhysicalChannelDefinition implements Serializable {
-    private static final long serialVersionUID = 8681183877136491160L;
-    private URI uri;
-    private QName deployable;
-    private boolean synchronous;
-    private boolean replicate;
-    private PhysicalChannelBindingDefinition bindingDefinition;
-
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean synchronous, boolean replicate) {
-        this.uri = uri;
-        this.deployable = deployable;
-        this.synchronous = synchronous;
-        this.replicate = replicate;
-    }
+public interface ChannelBindingBuilder<B extends PhysicalChannelBindingDefinition> {
 
     /**
-     * Returns the channel URI.
+     * Build (provision) the infrastructure.
      *
-     * @return the channel URI
+     * @param definition the binding definition
+     * @param channel    the channel
+     * @throws BuilderException if there is an error during the build process
      */
-    public URI getUri() {
-        return uri;
-    }
+    void build(B definition, Channel channel) throws BuilderException;
 
     /**
-     * Returns the deployable composite this channel is defined in.
+     * Disposes the infrastructure.
      *
-     * @return the composite qualified name
+     * @param definition the binding definition
+     * @param channel    the channel
+     * @throws BuilderException if there is an error during the dispose process
      */
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    /**
-     * Returns true if this channel synchronously dispatches events to consumers.
-     *
-     * @return true if this channel synchronously dispatches events to consumers.
-     */
-    public boolean isSynchronous() {
-        return synchronous;
-    }
-
-    /**
-     * Returns true if the channel replicates events to all channel instances in a zone.
-     *
-     * @return true if the channel replicates events to all channel instances in a zone
-     */
-    public boolean isReplicate() {
-        return replicate;
-    }
-
-
-    public PhysicalChannelBindingDefinition getBindingDefinition() {
-        return bindingDefinition;
-    }
-
-    public void setBindingDefinition(PhysicalChannelBindingDefinition bindingDefinition) {
-        this.bindingDefinition = bindingDefinition;
-    }
+    void dispose(B definition, Channel channel) throws BuilderException;
 }

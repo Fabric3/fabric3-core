@@ -45,6 +45,9 @@ package org.fabric3.spi.generator;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
@@ -56,24 +59,33 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 public interface ConnectionBindingGenerator<BD extends BindingDefinition> {
 
     /**
-     * Generates metadata used to attach an event connection to a transport that is the source of an event stream. The event connection may flow to a
-     * channel or consumer.
+     * Generates metadata used to provision a binding transport when a channel is deployed. If provisioning is not required, this method may return
+     * null.
      *
-     * @param binding the binding
-     * @return the connection metadata
+     * @param binding the channel binding configuration
+     * @return the binding transport metadata or null if provisioning is not required
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<BD> binding) throws GenerationException;
+    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding) throws GenerationException;
 
     /**
-     * Generates metadata used to attach an event connection to a transport that is the target of an event stream. The source of the connection may be
-     * a channel or producer.
+     * Generates metadata used to attach a consumer to a channel binding transport.
      *
-     * @param binding the binding
+     * @param consumer rhe consumer
+     * @param binding  the channel binding configuration
      * @return the connection metadata
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalBinding<BD> binding) throws GenerationException;
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding) throws GenerationException;
 
+    /**
+     * Generates metadata used to attach a producer to a channel binding transport.
+     *
+     * @param producer the producer
+     * @param binding  the channel binding configuration
+     * @return the connection metadata
+     * @throws GenerationException if an error occurs during the generation process
+     */
+    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding) throws GenerationException;
 
 }

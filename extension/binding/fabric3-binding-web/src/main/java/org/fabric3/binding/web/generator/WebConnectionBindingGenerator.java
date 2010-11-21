@@ -43,13 +43,21 @@
  */
 package org.fabric3.binding.web.generator;
 
+import java.net.URI;
+
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.model.WebBindingDefinition;
+import org.fabric3.binding.web.provision.WebChannelBindingDefinition;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
+import org.fabric3.binding.web.provision.WebConnectionTargetDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
@@ -61,15 +69,21 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 @EagerInit
 public class WebConnectionBindingGenerator implements ConnectionBindingGenerator<WebBindingDefinition> {
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<WebBindingDefinition> binding) {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<WebBindingDefinition> binding) throws GenerationException {
         OperationsAllowed allowed = binding.getDefinition().getAllowed();
+        return new WebChannelBindingDefinition(allowed);
+    }
 
-        WebConnectionSourceDefinition definition = new WebConnectionSourceDefinition(allowed);
-        definition.setUri(binding.getParent().getUri());
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<WebBindingDefinition> binding) {
+        URI channelUri = binding.getParent().getUri();
+        return new WebConnectionSourceDefinition(consumer.getUri(), channelUri);
+    }
+
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<WebBindingDefinition> binding) {
+        WebConnectionTargetDefinition definition = new WebConnectionTargetDefinition();
+        URI channelUri = binding.getParent().getUri();
+        definition.setTargetUri(channelUri);
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalBinding<WebBindingDefinition> binding) {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
@@ -66,7 +65,6 @@ import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
-import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -79,6 +77,10 @@ import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
+import org.fabric3.spi.generator.policy.PolicyActivationException;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.CopyUtil;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -87,10 +89,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.plan.DeploymentPlan;
-import org.fabric3.spi.generator.policy.PolicyActivationException;
-import org.fabric3.spi.generator.policy.PolicyAttacher;
-import org.fabric3.spi.generator.policy.PolicyRegistry;
-import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
  * Base class for a domain.
@@ -112,7 +110,6 @@ public abstract class AbstractDomain implements Domain {
     protected LogicalComponentManager logicalComponentManager;
     protected LogicalModelInstantiator logicalModelInstantiator;
     protected PolicyAttacher policyAttacher;
-    protected BindingSelector bindingSelector;
     protected Collector collector;
     protected ContributionHelper contributionHelper;
     protected HostInfo info;
@@ -128,7 +125,6 @@ public abstract class AbstractDomain implements Domain {
      * @param generator          the physical model generator
      * @param instantiator       the logical model instantiator
      * @param policyAttacher     the attacher for applying external attachment policies
-     * @param bindingSelector    the selector for binding.sca
      * @param deployer           the service for sending deployment commands
      * @param collector          the collector for undeploying components
      * @param contributionHelper the contribution helper
@@ -139,7 +135,6 @@ public abstract class AbstractDomain implements Domain {
                           Generator generator,
                           LogicalModelInstantiator instantiator,
                           PolicyAttacher policyAttacher,
-                          BindingSelector bindingSelector,
                           Deployer deployer,
                           Collector collector,
                           ContributionHelper contributionHelper,
@@ -149,7 +144,6 @@ public abstract class AbstractDomain implements Domain {
         this.logicalModelInstantiator = instantiator;
         this.logicalComponentManager = lcm;
         this.policyAttacher = policyAttacher;
-        this.bindingSelector = bindingSelector;
         this.deployer = deployer;
         this.collector = collector;
         this.contributionHelper = contributionHelper;
@@ -384,6 +378,16 @@ public abstract class AbstractDomain implements Domain {
     protected abstract boolean isTransactional();
 
     /**
+     * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
+     *
+     * @param domain the domain component
+     * @throws DeploymentException if an error occurs during binding selection
+     */
+    protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
+        // no-op
+    }
+
+    /**
      * Creates a wrapper used to include a composite at the domain level. The wrapper is thrown away during the inclusion.
      *
      * @param deployable the deployable being included
@@ -583,25 +587,6 @@ public abstract class AbstractDomain implements Domain {
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW) {
                 allocator.allocate(component, plan);
-            }
-        }
-    }
-
-    /**
-     * Selects bindings for references targeted to remote services for a set of components being deployed by delegating to a BindingSelector.
-     *
-     * @param domain the domain component
-     * @throws DeploymentException if an error occurs during binding selection
-     */
-    private void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
-        Collection<LogicalComponent<?>> components = domain.getComponents();
-        for (LogicalComponent<?> component : components) {
-            if (component.getState() == LogicalState.NEW) {
-                try {
-                    bindingSelector.selectBindings(component);
-                } catch (BindingSelectionException e) {
-                    throw new DeploymentException(e);
-                }
             }
         }
     }

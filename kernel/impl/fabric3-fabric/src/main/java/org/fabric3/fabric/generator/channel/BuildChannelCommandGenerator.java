@@ -40,20 +40,26 @@ package org.fabric3.fabric.generator.channel;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.fabric.generator.GeneratorNotFoundException;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -65,9 +71,11 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class BuildChannelCommandGenerator implements CommandGenerator {
 
     private int order;
+    private GeneratorRegistry generatorRegistry;
 
-    public BuildChannelCommandGenerator(@Property(name = "order") int order) {
+    public BuildChannelCommandGenerator(@Property(name = "order") int order, @Reference GeneratorRegistry generatorRegistry) {
         this.order = order;
+        this.generatorRegistry = generatorRegistry;
     }
 
     public int getOrder() {
@@ -86,7 +94,7 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         return new BuildChannelsCommand(definitions);
     }
 
-    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite, boolean incremental) {
+    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite, boolean incremental) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
@@ -95,10 +103,26 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
                 boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
                 boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
                 PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicate);
+                generateBinding(channel, definition);
                 definitions.add(definition);
             }
         }
         return definitions;
     }
 
+    @SuppressWarnings({"unchecked"})
+    private void generateBinding(LogicalChannel channel, PhysicalChannelDefinition definition) throws GenerationException {
+        if (!channel.getBindings().isEmpty()) {
+            // if the channel is configured with a binding, generate provisioning metadata for it
+            LogicalBinding<?> binding = channel.getBindings().get(0);
+            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
+            definition.setBindingDefinition(bindingDefinition);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+        return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
+    }
 }

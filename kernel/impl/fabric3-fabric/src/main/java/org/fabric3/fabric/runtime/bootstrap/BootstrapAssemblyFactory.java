@@ -48,8 +48,6 @@ import org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl;
 import org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.fabric.binding.BindingSelector;
-import org.fabric3.fabric.binding.BindingSelectorImpl;
 import org.fabric3.fabric.builder.ChannelConnector;
 import org.fabric3.fabric.builder.ChannelConnectorImpl;
 import org.fabric3.fabric.builder.Connector;
@@ -259,14 +257,11 @@ public class BootstrapAssemblyFactory {
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
 
-        BindingSelector bindingSelector = new BindingSelectorImpl();
-
         return new RuntimeDomain(metaDataStore,
                                  generator,
                                  logicalModelInstantiator,
                                  policyAttacher,
                                  logicalComponentManager,
-                                 bindingSelector,
                                  deployer,
                                  collector,
                                  contributionHelper,

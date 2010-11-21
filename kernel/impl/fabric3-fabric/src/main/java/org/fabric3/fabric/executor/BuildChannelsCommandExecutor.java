@@ -44,7 +44,9 @@
 package org.fabric3.fabric.executor;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 
@@ -59,6 +61,8 @@ import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.ReplicationHandler;
 import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.RegistrationException;
@@ -67,6 +71,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -81,6 +86,8 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     private CommandExecutorRegistry executorRegistry;
     private ZoneTopologyService topologyService;
     private boolean replicationCapable;
+    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
+            builders = Collections.emptyMap();
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
@@ -98,6 +105,11 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
             this.topologyService = services.get(0);
             replicationCapable = topologyService.supportsDynamicChannels();
         }
+    }
+
+    @Reference(required = false)
+    public void setBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> builders) {
+        this.builders = builders;
     }
 
     @Init
@@ -130,11 +142,33 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
                 } else {
                     channel = new ChannelImpl(uri, deployable, fanOutHandler);
                 }
+                PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
+                buildBinding(channel, bindingDefinition);
                 channelManager.register(channel);
             }
         } catch (RegistrationException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void buildBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
+        if (bindingDefinition != null) {
+            ChannelBindingBuilder builder = getBuilder(bindingDefinition);
+            try {
+                builder.build(bindingDefinition, channel);
+            } catch (BuilderException e) {
+                throw new ExecutionException(e);
+            }
+        }
+    }
+
+    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
+        ChannelBindingBuilder<?> builder = builders.get(bindingDefinition.getClass());
+        if (builder == null) {
+            throw new ExecutionException("Channel binding builder not found for type " + bindingDefinition.getClass());
+        }
+        return builder;
     }
 
 }

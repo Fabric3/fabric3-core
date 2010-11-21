@@ -76,7 +76,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
 
     public void attach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI sourceUri = source.getSourceUri();
+        URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         if (component == null) {
@@ -98,7 +98,7 @@ public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<
     }
 
     public void detach(SpringConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI sourceName = UriHelper.getDefragmentedName(source.getSourceUri());
+        URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         SpringComponent component = (SpringComponent) manager.getComponent(sourceName);
         component.detach(source.getProducerName());
     }

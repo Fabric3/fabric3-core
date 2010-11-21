@@ -76,7 +76,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
 
     public void attach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI sourceUri = source.getSourceUri();
+        URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         if (component == null) {
@@ -99,7 +99,7 @@ public class JavaSourceConnectionAttacher implements SourceConnectionAttacher<Ja
     }
 
     public void detach(JavaConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI sourceName = UriHelper.getDefragmentedName(source.getSourceUri());
+        URI sourceName = UriHelper.getDefragmentedName(source.getUri());
         JavaComponent component = (JavaComponent) manager.getComponent(sourceName);
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);

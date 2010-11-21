@@ -54,7 +54,6 @@ import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GenerationType;
 import org.fabric3.fabric.generator.channel.DomainChannelCommandGenerator;
@@ -163,10 +162,6 @@ public class GeneratorImpl implements Generator {
             CompensatableCommand command = channelGenerator.generateBuild(channel, incremental);
             if (command != null) {
                 deployment.addCommand(zone, command);
-            }
-            ChannelConnectionCommand connectionCommand = channelGenerator.generateAttachDetach(channel, incremental);
-            if (connectionCommand != null) {
-                deployment.addCommand(zone, connectionCommand);
             }
         }
 

@@ -50,9 +50,17 @@ Public License. See the accompanying license file for details.
         <property name="timeout" source="$systemConfig//web.binding/@timeout" />
     </component>
 
+    <component name="WebChannelBindingBuilder" f3-core:key="org.fabric3.binding.web.provision.WebChannelBindingDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebChannelBindingBuilder"/>
+        <property name="timeout" source="$systemConfig//web.binding/@timeout" />
+    </component>
+
     <component name="WebBindingSourceConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
         <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebSourceConnectionAttacher"/>
-        <property name="timeout" source="$systemConfig//web.binding/@timeout" />
+    </component>
+
+    <component name="WebBindingTargetConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionTargetDefinition">
+        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebTargetConnectionAttacher"/>
     </component>
 
     <component name="WebTargetWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebTargetDefinition">

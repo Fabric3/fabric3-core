@@ -46,9 +46,11 @@ import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DomainListener;
@@ -56,6 +58,7 @@ import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Implements a distributed domain containing user-defined services.
@@ -64,6 +67,7 @@ import org.fabric3.spi.generator.policy.PolicyRegistry;
  */
 public class DistributedDomain extends AbstractDomain implements Domain {
     private boolean transactional;
+    private BindingSelector bindingSelector;
 
     public DistributedDomain(@Reference(name = "store") MetaDataStore metaDataStore,
                              @Reference(name = "logicalComponentManager") LogicalComponentManager logicalComponentManager,
@@ -80,12 +84,12 @@ public class DistributedDomain extends AbstractDomain implements Domain {
               generator,
               logicalModelInstantiator,
               policyAttacher,
-              bindingSelector,
               deployer,
               collector,
               contributionHelper,
               info);
         generateFullDeployment = RuntimeMode.CONTROLLER == info.getRuntimeMode();
+        this.bindingSelector = bindingSelector;
     }
 
     /**
@@ -151,6 +155,15 @@ public class DistributedDomain extends AbstractDomain implements Domain {
         }
         return false;
     }
+
+    protected void selectBinding(LogicalCompositeComponent domain) throws DeploymentException {
+        try {
+            bindingSelector.selectBindings(domain);
+        } catch (BindingSelectionException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
 
 
 }

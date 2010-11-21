@@ -41,36 +41,15 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.builder.component;
+package org.fabric3.binding.web.provision;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * Attaches and detaches a {@link ChannelConnection} from a component producer, channel or channel binding.
+ * Used to attach a producer to a channel configured with the web binding.
  *
- * @version $Rev$ $Date$
+ * @version $Revision$ $Date$
  */
-public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceDefinition> {
-
-    /**
-     * Attach a connection to a component producer or channel binding transport.
-     *
-     * @param source     the source metadata
-     * @param target     the target metadata
-     * @param connection the channel connection
-     * @throws ConnectionAttachException if an error is encountered performing the attach
-     */
-    void attach(PCSD source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) throws ConnectionAttachException;
-
-    /**
-     * Detach a connection from a source.
-     *
-     * @param source the source metadata
-     * @param target the target metadata
-     * @throws ConnectionAttachException if an error is encountered performing the attach
-     */
-    void detach(PCSD source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException;
-
+public class WebConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
+    private static final long serialVersionUID = 4362255087198821030L;
 }

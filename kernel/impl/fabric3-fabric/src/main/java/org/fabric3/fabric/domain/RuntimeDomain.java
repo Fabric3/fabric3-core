@@ -39,20 +39,19 @@ package org.fabric3.fabric.domain;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.lcm.LogicalComponentManager;
 
 /**
  * Implements a domain for system components in a runtime. Fabric3 runtimes are constituted using SCA components and the runtime domain manages
- * deployment of those system components. When a runtime is booted, the runtime domain is provided with a set of primoridal services for deploying
+ * deployment of those system components. When a runtime is booted, the runtime domain is provided with a set of primordial services for deploying
  * system components. After bootstrap, the runtime domain is reinjected with a new set of fully-configured deployment services.
  *
  * @version $Rev$ $Date$
@@ -64,7 +63,6 @@ public class RuntimeDomain extends AbstractDomain {
                          @Reference LogicalModelInstantiator logicalModelInstantiator,
                          @Reference PolicyAttacher policyAttacher,
                          @Reference LogicalComponentManager logicalComponentManager,
-                         @Reference BindingSelector bindingSelector,
                          @Reference Deployer deployer,
                          @Reference Collector collector,
                          @Reference ContributionHelper contributionHelper,
@@ -74,7 +72,6 @@ public class RuntimeDomain extends AbstractDomain {
               generator,
               logicalModelInstantiator,
               policyAttacher,
-              bindingSelector,
               deployer,
               collector,
               contributionHelper,
@@ -119,4 +116,5 @@ public class RuntimeDomain extends AbstractDomain {
     protected boolean isTransactional() {
         return false;
     }
+
 }

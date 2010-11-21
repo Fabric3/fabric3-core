@@ -43,25 +43,26 @@
  */
 package org.fabric3.binding.web.provision;
 
-import org.fabric3.binding.web.common.OperationsAllowed;
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Metadata for attaching a channel to a websocket or comet connection.
+ * Used to attach a consumer to a channel configured with the web binding.
  *
  * @version $Revision$ $Date$
  */
 public class WebConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -3299304017732795098L;
 
-    private OperationsAllowed allowed;
+    private URI channelUri;
 
-    public WebConnectionSourceDefinition(OperationsAllowed allowed) {
-        this.allowed = allowed;
+    public WebConnectionSourceDefinition(URI sourceUri, URI channelUri) {
+        this.channelUri = channelUri;
+        setUri(sourceUri);
     }
 
-    public OperationsAllowed getAllowed() {
-        return allowed;
+    public URI getChannelUri() {
+        return channelUri;
     }
-
 }

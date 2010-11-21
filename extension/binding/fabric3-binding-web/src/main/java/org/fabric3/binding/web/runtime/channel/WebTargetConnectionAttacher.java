@@ -42,54 +42,41 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
-import org.fabric3.binding.web.runtime.common.BroadcasterManager;
+import org.fabric3.binding.web.provision.WebConnectionTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Attaches a consumer to a channel configured with the web binding. The connection to the channel is local since the web binding does not provide
- * native multicast. Instead, a channel is connected to a web socket or comet connection and multiplexes events using local handlers.
+ * Attaches a producer to a channel configured with the web binding. Since the web binding does not support native multicast, events are sent to a
+ * channel locally which replicates the event across a zone.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class WebSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSourceDefinition> {
+public class WebTargetConnectionAttacher implements TargetConnectionAttacher<WebConnectionTargetDefinition> {
     private ChannelManager channelManager;
 
-    public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
-                                       @Reference BroadcasterManager broadcasterManager,
-                                       @Reference PubSubManager pubSubManager,
-                                       @Reference ServletHost servletHost,
-                                       @Monitor ChannelMonitor monitor) {
+    public WebTargetConnectionAttacher(@Reference ChannelManager channelManager) {
         this.channelManager = channelManager;
     }
 
-    public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI sourceUri = source.getUri();
-        URI channelUri = source.getChannelUri();
-        Channel channel = getChannel(channelUri);
-        channel.subscribe(sourceUri, connection);
+    public void attach(PhysicalConnectionSourceDefinition source, WebConnectionTargetDefinition target, ChannelConnection connection)
+            throws ChannelNotFoundException {
+        Channel channel = getChannel(target.getTargetUri());
+        channel.attach(connection);
     }
 
-    public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI sourceUri = source.getUri();
-        URI channelUri = source.getChannelUri();
-        Channel channel = getChannel(channelUri);
-        channel.unsubscribe(sourceUri);
+    public void detach(PhysicalConnectionSourceDefinition source, WebConnectionTargetDefinition target) throws ConnectionAttachException {
     }
 
-    private Channel getChannel(URI sourceUri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(sourceUri);
+    private Channel getChannel(URI uri) throws ChannelNotFoundException {
+        Channel channel = channelManager.getChannel(uri);
         if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + sourceUri);
+            throw new ChannelNotFoundException("Channel not found: " + uri);
         }
         return channel;
     }

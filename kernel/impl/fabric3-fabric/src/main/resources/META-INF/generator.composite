@@ -111,11 +111,6 @@
         <property name="order">3</property>
     </component>
 
-    <component name="BoundChannelCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.BoundChannelCommandGenerator"/>
-        <property name="order">3</property>
-    </component>
-
     <component name="ProducerCommandGenerator">
         <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ProducerCommandGenerator"/>
         <property name="order">3</property>

@@ -40,30 +40,34 @@ package org.fabric3.fabric.generator.channel;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGenerator implements DomainChannelCommandGenerator {
+public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGenerator {
+    private GeneratorRegistry generatorRegistry;
 
     public DomainChannelCommandGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
-        super(generatorRegistry);
+        this.generatorRegistry = generatorRegistry;
     }
 
     public CompensatableCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
@@ -82,19 +86,7 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
         return new DisposeChannelsCommand(definitions);
     }
 
-    public ChannelConnectionCommand generateAttachDetach(LogicalChannel channel, boolean incremental) throws GenerationException {
-        if (!channel.isConcreteBound()) {
-            return null;
-        }
-        ChannelConnectionCommand connectionCommand = new ChannelConnectionCommand();
-        generateDefinitions(channel, connectionCommand, incremental);
-        if (connectionCommand.getAttachCommands().isEmpty() && connectionCommand.getDetachCommands().isEmpty()) {
-            return null;
-        }
-        return connectionCommand;
-    }
-
-    private List<PhysicalChannelDefinition> createBuildDefinitions(LogicalChannel channel, boolean incremental) {
+    private List<PhysicalChannelDefinition> createBuildDefinitions(LogicalChannel channel, boolean incremental) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         if (channel.getState() == LogicalState.NEW || !incremental) {
             generateChannelDefinition(channel, definitions);
@@ -102,8 +94,7 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
         return definitions;
     }
 
-
-    private List<PhysicalChannelDefinition> createDisposeDefinitions(LogicalChannel channel) {
+    private List<PhysicalChannelDefinition> createDisposeDefinitions(LogicalChannel channel) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         if (channel.getState() == LogicalState.MARKED) {
             generateChannelDefinition(channel, definitions);
@@ -111,12 +102,28 @@ public class DomainChannelCommandGeneratorImpl extends AbstractChannelCommandGen
         return definitions;
     }
 
-    private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) {
+    @SuppressWarnings({"unchecked"})
+    private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) throws GenerationException {
         URI uri = channel.getUri();
         QName deployable = channel.getDeployable();
         boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
         boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
         PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicate);
+
+        if (!channel.getBindings().isEmpty()) {
+            // generate binding information
+            LogicalBinding<?> binding = channel.getBindings().get(0);
+            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
+            definition.setBindingDefinition(bindingDefinition);
+        }
+
         definitions.add(definition);
     }
+
+    @SuppressWarnings("unchecked")
+    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
+        return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
+    }
+
 }

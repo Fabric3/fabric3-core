@@ -56,13 +56,15 @@ public class NoSCABindingProviderException extends BindingSelectionException {
 
     public String getMessage() {
         StringBuilder builder = new StringBuilder(super.getMessage());
-        builder.append("\nThe SCA binding selectors reported the following:\n");
-        for (BindingMatchResult result : results) {
-            builder.append(result.getType()).append("\n");
-            for (String reason : result.getReasons()) {
-                builder.append("  ").append(reason).append("\n");
-            }
+        if (!results.isEmpty()) {
+            builder.append("\nThe SCA binding selectors reported the following:\n");
+            for (BindingMatchResult result : results) {
+                builder.append(result.getType()).append("\n");
+                for (String reason : result.getReasons()) {
+                    builder.append("  ").append(reason).append("\n");
+                }
 
+            }
         }
         return builder.toString();
     }

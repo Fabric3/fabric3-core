@@ -44,71 +44,13 @@
 package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
-import java.net.URI;
-import javax.xml.namespace.QName;
 
 /**
- * Used to provision a channel on a runtime.
+ * Used to provision a binding transport configured on a channel.
  *
  * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
-public class PhysicalChannelDefinition implements Serializable {
-    private static final long serialVersionUID = 8681183877136491160L;
-    private URI uri;
-    private QName deployable;
-    private boolean synchronous;
-    private boolean replicate;
-    private PhysicalChannelBindingDefinition bindingDefinition;
+public abstract class PhysicalChannelBindingDefinition implements Serializable {
+    private static final long serialVersionUID = -448452657885276687L;
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean synchronous, boolean replicate) {
-        this.uri = uri;
-        this.deployable = deployable;
-        this.synchronous = synchronous;
-        this.replicate = replicate;
-    }
-
-    /**
-     * Returns the channel URI.
-     *
-     * @return the channel URI
-     */
-    public URI getUri() {
-        return uri;
-    }
-
-    /**
-     * Returns the deployable composite this channel is defined in.
-     *
-     * @return the composite qualified name
-     */
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    /**
-     * Returns true if this channel synchronously dispatches events to consumers.
-     *
-     * @return true if this channel synchronously dispatches events to consumers.
-     */
-    public boolean isSynchronous() {
-        return synchronous;
-    }
-
-    /**
-     * Returns true if the channel replicates events to all channel instances in a zone.
-     *
-     * @return true if the channel replicates events to all channel instances in a zone
-     */
-    public boolean isReplicate() {
-        return replicate;
-    }
-
-
-    public PhysicalChannelBindingDefinition getBindingDefinition() {
-        return bindingDefinition;
-    }
-
-    public void setBindingDefinition(PhysicalChannelBindingDefinition bindingDefinition) {
-        this.bindingDefinition = bindingDefinition;
-    }
 }

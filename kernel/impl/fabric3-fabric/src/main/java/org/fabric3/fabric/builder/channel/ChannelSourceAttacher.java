@@ -42,12 +42,12 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
@@ -63,16 +63,16 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
         this.channelManager = channelManager;
     }
 
-    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target,  ChannelConnection connection)
+    public void attach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI uri = source.getSourceUri();
+        URI uri = source.getUri();
         Channel channel = getChannel(uri);
         URI targetUri = target.getTargetUri();
         channel.subscribe(targetUri, connection);
     }
 
     public void detach(ChannelSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI uri = source.getSourceUri();
+        URI uri = source.getUri();
         Channel channel = getChannel(uri);
         URI targetUri = target.getTargetUri();
         channel.unsubscribe(targetUri);

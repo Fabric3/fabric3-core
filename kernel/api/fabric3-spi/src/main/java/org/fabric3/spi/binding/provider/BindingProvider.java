@@ -40,19 +40,23 @@ package org.fabric3.spi.binding.provider;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * Implementations are responsible for configuring a concrete binding for an inter-process (remote) wire that uses binding.sca.
+ * Implementations are responsible for configuring a concrete binding for an inter-process (remote) wire or channel that uses binding.sca.
  * <p/>
- * For a given wire, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends on the
- * algorithm inforce in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
+ * For a given wire or chanel, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends
+ * on the algorithm in-force in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
  *
  * @version $Rev$ $Date$
  */
 public interface BindingProvider {
 
+    /**
+     * Returns the unique binding type.
+     *
+     * @return the unique binding type
+     */
     QName getType();
 
     /**
@@ -64,13 +68,12 @@ public interface BindingProvider {
     BindingMatchResult canBind(LogicalWire wire);
 
     /**
-     * Determines if this binding provider can be used as a remote transport from a producer to a channel.
+     * Determines if this binding provider can be used as a remote transport for channel.
      *
-     * @param producer the producer
-     * @param channel  the channel
+     * @param channel the channel
      * @return if the binding provider can be used
      */
-    BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel);
+    BindingMatchResult canBind(LogicalChannel channel);
 
     /**
      * Configures binding information for a wire.
@@ -81,12 +84,11 @@ public interface BindingProvider {
     void bind(LogicalWire wire) throws BindingSelectionException;
 
     /**
-     * Configures binding information to connect a producer to a channel over a remote transport.
+     * Configures binding information for a channel.
      *
-     * @param producer the producer
-     * @param channel  the channel
+     * @param channel the channel
      * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
      */
-    void bind(LogicalProducer producer, LogicalChannel channel) throws BindingSelectionException;
+    void bind(LogicalChannel channel) throws BindingSelectionException;
 
 }

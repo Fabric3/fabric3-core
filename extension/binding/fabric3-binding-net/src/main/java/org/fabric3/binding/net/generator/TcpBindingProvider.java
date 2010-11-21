@@ -49,14 +49,13 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
+import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.federation.DomainTopologyService;
 
 /**
  * Creates logical configuration for binding.sca using the TCP binding.
@@ -97,7 +96,7 @@ public class TcpBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, TCP_BINDING);
     }
 
-    public BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel) {
+    public BindingMatchResult canBind(LogicalChannel channel) {
         // does not support eventing
         return NO_MATCH;
     }
@@ -131,7 +130,7 @@ public class TcpBindingProvider implements BindingProvider {
         }
     }
 
-    public void bind(LogicalProducer producer, LogicalChannel channel) {
+    public void bind(LogicalChannel channel) {
         throw new UnsupportedOperationException();
     }
 

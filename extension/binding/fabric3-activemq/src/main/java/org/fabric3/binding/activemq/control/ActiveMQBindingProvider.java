@@ -63,7 +63,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
@@ -113,7 +112,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, getType());
     }
 
-    public BindingMatchResult canBind(LogicalProducer producer, LogicalChannel channel) {
+    public BindingMatchResult canBind(LogicalChannel channel) {
         if (!enabled) {
             return NO_MATCH;
         }
@@ -175,22 +174,13 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return false;
     }
 
-    public void bind(LogicalProducer producer, LogicalChannel channel) {
-        QName deployable = producer.getParent().getDeployable();
-
-        // setup forward bindings
-        // derive the forward queue name from the service name
+    public void bind(LogicalChannel channel) {
+        QName deployable = channel.getParent().getDeployable();
         String topic = channel.getUri().toString();
-        JmsBindingDefinition producerDefinition = createTopicBindingDefinition(topic);
-        LogicalBinding<JmsBindingDefinition> producerBinding = new LogicalBinding<JmsBindingDefinition>(producerDefinition, producer, deployable);
-        producerBinding.setAssigned(true);
-        producer.addBinding(producerBinding);
-
         JmsBindingDefinition channelDefinition = createTopicBindingDefinition(topic);
         LogicalBinding<JmsBindingDefinition> channelBinding = new LogicalBinding<JmsBindingDefinition>(channelDefinition, channel, deployable);
         channelBinding.setAssigned(true);
         channel.addBinding(channelBinding);
-
     }
 
     private JmsBindingDefinition createBindingDefinition(String queueName, boolean response, boolean xa) {

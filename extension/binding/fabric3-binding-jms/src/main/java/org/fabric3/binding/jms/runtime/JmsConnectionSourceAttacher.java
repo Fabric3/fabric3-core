@@ -95,7 +95,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     public void attach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        URI serviceUri = source.getSourceUri();
+        URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
         ResolvedObjects objects = resolveAdministeredObjects(source);

@@ -39,23 +39,25 @@ package org.fabric3.fabric.binding;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
@@ -69,11 +71,16 @@ import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
  */
 @EagerInit
 public class BindingSelectorImpl implements BindingSelector {
-    private List<BindingProvider> providers = new ArrayList<BindingProvider>();
+    private HostInfo info;
     private BindingSelectionStrategy strategy;
+    private List<BindingProvider> providers = new ArrayList<BindingProvider>();
+
+    public BindingSelectorImpl(@Reference HostInfo info) {
+        this.info = info;
+    }
 
     /**
-     * Lazily injects SCAServiceProviders as they become available from runtime extensions.
+     * Lazily injects providers as they become available from runtime extensions.
      *
      * @param providers the set of providers
      */
@@ -95,7 +102,29 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
-    public void selectBindings(LogicalComponent<?> component) throws BindingSelectionException {
+    public void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException {
+        if (RuntimeMode.CONTROLLER != info.getRuntimeMode()) {
+            // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
+            return;
+        }
+        Collection<LogicalComponent<?>> components = domain.getComponents();
+        for (LogicalComponent<?> component : components) {
+            if (component.getState() == LogicalState.NEW) {
+                selectBindings(component);
+            }
+        }
+        for (LogicalChannel channel : domain.getChannels()) {
+            selectBinding(channel);
+        }
+    }
+
+    /**
+     * Selects and configures bindings for wires sourced from the given component.
+     *
+     * @param component the component
+     * @throws BindingSelectionException if an error occurs selecting a binding
+     */
+    private void selectBindings(LogicalComponent<?> component) throws BindingSelectionException {
         for (LogicalReference reference : component.getReferences()) {
             for (LogicalWire wire : reference.getWires()) {
                 LogicalService targetService = wire.getTarget();
@@ -112,33 +141,10 @@ public class BindingSelectorImpl implements BindingSelector {
                 }
             }
         }
-        for (LogicalProducer producer : component.getProducers()) {
-            LogicalCompositeComponent parent = component.getParent();
-            for (URI uri : producer.getTargets()) {
-                LogicalChannel channel = parent.getChannel(uri);
-                if (channel == null) {
-                    throw new BindingSelectionException("Target channel " + uri + " for " + producer.getUri() + " not found");
-                }
-                if ((LOCAL_ZONE.equals(component.getZone()) && LOCAL_ZONE.equals(channel.getZone()))) {
-                    // producer and channel are local, no need for a binding
-                    continue;
-                } else if (!LOCAL_ZONE.equals(component.getZone()) && component.getZone().equals(channel.getZone())) {
-                    // producer and channel are local, no need for a binding
-                    continue;
-                }
-                for (LogicalBinding<?> binding : channel.getBindings()) {
-                    // if the channel has an explicit binding, do not use binding.sca
-                    if (!binding.isAssigned()) {
-                        return;
-                    }
-                }
-                selectBinding(producer, channel);
-            }
-        }
     }
 
     /**
-     * Selects and configures a binding to connect the source to the target.
+     * Selects and configures a binding for a wire.
      *
      * @param wire the wire
      * @throws BindingSelectionException if an error occurs selecting a binding
@@ -171,30 +177,30 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     /**
-     * Selects and configures a binding to connect the producer to the channel.
+     * Selects and configures a binding for a channel.
      *
-     * @param producer the producer
-     * @param channel  the channel
+     * @param channel the channel
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
-    private void selectBinding(LogicalProducer producer, LogicalChannel channel) throws BindingSelectionException {
+    private void selectBinding(LogicalChannel channel) throws BindingSelectionException {
+        if (channel.isConcreteBound()) {
+            return;
+        }
         List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
         for (BindingProvider provider : providers) {
-            BindingMatchResult result = provider.canBind(producer, channel);
+            BindingMatchResult result = provider.canBind(channel);
             if (result.isMatch()) {
                 // clear binding.sca
-                producer.getBindings().clear();
                 channel.getBindings().clear();
-                provider.bind(producer, channel);
+                channel.getBindings().clear();
+                provider.bind(channel);
                 return;
             }
             results.add(result);
         }
-        URI sourceUri = producer.getUri();
-        URI targetUri = channel.getUri();
-        throw new NoSCABindingProviderException("No SCA binding provider suitable for connecting " + sourceUri + " to " + targetUri, results);
+        URI uri = channel.getUri();
+        throw new NoSCABindingProviderException("No SCA binding provider suitable for channel " + uri, results);
     }
-
 
 }
 

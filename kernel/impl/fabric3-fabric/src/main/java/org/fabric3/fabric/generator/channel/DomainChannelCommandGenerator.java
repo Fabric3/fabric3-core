@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -70,14 +69,5 @@ public interface DomainChannelCommandGenerator {
      */
     CompensatableCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException;
 
-    /**
-     * Generates attach and detach commands for a channel bound to a transport.
-     *
-     * @param channel     the channel
-     * @param incremental true if an incremental deployment is being performed
-     * @return the command
-     * @throws GenerationException if a generation error is encountered
-     */
-    ChannelConnectionCommand generateAttachDetach(LogicalChannel channel, boolean incremental) throws GenerationException;
 
 }

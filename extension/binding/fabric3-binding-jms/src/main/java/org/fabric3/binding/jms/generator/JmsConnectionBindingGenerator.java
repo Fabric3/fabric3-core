@@ -55,10 +55,10 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
@@ -77,14 +77,10 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         this.provisioner = provisioner;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBindingDefinition> binding)
+            throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
-        URI uri = binding.getDefinition().getTargetUri();
-        Bindable parent = binding.getParent();
-        if (parent instanceof LogicalConsumer || parent instanceof LogicalChannel) {
-            // consumers and channels do not have configured target URIs; use the parent URI for the JMS endpoint name
-            uri = parent.getUri();
-        }
+        URI uri = consumer.getUri();
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
@@ -92,7 +88,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBindingDefinition> binding)
+            throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata);
@@ -100,5 +97,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
             provisioner.generateConnectionTarget(definition);
         }
         return definition;
+    }
+
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
+        return null;
     }
 }

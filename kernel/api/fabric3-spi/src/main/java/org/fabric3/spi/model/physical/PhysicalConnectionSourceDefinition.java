@@ -61,7 +61,7 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     public PhysicalConnectionSourceDefinition() {
     }
 
-    public URI getSourceUri() {
+    public URI getUri() {
         return uri;
     }
 

@@ -38,21 +38,21 @@
 package org.fabric3.fabric.binding;
 
 import org.fabric3.spi.binding.provider.BindingSelectionException;
-import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Responsible for selecting and configuring binding information for wires and producers originating from component.
+ * Responsible for selecting and configuring binding configuration for wires and channels in a domain.
  *
  * @version $Rev$ $Date$
  */
 public interface BindingSelector {
 
     /**
-     * Selects and configures bindings for component wires.
+     * Selects and configures bindings in a domain.
      *
-     * @param component the component
+     * @param domain the domain component
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
-    void selectBindings(LogicalComponent<?> component) throws BindingSelectionException;
+    void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException;
 
 }
