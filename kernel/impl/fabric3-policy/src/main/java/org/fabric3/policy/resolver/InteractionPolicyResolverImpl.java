@@ -67,11 +67,9 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         super(policyRegistry, lcm, policyEvaluator);
     }
 
-    public Set<Intent> resolveProvidedIntents(LogicalOperation operation, LogicalBinding binding) throws PolicyResolutionException {
+    public Set<Intent> resolveProvidedIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException {
         Set<Intent> requiredIntents = getOperationIntents(operation);
-        QName type = binding.getDefinition().getType();
-        return filterProvidedIntents(type, requiredIntents);
-
+        return filterProvidedIntents(bindingType, requiredIntents);
     }
 
     public Set<Intent> resolveProvidedIntents(LogicalBinding binding) throws PolicyResolutionException {
@@ -117,9 +115,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         return policies;
     }
 
-    public Set<PolicySet> resolvePolicySets(LogicalOperation operation, LogicalBinding binding) throws PolicyResolutionException {
-
-        QName type = binding.getDefinition().getType();
+    public Set<PolicySet> resolvePolicySets(LogicalOperation operation, LogicalScaArtifact<?> artifact, QName type) throws PolicyResolutionException {
         BindingType bindingType = policyRegistry.getDefinition(type, BindingType.class);
 
         Set<QName> alwaysProvidedIntents = new LinkedHashSet<QName>();
@@ -148,7 +144,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         }
 
         // resolve policies against the binding
-        Set<PolicySet> policies = resolvePolicies(requiredIntents, binding);
+        Set<PolicySet> policies = resolvePolicies(requiredIntents, artifact);
         if (!requiredIntents.isEmpty()) {
             throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
         }

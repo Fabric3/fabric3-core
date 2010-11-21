@@ -54,7 +54,7 @@ import org.fabric3.model.type.component.ConsumerDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LogicalConsumer extends Bindable {
+public class LogicalConsumer extends LogicalInvocable {
     private static final long serialVersionUID = -8094856609591381761L;
     private ConsumerDefinition definition;
     private List<URI> sources;

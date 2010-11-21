@@ -242,7 +242,7 @@ public class CopyUtil {
         LogicalProducer copy = new LogicalProducer(uri, producer.getDefinition(), parent);
         copy.setServiceContract(producer.getServiceContract());
         copy.addTargets(producer.getTargets());
-        copy(producer, copy);
+        copyInvocable(producer, copy);
         copy.addIntents(producer.getIntents());
         copy.addPolicySets(producer.getPolicySets());
         parent.addProducer(copy);
@@ -253,7 +253,7 @@ public class CopyUtil {
         LogicalConsumer copy = new LogicalConsumer(uri, consumer.getDefinition(), parent);
         copy.setServiceContract(consumer.getServiceContract());
         copy.addSources(consumer.getSources());
-        copy(consumer, copy);
+        copyInvocable(consumer, copy);
         copy.addIntents(consumer.getIntents());
         copy.addPolicySets(consumer.getPolicySets());
         parent.addConsumer(copy);
@@ -287,6 +287,11 @@ public class CopyUtil {
             copy.addIntents(binding.getIntents());
             copy.addPolicySets(binding.getPolicySets());
         }
+        copyInvocable(from, to);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private static void copyInvocable(LogicalInvocable from, LogicalInvocable to) {
         List<LogicalOperation> operations = new ArrayList<LogicalOperation>();
         for (LogicalOperation operation : from.getOperations()) {
             LogicalOperation copy = new LogicalOperation(operation.getDefinition(), to);

@@ -108,14 +108,12 @@ public class CopyUtilTestCase extends TestCase {
         assertEquals(1, component.getProducers().size());
         LogicalProducer producer = component.getProducer("producer");
         assertNotSame(originalProducer, producer);
-        assertEquals(1, producer.getBindings().size());
         assertEquals(1, producer.getTargets().size());
         assertEquals(URI.create("target"), producer.getTargets().get(0));
 
         assertEquals(1, component.getConsumers().size());
         LogicalConsumer consumer = component.getConsumer("consumer");
         assertNotSame(originalConsumer, consumer);
-        assertEquals(1, consumer.getBindings().size());
         assertEquals(1, consumer.getSources().size());
         assertEquals(URI.create("source"), consumer.getSources().get(0));
 
@@ -165,7 +163,6 @@ public class CopyUtilTestCase extends TestCase {
         URI uri = URI.create(name);
         ProducerDefinition definition = new ProducerDefinition(name);
         LogicalProducer producer = new LogicalProducer(uri, definition, parent);
-        createBinding(producer);
         producer.addTarget(URI.create("target"));
         parent.addProducer(producer);
         return producer;
@@ -175,7 +172,6 @@ public class CopyUtilTestCase extends TestCase {
         URI uri = URI.create(name);
         ConsumerDefinition definition = new ConsumerDefinition(name);
         LogicalConsumer consumer = new LogicalConsumer(uri, definition, parent);
-        createBinding(consumer);
         consumer.addSource(URI.create("source"));
         parent.addConsumer(consumer);
         return consumer;

@@ -38,12 +38,14 @@
 package org.fabric3.policy.resolver;
 
 import java.util.Set;
+import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
  * Resolves interaction intents and policy sets. Resolution is performed for bindings, which aggregates intents and policy sets configured on a
@@ -69,15 +71,15 @@ public interface InteractionPolicyResolver {
     Set<Intent> resolveProvidedIntents(LogicalBinding binding) throws PolicyResolutionException;
 
     /**
-     * Returns the set of intents configured for an operation that are explicitly provided by the binding extension through the <code>mayProvide</code>
-     * attribute.
+     * Returns the set of intents configured for an operation that are explicitly provided by the binding extension through the
+     * <code>mayProvide</code> attribute.
      *
-     * @param operation the operation
-     * @param binding   the binding
+     * @param operation   the operation
+     * @param bindingType the binding type
      * @return the provided intents
      * @throws PolicyResolutionException if there are any unidentified intents
      */
-    Set<Intent> resolveProvidedIntents(LogicalOperation operation, LogicalBinding binding) throws PolicyResolutionException;
+    Set<Intent> resolveProvidedIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException;
 
     /**
      * Returns the set of policies explicitly declared for the binding and its ancestors, including those that satisfy the intents not provided by the
@@ -93,10 +95,11 @@ public interface InteractionPolicyResolver {
      * Returns the set of policies explicitly declared for the operation and those that satisfy the intents not provided by the binding type.
      *
      * @param operation the operation for which the intents are to be resolved
-     * @param binding   the binding
+     * @param artifact  the logical artifact where policy is applied
+     * @param type      the binding type
      * @return the resolved policies
      * @throws PolicyResolutionException if all intents cannot be resolved
      */
-    Set<PolicySet> resolvePolicySets(LogicalOperation operation, LogicalBinding binding) throws PolicyResolutionException;
+    Set<PolicySet> resolvePolicySets(LogicalOperation operation, LogicalScaArtifact<?> artifact, QName type) throws PolicyResolutionException;
 
 }

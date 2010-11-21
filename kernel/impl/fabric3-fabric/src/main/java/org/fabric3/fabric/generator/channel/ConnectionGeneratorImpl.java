@@ -61,12 +61,12 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.policy.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.generator.policy.PolicyResult;
-import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalInvocable;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
@@ -244,10 +244,10 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         return streams;
     }
 
-    private LogicalChannel getChannelInHierarchy(URI channelUri, Bindable bindable) throws GenerationException {
+    private LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws GenerationException {
         LogicalChannel channel = null;
         while (true) {
-            LogicalCompositeComponent parent = bindable.getParent().getParent();
+            LogicalCompositeComponent parent = invocable.getParent().getParent();
             if (parent != null) {
                 channel = parent.getChannel(channelUri);
                 if (channel != null) {

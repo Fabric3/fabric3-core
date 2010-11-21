@@ -45,8 +45,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalConsumer;
-import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -88,20 +86,6 @@ public class CollectorImpl implements Collector {
                     }
                 }
                 for (LogicalBinding<?> binding : reference.getCallbackBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
-            }
-            for (LogicalConsumer consumer : component.getConsumers()) {
-                for (LogicalBinding<?> binding : consumer.getBindings()) {
-                    if (LogicalState.NEW == binding.getState()) {
-                        binding.setState(LogicalState.PROVISIONED);
-                    }
-                }
-            }
-            for (LogicalProducer producer : component.getProducers()) {
-                for (LogicalBinding<?> binding : producer.getBindings()) {
                     if (LogicalState.NEW == binding.getState()) {
                         binding.setState(LogicalState.PROVISIONED);
                     }
@@ -154,16 +138,6 @@ public class CollectorImpl implements Collector {
                     }
                 }
 
-                for (LogicalConsumer consumer : component.getConsumers()) {
-                    for (LogicalBinding<?> binding : consumer.getBindings()) {
-                        binding.setState(LogicalState.MARKED);
-                    }
-                }
-                for (LogicalProducer producer : component.getProducers()) {
-                    for (LogicalBinding<?> binding : producer.getBindings()) {
-                        binding.setState(LogicalState.MARKED);
-                    }
-                }
             } else {
                 // mark service and callback bindings that were dynamically added to satisfy a wire when the deployable was provisioned
                 for (LogicalService service : component.getServices()) {

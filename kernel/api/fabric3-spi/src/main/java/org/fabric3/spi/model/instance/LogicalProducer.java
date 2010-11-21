@@ -54,7 +54,7 @@ import org.fabric3.model.type.component.ProducerDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LogicalProducer extends Bindable {
+public class LogicalProducer extends LogicalInvocable {
     private static final long serialVersionUID = 5403855901902189810L;
     private ProducerDefinition definition;
     private List<URI> targets;

@@ -197,15 +197,13 @@ public class DefaultPolicyResolver implements PolicyResolver {
 
         // synthesize an operation and binding
         LogicalOperation operation = new LogicalOperation(DEFINITION, consumer);
-        LogicalBinding<LocalBindingDefinition> binding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, consumer);
-
-        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, binding);
+        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, LocalBindingDefinition.INSTANCE.getType());
         PolicyResultImpl policyResult = new PolicyResultImpl();
         policyResult.addTargetIntents(operation, targetOperationIntents);
         Set<Intent> sourceImplementationIntents = implementationResolver.resolveProvidedIntents(component, operation);
         policyResult.addSourceIntents(operation, sourceImplementationIntents);
 
-        Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, binding);
+        Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, consumer, LocalBindingDefinition.INSTANCE.getType());
         policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
         policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
 
@@ -279,21 +277,23 @@ public class DefaultPolicyResolver implements PolicyResolver {
                                           LogicalBinding<?> sourceBinding,
                                           LogicalBinding<?> targetBinding,
                                           LogicalComponent<?> target) throws PolicyResolutionException {
-        Set<Intent> sourceOperationIntents = interactionResolver.resolveProvidedIntents(operation, sourceBinding);
+        QName sourceType = sourceBinding.getDefinition().getType();
+        Set<Intent> sourceOperationIntents = interactionResolver.resolveProvidedIntents(operation, sourceType);
         policyResult.addSourceIntents(operation, sourceOperationIntents);
 
-        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, targetBinding);
+        QName targetType = targetBinding.getDefinition().getType();
+        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, targetType);
         policyResult.addTargetIntents(operation, targetOperationIntents);
         if (target != null) {
             Set<Intent> sourceImplementationIntents = implementationResolver.resolveProvidedIntents(target, operation);
             policyResult.addSourceIntents(operation, sourceImplementationIntents);
         }
 
-        Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, sourceBinding);
+        Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, sourceBinding, sourceType);
         policyResult.addSourcePolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
         policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
 
-        policies = interactionResolver.resolvePolicySets(operation, targetBinding);
+        policies = interactionResolver.resolvePolicySets(operation, targetBinding, targetType);
         policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
         policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
 
