@@ -145,14 +145,14 @@ public class LogicalChannel extends Bindable {
     }
 
     /**
-     * Convenience getter as channels can be configured with only one binding.
+     * Convenience method as channels can be configured with only one binding.
      */
     public void clearBinding() {
         getBindings().clear();
     }
 
     /**
-     * Convenience getter as channels can be configured with only one binding.
+     * Convenience method as channels can be configured with only one binding.
      *
      * @return true if the channel is configured with a binding
      */
