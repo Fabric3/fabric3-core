@@ -112,7 +112,7 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
 
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
-            LogicalBinding<?> binding = channel.getBindings().get(0);
+            LogicalBinding<?> binding = channel.getBinding();
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
             PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
             definition.setBindingDefinition(bindingDefinition);

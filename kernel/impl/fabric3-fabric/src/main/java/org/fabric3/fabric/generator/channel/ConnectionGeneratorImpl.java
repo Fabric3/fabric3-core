@@ -105,7 +105,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         for (URI uri : producer.getTargets()) {
             LogicalChannel channel = getChannelInHierarchy(uri, producer);
-            if (channel.getBindings().isEmpty()) {
+            if (!channel.isBound()) {
                 if (!channel.getZone().equals(producer.getParent().getZone())) {
                     throw new AssertionError("Binding not configured on a channel where the producer is in a different zone");
                 }
@@ -115,8 +115,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                         new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
                 definitions.add(connectionDefinition);
             } else {
-                List<LogicalBinding<?>> bindings = channel.getBindings();
-                LogicalBinding<?> binding = bindings.get(0);
+                LogicalBinding<?> binding = channel.getBinding();
                 generateProducerBinding(producer, binding, sourceDefinition, eventStreams, classLoaderId, definitions);
             }
         }
@@ -140,7 +139,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         for (URI uri : consumer.getSources()) {
             LogicalChannel channel = getChannelInHierarchy(uri, consumer);
-            if (channel.getBindings().isEmpty()) {
+            if (!channel.isBound()) {
                 // the channel does not have bindings, which means it is a local channel
                 if (!channel.getZone().equals(consumer.getParent().getZone())) {
                     throw new AssertionError("Binding not configured on a channel where the producer is in a different zone");
@@ -153,8 +152,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                 definitions.add(connectionDefinition);
             } else {
                 // use the bindings on the channel to create a consumer binding configuration
-                List<LogicalBinding<?>> bindings = channel.getBindings();
-                LogicalBinding<?> binding = bindings.get(0);
+                LogicalBinding<?> binding = channel.getBinding();
                 generateConsumerBinding(consumer, binding, targetDefinition, eventStreams, classLoaderId, definitions);
             }
         }

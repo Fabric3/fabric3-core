@@ -132,4 +132,40 @@ public class LogicalChannel extends Bindable {
         this.state = state;
     }
 
+    /**
+     * Convenience getter as channels can be configured with only one binding.
+     *
+     * @return the binding or null if the channel is not bound
+     */
+    public LogicalBinding getBinding() {
+        if (getBindings().isEmpty()) {
+            return null;
+        }
+        return getBindings().get(0);
+    }
+
+    /**
+     * Convenience getter as channels can be configured with only one binding.
+     */
+    public void clearBinding() {
+        getBindings().clear();
+    }
+
+    /**
+     * Convenience getter as channels can be configured with only one binding.
+     *
+     * @return true if the channel is configured with a binding
+     */
+    public boolean isBound() {
+        return !getBindings().isEmpty();
+    }
+
+    @Override
+    public void addBinding(LogicalBinding<?> binding) {
+        if (!getBindings().isEmpty()) {
+            throw new IllegalStateException("Channel is already configured with a binding");
+        }
+        super.addBinding(binding);
+    }
+
 }

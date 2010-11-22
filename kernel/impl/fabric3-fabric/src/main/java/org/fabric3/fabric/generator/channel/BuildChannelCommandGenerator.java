@@ -112,9 +112,9 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
 
     @SuppressWarnings({"unchecked"})
     private void generateBinding(LogicalChannel channel, PhysicalChannelDefinition definition) throws GenerationException {
-        if (!channel.getBindings().isEmpty()) {
+        if (channel.isBound()) {
             // if the channel is configured with a binding, generate provisioning metadata for it
-            LogicalBinding<?> binding = channel.getBindings().get(0);
+            LogicalBinding<?> binding = channel.getBinding();
             ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
             PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
             definition.setBindingDefinition(bindingDefinition);

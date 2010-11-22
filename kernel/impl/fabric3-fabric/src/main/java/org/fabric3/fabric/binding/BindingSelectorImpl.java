@@ -191,8 +191,7 @@ public class BindingSelectorImpl implements BindingSelector {
             BindingMatchResult result = provider.canBind(channel);
             if (result.isMatch()) {
                 // clear binding.sca
-                channel.getBindings().clear();
-                channel.getBindings().clear();
+                channel.clearBinding();
                 provider.bind(channel);
                 return;
             }
