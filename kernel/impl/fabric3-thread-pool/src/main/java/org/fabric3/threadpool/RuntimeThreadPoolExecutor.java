@@ -250,6 +250,11 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         return System.currentTimeMillis() - runnable.start;
     }
 
+    @ManagementOperation
+    public int getCount(){
+        return inFlight.size();
+    }
+
     public RuntimeThreadPoolExecutor(@Monitor ExecutorMonitor monitor) {
         this.monitor = monitor;
     }
