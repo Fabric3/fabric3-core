@@ -70,6 +70,7 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
         String name = definition.getName();
         try {
             connection = factory.createConnection();
+            connection.start();
             switch (definition.geType()) {
             case QUEUE:
                 QueueConnection qc = (QueueConnection) connection;
@@ -83,6 +84,13 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
         } catch (JMSException ex) {
             throw new JmsResolutionException("Unable to create destination:" + name, ex);
         } finally {
+            if (connection != null)  {
+                try {
+                    connection.stop();
+                } catch (JMSException e) {
+                   e.printStackTrace();
+                }
+            }
             JmsHelper.closeQuietly(connection);
         }
     }
