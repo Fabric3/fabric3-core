@@ -110,8 +110,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
     }
 
     public PolicyResult resolvePolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
-        LogicalBinding<RemoteBindingDefinition> remoteBinding =
-                new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, binding.getParent());
+        Bindable parent = binding.getParent();
+        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, parent);
 
         Bindable bindable = binding.getParent();
         if (bindable instanceof LogicalReference) {
