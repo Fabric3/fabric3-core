@@ -64,6 +64,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -72,7 +73,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * Attaches a channel or consumer to a JMS destination.
+ * Attaches a consumer to a JMS destination.
  *
  * @version $Revision$ $Date$
  */
@@ -82,14 +83,17 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     private ClassLoaderRegistry classLoaderRegistry;
     private JmsHost jmsHost;
     private ListenerMonitor monitor;
+    private HostInfo info;
 
     public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
                                        @Reference ClassLoaderRegistry classLoaderRegistry,
                                        @Reference JmsHost jmsHost,
+                                       @Reference HostInfo info,
                                        @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.jmsHost = jmsHost;
+        this.info = info;
         this.monitor = monitor;
     }
 
@@ -127,7 +131,11 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     }
 
     public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-
+        try {
+            jmsHost.unregister(source.getUri());
+        } catch (JMSException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
 
@@ -146,10 +154,12 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setMinReceivers(metadata.getMinReceivers());
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
         configuration.setTransactionTimeout(metadata.getTransactionTimeout());
+
+        String clientId = info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
+        configuration.setClientId(clientId);
+        configuration.setDurable(metadata.isDurable());
 //        configuration.setDeliveryMode();
-//        configuration.setDurableSubscriptionName();
 //        configuration.setExceptionListener();
-//        configuration.setClientId();
 //        configuration.setLocalDelivery();
     }
 
@@ -164,9 +174,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
             Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory, env);
 
-            ConnectionFactory responseConnectionFactory = null;
-            Destination responseDestination = null;
-            return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
+            return new ResolvedObjects(requestConnectionFactory, requestDestination);
         } catch (JmsResolutionException e) {
             throw new ConnectionAttachException(e);
         }
@@ -174,35 +182,21 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     private class ResolvedObjects {
         private ConnectionFactory requestFactory;
-        private ConnectionFactory responseFactory;
         private Destination requestDestination;
-        private Destination responseDestination;
 
-        private ResolvedObjects(ConnectionFactory requestFactory,
-                                Destination requestDestination,
-                                ConnectionFactory responseFactory,
-                                Destination responseDestination) {
+        private ResolvedObjects(ConnectionFactory requestFactory, Destination requestDestination) {
             this.requestFactory = requestFactory;
             this.requestDestination = requestDestination;
-            this.responseFactory = responseFactory;
-            this.responseDestination = responseDestination;
         }
 
         public ConnectionFactory getRequestFactory() {
             return requestFactory;
         }
 
-        public ConnectionFactory getResponseFactory() {
-            return responseFactory;
-        }
-
         public Destination getRequestDestination() {
             return requestDestination;
         }
 
-        public Destination getResponseDestination() {
-            return responseDestination;
-        }
     }
 
 }

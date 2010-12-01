@@ -43,10 +43,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MessageListener;
-import javax.jms.Session;
 import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.annotation.Property;
@@ -58,7 +55,10 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
+import org.fabric3.binding.jms.runtime.container.ConnectionManager;
+import org.fabric3.binding.jms.runtime.container.ContainerStatistics;
 import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
+import org.fabric3.binding.jms.runtime.container.TransactionHelper;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -66,6 +66,8 @@ import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.transport.Transport;
+
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 
 /**
  * JmsHost implementation that registers JMS MessageListeners with an AdaptiveMessageContainer to receive messages and dispatch them to a service
@@ -76,6 +78,7 @@ import org.fabric3.spi.transport.Transport;
 @EagerInit
 @Service(interfaces = {JmsHost.class, Transport.class})
 public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<RuntimeStart> {
+    private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
     private EventService eventService;
@@ -84,7 +87,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     private MessageContainerMonitor containerMonitor;
     private ManagementService managementService;
     private HostMonitor monitor;
-    private int transactionTimeout;
+    private int transactionTimeout = DEFAULT_TRX_TIMEOUT;
 
     public JmsHostImpl(@Reference EventService eventService,
                        @Reference ExecutorService executorService,
@@ -101,8 +104,11 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     }
 
     @Property(required = false)
-    public void setTransactionTimeout(int transactionTimeout) {
-        this.transactionTimeout = transactionTimeout;
+    public void setTransactionTimeout(int timeout) {
+        if (timeout <= 0) {
+            throw new IllegalArgumentException("Invalid transaction timeout: " + timeout);
+        }
+        this.transactionTimeout = timeout;
     }
 
     @Init
@@ -167,32 +173,27 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     }
 
     public void register(ListenerConfiguration configuration) throws JMSException {
-        Destination destination = configuration.getDestination();
-        MessageListener listener = configuration.getMessageListener();
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
         URI uri = configuration.getUri();
-        AdaptiveMessageContainer container =
-                new AdaptiveMessageContainer(uri, destination, listener, factory, executorService, tm, transactionTimeout, containerMonitor);
-        if (TransactionType.GLOBAL == type) {
-            container.setTransactionTypeProperty(TransactionType.GLOBAL);
-            container.setAcknowledgeModeProperty(Session.AUTO_ACKNOWLEDGE);
-        }
-        container.setCacheLevel(configuration.getCacheLevel());
-        container.setExceptionListener(configuration.getExceptionListener());
-        container.setMaxMessagesToProcess(configuration.getMaxMessagesToProcess());
-        container.setCacheLevel(configuration.getCacheLevel());
-        container.setMaxReceivers(configuration.getMaxReceivers());
-        container.setMinReceivers(configuration.getMinReceivers());
-        container.setRecoveryInterval(configuration.getRecoveryInterval());
-        container.setIdleLimit(configuration.getIdleLimit());
-        container.setReceiveTimeout(configuration.getReceiveTimeout());
-        container.setRecoveryInterval(configuration.getRecoveryInterval());
-// TODO additional configuration        
-//        container.setClientId();
-//        container.setDurable();
-//        container.setDurableSubscriptionName();
-//        container.setLocalDelivery();
+        String clientId = configuration.getClientId();
+        boolean durable = configuration.isDurable();
+        int cacheLevel = configuration.getCacheLevel();
+        boolean cacheConnection = cacheLevel >= CACHE_CONNECTION;
+
+        // set the receive timeout to half of the trx timeout
+        int receiveTimeout = transactionTimeout / 2;
+
+        ContainerStatistics statistics = new ContainerStatistics();
+        ConnectionManager connectionManager = new ConnectionManager(factory, uri, clientId, cacheConnection, durable, containerMonitor);
+        TransactionHelper transactionHelper = new TransactionHelper(uri, type, transactionTimeout, tm, statistics, containerMonitor);
+        AdaptiveMessageContainer container = new AdaptiveMessageContainer(configuration,
+                                                                          receiveTimeout,
+                                                                          connectionManager,
+                                                                          transactionHelper,
+                                                                          statistics,
+                                                                          executorService,
+                                                                          containerMonitor);
         containers.put(uri, container);
 
         try {
@@ -226,7 +227,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         if (path.length() != 0) {
             return "JMS/message containers/" + path.substring(1);
         }
-        return "JMS/message containers/" +serviceUri.getAuthority();
+        return "JMS/message containers/" + serviceUri.getAuthority();
     }
 
 

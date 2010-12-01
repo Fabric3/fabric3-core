@@ -56,11 +56,14 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+
+import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
 
 /**
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
@@ -79,8 +82,14 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBindingDefinition> binding)
             throws GenerationException {
-        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
         URI uri = consumer.getUri();
+
+        // set the client id specifier
+        metadata.setClientIdSpecifier(uri.getSchemeSpecificPart().replace("/", ":").replace("#", ":"));
+
+        generateIntents(binding, metadata);
+
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
@@ -100,6 +109,21 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
     }
 
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
+        // do nothing
         return null;
     }
+
+    /**
+     * Generates intent metadata
+     *
+     * @param binding  the binding
+     * @param metadata the JSM metadata
+     */
+    private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
+        LogicalChannel parent = (LogicalChannel) binding.getParent();
+        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT) || parent.getDefinition().getIntents().contains(DURABLE_INTENT)) {
+            metadata.setDurable(true);
+        }
+    }
+
 }

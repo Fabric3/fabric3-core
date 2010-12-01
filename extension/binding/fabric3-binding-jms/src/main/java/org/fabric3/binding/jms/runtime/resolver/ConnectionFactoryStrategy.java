@@ -52,7 +52,7 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 /**
  * Strategy for looking up connection factories.
  *
- * @version $Revsion$ $Date$
+ * @version $Revision$ $Date$
  */
 public interface ConnectionFactoryStrategy {
 
@@ -61,7 +61,7 @@ public interface ConnectionFactoryStrategy {
      *
      * @param definition Connection factory definition.
      * @param env        JNDI environment.
-     * @return Lokked up or created destination.
+     * @return Looked up or created destination.
      * @throws JmsResolutionException if there is an error returning the connection factory
      */
     ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException;

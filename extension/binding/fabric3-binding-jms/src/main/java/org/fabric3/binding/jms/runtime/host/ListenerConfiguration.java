@@ -46,7 +46,7 @@ import javax.jms.MessageListener;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
- * Configuration for registering a MessageListener with a JmsHost.
+ * Configuration for registering a MessageListener with a {@link JmsHost}.
  *
  * @version $Rev$ $Date$
  */
@@ -54,24 +54,24 @@ public class ListenerConfiguration {
     private URI uri;
     private MessageListener messageListener;
     private ExceptionListener exceptionListener;
-    private TransactionType type;
+    private TransactionType type = TransactionType.NONE;
     private Destination destination;
     private ConnectionFactory factory;
     private int cacheLevel;
     private int deliveryMode;
-    private String durableSubscriptionName;
 
-    private int minReceivers;
-    private int maxReceivers;
-    private int idleLimit;
-    private int transactionTimeout;
-    private int receiveTimeout;
-    private int maxMessagesToProcess;
-    private long recoveryInterval;
+    private int minReceivers = 1;
+    private int maxReceivers = 1;
+    private int idleLimit = 1;
+
+    private int transactionTimeout = -1;
+    private int receiveTimeout = -1;
+
+    private int maxMessagesToProcess = -1;
+    private long recoveryInterval = 5000;   // default 5 seconds
     private boolean durable;
     private boolean localDelivery;
     private String clientId;
-
 
     public URI getUri() {
         return uri;
@@ -145,14 +145,6 @@ public class ListenerConfiguration {
      */
     public void setDeliveryMode(int deliveryMode) {
         this.deliveryMode = deliveryMode;
-    }
-
-    public String getDurableSubscriptionName() {
-        return durableSubscriptionName;
-    }
-
-    public void setDurableSubscriptionName(String durableSubscriptionName) {
-        this.durableSubscriptionName = durableSubscriptionName;
     }
 
     public int getMinReceivers() {

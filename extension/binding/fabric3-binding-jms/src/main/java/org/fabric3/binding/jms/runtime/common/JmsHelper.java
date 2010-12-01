@@ -46,7 +46,6 @@ package org.fabric3.binding.jms.runtime.common;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 /**

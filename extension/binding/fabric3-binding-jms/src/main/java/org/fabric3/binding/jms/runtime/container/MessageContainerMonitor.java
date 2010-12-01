@@ -47,9 +47,6 @@ import org.fabric3.api.annotation.monitor.Severe;
  */
 public interface MessageContainerMonitor {
 
-    @Severe("No transaction for {0}")
-    void noTransaction(URI uri);
-
     @Severe("All receivers are paused, possibly as a result of rejected work for {0}")
     void pauseError(String message);
 
@@ -59,8 +56,8 @@ public interface MessageContainerMonitor {
     @Severe("Listener threw an exception for {0}")
     void listenerError(String uri, Throwable e);
 
-    @Severe("Error refreshing connection for destination {0} for {1}")
-    void connectionError(String destination, String uri, Throwable e);
+    @Severe("Error refreshing connection for for {1}")
+    void connectionError(String uri, Throwable e);
 
     @Severe("Error stopping connection for {0}")
     void stopConnectionError(URI uri, Throwable e);

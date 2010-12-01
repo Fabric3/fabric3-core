@@ -53,10 +53,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Encapsulates binding configuration.
- * <p/>
- * TODO Support for overriding request connection, response connection and operation properties from an activation spec and resource adaptor.
- * <p/>
- * TODO Support exception listener
  *
  * @version $Revision$ $Date$
  */
@@ -84,8 +80,7 @@ public class JmsBindingMetadata extends ModelObject {
     private long recoveryInterval = 5000;   // default 5 seconds
     private boolean durable = false;
     private boolean localDelivery;
-    private String clientId;
-    private String durableSubscriptionName;
+    private String clientIdSpecifier;
 
     public ConnectionFactoryDefinition getConnectionFactory() {
         return connectionFactory;
@@ -269,19 +264,42 @@ public class JmsBindingMetadata extends ModelObject {
         this.localDelivery = localDelivery;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getClientIdSpecifier() {
+        return clientIdSpecifier;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setClientIdSpecifier(String specifier) {
+        this.clientIdSpecifier = specifier;
     }
 
-    public String getDurableSubscriptionName() {
-        return durableSubscriptionName;
+    public JmsBindingMetadata snapshot() {
+        JmsBindingMetadata copy = new JmsBindingMetadata();
+        copy.correlationScheme = this.correlationScheme;
+        copy.initialContextFactory = this.initialContextFactory;
+        copy.jndiUrl = this.jndiUrl;
+        copy.destination = this.destination;
+        copy.connectionFactory = this.connectionFactory;
+        copy.response = this.response;
+        copy.headers = this.headers;
+
+        if (this.operationProperties != null) {
+            copy.operationProperties = new HashMap<String, OperationPropertiesDefinition>();
+            copy.operationProperties.putAll(this.operationProperties);
+        }
+
+        copy.cacheLevel = this.cacheLevel;
+        copy.minReceivers = this.minReceivers;
+        copy.maxReceivers = this.maxReceivers;
+        copy.idleLimit = this.idleLimit;
+        copy.transactionTimeout = this.transactionTimeout;
+        copy.receiveTimeout = this.receiveTimeout;
+        copy.responseTimeout = this.responseTimeout;
+        copy.maxMessagesToProcess = this.maxMessagesToProcess;
+        copy.recoveryInterval = this.recoveryInterval;
+        copy.durable = this.durable;
+        copy.localDelivery = this.localDelivery;
+        copy.clientIdSpecifier = this.clientIdSpecifier;
+        return copy;
     }
 
-    public void setDurableSubscriptionName(String durableSubscriptionName) {
-        this.durableSubscriptionName = durableSubscriptionName;
-    }
 }

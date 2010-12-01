@@ -9,8 +9,9 @@ Public License. See the accompanying license file for details.
 <definitions
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+        xmlns:f3-binding="urn:fabric3.org:binding"
         targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
-    <bindingType name="binding.jms" mayProvide="sca:oneWay sca:transactedOneWay sca: sca:immediateOneWay"/>
+    <bindingType name="binding.jms" mayProvide="sca:oneWay sca:transactedOneWay sca: sca:immediateOneWay f3-binding:durable"/>
 
 </definitions>

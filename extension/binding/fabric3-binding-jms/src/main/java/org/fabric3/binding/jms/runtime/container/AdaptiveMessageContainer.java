@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
@@ -55,19 +54,12 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
@@ -85,112 +77,99 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_SESSION;
  */
 @Management
 public class AdaptiveMessageContainer {
-    private static final int DEFAULT_TRX_TIMEOUT = 30;
+    private final ConnectionManager connectionManager;
+    private TransactionHelper transactionHelper;
+    private ContainerStatistics statistics;
+    private ExecutorService executorService;
 
-    private int cacheLevel = CACHE_CONNECTION;
+    private MessageContainerMonitor monitor;
 
-    private int minReceivers = 1;
-    private int maxReceivers = 1;
-    private int idleLimit = 1;
-    private int transactionTimeout = DEFAULT_TRX_TIMEOUT;
-    private int receiveTimeout = transactionTimeout / 2;
-    private int maxMessagesToProcess = -1;
-    private long recoveryInterval = 5000;   // default 5 seconds
-    private boolean durable = false;
-    private boolean localDelivery;
-
-    private TransactionType transactionType = TransactionType.NONE;
-    private int acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
-
-    private ConnectionFactory connectionFactory;
+    // container configuration
+    private int receiveTimeout;
+    private URI listenerUri;
     private Destination destination;
-    private String durableSubscriptionName;
-    private String clientId;
+    private int cacheLevel;
+    private TransactionType transactionType;
+    private int minReceivers;
+    private int maxReceivers;
+    private int idleLimit;
+    private int maxMessagesToProcess;
+    private long recoveryInterval;
+    private String subscriptionName;
+    private boolean localDelivery;
     private String messageSelector;
+
+    // listeners to receive incoming messages or errors
     private MessageListener messageListener;
     private ExceptionListener exceptionListener;
-    private Connection sharedConnection;
 
     // state information
-    private boolean initialized = false;
-    private boolean running = false;
-    private boolean sharedConnectionStarted = false;
-    private int activeReceiverCount = 0;
+    private boolean initialized;
+    private boolean running;
+    private int activeReceiverCount;
 
     // sync objects
     private final Object syncMonitor = new Object();
-    protected final Object connectionSyncMonitor = new Object();
     private final Object recoverySyncMonitor = new Object();
     private Object recoveryMarker = new Object();
 
     private Set<MessageReceiver> receivers = new HashSet<MessageReceiver>();
     private List<Runnable> pausedWork = new LinkedList<Runnable>();
 
-    private URI listenerUri;
-    private ExecutorService executorService;
-    private TransactionManager tm;
-
-    private MessageContainerMonitor monitor;
-    private ContainerStatistics statistics = new ContainerStatistics();
-
     /**
      * Constructor. Creates a new container for receiving messages from a destination and dispatching them to a MessageListener.
      *
-     * @param listenerUri        the listener URI, typically a service or consumer
-     * @param destination        the destination
-     * @param listener           the message listener
-     * @param connectionFactory  the connection factory to use for creating JMS resources
-     * @param executorService    the work scheduler to schedule message receivers
-     * @param tm                 the JTA transaction manager for transacted messaging
-     * @param transactionTimeout the transaction timeout
-     * @param monitor            the monitor for reporting events and errors
+     * @param configuration     the container configuration
+     * @param receiveTimeout    the timeout for receiving messages in seconds
+     * @param connectionManager the connection manager
+     * @param transactionHelper the transaction helper
+     * @param statistics        the message statistics tracker
+     * @param executorService   the work scheduler to schedule message receivers
+     * @param monitor           the monitor for reporting events and errors
      */
-    public AdaptiveMessageContainer(URI listenerUri,
-                                    Destination destination,
-                                    MessageListener listener,
-                                    ConnectionFactory connectionFactory,
+    public AdaptiveMessageContainer(ListenerConfiguration configuration,
+                                    int receiveTimeout,
+                                    ConnectionManager connectionManager,
+                                    TransactionHelper transactionHelper,
+                                    ContainerStatistics statistics,
                                     ExecutorService executorService,
-                                    TransactionManager tm,
-                                    int transactionTimeout,
                                     MessageContainerMonitor monitor) {
-        this.listenerUri = listenerUri;
+        listenerUri = configuration.getUri();
+        destination = configuration.getDestination();
+        cacheLevel = configuration.getCacheLevel();
+        transactionType = configuration.getType();
+        messageListener = configuration.getMessageListener();
+        exceptionListener = configuration.getExceptionListener();
+
+        setReceiveTimeout(receiveTimeout);
+        setMaxMessagesToProcess(configuration.getMaxMessagesToProcess());
+        setMaxReceivers(configuration.getMaxReceivers());
+        setMinReceivers(configuration.getMinReceivers());
+        setRecoveryInterval(configuration.getRecoveryInterval());
+        setIdleLimit(configuration.getIdleLimit());
+
+        setRecoveryInterval(configuration.getRecoveryInterval());
+        // TODO additional configuration
+        // container.setLocalDelivery();
+
+        this.connectionManager = connectionManager;
+        this.transactionHelper = transactionHelper;
+        this.statistics = statistics;
         this.executorService = executorService;
-        this.destination = destination;
-        this.messageListener = listener;
-        this.durableSubscriptionName = listener.getClass().getName();
-        this.connectionFactory = connectionFactory;
-        this.tm = tm;
-        this.transactionTimeout = transactionTimeout;
         this.monitor = monitor;
-    }
-
-    /**
-     * Sets whether messages published by a connection are to be delivered to local topic subscribers.
-     *
-     * @param localDelivery true if messages published by a connection are to be delivered to local topic subscribers.
-     */
-    public void setLocalDelivery(boolean localDelivery) {
-        this.localDelivery = localDelivery;
-    }
-
-    @ManagementOperation(description = "The transaction timeout value")
-    public int getTransactionTimeout() {
-        return transactionTimeout;
-    }
-
-    @ManagementOperation(description = "The transaction timeout value")
-    public void setTransactionTimeout(int transactionTimeout) {
-        this.transactionTimeout = transactionTimeout;
     }
 
     /**
      * Sets the timeout value for receiving messages from a destination. The default is no timeout.
      *
-     * @param receiveTimeout the timeout value for receiving messages from a destination.
+     * @param timeout the timeout value for receiving messages from a destination.
      */
     @ManagementOperation(description = "The timeout value for receiving messages from a destination")
-    public void setReceiveTimeout(int receiveTimeout) {
-        this.receiveTimeout = receiveTimeout;
+    public void setReceiveTimeout(int timeout) {
+        if (timeout <= 0) {
+            throw new IllegalArgumentException("Receive timeout must be greater than 0");
+        }
+        receiveTimeout = timeout;
     }
 
     /**
@@ -210,22 +189,12 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "The time to wait while making repeated recovery attempts")
     public void setRecoveryInterval(long interval) {
-        this.recoveryInterval = interval;
+        recoveryInterval = interval;
     }
 
     @ManagementOperation(description = "The time to wait while making repeated recovery attempts")
     public long getRecoveryInterval() {
         return recoveryInterval;
-    }
-
-    /**
-     * Sets the cache level for JMS artifacts. Currently {@link JmsConstants#CACHE_NONE}, {@link JmsConstants#CACHE_CONNECTION}, and {@link
-     * JmsConstants#CACHE_SESSION} are supported. The default is to cache the connection.
-     *
-     * @param level the cache level
-     */
-    public void setCacheLevel(int level) {
-        this.cacheLevel = level;
     }
 
     @ManagementOperation(description = "The cache level")
@@ -247,10 +216,10 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "The minimum number of receivers to create for a destination")
     public void setMinReceivers(int min) {
-        synchronized (this.syncMonitor) {
-            this.minReceivers = min;
-            if (this.maxReceivers < min) {
-                this.maxReceivers = min;
+        synchronized (syncMonitor) {
+            minReceivers = min;
+            if (maxReceivers < min) {
+                maxReceivers = min;
             }
         }
     }
@@ -275,7 +244,7 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "The maximum number of receivers to create for a destination")
     public void setMaxReceivers(int max) {
-        synchronized (this.syncMonitor) {
+        synchronized (syncMonitor) {
             maxReceivers = (max > minReceivers ? max : minReceivers);
         }
     }
@@ -300,7 +269,7 @@ public class AdaptiveMessageContainer {
     @ManagementOperation(description = "The number of scheduled receivers")
     public int getReceiverCount() {
         synchronized (syncMonitor) {
-            return this.receivers.size();
+            return receivers.size();
         }
     }
 
@@ -312,7 +281,7 @@ public class AdaptiveMessageContainer {
     @ManagementOperation(description = "The number of receivers actively processing messages")
     public int getActiveReceiverCount() {
         synchronized (syncMonitor) {
-            return this.activeReceiverCount;
+            return activeReceiverCount;
         }
     }
 
@@ -335,11 +304,10 @@ public class AdaptiveMessageContainer {
      *
      * @param limit the limit to set
      */
-    @ManagementOperation(description = "The number of times a receiver can be marked idle during its execution window before it is removed from the "
-            + "work scheduler")
+    @ManagementOperation(description = "The times a receiver can be marked idle during execution before it is removed from the work scheduler")
     public void setIdleLimit(int limit) {
         synchronized (syncMonitor) {
-            this.idleLimit = limit;
+            idleLimit = limit;
         }
     }
 
@@ -348,8 +316,7 @@ public class AdaptiveMessageContainer {
      *
      * @return the maximum idle executions allowed for a receiver
      */
-    @ManagementOperation(description = "The number of times a receiver can be marked idle during its execution window before it is removed from the "
-            + "work scheduler")
+    @ManagementOperation(description = "The times a receiver can be marked idle during execution before it is removed from the work scheduler")
     public int getIdleLimit() {
         synchronized (syncMonitor) {
             return idleLimit;
@@ -365,8 +332,8 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "The maximum number of messages to process by a receivers")
     public void setMaxMessagesToProcess(int max) {
-        synchronized (this.syncMonitor) {
-            this.maxMessagesToProcess = max;
+        synchronized (syncMonitor) {
+            maxMessagesToProcess = max;
         }
     }
 
@@ -377,45 +344,9 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "The maximum number of messages to process by a receivers")
     public int getMaxMessagesToProcess() {
-        synchronized (this.syncMonitor) {
-            return this.maxMessagesToProcess;
+        synchronized (syncMonitor) {
+            return maxMessagesToProcess;
         }
-    }
-
-    /**
-     * Sets the JMS message selector for message listening.
-     *
-     * @param selector the message selector
-     */
-    public void setMessageSelectorProperty(String selector) {
-        this.messageSelector = selector;
-    }
-
-    /**
-     * Returns the JMS message selector for message listening.
-     *
-     * @return the JMS message selector for message listening
-     */
-    public String getMessageSelector() {
-        return this.messageSelector;
-    }
-
-    /**
-     * Set the ExceptionListener for handling JMSExceptions during message processing.
-     *
-     * @param listener the ExceptionListener
-     */
-    public void setExceptionListener(ExceptionListener listener) {
-        this.exceptionListener = listener;
-    }
-
-    /**
-     * Sets whether durable topic subscriptions will be used.
-     *
-     * @param durable true if durable topic subscriptions will be used
-     */
-    public void setDurableProperty(boolean durable) {
-        this.durable = durable;
     }
 
     /**
@@ -425,16 +356,7 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "If durable topic subscriptions are used")
     public boolean isDurable() {
-        return this.durable;
-    }
-
-    /**
-     * Sets the name of a durable subscription.
-     *
-     * @param name the durable subscription  name
-     */
-    public void setDurableSubscriptionNameProperty(String name) {
-        this.durableSubscriptionName = name;
+        return connectionManager.isDurable();
     }
 
     /**
@@ -443,49 +365,13 @@ public class AdaptiveMessageContainer {
      * @return the name of the durable subscription or null if none is set
      */
     @ManagementOperation(description = "The durable topic subscription name")
-    public String getDurableSubscriptionName() {
-        return this.durableSubscriptionName;
-    }
-
-    /**
-     * Sets the transaction mode to use: global, local (session), or none.
-     *
-     * @param transactionType the transaction mode to use
-     */
-    public void setTransactionTypeProperty(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public String getSubscriptionName() {
+        return subscriptionName;
     }
 
     @ManagementOperation(description = "The transaction type")
     public String getTransactionType() {
         return transactionType.toString();
-    }
-
-    /**
-     * Sets the JMS message acknowledge mode to use.
-     *
-     * @param mode the JMS message acknowledge mode to use
-     */
-    public void setAcknowledgeModeProperty(int mode) {
-        this.acknowledgeMode = mode;
-    }
-
-    /**
-     * Sets the JMS client id for a shared connection.
-     *
-     * @param id the id
-     */
-    public void setClientId(String id) {
-        this.clientId = id;
-    }
-
-    /**
-     * Returns the JMS client id.
-     *
-     * @return the id or null
-     */
-    public String getClientId() {
-        return this.clientId;
     }
 
     /**
@@ -495,8 +381,8 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "True if the container is initialized")
     public boolean isInitialized() {
-        synchronized (this.syncMonitor) {
-            return this.initialized;
+        synchronized (syncMonitor) {
+            return initialized;
         }
     }
 
@@ -507,73 +393,8 @@ public class AdaptiveMessageContainer {
      */
     @ManagementOperation(description = "True if the container is running")
     public boolean isRunning() {
-        synchronized (this.syncMonitor) {
-            return this.running;
-        }
-    }
-
-    /**
-     * Initializes and starts the container. Once started, messages will be received.
-     *
-     * @throws JMSException if an initialization error occurs
-     */
-    public void initialize() throws JMSException {
-        try {
-            synchronized (this.syncMonitor) {
-                initialized = true;
-                syncMonitor.notifyAll();
-            }
-            start();
-            synchronized (this.syncMonitor) {
-                for (int i = 0; i < minReceivers; i++) {
-                    addReceiver();
-                }
-            }
-        } catch (JMSException e) {
-            synchronized (connectionSyncMonitor) {
-                JmsHelper.closeQuietly(sharedConnection);
-                sharedConnection = null;
-            }
-            throw e;
-        }
-    }
-
-    /**
-     * Starts the container. Once started, messages will be received.
-     *
-     * @throws JMSException if an error during start-up occurs
-     */
-    @ManagementOperation(description = "Starts the containing processing messages")
-    public void start() throws JMSException {
-        if (cacheLevel >= CACHE_CONNECTION) {
-            getSharedConnection();
-        }
-
         synchronized (syncMonitor) {
-            this.running = true;
-            this.syncMonitor.notifyAll();
-            resumePausedWork();
-        }
-
-        if (cacheLevel >= CACHE_CONNECTION) {
-            startSharedConnection();
-        }
-    }
-
-    /**
-     * Stops the container processing messages.
-     *
-     * @throws JMSException if an error occurs during stop
-     */
-    @ManagementOperation(description = "Stops the containing processing messages")
-    public void stop() throws JMSException {
-        synchronized (syncMonitor) {
-            this.running = false;
-            this.syncMonitor.notifyAll();
-        }
-
-        if (cacheLevel >= CACHE_CONNECTION) {
-            stopSharedConnection();
+            return running;
         }
     }
 
@@ -619,9 +440,73 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Stops the container from receiving message and releases all resources and receivers.
+     * Starts the container. Once started, messages will be received.
+     *
+     * @throws JMSException if an error during start-up occurs
      */
-    public void shutdown() {
+    @ManagementOperation(description = "Starts the containing processing messages")
+    public void start() throws JMSException {
+        connectionManager.start();
+        synchronized (syncMonitor) {
+            running = true;
+            syncMonitor.notifyAll();
+            resumePausedWork();
+        }
+
+        if (cacheLevel >= CACHE_CONNECTION) {
+            connectionManager.startSharedConnection();
+        }
+    }
+
+    /**
+     * Stops the container processing messages.
+     *
+     * @throws JMSException if an error occurs during stop
+     */
+    @ManagementOperation(description = "Stops the containing processing messages")
+    public void stop() throws JMSException {
+        synchronized (syncMonitor) {
+            running = false;
+            syncMonitor.notifyAll();
+        }
+
+        if (cacheLevel >= CACHE_CONNECTION) {
+            connectionManager.stopSharedConnection();
+        }
+    }
+
+    /**
+     * Initializes and starts the container. Once started, messages will be received.
+     *
+     * @throws JMSException if an initialization error occurs
+     */
+    public void initialize() throws JMSException {
+        if (isDurable()) {
+            subscriptionName = "listenerSubscription";
+        }
+        try {
+            synchronized (syncMonitor) {
+                initialized = true;
+                syncMonitor.notifyAll();
+            }
+            start();
+            synchronized (syncMonitor) {
+                for (int i = 0; i < minReceivers; i++) {
+                    addReceiver();
+                }
+            }
+        } catch (JMSException e) {
+            connectionManager.close();
+            throw e;
+        }
+    }
+
+    /**
+     * Stops the container from receiving message and releases all resources and receivers.
+     *
+     * @throws JMSException if there is an error during shutdown.
+     */
+    public void shutdown() throws JMSException {
         boolean wasRunning;
         synchronized (syncMonitor) {
             wasRunning = running;
@@ -629,9 +514,8 @@ public class AdaptiveMessageContainer {
             initialized = false;
             syncMonitor.notifyAll();
         }
-
         if (wasRunning && cacheLevel >= CACHE_CONNECTION) {
-            stopSharedConnection();
+            connectionManager.stopSharedConnection();
         }
         try {
             synchronized (syncMonitor) {
@@ -644,10 +528,7 @@ public class AdaptiveMessageContainer {
             Thread.currentThread().interrupt();
         } finally {
             if (cacheLevel >= CACHE_CONNECTION) {
-                synchronized (connectionSyncMonitor) {
-                    JmsHelper.closeQuietly(sharedConnection);
-                    sharedConnection = null;
-                }
+                connectionManager.close();
             }
         }
     }
@@ -669,7 +550,7 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Instantiate and schedules a new receiver.
+     * Instantiates and schedules a new receiver.
      */
     private void addReceiver() {
         MessageReceiver receiver = new MessageReceiver();
@@ -681,7 +562,6 @@ public class AdaptiveMessageContainer {
             monitor.increaseReceivers(receivers.size());
         }
     }
-
 
     /**
      * Determines if the a receiver with the given idle count should be rescheduled.
@@ -695,105 +575,13 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Refreshes the shared connection.
-     *
-     * @throws JMSException there is an error refreshing the connection
-     */
-    private void refreshSharedConnection() throws JMSException {
-        synchronized (connectionSyncMonitor) {
-            JmsHelper.closeQuietly(sharedConnection);
-            sharedConnection = createSharedConnection();
-            if (sharedConnectionStarted) {
-                sharedConnection.start();
-            }
-        }
-    }
-
-    /**
-     * Returns a shared connection
-     *
-     * @return the shared connection
-     * @throws JMSException if there was an error returning the shared connection
-     */
-    private Connection getSharedConnection() throws JMSException {
-        synchronized (connectionSyncMonitor) {
-            if (sharedConnection == null) {
-                sharedConnection = createSharedConnection();
-            }
-            return sharedConnection;
-        }
-    }
-
-
-    /**
-     * Create a shared connection.
-     *
-     * @return the connection
-     * @throws JMSException if an error is encountered creating the connection
-     */
-    private Connection createSharedConnection() throws JMSException {
-        Connection connection = connectionFactory.createConnection();
-        try {
-            String clientId = getClientId();
-            if (clientId != null) {
-                connection.setClientID(clientId);
-            }
-            return connection;
-        }
-        catch (JMSException ex) {
-            JmsHelper.closeQuietly(connection);
-            throw ex;
-        }
-    }
-
-    /**
-     * Starts a shared connection.
-     */
-    private void startSharedConnection() {
-        try {
-            synchronized (connectionSyncMonitor) {
-                this.sharedConnectionStarted = true;
-                if (sharedConnection != null) {
-                    sharedConnection.start();
-                }
-            }
-        } catch (JMSException e) {
-            monitor.startConnectionError(e);
-        }
-    }
-
-    /**
-     * Stops a shared connection.
-     */
-    private void stopSharedConnection() {
-        try {
-            synchronized (connectionSyncMonitor) {
-                sharedConnectionStarted = false;
-                if (sharedConnection != null) {
-                    sharedConnection.stop();
-                }
-            }
-        } catch (Exception e) {
-            monitor.stopConnectionError(listenerUri, e);
-        }
-    }
-
-    /**
      * Refreshes a connection.
      */
     private void refreshConnection() {
         // loop until a connection has been obtained
         while (isRunning()) {
-            try {
-                if (cacheLevel >= CACHE_CONNECTION) {
-                    refreshSharedConnection();
-                } else {
-                    Connection con = connectionFactory.createConnection();
-                    JmsHelper.closeQuietly(con);
-                }
-                break;
-            } catch (Exception e) {
-                monitor.connectionError(destination.toString(), listenerUri.toString(), e);
+            if (connectionManager.refreshConnection()) {
+                return;
             }
             // wait and try again
             sleep();
@@ -801,7 +589,7 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Handle the given exception during a receive by delegating to an excetpion listener if the exception is a JMSException or sending it to the
+     * Handle the given exception during a receive by delegating to an exception listener if the exception is a JMSException or sending it to the
      * monitor.
      *
      * @param e the exception to handle
@@ -832,7 +620,7 @@ public class AdaptiveMessageContainer {
             }
             return true;
         } else if (initialized) {
-            this.pausedWork.add(runnable);
+            pausedWork.add(runnable);
             return true;
         } else {
             return false;
@@ -861,93 +649,6 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sleep according to the specified recovery interval.
-     */
-    private void sleep() {
-        if (this.recoveryInterval > 0) {
-            try {
-                Thread.sleep(recoveryInterval);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    /**
-     * Performs a local commit or acknowledgement if a local transaction or client acknowledgement is being used.
-     *
-     * @param session the session to commit
-     * @param message the message to acknowledge
-     * @throws JMSException if the commit fails
-     */
-    private void localCommitOrAcknowledge(Session session, Message message) throws JMSException {
-        if (TransactionType.SESSION == transactionType) {
-            session.commit();
-            statistics.incrementTransactions();
-        } else if (Session.CLIENT_ACKNOWLEDGE == session.getAcknowledgeMode()) {
-            message.acknowledge();
-        }
-    }
-
-    /**
-     * Commits the current global (JTA) transaction.
-     *
-     * @throws TransactionException if a commit error was encountered
-     */
-    private void globalCommit() throws TransactionException {
-        try {
-            if (tm.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
-                tm.commit();
-                statistics.incrementTransactions();
-            } else {
-                tm.rollback();
-                statistics.incrementTransactionsRolledBack();
-            }
-        } catch (SystemException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (IllegalStateException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (SecurityException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (HeuristicMixedException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (HeuristicRollbackException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (RollbackException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        }
-    }
-
-    /**
-     * Rollbacks the current global (JTA) transaction.
-     *
-     * @throws TransactionException if an error rolling back was encountered
-     */
-    private void globalRollback() throws TransactionException {
-        try {
-            if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
-                tm.rollback();
-                statistics.incrementTransactionsRolledBack();
-            }
-        } catch (SystemException e) {
-            throw new TransactionException("Error reverting transaction for " + listenerUri, e);
-        }
-    }
-
-    /**
-     * Performs a local rollback of the JMS session.
-     *
-     * @param session the session to rollback
-     * @throws JMSException if the rollback fails
-     */
-    private void localRollback(Session session) throws JMSException {
-        if (TransactionType.SESSION == transactionType) {
-            session.rollback();
-            statistics.incrementTransactionsRolledBack();
-        }
-    }
-
-    /**
      * Creates a session.
      *
      * @param connection the connection to use
@@ -957,29 +658,40 @@ public class AdaptiveMessageContainer {
     private Session createSession(Connection connection) throws JMSException {
         boolean transacted = TransactionType.SESSION == transactionType || TransactionType.GLOBAL == transactionType;
         // FIXME Atomikos requires this set to "true" but app servers (and Java EE) requires it to be false for XA transactions
-        return connection.createSession(transacted, acknowledgeMode);
+        return connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
     }
 
     /**
      * Creates a MessageConsumer for the given destination and session.
      *
-     * @param destination the destination
-     * @param session     the session
+     * @param session the session
      * @return the consumer
      * @throws JMSException if an error is encountered creating the consumer
      */
-    private MessageConsumer createConsumer(Destination destination, Session session) throws JMSException {
+    private MessageConsumer createConsumer(Session session) throws JMSException {
         if (destination instanceof Topic && !(destination instanceof Queue)) {
             if (isDurable()) {
-                return session.createDurableSubscriber((Topic) destination, getDurableSubscriptionName(), getMessageSelector(), localDelivery);
+                return session.createDurableSubscriber((Topic) destination, subscriptionName, messageSelector, localDelivery);
             } else {
-                return session.createConsumer(destination, getMessageSelector(), localDelivery);
+                return session.createConsumer(destination, messageSelector, localDelivery);
             }
         } else {
-            return session.createConsumer(destination, getMessageSelector());
+            return session.createConsumer(destination, messageSelector);
         }
     }
 
+    /**
+     * Sleep according to the specified recovery interval.
+     */
+    private void sleep() {
+        if (recoveryInterval > 0) {
+            try {
+                Thread.sleep(recoveryInterval);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
     /**
      * Listens for messages from a destination and dispatches them to a message listener, managing transaction semantics and recovery if necessary.
@@ -1128,7 +840,7 @@ public class AdaptiveMessageContainer {
             } else {
                 received = receive();
             }
-            this.previousSucceeded = true;
+            previousSucceeded = true;
             return received;
         }
 
@@ -1136,39 +848,24 @@ public class AdaptiveMessageContainer {
          * Waits to receive a message and invokes the listener within the context of a global transaction.
          *
          * @return true if a message was received
-         * @throws TransactionException if an exception starting, committing, or rolling back a transaction occured
+         * @throws TransactionException if an exception starting, committing, or rolling back a transaction occurred
          */
         private boolean jtaReceiveMessage() throws TransactionException {
 
             try {
-                int status = tm.getStatus();
-                boolean begun = false;
-                if (Status.STATUS_NO_TRANSACTION == status) {
-                    // this should always be true
-                    tm.begin();
-                    begun = true;
-                } else {
-                    monitor.noTransaction(listenerUri);
-                }
-                boolean received;
-                received = receive();
-                if (begun) {
-                    globalCommit();
-                }
+                transactionHelper.begin();
+                boolean received = receive();
+                transactionHelper.globalCommit();
                 return received;
             } catch (JMSException e) {
                 monitor.receiveError(listenerUri, e);
-                globalRollback();
+                transactionHelper.globalRollback();
             } catch (RuntimeException e) {
                 monitor.receiveError(listenerUri, e);
-                globalRollback();
+                transactionHelper.globalRollback();
             } catch (Error e) {
                 monitor.receiveError(listenerUri, e);
-                globalRollback();
-            } catch (SystemException e) {
-                throw new TransactionException("Error receiving message for " + listenerUri, e);
-            } catch (NotSupportedException e) {
-                throw new TransactionException("Error receiving message for " + listenerUri, e);
+                transactionHelper.globalRollback();
             }
             return false;
         }
@@ -1177,58 +874,31 @@ public class AdaptiveMessageContainer {
          * Waits to receive a message and invokes the listener.
          *
          * @return true if a message was received
-         * @throws JMSException if an exception occurred during the receive
+         * @throws JMSException         if a JMS-related exception occurred during the receive
+         * @throws TransactionException if a transaction exception occurred during thr receive
          */
-        private boolean receive() throws JMSException {
+        private boolean receive() throws JMSException, TransactionException {
             Connection connectionToUse = null;
             Session sessionToClose = null;
             MessageConsumer consumerToClose = null;
             try {
                 Session sessionToUse = session;
                 if (sessionToUse == null) {
-                    if (cacheLevel >= CACHE_CONNECTION) {
-                        connectionToUse = getSharedConnection();
-                    } else {
-                        connectionToUse = connectionFactory.createConnection();
-                        connectionToUse.start();
-                    }
+                    connectionToUse = connectionManager.getConnection();
                     sessionToUse = createSession(connectionToUse);
                     sessionToClose = sessionToUse;
                 }
                 MessageConsumer consumerToUse = consumer;
                 if (consumerToUse == null) {
-                    consumerToUse = createConsumer(destination, sessionToUse);
+                    consumerToUse = createConsumer(sessionToUse);
                     consumerToClose = consumerToUse;
                 }
-                int timeout = receiveTimeout;
-                if (TransactionType.GLOBAL == transactionType) {
-                    if (timeout == 0) {
-                        // No default receive timeout was defined, which means the consumer will block indefinitely. If JTA transaction is begun, this
-                        // can result in a transaction timeout before the message is received. Set the receive timeout to half that of the transaction
-                        // timeout to avoid this.
-                        timeout = transactionTimeout / 2;
-                    }
-                    try {
-                        tm.setTransactionTimeout(transactionTimeout);
-                    } catch (SystemException e) {
-                        monitor.timeoutError(listenerUri, e);
-                        return false;
-                    }
-                }
                 // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
-                Message message = consumerToUse.receive(timeout);
+                Message message = consumerToUse.receive(receiveTimeout);
                 if (message != null) {
                     if (!isRunning()) {
                         // container is shutting down.
-                        if (TransactionType.GLOBAL == transactionType) {
-                            try {
-                                tm.rollback();
-                            } catch (SystemException e) {
-                                monitor.rollbackError(listenerUri, e);
-                            }
-                        } else {
-                            localRollback(session);
-                        }
+                        transactionHelper.rollback(session);
                         idle = true;
                         return false;
                     }
@@ -1238,16 +908,12 @@ public class AdaptiveMessageContainer {
                     try {
                         messageListener.onMessage(message);
                         statistics.incrementMessagesReceived();
-                        localCommitOrAcknowledge(sessionToUse, message);
+                        transactionHelper.localCommitOrAcknowledge(sessionToUse, message);
                     } catch (JMSException e) {
-                        if (TransactionType.SESSION == transactionType) {
-                            localRollback(sessionToUse);
-                        }
+                        transactionHelper.localRollback(sessionToUse);
                         throw e;
                     } catch (RuntimeException e) {
-                        if (TransactionType.SESSION == transactionType) {
-                            localRollback(sessionToUse);
-                        }
+                        transactionHelper.localRollback(sessionToUse);
                         throw e;
                     }
                     return true;
@@ -1266,7 +932,15 @@ public class AdaptiveMessageContainer {
         }
 
         private void closeResources() {
-            synchronized (connectionSyncMonitor) {
+            synchronized (connectionManager) {
+                try {
+                    if (isDurable() && session != null) {
+                        session.unsubscribe(subscriptionName);
+                    }
+
+                } catch (JMSException e) {
+                    monitor.listenerError(listenerUri.toString(), e);
+                }
                 JmsHelper.closeQuietly(consumer);
                 JmsHelper.closeQuietly(session);
             }

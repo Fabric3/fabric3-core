@@ -185,21 +185,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         }
         NamespaceContext namespace = reader.getNamespaceContext();
         String targetNamespace = context.getTargetNamespace();
-        String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
-        if (correlationScheme != null) {
-            QName scheme = LoaderUtil.getQName(correlationScheme, targetNamespace, namespace);
-            // support lax namespaces
-            if ("messageID".equalsIgnoreCase(scheme.getLocalPart())) {
-                metadata.setCorrelationScheme(CorrelationScheme.MESSAGE_ID);
-            } else if ("correlationID".equalsIgnoreCase(scheme.getLocalPart())) {
-                metadata.setCorrelationScheme(CorrelationScheme.CORRELATION_ID);
-            } else if ("none".equalsIgnoreCase(scheme.getLocalPart())) {
-                metadata.setCorrelationScheme(CorrelationScheme.NONE);
-            } else {
-                InvalidValue error = new InvalidValue("Invalid value specified for correlationScheme attribute: " + scheme.getLocalPart(), reader);
-                context.addError(error);
-            }
-        }
+
+        parseCorrelationScheme(metadata, namespace, targetNamespace, reader, context);
 
         QName requestConnection = LoaderUtil.getQName("requestConnection", targetNamespace, namespace);
         bd.setRequestConnection(requestConnection);
@@ -258,12 +245,30 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         }
     }
 
-    private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-//    TODO    boolean durable = false;
-//    TODO    boolean localDelivery;
-//    TODO    String clientId;
-//    TODO    String durableSubscriptionName;
+    private void parseCorrelationScheme(JmsBindingMetadata metadata,
+                                        NamespaceContext namespace,
+                                        String targetNamespace,
+                                        XMLStreamReader reader,
+                                        IntrospectionContext context) {
+        String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
+        if (correlationScheme != null) {
+            QName scheme = LoaderUtil.getQName(correlationScheme, targetNamespace, namespace);
+            // support lax namespaces
+            if ("messageID".equalsIgnoreCase(scheme.getLocalPart())) {
+                metadata.setCorrelationScheme(CorrelationScheme.MESSAGE_ID);
+            } else if ("correlationID".equalsIgnoreCase(scheme.getLocalPart())) {
+                metadata.setCorrelationScheme(CorrelationScheme.CORRELATION_ID);
+            } else if ("none".equalsIgnoreCase(scheme.getLocalPart())) {
+                metadata.setCorrelationScheme(CorrelationScheme.NONE);
+            } else {
+                InvalidValue error = new InvalidValue("Invalid value specified for correlationScheme attribute: " + scheme.getLocalPart(), reader);
+                context.addError(error);
+            }
+        }
+    }
 
+    private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) {
+//    TODO    boolean localDelivery;
 
         String cacheLevel = reader.getAttributeValue(null, "cache");
         if (cacheLevel == null) {

@@ -48,6 +48,7 @@ import org.osoa.sca.annotations.Property;
 
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.spi.channel.ChannelIntents;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;

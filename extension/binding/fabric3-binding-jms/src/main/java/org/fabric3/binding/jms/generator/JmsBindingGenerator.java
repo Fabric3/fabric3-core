@@ -66,10 +66,12 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.xsd.XSDType;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
+
+import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
 
 /**
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
@@ -106,9 +108,14 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
                                               EffectivePolicy policy) throws GenerationException {
 
         TransactionType transactionType = getTransactionType(operations, policy);
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
-        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
+        // set the client id specifier
+        metadata.setClientIdSpecifier(binding.getParent().getUri().getSchemeSpecificPart().replace("/", ":").replace("#", ":"));
         validateResponseDestination(metadata, contract);
+
+        generateIntents(binding, metadata);
+
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
         URI uri = binding.getDefinition().getTargetUri();
         JmsSourceDefinition definition = null;
@@ -179,6 +186,18 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
                 throw new GenerationException("Response destination must be specified for operation " + operation.getName() + " on "
                         + contract.getInterfaceName());
             }
+        }
+    }
+
+    /**
+     * Generates intent metadata
+     *
+     * @param binding  the binding
+     * @param metadata the JSM metadata
+     */
+    private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
+        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT)){
+            metadata.setDurable(true);
         }
     }
 
