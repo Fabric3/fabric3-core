@@ -33,17 +33,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-core/5.2.0/activemq-core-5.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -105,17 +94,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="activemq-pool-5.2.0">
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/activemq/activemq-pool/5.2.0/activemq-pool-5.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="javax.transaction:com.springsource.javax:transaction:1.1.0">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/com.springsource.javax.transaction/1.1.0/com.springsource.javax.transaction-1.1.0.jar!/" />
@@ -134,13 +112,20 @@
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-binding-jms" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.jms:com.springsource.javax.jms:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.activemq:activemq-core:5.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.activemq:activeio-core:3.1.0" level="project" />
-    <orderEntry type="library" name="Maven: backport-util-concurrent:backport-util-concurrent:2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.activemq:activemq-pool:5.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.activemq:activemq-core:5.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.activemq:activeio-core:3.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.activemq:kahadb:5.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.activemq.protobuf:activemq-protobuf:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-net:commons-net:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.6" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:4.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.activemq:activemq-pool:5.4.1" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging-api:1.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.5.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-classic:0.9.20" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-core:0.9.20" level="project" />

@@ -43,7 +43,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>5.2.0</version>
+            <version>5.4.1</version>
             <exclusions>
                 <!-- Exclude clogging as it interferes with classloading. It is replaced by SLF4J below. -->
                 <exclusion>
@@ -70,12 +70,16 @@ Public License. See the accompanying license file for details.
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>5.2.0</version>
+            <version>5.4.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>

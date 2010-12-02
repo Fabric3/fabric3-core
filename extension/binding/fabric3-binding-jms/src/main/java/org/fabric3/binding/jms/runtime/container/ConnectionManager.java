@@ -183,7 +183,7 @@ public class ConnectionManager {
      *
      * @return true if the connection was refreshed successfully
      */
-    public boolean refreshConnection() {
+    public synchronized boolean refreshConnection() {
         try {
             if (cacheConnection) {
                 refreshSharedConnection();

@@ -698,7 +698,6 @@ public class AdaptiveMessageContainer {
      */
     private class MessageReceiver implements Runnable {
         private Session session;
-        private MessageConsumer consumer;
         private Object previousRecoveryMarker;
         private boolean previousSucceeded;
         private int idleWorkCount = 0;
@@ -880,7 +879,7 @@ public class AdaptiveMessageContainer {
         private boolean receive() throws JMSException, TransactionException {
             Connection connectionToUse = null;
             Session sessionToClose = null;
-            MessageConsumer consumerToClose = null;
+            MessageConsumer consumer;
             try {
                 Session sessionToUse = session;
                 if (sessionToUse == null) {
@@ -888,13 +887,9 @@ public class AdaptiveMessageContainer {
                     sessionToUse = createSession(connectionToUse);
                     sessionToClose = sessionToUse;
                 }
-                MessageConsumer consumerToUse = consumer;
-                if (consumerToUse == null) {
-                    consumerToUse = createConsumer(sessionToUse);
-                    consumerToClose = consumerToUse;
-                }
+                consumer = createConsumer(sessionToUse);
                 // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
-                Message message = consumerToUse.receive(receiveTimeout);
+                Message message = consumer.receive(receiveTimeout);
                 if (message != null) {
                     if (!isRunning()) {
                         // container is shutting down.
@@ -923,10 +918,13 @@ public class AdaptiveMessageContainer {
                 }
             }
             finally {
-                JmsHelper.closeQuietly(consumerToClose);
-                JmsHelper.closeQuietly(sessionToClose);
-                if (cacheLevel == CACHE_NONE) {
-                    JmsHelper.closeQuietly(connectionToUse);
+                synchronized (connectionManager) {
+                    // Atomikos throws an exception if the consumer is closed with ActiveMQ as session de-enlistment takes place when the session is closed
+                    // JmsHelper.closeQuietly(consumer);
+                    JmsHelper.closeQuietly(sessionToClose);
+                    if (cacheLevel == CACHE_NONE) {
+                        JmsHelper.closeQuietly(connectionToUse);
+                    }
                 }
             }
         }
@@ -941,10 +939,8 @@ public class AdaptiveMessageContainer {
                 } catch (JMSException e) {
                     monitor.listenerError(listenerUri.toString(), e);
                 }
-                JmsHelper.closeQuietly(consumer);
                 JmsHelper.closeQuietly(session);
             }
-            consumer = null;
             session = null;
         }
 
