@@ -206,7 +206,7 @@ public class BrokerEngine {
         selectedPort = minPort;
         while (selectedPort <= maxPort) {
             try {
-                ServerSocket socket = new ServerSocket(selectedPort);
+                ServerSocket socket = new ServerSocket(selectedPort, 0, InetAddress.getByName(bindAddress));
                 socket.close();
                 return;
             } catch (IOException e) {
