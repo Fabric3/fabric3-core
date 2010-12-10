@@ -42,10 +42,19 @@ import javax.jms.ConnectionFactory;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 
 /**
+ * Implemented by the JMS provider to resolve connection factories.
+ *
  * @version $Rev$ $Date$
  */
 public interface ProviderConnectionFactoryResolver {
 
+    /**
+     * Resolves the connection factory.
+     *
+     * @param definition the definition to resolve
+     * @return the resolved factory
+     * @throws JmsResolutionException if there is a resolution error
+     */
     ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException;
-    
+
 }

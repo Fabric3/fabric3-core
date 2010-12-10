@@ -58,7 +58,7 @@ import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
 import org.fabric3.binding.jms.runtime.container.ConnectionManager;
 import org.fabric3.binding.jms.runtime.container.ContainerStatistics;
 import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
-import org.fabric3.binding.jms.runtime.container.TransactionHelper;
+import org.fabric3.binding.jms.runtime.container.UnitOfWork;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -186,7 +186,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
 
         ContainerStatistics statistics = new ContainerStatistics();
         ConnectionManager connectionManager = new ConnectionManager(factory, uri, clientId, cacheConnection, durable, containerMonitor);
-        TransactionHelper transactionHelper = new TransactionHelper(uri, type, transactionTimeout, tm, statistics, containerMonitor);
+        UnitOfWork transactionHelper = new UnitOfWork(uri, type, transactionTimeout, tm, statistics);
         AdaptiveMessageContainer container = new AdaptiveMessageContainer(configuration,
                                                                           receiveTimeout,
                                                                           connectionManager,

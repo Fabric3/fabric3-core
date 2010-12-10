@@ -37,24 +37,23 @@
 */
 package org.fabric3.binding.jms.spi.runtime;
 
-import javax.jms.Destination;
-
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import javax.jms.ConnectionFactory;
 
 /**
- * Implemented by the JMS provider to resolve destinations.
+ * Implemented by the JMS provider to create connection factories on demand.
  *
  * @version $Rev$ $Date$
  */
-public interface ProviderDestinationResolver {
+public interface ProviderConnectionFactoryCreator {
 
     /**
-     * Resolves a destination.
+     * Creates the connection factory.
      *
-     * @param definition the destination definition
-     * @return the resolved destination
-     * @throws JmsResolutionException if there is a resolution error
+     * @param templateName the template name
+     * @return the connection factory
+     * @throws ConnectionFactoryCreationException
+     *          if there is an error creating the connection factory
      */
-    Destination resolve(DestinationDefinition definition) throws JmsResolutionException;
+    ConnectionFactory create(String templateName) throws ConnectionFactoryCreationException;
 
 }

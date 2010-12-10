@@ -50,11 +50,6 @@ public interface JmsConstants {
     String OPERATION_HEADER = "scaOperationName";
 
     /**
-     * Header used to send routing (callback and conversation) information.
-     */
-    String ROUTING_HEADER = "f3Context";
-
-    /**
      * Header used to determine if a response is a fault.
      */
     String FAULT_HEADER = "f3Fault";
@@ -65,14 +60,28 @@ public interface JmsConstants {
     String DEFAULT_CONNECTION_FACTORY = "default";
 
     /**
+     * Identifies the default configured non-XA pooled connection factory
+     */
+    String DEFAULT_POOLED_CONNECTION_FACTORY = "default.pooled";
+
+    /**
      * Identifies the default configured XA-enabled connection factory
      */
     String DEFAULT_XA_CONNECTION_FACTORY = "xaDefault";
 
+    /**
+     * No caching of JMS objects
+     */
     int CACHE_NONE = 0;
 
+    /**
+     * JMS connection caching
+     */
     int CACHE_CONNECTION = 1;
 
-    int CACHE_SESSION = 2;
+    /**
+     * Caching of all JMS objects
+     */
+    int CACHE_ADMINISTERED_OBJECTS = 2;
 
 }

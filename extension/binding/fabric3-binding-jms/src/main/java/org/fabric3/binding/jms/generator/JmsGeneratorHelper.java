@@ -1,4 +1,4 @@
-/* 
+/*
  * Fabric3
  * Copyright (c) 2009 Metaform Systems
  *
@@ -41,32 +41,58 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.binding.jms.generator;
+
+import java.net.URI;
+
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.TransactionType;
+
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTION_FACTORY;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
- * A connection factory configuration.
+ * Contains helper functions used during generation.
  *
  * @version $Revision$ $Date$
  */
-public class ConnectionFactoryDefinition extends AdministeredObjectDefinition {
-    private static final long serialVersionUID = -1167106940062628310L;
-    private String templateName;
+public class JmsGeneratorHelper {
 
     /**
-     * Returns the JMS connection factory template name to use when configuring the connection factory.
+     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name. Hierarchical URIs are converted to dot
+     * notation by replacing '/' with '.'.
      *
-     * @return the JMS connection factory template or null
+     * @param uri the URI
+     * @return the specifier
      */
-    public String getTemplateName() {
-        return templateName;
+    public static String getSpecifier(URI uri) {
+        String specifier = uri.getPath().substring(1).replace("/", ".");
+        String fragment = uri.getFragment();
+        if (fragment != null) {
+            specifier = specifier + "." + fragment;
+        }
+        return specifier;
     }
 
     /**
-     * Sets the JMS connection factory template name to use when configuring the connection factory.
+     * Generates a default connection factory configuration.
      *
-     * @param name the template name
+     * @param factory   the connection factory definition to configure
+     * @param specifier the factory specifier used to generate a unique name
+     * @param trxType   the transaction type
      */
-    public void setTemplateName(String name) {
-        this.templateName = name;
+    public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, String specifier, TransactionType trxType) {
+        if (factory.getName() == null) {
+            factory.setName(specifier);
+            if (TransactionType.GLOBAL == trxType) {
+                factory.setTemplateName(DEFAULT_XA_CONNECTION_FACTORY);
+            } else {
+                factory.setTemplateName(DEFAULT_CONNECTION_FACTORY);
+            }
+        }
+    }
+
+
+    private JmsGeneratorHelper() {
     }
 }

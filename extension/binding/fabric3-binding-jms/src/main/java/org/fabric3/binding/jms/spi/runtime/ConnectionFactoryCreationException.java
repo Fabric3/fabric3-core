@@ -37,24 +37,15 @@
 */
 package org.fabric3.binding.jms.spi.runtime;
 
-import javax.jms.Destination;
-
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-
 /**
- * Implemented by the JMS provider to resolve destinations.
- *
  * @version $Rev$ $Date$
  */
-public interface ProviderDestinationResolver {
+public class ConnectionFactoryCreationException extends JmsResolutionException {
+    private static final long serialVersionUID = -3693698848141597803L;
 
-    /**
-     * Resolves a destination.
-     *
-     * @param definition the destination definition
-     * @return the resolved destination
-     * @throws JmsResolutionException if there is a resolution error
-     */
-    Destination resolve(DestinationDefinition definition) throws JmsResolutionException;
+
+    public ConnectionFactoryCreationException(String message) {
+        super(message);
+    }
 
 }

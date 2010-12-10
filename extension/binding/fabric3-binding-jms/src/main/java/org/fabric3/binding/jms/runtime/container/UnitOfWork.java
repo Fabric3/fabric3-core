@@ -49,51 +49,49 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 
 
 /**
- * Implements JMS transaction operations.
+ * Implements unit of work boundaries for a JMS operation.
  *
  * @version $Rev$ $Date$
  */
-@Management
-public class TransactionHelper {
+public class UnitOfWork {
     private URI listenerUri;
     private TransactionType transactionType;
     private int transactionTimeout;
     private TransactionManager tm;
 
     private ContainerStatistics statistics;
-    private MessageContainerMonitor monitor;
 
 
     /**
      * Constructor.
      *
-     * @param listenerUri        the listener URI, typically a service or consumer
-     * @param transactionType    the transaction type
-     * @param transactionTimeout transaction timeout in seconds
-     * @param tm                 the JTA transaction manager for transacted messaging
-     * @param statistics         the JMS statistics tracker
-     * @param monitor            the monitor
+     * @param listenerUri the listener URI, typically a service or consumer
+     * @param type        the transaction type
+     * @param timeout     transaction timeout in seconds
+     * @param tm          the JTA transaction manager for transacted messaging
+     * @param statistics  the JMS statistics tracker
      */
-    public TransactionHelper(URI listenerUri,
-                             TransactionType transactionType,
-                             int transactionTimeout,
-                             TransactionManager tm,
-                             ContainerStatistics statistics,
-                             MessageContainerMonitor monitor) {
+    public UnitOfWork(URI listenerUri, TransactionType type, int timeout, TransactionManager tm, ContainerStatistics statistics) {
         this.listenerUri = listenerUri;
-        this.transactionTimeout = transactionTimeout;
-        this.transactionType = transactionType;
+        this.transactionTimeout = timeout;
+        this.transactionType = type;
         this.tm = tm;
         this.statistics = statistics;
-        this.monitor = monitor;
     }
 
+    /**
+     * Begins a transaction. For local (non-JTA) transactions, this method does nothing.
+     *
+     * @throws TransactionException if there is an error beginning a global transaction.
+     */
     public void begin() throws TransactionException {
+        if (TransactionType.GLOBAL != transactionType) {
+            return;
+        }
         try {
             tm.begin();
             tm.setTransactionTimeout(transactionTimeout);
@@ -104,13 +102,23 @@ public class TransactionHelper {
         }
     }
 
+    public void end(Session session, Message message) throws TransactionException {
+        if (TransactionType.GLOBAL == transactionType) {
+            globalCommit();
+        } else {
+            localCommitOrAcknowledge(session, message);
+        }
+    }
+
+    /**
+     * Performs a global or local transaction rollback.
+     *
+     * @param session the current JMS session the transaction is associated with
+     * @throws TransactionException if there is a rollback error
+     */
     public void rollback(Session session) throws TransactionException {
         if (TransactionType.GLOBAL == transactionType) {
-            try {
-                tm.rollback();
-            } catch (SystemException e) {
-                monitor.rollbackError(listenerUri, e);
-            }
+            globalRollback();
         } else {
             try {
                 localRollback(session);
@@ -125,7 +133,7 @@ public class TransactionHelper {
      *
      * @throws TransactionException if a commit error was encountered
      */
-    public void globalCommit() throws TransactionException {
+    private void globalCommit() throws TransactionException {
         try {
             if (tm.getStatus() != Status.STATUS_MARKED_ROLLBACK) {
                 tm.commit();
@@ -150,11 +158,31 @@ public class TransactionHelper {
     }
 
     /**
+     * Performs a local commit or acknowledgement if a local transaction or client acknowledgement is being used.
+     *
+     * @param session the session to commit
+     * @param message the message to acknowledge
+     * @throws TransactionException if the commit fails
+     */
+    private void localCommitOrAcknowledge(Session session, Message message) throws TransactionException {
+        try {
+            if (TransactionType.SESSION == transactionType) {
+                session.commit();
+                statistics.incrementTransactions();
+            } else if (Session.CLIENT_ACKNOWLEDGE == session.getAcknowledgeMode()) {
+                message.acknowledge();
+            }
+        } catch (JMSException e) {
+            throw new TransactionException(e);
+        }
+    }
+
+    /**
      * Rollbacks the current global (JTA) transaction.
      *
      * @throws TransactionException if an error rolling back was encountered
      */
-    public void globalRollback() throws TransactionException {
+    private void globalRollback() throws TransactionException {
         try {
             if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
                 tm.rollback();
@@ -166,28 +194,12 @@ public class TransactionHelper {
     }
 
     /**
-     * Performs a local commit or acknowledgement if a local transaction or client acknowledgement is being used.
-     *
-     * @param session the session to commit
-     * @param message the message to acknowledge
-     * @throws JMSException if the commit fails
-     */
-    public void localCommitOrAcknowledge(Session session, Message message) throws JMSException {
-        if (TransactionType.SESSION == transactionType) {
-            session.commit();
-            statistics.incrementTransactions();
-        } else if (Session.CLIENT_ACKNOWLEDGE == session.getAcknowledgeMode()) {
-            message.acknowledge();
-        }
-    }
-
-    /**
      * Performs a local rollback of the JMS session.
      *
      * @param session the session to rollback
      * @throws JMSException if the rollback fails
      */
-    public void localRollback(Session session) throws JMSException {
+    private void localRollback(Session session) throws JMSException {
         if (TransactionType.SESSION == transactionType) {
             session.rollback();
             statistics.incrementTransactionsRolledBack();

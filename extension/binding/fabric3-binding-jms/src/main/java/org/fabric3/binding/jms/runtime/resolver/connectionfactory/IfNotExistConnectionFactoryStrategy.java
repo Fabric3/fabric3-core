@@ -56,16 +56,16 @@ import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
 import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
 
 /**
- * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, JNDI and then, if not found,
- * creating it.
+ * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ProviderConnectionFactoryResolver},
+ * JNDI and then, if not found, creating it.
  */
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
-    private ConnectionFactoryStrategy always;
+    private AlwaysConnectionFactoryStrategy always;
     private ConnectionFactoryManager manager;
     private List<ProviderConnectionFactoryResolver> resolvers;
 
@@ -79,9 +79,17 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
         this.resolvers = resolvers;
     }
 
+    @Reference(required = false)
+    public void setCreator(ProviderConnectionFactoryCreator creator) {
+        always.setCreator(creator);
+    }
+
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
             throws JmsResolutionException {
         String name = definition.getName();
+        if (name == null) {
+            return always.getConnectionFactory(definition, env);
+        }
         try {
             ConnectionFactory factory = manager.get(name);
             if (factory != null) {
@@ -90,7 +98,6 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
             for (ProviderConnectionFactoryResolver resolver : resolvers) {
                 factory = resolver.resolve(definition);
                 if (factory != null) {
-                    manager.register(name, factory);
                     return factory;
                 }
             }
@@ -101,9 +108,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
             } catch (NameNotFoundException ex) {
                 factory = always.getConnectionFactory(definition, env);
             }
-            return manager.register(name, factory);
-        } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
+            return factory;
         } catch (NamingException e) {
             throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }

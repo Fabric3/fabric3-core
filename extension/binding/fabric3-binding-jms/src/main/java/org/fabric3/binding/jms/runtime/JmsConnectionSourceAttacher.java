@@ -62,7 +62,6 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
@@ -71,6 +70,13 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+
+import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.common.CacheLevel.CONNECTION;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTION_FACTORY;
 
 /**
  * Attaches a consumer to a JMS destination.
@@ -110,7 +116,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             Destination destination = objects.getRequestDestination();
             List<EventStream> streams = connection.getEventStreams();
             if (streams.size() != 1) {
-                throw new ConnectionAttachException("There must be a single event stream:" + streams.size());
+                throw new ConnectionAttachException("There must be a single event stream: " + streams.size());
             }
             EventStream stream = streams.get(0);
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
@@ -118,7 +124,6 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             configuration.setFactory(connectionFactory);
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
-            configuration.setType(TransactionType.NONE);
             populateConfiguration(configuration, source.getMetadata());
             if (jmsHost.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
@@ -138,15 +143,14 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         }
     }
 
-
     private void populateConfiguration(ListenerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
-        if (CacheLevel.CONNECTION == cacheLevel) {
-            configuration.setCacheLevel(JmsConstants.CACHE_CONNECTION);
-        } else if (CacheLevel.SESSION == cacheLevel) {
-            configuration.setCacheLevel(JmsConstants.CACHE_SESSION);
+        if (CONNECTION == cacheLevel) {
+            configuration.setCacheLevel(CACHE_CONNECTION);
+        } else if (ADMINISTERED_OBJECTS == cacheLevel) {
+            configuration.setCacheLevel(CACHE_ADMINISTERED_OBJECTS);
         } else {
-            configuration.setCacheLevel(JmsConstants.CACHE_NONE);
+            configuration.setCacheLevel(CACHE_NONE);
         }
         configuration.setIdleLimit(metadata.getIdleLimit());
         configuration.setMaxMessagesToProcess(metadata.getMaxMessagesToProcess());
@@ -167,10 +171,8 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         try {
             JmsBindingMetadata metadata = source.getMetadata();
             Hashtable<String, String> env = metadata.getEnv();
-            ConnectionFactoryDefinition requestConnectionFactoryDefinition = metadata.getConnectionFactory();
-            requestConnectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
-
-            ConnectionFactory requestConnectionFactory = resolver.resolve(requestConnectionFactoryDefinition, env);
+            ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
+            ConnectionFactory requestConnectionFactory = resolver.resolve(definition, env);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
             Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory, env);
 

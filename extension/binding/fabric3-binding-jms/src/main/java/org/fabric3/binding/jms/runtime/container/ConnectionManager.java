@@ -41,8 +41,13 @@ import java.net.URI;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.Topic;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Maintains shared JMS connection state for an {@link AdaptiveMessageContainer}.
@@ -110,6 +115,14 @@ public class ConnectionManager {
     }
 
     /**
+     * Closes the shared connection
+     */
+    public synchronized void close() {
+        JmsHelper.closeQuietly(sharedConnection);
+        sharedConnection = null;
+    }
+
+    /**
      * Returns a shared connection
      *
      * @return the shared connection
@@ -120,14 +133,6 @@ public class ConnectionManager {
             sharedConnection = createSharedConnection();
         }
         return sharedConnection;
-    }
-
-    /**
-     * Closes the shared connection
-     */
-    public synchronized void close() {
-        JmsHelper.closeQuietly(sharedConnection);
-        sharedConnection = null;
     }
 
     /**

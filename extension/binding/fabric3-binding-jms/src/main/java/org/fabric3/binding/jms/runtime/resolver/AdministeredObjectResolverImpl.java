@@ -51,7 +51,6 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- * Default implementation of AdministeredObjectResolver.
  *
  * @version $Rev$ $Date$
  */

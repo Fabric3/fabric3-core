@@ -31,9 +31,18 @@
         <property name="maxPort" source="$systemConfig//jms/activemq/@max.port"/>
     </component>
 
-    <component name="ConnectionFactoryParser">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryParser"/>
+    <component name="ConnectionFactoryInstantiator">
+        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryInstantiator"/>
         <property name="connectionFactories" source="$systemConfig//jms/connection.factories"/>
+    </component>
+
+    <component name="ConnectionFactoryTemplateRegistry">
+        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryTemplateRegistryImpl"/>
+        <property name="connectionFactoryTemplates" source="$systemConfig//jms/connection.factory.templates"/>
+    </component>
+
+    <component name="ActiveMQConnectionFactoryCreator">
+        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ActiveMQConnectionFactoryCreator"/>
     </component>
 
 </composite>

@@ -40,6 +40,7 @@ package org.fabric3.binding.activemq.factory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -57,7 +58,7 @@ import org.fabric3.host.runtime.HostInfo;
 /**
  * @version $Rev$ $Date$
  */
-public class ConnectionFactoryParserTestCase extends TestCase {
+public class ConnectionFactoryConfigurationParserTestCase extends TestCase {
     private static final String XML = "<foo><value>" +
             "<connection.factories>" +
             "   <connection.factory name='testFactory' broker.url='vm://broker' type='xa'>" +
@@ -72,62 +73,31 @@ public class ConnectionFactoryParserTestCase extends TestCase {
             "</connection.factories>" +
             "</value></foo>";
 
-    private ConnectionFactoryParser parser;
+    private ConnectionFactoryConfigurationParser parser;
     private XMLStreamReader reader;
-    private MockConnectionFactoryManager registry;
 
 
     public void testParse() throws Exception {
-        parser.setConnectionFactories(reader);
-        parser.init();
-        registry.verify();
+      List<ConnectionFactoryConfiguration> configurations = parser.parse("broker", reader);
+        assertEquals(2, configurations.size());
+        for (ConnectionFactoryConfiguration configuration : configurations) {
+            assertEquals("vm://broker", configuration.getBrokerUri().toString());
+            if ("testFactory".equals(configuration.getName())){
+                assertEquals(1, configuration.getPoolProperties().size());
+                assertEquals(1, configuration.getFactoryProperties().size());
+            }
+        }
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new MockConnectionFactoryManager();
-        HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.getRuntimeName()).andReturn("broker");
-        EasyMock.replay(info);
-        parser = new ConnectionFactoryParser(registry, info);
+        parser = new ConnectionFactoryConfigurationParser();
 
         InputStream stream = new ByteArrayInputStream(XML.getBytes());
         reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         reader.nextTag();
 
 
-    }
-
-    private class MockConnectionFactoryManager implements ConnectionFactoryManager {
-        private Map<String, ConnectionFactory> factories = new HashMap<String, ConnectionFactory>();
-
-        public ConnectionFactory get(String name) {
-            return factories.get(name);
-        }
-
-        public ConnectionFactory register(String name, ConnectionFactory factory) throws FactoryRegistrationException {
-            return null;
-        }
-
-        public ConnectionFactory register(String name, ConnectionFactory factory, Map<String, String> properties) {
-            factories.put(name, factory);
-            if ("testFactory".equals(name)) {
-                assertNotNull(properties.get("maxSize"));
-            }
-            return factory;
-        }
-
-        public void unregister(String name) {
-            factories.remove(name);
-        }
-
-        public void verify() {
-            assertEquals(2, factories.size());
-            ActiveMQXAConnectionFactory xaFactory = (ActiveMQXAConnectionFactory) factories.get("testFactory");
-            assertEquals("vm://broker", xaFactory.getBrokerURL());
-            ActiveMQConnectionFactory nonXaFactory = (ActiveMQConnectionFactory) factories.get("nonXAtestFactory");
-            assertEquals("vm://broker", nonXaFactory.getBrokerURL());
-        }
     }
 }

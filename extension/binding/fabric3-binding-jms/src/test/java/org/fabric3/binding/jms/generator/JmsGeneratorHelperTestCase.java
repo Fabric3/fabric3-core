@@ -34,27 +34,26 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.binding.jms.spi.runtime;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.binding.jms.generator;
 
-import javax.jms.Destination;
+import java.net.URI;
 
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import junit.framework.TestCase;
 
 /**
- * Implemented by the JMS provider to resolve destinations.
- *
- * @version $Rev$ $Date$
+ * @version $Revision: 9672 $ $Date: 2010-12-01 22:10:58 +0100 (Wed, 01 Dec 2010) $
  */
-public interface ProviderDestinationResolver {
+public class JmsGeneratorHelperTestCase extends TestCase {
 
-    /**
-     * Resolves a destination.
-     *
-     * @param definition the destination definition
-     * @return the resolved destination
-     * @throws JmsResolutionException if there is a resolution error
-     */
-    Destination resolve(DestinationDefinition definition) throws JmsResolutionException;
-
+    public void testSpecifier() throws Exception {
+        String specifier = JmsGeneratorHelper.getSpecifier(URI.create("fabric3://domain/TestComponent#TestService"));
+        assertEquals("TestComponent.TestService", specifier);
+    }
 }

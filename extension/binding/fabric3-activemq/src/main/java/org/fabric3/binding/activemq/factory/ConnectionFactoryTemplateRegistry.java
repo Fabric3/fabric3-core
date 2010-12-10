@@ -38,10 +38,17 @@
 package org.fabric3.binding.activemq.factory;
 
 /**
- * Defines ActiveMQ connection factory types.
+ * Manages JMS connection factory templates.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9497 $ $Date: 2010-09-27 00:13:13 +0200 (Mon, 27 Sep 2010) $
  */
-public enum ConnectionFactoryType {
-    LOCAL, XA, POOLED
+public interface ConnectionFactoryTemplateRegistry {
+
+    /**
+     * Returns the connection factory template or null if not found.
+     *
+     * @param name the template name
+     * @return the connection factory template or null if not found
+     */
+    ConnectionFactoryConfiguration getTemplate(String name);
 }

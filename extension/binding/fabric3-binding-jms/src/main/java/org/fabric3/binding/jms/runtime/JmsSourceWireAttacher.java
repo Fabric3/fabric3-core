@@ -65,16 +65,20 @@ import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+
+import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
 
 /**
  * Attaches a channel or consumer to a JMS destination.
@@ -132,11 +136,11 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     private void populateConfiguration(ListenerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
         if (CacheLevel.CONNECTION == cacheLevel) {
-            configuration.setCacheLevel(JmsConstants.CACHE_CONNECTION);
-        } else if (CacheLevel.SESSION == cacheLevel) {
-            configuration.setCacheLevel(JmsConstants.CACHE_SESSION);
+            configuration.setCacheLevel(CACHE_CONNECTION);
+        } else if (ADMINISTERED_OBJECTS == cacheLevel) {
+            configuration.setCacheLevel(CACHE_ADMINISTERED_OBJECTS);
         } else {
-            configuration.setCacheLevel(JmsConstants.CACHE_NONE);
+            configuration.setCacheLevel(CACHE_NONE);
         }
         configuration.setIdleLimit(metadata.getIdleLimit());
         configuration.setMaxMessagesToProcess(metadata.getMaxMessagesToProcess());
@@ -172,22 +176,17 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         try {
             JmsBindingMetadata metadata = source.getMetadata();
             Hashtable<String, String> env = metadata.getEnv();
-            ConnectionFactoryDefinition requestConnectionFactoryDefinition = metadata.getConnectionFactory();
+            ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
-            checkDefaults(source, requestConnectionFactoryDefinition);
-
-            ConnectionFactory requestConnectionFactory = resolver.resolve(requestConnectionFactoryDefinition, env);
+            ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition, env);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
             Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory, env);
 
             ConnectionFactory responseConnectionFactory = null;
             Destination responseDestination = null;
             if (metadata.isResponse()) {
-                ConnectionFactoryDefinition responseConnectionFactoryDefinition = metadata.getResponseConnectionFactory();
-
-                checkDefaults(source, responseConnectionFactoryDefinition);
-
-                responseConnectionFactory = resolver.resolve(responseConnectionFactoryDefinition, env);
+                ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
+                responseConnectionFactory = resolver.resolve(responseDefinition, env);
                 DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
                 responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory, env);
             }
@@ -227,23 +226,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         }
         // programming error
         throw new AssertionError("Error resolving operation: " + operationName);
-    }
-
-    /**
-     * Sets default connection factory values if not specified.
-     *
-     * @param source                      the source definition
-     * @param connectionFactoryDefinition the connection factory definition
-     */
-    private void checkDefaults(JmsSourceDefinition source, ConnectionFactoryDefinition connectionFactoryDefinition) {
-        String name = connectionFactoryDefinition.getName();
-        if (name == null) {
-            if (TransactionType.GLOBAL == source.getTransactionType()) {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_XA_CONNECTION_FACTORY);
-            } else {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
-            }
-        }
     }
 
     private class ResolvedObjects {

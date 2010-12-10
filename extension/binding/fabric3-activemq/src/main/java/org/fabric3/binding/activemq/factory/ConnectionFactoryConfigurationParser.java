@@ -46,37 +46,18 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQXAConnectionFactory;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryType;
 
 /**
- * Parses ConnectionFactoryConfiguration entries in the runtime system configuration, instantiates connection factories for them, and registers the
- * factories with the ConnectionFactoryRegistry.
+ * Parses {@link ConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9497 $ $Date: 2010-09-27 00:13:13 +0200 (Mon, 27 Sep 2010) $
  */
-@EagerInit
-public class ConnectionFactoryParser {
-    private List<ConnectionFactoryConfiguration> configurations = new ArrayList<ConnectionFactoryConfiguration>();
-    private ConnectionFactoryManager manager;
-    private String brokerName;
+public class ConnectionFactoryConfigurationParser {
 
-    public ConnectionFactoryParser(@Reference ConnectionFactoryManager manager, @Reference HostInfo info) {
-        this.manager = manager;
-        this.brokerName = info.getRuntimeName().replace(":", ".");
-    }
-
-    @Property
-    public void setConnectionFactories(XMLStreamReader reader) throws XMLStreamException, InvalidConfigurationException {
+    public List<ConnectionFactoryConfiguration> parse(String defaultBrokerName, XMLStreamReader reader)
+            throws XMLStreamException, InvalidConfigurationException {
+        List<ConnectionFactoryConfiguration> configurations = new ArrayList<ConnectionFactoryConfiguration>();
         reader.nextTag();
         ConnectionFactoryConfiguration configuration = null;
         while (true) {
@@ -96,7 +77,7 @@ public class ConnectionFactoryParser {
                     configuration.setName(name);
                     String urlString = reader.getAttributeValue(null, "broker.url");
                     if (urlString == null) {
-                        urlString = "vm://" + brokerName;
+                        urlString = defaultBrokerName;
                     }
                     try {
                         URI uri = new URI(urlString);
@@ -125,44 +106,8 @@ public class ConnectionFactoryParser {
                     break;
                 }
             case XMLStreamConstants.END_DOCUMENT:
-                return;
+                return configurations;
             }
-        }
-    }
-
-    @Init
-    public void init() throws FactoryRegistrationException {
-        // initialize and register the connection factories
-        for (ConnectionFactoryConfiguration configuration : configurations) {
-            URI uri = configuration.getBrokerUri();
-            String name = configuration.getName();
-            switch (configuration.getType()) {
-            case LOCAL:
-                ActiveMQConnectionFactory defaultFactory = new ActiveMQConnectionFactory(uri);
-                defaultFactory.setProperties(configuration.getFactoryProperties());
-                manager.register(name, defaultFactory, configuration.getPoolProperties());
-                break;
-            case POOLED:
-                throw new UnsupportedOperationException();
-//                ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(uri);
-//                wrapped.setProperties(configuration.getFactoryProperties());
-//                PooledConnectionFactory pooledFactory = new PooledConnectionFactory(wrapped);
-//                registry.register(name, pooledFactory, configuration.getPoolProperties());
-//                break;
-            case XA:
-                ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(uri);
-                xaFactory.setProperties(configuration.getFactoryProperties());
-                manager.register(name, xaFactory, configuration.getPoolProperties());
-                break;
-            }
-        }
-    }
-
-
-    @Destroy
-    public void destroy() throws FactoryRegistrationException {
-        for (ConnectionFactoryConfiguration configuration : configurations) {
-            manager.unregister(configuration.getName());
         }
     }
 
@@ -182,7 +127,6 @@ public class ConnectionFactoryParser {
             }
         }
     }
-
 
     private void parsePoolProperties(ConnectionFactoryConfiguration configuration, XMLStreamReader reader) throws XMLStreamException {
         while (true) {
@@ -216,7 +160,7 @@ public class ConnectionFactoryParser {
             throw new InvalidConfigurationException(message + " [" + line + "," + col + "]", e);
         }
         throw new InvalidConfigurationException(message + " [" + line + "," + col + "]");
-
     }
+
 
 }

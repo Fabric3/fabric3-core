@@ -49,7 +49,9 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
@@ -86,7 +88,10 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         URI uri = consumer.getUri();
 
         // set the client id specifier
-        metadata.setClientIdSpecifier(uri.getSchemeSpecificPart().replace("/", ":").replace("#", ":"));
+        String specifier = JmsGeneratorHelper.getSpecifier(uri);
+        metadata.setClientIdSpecifier(specifier);
+        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);  // TODO support transactions
 
         generateIntents(binding, metadata);
 
@@ -100,7 +105,11 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBindingDefinition> binding)
             throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
-        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
+
+        String specifier = JmsGeneratorHelper.getSpecifier(producer.getUri());
+        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);   // TODO support transactions
         JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionTarget(definition);

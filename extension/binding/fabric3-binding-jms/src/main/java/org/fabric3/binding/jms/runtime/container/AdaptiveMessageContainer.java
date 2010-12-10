@@ -65,7 +65,7 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_SESSION;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
@@ -78,7 +78,7 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_SESSION;
 @Management
 public class AdaptiveMessageContainer {
     private final ConnectionManager connectionManager;
-    private TransactionHelper transactionHelper;
+    private UnitOfWork work;
     private ContainerStatistics statistics;
     private ExecutorService executorService;
 
@@ -122,7 +122,7 @@ public class AdaptiveMessageContainer {
      * @param configuration     the container configuration
      * @param receiveTimeout    the timeout for receiving messages in seconds
      * @param connectionManager the connection manager
-     * @param transactionHelper the transaction helper
+     * @param work              the unit of work
      * @param statistics        the message statistics tracker
      * @param executorService   the work scheduler to schedule message receivers
      * @param monitor           the monitor for reporting events and errors
@@ -130,7 +130,7 @@ public class AdaptiveMessageContainer {
     public AdaptiveMessageContainer(ListenerConfiguration configuration,
                                     int receiveTimeout,
                                     ConnectionManager connectionManager,
-                                    TransactionHelper transactionHelper,
+                                    UnitOfWork work,
                                     ContainerStatistics statistics,
                                     ExecutorService executorService,
                                     MessageContainerMonitor monitor) {
@@ -153,7 +153,7 @@ public class AdaptiveMessageContainer {
         // container.setLocalDelivery();
 
         this.connectionManager = connectionManager;
-        this.transactionHelper = transactionHelper;
+        this.work = work;
         this.statistics = statistics;
         this.executorService = executorService;
         this.monitor = monitor;
@@ -201,8 +201,8 @@ public class AdaptiveMessageContainer {
     public String getLevel() {
         if (cacheLevel == CACHE_CONNECTION) {
             return "Connection";
-        } else if (cacheLevel == CACHE_SESSION) {
-            return "Session";
+        } else if (cacheLevel == CACHE_ADMINISTERED_OBJECTS) {
+            return "Administered Objects";
         } else {
             return "None";
         }
@@ -638,8 +638,7 @@ public class AdaptiveMessageContainer {
                     try {
                         executorService.execute(runnable);
                         it.remove();
-                    }
-                    catch (RuntimeException e) {
+                    } catch (RuntimeException e) {
                         // keep the work paused paused and log the event
                         monitor.reject(e);
                     }
@@ -697,7 +696,9 @@ public class AdaptiveMessageContainer {
      * Listens for messages from a destination and dispatches them to a message listener, managing transaction semantics and recovery if necessary.
      */
     private class MessageReceiver implements Runnable {
+        private Connection connection;
         private Session session;
+        private MessageConsumer consumer;
         private Object previousRecoveryMarker;
         private boolean previousSucceeded;
         private int idleWorkCount = 0;
@@ -720,12 +721,12 @@ public class AdaptiveMessageContainer {
                 } else {
                     int messageCount = 0;
                     while (isRunning() && messageCount < maxMessagesToProcess) {
-                        messageReceived = (receiveMessage() || messageReceived);
+                        messageReceived = (receive() || messageReceived);
                         messageCount++;
                     }
                 }
             } catch (Throwable e) {
-                closeResources();
+                closeSession();
                 if (!previousSucceeded) {
                     // consecutive failure - wait to retry
                     sleep();
@@ -755,7 +756,7 @@ public class AdaptiveMessageContainer {
                     receivers.remove(this);
                     monitor.decreaseReceivers(receivers.size());
                     syncMonitor.notifyAll();
-                    closeResources();
+                    closeSession();
                 } else if (isRunning()) {
                     int nonPausedReceivers = getReceiverCount() - getPausedReceiversCount();
                     if (nonPausedReceivers < 1) {
@@ -780,11 +781,12 @@ public class AdaptiveMessageContainer {
             while (active) {
                 // reset the execution context so the thread does not appear stalled to the runtime
                 ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
+                if (context == null) {
+                    throw new AssertionError("Execution context was not set: " + listenerUri);
+                }
                 synchronized (syncMonitor) {
                     try {
-                        if (context != null) {
-                            context.start();
-                        }
+                        context.start();
                         boolean interrupted = false;
                         boolean waiting = false;
                         while ((active = isInitialized()) && !isRunning()) {
@@ -808,17 +810,13 @@ public class AdaptiveMessageContainer {
                         if (waiting) {
                             activeReceiverCount++;
                         }
-                        if (context != null) {
-                            context.stop();
-                        }
+                        context.stop();
                     } finally {
-                        if (context != null) {
-                            context.clear();
-                        }
+                        context.clear();
                     }
                 }
                 if (active) {
-                    received = (receiveMessage() || received);
+                    received = (receive() || received);
                 }
             }
             return received;
@@ -831,117 +829,90 @@ public class AdaptiveMessageContainer {
          * @throws JMSException         if there was an error receiving the message
          * @throws TransactionException if receiving a globally transacted message and a transaction operation (begin, commit, rollback) fails.
          */
-        private boolean receiveMessage() throws JMSException, TransactionException {
-            setRecoveryMarker();
-            boolean received;
-            if (TransactionType.GLOBAL == transactionType) {
-                received = jtaReceiveMessage();
-            } else {
-                received = receive();
-            }
-            previousSucceeded = true;
-            return received;
-        }
-
-        /**
-         * Waits to receive a message and invokes the listener within the context of a global transaction.
-         *
-         * @return true if a message was received
-         * @throws TransactionException if an exception starting, committing, or rolling back a transaction occurred
-         */
-        private boolean jtaReceiveMessage() throws TransactionException {
-
+        private boolean receive() throws JMSException, TransactionException {
             try {
-                transactionHelper.begin();
-                boolean received = receive();
-                transactionHelper.globalCommit();
+                setRecoveryMarker();
+                boolean received = doReceive();
+                previousSucceeded = true;
                 return received;
-            } catch (JMSException e) {
-                monitor.receiveError(listenerUri, e);
-                transactionHelper.globalRollback();
-            } catch (RuntimeException e) {
-                monitor.receiveError(listenerUri, e);
-                transactionHelper.globalRollback();
-            } catch (Error e) {
-                monitor.receiveError(listenerUri, e);
-                transactionHelper.globalRollback();
+            } finally {
+                closeResources();
             }
-            return false;
         }
 
         /**
-         * Waits to receive a message and invokes the listener.
+         * Initiates a transaction context if required and performs the blocking receive on the JMS destination.
          *
          * @return true if a message was received
          * @throws JMSException         if a JMS-related exception occurred during the receive
          * @throws TransactionException if a transaction exception occurred during thr receive
          */
-        private boolean receive() throws JMSException, TransactionException {
-            Connection connectionToUse = null;
-            Session sessionToClose = null;
-            MessageConsumer consumer;
-            try {
-                Session sessionToUse = session;
-                if (sessionToUse == null) {
-                    connectionToUse = connectionManager.getConnection();
-                    sessionToUse = createSession(connectionToUse);
-                    sessionToClose = sessionToUse;
-                }
-                consumer = createConsumer(sessionToUse);
-                // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
-                Message message = consumer.receive(receiveTimeout);
-                if (message != null) {
-                    if (!isRunning()) {
-                        // container is shutting down.
-                        transactionHelper.rollback(session);
-                        idle = true;
-                        return false;
-                    }
-
-                    idle = false;
-                    resizePool();
-                    try {
-                        messageListener.onMessage(message);
-                        statistics.incrementMessagesReceived();
-                        transactionHelper.localCommitOrAcknowledge(sessionToUse, message);
-                    } catch (JMSException e) {
-                        transactionHelper.localRollback(sessionToUse);
-                        throw e;
-                    } catch (RuntimeException e) {
-                        transactionHelper.localRollback(sessionToUse);
-                        throw e;
-                    }
-                    return true;
-                } else {
+        private boolean doReceive() throws JMSException, TransactionException {
+            work.begin();
+            connection = connectionManager.getConnection();
+            if (session == null) {
+                session = createSession(connection);
+            }
+            consumer = createConsumer(session);
+            // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
+            Message message = consumer.receive(receiveTimeout);
+            if (message != null) {
+                if (!isRunning()) {
+                    // container is shutting down.
+                    work.rollback(session);
                     idle = true;
                     return false;
                 }
-            }
-            finally {
-                synchronized (connectionManager) {
-                    // Atomikos throws an exception if the consumer is closed with ActiveMQ as session de-enlistment takes place when the session is closed
-                    // JmsHelper.closeQuietly(consumer);
-                    JmsHelper.closeQuietly(sessionToClose);
-                    if (cacheLevel == CACHE_NONE) {
-                        JmsHelper.closeQuietly(connectionToUse);
-                    }
+
+                idle = false;
+                resizePool();
+                try {
+                    messageListener.onMessage(message);
+                    statistics.incrementMessagesReceived();
+                    work.end(session, message);
+                    return true;
+                } catch (RuntimeException e) {
+                    monitor.receiveError(listenerUri, e);
+                    work.rollback(session);
+                } catch (Error e) {
+                    monitor.receiveError(listenerUri, e);
+                    work.rollback(session);
                 }
+                return false;
+            } else {
+                idle = true;
+                work.end(session, message);
+                return false;
             }
         }
 
-        private void closeResources() {
+        private void closeSession() {
             synchronized (connectionManager) {
-                try {
-                    if (isDurable() && session != null) {
+                if (isDurable() && session != null) {
+                    try {
                         session.unsubscribe(subscriptionName);
+                    } catch (JMSException e) {
+                        monitor.listenerError(listenerUri.toString(), e);
                     }
-
-                } catch (JMSException e) {
-                    monitor.listenerError(listenerUri.toString(), e);
                 }
                 JmsHelper.closeQuietly(session);
             }
             session = null;
+        }
+
+        private void closeResources() {
+            synchronized (connectionManager) {
+                JmsHelper.closeQuietly(consumer);
+                if (cacheLevel < CACHE_ADMINISTERED_OBJECTS) {
+                    JmsHelper.closeQuietly(session);
+                    consumer = null;
+                    session = null;
+                }
+                if (cacheLevel == CACHE_NONE) {
+                    JmsHelper.closeQuietly(connection);
+                    connection = null;
+                }
+            }
         }
 
         private void setRecoveryMarker() {

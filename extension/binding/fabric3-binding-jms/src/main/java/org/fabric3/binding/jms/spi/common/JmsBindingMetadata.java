@@ -131,10 +131,16 @@ public class JmsBindingMetadata extends ModelObject {
     }
 
     public DestinationDefinition getResponseDestination() {
+        if (response == null) {
+            return null;
+        }
         return response.getDestination();
     }
 
     public ConnectionFactoryDefinition getResponseConnectionFactory() {
+        if (response == null) {
+            return null;
+        }
         return response.getConnectionFactory();
     }
 
@@ -278,7 +284,10 @@ public class JmsBindingMetadata extends ModelObject {
         copy.initialContextFactory = this.initialContextFactory;
         copy.jndiUrl = this.jndiUrl;
         copy.destination = this.destination;
-        copy.connectionFactory = this.connectionFactory;
+        copy.connectionFactory.setCreate(this.connectionFactory.getCreate());
+        copy.connectionFactory.setName(this.connectionFactory.getName());
+        copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());
+        copy.connectionFactory.getProperties().putAll(this.connectionFactory.getProperties());
         copy.response = this.response;
         copy.headers = this.headers;
 

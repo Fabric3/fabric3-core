@@ -53,6 +53,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
@@ -81,7 +82,6 @@ import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
 @EagerInit
 public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinition> {
 
-    // Transacted one way intent
     private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
     private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
@@ -111,7 +111,9 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         // set the client id specifier
-        metadata.setClientIdSpecifier(binding.getParent().getUri().getSchemeSpecificPart().replace("/", ":").replace("#", ":"));
+        String specifier = JmsGeneratorHelper.getSpecifier(binding.getParent().getUri());
+        metadata.setClientIdSpecifier(specifier);
+
         validateResponseDestination(metadata, contract);
 
         generateIntents(binding, metadata);
@@ -132,6 +134,9 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         if (provisioner != null) {
             provisioner.generateSource(definition);
         }
+
+        setDefaultFactoryConfigurations(metadata, transactionType, specifier);
+
         return definition;
     }
 
@@ -145,6 +150,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
         validateResponseDestination(metadata, contract);
+
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
         JmsTargetDefinition definition = null;
@@ -160,6 +166,10 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         if (provisioner != null) {
             provisioner.generateTarget(definition);
         }
+
+        String specifier = JmsGeneratorHelper.getSpecifier(binding.getParent().getUri());
+        setDefaultFactoryConfigurations(metadata, transactionType, specifier);
+
         return definition;
     }
 
@@ -196,7 +206,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
      * @param metadata the JSM metadata
      */
     private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
-        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT)){
+        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT)) {
             metadata.setDurable(true);
         }
     }
@@ -249,4 +259,16 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
         return types;
     }
+
+    private void setDefaultFactoryConfigurations(JmsBindingMetadata metadata, TransactionType trxType, String specifier) {
+        // create the connection factory name if one not explicitly given
+        ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
+        JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, trxType);
+        ConnectionFactoryDefinition responseFactory = metadata.getResponseConnectionFactory();
+        if (responseFactory != null) {
+            JmsGeneratorHelper.generateDefaultFactoryConfiguration(responseFactory, specifier + "Response", trxType);
+        }
+    }
+
+
 }

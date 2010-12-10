@@ -85,7 +85,11 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         JmsBindingMetadata metadata = target.getMetadata();
         Hashtable<String, String> env = metadata.getEnv();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
-        connectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
+
+        // use the default pooled factory
+        if (connectionFactoryDefinition.getName() == null) {
+            connectionFactoryDefinition.setName(JmsConstants.DEFAULT_POOLED_CONNECTION_FACTORY);
+        }
         Destination destination;
         ConnectionFactory connectionFactory;
         try {

@@ -276,7 +276,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         } else if ("connection".equalsIgnoreCase(cacheLevel)) {
             metadata.setCacheLevel((CacheLevel.CONNECTION));
         } else if ("session".equalsIgnoreCase(cacheLevel)) {
-            metadata.setCacheLevel((CacheLevel.SESSION));
+            metadata.setCacheLevel((CacheLevel.ADMINISTERED_OBJECTS));
         } else {
             InvalidValue error = new InvalidValue("Invalid cache level attribute", reader);
             context.addError(error);

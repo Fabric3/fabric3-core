@@ -53,7 +53,7 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 /**
  * Strategy for looking up destinations.
  *
- * @version $Revsion$ $Date$
+ * @version $Revision$ $Date$
  */
 public interface DestinationStrategy {
 
@@ -63,7 +63,7 @@ public interface DestinationStrategy {
      * @param definition Destination definition.
      * @param cf         Connection factory.
      * @param env        JNDI environment.
-     * @return Lokked up or created destination.
+     * @return Looked up or created destination.
      * @throws JmsResolutionException if there is an error looking up the destination
      */
     Destination getDestination(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env) throws JmsResolutionException;

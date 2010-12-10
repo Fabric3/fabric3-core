@@ -57,8 +57,8 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
 
 /**
  * Implementation that always attempts to create a connection factory.
@@ -67,21 +67,39 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
  */
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;
+    private ProviderConnectionFactoryCreator creator;
 
     public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
         this.manager = manager;
     }
 
+    @Reference(required = false)
+    public void setCreator(ProviderConnectionFactoryCreator creator) {
+        this.creator = creator;
+    }
+
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
             throws JmsResolutionException {
 
+        Map<String, String> props = definition.getProperties();
+        String className = props.get("class");
+        ConnectionFactory factory;
         String name = definition.getName();
-        try {
-            Map<String, String> props = definition.getProperties();
-            String className = props.get("class");
-            if (className == null) {
-                throw new JmsResolutionException("The 'class' attribute must be set for the connection factory: " + name);
+        String templateName = definition.getTemplateName();
+        if (className == null) {
+            if (creator == null) {
+                throw new JmsResolutionException("A connection factory class was not specified for: " + name);
             }
+            factory = creator.create(templateName);
+        } else {
+            factory = instantiate(className, props);
+        }
+        return manager.register(name, factory);
+
+    }
+
+    private ConnectionFactory instantiate(String className, Map<String, String> props) throws JmsResolutionException {
+        try {
             ConnectionFactory factory = (ConnectionFactory) Class.forName(className).newInstance();
             for (PropertyDescriptor pd : Introspector.getBeanInfo(factory.getClass()).getPropertyDescriptors()) {
                 String propName = pd.getName();
@@ -91,19 +109,17 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
                     writeMethod.invoke(factory, propValue);
                 }
             }
-            return manager.register(name, factory);
+            return factory;
         } catch (InstantiationException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
+            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         } catch (IllegalAccessException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
+            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         } catch (ClassNotFoundException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
+            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         } catch (IntrospectionException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
+            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         } catch (InvocationTargetException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
-        } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + name, e);
+            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         }
 
     }

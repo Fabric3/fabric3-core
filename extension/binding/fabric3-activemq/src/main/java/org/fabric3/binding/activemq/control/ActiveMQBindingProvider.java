@@ -41,8 +41,6 @@ import java.net.URI;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
@@ -68,9 +66,15 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * Allows ActiveMQ to be used for sca.binding in a domain. By default, this provider configures a wire to use an embedded broker, which forwards
- * messages to external brokers with target service consumers. To configure the wire to use a remote broker topology, the <code>brokerUrl</code>
- * property may be set to the appropriate broker location.
+ * Implements binding.sca using ActiveMQ.
+ * <p/>
+ * <p/>
+ * By default, this provider uses an embedded broker, which forwards messages to peer brokers in a zone. To configure the provider to use a remote
+ * broker, the <code>brokerUrl</code> property may be set to the appropriate broker location.
+ * <p/>
+ * <p/>
+ * Also, the provider uses default connection factory configurations; to use specific connection factories, set the <code>connectionFactory</code> and
+ * <code>xaConnectionFactory</code> properties.
  *
  * @version $Rev$ $Date$
  */
@@ -149,6 +153,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
             // derive the callback queue name from the reference name since multiple clients can connect to a service
             String callbackQueue = source.getUri().toString();
             boolean callbackXa = isXA(target, true);
+
             JmsBindingDefinition callbackReferenceDefinition = createBindingDefinition(callbackQueue, false, callbackXa);
             LogicalBinding<JmsBindingDefinition> callbackReferenceBinding =
                     new LogicalBinding<JmsBindingDefinition>(callbackReferenceDefinition, source, deployable);
@@ -197,21 +202,10 @@ public class ActiveMQBindingProvider implements BindingProvider {
             factoryDefinition.setName(xaConnectionFactory);
             factoryDefinition.setCreate(CreateOption.NEVER);
             metadata.setConnectionFactory(factoryDefinition);
-        } else if (xa) {
-            // XA, no connection factory defined
-            factoryDefinition.setName(ActiveMQXAConnectionFactory.class.getName());
-            factoryDefinition.setCreate(CreateOption.ALWAYS);
-            metadata.setConnectionFactory(factoryDefinition);
-
-        } else if (connectionFactory != null) {
+        } else if (!xa && connectionFactory != null) {
             // non-XA connection factory defined
             factoryDefinition.setName(connectionFactory);
             factoryDefinition.setCreate(CreateOption.NEVER);
-            metadata.setConnectionFactory(factoryDefinition);
-        } else {
-            // non-XA, no connection factory defined
-            factoryDefinition.setName(ActiveMQConnectionFactory.class.getName());
-            factoryDefinition.setCreate(CreateOption.ALWAYS);
             metadata.setConnectionFactory(factoryDefinition);
         }
 
@@ -245,12 +239,6 @@ public class ActiveMQBindingProvider implements BindingProvider {
             ConnectionFactoryDefinition factoryDefinition = new ConnectionFactoryDefinition();
             factoryDefinition.setName(connectionFactory);
             factoryDefinition.setCreate(CreateOption.NEVER);
-            metadata.setConnectionFactory(factoryDefinition);
-        } else {
-            // non-XA, no connection factory defined
-            ConnectionFactoryDefinition factoryDefinition = new ConnectionFactoryDefinition();
-            factoryDefinition.setName(ActiveMQConnectionFactory.class.getName());
-            factoryDefinition.setCreate(CreateOption.ALWAYS);
             metadata.setConnectionFactory(factoryDefinition);
         }
         JmsBindingDefinition definition = new JmsBindingDefinition(metadata);

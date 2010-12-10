@@ -38,10 +38,23 @@
 package org.fabric3.binding.jms.spi.common;
 
 /**
- * Defines service caching levels.
+ * Defines consumer caching levels.
  *
  * @version $Rev$ $Date$
  */
 public enum CacheLevel {
-    NONE, CONNECTION, SESSION
+    /**
+     * No caching. Connections, sessions, and consumers will be created for every JMS operation.
+     */
+    NONE,
+
+    /**
+     * Connections are cached between JMS operations.
+     */
+    CONNECTION,
+
+    /**
+     * Connections, sessions, and consumers are cached between JMS operations.
+     */
+    ADMINISTERED_OBJECTS
 }

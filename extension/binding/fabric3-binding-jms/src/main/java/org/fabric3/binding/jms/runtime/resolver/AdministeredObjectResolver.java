@@ -68,7 +68,7 @@ public interface AdministeredObjectResolver {
      *
      * @param definition the destination definition
      * @param factory    the connection factory
-     * @param env        environment properties used during resloution
+     * @param env        environment properties used during resolution
      * @return the destination
      * @throws JmsResolutionException if there is an error during resolution
      */
