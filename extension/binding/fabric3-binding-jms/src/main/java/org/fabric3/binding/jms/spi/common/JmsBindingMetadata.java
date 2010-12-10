@@ -45,9 +45,7 @@ package org.fabric3.binding.jms.spi.common;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
-import javax.naming.Context;
 
 import org.fabric3.model.type.ModelObject;
 
@@ -60,7 +58,6 @@ public class JmsBindingMetadata extends ModelObject {
     private static final long serialVersionUID = 4623441503097788831L;
 
     private CorrelationScheme correlationScheme = CorrelationScheme.MESSAGE_ID;
-    private String initialContextFactory;
     private String jndiUrl;
     private DestinationDefinition destination;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
@@ -106,14 +103,6 @@ public class JmsBindingMetadata extends ModelObject {
         this.destination = destination;
     }
 
-    public String getInitialContextFactory() {
-        return initialContextFactory;
-    }
-
-    public void setInitialContextFactory(String initialContextFactory) {
-        this.initialContextFactory = initialContextFactory;
-    }
-
     public String getJndiUrl() {
         return jndiUrl;
     }
@@ -142,17 +131,6 @@ public class JmsBindingMetadata extends ModelObject {
             return null;
         }
         return response.getConnectionFactory();
-    }
-
-    public Hashtable<String, String> getEnv() {
-        Hashtable<String, String> props = new Hashtable<String, String>();
-        if (jndiUrl != null) {
-            props.put(Context.PROVIDER_URL, getJndiUrl());
-        }
-        if (initialContextFactory != null) {
-            props.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory());
-        }
-        return props;
     }
 
     public HeadersDefinition getHeaders() {
@@ -281,7 +259,6 @@ public class JmsBindingMetadata extends ModelObject {
     public JmsBindingMetadata snapshot() {
         JmsBindingMetadata copy = new JmsBindingMetadata();
         copy.correlationScheme = this.correlationScheme;
-        copy.initialContextFactory = this.initialContextFactory;
         copy.jndiUrl = this.jndiUrl;
         copy.destination = this.destination;
         copy.connectionFactory.setCreate(this.connectionFactory.getCreate());

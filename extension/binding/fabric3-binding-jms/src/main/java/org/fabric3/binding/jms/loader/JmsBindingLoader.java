@@ -195,7 +195,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         bd.setResponseConnection(responseConnection);
 
         metadata.setJndiUrl(reader.getAttributeValue(null, "jndiURL"));
-        metadata.setInitialContextFactory(reader.getAttributeValue(null, "initialContextFactory"));
         loaderHelper.loadPolicySetsAndIntents(bd, reader, context);
         if (uri != null) {
             while (true) {
