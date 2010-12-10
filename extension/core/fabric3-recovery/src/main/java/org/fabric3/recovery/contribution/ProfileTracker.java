@@ -160,10 +160,6 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
 
     }
 
-    public void onContribute(Contribution contribution) {
-        update(contribution);
-    }
-
     public void onUpdate(Contribution contribution) {
         update(contribution);
     }
