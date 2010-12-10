@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime;
 
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -60,12 +59,12 @@ import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
@@ -128,15 +127,14 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
 
     private void resolveAdministeredObjects(JmsTargetDefinition target, WireConfiguration wireConfiguration) throws WiringException {
         JmsBindingMetadata metadata = target.getMetadata();
-        Hashtable<String, String> env = metadata.getEnv();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
         checkDefaults(target, connectionFactoryDefinition);
 
         try {
-            ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactoryDefinition, env);
+            ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactoryDefinition);
             DestinationDefinition destinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(destinationDefinition, requestConnectionFactory, env);
+            Destination requestDestination = resolver.resolve(destinationDefinition, requestConnectionFactory);
             wireConfiguration.setRequestConnectionFactory(requestConnectionFactory);
             wireConfiguration.setRequestDestination(requestDestination);
 
@@ -144,9 +142,9 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 connectionFactoryDefinition = metadata.getResponseConnectionFactory();
                 checkDefaults(target, connectionFactoryDefinition);
 
-                ConnectionFactory responseConnectionFactory = resolver.resolve(connectionFactoryDefinition, env);
+                ConnectionFactory responseConnectionFactory = resolver.resolve(connectionFactoryDefinition);
                 destinationDefinition = metadata.getResponseDestination();
-                Destination responseDestination = resolver.resolve(destinationDefinition, responseConnectionFactory, env);
+                Destination responseDestination = resolver.resolve(destinationDefinition, responseConnectionFactory);
                 ResponseListener listener = new ResponseListener(responseDestination);
                 wireConfiguration.setResponseListener(listener);
             }

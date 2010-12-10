@@ -43,24 +43,19 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
- * Implementation that attempts to resolve a a destination via provider resolvers, in JNDI, and if it is not found, will create it.
+ * Implementation that attempts to resolve a a destination via provider resolvers and, if it is not found, will create it.
  *
  * @version $Revision$ $Date$
  */
@@ -73,25 +68,15 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
-            throws JmsResolutionException {
-        try {
-            Destination destination;
-            for (ProviderDestinationResolver resolver : resolvers) {
-                destination = resolver.resolve(definition);
-                if (destination != null) {
-                    return destination;
-                }
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+        Destination destination;
+        for (ProviderDestinationResolver resolver : resolvers) {
+            destination = resolver.resolve(definition);
+            if (destination != null) {
+                return destination;
             }
-            return (Destination) JndiHelper.lookup(definition.getName(), env);
-        } catch (NoInitialContextException e) {
-            return always.getDestination(definition, factory, env);
-        } catch (NameNotFoundException ex) {
-            return always.getDestination(definition, factory, env);
-        } catch (NamingException e) {
-            throw new JmsResolutionException("Unable to resolve destination: " + definition.getName(), e);
         }
-
+        return always.getDestination(definition, factory);
     }
 
 }

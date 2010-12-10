@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime;
 
-import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
@@ -83,7 +82,6 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         // resolve the connection factories and destinations for the wire
         JmsBindingMetadata metadata = target.getMetadata();
-        Hashtable<String, String> env = metadata.getEnv();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
 
         // use the default pooled factory
@@ -93,9 +91,9 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         Destination destination;
         ConnectionFactory connectionFactory;
         try {
-            connectionFactory = resolver.resolve(connectionFactoryDefinition, env);
+            connectionFactory = resolver.resolve(connectionFactoryDefinition);
             DestinationDefinition destinationDefinition = metadata.getDestination();
-            destination = resolver.resolve(destinationDefinition, connectionFactory, env);
+            destination = resolver.resolve(destinationDefinition, connectionFactory);
         } catch (JmsResolutionException e) {
             throw new ConnectionAttachException(e);
         }

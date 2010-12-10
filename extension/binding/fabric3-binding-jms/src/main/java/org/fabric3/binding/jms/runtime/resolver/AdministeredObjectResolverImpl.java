@@ -65,14 +65,14 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
         this.destinationStrategies = destinationStrategies;
     }
 
-    public ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException {
+    public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException {
         CreateOption create = definition.getCreate();
-        return factoryStrategies.get(create).getConnectionFactory(definition, env);
+        return factoryStrategies.get(create).getConnectionFactory(definition);
     }
 
-    public Destination resolve(DestinationDefinition definition, ConnectionFactory cf, Hashtable<String, String> env) throws JmsResolutionException {
+    public Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
         CreateOption create = definition.getCreate();
-        return destinationStrategies.get(create).getDestination(definition, cf, env);
+        return destinationStrategies.get(create).getDestination(definition, factory);
     }
 
 }

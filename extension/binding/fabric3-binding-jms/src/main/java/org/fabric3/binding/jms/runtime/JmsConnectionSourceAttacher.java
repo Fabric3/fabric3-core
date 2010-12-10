@@ -44,7 +44,6 @@
 package org.fabric3.binding.jms.runtime;
 
 import java.net.URI;
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -168,11 +167,10 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source) throws ConnectionAttachException {
         try {
             JmsBindingMetadata metadata = source.getMetadata();
-            Hashtable<String, String> env = metadata.getEnv();
             ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
-            ConnectionFactory requestConnectionFactory = resolver.resolve(definition, env);
+            ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory, env);
+            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
 
             return new ResolvedObjects(requestConnectionFactory, requestDestination);
         } catch (JmsResolutionException e) {

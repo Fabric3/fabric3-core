@@ -44,16 +44,12 @@
 package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
@@ -80,8 +76,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
     }
 
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
-            throws JmsResolutionException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
         String name = definition.getName();
         try {
             ConnectionFactory factory = manager.get(name);
@@ -95,15 +90,8 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
                     break;
                 }
             }
-            if (factory == null) {
-                factory = (ConnectionFactory) JndiHelper.lookup(name, env);
-            }
             return manager.register(name, factory, Collections.<String, String>emptyMap());
-        } catch (NameNotFoundException e) {
-            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         } catch (FactoryRegistrationException e) {
-            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
-        } catch (NamingException e) {
             throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }
     }

@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
@@ -60,10 +59,9 @@ public interface ConnectionFactoryStrategy {
      * Gets the connection factory based on SCA JMS binding rules.
      *
      * @param definition Connection factory definition.
-     * @param env        JNDI environment.
      * @return Looked up or created destination.
      * @throws JmsResolutionException if there is an error returning the connection factory
      */
-    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException;
+    ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException;
 
 }

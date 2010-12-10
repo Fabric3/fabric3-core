@@ -48,7 +48,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Hashtable;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 
@@ -78,8 +77,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         this.creator = creator;
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
-            throws JmsResolutionException {
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
 
         Map<String, String> props = definition.getProperties();
         String className = props.get("class");

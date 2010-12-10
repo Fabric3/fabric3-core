@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
-import java.util.Hashtable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -64,8 +63,7 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
-            throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
         Connection connection = null;
         String name = definition.getName();
         try {
@@ -84,11 +82,11 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
         } catch (JMSException ex) {
             throw new JmsResolutionException("Unable to create destination:" + name, ex);
         } finally {
-            if (connection != null)  {
+            if (connection != null) {
                 try {
                     connection.stop();
                 } catch (JMSException e) {
-                   e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
             JmsHelper.closeQuietly(connection);

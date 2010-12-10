@@ -37,7 +37,6 @@
 */
 package org.fabric3.binding.jms.runtime.resolver;
 
-import java.util.Hashtable;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
@@ -57,21 +56,19 @@ public interface AdministeredObjectResolver {
      * Resolves a ConnectionFactory.
      *
      * @param definition the connection factory definition
-     * @param env        properties for use when resolving the ConnectionFactory.
      * @return the connection factory.
      * @throws JmsResolutionException if there is an error during resolution
      */
-    ConnectionFactory resolve(ConnectionFactoryDefinition definition, Hashtable<String, String> env) throws JmsResolutionException;
+    ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException;
 
     /**
      * Resolves a destination.
      *
      * @param definition the destination definition
      * @param factory    the connection factory
-     * @param env        environment properties used during resolution
      * @return the destination
      * @throws JmsResolutionException if there is an error during resolution
      */
-    Destination resolve(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env) throws JmsResolutionException;
+    Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException;
 
 }

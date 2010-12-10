@@ -43,15 +43,16 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.destination;
 
-import java.util.Hashtable;
+import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.naming.NamingException;
+
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
  * Implementation that always resolves a destination against JNDI and never attempts to create it.
@@ -59,15 +60,21 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
  * @version $Revision$ $Date$
  */
 public class NeverDestinationStrategy implements DestinationStrategy {
+    private List<ProviderDestinationResolver> resolvers;
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory, Hashtable<String, String> env)
-            throws JmsResolutionException {
-        String name = definition.getName();
-        try {
-            return (Destination) JndiHelper.lookup(name, env);
-        } catch (NamingException e) {
-            throw new JmsResolutionException("Unable to resolve destination: " + name, e);
+    @Reference(required = false)
+    public void setResolvers(List<ProviderDestinationResolver> resolvers) {
+        this.resolvers = resolvers;
+    }
+
+    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+        for (ProviderDestinationResolver resolver : resolvers) {
+            Destination destination = resolver.resolve(definition);
+            if (destination != null) {
+                return destination;
+            }
         }
+        throw new JmsResolutionException("Destination not found: " + definition.getName());
     }
 
 }

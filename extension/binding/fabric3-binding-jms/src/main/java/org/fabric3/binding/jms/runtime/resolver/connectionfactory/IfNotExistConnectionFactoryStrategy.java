@@ -43,17 +43,12 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
 
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.runtime.resolver.JndiHelper;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
@@ -84,13 +79,11 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
         always.setCreator(creator);
     }
 
-    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition, Hashtable<String, String> env)
+    public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition)
             throws JmsResolutionException {
         String name = definition.getName();
-        if (name == null) {
-            return always.getConnectionFactory(definition, env);
-        }
-        try {
+        if (name != null) {
+            // check if the connection factory has already been created
             ConnectionFactory factory = manager.get(name);
             if (factory != null) {
                 return factory;
@@ -101,17 +94,10 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
                     return factory;
                 }
             }
-            try {
-                factory = (ConnectionFactory) JndiHelper.lookup(name, env);
-            } catch (NoInitialContextException e) {
-                factory = always.getConnectionFactory(definition, env);
-            } catch (NameNotFoundException ex) {
-                factory = always.getConnectionFactory(definition, env);
-            }
-            return factory;
-        } catch (NamingException e) {
-            throw new JmsResolutionException("Error resolving connection factory: " + name, e);
         }
+        // the connection factory has not been created
+        return always.getConnectionFactory(definition);
+
     }
 
 }

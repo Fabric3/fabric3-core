@@ -45,7 +45,6 @@ package org.fabric3.binding.jms.runtime;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -175,20 +174,19 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     private ResolvedObjects resolveAdministeredObjects(JmsSourceDefinition source) throws WiringException {
         try {
             JmsBindingMetadata metadata = source.getMetadata();
-            Hashtable<String, String> env = metadata.getEnv();
             ConnectionFactoryDefinition requestDefinition = metadata.getConnectionFactory();
 
-            ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition, env);
+            ConnectionFactory requestConnectionFactory = resolver.resolve(requestDefinition);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory, env);
+            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
 
             ConnectionFactory responseConnectionFactory = null;
             Destination responseDestination = null;
             if (metadata.isResponse()) {
                 ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
-                responseConnectionFactory = resolver.resolve(responseDefinition, env);
+                responseConnectionFactory = resolver.resolve(responseDefinition);
                 DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
-                responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory, env);
+                responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
             }
             return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
         } catch (JmsResolutionException e) {
