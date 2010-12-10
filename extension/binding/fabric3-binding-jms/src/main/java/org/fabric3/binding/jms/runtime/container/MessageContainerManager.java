@@ -36,40 +36,40 @@
  * If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.fabric3.binding.jms.runtime.host;
+package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
 import javax.jms.JMSException;
 
 /**
- * Provisions MessageListeners that dispatch to service endpoints with the underlying JMS infrastructure.
+ * Manages {@link AdaptiveMessageContainer}s used to receive messages from a JMS provider.
  *
  * @version $Rev$ $Date$
  */
-public interface JmsHost {
+public interface MessageContainerManager {
 
     /**
      * Returns true if a listener for the service URI is registered.
      *
-     * @param serviceUri the service URI
+     * @param uri the container URI
      * @return true if a listener is registered
      */
-    boolean isRegistered(URI serviceUri);
+    boolean isRegistered(URI uri);
 
     /**
-     * Register a MessageListener which dispatches inbound JMS messages to a service.
+     * Register a container which dispatches inbound JMS messages.
      *
      * @param configuration the configuration for the message listener to register
      * @throws JMSException if an error registering the listener is encountered
      */
-    public void register(ListenerConfiguration configuration) throws JMSException;
+    public void register(ContainerConfiguration configuration) throws JMSException;
 
     /**
-     * Unregister the MessageListener for the given service
+     * Unregister a container.
      *
-     * @param serviceUri the service URI
-     * @throws JMSException if an error unregistering the listener is encountered
+     * @param uri the container URI
+     * @throws JMSException if an error un-registering the listener is encountered
      */
-    public void unregister(URI serviceUri) throws JMSException;
+    public void unregister(URI uri) throws JMSException;
 
 }

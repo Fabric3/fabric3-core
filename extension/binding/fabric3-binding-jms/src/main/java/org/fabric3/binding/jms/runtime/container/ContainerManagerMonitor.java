@@ -36,7 +36,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.fabric3.binding.jms.runtime.host;
+package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
 
@@ -44,16 +44,14 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * Monitor for the JmsHost.
- *
  * @version $Rev$ $Date$
  */
-public interface HostMonitor {
+public interface ContainerManagerMonitor {
 
-    @Severe("Error starting service listener: {0}")
+    @Severe("Error starting listener: {0}")
     void startError(URI address, Throwable e);
 
-    @Severe("Error starting service listener: {0}")
+    @Severe("Error starting listener: {0}")
     void stopError(URI address, Throwable e);
 
     @Info("Provisioned JMS endpoint [{0}]")

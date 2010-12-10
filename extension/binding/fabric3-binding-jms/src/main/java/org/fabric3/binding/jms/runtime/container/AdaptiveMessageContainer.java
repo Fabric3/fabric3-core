@@ -58,14 +58,13 @@ import javax.jms.Topic;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
-import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
 
 /**
  * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
@@ -127,7 +126,7 @@ public class AdaptiveMessageContainer {
      * @param executorService   the work scheduler to schedule message receivers
      * @param monitor           the monitor for reporting events and errors
      */
-    public AdaptiveMessageContainer(ListenerConfiguration configuration,
+    public AdaptiveMessageContainer(ContainerConfiguration configuration,
                                     int receiveTimeout,
                                     ConnectionManager connectionManager,
                                     UnitOfWork work,

@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.runtime.host;
+package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
 import javax.jms.ConnectionFactory;
@@ -46,11 +46,11 @@ import javax.jms.MessageListener;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
- * Configuration for registering a MessageListener with a {@link JmsHost}.
+ * Configuration for registering a MessageListener with a {@link MessageContainerManager}.
  *
  * @version $Rev$ $Date$
  */
-public class ListenerConfiguration {
+public class ContainerConfiguration {
     private URI uri;
     private MessageListener messageListener;
     private ExceptionListener exceptionListener;

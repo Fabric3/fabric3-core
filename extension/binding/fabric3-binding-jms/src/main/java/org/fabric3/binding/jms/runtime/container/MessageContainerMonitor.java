@@ -65,12 +65,6 @@ public interface MessageContainerMonitor {
     @Severe("Error receiving message for {0}")
     void receiveError(URI uri, Throwable e);
 
-    @Severe("Error setting transaction timeout for {0}")
-    void timeoutError(URI uri, Throwable e);
-
-    @Severe("Error setting rollback for {0}")
-    void rollbackError(URI uri, Throwable e);
-
     @Debug("Receiver scheduled: {0}")
     void scheduledReceiver(String name);
 

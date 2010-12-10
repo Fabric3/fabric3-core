@@ -45,10 +45,6 @@ import org.fabric3.host.Fabric3Exception;
 public class TransactionException extends Fabric3Exception {
     private static final long serialVersionUID = -5376791778196200639L;
 
-    public TransactionException(String message) {
-        super(message);
-    }
-
     public TransactionException(Throwable cause) {
         super(cause);
     }

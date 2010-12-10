@@ -36,7 +36,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.fabric3.binding.jms.runtime.host;
+package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
 import java.util.Map;
@@ -54,11 +54,6 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.runtime.container.AdaptiveMessageContainer;
-import org.fabric3.binding.jms.runtime.container.ConnectionManager;
-import org.fabric3.binding.jms.runtime.container.ContainerStatistics;
-import org.fabric3.binding.jms.runtime.container.MessageContainerMonitor;
-import org.fabric3.binding.jms.runtime.container.UnitOfWork;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
@@ -70,14 +65,11 @@ import org.fabric3.spi.transport.Transport;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 
 /**
- * JmsHost implementation that registers JMS MessageListeners with an AdaptiveMessageContainer to receive messages and dispatch them to a service
- * endpoint.
- *
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Service(interfaces = {JmsHost.class, Transport.class})
-public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<RuntimeStart> {
+@Service(interfaces = {MessageContainerManager.class, Transport.class})
+public class MessageContainerManagerImpl implements MessageContainerManager, Transport, Fabric3EventListener<RuntimeStart> {
     private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
@@ -86,21 +78,21 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
     private TransactionManager tm;
     private MessageContainerMonitor containerMonitor;
     private ManagementService managementService;
-    private HostMonitor monitor;
+    private ContainerManagerMonitor managerMonitor;
     private int transactionTimeout = DEFAULT_TRX_TIMEOUT;
 
-    public JmsHostImpl(@Reference EventService eventService,
-                       @Reference ExecutorService executorService,
-                       @Reference TransactionManager tm,
-                       @Reference ManagementService managementService,
-                       @Monitor MessageContainerMonitor containerMonitor,
-                       @Monitor HostMonitor monitor) {
+    public MessageContainerManagerImpl(@Reference EventService eventService,
+                                       @Reference ExecutorService executorService,
+                                       @Reference TransactionManager tm,
+                                       @Reference ManagementService managementService,
+                                       @Monitor MessageContainerMonitor containerMonitor,
+                                       @Monitor ContainerManagerMonitor managerMonitor) {
         this.eventService = eventService;
         this.executorService = executorService;
         this.tm = tm;
         this.managementService = managementService;
         this.containerMonitor = containerMonitor;
-        this.monitor = monitor;
+        this.managerMonitor = managerMonitor;
     }
 
     @Property(required = false)
@@ -135,7 +127,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
             try {
                 entry.getValue().stop();
             } catch (JMSException e) {
-                monitor.stopError(entry.getKey(), e);
+                managerMonitor.stopError(entry.getKey(), e);
             }
         }
         started = false;
@@ -149,7 +141,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
             try {
                 entry.getValue().start();
             } catch (JMSException e) {
-                monitor.startError(entry.getKey(), e);
+                managerMonitor.startError(entry.getKey(), e);
             }
         }
         started = true;
@@ -160,9 +152,9 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
             try {
                 entry.getValue().initialize();
-                monitor.registerListener(entry.getKey());
+                managerMonitor.registerListener(entry.getKey());
             } catch (JMSException e) {
-                monitor.startError(entry.getKey(), e);
+                managerMonitor.startError(entry.getKey(), e);
             }
         }
         started = true;
@@ -172,7 +164,7 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         return containers.containsKey(serviceUri);
     }
 
-    public void register(ListenerConfiguration configuration) throws JMSException {
+    public void register(ContainerConfiguration configuration) throws JMSException {
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
         URI uri = configuration.getUri();
@@ -204,30 +196,30 @@ public class JmsHostImpl implements JmsHost, Transport, Fabric3EventListener<Run
         }
         if (started) {
             container.initialize();
-            monitor.registerListener(uri);
+            managerMonitor.registerListener(uri);
         }
     }
 
-    public void unregister(URI serviceUri) throws JMSException {
-        AdaptiveMessageContainer container = containers.remove(serviceUri);
+    public void unregister(URI uri) throws JMSException {
+        AdaptiveMessageContainer container = containers.remove(uri);
         if (container != null) {
             container.shutdown();
             try {
-                String encoded = encode(serviceUri);
-                managementService.export(serviceUri.getFragment(), encoded, "JMS message container", container);
+                String encoded = encode(uri);
+                managementService.export(uri.getFragment(), encoded, "JMS message container", container);
             } catch (ManagementException e) {
                 throw new JMSException(e.getMessage());
             }
-            monitor.unRegisterListener(serviceUri);
+            managerMonitor.unRegisterListener(uri);
         }
     }
 
-    private String encode(URI serviceUri) {
-        String path = serviceUri.getPath();
+    private String encode(URI uri) {
+        String path = uri.getPath();
         if (path.length() != 0) {
             return "JMS/message containers/" + path.substring(1);
         }
-        return "JMS/message containers/" + serviceUri.getAuthority();
+        return "JMS/message containers/" + uri.getAuthority();
     }
 
 

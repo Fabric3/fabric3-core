@@ -53,14 +53,13 @@ import javax.jms.JMSException;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.runtime.host.JmsHost;
-import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
+import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
+import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.host.runtime.HostInfo;
@@ -76,7 +75,6 @@ import static org.fabric3.binding.jms.spi.common.CacheLevel.CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTION_FACTORY;
 
 /**
  * Attaches a consumer to a JMS destination.
@@ -87,18 +85,18 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
-    private JmsHost jmsHost;
+    private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
     private HostInfo info;
 
     public JmsConnectionSourceAttacher(@Reference AdministeredObjectResolver resolver,
                                        @Reference ClassLoaderRegistry classLoaderRegistry,
-                                       @Reference JmsHost jmsHost,
+                                       @Reference MessageContainerManager containerManager,
                                        @Reference HostInfo info,
                                        @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
-        this.jmsHost = jmsHost;
+        this.containerManager = containerManager;
         this.info = info;
         this.monitor = monitor;
     }
@@ -110,7 +108,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
-        ListenerConfiguration configuration = new ListenerConfiguration();
+        ContainerConfiguration configuration = new ContainerConfiguration();
         try {
             ConnectionFactory connectionFactory = objects.getRequestFactory();
             Destination destination = objects.getRequestDestination();
@@ -125,11 +123,11 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
             populateConfiguration(configuration, source.getMetadata());
-            if (jmsHost.isRegistered(serviceUri)) {
+            if (containerManager.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
-                jmsHost.unregister(serviceUri);
+                containerManager.unregister(serviceUri);
             }
-            jmsHost.register(configuration);
+            containerManager.register(configuration);
         } catch (JMSException e) {
             throw new ConnectionAttachException(e);
         }
@@ -137,13 +135,13 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
 
     public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         try {
-            jmsHost.unregister(source.getUri());
+            containerManager.unregister(source.getUri());
         } catch (JMSException e) {
             throw new ConnectionAttachException(e);
         }
     }
 
-    private void populateConfiguration(ListenerConfiguration configuration, JmsBindingMetadata metadata) {
+    private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
         if (CONNECTION == cacheLevel) {
             configuration.setCacheLevel(CACHE_CONNECTION);

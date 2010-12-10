@@ -54,8 +54,8 @@ import javax.jms.JMSException;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.jms.runtime.host.JmsHost;
-import org.fabric3.binding.jms.runtime.host.ListenerConfiguration;
+import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
+import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
@@ -89,16 +89,16 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
-    private JmsHost jmsHost;
+    private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
-                                 @Reference JmsHost jmsHost,
+                                 @Reference MessageContainerManager containerManager,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
-        this.jmsHost = jmsHost;
+        this.containerManager = containerManager;
         this.monitor = monitor;
     }
 
@@ -110,7 +110,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 
         ResolvedObjects objects = resolveAdministeredObjects(source);
 
-        ListenerConfiguration configuration = new ListenerConfiguration();
+        ContainerConfiguration configuration = new ContainerConfiguration();
         try {
             ConnectionFactory requestFactory = objects.getRequestFactory();
             Destination requestDestination = objects.getRequestDestination();
@@ -123,17 +123,17 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             configuration.setUri(serviceUri);
             configuration.setType(trxType);
             populateConfiguration(configuration, source.getMetadata());
-            if (jmsHost.isRegistered(serviceUri)) {
+            if (containerManager.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
-                jmsHost.unregister(serviceUri);
+                containerManager.unregister(serviceUri);
             }
-            jmsHost.register(configuration);
+            containerManager.register(configuration);
         } catch (JMSException e) {
             throw new WiringException(e);
         }
     }
 
-    private void populateConfiguration(ListenerConfiguration configuration, JmsBindingMetadata metadata) {
+    private void populateConfiguration(ContainerConfiguration configuration, JmsBindingMetadata metadata) {
         CacheLevel cacheLevel = metadata.getCacheLevel();
         if (CacheLevel.CONNECTION == cacheLevel) {
             configuration.setCacheLevel(CACHE_CONNECTION);
@@ -157,7 +157,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 
     public void detach(JmsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         try {
-            jmsHost.unregister(target.getUri());
+            containerManager.unregister(target.getUri());
         } catch (JMSException e) {
             throw new WiringException(e);
         }
