@@ -46,7 +46,7 @@ import org.fabric3.spi.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Generates metadta for a transactional event stream handler.
+ * Generates metadata for a transactional event stream handler.
  *
  * @version $Rev$ $Date$
  */
