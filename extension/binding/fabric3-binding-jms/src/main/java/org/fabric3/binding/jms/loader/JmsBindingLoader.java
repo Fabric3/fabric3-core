@@ -107,6 +107,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("type");
         ATTRIBUTES.add("destination");
         ATTRIBUTES.add("connectionFactory");
+        ATTRIBUTES.add("connectionFactory.template");
         ATTRIBUTES.add("type");
         ATTRIBUTES.add("timeToLive");
         ATTRIBUTES.add("priority");
@@ -267,8 +268,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     }
 
     private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) {
-//    TODO    boolean localDelivery;
-
         String cacheLevel = reader.getAttributeValue(null, "cache");
         if (cacheLevel == null) {
             metadata.setCacheLevel(CacheLevel.NONE);
@@ -280,6 +279,12 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             InvalidValue error = new InvalidValue("Invalid cache level attribute", reader);
             context.addError(error);
         }
+
+        String templateName = reader.getAttributeValue(null, "connectionFactory.template");
+        if(templateName != null) {
+            metadata.getConnectionFactory().setTemplateName(templateName);
+        }
+
         String idleLimit = reader.getAttributeValue(null, "idle.limit");
         if (idleLimit != null) {
             try {

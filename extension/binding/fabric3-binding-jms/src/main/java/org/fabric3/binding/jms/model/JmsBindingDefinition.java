@@ -53,8 +53,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * Encapsulates JMS binding configuration specified in a composite.
- * <p/>
- * TODO Support for overriding request connection, response connection and operation properties from an activation spec and resource adaptor.
  *
  * @version $Revision$ $Date$
  */

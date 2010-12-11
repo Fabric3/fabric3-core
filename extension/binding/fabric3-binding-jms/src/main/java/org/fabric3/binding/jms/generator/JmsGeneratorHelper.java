@@ -82,13 +82,15 @@ public class JmsGeneratorHelper {
      * @param trxType   the transaction type
      */
     public static void generateDefaultFactoryConfiguration(ConnectionFactoryDefinition factory, String specifier, TransactionType trxType) {
-        if (factory.getName() == null) {
+        if (factory.getName() == null && factory.getTemplateName() == null) {
             factory.setName(specifier);
             if (TransactionType.GLOBAL == trxType) {
                 factory.setTemplateName(DEFAULT_XA_CONNECTION_FACTORY);
             } else {
                 factory.setTemplateName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
             }
+        } else if (factory.getTemplateName() != null) {
+            factory.setName(specifier);
         }
     }
 
