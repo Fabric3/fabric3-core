@@ -53,7 +53,6 @@ import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
@@ -71,7 +70,6 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
     private AdministeredObjectResolver resolver;
     private ClassLoaderRegistry classLoaderRegistry;
 
-
     public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
@@ -84,10 +82,6 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
 
-        // use the default pooled factory
-        if (connectionFactoryDefinition.getName() == null) {
-            connectionFactoryDefinition.setName(JmsConstants.DEFAULT_POOLED_CONNECTION_FACTORY);
-        }
         Destination destination;
         ConnectionFactory connectionFactory;
         try {

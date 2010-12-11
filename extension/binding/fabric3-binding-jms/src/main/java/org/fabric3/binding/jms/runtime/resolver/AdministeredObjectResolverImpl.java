@@ -38,7 +38,6 @@
 package org.fabric3.binding.jms.runtime.resolver;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -51,7 +50,6 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- *
  * @version $Rev$ $Date$
  */
 public class AdministeredObjectResolverImpl implements AdministeredObjectResolver {
@@ -71,8 +69,16 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
     }
 
     public Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+        return resolve(definition, null, factory);
+    }
+
+    public Destination resolve(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
         CreateOption create = definition.getCreate();
-        return destinationStrategies.get(create).getDestination(definition, factory);
+        DestinationStrategy strategy = destinationStrategies.get(create);
+        if (strategy == null) {
+            throw new AssertionError("DestinationStrategy not configured: " + create);
+        }
+        return strategy.getDestination(definition, clientId, factory);
     }
 
 }

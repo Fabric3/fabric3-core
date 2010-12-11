@@ -105,7 +105,10 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         URI serviceUri = source.getUri();
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
-        ResolvedObjects objects = resolveAdministeredObjects(source);
+        JmsBindingMetadata metadata = source.getMetadata();
+        String clientId = info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
+
+        ResolvedObjects objects = resolveAdministeredObjects(source, clientId);
 
         ContainerConfiguration configuration = new ContainerConfiguration();
         try {
@@ -117,11 +120,12 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             }
             EventStream stream = streams.get(0);
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
+            configuration.setClientId(clientId);
             configuration.setDestination(destination);
             configuration.setFactory(connectionFactory);
             configuration.setMessageListener(listener);
             configuration.setUri(serviceUri);
-            populateConfiguration(configuration, source.getMetadata());
+            populateConfiguration(configuration, metadata);
             if (containerManager.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
                 containerManager.unregister(serviceUri);
@@ -156,22 +160,25 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
         configuration.setTransactionTimeout(metadata.getTransactionTimeout());
 
-        String clientId = info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
-        configuration.setClientId(clientId);
         configuration.setDurable(metadata.isDurable());
 //        configuration.setDeliveryMode();
 //        configuration.setExceptionListener();
 //        configuration.setLocalDelivery();
     }
 
-    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source) throws ConnectionAttachException {
+    private ResolvedObjects resolveAdministeredObjects(JmsConnectionSourceDefinition source, String clientId) throws ConnectionAttachException {
         try {
             JmsBindingMetadata metadata = source.getMetadata();
             ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
             ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-            Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
 
+            Destination requestDestination;
+            if (metadata.isDurable()) {
+                requestDestination = resolver.resolve(requestDestinationDefinition, clientId, requestConnectionFactory);
+            } else {
+                requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
+            }
             return new ResolvedObjects(requestConnectionFactory, requestDestination);
         } catch (JmsResolutionException e) {
             throw new ConnectionAttachException(e);

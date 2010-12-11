@@ -47,8 +47,8 @@ import java.net.URI;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTION_FACTORY;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
@@ -87,7 +87,7 @@ public class JmsGeneratorHelper {
             if (TransactionType.GLOBAL == trxType) {
                 factory.setTemplateName(DEFAULT_XA_CONNECTION_FACTORY);
             } else {
-                factory.setTemplateName(DEFAULT_CONNECTION_FACTORY);
+                factory.setTemplateName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
             }
         }
     }

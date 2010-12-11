@@ -41,13 +41,8 @@ import java.net.URI;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.Topic;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
-import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Maintains shared JMS connection state for an {@link AdaptiveMessageContainer}.
@@ -106,9 +101,7 @@ public class ConnectionManager {
             return getSharedConnection();
         } else {
             Connection connection = connectionFactory.createConnection();
-            if (durable) {
-                connection.setClientID(clientId);
-            }
+            setClientId(connection);
             connection.start();
             return connection;
         }
@@ -144,9 +137,7 @@ public class ConnectionManager {
     private Connection createSharedConnection() throws JMSException {
         Connection connection = connectionFactory.createConnection();
         try {
-            if (clientId != null) {
-                connection.setClientID(clientId);
-            }
+            setClientId(connection);
             return connection;
         }
         catch (JMSException ex) {
@@ -215,5 +206,18 @@ public class ConnectionManager {
             sharedConnection.start();
         }
     }
+
+    /**
+     * Sets the client id if the connection is used for a durable subscription and the id has not yet been set.
+     *
+     * @param connection the connection
+     * @throws JMSException if there is an error setting the id
+     */
+    private void setClientId(Connection connection) throws JMSException {
+        if (durable && (connection.getClientID() == null || !connection.getClientID().equals(clientId))) {
+            connection.setClientID(clientId);
+        }
+    }
+
 
 }

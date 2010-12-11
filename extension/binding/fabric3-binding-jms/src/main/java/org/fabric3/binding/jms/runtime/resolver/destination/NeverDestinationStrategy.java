@@ -67,7 +67,7 @@ public class NeverDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
         for (ProviderDestinationResolver resolver : resolvers) {
             Destination destination = resolver.resolve(definition);
             if (destination != null) {

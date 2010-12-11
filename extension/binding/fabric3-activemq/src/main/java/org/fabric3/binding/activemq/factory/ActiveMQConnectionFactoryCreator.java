@@ -75,19 +75,15 @@ public class ActiveMQConnectionFactoryCreator implements ProviderConnectionFacto
         ConnectionFactoryType type = configuration.getType();
         switch (type) {
 
-        case LOCAL_POOLED:
-            ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(brokerUri);
-            wrapped.setProperties(configuration.getFactoryProperties());
-            return new PooledConnectionFactory(wrapped);
         case XA:
             ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(brokerUri);
             xaFactory.setProperties(configuration.getFactoryProperties());
             return xaFactory;
         default:
-            // default to local, non-pooled
-            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
-            factory.setProperties(configuration.getFactoryProperties());
-            return factory;
+            // default to local pooled
+            ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(brokerUri);
+            wrapped.setProperties(configuration.getFactoryProperties());
+            return new PooledConnectionFactory(wrapped);
         }
 
     }

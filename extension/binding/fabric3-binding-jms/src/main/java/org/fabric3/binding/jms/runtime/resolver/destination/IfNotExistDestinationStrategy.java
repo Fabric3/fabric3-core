@@ -68,7 +68,7 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
         this.resolvers = resolvers;
     }
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
         Destination destination;
         for (ProviderDestinationResolver resolver : resolvers) {
             destination = resolver.resolve(definition);
@@ -76,7 +76,7 @@ public class IfNotExistDestinationStrategy implements DestinationStrategy {
                 return destination;
             }
         }
-        return always.getDestination(definition, factory);
+        return always.getDestination(definition, clientId, factory);
     }
 
 }

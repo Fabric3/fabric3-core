@@ -63,11 +63,14 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 
-    public Destination getDestination(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
+    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
         Connection connection = null;
         String name = definition.getName();
         try {
             connection = factory.createConnection();
+            if (clientId != null && (connection.getClientID() == null || connection.getClientID().equals(clientId))) {
+               connection.setClientID(clientId);
+            }
             connection.start();
             switch (definition.geType()) {
             case QUEUE:

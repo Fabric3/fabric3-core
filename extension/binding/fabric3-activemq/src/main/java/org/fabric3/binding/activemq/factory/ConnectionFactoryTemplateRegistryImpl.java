@@ -54,7 +54,6 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.host.runtime.HostInfo;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTION_FACTORY;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_POOLED_CONNECTION_FACTORY;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
@@ -94,13 +93,6 @@ public class ConnectionFactoryTemplateRegistryImpl implements ConnectionFactoryT
             template.setName(DEFAULT_CONNECTION_FACTORY);
             template.setBrokerUri(brokerUri);
             template.setType(ConnectionFactoryType.LOCAL);
-            templates.put(template.getName(), template);
-        }
-        if (!templates.containsKey(DEFAULT_POOLED_CONNECTION_FACTORY)){
-            ConnectionFactoryConfiguration template = new ConnectionFactoryConfiguration();
-            template.setName(DEFAULT_POOLED_CONNECTION_FACTORY);
-            template.setBrokerUri(brokerUri);
-            template.setType(ConnectionFactoryType.LOCAL_POOLED);
             templates.put(template.getName(), template);
         }
         if (!templates.containsKey(DEFAULT_XA_CONNECTION_FACTORY)){

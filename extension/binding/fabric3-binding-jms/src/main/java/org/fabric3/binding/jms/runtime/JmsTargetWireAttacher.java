@@ -54,10 +54,8 @@ import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -129,7 +127,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         JmsBindingMetadata metadata = target.getMetadata();
 
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
-        checkDefaults(target, connectionFactoryDefinition);
 
         try {
             ConnectionFactory requestConnectionFactory = resolver.resolve(connectionFactoryDefinition);
@@ -140,7 +137,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
 
             if (metadata.isResponse()) {
                 connectionFactoryDefinition = metadata.getResponseConnectionFactory();
-                checkDefaults(target, connectionFactoryDefinition);
 
                 ConnectionFactory responseConnectionFactory = resolver.resolve(connectionFactoryDefinition);
                 destinationDefinition = metadata.getResponseDestination();
@@ -162,23 +158,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         }
         // programming error
         throw new AssertionError("Error resolving operation: " + operationName);
-    }
-
-    /**
-     * Sets default connection factory values if not specified.
-     *
-     * @param target                      the target definition
-     * @param connectionFactoryDefinition the connection factory definition
-     */
-    private void checkDefaults(JmsTargetDefinition target, ConnectionFactoryDefinition connectionFactoryDefinition) {
-        String name = connectionFactoryDefinition.getName();
-        if (name == null) {
-            if (TransactionType.GLOBAL == target.getTransactionType()) {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_XA_CONNECTION_FACTORY);
-            } else {
-                connectionFactoryDefinition.setName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
-            }
-        }
     }
 
 }

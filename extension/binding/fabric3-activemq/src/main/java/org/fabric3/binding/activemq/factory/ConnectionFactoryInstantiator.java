@@ -89,11 +89,6 @@ public class ConnectionFactoryInstantiator {
             String name = configuration.getName();
             switch (configuration.getType()) {
             case LOCAL:
-                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(uri);
-                factory.setProperties(configuration.getFactoryProperties());
-                manager.register(name, factory, configuration.getPoolProperties());
-                break;
-            case LOCAL_POOLED:
                 ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(uri);
                 wrapped.setProperties(configuration.getFactoryProperties());
                 PooledConnectionFactory pooledFactory = new PooledConnectionFactory(wrapped);

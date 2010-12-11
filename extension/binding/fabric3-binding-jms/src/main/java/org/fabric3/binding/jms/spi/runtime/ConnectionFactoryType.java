@@ -43,5 +43,5 @@ package org.fabric3.binding.jms.spi.runtime;
  * @version $Rev$ $Date$
  */
 public enum ConnectionFactoryType {
-    LOCAL, LOCAL_POOLED, XA
+    LOCAL, XA
 }
