@@ -199,13 +199,15 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
     }
 
 
-    public void unregister(String name) throws FactoryRegistrationException {
+    public ConnectionFactory unregister(String name) throws FactoryRegistrationException {
         AtomikosConnectionFactoryBean bean = beans.remove(name);
         if (bean == null) {
-            nonXA.remove(name);
+            return nonXA.remove(name);
         } else {
             try {
                 remove(bean);
+                bean.close();
+                return bean;
             } catch (ManagementException e) {
                 throw new FactoryRegistrationException("Error exporting " + name, e);
             }

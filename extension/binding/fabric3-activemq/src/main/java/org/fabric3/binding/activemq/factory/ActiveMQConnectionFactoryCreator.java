@@ -85,6 +85,13 @@ public class ActiveMQConnectionFactoryCreator implements ProviderConnectionFacto
             wrapped.setProperties(configuration.getFactoryProperties());
             return new PooledConnectionFactory(wrapped);
         }
+    }
+
+    public void release(ConnectionFactory factory) {
+        if (factory instanceof PooledConnectionFactory) {
+            PooledConnectionFactory pooled = (PooledConnectionFactory) factory;
+            pooled.stop();
+        }
 
     }
 

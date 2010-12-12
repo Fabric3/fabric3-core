@@ -82,4 +82,12 @@ public interface AdministeredObjectResolver {
      */
     Destination resolve(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException;
 
+    /**
+     * Signals that a connection factory is being released and resources can be disposed.
+     *
+     * @param definition the definition that created the connection factory
+     * @throws JmsResolutionException if there is an error releasing resources
+     */
+    void release(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+
 }

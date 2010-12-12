@@ -56,12 +56,20 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 public interface ConnectionFactoryStrategy {
 
     /**
-     * Gets the connection factory based on SCA JMS binding rules.
+     * Gets the connection factory.
      *
-     * @param definition Connection factory definition.
-     * @return Looked up or created destination.
+     * @param definition the connection factory definition.
+     * @return the connection factory
      * @throws JmsResolutionException if there is an error returning the connection factory
      */
     ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException;
+
+    /**
+     * Signals that a connection factory is being released and resources can be disposed.
+     *
+     * @param definition the definition that created the connection factory
+     * @throws JmsResolutionException if there is an error releasing resources
+     */
+    void release(ConnectionFactoryDefinition definition) throws JmsResolutionException;
 
 }

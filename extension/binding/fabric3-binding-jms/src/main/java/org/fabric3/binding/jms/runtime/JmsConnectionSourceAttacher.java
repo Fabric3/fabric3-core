@@ -139,7 +139,10 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
     public void detach(JmsConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         try {
             containerManager.unregister(source.getUri());
+            resolver.release(source.getMetadata().getConnectionFactory());
         } catch (JMSException e) {
+            throw new ConnectionAttachException(e);
+        } catch (JmsResolutionException e) {
             throw new ConnectionAttachException(e);
         }
     }

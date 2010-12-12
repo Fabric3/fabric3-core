@@ -99,7 +99,11 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
     }
 
     public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target) throws ConnectionAttachException {
-        // no-op
+        try {
+            resolver.release(target.getMetadata().getConnectionFactory());
+        } catch (JmsResolutionException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
 }

@@ -61,8 +61,9 @@ public class WebLogicConnectionFactoryManager implements ConnectionFactoryManage
         return factory;
     }
 
-    public void unregister(String name) {
+    public ConnectionFactory unregister(String name) {
         // no-op
+        return null;
     }
 
     public ConnectionFactory get(String name) {

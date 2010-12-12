@@ -48,7 +48,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.jms.ConnectionFactory;
 
 import org.osoa.sca.annotations.Reference;
@@ -67,6 +69,7 @@ import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;
     private ProviderConnectionFactoryCreator creator;
+    private Set<String> created = new HashSet<String>();
 
     public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
         this.manager = manager;
@@ -92,9 +95,21 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
         } else {
             factory = instantiate(className, props);
         }
+        created.add(name);
         return manager.register(name, factory);
-
     }
+
+    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+        String name = definition.getName();
+        if (created.remove(name)) {
+            ConnectionFactory factory = manager.unregister(name);
+            if (factory == null) {
+                throw new JmsResolutionException("Connection factory not found: " + name);
+            }
+            creator.release(factory);
+        }
+    }
+
 
     private ConnectionFactory instantiate(String className, Map<String, String> props) throws JmsResolutionException {
         try {

@@ -116,7 +116,11 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
     }
 
     public void detach(PhysicalSourceDefinition source, JmsTargetDefinition target) throws WiringException {
-        // no-op
+        try {
+            resolver.release(target.getMetadata().getConnectionFactory());
+        } catch (JmsResolutionException e) {
+            throw new WiringException(e);
+        }
     }
 
     public ObjectFactory<?> createObjectFactory(JmsTargetDefinition target) throws WiringException {

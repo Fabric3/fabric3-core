@@ -65,7 +65,8 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
 
     public ConnectionFactory resolve(ConnectionFactoryDefinition definition) throws JmsResolutionException {
         CreateOption create = definition.getCreate();
-        return factoryStrategies.get(create).getConnectionFactory(definition);
+        ConnectionFactoryStrategy strategy = getConnectionFactory(create);
+        return strategy.getConnectionFactory(definition);
     }
 
     public Destination resolve(DestinationDefinition definition, ConnectionFactory factory) throws JmsResolutionException {
@@ -79,6 +80,20 @@ public class AdministeredObjectResolverImpl implements AdministeredObjectResolve
             throw new AssertionError("DestinationStrategy not configured: " + create);
         }
         return strategy.getDestination(definition, clientId, factory);
+    }
+
+    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+        CreateOption create = definition.getCreate();
+        ConnectionFactoryStrategy strategy = getConnectionFactory(create);
+        strategy.release(definition);
+    }
+
+    private ConnectionFactoryStrategy getConnectionFactory(CreateOption create) {
+        ConnectionFactoryStrategy strategy = factoryStrategies.get(create);
+        if (strategy == null) {
+            throw new AssertionError("ConnectionFactoryStrategy not configured: " + create);
+        }
+        return strategy;
     }
 
 }

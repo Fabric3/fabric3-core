@@ -74,9 +74,10 @@ public interface ConnectionFactoryManager {
      * Removes a registered connection factory.
      *
      * @param name the connection factory name
+     * @return the unregistered connection factory
      * @throws FactoryRegistrationException if there is an error un-registering
      */
-    void unregister(String name) throws FactoryRegistrationException;
+    ConnectionFactory unregister(String name) throws FactoryRegistrationException;
 
     /**
      * Returns the registered connection factory for the given name.

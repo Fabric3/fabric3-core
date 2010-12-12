@@ -100,4 +100,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
 
     }
 
+    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+        always.release(definition);
+    }
 }

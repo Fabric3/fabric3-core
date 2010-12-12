@@ -96,4 +96,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
         }
     }
 
+    public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
+        // no-op
+    }
 }

@@ -56,4 +56,11 @@ public interface ProviderConnectionFactoryCreator {
      */
     ConnectionFactory create(String templateName) throws ConnectionFactoryCreationException;
 
+    /**
+     * Releases the connection factory from use. Implementations may close open connections and remove any resources allocated by the connection
+     * factory.
+     *
+     * @param factory the factory to release
+     */
+    void release(ConnectionFactory factory);
 }
