@@ -93,7 +93,7 @@ public interface BindingGenerator<BD extends BindingDefinition> {
 
     /**
      * Generates metadata used to attach a physical wire connected to a source component to a target transport. This method is called when the
-     * reference is wired using the <code>@target</code> attribute of the <code>&lt;reference<&gt;</code> attribute. In this case, the reference is
+     * reference is wired using the <code>@target</code> attribute of the <code>&lt;reference<&gt;</code> element. In this case, the reference is
      * wired without a binding to a service hosted in the same domain and the target service binding configuration is used to calculate the physical
      * wire for the reference.
      *
