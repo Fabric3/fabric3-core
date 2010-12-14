@@ -46,6 +46,7 @@ package org.fabric3.binding.jms.generator;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
@@ -54,6 +55,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
@@ -61,6 +63,7 @@ import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
+import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -71,8 +74,6 @@ import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.xsd.XSDType;
-
-import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
 
 /**
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
@@ -85,6 +86,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
     private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
+    private static final QName NON_PERSISTENT = new QName(Namespaces.CORE, "nonPersistent");
 
     private static final DataType<?> ANY = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
 
@@ -206,8 +208,9 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
      * @param metadata the JSM metadata
      */
     private void generateIntents(LogicalBinding<JmsBindingDefinition> binding, JmsBindingMetadata metadata) {
-        if (binding.getDefinition().getIntents().contains(DURABLE_INTENT)) {
-            metadata.setDurable(true);
+        Set<QName> intents = binding.getDefinition().getIntents();
+        if (intents.contains(NON_PERSISTENT)) {
+            metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         }
     }
 

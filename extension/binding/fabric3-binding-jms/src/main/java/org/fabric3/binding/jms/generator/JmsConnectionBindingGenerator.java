@@ -45,16 +45,20 @@ package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
+import org.fabric3.host.Namespaces;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -74,6 +78,7 @@ import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
  */
 @EagerInit
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
+    private static final QName NON_PERSISTENT = new QName(Namespaces.CORE, "nonPersistent");
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
@@ -110,6 +115,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         String specifier = JmsGeneratorHelper.getSpecifier(producer.getUri());
         ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);   // TODO support transactions
+
+        generateIntents(binding, metadata);
+        
         JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionTarget(definition);
@@ -133,6 +141,10 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         if (binding.getDefinition().getIntents().contains(DURABLE_INTENT) || parent.getDefinition().getIntents().contains(DURABLE_INTENT)) {
             metadata.setDurable(true);
         }
+        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT) || parent.getDefinition().getIntents().contains(NON_PERSISTENT)) {
+            metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        }
+
     }
 
 }

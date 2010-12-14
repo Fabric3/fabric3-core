@@ -62,7 +62,7 @@ public class JmsBindingMetadata extends ModelObject {
     private DestinationDefinition destination;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ResponseDefinition response;
-    private HeadersDefinition headers;
+    private HeadersDefinition headers = new HeadersDefinition();
     private Map<String, OperationPropertiesDefinition> operationProperties;
 
     // Fabric3-specific configuration settings
@@ -266,7 +266,11 @@ public class JmsBindingMetadata extends ModelObject {
         copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());
         copy.connectionFactory.getProperties().putAll(this.connectionFactory.getProperties());
         copy.response = this.response;
-        copy.headers = this.headers;
+        copy.headers.setDeliveryMode(this.headers.getDeliveryMode());
+        copy.headers.getProperties().putAll(this.headers.getProperties());
+        copy.headers.setPriority(this.headers.getPriority());
+        copy.headers.setTimeToLive(this.headers.getTimeToLive());
+        copy.headers.setType(this.headers.getType());
 
         if (this.operationProperties != null) {
             copy.operationProperties = new HashMap<String, OperationPropertiesDefinition>();

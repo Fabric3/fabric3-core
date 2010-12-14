@@ -58,6 +58,7 @@ public class WireConfiguration {
     private TransactionType transactionType;
     private TransactionManager tm;
     private long responseTimeout;
+    boolean persistent = true;
 
     public CorrelationScheme getCorrelationScheme() {
         return correlationScheme;
@@ -121,5 +122,13 @@ public class WireConfiguration {
 
     public void setResponseTimeout(long responseTimeout) {
         this.responseTimeout = responseTimeout;
+    }
+
+    public boolean isPersistent() {
+        return persistent;
+    }
+
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
     }
 }

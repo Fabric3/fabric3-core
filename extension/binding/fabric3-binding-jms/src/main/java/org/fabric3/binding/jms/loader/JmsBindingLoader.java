@@ -86,7 +86,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 /**
  * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite.
  * <p/>
- * TODO support requestConnection and responseConnection attributes TODO add validation error for when connectionFactory and
  * request/responseConnection are specified per the SCA JMS spec
  *
  * @version $Revision$ $Date$
@@ -281,7 +280,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         }
 
         String templateName = reader.getAttributeValue(null, "connectionFactory.template");
-        if(templateName != null) {
+        if (templateName != null) {
             metadata.getConnectionFactory().setTemplateName(templateName);
         }
 
@@ -323,7 +322,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         int responseVal = defaultResponseTimeout;
         if (responseTimeout != null) {
             try {
-                 responseVal = Integer.parseInt(responseTimeout);
+                responseVal = Integer.parseInt(responseTimeout);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid response.timeout attribute", reader, e);
                 context.addError(error);
@@ -460,7 +459,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             if ("PERSISTENT".equalsIgnoreCase(deliveryMode)) {
                 headers.setDeliveryMode(DeliveryMode.PERSISTENT);
             } else if ("NONPERSISTENT".equalsIgnoreCase(deliveryMode)) {
-                headers.setDeliveryMode(DeliveryMode.NONPERSISTENT);
+                headers.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             } else {
                 InvalidValue failure = new InvalidValue("Invalid delivery mode: " + deliveryMode, reader);
                 context.addError(failure);
@@ -499,8 +498,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("headers".equals(name)) {
-                    HeadersDefinition headersDefinition = loadHeaders(reader, context);
-                    optProperties.setHeaders(headersDefinition);
+                    HeadersDefinition headers = loadHeaders(reader, context);
+                    optProperties.setHeaders(headers);
                 } else if ("property".equals(name)) {
                     loadProperty(reader, optProperties);
                 }

@@ -61,4 +61,10 @@ public interface ChannelIntents {
      */
     QName DURABLE_INTENT = new QName(Namespaces.CORE, "durable");
 
+
+    /**
+     * Indicates a channel must send events in a durable (persistent) fashion.
+     */
+    QName NON_PERSISTENT_INTENT = new QName(Namespaces.CORE, "nonPersistent");
+
 }

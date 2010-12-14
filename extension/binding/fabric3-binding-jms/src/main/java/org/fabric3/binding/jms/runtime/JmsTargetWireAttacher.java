@@ -52,6 +52,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
@@ -95,6 +96,10 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         wireConfiguration.setCorrelationScheme(target.getMetadata().getCorrelationScheme());
         wireConfiguration.setResponseTimeout(target.getMetadata().getResponseTimeout());
         wireConfiguration.setTransactionType(target.getTransactionType());
+
+        JmsBindingMetadata metadata = target.getMetadata();
+        boolean persistent = DeliveryMode.PERSISTENT == metadata.getHeaders().getDeliveryMode();
+        wireConfiguration.setPersistent(persistent);
 
         // resolve the connection factories and destinations for the wire
         resolveAdministeredObjects(target, wireConfiguration);

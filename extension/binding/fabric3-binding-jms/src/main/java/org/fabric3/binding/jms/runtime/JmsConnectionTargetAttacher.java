@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
@@ -81,7 +82,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         // resolve the connection factories and destinations for the wire
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
-
+        boolean persistent = DeliveryMode.PERSISTENT == metadata.getHeaders().getDeliveryMode();
         Destination destination;
         ConnectionFactory connectionFactory;
         try {
@@ -92,7 +93,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
             throw new ConnectionAttachException(e);
         }
         for (EventStream stream : connection.getEventStreams()) {
-            JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, classLoader);
+            JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent, classLoader);
             stream.addHandler(handler);
         }
 

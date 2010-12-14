@@ -49,6 +49,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -97,6 +98,7 @@ public class JmsInterceptor implements Interceptor {
     private TransactionType transactionType;
     private TransactionManager tm;
     private long responseTimeout;
+    private boolean persistent;
 
     /**
      * Constructor.
@@ -113,6 +115,7 @@ public class JmsInterceptor implements Interceptor {
         this.tm = wireConfig.getTransactionManager();
         this.transactionType = wireConfig.getTransactionType();
         this.responseTimeout = wireConfig.getResponseTimeout();
+        this.persistent = wireConfig.isPersistent();
         this.oneWay = configuration.isOneWay();
         this.methodName = configuration.getOperationName();
         this.payloadTypes = configuration.getPayloadTypes();
@@ -145,6 +148,10 @@ public class JmsInterceptor implements Interceptor {
             }
 
             MessageProducer producer = session.createProducer(destination);
+
+            if (!persistent) {
+                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            }
 
             javax.jms.Message jmsMessage = createMessage(message, session);
 

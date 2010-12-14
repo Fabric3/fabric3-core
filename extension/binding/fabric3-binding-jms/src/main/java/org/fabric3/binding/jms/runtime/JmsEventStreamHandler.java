@@ -46,6 +46,7 @@ package org.fabric3.binding.jms.runtime;
 import java.io.Serializable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -66,10 +67,12 @@ public class JmsEventStreamHandler implements EventStreamHandler {
     private Destination destination;
     private ConnectionFactory connectionFactory;
     private ClassLoader classLoader;
+    private boolean persistent;
 
-    public JmsEventStreamHandler(Destination destination, ConnectionFactory connectionFactory, ClassLoader classLoader) {
+    public JmsEventStreamHandler(Destination destination, ConnectionFactory connectionFactory, boolean persistent, ClassLoader classLoader) {
         this.destination = destination;
         this.connectionFactory = connectionFactory;
+        this.persistent = persistent;
         this.classLoader = classLoader;
     }
 
@@ -87,6 +90,9 @@ public class JmsEventStreamHandler implements EventStreamHandler {
             connection.start();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer producer = session.createProducer(destination);
+            if (!persistent) {
+                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            }
             Message jmsMessage = session.createObjectMessage(payload);
             // enqueue the message
             producer.send(jmsMessage);

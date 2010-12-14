@@ -44,12 +44,14 @@
 package org.fabric3.binding.jms.spi.common;
 
 /**
- * Represents binding.jms\headers and binding.jms\operationProperties\headers.
+ * JMS header values.
+ *
+ * @version $Revision$ $Date$
  */
 public class HeadersDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 831415808031924363L;
     private String type;
-    private DeliveryMode deliveryMode = DeliveryMode.UNDEFINED;
+    private DeliveryMode deliveryMode = DeliveryMode.PERSISTENT;
     private Long timeToLive;
     private Integer priority;
 

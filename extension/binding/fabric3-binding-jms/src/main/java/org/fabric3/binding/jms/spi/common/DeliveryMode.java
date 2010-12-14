@@ -43,5 +43,5 @@ package org.fabric3.binding.jms.spi.common;
  * @version $Rev$ $Date$
  */
 public enum DeliveryMode {
-    PERSISTENT, NONPERSISTENT, UNDEFINED
+    PERSISTENT, NON_PERSISTENT
 }
