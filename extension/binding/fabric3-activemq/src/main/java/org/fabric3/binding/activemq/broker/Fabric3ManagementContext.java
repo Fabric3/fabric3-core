@@ -53,6 +53,8 @@ public class Fabric3ManagementContext extends ManagementContext {
 
     public Fabric3ManagementContext(String brokerName, MBeanServer mBeanServer) {
         this.mBeanServer = new MBeanServerWrapper(brokerName, mBeanServer);
+        // force MBeanServer to be set in parent
+        super.getMBeanServer();
     }
 
     @Override

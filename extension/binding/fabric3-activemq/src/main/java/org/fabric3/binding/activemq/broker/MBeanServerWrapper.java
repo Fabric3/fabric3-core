@@ -62,6 +62,7 @@ import javax.management.ObjectName;
 import javax.management.OperationsException;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
+import javax.management.StandardMBean;
 import javax.management.loading.ClassLoaderRepository;
 
 import org.apache.activemq.broker.jmx.BrokerView;
@@ -149,7 +150,8 @@ public class MBeanServerWrapper implements MBeanServer {
         return delegate.queryNames(name, query);
     }
 
-    public boolean isRegistered(ObjectName name) {
+    public boolean isRegistered(ObjectName original) {
+        ObjectName name = mappings.get(original);
         return delegate.isRegistered(name);
     }
 
@@ -267,13 +269,17 @@ public class MBeanServerWrapper implements MBeanServer {
     }
 
     private ObjectName convertName(ObjectName name, Object object) throws MBeanRegistrationException {
-        if (object instanceof BrokerView) {
+        if (!(object instanceof StandardMBean)){
+           return name;
+        }
+        Object implementation = ((StandardMBean)object).getImplementation();
+        if (implementation instanceof BrokerView) {
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName + ", subgroup=Broker");
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof ConnectionView) {
+        } else if (implementation instanceof ConnectionView) {
             try {
                 String connectionName = name.getKeyProperty("Connection");
                 String connectorName = name.getKeyProperty("ConnectorName");
@@ -289,7 +295,7 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof ConnectorView) {
+        } else if (implementation instanceof ConnectorView) {
             try {
                 String connectorName = name.getKeyProperty("ConnectorName");
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
@@ -297,8 +303,8 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof SubscriptionView) {
-            SubscriptionView view = (SubscriptionView) object;
+        } else if (implementation instanceof SubscriptionView) {
+            SubscriptionView view = (SubscriptionView) implementation;
             String destinationType;
             if (view.isDestinationQueue()) {
                 destinationType = "queues";
@@ -314,7 +320,7 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof FTConnectorView) {
+        } else if (implementation instanceof FTConnectorView) {
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
                         + ", Type=MasterConnector");
@@ -322,7 +328,7 @@ public class MBeanServerWrapper implements MBeanServer {
                 throw new MBeanRegistrationException(e);
             }
 
-        } else if (object instanceof JmsConnectorView) {
+        } else if (implementation instanceof JmsConnectorView) {
             String connectorName = name.getKeyProperty("JmsConnectorName");
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
@@ -330,7 +336,7 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof NetworkBridgeView) {
+        } else if (implementation instanceof NetworkBridgeView) {
             String bridgeName = name.getKeyProperty("Name");
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
@@ -339,15 +345,15 @@ public class MBeanServerWrapper implements MBeanServer {
                 throw new MBeanRegistrationException(e);
             }
 
-        } else if (object instanceof NetworkConnectorView) {
-            NetworkConnectorView view = (NetworkConnectorView) object;
+        } else if (implementation instanceof NetworkConnectorView) {
+            NetworkConnectorView view = (NetworkConnectorView) implementation;
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
                         + ", subgroup=network connectors, connectorName=" + JMXSupport.encodeObjectNamePart(view.getName()));
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof ProxyConnectorView) {
+        } else if (implementation instanceof ProxyConnectorView) {
             String connectorName = name.getKeyProperty("ProxyConnectorName");
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
@@ -355,16 +361,16 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof QueueView) {
-            QueueView view = (QueueView) object;
+        } else if (implementation instanceof QueueView) {
+            QueueView view = (QueueView) implementation;
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName="
                         + brokerName + ", subgroup=queues, queueName=" + JMXSupport.encodeObjectNamePart(view.getName()));
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (object instanceof TopicView) {
-            TopicView view = (TopicView) object;
+        } else if (implementation instanceof TopicView) {
+            TopicView view = (TopicView) implementation;
             try {
                 name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName="
                         + brokerName + ", subgroup=topics, queueName=" + JMXSupport.encodeObjectNamePart(view.getName()));
