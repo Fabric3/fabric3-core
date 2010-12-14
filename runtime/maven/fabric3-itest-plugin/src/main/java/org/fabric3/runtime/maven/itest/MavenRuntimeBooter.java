@@ -155,7 +155,7 @@ public class MavenRuntimeBooter {
         }
     }
 
-    private MavenRuntime createRuntime() throws MojoExecutionException {
+    private MavenRuntime createRuntime() {
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
         if (tempDir.exists()) {
@@ -216,19 +216,19 @@ public class MavenRuntimeBooter {
             Class<?> implClass = cl.loadClass(RUNTIME_IMPL);
             return MavenRuntime.class.cast(implClass.getConstructor(RuntimeConfiguration.class).newInstance(configuration));
         } catch (ClassNotFoundException e) {
-            // programming errror
+            // programming error
             throw new AssertionError(e);
         } catch (IllegalAccessException e) {
-            // programming errror
+            // programming error
             throw new AssertionError(e);
         } catch (InstantiationException e) {
-            // programming errror
+            // programming error
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {
-            // programming errror
+            // programming error
             throw new AssertionError(e);
         } catch (NoSuchMethodException e) {
-            // programming errror
+            // programming error
             throw new AssertionError(e);
         }
     }
