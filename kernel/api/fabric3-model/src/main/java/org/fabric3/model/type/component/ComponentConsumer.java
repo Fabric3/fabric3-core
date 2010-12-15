@@ -73,10 +73,6 @@ public class ComponentConsumer extends ConsumerDefinition {
         return sources;
     }
 
-    public void addSource(URI source) {
-        sources.add(source);
-    }
-
     /**
      * Returns the bindings configured on the consumer.
      *
