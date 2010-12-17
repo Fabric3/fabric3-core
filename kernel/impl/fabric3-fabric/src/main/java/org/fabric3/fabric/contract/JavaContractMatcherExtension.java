@@ -66,7 +66,11 @@ public class JavaContractMatcherExtension implements ContractMatcherExtension<Ja
         }
         if ((source.getSuperType() == null && target.getSuperType() != null)
                 || (source.getSuperType() != null && !source.getSuperType().equals(target.getSuperType()))) {
-            return NO_MATCH;
+            if (reportErrors) {
+                return new MatchResult("Types are not in the same type hierarchy");
+            } else {
+                return NO_MATCH;
+            }
         }
         if (source.getInterfaceClass().equals(target.getInterfaceClass())) {
             for (Signature signature : source.getMethodSignatures()) {
