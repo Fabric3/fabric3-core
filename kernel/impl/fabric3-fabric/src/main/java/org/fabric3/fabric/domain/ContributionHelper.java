@@ -108,7 +108,7 @@ public interface ContributionHelper {
     /**
      * Locks a set of contributions. The lock owners are the deployables in the contribution.
      *
-     * @param contributions the cotnributions
+     * @param contributions the contributions
      * @throws CompositeAlreadyDeployedException
      *          if a deployable is already deployed
      */
