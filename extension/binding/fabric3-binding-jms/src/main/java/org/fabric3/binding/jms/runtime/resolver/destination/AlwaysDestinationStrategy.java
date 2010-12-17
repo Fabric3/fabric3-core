@@ -68,7 +68,7 @@ public class AlwaysDestinationStrategy implements DestinationStrategy {
         String name = definition.getName();
         try {
             connection = factory.createConnection();
-            if (clientId != null && (connection.getClientID() == null || connection.getClientID().equals(clientId))) {
+            if (clientId != null && (connection.getClientID() == null || !connection.getClientID().equals(clientId))) {
                connection.setClientID(clientId);
             }
             connection.start();

@@ -59,20 +59,27 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNEC
 public class JmsGeneratorHelper {
 
     /**
-     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name. Hierarchical URIs are converted to dot
-     * notation by replacing '/' with '.'.
+     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name for the source side of a wire or channel
+     * connection. Hierarchical URIs are converted to dot notation by replacing '/' with '.'.
      *
      * @param uri the URI
      * @return the specifier
      */
-    public static String getSpecifier(URI uri) {
-        String specifier = uri.getPath().substring(1).replace("/", ".");
-        String fragment = uri.getFragment();
-        if (fragment != null) {
-            specifier = specifier + "." + fragment;
-        }
-        return specifier;
+    public static String getSourceSpecifier(URI uri) {
+        return getSpecifier(uri) + "Source";
     }
+
+    /**
+     * Converts a URI to a JMS specifier that can be used for creating client id or connection factory name for the target side of a wire or channel
+     * connection. Hierarchical URIs are converted to dot notation by replacing '/' with '.'.
+     *
+     * @param uri the URI
+     * @return the specifier
+     */
+    public static String getTargetSpecifier(URI uri) {
+        return getSpecifier(uri) + "Target";
+    }
+
 
     /**
      * Generates a default connection factory configuration.
@@ -94,7 +101,17 @@ public class JmsGeneratorHelper {
         }
     }
 
+    private static String getSpecifier(URI uri) {
+        String specifier = uri.getPath().substring(1).replace("/", ".");
+        String fragment = uri.getFragment();
+        if (fragment != null) {
+            specifier = specifier + "." + fragment;
+        }
+        return specifier;
+    }
+
 
     private JmsGeneratorHelper() {
     }
+
 }

@@ -53,7 +53,9 @@ import junit.framework.TestCase;
 public class JmsGeneratorHelperTestCase extends TestCase {
 
     public void testSpecifier() throws Exception {
-        String specifier = JmsGeneratorHelper.getSpecifier(URI.create("fabric3://domain/TestComponent#TestService"));
-        assertEquals("TestComponent.TestService", specifier);
+        String sourceSpecifier = JmsGeneratorHelper.getSourceSpecifier(URI.create("fabric3://domain/TestComponent#TestService"));
+        assertEquals("TestComponent.TestServiceSource", sourceSpecifier);
+        String targetSpecifier = JmsGeneratorHelper.getTargetSpecifier(URI.create("fabric3://domain/TestComponent#TestService"));
+        assertEquals("TestComponent.TestServiceTarget", targetSpecifier);
     }
 }

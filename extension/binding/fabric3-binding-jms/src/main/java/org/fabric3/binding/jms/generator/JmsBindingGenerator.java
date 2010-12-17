@@ -113,7 +113,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
         // set the client id specifier
-        String specifier = JmsGeneratorHelper.getSpecifier(binding.getParent().getUri());
+        String specifier = JmsGeneratorHelper.getSourceSpecifier(binding.getParent().getUri());
         metadata.setClientIdSpecifier(specifier);
 
         validateResponseDestination(metadata, contract);
@@ -169,7 +169,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
             provisioner.generateTarget(definition);
         }
 
-        String specifier = JmsGeneratorHelper.getSpecifier(binding.getParent().getUri());
+        String specifier = JmsGeneratorHelper.getTargetSpecifier(binding.getParent().getUri());
         setDefaultFactoryConfigurations(metadata, transactionType, specifier);
 
         return definition;
