@@ -119,7 +119,7 @@ public class MBeanServerWrapper implements MBeanServer {
     public ObjectInstance registerMBean(Object object, ObjectName original)
             throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         ObjectName name = convertName(original, object);
-        if (mappings.containsKey(original)) {
+        if (delegate.isRegistered(name)) {
             try {
                 delegate.unregisterMBean(name);
             } catch (InstanceNotFoundException e) {
