@@ -46,8 +46,8 @@ import java.util.Set;
 
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * @version $Rev$ $Date$

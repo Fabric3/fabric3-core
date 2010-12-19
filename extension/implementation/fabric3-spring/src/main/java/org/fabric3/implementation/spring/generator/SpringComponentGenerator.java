@@ -51,6 +51,7 @@ import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -65,7 +66,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Generator for Spring components.

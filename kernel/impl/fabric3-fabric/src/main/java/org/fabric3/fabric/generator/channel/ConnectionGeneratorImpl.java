@@ -58,7 +58,7 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;

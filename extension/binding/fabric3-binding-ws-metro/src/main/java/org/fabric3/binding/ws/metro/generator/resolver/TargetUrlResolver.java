@@ -40,9 +40,9 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.URL;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * Determines the endpoint of a URL based on the service binding metadata. This is used when determining a URL for a reference targeted using the SCA

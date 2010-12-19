@@ -47,7 +47,7 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.federation.DomainTopologyService;
 
 /**

@@ -51,7 +51,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.EffectivePolicy;
 
 /**
  * Handles generation for Java components and specialized subtypes.

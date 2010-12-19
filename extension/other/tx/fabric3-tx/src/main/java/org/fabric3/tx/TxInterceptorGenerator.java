@@ -41,9 +41,9 @@ import org.osoa.sca.annotations.EagerInit;
 import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.generator.policy.PolicyMetadata;
 
 /**
  * Generates metadata for creating a TxInterceptor on a wire invocation chain.

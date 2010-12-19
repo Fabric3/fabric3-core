@@ -51,6 +51,7 @@ import org.fabric3.implementation.system.provision.SystemTargetDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -67,7 +68,6 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
 
 /**
  * @version $Rev$ $Date$

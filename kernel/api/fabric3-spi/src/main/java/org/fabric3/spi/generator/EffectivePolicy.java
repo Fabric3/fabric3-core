@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator.policy;
+package org.fabric3.spi.generator;
 
 import java.util.List;
 import java.util.Map;

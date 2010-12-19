@@ -53,7 +53,7 @@ import org.fabric3.policy.resolver.ImplementationPolicyResolver;
 import org.fabric3.policy.resolver.InteractionPolicyResolver;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.generator.policy.PolicyResult;

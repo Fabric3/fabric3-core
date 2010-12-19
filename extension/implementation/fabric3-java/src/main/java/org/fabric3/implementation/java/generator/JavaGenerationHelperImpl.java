@@ -71,7 +71,7 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.EffectivePolicy;
 
 /**
  * @version $Rev$ $Date$
