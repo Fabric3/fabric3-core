@@ -48,10 +48,15 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Scope;
 
+import org.fabric3.api.annotation.scope.Composite;
+import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+
+import static org.fabric3.model.type.component.Scope.COMPOSITE;
+import static org.fabric3.model.type.component.Scope.DOMAIN;
 
 /**
  * @version $Rev$ $Date$
@@ -78,9 +83,11 @@ public class EagerInitProcessor<I extends Implementation<? extends InjectingComp
             return true;
         }
         Scope scope = type.getAnnotation(Scope.class);
-        if (scope == null
-                || (!org.fabric3.model.type.component.Scope.COMPOSITE.getScope().equals(scope.value())
-                && !org.fabric3.model.type.component.Scope.DOMAIN.getScope().equals(scope.value()))) {
+        if (scope != null && !COMPOSITE.getScope().equals(scope.value()) && !DOMAIN.getScope().equals(scope.value())) {
+            EagerInitNotSupported warning = new EagerInitNotSupported(type);
+            context.addWarning(warning);
+            return false;
+        } else if (scope == null && type.getAnnotation(Composite.class) == null && type.getAnnotation(Domain.class) == null) {
             EagerInitNotSupported warning = new EagerInitNotSupported(type);
             context.addWarning(warning);
             return false;
