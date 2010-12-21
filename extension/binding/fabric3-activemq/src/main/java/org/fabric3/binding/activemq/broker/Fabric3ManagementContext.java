@@ -40,8 +40,12 @@ package org.fabric3.binding.activemq.broker;
 import java.io.IOException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 
+import org.apache.activemq.broker.jmx.AnnotatedMBean;
 import org.apache.activemq.broker.jmx.ManagementContext;
+import org.apache.activemq.broker.jmx.SubscriptionViewMBean;
 
 /**
  * Overrides the ActiveMQ management context to use the Fabric3 runtime MBean server and map default ActiveMQ JMX MBean names to Fabric3 conventions.
@@ -92,4 +96,16 @@ public class Fabric3ManagementContext extends ManagementContext {
         return mBeanServer;
     }
 
+    @Override
+    public ObjectInstance registerMBean(Object bean, ObjectName name) throws Exception {
+        if (bean instanceof AnnotatedMBean) {
+            Object impl = ((AnnotatedMBean) bean).getImplementation();
+            if (impl instanceof SubscriptionViewMBean) {
+                return null;
+            }
+        } else if (bean instanceof SubscriptionViewMBean) {
+            return null;
+        }
+        return super.registerMBean(bean, name);
+    }
 }

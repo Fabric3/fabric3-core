@@ -75,6 +75,7 @@ import org.apache.activemq.broker.jmx.NetworkConnectorView;
 import org.apache.activemq.broker.jmx.ProxyConnectorView;
 import org.apache.activemq.broker.jmx.QueueView;
 import org.apache.activemq.broker.jmx.SubscriptionView;
+import org.apache.activemq.broker.jmx.SubscriptionViewMBean;
 import org.apache.activemq.broker.jmx.TopicView;
 import org.apache.activemq.util.JMXSupport;
 
@@ -152,7 +153,7 @@ public class MBeanServerWrapper implements MBeanServer {
 
     public boolean isRegistered(ObjectName original) {
         ObjectName name = mappings.get(original);
-        return delegate.isRegistered(name);
+        return name != null && delegate.isRegistered(name);
     }
 
     public Integer getMBeanCount() {
