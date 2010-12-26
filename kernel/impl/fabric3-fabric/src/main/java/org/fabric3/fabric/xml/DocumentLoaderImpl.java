@@ -103,7 +103,7 @@ public class DocumentLoaderImpl implements DocumentLoader {
     }
 
     /**
-     * Recursively strips whitepsace nodes starting at a DOM element.
+     * Recursively strips whitespace nodes starting at a DOM element.
      * <p>
      * This is necessary as <code>DocumentBuilderFactory.setIgnoringElementContentWhitespace(boolean)</code> is broken in JDK 6:
      * <p>
