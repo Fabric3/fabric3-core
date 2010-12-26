@@ -274,8 +274,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             RepositoryImpl repository = new RepositoryImpl(hostInfo);
             repository.init();
             return repository;
-        } catch (IOException e) {
-            throw new InitializationException(e);
         } catch (RepositoryException e) {
             throw new InitializationException(e);
         }
