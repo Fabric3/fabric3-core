@@ -141,7 +141,7 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
     @Init
     public void init() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         initializeKeystore();
-        initializeTruststore();
+        initializeTrustStore();
     }
 
     public KeyStore getKeyStore() {
@@ -205,7 +205,7 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
         }
     }
 
-    private void initializeTruststore() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+    private void initializeTrustStore() throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         truststoreFile = null;
         if (trustStoreLocation == null) {
             File dir = info.getBaseDir();
