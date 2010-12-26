@@ -10,9 +10,8 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:federation="urn:fabric3.org:federation"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="org.fabric3.util.*" version="1.7"/>
     <import.java package="org.fabric3.federation.deployment.command" version="1.7"/>
@@ -20,6 +19,6 @@ Public License. See the accompanying license file for details.
 
     <import.java package="org.jgroups.*" version="2.10.0"/>
 
-    <deployable composite="federation:JGroupsFederationControllerExtension" modes="controller"/>
-    <deployable composite="federation:JGroupsFederationParticipantExtension" modes="participant"/>
+    <deployable composite="f3:JGroupsFederationControllerExtension" modes="controller"/>
+    <deployable composite="f3:JGroupsFederationParticipantExtension" modes="participant"/>
 </contribution>

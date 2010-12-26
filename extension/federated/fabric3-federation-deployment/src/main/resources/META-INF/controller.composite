@@ -11,21 +11,21 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:federation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="FederationControllerDeploymentExtension"
            autowire="true">
 
 
     <component name="FederatedDeployer">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.domain.FederatedDeployer"/>
+        <f3:implementation.system class="org.fabric3.federation.deployment.domain.FederatedDeployer"/>
     </component>
 
     <!-- this wire reinjects the routing service into the application Domain -->
     <wire source="ApplicationDomain/deployer" target="FederatedDeployer"/>
 
     <component name="ControllerRuntimeSyncCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.deployment.executor.ControllerRuntimeUpdateCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.federation.deployment.executor.ControllerRuntimeUpdateCommandExecutor"/>
         <reference name="lcm" target="LogicalComponentManager"/>
         <reference name="generator" target="Generator"/>
     </component>

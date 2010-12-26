@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.Import;
  */
 public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;
-    private static final QName TYPE = new QName(Namespaces.CORE, "contributionImport");
+    private static final QName TYPE = new QName(Namespaces.F3, "contributionImport");
     private URI location;
 
     public ContributionExport(URI contributionId) {

@@ -47,7 +47,7 @@ import org.fabric3.model.type.component.Implementation;
  */
 public class XQueryImplementation extends Implementation<XQueryComponentType> {
 
-    public static final QName QNAME = new QName(Namespaces.IMPLEMENTATION, "implementation.xquery");
+    public static final QName QNAME = new QName(Namespaces.F3, "implementation.xquery");
     private String location;
     private String context;
     private boolean isModule;

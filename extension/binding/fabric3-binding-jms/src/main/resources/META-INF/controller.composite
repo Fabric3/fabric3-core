@@ -10,28 +10,27 @@ Portions originally based on Apache Tuscany 2007
 licensed under the Apache 2.0 license.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3="urn:fabric3.org"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           targetNamespace="urn:fabric3.org"
            name="JmsControllerExtension">
 
-    <component f3-core:key="sca:binding.jms" name="JMSBindingLoader">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.loader.JmsBindingLoader"/>
+    <component f3:key="sca:binding.jms" name="JMSBindingLoader">
+        <f3:implementation.system class="org.fabric3.binding.jms.loader.JmsBindingLoader"/>
         <property name="defaultResponseTimeout" source="$systemConfig//jms/@response.timeout"/>
         <property name="defaultTransactionTimeout" source="$systemConfig//jms/@transaction.timeout"/>
     </component>
 
-    <component name="JmsBindingGenerator" f3-core:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
+    <component name="JmsBindingGenerator" f3:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
     </component>
 
-    <component name="JmsConnectionBindingGenerator" f3-core:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator"/>
+    <component name="JmsConnectionBindingGenerator" f3:key="org.fabric3.binding.jms.model.JmsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsConnectionBindingGenerator"/>
     </component>
 
     <component name="MessageTypeIntrospector">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.jms.generator.PayloadTypeIntrospectorImpl"/>
     </component>
 
 </composite>

@@ -24,18 +24,17 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
            name="org.fabric3.MockImplementation"
            autowire="true">
 
 
     <component name="testMock">
-        <f3-impl:implementation.mock>
+        <f3:implementation.mock>
             org.fabric3.implementation.mock.Foo
             org.fabric3.implementation.mock.Bar
             org.fabric3.implementation.mock.Baz
-        </f3-impl:implementation.mock>
+        </f3:implementation.mock>
     </component>
 
 </composite>

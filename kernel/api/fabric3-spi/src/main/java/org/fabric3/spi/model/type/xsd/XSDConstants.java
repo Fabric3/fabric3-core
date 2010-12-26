@@ -53,5 +53,5 @@ public interface XSDConstants {
     /**
      * Defines a component property.
      */
-    XSDComplexType PROPERTY_TYPE = new XSDComplexType(Node.class, new QName(Namespaces.CORE, "property"));
+    XSDComplexType PROPERTY_TYPE = new XSDComplexType(Node.class, new QName(Namespaces.F3, "property"));
 }

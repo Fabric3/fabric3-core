@@ -52,7 +52,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 public class ImplementationMock extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3519206465795353416L;
 
-    static final QName IMPLEMENTATION_MOCK = new QName(Namespaces.IMPLEMENTATION, "implementation.mock");
+    static final QName IMPLEMENTATION_MOCK = new QName(Namespaces.F3, "implementation.mock");
 
     private final List<String> mockedInterfaces;
 

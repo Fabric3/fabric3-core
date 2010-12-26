@@ -9,8 +9,8 @@ Public License. See the accompanying license file for details.
 <definitions
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-        targetNamespace="urn:fabric3.org:policy"
-        xmlns:f3-policy="urn:fabric3.org:policy"
+        targetNamespace="urn:fabric3.org"
+        xmlns:f3="urn:fabric3.org"
         xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
         xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
 
@@ -24,12 +24,12 @@ Public License. See the accompanying license file for details.
         <qualifier name="qualifier2"/>
     </intent>
 
-    <policySet name="interceptedPolicy" appliesTo="sca:binding.foo" provides="f3-policy:intercepted">
-        <f3-policy:interceptor class="FooInterceptor"/>
+    <policySet name="interceptedPolicy" appliesTo="sca:binding.foo" provides="f3:intercepted">
+        <f3:interceptor class="FooInterceptor"/>
     </policySet>
 
-    <policySet name="providedPolicy" appliesTo="sca:binding.foo" provides="f3-policy:provided">
-        <f3-policy:someElement f3-policy:phase="provided"/>
+    <policySet name="providedPolicy" appliesTo="sca:binding.foo" provides="f3:provided">
+        <f3:someElement f3:phase="provided"/>
     </policySet>
 
     <policySet name="wsPolicy" provides="sca:authentication.message" appliesTo="fabric3://domain/FooService">

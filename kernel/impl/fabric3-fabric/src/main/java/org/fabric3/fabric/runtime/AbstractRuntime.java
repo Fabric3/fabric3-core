@@ -155,7 +155,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         channelManager = new ChannelManagerImpl();
 
         // register runtime and app channels
-        QName deployable = new QName(Namespaces.CORE, "boot");
+        QName deployable = new QName(Namespaces.F3, "boot");
         runtimeDispatcher.start();
         registerChannel(RUNTIME_MONITOR_CHANNEL_URI, deployable, runtimeDispatcher);
         appDispatcher.start();

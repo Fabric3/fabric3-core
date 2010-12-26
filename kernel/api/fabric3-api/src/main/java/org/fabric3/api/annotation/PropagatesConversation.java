@@ -53,6 +53,6 @@ import org.oasisopen.sca.annotation.Intent;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropagatesConversation {
-    String PROPAGATES = "{urn:fabric3.org:policy}" + "propagatesConversation";
+    String PROPAGATES = "{urn:fabric3.org}" + "propagatesConversation";
 
 }

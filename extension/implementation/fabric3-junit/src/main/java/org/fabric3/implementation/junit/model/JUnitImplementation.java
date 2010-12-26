@@ -47,7 +47,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  * @version $Rev$ $Date$
  */
 public class JUnitImplementation extends Implementation<InjectingComponentType> {
-    public static final QName IMPLEMENTATION_JUNIT = new QName(Namespaces.IMPLEMENTATION, "junit");
+    public static final QName IMPLEMENTATION_JUNIT = new QName(Namespaces.F3, "junit");
     private static final long serialVersionUID = -5048471724313487914L;
     private String implementationClass;
 

@@ -10,16 +10,16 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true"
-              f3-core:description="Hibernate library extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="Hibernate library extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="2.0.0"/>
     <import.java package="org.slf4j.*"/>
     <export.java package="org.hibernate.*" version="3.5.3"/>
     <export.java package="javassist.util.proxy" version="3.5.3"/>
-    <f3-core:requires.capability name="transaction"/>
-    <f3-core:provides.capability name="jpa"/>
-    <f3-core:provides.capability name="hibernate"/>
+    <f3:requires.capability name="transaction"/>
+    <f3:provides.capability name="jpa"/>
+    <f3:provides.capability name="hibernate"/>
 </contribution>

@@ -10,13 +10,12 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-core="urn:fabric3.org:core"
-              xmlns:other="urn:fabric3.org:other"
-              f3-core:extension="true">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <export.java package="org.fabric3.wsdl.model" version="1.7"/>
     <export.java package="javax.wsdl" version="1.6.2"/>
     <export.java package="org.fabric3.wsdl.contribution" version="1.7"/>
     <export.java package="org.fabric3.wsdl.factory" version="1.7"/>
-    <deployable composite="other:WsdlInterfaceExtension"/>
+    <deployable composite="f3:WsdlInterfaceExtension"/>
 </contribution>

@@ -9,54 +9,53 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="MetroControllerExtension"
            autowire="true">
 
     <component name="WsdlResolver">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.WsdlResolverImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.WsdlResolverImpl"/>
     </component>
 
     <component name="EndpointResolver">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.EndpointResolverImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.EndpointResolverImpl"/>
     </component>
 
     <component name="EndpointSynthesizer">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.java.EndpointSynthesizerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.EndpointSynthesizerImpl"/>
     </component>
 
     <component name="WsdlSynthesizer">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
     </component>
 
     <component name="TargetUrlResolver">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl"/>
     </component>
 
     <component name="JavaInterfaceGenerator">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
     </component>
 
     <component name="JavaWsdlGenerator">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGeneratorImpl"/>
     </component>
 
     <component name="WsdlPolicyAttacher">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacherImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacherImpl"/>
     </component>
 
-    <component name="MetroBindingGenerator" f3-core:key="org.fabric3.binding.ws.model.WsBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroBindingGenerator"/>
+    <component name="MetroBindingGenerator" f3:key="org.fabric3.binding.ws.model.WsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.MetroBindingGenerator"/>
     </component>
 
-    <component name="WsdlGeneratorDelegate" f3-core:key="org.fabric3.wsdl.model.WsdlServiceContract">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlGeneratorDelegate"/>
+    <component name="WsdlGeneratorDelegate" f3:key="org.fabric3.wsdl.model.WsdlServiceContract">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlGeneratorDelegate"/>
     </component>
 
-    <component name="JavaGeneratorDelegate" f3-core:key="org.fabric3.spi.model.type.java.JavaServiceContract">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.generator.java.JavaGeneratorDelegate"/>
+    <component name="JavaGeneratorDelegate" f3:key="org.fabric3.spi.model.type.java.JavaServiceContract">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.JavaGeneratorDelegate"/>
     </component>
 
 </composite>

@@ -102,7 +102,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      *
      * @parameter
      */
-    public String compositeNamespace = "org.codehaus.fabric3";
+    public String compositeNamespace = "urn:fabric3.org";
 
     /**
      * The local name of the composite to activate.

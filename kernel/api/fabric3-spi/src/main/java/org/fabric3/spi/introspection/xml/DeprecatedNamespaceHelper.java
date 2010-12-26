@@ -34,39 +34,35 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
  */
-package org.fabric3.binding.ws.metro.util;
-
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-
-import org.fabric3.host.Namespaces;
+package org.fabric3.spi.introspection.xml;
 
 /**
- * List of intents that may be provided by Metro.
- *
  * @version $Rev$ $Date$
  */
-public class MayProvideIntents {
+public class DeprecatedNamespaceHelper {
 
-    public static QName MESSAGE_OPTIMIZATION = new QName(Namespaces.F3, "messageOptimization");
-
-    public static QName SOAP1_1 = new QName(Constants.SCA_NS, "SOAP.1_1");
-    public static QName SOAP1_2 = new QName(Constants.SCA_NS, "SOAP.1_2");
-    public static QName X_SOAP1_2 = new QName(Namespaces.F3, "protocolBinding.xsoap12");
-    public static QName REST = new QName(Namespaces.F3, "protocolBinding.rest");
-
-    public static QName AT_LEAST_ONCE = new QName(Constants.SCA_NS, "atLeastOnce");
-    public static QName AT_MOST_ONCE = new QName(Constants.SCA_NS, "atMostOnce");
-    public static QName EXACTLY_ONCE = new QName(Constants.SCA_NS, "exactlyOnce");
-
-    public static QName SCHEMA_VALIDATION = new QName(Namespaces.F3, "schemaValidation");
+    private static final String BINDING = "urn:fabric3.org:binding";
+    private static final String IMPLEMENTATION = "urn:fabric3.org:implementation";
+    private static final String POLICY = "urn:fabric3.org:policy";
+    private static final String OTHER = "urn:fabric3.org:other";
 
     /**
-     * Private constructor for constant class.
+     * Returns true if the namespace has been deprecated.
+     *
+     * @param namespace the namespace
+     * @return true if the namespace has been deprecated
      */
-    private MayProvideIntents() {
+    public static boolean isDeprecatedNamespace(String namespace) {
+        return BINDING.equals(namespace) || IMPLEMENTATION.equals(namespace) || POLICY.equals(namespace) || OTHER.equals(namespace);
     }
 
+    private DeprecatedNamespaceHelper() {
+    }
 }

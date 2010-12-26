@@ -13,24 +13,21 @@
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="SingletonImplementationComposite"
            autowire="true">
 
-    <!-- Singleton implementation type -->
-
-    <component name="SingletonGenerator" f3-core:key="org.fabric3.implementation.system.singleton.SingletonImplementation">
-        <f3-impl:implementation.system class="org.fabric3.implementation.system.singleton.SingletonComponentGenerator"/>
+    <component name="SingletonGenerator" f3:key="org.fabric3.implementation.system.singleton.SingletonImplementation">
+        <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonComponentGenerator"/>
     </component>
 
-    <component name="SingletonWireSourceAttacher" f3-core:key="org.fabric3.implementation.system.singleton.SingletonSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher"/>
+    <component name="SingletonWireSourceAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonSourceDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher"/>
     </component>
 
-    <component name="SingletonWireTargetAttacher" f3-core:key="org.fabric3.implementation.system.singleton.SingletonTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher"/>
+    <component name="SingletonWireTargetAttacher" f3:key="org.fabric3.implementation.system.singleton.SingletonTargetDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher"/>
     </component>
 
 </composite>

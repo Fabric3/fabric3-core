@@ -16,14 +16,13 @@
  under the License.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="ActiveMQControllerExtension"
            autowire="true">
 
     <component name="ActiveMQBindingProvider">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.control.ActiveMQBindingProvider"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.control.ActiveMQBindingProvider"/>
         <property name="connectionFactory" source="$systemConfig//jms/binding.sca/@factory"/>
         <property name="xaConnectionFactory" source="$systemConfig//jms/binding.sca/@xa.factory"/>
         <property name="enabled" source="$systemConfig//binding.jms/@jmsBindingProvider"/>

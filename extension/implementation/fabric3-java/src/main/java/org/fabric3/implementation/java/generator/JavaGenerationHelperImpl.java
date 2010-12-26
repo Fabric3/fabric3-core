@@ -77,7 +77,7 @@ import org.fabric3.spi.generator.EffectivePolicy;
  * @version $Rev$ $Date$
  */
 public class JavaGenerationHelperImpl implements JavaGenerationHelper {
-    private static final QName PROPAGATES_CONVERSATION_POLICY = new QName(Namespaces.POLICY, "propagatesConversationPolicy");
+    private static final QName PROPAGATES_CONVERSATION_POLICY = new QName(Namespaces.F3, "propagatesConversationPolicy");
     private final GenerationHelper helper;
     private ContractMatcher matcher;
 

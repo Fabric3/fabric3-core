@@ -10,10 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-impl="urn:fabric3.org:implementation"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true"
-              f3-core:description="JAX-RS (REST) extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="JAX-RS (REST) extension">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="org.fabric3.implementation.pojo.*" version="1.7"/>
     <import.java package="org.fabric3.implementation.java.model" version="1.7"/>
@@ -33,8 +32,8 @@ Public License. See the accompanying license file for details.
     <export.java package="com.sun.jersey."/>
 
     <!-- provides required for JAXB support. Jersey loads JAXB implementation classes using Class.forName() -->
-    <f3-core:provides name="jaxb"/>
+    <f3:provides name="jaxb"/>
 
-    <f3-core:provides.capability name="rest"/>
-    <deployable composite="f3-impl:RsExtension"/>
+    <f3:provides.capability name="rest"/>
+    <deployable composite="f3:RsExtension"/>
 </contribution>

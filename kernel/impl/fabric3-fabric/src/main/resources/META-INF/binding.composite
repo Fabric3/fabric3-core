@@ -12,26 +12,25 @@
     $Rev: 7117 $ $Date: 2009-06-14 14:03:22 -0700 (Sun, 14 Jun 2009) $
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-core="urn:fabric3.org:core"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="BindingComposite"
            autowire="true">
 
-    <component name="JDKParameterEncoderFactory" f3-core:key="jdk">
-        <f3-impl:implementation.system class="org.fabric3.fabric.binding.format.JDKParameterEncoderFactory"/>
+    <component name="JDKParameterEncoderFactory" f3:key="jdk">
+        <f3:implementation.system class="org.fabric3.fabric.binding.format.JDKParameterEncoderFactory"/>
     </component>
 
-    <component name="JDKUnwrappedMessageEncoder" f3-core:key="jdk">
-        <f3-impl:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
+    <component name="JDKUnwrappedMessageEncoder" f3:key="jdk">
+        <f3:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
     </component>
 
-    <component name="JDKWrappedParameterEncoderFactory" f3-core:key="jdk.wrapped">
-        <f3-impl:implementation.system class="org.fabric3.fabric.binding.format.JDKParameterEncoderFactory"/>
+    <component name="JDKWrappedParameterEncoderFactory" f3:key="jdk.wrapped">
+        <f3:implementation.system class="org.fabric3.fabric.binding.format.JDKParameterEncoderFactory"/>
     </component>
 
-    <component name="JDKWrappedMessageFormatter" f3-core:key="jdk.wrapped">
-        <f3-impl:implementation.system class="org.fabric3.fabric.binding.format.JDKMessageEncoder"/>
+    <component name="JDKWrappedMessageFormatter" f3:key="jdk.wrapped">
+        <f3:implementation.system class="org.fabric3.fabric.binding.format.JDKMessageEncoder"/>
     </component>
 
 

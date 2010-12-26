@@ -10,14 +10,13 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="introspection">
 
     <!-- Ws Binding Loader -->
-    <component name="WsBindingLoader" f3-core:key="sca:binding.ws">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.loader.WsBindingLoader"/>
+    <component name="WsBindingLoader" f3:key="sca:binding.ws">
+        <f3:implementation.system class="org.fabric3.binding.ws.loader.WsBindingLoader"/>
     </component>
 
 </composite>

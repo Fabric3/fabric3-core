@@ -65,10 +65,10 @@ import org.fabric3.spi.generator.EffectivePolicy;
  */
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
-    private static final QName F3_AUTHORIZATION = new QName(Namespaces.POLICY, "authorization");
+    private static final QName F3_AUTHORIZATION = new QName(Namespaces.F3, "authorization");
     private static final QName SCA_AUTHORIZATION = new QName(Constants.SCA_NS, "authorization");
     private static final QName SCA_AUTHENTICATION = new QName(Constants.SCA_NS, "clientAuthentication");
-    private static final QName F3_BASIC_AUTHENTICATION = new QName(Namespaces.POLICY, "clientAuthentication");
+    private static final QName F3_BASIC_AUTHENTICATION = new QName(Namespaces.F3, "clientAuthentication");
     private static final QName F3_DIGEST_AUTHENTICATION = null;
 
     public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,

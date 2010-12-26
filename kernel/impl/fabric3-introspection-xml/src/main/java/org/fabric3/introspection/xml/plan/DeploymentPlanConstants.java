@@ -47,5 +47,5 @@ import org.fabric3.host.Namespaces;
 public interface DeploymentPlanConstants {
     String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";
 
-    QName PLAN = new QName(Namespaces.CORE, "plan");
+    QName PLAN = new QName(Namespaces.F3, "plan");
 }

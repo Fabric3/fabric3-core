@@ -50,7 +50,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 public class WebArtifactImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -5415465119697665067L;
-    public static final QName QNAME = new QName(Namespaces.IMPLEMENTATION, "webArtifact");
+    public static final QName QNAME = new QName(Namespaces.F3, "webArtifact");
 
     public QName getType() {
         return QNAME;

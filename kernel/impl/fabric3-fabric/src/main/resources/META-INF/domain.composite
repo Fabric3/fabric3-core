@@ -12,42 +12,42 @@
     $Rev: 7117 $ $Date: 2009-06-14 14:03:22 -0700 (Sun, 14 Jun 2009) $
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="DomainComposite"
            autowire="true">
 
     <component name="ApplicationDomain">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.DistributedDomain"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.DistributedDomain"/>
         <reference name="logicalComponentManager" target="LogicalComponentManager"/>
         <property name="transactional" source="$systemConfig//deployment/@transactional"/>
     </component>
 
     <component name="DomainMonitorListener">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.DomainMonitorListener"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.DomainMonitorListener"/>
     </component>
 
     <component name="ContributionHelper">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.ContributionHelperImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.ContributionHelperImpl"/>
     </component>
 
     <component name="LogicalComponentManager">
-        <f3-impl:implementation.system class="org.fabric3.fabric.lcm.LogicalComponentManagerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.lcm.LogicalComponentManagerImpl"/>
         <property name="autowire" source="$systemConfig/domain/@autowire"/>
     </component>
 
     <component name="LocalDeployer">
-        <f3-impl:implementation.system class="org.fabric3.fabric.domain.LocalDeployer"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.LocalDeployer"/>
     </component>
     <!-- this wire reinjects the deployer into the RuntimeDomain -->
     <wire source="RuntimeDomain/deployer" target="LocalDeployer"/>
 
     <component name="SingletonComponentSynthesizer">
-        <f3-impl:implementation.system class="org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer"/>
+        <f3:implementation.system class="org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer"/>
     </component>
 
     <component name="PolicyRegistry">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.policy.DefaultPolicyRegistry"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.policy.DefaultPolicyRegistry"/>
     </component>
 
     <wire source="ApplicationDomain/policyRegistry" target="PolicyRegistry"/>

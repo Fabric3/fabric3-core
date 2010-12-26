@@ -7,8 +7,8 @@ Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 -->
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-             targetNamespace="urn:fabric3.org:policy"
-             xmlns:f3-policy="urn:fabric3.org:policy">
+             targetNamespace="urn:fabric3.org"
+             xmlns:f3="urn:fabric3.org">
 
     <intent name="authorization" constrains="implementation">
         <description>
@@ -16,8 +16,8 @@ Public License. See the accompanying license file for details.
         </description>
     </intent>
 
-    <policySet name="authorizationPolicy" provides="f3-policy:authorization">
-        <f3-policy:authorization/>
+    <policySet name="authorizationPolicy" provides="f3:authorization">
+        <f3:authorization/>
     </policySet>
 
 

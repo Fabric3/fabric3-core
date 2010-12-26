@@ -9,62 +9,60 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-binding="urn:org.fabric3:binding"
-           targetNamespace="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="WebBindingExtension"
            autowire="true">
 
     <component name="LogLevelSetter">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.log.LogLevelSetter"/>
+        <f3:implementation.system class="org.fabric3.binding.web.log.LogLevelSetter"/>
         <property name="monitorLevel" source="$systemConfig//web.binding/@logging"/>
     </component>
 
-    <component name="WebBindingGenerator" f3-core:key="org.fabric3.binding.web.model.WebBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.generator.WebBindingGenerator"/>
+    <component name="WebBindingGenerator" f3:key="org.fabric3.binding.web.model.WebBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.generator.WebBindingGenerator"/>
     </component>
 
-    <component name="WebConnectionBindingGenerator" f3-core:key="org.fabric3.binding.web.model.WebBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.generator.WebConnectionBindingGenerator"/>
+    <component name="WebConnectionBindingGenerator" f3:key="org.fabric3.binding.web.model.WebBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.generator.WebConnectionBindingGenerator"/>
     </component>
 
-    <component name="WebBindingLoader" f3-core:key="f3-binding:binding.web">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.loader.WebBindingLoader"/>
+    <component name="WebBindingLoader" f3:key="f3:binding.web">
+        <f3:implementation.system class="org.fabric3.binding.web.loader.WebBindingLoader"/>
     </component>
 
     <component name="BroadcasterManager">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.common.BroadcasterManagerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.common.BroadcasterManagerImpl"/>
     </component>
 
     <component name="ServiceManager">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.ServiceManagerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.service.ServiceManagerImpl"/>
     </component>
 
     <component name="PubSubManager">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.PubSubManagerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.PubSubManagerImpl"/>
     </component>
 
-    <component name="WebBindingSourceWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
+    <component name="WebBindingSourceWireAttacher" f3:key="org.fabric3.binding.web.provision.WebSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.service.WebSourceWireAttacher"/>
         <property name="timeout" source="$systemConfig//web.binding/@timeout" />
     </component>
 
-    <component name="WebChannelBindingBuilder" f3-core:key="org.fabric3.binding.web.provision.WebChannelBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebChannelBindingBuilder"/>
+    <component name="WebChannelBindingBuilder" f3:key="org.fabric3.binding.web.provision.WebChannelBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.WebChannelBindingBuilder"/>
         <property name="timeout" source="$systemConfig//web.binding/@timeout" />
     </component>
 
-    <component name="WebBindingSourceConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebSourceConnectionAttacher"/>
+    <component name="WebBindingSourceConnectionAttacher" f3:key="org.fabric3.binding.web.provision.WebConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.WebSourceConnectionAttacher"/>
     </component>
 
-    <component name="WebBindingTargetConnectionAttacher" f3-core:key="org.fabric3.binding.web.provision.WebConnectionTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.channel.WebTargetConnectionAttacher"/>
+    <component name="WebBindingTargetConnectionAttacher" f3:key="org.fabric3.binding.web.provision.WebConnectionTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.channel.WebTargetConnectionAttacher"/>
     </component>
 
-    <component name="WebTargetWireAttacher" f3-core:key="org.fabric3.binding.web.provision.WebTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
+    <component name="WebTargetWireAttacher" f3:key="org.fabric3.binding.web.provision.WebTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.web.runtime.service.WebTargetWireAttacher"/>
     </component>
 
 </composite>

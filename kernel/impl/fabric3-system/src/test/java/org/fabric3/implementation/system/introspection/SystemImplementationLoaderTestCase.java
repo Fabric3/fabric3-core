@@ -60,7 +60,7 @@ import org.fabric3.implementation.system.model.SystemImplementation;
  */
 public class SystemImplementationLoaderTestCase extends TestCase {
 
-    public static final QName SYSTEM_IMPLEMENTATION = new QName(Namespaces.IMPLEMENTATION, "implementation.system");
+    public static final QName SYSTEM_IMPLEMENTATION = new QName(Namespaces.F3, "implementation.system");
     private IntrospectionContext context;
     private XMLStreamReader reader;
     private ImplementationProcessor<SystemImplementation> implementationProcessor;

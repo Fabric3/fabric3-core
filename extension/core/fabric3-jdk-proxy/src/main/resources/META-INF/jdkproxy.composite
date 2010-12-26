@@ -11,14 +11,13 @@
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:other"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="ProxyServiceExtension"
            autowire="true">
 
     <component name="JDKWireProxyService">
-        <f3-impl:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKWireProxyService"/>
+        <f3:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKWireProxyService"/>
     </component>
 
 

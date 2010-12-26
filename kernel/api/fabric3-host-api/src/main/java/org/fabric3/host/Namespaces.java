@@ -38,39 +38,19 @@
 package org.fabric3.host;
 
 /**
- * Namespace URIs used in Fabric3.
+ * Namespaces used by Fabric3.
  *
  * @version $Rev$ $Date$
  */
 public interface Namespaces {
 
     /**
-     * Namespace URI used for core Fabric3. Intended usage for map keys in composite files etc. Recommended prefix f3-core.
+     * Namespace used for Fabric3 elements.
      */
-    String CORE = "urn:fabric3.org:core";
+    String F3 = "urn:fabric3.org";
 
     /**
-     * Namespace URI used for fabric3 binding extensions. Recommended prefix f3-binding.
-     */
-    String BINDING = "urn:fabric3.org:binding";
-
-    /**
-     * Namespace URI used for fabric3 implementation extensions. Recommended prefix f3-implementation.
-     */
-    String IMPLEMENTATION = "urn:fabric3.org:implementation";
-
-    /**
-     * Namespace URI used for fabric3 policy extensions. Recommended prefix f3-policy.
-     */
-    String POLICY = "urn:fabric3.org:policy";
-
-    /**
-     * Namespace URI used for miscellaneous extensions. Recommended prefix f3-other.
-     */
-    String OTHER = "urn:fabric3.org:other";
-
-    /**
-     * Namespace URI for synthesized artifacts. Generally not visible to end-user applications.
+     * Namespace for synthesized artifacts. Generally not visible to end-user applications.
      */
     String SYNTHESIZED = "urn:fabric3.org:synthesized";
 }

@@ -110,8 +110,8 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
 
         // Determine the phase: if the policy language is in the F3 namespace, default to interception phase. Otherwise default to provided phase.
         PolicyPhase phase = PolicyPhase.PROVIDED;
-        if (extension != null && Namespaces.POLICY.equals(extension.getNamespaceURI())) {
-            String phaseAttr = extension.getAttributeNS(Namespaces.POLICY, "phase");
+        if (extension != null && Namespaces.F3.equals(extension.getNamespaceURI())) {
+            String phaseAttr = extension.getAttributeNS(Namespaces.F3, "phase");
             if (phaseAttr != null && phaseAttr.length() > 0) {
                 try {
                     phase = PolicyPhase.valueOf(phaseAttr.toUpperCase());

@@ -10,59 +10,58 @@ Portions originally based on Apache Tuscany 2007
 licensed under the Apache 2.0 license.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3="urn:fabric3.org"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           targetNamespace="urn:fabric3.org"
            name="JmsRuntimeExtension">
 
-    <component name="MessageContainerManager" f3-core:key="jms">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.container.MessageContainerManagerImpl"/>
+    <component name="MessageContainerManager" f3:key="jms">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.container.MessageContainerManagerImpl"/>
         <property name="transactionTimeout" source="$systemConfig//jms/@transaction.timeout"/>
     </component>
 
-    <component name="JmsSourceWireAttacher" f3-core:key="org.fabric3.binding.jms.spi.provision.JmsSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsSourceWireAttacher"/>
+    <component name="JmsSourceWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsSourceWireAttacher"/>
     </component>
 
-    <component name="JmsTargetWireAttacher" f3-core:key="org.fabric3.binding.jms.spi.provision.JmsTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
+    <component name="JmsTargetWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsTargetWireAttacher"/>
     </component>
 
-    <component name="JmsConnectionSourceAttacher" f3-core:key="org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionSourceAttacher"/>
+    <component name="JmsConnectionSourceAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionSourceAttacher"/>
     </component>
 
-    <component name="JmsConnectionTargetAttacher" f3-core:key="org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionTargetAttacher"/>
+    <component name="JmsConnectionTargetAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.JmsConnectionTargetAttacher"/>
     </component>
 
     <component name="AdministeredObjectResolver">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolverImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolverImpl"/>
     </component>
 
-    <component name="AlwaysCreateDestination" f3-core:key="ALWAYS">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.AlwaysDestinationStrategy"/>
+    <component name="AlwaysCreateDestination" f3:key="ALWAYS">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.AlwaysDestinationStrategy"/>
     </component>
 
-    <component name="NeverCreateDestination" f3-core:key="NEVER">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.NeverDestinationStrategy"/>
+    <component name="NeverCreateDestination" f3:key="NEVER">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.NeverDestinationStrategy"/>
     </component>
 
-    <component name="IfNotExistCreateDestination" f3-core:key="IF_NOT_EXIST">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.IfNotExistDestinationStrategy"/>
+    <component name="IfNotExistCreateDestination" f3:key="IF_NOT_EXIST">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.destination.IfNotExistDestinationStrategy"/>
     </component>
 
-    <component name="AlwaysCreateConnectionFactory" f3-core:key="ALWAYS">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.AlwaysConnectionFactoryStrategy"/>
+    <component name="AlwaysCreateConnectionFactory" f3:key="ALWAYS">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.AlwaysConnectionFactoryStrategy"/>
     </component>
 
-    <component name="NeverCreateConnectionFactory" f3-core:key="NEVER">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.NeverConnectionFactoryStrategy"/>
+    <component name="NeverCreateConnectionFactory" f3:key="NEVER">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.NeverConnectionFactoryStrategy"/>
     </component>
 
-    <component name="IfNotExistCreateConnectionFactory" f3-core:key="IF_NOT_EXIST">
-        <f3-impl:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.IfNotExistConnectionFactoryStrategy"/>
+    <component name="IfNotExistCreateConnectionFactory" f3:key="IF_NOT_EXIST">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.IfNotExistConnectionFactoryStrategy"/>
     </component>
 
 </composite>

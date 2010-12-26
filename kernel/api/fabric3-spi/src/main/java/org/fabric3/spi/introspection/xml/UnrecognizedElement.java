@@ -46,6 +46,8 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.host.Namespaces;
+
 /**
  * Failure that indicates an element was encountered that could not be handled.
  *
@@ -65,9 +67,13 @@ public class UnrecognizedElement extends XmlValidationFailure {
     }
 
     public String getMessage() {
-        StringBuffer b = new StringBuffer("The element ").append(name).append(" specified in ").append(getResourceURI()).append(
-                " at ").append(getLine()).append(",").append(getColumn()).append(" was not recognized. If this is not a typo, check to").append(
-                " ensure extensions are configured properly.");
-        return b.toString();
+        String namespace = name.getNamespaceURI();
+        if (DeprecatedNamespaceHelper.isDeprecatedNamespace(namespace)) {
+            return "The element specified in " + getResourceURI() + " at " + getLine() + "," + getColumn() + " uses the deprecated namespace "
+                    + namespace + ". Please change it to " + Namespaces.F3;
+        } else {
+            return "The element " + name + " specified in " + getResourceURI() + " at " + getLine() + "," + getColumn() + " was not recognized. "
+                    + "If this is not a typo, check to ensure extensions are configured properly.";
+        }
     }
 }

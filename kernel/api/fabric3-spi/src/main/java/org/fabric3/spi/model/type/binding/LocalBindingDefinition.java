@@ -53,7 +53,7 @@ public final class LocalBindingDefinition extends BindingDefinition {
     public static final LocalBindingDefinition INSTANCE = new LocalBindingDefinition();
 
     private LocalBindingDefinition() {
-        super(null, new QName(Namespaces.BINDING, "binding.local"));
+        super(null, new QName(Namespaces.F3, "binding.local"));
     }
 
 

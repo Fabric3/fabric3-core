@@ -10,28 +10,26 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
            name="TimerExtension"
-           xmlns:f3-other="urn:fabric3.org:other"
-           targetNamespace="urn:fabric3.org:other"
+           targetNamespace="urn:fabric3.org"
            autowire="true">
 
     <component name="ScheduledExecutorService">
-        <f3-impl:implementation.system class="org.fabric3.timer.impl.ExecutorTimerService"/>
+        <f3:implementation.system class="org.fabric3.timer.impl.ExecutorTimerService"/>
         <property name="defaultPoolSize" source="$systemConfig//timers/@default.pool.Size"/>
     </component>
 
-    <component name="TimerPoolResourceLoader" f3-core:key="f3-other:timer.pool">
-        <f3-impl:implementation.system class="org.fabric3.timer.introspection.TimerPoolResourceLoader"/>
+    <component name="TimerPoolResourceLoader" f3:key="f3:timer.pool">
+        <f3:implementation.system class="org.fabric3.timer.introspection.TimerPoolResourceLoader"/>
     </component>
 
-    <component name="TimerPoolResourceGenerator" f3-core:key="org.fabric3.timer.model.TimerPoolResource">
-        <f3-impl:implementation.system class="org.fabric3.timer.generator.TimerPoolResourceGenerator"/>
+    <component name="TimerPoolResourceGenerator" f3:key="org.fabric3.timer.model.TimerPoolResource">
+        <f3:implementation.system class="org.fabric3.timer.generator.TimerPoolResourceGenerator"/>
     </component>
 
-    <component name="TimerPoolBuilder" f3-core:key="org.fabric3.timer.provision.PhysicalTimerPoolResource">
-        <f3-impl:implementation.system class="org.fabric3.timer.runtime.TimerPoolBuilder"/>
+    <component name="TimerPoolBuilder" f3:key="org.fabric3.timer.provision.PhysicalTimerPoolResource">
+        <f3:implementation.system class="org.fabric3.timer.runtime.TimerPoolBuilder"/>
     </component>
 
 </composite>

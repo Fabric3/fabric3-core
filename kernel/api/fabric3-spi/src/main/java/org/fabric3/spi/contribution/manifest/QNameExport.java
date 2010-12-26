@@ -50,7 +50,7 @@ import org.fabric3.spi.contribution.Import;
  */
 public class QNameExport implements Export {
     private static final long serialVersionUID = -6813997109078522174L;
-    private static final QName TYPE = new QName(Namespaces.CORE, "qNameImport");
+    private static final QName TYPE = new QName(Namespaces.F3, "qNameImport");
     private String namespace;
 
     public QNameExport(String namespace) {

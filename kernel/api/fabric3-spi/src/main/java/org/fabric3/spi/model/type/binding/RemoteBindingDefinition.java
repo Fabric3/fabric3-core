@@ -51,7 +51,7 @@ import org.fabric3.model.type.component.BindingDefinition;
  */
 public class RemoteBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 975283470994901368L;
-    private static final QName QNAME = new QName(Namespaces.BINDING, "binding.remote");
+    private static final QName QNAME = new QName(Namespaces.F3, "binding.remote");
 
     public static final RemoteBindingDefinition INSTANCE = new RemoteBindingDefinition();
 

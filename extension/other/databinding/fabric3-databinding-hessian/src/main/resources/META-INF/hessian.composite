@@ -9,19 +9,17 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:databinding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="HessianDatabindingExtension"
-           autowire="true"
-           xmlns:f3-binding="urn:org.fabric3:binding">
+           autowire="true">
 
-    <component name="HessianParameterEncoderFactory" f3-core:key="hessian">
-        <f3-impl:implementation.system class="org.fabric3.databinding.hessian.format.HessianParameterEncoderFactory"/>
+    <component name="HessianParameterEncoderFactory" f3:key="hessian">
+        <f3:implementation.system class="org.fabric3.databinding.hessian.format.HessianParameterEncoderFactory"/>
     </component>
 
-    <component name="HessianUnwrappedMessageFormatter" f3-core:key="hessian">
-        <f3-impl:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
+    <component name="HessianUnwrappedMessageFormatter" f3:key="hessian">
+        <f3:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
     </component>
 
 </composite>

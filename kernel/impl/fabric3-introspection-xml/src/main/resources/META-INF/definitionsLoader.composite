@@ -12,33 +12,32 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
            name="DefinitionsLoaderBootComposite"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot">
+           targetNamespace="urn:fabric3.org">
 
     <component name="DefinitionsLoader">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsLoader"/>
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsLoader"/>
     </component>
 
     <component name="DefinitionsIndexer">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsIndexer"/>
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.DefinitionsIndexer"/>
     </component>
 
-    <component name="IntentLoader" f3-core:key="sca:intent">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.IntentLoader"/>
+    <component name="IntentLoader" f3:key="sca:intent">
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.IntentLoader"/>
     </component>
 
-    <component name="PolicySetLoader" f3-core:key="sca:policySet">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.PolicySetLoader"/>
+    <component name="PolicySetLoader" f3:key="sca:policySet">
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.PolicySetLoader"/>
     </component>
 
-    <component name="BindingTypeLoader" f3-core:key="sca:bindingType">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.BindingTypeLoader"/>
+    <component name="BindingTypeLoader" f3:key="sca:bindingType">
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.BindingTypeLoader"/>
     </component>
 
-    <component name="ImplementationTypeLoader" f3-core:key="sca:implementationType">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.definitions.ImplementationTypeLoader"/>
+    <component name="ImplementationTypeLoader" f3:key="sca:implementationType">
+        <f3:implementation.system class="org.fabric3.introspection.xml.definitions.ImplementationTypeLoader"/>
     </component>
 
 </composite>

@@ -9,21 +9,20 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-core="urn:fabric3.org:core"
-           targetNamespace="urn:fabric3.org:federation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="HttpParticipantProvisioningExtension"
            autowire="true">
 
     <component name="ZoneProvisionCommandExecutor">
-        <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneProvisionCommandExecutor"/>
+        <f3:implementation.system class="org.fabric3.federation.provisioning.ZoneProvisionCommandExecutor"/>
         <property name="role" source="$systemConfig//federation/provision/@role"/>
         <property name="secure" source="$systemConfig//federation/provision/@secure"/>
         <property name="address" source="$systemConfig//federation/provision/@address"/>
     </component>
 
     <component name="ZoneContributionUriResolverExtension">
-        <f3-impl:implementation.system class="org.fabric3.federation.provisioning.ZoneContributionResolverExtension"/>
+        <f3:implementation.system class="org.fabric3.federation.provisioning.ZoneContributionResolverExtension"/>
         <property name="secure" source="$systemConfig//federation/provision/@secure"/>
         <property name="username" source="$systemConfig//federation/provision/@username"/>
         <property name="password" source="$systemConfig//federation/provision/@password"/>

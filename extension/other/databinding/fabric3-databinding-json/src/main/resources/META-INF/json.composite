@@ -10,31 +10,29 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:databinding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="JsonDatabindingExtension"
-           autowire="true"
-           xmlns:f3-binding="urn:org.fabric3:binding">
+           autowire="true">
 
-    <component name="JsonParameterEncoderFactory" f3-core:key="json">
-        <f3-impl:implementation.system class="org.fabric3.databinding.json.format.JsonParameterEncoderFactory"/>
+    <component name="JsonParameterEncoderFactory" f3:key="json">
+        <f3:implementation.system class="org.fabric3.databinding.json.format.JsonParameterEncoderFactory"/>
     </component>
 
-    <component name="JsonUnwrappedMessageFormatter" f3-core:key="json">
-        <f3-impl:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
+    <component name="JsonUnwrappedMessageFormatter" f3:key="json">
+        <f3:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
     </component>
 
     <component name="String2ObjectJsonTransformerFactory">
-        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.String2ObjectJsonTransformerFactory"/>
+        <f3:implementation.system class="org.fabric3.databinding.json.transform.String2ObjectJsonTransformerFactory"/>
     </component>
 
     <component name="Object2StringJsonTransformerFactory">
-        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.Object2StringJsonTransformerFactory"/>
+        <f3:implementation.system class="org.fabric3.databinding.json.transform.Object2StringJsonTransformerFactory"/>
     </component>
 
     <component name="Stream2ObjectJsonTransformerFactory">
-        <f3-impl:implementation.system class="org.fabric3.databinding.json.transform.Stream2ObjectJsonTransformerFactory"/>
+        <f3:implementation.system class="org.fabric3.databinding.json.transform.Stream2ObjectJsonTransformerFactory"/>
     </component>
 
 </composite>

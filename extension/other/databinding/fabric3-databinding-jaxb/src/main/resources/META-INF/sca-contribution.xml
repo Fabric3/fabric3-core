@@ -10,9 +10,8 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:databinding="urn:fabric3.org:databinding"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="javax.xml.bind" version="2.2"/>
     <import.java package="javax.xml.bind.annotation" version="2.2"/>
@@ -21,6 +20,6 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.xml.bind.helpers" version="2.2"/>
     <import.java package="javax.xml.bind.util" version="2.2"/>
 
-    <deployable composite="databinding:DataBindingJAXBExtension"/>
-    <f3-core:provides name="jaxb"/>
+    <deployable composite="f3:DataBindingJAXBExtension"/>
+    <f3:provides name="jaxb"/>
 </contribution>

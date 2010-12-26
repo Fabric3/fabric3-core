@@ -68,7 +68,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.fabric3.host.Namespaces.CORE;
+import static org.fabric3.host.Namespaces.F3;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
@@ -80,9 +80,9 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ContributionElementLoader implements TypeLoader<ContributionManifest> {
     private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
     private static final QName DEPLOYABLE = new QName(SCA_NS, "deployable");
-    private static final QName SCAN = new QName(CORE, "scan");
-    private static final QName PROVIDES_CAPABILITY = new QName(CORE, "provides.capability");
-    private static final QName REQUIRES_CAPABILITY = new QName(CORE, "requires.capability");
+    private static final QName SCAN = new QName(F3, "scan");
+    private static final QName PROVIDES_CAPABILITY = new QName(F3, "provides.capability");
+    private static final QName REQUIRES_CAPABILITY = new QName(F3, "requires.capability");
 
     private final LoaderRegistry registry;
 
@@ -108,10 +108,10 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             throw new AssertionError("Loader not positioned on the <contribution> element: " + element);
         }
         validateContributionAttributes(reader, context);
-        boolean extension = Boolean.valueOf(reader.getAttributeValue(CORE, "extension"));
+        boolean extension = Boolean.valueOf(reader.getAttributeValue(F3, "extension"));
         manifest.setExtension(extension);
 
-        String description = reader.getAttributeValue(CORE, "description");
+        String description = reader.getAttributeValue(F3, "description");
         manifest.setDescription(description);
 
         while (true) {

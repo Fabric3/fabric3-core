@@ -64,7 +64,7 @@ import org.fabric3.spi.model.instance.LogicalWire;
  */
 @EagerInit
 public class TcpBindingProvider implements BindingProvider {
-    private static final QName TCP_BINDING = new QName(Namespaces.BINDING, "binding.tcp");
+    private static final QName TCP_BINDING = new QName(Namespaces.F3, "binding.tcp");
     private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, TCP_BINDING);
 
     private DomainTopologyService topologyService;

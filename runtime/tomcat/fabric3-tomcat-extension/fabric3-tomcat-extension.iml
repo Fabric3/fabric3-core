@@ -51,6 +51,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="sca-spec" />
     <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module" module-name="fabric3-container-web-spi" />
   </component>
 </module>
 

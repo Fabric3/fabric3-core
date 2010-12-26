@@ -50,8 +50,8 @@ import org.fabric3.spi.contribution.ContributionManifest;
  * @version $Rev$ $Date$
  */
 public class ContributionElementLoaderExcludesTestCase extends TestCase {
-    private static final String XML = "<contribution xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' xmlns:f3-core='urn:fabric3.org:core'>" +
-            "<f3-core:scan exclude='foo,bar'/>" +
+    private static final String XML = "<contribution xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' xmlns:f3='urn:fabric3.org'>" +
+            "<f3:scan exclude='foo,bar'/>" +
             "</contribution>";
     private ContributionElementLoader loader;
     private MockXMLFactory factory;

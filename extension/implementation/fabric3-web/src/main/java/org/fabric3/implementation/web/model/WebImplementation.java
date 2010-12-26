@@ -51,7 +51,7 @@ public class WebImplementation extends Implementation<WebComponentType> {
     private static final long serialVersionUID = 5589199308230767243L;
     // the deprecated, F3-specific namespace
     @Deprecated
-    public static final QName IMPLEMENTATION_WEBAPP = new QName(Namespaces.IMPLEMENTATION, "web");
+    public static final QName IMPLEMENTATION_WEBAPP = new QName(Namespaces.F3, "web");
     public static final QName IMPLEMENTATION_WEB = new QName(org.oasisopen.sca.Constants.SCA_NS, "implementation.web");
 
     public QName getType() {

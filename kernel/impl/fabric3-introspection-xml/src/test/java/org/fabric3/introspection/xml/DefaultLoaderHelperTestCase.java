@@ -66,14 +66,14 @@ import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 public class DefaultLoaderHelperTestCase extends TestCase {
 
     public static final String XML = "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
-            "xmlns:f3-core=\"urn:fabric3.org:core\"/>";
+            "xmlns:f3=\"urn:fabric3.org\"/>";
     private XMLInputFactory xmlFactory;
     private DefaultLoaderHelper helper;
 
     public void testCreateQName() throws Exception {
         XMLStreamReader reader = createReader(XML);
-        QName qName = helper.createQName("f3-core:bar", reader);
-        assertEquals("urn:fabric3.org:core", qName.getNamespaceURI());
+        QName qName = helper.createQName("f3:bar", reader);
+        assertEquals("urn:fabric3.org", qName.getNamespaceURI());
         assertEquals("bar", qName.getLocalPart());
     }
 
@@ -233,7 +233,7 @@ public class DefaultLoaderHelperTestCase extends TestCase {
         assertEquals("binding", target.getBinding());
     }
 
-    public void testultiplicityNarrow() throws Exception {
+    public void testMultiplicityNarrow() throws Exception {
         assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ZERO_ONE));
         assertTrue(helper.canNarrow(Multiplicity.ONE_ONE, Multiplicity.ONE_ONE));
         assertTrue(helper.canNarrow(Multiplicity.ZERO_N, Multiplicity.ZERO_N));

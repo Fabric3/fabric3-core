@@ -12,26 +12,25 @@
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-core="urn:fabric3.org:core"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="PojoComposite"
            autowire="true">
 
     <component name="JDKChannelProxyService">
-        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.proxy.JDKChannelProxyService"/>
+        <f3:implementation.system class="org.fabric3.implementation.pojo.proxy.JDKChannelProxyService"/>
     </component>
 
-    <component name="ReflectiveInstanceFactoryBuilder" f3-core:key="org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder"/>
+    <component name="ReflectiveInstanceFactoryBuilder" f3:key="org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder"/>
     </component>
 
     <component name="GenerationHelper">
-        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.generator.GenerationHelperImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.pojo.generator.GenerationHelperImpl"/>
     </component>
 
     <component name="PropertyObjectFactoryBuilder">
-        <f3-impl:implementation.system class="org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl"/>
     </component>
 
 </composite>

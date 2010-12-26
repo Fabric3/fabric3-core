@@ -99,7 +99,7 @@ public class FSDomainTracker implements DomainListener {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("domain");
-            writer.writeDefaultNamespace(Namespaces.CORE);
+            writer.writeDefaultNamespace(Namespaces.F3);
             for (Map.Entry<QName, String> entry : deployables.entrySet()) {
                 QName deployable = entry.getKey();
                 String plan = entry.getValue();

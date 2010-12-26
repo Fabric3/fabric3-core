@@ -49,22 +49,22 @@ public interface ChannelIntents {
     /**
      * Indicates a channel must flow events synchronously for a given client connection.
      */
-    QName SYNC_INTENT = new QName(Namespaces.CORE, "synchronous");
+    QName SYNC_INTENT = new QName(Namespaces.F3, "synchronous");
 
     /**
      * Indicates a channel must replicate events to all channel instances in a zone.
      */
-    QName REPLICATE_INTENT = new QName(Namespaces.CORE, "replication");
+    QName REPLICATE_INTENT = new QName(Namespaces.F3, "replication");
 
     /**
      * Indicates a channel must send events in a durable (persistent) fashion.
      */
-    QName DURABLE_INTENT = new QName(Namespaces.CORE, "durable");
+    QName DURABLE_INTENT = new QName(Namespaces.F3, "durable");
 
 
     /**
      * Indicates a channel must send events in a durable (persistent) fashion.
      */
-    QName NON_PERSISTENT_INTENT = new QName(Namespaces.CORE, "nonPersistent");
+    QName NON_PERSISTENT_INTENT = new QName(Namespaces.F3, "nonPersistent");
 
 }

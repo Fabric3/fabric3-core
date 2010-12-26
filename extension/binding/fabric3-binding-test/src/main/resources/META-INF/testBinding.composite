@@ -20,29 +20,27 @@ destination uri the reference should flow invocations to as in:
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-binding="urn:fabric3.org:binding"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="TestBindingExtension">
 
     <component name="BindingChannel">
-        <f3-impl:implementation.system class="org.fabric3.binding.test.BindingChannelImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.test.BindingChannelImpl"/>
     </component>
 
-    <component name="TestBindingLoader" f3-core:key="f3-binding:binding.test">
-        <f3-impl:implementation.system class="org.fabric3.binding.test.TestBindingLoader"/>
+    <component name="TestBindingLoader" f3:key="f3:binding.test">
+        <f3:implementation.system class="org.fabric3.binding.test.TestBindingLoader"/>
     </component>
 
-    <component name="TestBindingGenerator" f3-core:key="org.fabric3.binding.test.TestBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.test.TestBindingGenerator"/>
+    <component name="TestBindingGenerator" f3:key="org.fabric3.binding.test.TestBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.test.TestBindingGenerator"/>
     </component>
 
-    <component f3-core:key="org.fabric3.binding.test.TestBindingSourceDefinition" name="TestBindingSourceWireAttacher">
-        <f3-impl:implementation.system class="org.fabric3.binding.test.TestBindingSourceWireAttacher"/>
+    <component f3:key="org.fabric3.binding.test.TestBindingSourceDefinition" name="TestBindingSourceWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.test.TestBindingSourceWireAttacher"/>
     </component>
-    <component f3-core:key="org.fabric3.binding.test.TestBindingTargetDefinition" name="TestBindingTargetWireAttacher">
-        <f3-impl:implementation.system class="org.fabric3.binding.test.TestBindingTargetWireAttacher"/>
+    <component f3:key="org.fabric3.binding.test.TestBindingTargetDefinition" name="TestBindingTargetWireAttacher">
+        <f3:implementation.system class="org.fabric3.binding.test.TestBindingTargetWireAttacher"/>
     </component>
 
 </composite>

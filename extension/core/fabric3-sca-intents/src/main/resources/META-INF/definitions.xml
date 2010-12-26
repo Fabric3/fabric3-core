@@ -9,8 +9,7 @@ Public License. See the accompanying license file for details.
 <definitions
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-        xmlns:f3-binding="urn:fabric3.org:binding"
-        xmlns:f3-policy="urn:fabric3.org:policy"
+        xmlns:f3="urn:fabric3.org"
         targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <intent name="serverAuthentication" constrains="sca:binding" intentType="interaction">
@@ -67,7 +66,7 @@ Public License. See the accompanying license file for details.
         <qualifier name="fineGrain" default="true"/>
     </intent>
 
-    <bindingType name="f3-binding:binding.local" mayProvide="sca:confidentiality sca:integrity"/>
+    <bindingType name="f3:binding.local" mayProvide="sca:confidentiality sca:integrity"/>
 
     <!-- Reliable messaging related intents -->
     <intent name="atLeastOnce" constrains="sca:binding" intentType="interaction">
@@ -191,14 +190,14 @@ Public License. See the accompanying license file for details.
         </description>
     </intent>
 
-    <intent name="f3-policy:allowsPassByReference" constrains="sca:implementation" intentType="interaction">
+    <intent name="f3:allowsPassByReference" constrains="sca:implementation" intentType="interaction">
         <description>
             Used to indicate the implementation allows pass-by-reference semantics.
         </description>
     </intent>
 
-    <policySet name="allowsPassByReferencePolicy" provides="f3-policy:allowsPassByReference">
-        <f3-policy:allowsPassByReferencePolicy/>
+    <policySet name="allowsPassByReferencePolicy" provides="f3:allowsPassByReference">
+        <f3:allowsPassByReferencePolicy/>
     </policySet>
 
 

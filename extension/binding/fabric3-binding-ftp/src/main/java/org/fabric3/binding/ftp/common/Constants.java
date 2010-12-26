@@ -49,12 +49,12 @@ public interface Constants {
     /**
      * Qualified name for the binding element.
      */
-    QName BINDING_QNAME = new QName(Namespaces.BINDING, "binding.ftp");
+    QName BINDING_QNAME = new QName(Namespaces.F3, "binding.ftp");
 
     /**
      * Qualified name for the policy element.
      */
-    QName POLICY_QNAME = new QName(Namespaces.POLICY, "security");
+    QName POLICY_QNAME = new QName(Namespaces.F3, "security");
 
     /**
      * The value for specifying no timeout for blocking operations on an FTP socket.

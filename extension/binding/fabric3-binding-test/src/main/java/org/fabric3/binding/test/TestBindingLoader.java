@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 @EagerInit
 public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
 
-    public static final QName BINDING_QNAME = new QName(Namespaces.BINDING, "binding.test");
+    public static final QName BINDING_QNAME = new QName(Namespaces.F3, "binding.test");
 
     public TestBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
 

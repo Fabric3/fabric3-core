@@ -11,154 +11,154 @@
 
     $Rev$ $Date$
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:f3-impl="urn:fabric3.org:implementation"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3="urn:fabric3.org"
            targetNamespace="urn:maven:org.codehaus.fabric3:boot"
            name="DeploymentComposite"
            autowire="true">
 
     <component name="ContributionService">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ContributionServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.ContributionServiceImpl"/>
     </component>
 
     <component name="ContributionLoader">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ContributionLoaderImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.ContributionLoaderImpl"/>
     </component>
 
     <component name="DependencyService">
-        <f3-impl:implementation.system class="org.fabric3.contribution.DependencyServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.DependencyServiceImpl"/>
     </component>
 
-    <component name="ClassLoaderWireGenerator" f3-core:key="org.fabric3.contribution.wire.JavaContributionWire">
-        <f3-impl:implementation.system class="org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl"/>
+    <component name="ClassLoaderWireGenerator" f3:key="org.fabric3.contribution.wire.JavaContributionWire">
+        <f3:implementation.system class="org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl"/>
     </component>
 
-    <component name="LocationContributionWireGenerator" f3-core:key="org.fabric3.contribution.wire.LocationContributionWire">
-        <f3-impl:implementation.system class="org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl"/>
+    <component name="LocationContributionWireGenerator" f3:key="org.fabric3.contribution.wire.LocationContributionWire">
+        <f3:implementation.system class="org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl"/>
     </component>
 
     <component name="ClasspathProcessorRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ClasspathProcessorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.ClasspathProcessorRegistryImpl"/>
     </component>
 
     <component name="JarClasspathProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.archive.JarClasspathProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.archive.JarClasspathProcessor"/>
         <property name="explodeJars" source="$systemConfig//runtime/explode.jars"/>
     </component>
 
     <component name="ArchiveContributionProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.archive.ArchiveContributionProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.archive.ArchiveContributionProcessor"/>
     </component>
 
     <component name="ZipContributionHandler">
-        <f3-impl:implementation.system class="org.fabric3.contribution.archive.ZipContributionHandler"/>
+        <f3:implementation.system class="org.fabric3.contribution.archive.ZipContributionHandler"/>
     </component>
 
     <component name="ExplodedArchiveContributionHandler">
-        <f3-impl:implementation.system class="org.fabric3.contribution.archive.ExplodedArchiveContributionHandler"/>
+        <f3:implementation.system class="org.fabric3.contribution.archive.ExplodedArchiveContributionHandler"/>
     </component>
 
     <component name="XmlResourceProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlResourceProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.XmlResourceProcessor"/>
     </component>
 
     <component name="CompositeResourceProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.CompositeResourceProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.CompositeResourceProcessor"/>
     </component>
 
     <component name="XmlContributionProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlContributionProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.XmlContributionProcessor"/>
     </component>
 
     <component name="SymLinkContributionProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.SymLinkContributionProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.SymLinkContributionProcessor"/>
     </component>
 
     <component name="XmlIndexerRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlIndexerRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.XmlIndexerRegistryImpl"/>
     </component>
 
     <component name="XmlPRocessorRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlProcessorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.XmlProcessorRegistryImpl"/>
     </component>
 
     <component name="XmlResourceElementLoaderRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.XmlResourceElementLoaderRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.XmlResourceElementLoaderRegistryImpl"/>
     </component>
 
     <component name="DefinitionsProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.DefinitionsProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.DefinitionsProcessor"/>
         <reference name="loader" target="DefinitionsLoader"/>
     </component>
 
     <component name="DeploymentPlanXmlProcessor">
-        <f3-impl:implementation.system class="org.fabric3.contribution.processor.DeploymentPlanXmlProcessor"/>
+        <f3:implementation.system class="org.fabric3.contribution.processor.DeploymentPlanXmlProcessor"/>
         <reference name="loader" target="DeploymentPlanProcessor"/>
     </component>
 
     <component name="ContributionElementLoader">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.ContributionElementLoader"/>
+        <f3:implementation.system class="org.fabric3.contribution.manifest.ContributionElementLoader"/>
     </component>
 
-    <component name="QNameExportLoader" f3-core:key="sca:export">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.QNameExportLoader"/>
+    <component name="QNameExportLoader" f3:key="sca:export">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.QNameExportLoader"/>
     </component>
 
-    <component name="QNameImportLoader" f3-core:key="sca:import">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.QNameImportLoader"/>
+    <component name="QNameImportLoader" f3:key="sca:import">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.QNameImportLoader"/>
     </component>
 
-    <component name="JavaExportLoader" f3-core:key="sca:export.java">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.JavaExportLoader"/>
+    <component name="JavaExportLoader" f3:key="sca:export.java">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.JavaExportLoader"/>
     </component>
 
-    <component name="JavaImportLoader" f3-core:key="sca:import.java">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.JavaImportLoader"/>
+    <component name="JavaImportLoader" f3:key="sca:import.java">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.JavaImportLoader"/>
     </component>
 
-    <component name="ProvidesLoader" f3-core:key="f3-core:provides">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.ProvidesLoader"/>
+    <component name="ProvidesLoader" f3:key="f3:provides">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.ProvidesLoader"/>
     </component>
 
-    <component name="ExtendsLoader" f3-core:key="f3-core:extends">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.ExtendsLoader"/>
+    <component name="ExtendsLoader" f3:key="f3:extends">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.ExtendsLoader"/>
     </component>
 
     <component name="ContributionWireInstantiatorRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl"/>
     </component>
 
     <wire source="MetaDataStore/instantiatorRegistry" target="ContributionWireInstantiatorRegistry"/>
 
     <component name="ProcessorRegistry">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ProcessorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.ProcessorRegistryImpl"/>
     </component>
     <!-- reinjects the metadata store after runtime bootstrap -->
     <wire source="MetaDataStore/processorRegistry" target="ProcessorRegistry"/>
 
-    <component name="QNameWireInstantiator" f3-core:key="org.fabric3.spi.contribution.manifest.QNameImport">
-        <f3-impl:implementation.system class="org.fabric3.contribution.wire.QNameWireInstantiator"/>
+    <component name="QNameWireInstantiator" f3:key="org.fabric3.spi.contribution.manifest.QNameImport">
+        <f3:implementation.system class="org.fabric3.contribution.wire.QNameWireInstantiator"/>
     </component>
 
-    <component name="JavaContributionWireInstantiator" f3-core:key="org.fabric3.spi.contribution.manifest.JavaImport">
-        <f3-impl:implementation.system class="org.fabric3.contribution.wire.JavaContributionWireInstantiator"/>
+    <component name="JavaContributionWireInstantiator" f3:key="org.fabric3.spi.contribution.manifest.JavaImport">
+        <f3:implementation.system class="org.fabric3.contribution.wire.JavaContributionWireInstantiator"/>
     </component>
 
-    <component name="LocationContributionWireInstantiator" f3-core:key="org.fabric3.contribution.manifest.ContributionImport">
-        <f3-impl:implementation.system class="org.fabric3.contribution.wire.LocationContributionWireInstantiator"/>
+    <component name="LocationContributionWireInstantiator" f3:key="org.fabric3.contribution.manifest.ContributionImport">
+        <f3:implementation.system class="org.fabric3.contribution.wire.LocationContributionWireInstantiator"/>
     </component>
 
     <component name="OSGiManifestHandler">
-        <f3-impl:implementation.system class="org.fabric3.contribution.manifest.OSGiManifestHandler"/>
+        <f3:implementation.system class="org.fabric3.contribution.manifest.OSGiManifestHandler"/>
     </component>
 
-    <component name="ContributionResolver" f3-core:key="local">
-        <f3-impl:implementation.system class="org.fabric3.contribution.DefaultContributionResolver"/>
+    <component name="ContributionResolver" f3:key="local">
+        <f3:implementation.system class="org.fabric3.contribution.DefaultContributionResolver"/>
     </component>
 
     <component name="ContentTypeResolver">
-        <f3-impl:implementation.system class="org.fabric3.contribution.ExtensionMapContentTypeResolver"/>
+        <f3:implementation.system class="org.fabric3.contribution.ExtensionMapContentTypeResolver"/>
     </component>
 
 </composite>

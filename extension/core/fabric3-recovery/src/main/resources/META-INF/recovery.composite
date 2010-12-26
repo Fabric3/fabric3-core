@@ -16,23 +16,22 @@
  under the License.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:other"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="RecoveryExtension"
            autowire="true">
 
 
     <component name="ProfileTracker">
-        <f3-impl:implementation.system class="org.fabric3.recovery.contribution.ProfileTracker"/>
+        <f3:implementation.system class="org.fabric3.recovery.contribution.ProfileTracker"/>
     </component>
 
     <component name="FSDomainTracker">
-        <f3-impl:implementation.system class="org.fabric3.recovery.domain.FSDomainTracker"/>
+        <f3:implementation.system class="org.fabric3.recovery.domain.FSDomainTracker"/>
     </component>
 
     <component name="FSDomainReplayer">
-        <f3-impl:implementation.system class="org.fabric3.recovery.domain.FSDomainReplayer"/>
+        <f3:implementation.system class="org.fabric3.recovery.domain.FSDomainReplayer"/>
         <reference name="domain" target="ApplicationDomain"/>
     </component>
 

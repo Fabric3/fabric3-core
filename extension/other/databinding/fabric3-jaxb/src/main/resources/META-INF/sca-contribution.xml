@@ -10,9 +10,8 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-core="urn:fabric3.org:core"
-              xmlns:other="urn:fabric3.org:other"
-              f3-core:extension="true">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <!-- exports are needed for the implicit imports added by JaxbContributionServiceListener to end-user contrbutions -->
     <export.java package="com.sun.xml.bind.*" version="2.2"/>
@@ -21,6 +20,6 @@ Public License. See the accompanying license file for details.
     <export.java package="com.sun.xml.dtdparser.*" version="2.2"/>
     <export.java package="com.sun.xml.util.*" version="2.2"/>
     <export.java package="com.sun.istack.*" version="2.2"/>
-    <f3-core:extends name="jaxb"/>
-    <deployable composite="other:JAXBExtension"/>
+    <f3:extends name="jaxb"/>
+    <deployable composite="f3:JAXBExtension"/>
 </contribution>

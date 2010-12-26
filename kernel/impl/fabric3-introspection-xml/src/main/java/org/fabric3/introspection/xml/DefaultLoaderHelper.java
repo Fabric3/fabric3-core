@@ -101,7 +101,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
     }
 
     public String loadKey(XMLStreamReader reader) {
-        String key = reader.getAttributeValue(Namespaces.CORE, "key");
+        String key = reader.getAttributeValue(Namespaces.F3, "key");
         if (key == null) {
             return null;
         }

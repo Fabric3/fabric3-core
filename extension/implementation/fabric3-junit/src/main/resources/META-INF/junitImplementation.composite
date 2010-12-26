@@ -7,40 +7,39 @@ Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-core="urn:fabric3.org:core"
+           xmlns:f3="urn:fabric3.org"
            name="JUnitExtension"
-           targetNamespace="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org"
            autowire="true">
 
-    <component name="JUnitImplementationLoader" f3-core:key="f3-impl:junit">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationLoader"/>
+    <component name="JUnitImplementationLoader" f3:key="f3:junit">
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationLoader"/>
     </component>
 
     <component name="JUnitImplementationProcessorImpl">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationProcessorImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitImplementationProcessorImpl"/>
         <reference name="heuristic" target="JUnitHeuristic"/>
     </component>
 
     <component name="JUnitHeuristic">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitHeuristic"/>
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitHeuristic"/>
         <reference name="service" target="JUnitServiceHeuristic"/>
     </component>
 
     <component name="JUnitServiceHeuristic">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitServiceHeuristic"/>
+        <f3:implementation.system class="org.fabric3.implementation.junit.introspection.JUnitServiceHeuristic"/>
     </component>
 
-    <component name="JUnitComponentGenerator" f3-core:key="org.fabric3.implementation.junit.model.JUnitImplementation">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.generator.JUnitComponentGenerator"/>
+    <component name="JUnitComponentGenerator" f3:key="org.fabric3.implementation.junit.model.JUnitImplementation">
+        <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitComponentGenerator"/>
     </component>
 
-    <component f3-core:key="org.fabric3.implementation.junit.model.JUnitBindingDefinition" name="JUnitBindingGenerator">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.generator.JUnitBindingGenerator"/>
+    <component f3:key="org.fabric3.implementation.junit.model.JUnitBindingDefinition" name="JUnitBindingGenerator">
+        <f3:implementation.system class="org.fabric3.implementation.junit.generator.JUnitBindingGenerator"/>
     </component>
 
-    <component f3-core:key="org.fabric3.implementation.junit.provision.JUnitSourceDefinition" name="JunitSourceWireAttacher">
-        <f3-impl:implementation.system class="org.fabric3.implementation.junit.runtime.JunitSourceWireAttacher"/>
+    <component f3:key="org.fabric3.implementation.junit.provision.JUnitSourceDefinition" name="JunitSourceWireAttacher">
+        <f3:implementation.system class="org.fabric3.implementation.junit.runtime.JunitSourceWireAttacher"/>
     </component>
 
 </composite>

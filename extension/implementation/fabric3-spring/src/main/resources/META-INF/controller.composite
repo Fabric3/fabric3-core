@@ -12,23 +12,22 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="SpringControllerExtension"
            autowire="true">
 
 
-    <component name="SpringImplementationLoader" f3-core:key="sca:implementation.spring">
-        <f3-impl:implementation.system class="org.fabric3.implementation.spring.introspection.SpringImplementationLoader"/>
+    <component name="SpringImplementationLoader" f3:key="sca:implementation.spring">
+        <f3:implementation.system class="org.fabric3.implementation.spring.introspection.SpringImplementationLoader"/>
     </component>
 
     <component name="SpringImplementationProcessor">
-        <f3-impl:implementation.system class="org.fabric3.implementation.spring.introspection.SpringImplementationProcessorImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.spring.introspection.SpringImplementationProcessorImpl"/>
     </component>
 
-    <component name="SpringComponentGenerator" f3-core:key="org.fabric3.implementation.spring.model.SpringImplementation">
-        <f3-impl:implementation.system class="org.fabric3.implementation.spring.generator.SpringComponentGenerator"/>
+    <component name="SpringComponentGenerator" f3:key="org.fabric3.implementation.spring.model.SpringImplementation">
+        <f3:implementation.system class="org.fabric3.implementation.spring.generator.SpringComponentGenerator"/>
     </component>
 
 </composite>

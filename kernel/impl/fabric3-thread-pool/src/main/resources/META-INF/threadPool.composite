@@ -8,13 +8,12 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="ThreadPoolComposite">
 
     <component name="RuntimeThreadPoolExecutor">
-        <f3-impl:implementation.system class="org.fabric3.threadpool.RuntimeThreadPoolExecutor"/>
+        <f3:implementation.system class="org.fabric3.threadpool.RuntimeThreadPoolExecutor"/>
         <property name="maximumSize" source="$systemConfig//thread.pool/@size"/>
         <property name="coreSize" source="$systemConfig//thread.pool/@coreSize"/>
         <property name="keepAliveTime" source="$systemConfig//thread.pool/@keepAliveTime"/>

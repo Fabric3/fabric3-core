@@ -10,11 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:ns="urn:fabric3.org:web"
-              xmlns:f3-core="urn:fabric3.org:core"
-              xmlns:web="urn:fabric3.org:web"
-              f3-core:extension="true"
-              f3-core:description="WAR extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="WAR extension">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
-    <deployable composite="web:WarContributionExtension"/>
+    <deployable composite="f3:WarContributionExtension"/>
 </contribution>

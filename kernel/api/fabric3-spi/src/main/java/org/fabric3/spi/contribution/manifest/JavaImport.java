@@ -50,7 +50,7 @@ import org.fabric3.spi.contribution.Import;
  */
 public class JavaImport implements Import {
     private static final long serialVersionUID = -7863768515125756048L;
-    private static final QName TYPE = new QName(Namespaces.CORE, "javaImport");
+    private static final QName TYPE = new QName(Namespaces.F3, "javaImport");
     private URI location;
     private PackageInfo packageInfo;
 

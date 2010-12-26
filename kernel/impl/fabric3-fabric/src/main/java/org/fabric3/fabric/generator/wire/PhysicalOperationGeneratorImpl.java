@@ -72,7 +72,7 @@ import org.fabric3.spi.generator.policy.PolicyResult;
  */
 public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerator {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName ALLOWS_BY_REFERENCE = new QName(Namespaces.POLICY, "allowsPassByReference");
+    private static final QName ALLOWS_BY_REFERENCE = new QName(Namespaces.F3, "allowsPassByReference");
     private OperationResolver operationResolver;
     private GeneratorRegistry generatorRegistry;
 

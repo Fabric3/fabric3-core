@@ -48,7 +48,7 @@ import org.fabric3.model.type.component.BindingDefinition;
  */
 public class WebBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 3182899822938972425L;
-    private static final QName BINDING_WEB = new QName(Namespaces.BINDING, "binding.web");
+    private static final QName BINDING_WEB = new QName(Namespaces.F3, "binding.web");
 
     private OperationsAllowed allowed;
     private String wireFormat;

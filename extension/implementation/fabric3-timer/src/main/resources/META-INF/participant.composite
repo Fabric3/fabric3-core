@@ -10,14 +10,13 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
            name="TimerParticipantExtension"
-           targetNamespace="urn:fabric3.org:implementation"
+           targetNamespace="urn:fabric3.org"
            autowire="true">
 
-    <component name="TimerComponentBuilder" f3-core:key="org.fabric3.implementation.timer.provision.TimerComponentDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.timer.runtime.TimerComponentBuilder"/>
+    <component name="TimerComponentBuilder" f3:key="org.fabric3.implementation.timer.provision.TimerComponentDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.timer.runtime.TimerComponentBuilder"/>
     </component>
 
 </composite>

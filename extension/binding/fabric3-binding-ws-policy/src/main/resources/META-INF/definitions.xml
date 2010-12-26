@@ -16,15 +16,15 @@ http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
 -->
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-             targetNamespace="urn:fabric3.org:policy"
-             xmlns:f3-policy="urn:fabric3.org:policy"
+             targetNamespace="urn:fabric3.org"
+             xmlns:f3="urn:fabric3.org"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
              xmlns:wsp="http://www.w3.org/ns/ws-policy"
              xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
              xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
 
-    <intent name="f3-policy:clientAuthentication" constrains="sca:binding" intentType="interaction">
+    <intent name="f3:clientAuthentication" constrains="sca:binding" intentType="interaction">
         <description>
             Fabric3 client authentication
         </description>
@@ -105,7 +105,7 @@ http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
         </wsp:Policy>
     </policySet>
 
-    <policySet name="X509TokenPolicy" provides="f3-policy:clientAuthentication.X509" appliesTo="sca:binding.ws">
+    <policySet name="X509TokenPolicy" provides="f3:clientAuthentication.X509" appliesTo="sca:binding.ws">
         <wsp:Policy wsu:Id="X509TokenPolicy">
             <!-- Based on policy id A11Endpoint, Test Case A11 (Section 3.3.1.1 in WS-Policy-Scenarios.doc) -->
             <!-- X509 certificate-based mutual authentication using AES 256 -->

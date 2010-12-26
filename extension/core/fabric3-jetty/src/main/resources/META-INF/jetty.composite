@@ -10,14 +10,13 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:other"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="JettyExtension">
 
     <!-- Jetty service -->
-    <component name="JettyService" f3-core:key="http">
-        <f3-impl:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
+    <component name="JettyService" f3:key="http">
+        <f3:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
         <property name="httpPort" source="$systemConfig//web.server/http/@port"/>
         <property name="enableHttps" source="$systemConfig//web.server/https/@enabled"/>
         <property name="httpsPort" source="$systemConfig//web.server/https/@port"/>

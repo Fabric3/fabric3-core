@@ -10,27 +10,26 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:transaction"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="TxExtension"
            autowire="true">
 
-    <component name="TxInterceptorBuilder" f3-core:key="org.fabric3.tx.TxInterceptorDefinition">
-        <f3-impl:implementation.system class="org.fabric3.tx.TxInterceptorBuilder"/>
+    <component name="TxInterceptorBuilder" f3:key="org.fabric3.tx.TxInterceptorDefinition">
+        <f3:implementation.system class="org.fabric3.tx.TxInterceptorBuilder"/>
     </component>
 
-    <component name="TxInterceptorGenerator" f3-core:key="{urn:fabric3.org:policy}transaction">
-        <f3-impl:implementation.system class="org.fabric3.tx.TxInterceptorGenerator"/>
+    <component name="TxInterceptorGenerator" f3:key="{urn:fabric3.org}transaction">
+        <f3:implementation.system class="org.fabric3.tx.TxInterceptorGenerator"/>
     </component>
 
 
-    <component name="TxHandlerBuilder" f3-core:key="org.fabric3.tx.TxHandlerDefinition">
-        <f3-impl:implementation.system class="org.fabric3.tx.TxHandlerBuilder"/>
+    <component name="TxHandlerBuilder" f3:key="org.fabric3.tx.TxHandlerDefinition">
+        <f3:implementation.system class="org.fabric3.tx.TxHandlerBuilder"/>
     </component>
 
-    <component name="TxHandlerGenerator" f3-core:key="{urn:fabric3.org:policy}transaction">
-        <f3-impl:implementation.system class="org.fabric3.tx.TxHandlerGenerator"/>
+    <component name="TxHandlerGenerator" f3:key="{urn:fabric3.org}transaction">
+        <f3:implementation.system class="org.fabric3.tx.TxHandlerGenerator"/>
     </component>
 
 </composite>

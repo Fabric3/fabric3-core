@@ -73,7 +73,7 @@ import org.fabric3.spi.xml.XMLFactory;
 @EagerInit
 public class LoaderRegistryImpl implements LoaderRegistry {
     private final XMLInputFactory xmlFactory;
-    private Map<QName, TypeLoader<?>> mappedLoaders;
+    private Map<QName, TypeLoader<?>> mappedLoaders = new HashMap<QName, TypeLoader<?>>();
     private final Map<QName, TypeLoader<?>> loaders = new HashMap<QName, TypeLoader<?>>();
 
     public LoaderRegistryImpl(@Reference XMLFactory factory) {

@@ -13,149 +13,148 @@
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:maven:org.codehaus.fabric3:boot"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="GeneratorComposite"
            autowire="true">
 
     <component name="GeneratorRegistry">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorRegistryImpl"/>
     </component>
 
     <component name="PhysicalOperationGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl"/>
         <property name="passByValueEnabled" source="$systemConfig//sca/@enableByValue"/>
     </component>
 
     <component name="OperationResolver">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.OperationResolverImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.OperationResolverImpl"/>
     </component>
 
     <component name="Generator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.impl.GeneratorImpl"/>
     </component>
     <!-- the wire forces a reinjection of the generator into the RuntimeDomain -->
     <wire source="RuntimeDomain/generator" target="Generator"/>
 
     <component name="WireGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.WireGeneratorImpl"/>
     </component>
 
     <component name="ConnectionGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl"/>
     </component>
 
     <component name="ContributionCollator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.collator.ContributionCollatorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.collator.ContributionCollatorImpl"/>
     </component>
 
     <component name="ExtensionGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.extension.ExtensionGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.extension.ExtensionGeneratorImpl"/>
     </component>
 
     <component name="ClassLoaderGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
     </component>
 
     <component name="DomainChannelCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl"/>
     </component>
 
     <component name="DomainResourceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.resource.DomainResourceCommandGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.resource.DomainResourceCommandGeneratorImpl"/>
     </component>
 
     <component name="BindingSelector">
-        <f3-impl:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
     </component>
 
     <component name="ConfigurableBindingSelectionStrategy">
-        <f3-impl:implementation.system class="org.fabric3.fabric.binding.ConfigurableBindingSelectionStrategy"/>
+        <f3:implementation.system class="org.fabric3.fabric.binding.ConfigurableBindingSelectionStrategy"/>
         <!-- allows users to configure the SCA binding preference through a systemConfig entry -->
         <property name="scaBindingOrder" source="$systemConfig//bindings/binding.sca/provider.order"/>
     </component>
 
     <component name="StopComponentCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.component.StopComponentCommandGenerator"/>
         <property name="order">1</property>
     </component>
 
     <component name="BuildResourceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.resource.BuildResourceCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.resource.BuildResourceCommandGenerator"/>
         <property name="order">1</property>
     </component>
 
     <component name="ComponentBuildCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
     <component name="BuildChannelCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.BuildChannelCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.BuildChannelCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
     <component name="WireCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.WireCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.WireCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="BoundReferenceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundReferenceCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.BoundReferenceCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="BoundServiceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="ProducerCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ProducerCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.ProducerCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="ConsumerCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.ConsumerCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.ConsumerCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="ResourceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.wire.ResourceReferenceCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.ResourceReferenceCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
     <component name="StartComponentCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.StartComponentCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.component.StartComponentCommandGenerator"/>
         <property name="order">4</property>
     </component>
 
     <component name="DisposeComponentCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.component.DisposeComponentCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.component.DisposeComponentCommandGenerator"/>
         <property name="order">5</property>
     </component>
 
     <component name="DisposeChannelCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.channel.DisposeChannelCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DisposeChannelCommandGenerator"/>
         <property name="order">5</property>
     </component>
 
     <component name="DisposeResourceCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.resource.DisposeResourceCommandGenerator"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.resource.DisposeResourceCommandGenerator"/>
         <property name="order">6</property>
     </component>
 
     <component name="StartCompositeContextCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StartContextCommandGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.context.StartContextCommandGeneratorImpl"/>
     </component>
 
     <component name="StopCompositeContextCommandGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl"/>
     </component>
 
-     <component f3-core:key="{urn:fabric3.org:policy}allowsPassByReferencePolicy" name="ByReferenceInterceptorGenerator">
-        <f3-impl:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
+     <component f3:key="{urn:fabric3.org}allowsPassByReferencePolicy" name="ByReferenceInterceptorGenerator">
+        <f3:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
     </component>
 
 </composite>

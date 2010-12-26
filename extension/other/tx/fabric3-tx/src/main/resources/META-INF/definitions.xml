@@ -10,19 +10,19 @@ Public License. See the accompanying license file for details.
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:oasis="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-        targetNamespace="urn:fabric3.org:policy"
-        xmlns:f3-policy="urn:fabric3.org:policy">
+        targetNamespace="urn:fabric3.org"
+        xmlns:f3="urn:fabric3.org">
 
     <policySet name="oasisManagedTransactionPolicy" provides="oasis:managedTransaction">
-        <f3-policy:transaction action="BEGIN"/>
+        <f3:transaction action="BEGIN"/>
     </policySet>
 
     <policySet name="oasisSuspendsTransactionPolicy" provides="oasis:suspendsTransaction" >
-        <f3-policy:transaction action="SUSPEND"/>
+        <f3:transaction action="SUSPEND"/>
     </policySet>
 
     <policySet name="oasisPropagatesTransactionPolicy" provides="oasis:propagatesTransaction" >
-        <f3-policy:transaction action="PROPOGATE"/>
+        <f3:transaction action="PROPOGATE"/>
     </policySet>
 
 </definitions>

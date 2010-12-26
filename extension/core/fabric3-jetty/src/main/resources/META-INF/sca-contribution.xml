@@ -10,10 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:other="urn:fabric3.org:other"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true"
-              f3-core:description="HTTP extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="HTTP extension">
     <import.java package="org.fabric3.spi.*" version="1.7"/>
 
     <export.java package="org.fabric3.transport.jetty" version="1.7"/>
@@ -26,5 +25,5 @@ Public License. See the accompanying license file for details.
         <!-- The following exports are required for JSP compilation -->
     <export.java package="org.apache.jasper.runtime" version="7.1.4.v20100610"/>
     <export.java package="com.sun.el" version="7.1.4.v20100610"/>
-    <deployable composite="other:JettyExtension"/>
+    <deployable composite="f3:JettyExtension"/>
 </contribution>

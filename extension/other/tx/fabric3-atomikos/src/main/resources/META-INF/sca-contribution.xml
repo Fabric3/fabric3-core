@@ -10,10 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:transaction="urn:fabric3.org:transaction"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true"
-              f3-core:description="JTA extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="JTA extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
 
@@ -24,7 +23,7 @@ Public License. See the accompanying license file for details.
 
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="org.fabric3.datasource.spi"/>
-    <deployable composite="transaction:AtomikosExtension"/>
-    <f3-core:provides name="datasource"/>
-    <f3-core:provides.capability name="transaction"/>
+    <deployable composite="f3:AtomikosExtension"/>
+    <f3:provides name="datasource"/>
+    <f3:provides.capability name="transaction"/>
 </contribution>

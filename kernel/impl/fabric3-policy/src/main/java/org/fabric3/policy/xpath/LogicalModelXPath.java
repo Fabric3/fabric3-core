@@ -68,9 +68,7 @@ public class LogicalModelXPath extends BaseXPath {
         // setup namespaces and functions
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace("sca", Constants.SCA_NS);
-        nc.addNamespace("f3-core", Namespaces.CORE);
-        nc.addNamespace("f3-binding", Namespaces.BINDING);
-        nc.addNamespace("f3-policy", Namespaces.POLICY);
+        nc.addNamespace("f3", Namespaces.F3);
         setNamespaceContext(nc);
         SimpleFunctionContext fc = new SimpleFunctionContext();
         fc.registerFunction(Constants.SCA_NS, "URIRef", new UriRefFunction());

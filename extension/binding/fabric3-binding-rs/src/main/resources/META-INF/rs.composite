@@ -9,23 +9,21 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           xmlns:f3-binding="urn:org.fabric3:binding"
-           targetNamespace="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="RsExtension"
            autowire="true">
 
-    <component name="RsBindingLoader" f3-core:key="f3-binding:binding.rs">
-        <f3-impl:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingLoader"/>
+    <component name="RsBindingLoader" f3:key="f3:binding.rs">
+        <f3:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingLoader"/>
     </component>
 
-    <component name="RsBindingGenerator" f3-core:key="org.fabric3.binding.rs.model.RsBindingDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
+    <component name="RsBindingGenerator" f3:key="org.fabric3.binding.rs.model.RsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
     </component>
 
-    <component name="RsSourceWireAttacher" f3-core:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
+    <component name="RsSourceWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
     </component>
 
 </composite>

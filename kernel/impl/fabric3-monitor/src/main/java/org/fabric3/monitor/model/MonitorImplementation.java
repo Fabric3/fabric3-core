@@ -58,7 +58,7 @@ import org.fabric3.model.type.component.Implementation;
  */
 public class MonitorImplementation extends Implementation<ComponentType> {
     private static final long serialVersionUID = 3139588435544226827L;
-    public static final QName IMPLEMENTATION_MONITOR = new QName(Namespaces.IMPLEMENTATION, "monitor");
+    public static final QName IMPLEMENTATION_MONITOR = new QName(Namespaces.F3, "monitor");
     private Element configuration;
 
     /**

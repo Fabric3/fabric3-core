@@ -57,7 +57,7 @@ import org.fabric3.api.annotation.IntentMetaData;
 @Inherited
 @Intent(RolesAllowed.AUTHORIZATION)
 public @interface RolesAllowed {
-    String AUTHORIZATION = "{urn:fabric3.org:policy}authorization";
+    String AUTHORIZATION = "{urn:fabric3.org}authorization";
 
     @IntentMetaData String[] value();
 

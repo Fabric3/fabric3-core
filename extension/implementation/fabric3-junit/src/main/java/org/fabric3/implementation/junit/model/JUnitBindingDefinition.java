@@ -48,7 +48,7 @@ import org.fabric3.model.type.component.BindingDefinition;
  */
 public class JUnitBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1306543849900003084L;
-    private static final QName BINDING_QNAME = new QName(Namespaces.BINDING, "binding.junit");
+    private static final QName BINDING_QNAME = new QName(Namespaces.F3, "binding.junit");
     private ContextConfiguration configuration;
 
     /**

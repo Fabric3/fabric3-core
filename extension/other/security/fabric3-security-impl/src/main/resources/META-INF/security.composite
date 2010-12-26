@@ -12,22 +12,21 @@ Public License. See the accompanying license file for details.
     $Rev: 7148 $ $Date: 2009-06-14 17:18:27 -0700 (Sun, 14 Jun 2009) $
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:security"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="SecurityImplementationExtension"
            autowire="true">
 
     <component name="AuthenticationService">
-        <f3-impl:implementation.system class="org.fabric3.security.impl.AuthenticationServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.security.impl.AuthenticationServiceImpl"/>
     </component>
 
     <component name="Authorization">
-        <f3-impl:implementation.system class="org.fabric3.security.impl.AuthorizationServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.security.impl.AuthorizationServiceImpl"/>
     </component>
 
     <component name="FileSecurityStore">
-        <f3-impl:implementation.system class="org.fabric3.security.impl.FileSecurityStore"/>
+        <f3:implementation.system class="org.fabric3.security.impl.FileSecurityStore"/>
         <property name="securityConfiguration" source="$systemConfig/users"/>
     </component>
 

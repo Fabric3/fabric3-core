@@ -10,15 +10,13 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="NetBindingParticipantExtension"
-           autowire="true"
-           xmlns:f3-binding="urn:org.fabric3:binding">
+           autowire="true">
 
     <component name="NETTransportService">
-        <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.impl.TransportServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.net.runtime.impl.TransportServiceImpl"/>
         <!-- set optional configuration from the system configuration domain property -->
         <property name="connectTimeout" source="$systemConfig//net.binding/@connectTimeout"/>
         <property name="ipAddress" source="$systemConfig//net.binding/@ipAddress"/>
@@ -32,12 +30,12 @@ Public License. See the accompanying license file for details.
 
     <!-- HTTP channel infrastructure -->
 
-    <component name="HttpSourceWireAttacher" f3-core:key="org.fabric3.binding.net.provision.HttpSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.http.HttpSourceWireAttacher"/>
+    <component name="HttpSourceWireAttacher" f3:key="org.fabric3.binding.net.provision.HttpSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.net.runtime.http.HttpSourceWireAttacher"/>
     </component>
 
-    <component name="HttpTargetWireAttacher" f3-core:key="org.fabric3.binding.net.provision.HttpTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.http.HttpTargetWireAttacher"/>
+    <component name="HttpTargetWireAttacher" f3:key="org.fabric3.binding.net.provision.HttpTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.net.runtime.http.HttpTargetWireAttacher"/>
         <!-- set optional configuration from the system configuration domain property -->
         <property name="connectTimeout" source="$systemConfig//net.binding/@connectTimeout"/>
         <property name="httpWireFormat" source="$systemConfig//net.binding/@httpWireFormat"/>
@@ -46,12 +44,12 @@ Public License. See the accompanying license file for details.
 
     <!-- TCP channel infrastructure -->
 
-    <component name="TcpSourceWireAttacher" f3-core:key="org.fabric3.binding.net.provision.TcpSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.tcp.TcpSourceWireAttacher"/>
+    <component name="TcpSourceWireAttacher" f3:key="org.fabric3.binding.net.provision.TcpSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.net.runtime.tcp.TcpSourceWireAttacher"/>
     </component>
 
-    <component name="TcpTargetWireAttacher" f3-core:key="org.fabric3.binding.net.provision.TcpTargetDefinition">
-        <f3-impl:implementation.system class="org.fabric3.binding.net.runtime.tcp.TcpTargetWireAttacher"/>
+    <component name="TcpTargetWireAttacher" f3:key="org.fabric3.binding.net.provision.TcpTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.net.runtime.tcp.TcpTargetWireAttacher"/>
         <!-- set optional configuration from the system configuration domain property -->
         <property name="connectTimeout" source="$systemConfig//net.binding/@connectTimeout"/>
         <property name="tcpWireFormat" source="$systemConfig//net.binding/@tcpWireFormat"/>

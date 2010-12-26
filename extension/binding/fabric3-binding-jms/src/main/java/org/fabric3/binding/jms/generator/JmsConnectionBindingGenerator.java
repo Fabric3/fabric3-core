@@ -78,7 +78,7 @@ import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
  */
 @EagerInit
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
-    private static final QName NON_PERSISTENT = new QName(Namespaces.CORE, "nonPersistent");
+    private static final QName NON_PERSISTENT = new QName(Namespaces.F3, "nonPersistent");
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 

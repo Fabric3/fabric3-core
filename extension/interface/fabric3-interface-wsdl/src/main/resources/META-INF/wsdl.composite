@@ -12,38 +12,37 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:other"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="WsdlInterfaceExtension"
            autowire="true">
 
     <component name="Wsdl4JFactory">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.factory.impl.Wsdl4JFactoryImpl"/>
+        <f3:implementation.system class="org.fabric3.wsdl.factory.impl.Wsdl4JFactoryImpl"/>
     </component>
 
     <component name="WsdlResourceProcessor">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.contribution.impl.WsdlResourceProcessor"/>
+        <f3:implementation.system class="org.fabric3.wsdl.contribution.impl.WsdlResourceProcessor"/>
     </component>
 
-    <component name="InterfaceWsdlLoader" f3-core:key="sca:interface.wsdl">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.loader.InterfaceWsdlLoader"/>
+    <component name="InterfaceWsdlLoader" f3:key="sca:interface.wsdl">
+        <f3:implementation.system class="org.fabric3.wsdl.loader.InterfaceWsdlLoader"/>
     </component>
 
     <component name="Wsdl11ContractProcessor">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.processor.Wsdl11ContractProcessor"/>
+        <f3:implementation.system class="org.fabric3.wsdl.processor.Wsdl11ContractProcessor"/>
     </component>
 
     <component name="WsdlContractMatcherExtension">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.contract.WsdlContractMatcherExtension"/>
+        <f3:implementation.system class="org.fabric3.wsdl.contract.WsdlContractMatcherExtension"/>
     </component>
 
     <component name="JavaToWsdlContractMatcherExtension">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.contract.JavaToWsdlContractMatcherExtension"/>
+        <f3:implementation.system class="org.fabric3.wsdl.contract.JavaToWsdlContractMatcherExtension"/>
     </component>
 
     <component name="WsdlToJavaContractMatcherExtension">
-        <f3-impl:implementation.system class="org.fabric3.wsdl.contract.WsdlToJavaContractMatcherExtension"/>
+        <f3:implementation.system class="org.fabric3.wsdl.contract.WsdlToJavaContractMatcherExtension"/>
     </component>
 
 </composite>

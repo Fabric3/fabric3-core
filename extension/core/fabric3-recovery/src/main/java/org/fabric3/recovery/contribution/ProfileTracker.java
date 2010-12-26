@@ -83,7 +83,7 @@ import org.fabric3.spi.xml.XMLFactory;
 @Service(interfaces = {ContributionServiceListener.class, Fabric3EventListener.class})
 @EagerInit
 public class ProfileTracker implements ContributionServiceListener, Fabric3EventListener<RuntimeRecover> {
-    private static final QName CONTRIBUTION = new QName(Namespaces.CORE, "contribution");
+    private static final QName CONTRIBUTION = new QName(Namespaces.F3, "contribution");
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private File repositoryIndex;
@@ -200,7 +200,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("profiles");
-            writer.writeDefaultNamespace(Namespaces.CORE);
+            writer.writeDefaultNamespace(Namespaces.F3);
             for (Map.Entry<URI, List<URI>> entry : mappings.entrySet()) {
                 writer.writeStartElement("contribution");
                 writer.writeAttribute("uri", entry.getKey().toString());

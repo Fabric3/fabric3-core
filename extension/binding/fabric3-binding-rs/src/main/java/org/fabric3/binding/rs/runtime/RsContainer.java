@@ -82,7 +82,7 @@ public final class RsContainer extends HttpServlet {
     }
 
     @Override
-    public void init(final ServletConfig config) {
+    public void init(ServletConfig config) {
         servletConfig = new ServletConfigWrapper(config);
     }
 

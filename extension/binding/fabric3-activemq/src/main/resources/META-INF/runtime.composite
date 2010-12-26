@@ -16,14 +16,13 @@
  under the License.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="ActiveMQRuntimeExtension"
            autowire="true">
 
     <component name="ActiveMQBrokerEngine">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
         <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
         <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
         <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
@@ -32,17 +31,17 @@
     </component>
 
     <component name="ConnectionFactoryInstantiator">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryInstantiator"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryInstantiator"/>
         <property name="connectionFactories" source="$systemConfig//jms/connection.factories"/>
     </component>
 
     <component name="ConnectionFactoryTemplateRegistry">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryTemplateRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryTemplateRegistryImpl"/>
         <property name="connectionFactoryTemplates" source="$systemConfig//jms/connection.factory.templates"/>
     </component>
 
     <component name="ActiveMQConnectionFactoryCreator">
-        <f3-impl:implementation.system class="org.fabric3.binding.activemq.factory.ActiveMQConnectionFactoryCreator"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ActiveMQConnectionFactoryCreator"/>
     </component>
 
 </composite>

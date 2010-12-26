@@ -12,15 +12,15 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           name="LoaderCommonBootComposite" targetNamespace="urn:maven:org.codehaus.fabric3:boot">
+           xmlns:f3="urn:fabric3.org"
+           name="LoaderCommonBootComposite"
+           targetNamespace="urn:fabric3.org">
 
     <component name="LoaderRegistry">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.LoaderRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.introspection.xml.LoaderRegistryImpl"/>
     </component>
 
     <component name="LoaderHelper">
-        <f3-impl:implementation.system class="org.fabric3.introspection.xml.DefaultLoaderHelper"/>
+        <f3:implementation.system class="org.fabric3.introspection.xml.DefaultLoaderHelper"/>
     </component>
 </composite>

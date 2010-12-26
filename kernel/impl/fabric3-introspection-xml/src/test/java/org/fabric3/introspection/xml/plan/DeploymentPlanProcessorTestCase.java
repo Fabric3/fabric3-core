@@ -61,7 +61,7 @@ public class DeploymentPlanProcessorTestCase extends TestCase {
 
     private static final String XML =
             "<?xml version=\"1.0\" encoding=\"ASCII\"?>\n" +
-                    "<plan xmlns=\"urn:fabric3.org:core\" name=\"testPlan\">\n" +
+                    "<plan xmlns=\"urn:fabric3.org\" name=\"testPlan\">\n" +
                     "   <mappings>\n" +
                     "      <mapping deployable=\"deployable1\" zone=\"zone1\"/>  \n" +
                     "      <mapping deployable=\"deployable2\" zone=\"zone2\"/>  \n" +

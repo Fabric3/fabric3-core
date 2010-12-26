@@ -74,8 +74,8 @@ import org.fabric3.util.closure.CollectionUtils;
  * @version $Rev$ $Date$
  */
 public class DefaultPolicyResolver implements PolicyResolver {
-    private static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.IMPLEMENTATION, "implementation.system");
-    private static final QName IMPLEMENTATION_SINGLETON = new QName(Namespaces.IMPLEMENTATION, "singleton");
+    private static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.F3, "implementation.system");
+    private static final QName IMPLEMENTATION_SINGLETON = new QName(Namespaces.F3, "singleton");
     private static final PolicyResult EMPTY_RESULT = new NullPolicyResult();
     private static final Operation DEFINITION = new Operation("_fabric3Generated", null, null, null);
 

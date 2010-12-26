@@ -9,25 +9,25 @@ Public License. See the accompanying license file for details.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:binding"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="MetroBinding"
            autowire="true">
 
     <component name="BindingIDResolver">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.DefaultBindingIdResolver"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.DefaultBindingIdResolver"/>
     </component>
 
     <component name="ClassDefiner">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.ClassDefinerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.ClassDefinerImpl"/>
     </component>
 
     <component name="ClassLoaderUpdater">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.util.ClassLoaderUpdaterImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.util.ClassLoaderUpdaterImpl"/>
     </component>
 
     <component name="MetroBinding">
-        <f3-impl:implementation.system class="org.fabric3.binding.ws.metro.MetroBinding"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.MetroBinding"/>
         <property name="logLevel" source="$systemConfig//web.services/metro/@logging"/>
     </component>
 

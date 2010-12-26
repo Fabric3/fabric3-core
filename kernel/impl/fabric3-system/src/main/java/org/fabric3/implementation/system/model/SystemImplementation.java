@@ -56,7 +56,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 public class SystemImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3698947089871597184L;
-    public static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.IMPLEMENTATION, "implementation.system");
+    public static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.F3, "implementation.system");
     private String implementationClass;
 
     public SystemImplementation() {

@@ -69,7 +69,7 @@ import org.fabric3.spi.plan.DeploymentPlan;
  */
 @EagerInit
 public class DeploymentPlanProcessor implements XmlResourceElementLoader {
-    private static final QName DEPLOYABLE_MAPPING = new QName(Namespaces.CORE, "mapping");
+    private static final QName DEPLOYABLE_MAPPING = new QName(Namespaces.F3, "mapping");
 
     private XmlResourceElementLoaderRegistry registry;
 

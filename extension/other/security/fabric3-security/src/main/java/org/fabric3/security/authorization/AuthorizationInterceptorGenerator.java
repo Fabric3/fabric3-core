@@ -56,7 +56,7 @@ import org.fabric3.spi.generator.PolicyMetadata;
  */
 @EagerInit
 public class AuthorizationInterceptorGenerator implements InterceptorGenerator {
-    private static final QName AUTHORIZATION = new QName("urn:fabric3.org:policy", "authorization");
+    private static final QName AUTHORIZATION = new QName("urn:fabric3.org", "authorization");
 
     public AuthorizationInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation)
             throws GenerationException {

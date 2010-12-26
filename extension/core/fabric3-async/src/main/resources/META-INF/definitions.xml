@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-             xmlns:f3-policy="urn:fabric3.org:policy"
-             xmlns:f3-binding="urn:fabric3.org:binding"
+             xmlns:f3="urn:fabric3.org"
              targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
-    <bindingType name="f3-binding:binding.remote" mayProvide="sca:oneWay"/>
+    <bindingType name="f3:binding.remote" mayProvide="sca:oneWay"/>
 
     <intent name="oneWay" constrains="binding">
         <description>
@@ -14,8 +13,8 @@
     </intent>
 
     <!-- note this policy only applies to collocated wires as bindings are expected to handle one-way semantics natively -->
-    <policySet name="oneWayPolicy" provides="sca:oneWay" appliesTo="f3-binding:binding.local">
-        <f3-policy:oneWayPolicy/>
+    <policySet name="oneWayPolicy" provides="sca:oneWay" appliesTo="f3:binding.local">
+        <f3:oneWayPolicy/>
     </policySet>
 
 </definitions>

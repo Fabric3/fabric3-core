@@ -88,10 +88,10 @@ public class ContributionElementLoaderTestCase extends TestCase {
         reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getAttributeCount()).andReturn(0).atLeastOnce();
         EasyMock.expect(reader.getName()).andReturn(CONTRIBUTION);
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.CORE), EasyMock.eq("extension"))).andReturn("true");
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.CORE), EasyMock.eq("description"))).andReturn("the description");
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.CORE), EasyMock.eq("required-capabilities"))).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.CORE), EasyMock.eq("capabilities"))).andReturn(null);
+        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("extension"))).andReturn("true");
+        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("description"))).andReturn("the description");
+        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("required-capabilities"))).andReturn(null);
+        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("capabilities"))).andReturn(null);
         EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("modes"))).andReturn(null);
 
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);

@@ -10,10 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-impl="urn:fabric3.org:implementation"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:description="Timer implementation extension"
-              f3-core:extension="true">
+              xmlns:f3="urn:fabric3.org"
+              f3:description="Timer implementation extension"
+              f3:extension="true">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="org.fabric3.spi.*" version="1.7"/>
     <import.java package="org.fabric3.implementation.pojo.*" version="1.7"/>
@@ -24,6 +23,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.implementation.java.introspection" version="1.7"/>
     <import.java package="org.fabric3.implementation.java.runtime" version="1.7"/>
     <import.java package="org.fabric3.timer.spi" version="1.7"/>
-    <deployable composite="f3-impl:TimerControllerExtension" modes="controller vm"/>
-    <deployable composite="f3-impl:TimerParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:TimerControllerExtension" modes="controller vm"/>
+    <deployable composite="f3:TimerParticipantExtension" modes="participant vm"/>
 </contribution>

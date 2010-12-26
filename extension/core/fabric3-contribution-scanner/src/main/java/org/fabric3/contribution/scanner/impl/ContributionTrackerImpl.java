@@ -163,7 +163,7 @@ public class ContributionTrackerImpl implements ContributionTracker {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("contributions");
-            writer.writeDefaultNamespace(Namespaces.CORE);
+            writer.writeDefaultNamespace(Namespaces.F3);
             for (String entry : tracked) {
                 writer.writeStartElement("contribution");
                 writer.writeAttribute("name", entry);

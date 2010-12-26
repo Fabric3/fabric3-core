@@ -10,9 +10,9 @@ Public License. See the accompanying license file for details.
     $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-              xmlns:f3-core="urn:fabric3.org:core"
-              f3-core:extension="true"
-              f3-core:description="Infinispan cache extension">
+              xmlns:f3="urn:fabric3.org"
+              f3:extension="true"
+              f3:description="Infinispan cache extension">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="org.jgroups.*" version="2.10.0"/>

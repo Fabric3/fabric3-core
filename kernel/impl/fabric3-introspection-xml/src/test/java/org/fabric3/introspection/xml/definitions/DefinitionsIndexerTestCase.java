@@ -57,12 +57,12 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
  */
 public class DefinitionsIndexerTestCase extends TestCase {
-    private static final QName INTERCEPTED_INTENT = new QName(Namespaces.POLICY, "intercepted");
-    private static final QName QUALIFIER_INTENT = new QName(Namespaces.POLICY, "qualifier");
-    private static final QName PROVIDED_INTENT = new QName(Namespaces.POLICY, "provided");
-    private static final QName PROVIDED_POLICY = new QName(Namespaces.POLICY, "providedPolicy");
-    private static final QName INTERCEPTED_POLICY = new QName(Namespaces.POLICY, "interceptedPolicy");
-    private static final QName WS_POLICY = new QName(Namespaces.POLICY, "wsPolicy");
+    private static final QName INTERCEPTED_INTENT = new QName(Namespaces.F3, "intercepted");
+    private static final QName QUALIFIER_INTENT = new QName(Namespaces.F3, "qualifier");
+    private static final QName PROVIDED_INTENT = new QName(Namespaces.F3, "provided");
+    private static final QName PROVIDED_POLICY = new QName(Namespaces.F3, "providedPolicy");
+    private static final QName INTERCEPTED_POLICY = new QName(Namespaces.F3, "interceptedPolicy");
+    private static final QName WS_POLICY = new QName(Namespaces.F3, "wsPolicy");
 
     private DefinitionsIndexer loader;
     private XMLStreamReader reader;

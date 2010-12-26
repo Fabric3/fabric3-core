@@ -67,7 +67,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     /**
      * Represents a synthetic composite. Synthetic composites are created to instantiate multiple deployable composites in a single operation.
      */
-    private QName SYNTHENTIC_COMPOSITE = new QName(Namespaces.IMPLEMENTATION, "SyntheticComposite");
+    private QName SYNTHENTIC_COMPOSITE = new QName(Namespaces.F3, "SyntheticComposite");
 
     private ChannelInstantiator channelInstantiator;
     private PromotionNormalizer promotionNormalizer;

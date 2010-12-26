@@ -16,11 +16,11 @@ http://131.107.72.15/ilab/WSPolicy/WS-Policy-Scenarios.doc
 -->
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
              xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-             targetNamespace="urn:fabric3.org:policy"
-             xmlns:f3-policy="urn:fabric3.org:policy">
+             targetNamespace="urn:fabric3.org"
+             xmlns:f3="urn:fabric3.org">
 
     <policySet name="authenticationPolicy" provides="sca:authentication.message sca:clientAuthentication" appliesTo="binding.rs">
-        <f3-policy:security user="user" password="password" f3-policy:phase="provided"/>
+        <f3:security user="user" password="password" f3:phase="provided"/>
     </policySet>
 
 

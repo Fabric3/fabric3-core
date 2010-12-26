@@ -60,7 +60,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 @EagerInit
 public class DeploymentPlanXmlProcessor implements XmlProcessor {
-    private static final QName PLAN = new QName(Namespaces.CORE, "plan");
+    private static final QName PLAN = new QName(Namespaces.F3, "plan");
     private XmlResourceElementLoader loader;
 
     public DeploymentPlanXmlProcessor(@Reference(name = "processorRegistry") XmlProcessorRegistry processorRegistry,

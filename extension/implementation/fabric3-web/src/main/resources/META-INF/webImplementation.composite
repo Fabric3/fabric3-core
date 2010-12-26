@@ -11,41 +11,40 @@ Public License. See the accompanying license file for details.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-           xmlns:f3-core="urn:fabric3.org:core"
-           xmlns:f3-impl="urn:fabric3.org:implementation"
-           targetNamespace="urn:fabric3.org:implementation"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
            name="WebImplementationExtension"
            autowire="true">
 
     <component name="WebComponentLoader">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.introspection.WebComponentLoader"/>
+        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebComponentLoader"/>
     </component>
 
     <component name="WebImplementationProcessor">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.introspection.WebImplementationIntrospectorImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebImplementationIntrospectorImpl"/>
     </component>
 
     <component name="WebXmlIntrospector">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.introspection.WebXmlIntrospectorImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.web.introspection.WebXmlIntrospectorImpl"/>
     </component>
 
-    <component name="WebComponentGenerator" f3-core:key="org.fabric3.implementation.web.model.WebImplementation">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.generator.WebComponentGenerator"/>
+    <component name="WebComponentGenerator" f3:key="org.fabric3.implementation.web.model.WebImplementation">
+        <f3:implementation.system class="org.fabric3.implementation.web.generator.WebComponentGenerator"/>
     </component>
 
-    <component name="WebComponentBuilder" f3-core:key="org.fabric3.implementation.web.provision.WebComponentDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentBuilder"/>
+    <component name="WebComponentBuilder" f3:key="org.fabric3.implementation.web.provision.WebComponentDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentBuilder"/>
     </component>
     <component name="InjectionFactory">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.runtime.InjectorFactoryImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.web.runtime.InjectorFactoryImpl"/>
     </component>
 
-    <component name="WebSourceWireAttacher" f3-core:key="org.fabric3.implementation.web.provision.WebComponentSourceDefinition">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
+    <component name="WebSourceWireAttacher" f3:key="org.fabric3.implementation.web.provision.WebComponentSourceDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.web.runtime.WebComponentSourceWireAttacher"/>
     </component>
 
     <component name="WarContributionListener">
-        <f3-impl:implementation.system class="org.fabric3.implementation.web.contribution.WarContributionListener"/>
+        <f3:implementation.system class="org.fabric3.implementation.web.contribution.WarContributionListener"/>
     </component>
 
 </composite>
