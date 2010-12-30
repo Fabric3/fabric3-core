@@ -157,8 +157,9 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
 
     public void detach(JmsSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         try {
-            resolver.release(source.getMetadata().getConnectionFactory());
             containerManager.unregister(target.getUri());
+            // FABRICTHREE-544: release must be done after unregistering since a container may attempt to receive a message from a closed connection
+            resolver.release(source.getMetadata().getConnectionFactory());
         } catch (JMSException e) {
             throw new WiringException(e);
         }

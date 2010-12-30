@@ -512,26 +512,23 @@ public class AdaptiveMessageContainer {
             running = false;
             initialized = false;
             syncMonitor.notifyAll();
-        }
-        if (wasRunning && cacheLevel >= CACHE_CONNECTION) {
-            connectionManager.stopSharedConnection();
-        }
-        try {
-            synchronized (syncMonitor) {
+            if (wasRunning && cacheLevel >= CACHE_CONNECTION) {
+                connectionManager.stopSharedConnection();
+            }
+            try {
                 // wait for active receivers to finish processing
                 while (activeReceiverCount > 0) {
                     syncMonitor.wait();
                 }
-            }
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        } finally {
-            if (cacheLevel >= CACHE_CONNECTION) {
-                connectionManager.close();
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            } finally {
+                if (cacheLevel >= CACHE_CONNECTION) {
+                    connectionManager.close();
+                }
             }
         }
     }
-
 
     /**
      * Re-sizes the receivers pool. If there are no idle receivers and the maximum number of receivers has not been reached, a new receiver will be
@@ -847,8 +844,13 @@ public class AdaptiveMessageContainer {
          * @throws TransactionException if a transaction exception occurred during thr receive
          */
         private boolean doReceive() throws JMSException, TransactionException {
-            work.begin();
-            connection = connectionManager.getConnection();
+            synchronized (syncMonitor) {
+                if (!isRunning()) {
+                    return false;
+                }
+                work.begin();
+                connection = connectionManager.getConnection();
+            }
             if (session == null) {
                 session = createSession(connection);
             }
