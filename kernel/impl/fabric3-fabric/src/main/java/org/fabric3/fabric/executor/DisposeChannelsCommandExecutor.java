@@ -57,6 +57,8 @@ import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.federation.ZoneChannelException;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -68,6 +70,17 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {
     private ChannelManager channelManager;
     private CommandExecutorRegistry executorRegistry;
+    private ZoneTopologyService topologyService;
+    private boolean replicationCapable;
+
+    @Reference(required = false)
+    public void setTopologyService(List<ZoneTopologyService> services) {
+        // use a collection to force reinjection
+        if (services != null && !services.isEmpty()) {
+            this.topologyService = services.get(0);
+            replicationCapable = topologyService.supportsDynamicChannels();
+        }
+    }
 
     @Constructor
     public DisposeChannelsCommandExecutor(@Reference ChannelManager channelManager, @Reference CommandExecutorRegistry executorRegistry) {
@@ -86,6 +99,16 @@ public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeCh
             for (PhysicalChannelDefinition definition : definitions) {
                 URI uri = definition.getUri();
                 channelManager.unregister(uri);
+
+                if (definition.isReplicate() && replicationCapable) {
+                    String channelName = uri.toString();
+                    try {
+                        topologyService.closeChannel(channelName);
+                    } catch (ZoneChannelException e) {
+                        throw new ExecutionException(e);
+                    }
+                }
+
             }
         } catch (RegistrationException e) {
             throw new ExecutionException(e.getMessage(), e);
