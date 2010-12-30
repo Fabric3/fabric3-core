@@ -39,10 +39,7 @@ package org.fabric3.fabric.executor;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -51,7 +48,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.command.UnProvisionExtensionsCommand;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.domain.DeploymentException;
@@ -100,18 +96,9 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
             if (count == 0) {
                 try {
                     // no longer in use, undeploy and uninstall the extension
-                    List<Deployable> deployables = contributionService.getDeployables(uri);
-                    List<Deployable> reverse = new ArrayList<Deployable>(deployables);
-                    // undeploy in reverse order
-                    Collections.reverse(reverse);
-                    for (Deployable deployable : reverse) {
-                        QName name = deployable.getName();
-                        domain.undeploy(name);
-                    }
+                    domain.undeploy(uri, false);
                     uninstall.add(uri);
                 } catch (DeploymentException e) {
-                    throw new ExecutionException(e);
-                } catch (ContributionNotFoundException e) {
                     throw new ExecutionException(e);
                 }
                 try {

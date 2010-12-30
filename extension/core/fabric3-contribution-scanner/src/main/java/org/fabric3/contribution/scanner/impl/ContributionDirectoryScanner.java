@@ -47,13 +47,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -279,16 +277,11 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 URL location = resource.getLocation();
                 long timestamp = resource.getTimestamp();
                 // undeploy any deployed composites in the reverse order that they were deployed in
-                List<QName> deployables = contributionService.getDeployedComposites(artifactUri);
-                ListIterator<QName> iter = deployables.listIterator(deployables.size());
-                while (iter.hasPrevious()) {
-                    QName deployable = iter.previous();
-                    try {
-                        domain.undeploy(deployable);
-                    } catch (DeploymentException e) {
+                try {
+                    domain.undeploy(artifactUri, false);
+                } catch (DeploymentException e) {
                         monitor.error(e);
                         return;
-                    }
                 }
                 // if the resource has changed, wait until the next pass as updates may still be in progress
                 if (resource.isChanged()) {
@@ -299,9 +292,6 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 sources.add(source);
                 updatedResources.add(resource);
                 uris.add(artifactUri);
-            } catch (ContributionException e) {
-                resource.setState(FileSystemResourceState.ERROR);
-                monitor.error(e);
             } catch (URISyntaxException e) {
                 resource.setState(FileSystemResourceState.ERROR);
                 monitor.error(e);
@@ -456,13 +446,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     iterator.remove();
                     // check that the resource was not deleted by another process
                     if (contributionService.exists(uri)) {
-                        // undeploy any deployed composites in the reverse order that they were deployed in
-                        List<QName> deployables = contributionService.getDeployedComposites(uri);
-                        ListIterator<QName> iter = deployables.listIterator(deployables.size());
-                        while (iter.hasPrevious()) {
-                            QName deployable = iter.previous();
-                            domain.undeploy(deployable);
-                        }
+                        domain.undeploy(uri, false);
                         contributionService.uninstall(uri);
                         contributionService.remove(uri);
                     }

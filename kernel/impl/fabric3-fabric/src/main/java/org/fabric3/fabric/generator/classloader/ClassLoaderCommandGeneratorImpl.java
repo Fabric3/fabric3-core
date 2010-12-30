@@ -105,7 +105,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         // commands mapped to zone
 
         // Create the classloader definitions for contributions required to run the components being deployed.
-        // These are created first since they must be instantitated on a runtime prior to component classloaders
+        // These are created first since they must be instantiated on a runtime prior to component classloaders
         Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = createContributionDefinitions(contributions);
         Map<String, List<CompensatableCommand>> commands = createProvisionCommands(definitionsPerZone);
         createExtensionCommands(commands, contributions);
@@ -119,7 +119,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         // generate commands to unprovision contribution classloaders
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             if (entry.getKey() == null) {
-                // Don't uprovision the contribution classloader for locally deployed components since it is shared by the contrbution service
+                // Don't uprovision the contribution classloader for locally deployed components since it is shared by the contribution service
                 // In a multi-VM domain, the contribution classloaders are unprovisioned when they are no longer referenced by component classloaders.
                 // However, in a single-VM domain, the contribution classloader is used by runtime components.
                 // Consequently, the contribution classloader cannot be removed until the contribution is uninstalled.
@@ -156,7 +156,6 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
      *
      * @param contributionsPerZone the contributions grouped by zone id
      * @return the PhysicalClassLoaderDefinitions grouped by zone
-     * @throws GenerationException if a generation error occurs
      */
     private Map<String, List<PhysicalClassLoaderDefinition>> createContributionDefinitions(Map<String, List<Contribution>> contributionsPerZone) {
         Map<String, List<PhysicalClassLoaderDefinition>> definitionsPerZone = new HashMap<String, List<PhysicalClassLoaderDefinition>>();

@@ -40,7 +40,6 @@ package org.fabric3.admin.controller;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -48,7 +47,6 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
@@ -102,14 +100,10 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean {
             if (contribution == null) {
                 throw new ContributionNotFoundException("Contribution not found: " + contributionUri);
             }
-            for (Deployable deployable : contribution.getManifest().getDeployables()) {
-                try {
-                    QName name = deployable.getName();
-                    domain.undeploy(name);
-                } catch (DeploymentException e) {
-                    reportError(contributionUri, e);
-                }
-
+            try {
+                domain.undeploy(contributionUri, false);
+            } catch (DeploymentException e) {
+                reportError(contributionUri, e);
             }
         }
 

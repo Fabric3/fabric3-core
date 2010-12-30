@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -53,6 +54,7 @@ import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.ContributionNotInstalledException;
@@ -223,24 +225,39 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void undeploy(QName deployable) throws DeploymentException {
-        undeploy(deployable, false);
-    }
-
-    public void undeploy(QName deployable, boolean force) throws DeploymentException {
-        QNameSymbol deployableSymbol = new QNameSymbol(deployable);
-        Contribution contribution = metadataStore.find(DeploymentPlan.class, deployableSymbol).getResource().getContribution();
-        if (!contribution.getLockOwners().contains(deployable)) {
-            throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
+    public synchronized void undeploy(URI uri, boolean force) throws DeploymentException {
+        Contribution contribution = metadataStore.find(uri);
+        if (contribution == null) {
+            throw new DeploymentException("Contribution not found: " + uri);
         }
-        for (DomainListener listener : listeners) {
-            listener.onUndeploy(deployable);
+        List<Deployable> deployables = contribution.getManifest().getDeployables();
+        if (deployables.isEmpty()) {
+            return;
+        }
+        // reverse the deployables
+        List<QName> names = new ArrayList<QName>();
+        ListIterator<Deployable> iter = deployables.listIterator(deployables.size());
+        while (iter.hasPrevious()) {
+            names.add(iter.previous().getName());
+        }
+        for (QName deployable : names) {
+            if (!contribution.getLockOwners().contains(deployable)) {
+                throw new CompositeNotDeployedException("Composite is not deployed: " + deployable);
+            }
+        }
+
+        for (QName deployable : names) {
+            for (DomainListener listener : listeners) {
+                listener.onUndeploy(deployable);
+            }
         }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
         }
-        collector.markForCollection(deployable, domain);
+        for (QName deployable : names) {
+            collector.markForCollection(deployable, domain);
+        }
         try {
             Deployment deployment = generator.generate(domain, true);
             collector.collect(domain);
@@ -258,9 +275,16 @@ public abstract class AbstractDomain implements Domain {
                 // force undeployment in effect: ignore deployment exceptions
             }
         } catch (GenerationException e) {
-            throw new DeploymentException("Error undeploying: " + deployable, e);
+            StringBuffer list = new StringBuffer();
+            for (QName deployable : names) {
+                list.append(" ").append(deployable);
+            }
+            throw new DeploymentException("Error undeploying:" + list, e);
         }
-        contribution.releaseLock(deployable);
+        for (int i = 0, deployablesSize = names.size(); i < deployablesSize; i++) {
+            QName deployable = names.get(i);
+            contribution.releaseLock(deployable);
+        }
         logicalComponentManager.replaceRootComponent(domain);
     }
 
