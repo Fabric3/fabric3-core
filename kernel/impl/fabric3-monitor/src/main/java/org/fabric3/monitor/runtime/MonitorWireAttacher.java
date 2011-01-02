@@ -42,8 +42,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
@@ -51,6 +49,8 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
 /**

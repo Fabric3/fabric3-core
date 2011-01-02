@@ -48,8 +48,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
+import org.fabric3.fabric.command.DetachChannelConnectionCommand;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;

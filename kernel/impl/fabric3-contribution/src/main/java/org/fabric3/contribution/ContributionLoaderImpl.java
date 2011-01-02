@@ -49,7 +49,6 @@ import java.util.Set;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.contribution.manifest.ContributionImport;
-import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 import org.fabric3.host.contribution.ContributionInUseException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
@@ -65,6 +64,8 @@ import org.fabric3.spi.contribution.UnresolvedImportException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+
+import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 
 /**
  * Default implementation of the ContributionLoader. Classloaders corresponding to loaded contributions are registered by name with the system

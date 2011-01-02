@@ -45,11 +45,12 @@ package org.fabric3.implementation.pojo.reflection;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.createMock;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.invocation.WorkContext;
+
+import static org.easymock.EasyMock.createMock;
 
 /**
  * @version $Rev$ $Date$

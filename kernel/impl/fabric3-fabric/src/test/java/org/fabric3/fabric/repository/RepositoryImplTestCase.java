@@ -47,8 +47,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.FileHelper;
 
 public class RepositoryImplTestCase extends TestCase {
     private RepositoryImpl repository;

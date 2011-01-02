@@ -42,7 +42,6 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.stream.Source;
@@ -50,6 +49,7 @@ import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;

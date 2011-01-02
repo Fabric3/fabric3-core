@@ -42,12 +42,12 @@ import java.net.URI;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 

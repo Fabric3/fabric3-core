@@ -44,9 +44,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$

@@ -53,11 +53,11 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * The default ChannelProxyService that uses JDK dynamic proxies.

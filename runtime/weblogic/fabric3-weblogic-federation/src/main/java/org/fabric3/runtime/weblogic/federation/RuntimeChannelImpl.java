@@ -44,8 +44,8 @@ import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 

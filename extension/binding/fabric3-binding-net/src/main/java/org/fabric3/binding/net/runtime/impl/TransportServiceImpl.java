@@ -56,12 +56,12 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.net.NetBindingMonitor;
+import org.fabric3.binding.net.runtime.TransportService;
+import org.fabric3.binding.net.runtime.WireHolder;
 import org.fabric3.binding.net.runtime.http.HttpRequestHandler;
 import org.fabric3.binding.net.runtime.http.HttpServerPipelineFactory;
 import org.fabric3.binding.net.runtime.tcp.TcpPipelineFactory;
 import org.fabric3.binding.net.runtime.tcp.TcpRequestHandler;
-import org.fabric3.binding.net.runtime.TransportService;
-import org.fabric3.binding.net.runtime.WireHolder;
 import org.fabric3.spi.binding.format.MessageEncoder;
 import org.fabric3.spi.builder.WiringException;
 

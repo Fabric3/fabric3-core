@@ -15,7 +15,7 @@
     <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
     <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
   </component>
 </module>

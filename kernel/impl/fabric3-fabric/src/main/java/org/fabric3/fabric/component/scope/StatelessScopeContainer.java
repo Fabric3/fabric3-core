@@ -50,7 +50,6 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
@@ -60,6 +59,7 @@ import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.

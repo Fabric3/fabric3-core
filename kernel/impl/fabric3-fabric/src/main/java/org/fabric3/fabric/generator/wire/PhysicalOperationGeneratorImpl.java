@@ -60,12 +60,12 @@ import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.PolicyMetadata;
+import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalAttachPoint;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.generator.policy.PolicyResult;
 
 /**
  * @version $Rev$ $Date$

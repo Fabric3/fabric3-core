@@ -50,9 +50,9 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Scope;
 
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class EagerInitProcessorTestCase extends TestCase {

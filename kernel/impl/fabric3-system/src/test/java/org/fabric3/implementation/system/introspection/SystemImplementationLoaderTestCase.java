@@ -51,9 +51,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
-import org.fabric3.implementation.system.model.SystemImplementation;
 
 /**
  * @version $Rev$ $Date$

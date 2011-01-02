@@ -49,10 +49,10 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.model.type.component.Composite;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;

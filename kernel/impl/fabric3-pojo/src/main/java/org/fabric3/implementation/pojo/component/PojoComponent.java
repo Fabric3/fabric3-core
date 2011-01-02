@@ -50,14 +50,14 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Base class for Component implementations based on Java objects.

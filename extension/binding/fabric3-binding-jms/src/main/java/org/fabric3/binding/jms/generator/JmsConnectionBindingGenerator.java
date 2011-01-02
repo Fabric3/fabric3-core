@@ -44,7 +44,6 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;

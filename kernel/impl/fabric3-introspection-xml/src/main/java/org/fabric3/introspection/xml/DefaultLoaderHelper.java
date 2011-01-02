@@ -56,15 +56,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.CDATA;
-import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
-import static javax.xml.stream.XMLStreamConstants.COMMENT;
-import static javax.xml.stream.XMLStreamConstants.DTD;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.ENTITY_REFERENCE;
-import static javax.xml.stream.XMLStreamConstants.PROCESSING_INSTRUCTION;
-import static javax.xml.stream.XMLStreamConstants.SPACE;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -77,15 +68,25 @@ import org.w3c.dom.Text;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.PolicyAware;
 import org.fabric3.model.type.component.Multiplicity;
-import static org.fabric3.model.type.component.Multiplicity.ONE_N;
-import static org.fabric3.model.type.component.Multiplicity.ONE_ONE;
-import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+
+import static javax.xml.stream.XMLStreamConstants.CDATA;
+import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
+import static javax.xml.stream.XMLStreamConstants.COMMENT;
+import static javax.xml.stream.XMLStreamConstants.DTD;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.ENTITY_REFERENCE;
+import static javax.xml.stream.XMLStreamConstants.PROCESSING_INSTRUCTION;
+import static javax.xml.stream.XMLStreamConstants.SPACE;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.fabric3.model.type.component.Multiplicity.ONE_N;
+import static org.fabric3.model.type.component.Multiplicity.ONE_ONE;
+import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
 
 /**
  * Default implementation of the loader helper.

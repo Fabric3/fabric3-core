@@ -37,9 +37,6 @@
 */
 package org.fabric3.api.annotation.monitor;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 /**
  * Defines monitor levels recognized by the {@link MonitorEventType} annotation.
  */

@@ -43,8 +43,8 @@
  */
 package org.fabric3.runtime.weblogic.api;
 
-import javax.management.ObjectName;
 import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 /**
  * Defines constants for the Fabric3 WebLogic Runtime.

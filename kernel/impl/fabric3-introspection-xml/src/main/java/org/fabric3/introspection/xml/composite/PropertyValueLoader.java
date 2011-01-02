@@ -55,9 +55,9 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.component.PropertyMany;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.introspection.IntrospectionContext;

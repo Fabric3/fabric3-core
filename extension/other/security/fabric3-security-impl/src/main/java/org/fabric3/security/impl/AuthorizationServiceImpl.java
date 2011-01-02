@@ -39,11 +39,11 @@ package org.fabric3.security.impl;
 
 import java.util.Collection;
 
+import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.NotAuthorizedException;
-import org.fabric3.api.SecuritySubject;
 
 /**
  * Basic implementation of the AuthorizationService.

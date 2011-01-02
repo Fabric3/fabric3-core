@@ -75,7 +75,6 @@ import org.apache.activemq.broker.jmx.NetworkConnectorView;
 import org.apache.activemq.broker.jmx.ProxyConnectorView;
 import org.apache.activemq.broker.jmx.QueueView;
 import org.apache.activemq.broker.jmx.SubscriptionView;
-import org.apache.activemq.broker.jmx.SubscriptionViewMBean;
 import org.apache.activemq.broker.jmx.TopicView;
 import org.apache.activemq.util.JMXSupport;
 

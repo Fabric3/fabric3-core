@@ -57,9 +57,9 @@ import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.util.UriHelper;
 
 /**

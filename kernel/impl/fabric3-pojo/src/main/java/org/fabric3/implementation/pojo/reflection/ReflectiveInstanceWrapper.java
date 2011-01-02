@@ -46,8 +46,6 @@ package org.fabric3.implementation.pojo.reflection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -55,6 +53,8 @@ import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * @version $Rev$ $Date$

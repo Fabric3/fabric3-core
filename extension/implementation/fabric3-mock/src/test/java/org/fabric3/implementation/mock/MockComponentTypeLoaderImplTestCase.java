@@ -45,10 +45,10 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$

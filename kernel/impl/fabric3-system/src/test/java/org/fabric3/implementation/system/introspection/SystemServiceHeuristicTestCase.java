@@ -52,15 +52,15 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
+import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionException;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$

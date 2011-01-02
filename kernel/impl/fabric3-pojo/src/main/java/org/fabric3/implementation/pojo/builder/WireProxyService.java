@@ -49,9 +49,9 @@ import java.util.Map;
 
 import org.oasisopen.sca.ServiceReference;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.InteractionType;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

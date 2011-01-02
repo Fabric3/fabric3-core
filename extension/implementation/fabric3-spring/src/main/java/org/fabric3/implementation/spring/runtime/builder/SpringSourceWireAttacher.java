@@ -48,13 +48,13 @@ import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
 

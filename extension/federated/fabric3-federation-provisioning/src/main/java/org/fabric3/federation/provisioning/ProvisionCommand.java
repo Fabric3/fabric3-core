@@ -39,8 +39,8 @@ package org.fabric3.federation.provisioning;
 
 import java.net.URI;
 
-import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
  * Sent to a controller or zone peer to return the provisioning URL of a contribution artifact.

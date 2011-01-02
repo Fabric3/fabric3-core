@@ -48,8 +48,8 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.Role;
+import org.fabric3.api.SecuritySubject;
 import org.fabric3.runtime.tomcat.connector.ConnectorService;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;

@@ -39,8 +39,8 @@ package org.fabric3.databinding.jaxb.transform;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
 
 /**
  * @version $Rev$ $Date$

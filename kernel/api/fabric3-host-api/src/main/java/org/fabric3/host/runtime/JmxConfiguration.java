@@ -39,8 +39,8 @@ package org.fabric3.host.runtime;
 
 import java.util.Set;
 
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.api.Role;
+import org.fabric3.host.security.JmxSecurity;
 
 /**
  * Configuration for the JMX server.

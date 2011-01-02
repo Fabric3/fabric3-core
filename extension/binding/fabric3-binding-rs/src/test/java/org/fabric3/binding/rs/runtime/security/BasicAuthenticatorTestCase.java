@@ -46,8 +46,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.Role;
+import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;

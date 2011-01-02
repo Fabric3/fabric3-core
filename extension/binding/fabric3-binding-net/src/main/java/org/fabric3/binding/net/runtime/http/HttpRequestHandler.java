@@ -53,17 +53,11 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpChunk;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Values.CLOSE;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Values.KEEP_ALIVE;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_0;
-import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import org.fabric3.binding.net.NetBindingMonitor;
-import static org.fabric3.binding.net.provision.NetConstants.OPERATION_NAME;
 import org.fabric3.binding.net.runtime.WireHolder;
 import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.MessageEncoder;
@@ -77,6 +71,13 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+
+import static org.fabric3.binding.net.provision.NetConstants.OPERATION_NAME;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Values.CLOSE;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Values.KEEP_ALIVE;
+import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_0;
+import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * Handles incoming requests from an HTTP channel. This is placed on the service side of an invocation chain.

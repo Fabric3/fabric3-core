@@ -46,18 +46,12 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 
-import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
-import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.implementation.web.provision.WebComponentSourceDefinition;
-import static org.fabric3.implementation.web.provision.WebConstants.SERVLET_CONTEXT_SITE;
-import static org.fabric3.implementation.web.provision.WebConstants.SESSION_CONTEXT_SITE;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
-import static org.fabric3.implementation.web.provision.WebContextInjectionSite.ContextType.SERVLET_CONTEXT;
-import static org.fabric3.implementation.web.provision.WebContextInjectionSite.ContextType.SESSION_CONTEXT;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -66,21 +60,28 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalConsumer;
+import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectionSite;
+
+import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
+import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
+import static org.fabric3.implementation.web.provision.WebConstants.SERVLET_CONTEXT_SITE;
+import static org.fabric3.implementation.web.provision.WebConstants.SESSION_CONTEXT_SITE;
+import static org.fabric3.implementation.web.provision.WebContextInjectionSite.ContextType.SERVLET_CONTEXT;
+import static org.fabric3.implementation.web.provision.WebContextInjectionSite.ContextType.SESSION_CONTEXT;
 
 /**
  * Generates commands to provision a web component.

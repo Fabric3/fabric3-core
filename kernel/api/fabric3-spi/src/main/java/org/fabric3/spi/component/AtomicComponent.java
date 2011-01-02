@@ -43,9 +43,9 @@
  */
 package org.fabric3.spi.component;
 
+import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component

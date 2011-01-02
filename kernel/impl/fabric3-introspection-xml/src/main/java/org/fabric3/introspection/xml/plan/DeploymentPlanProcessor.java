@@ -38,8 +38,6 @@
 package org.fabric3.introspection.xml.plan;
 
 import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -49,8 +47,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.InstallException;
-import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
-import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceState;
@@ -61,6 +57,11 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.plan.DeploymentPlan;
+
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN;
+import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NAMESPACE;
 
 /**
  * Processes a deployment plan.

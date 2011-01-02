@@ -58,8 +58,6 @@ import org.fabric3.implementation.pojo.injection.ConversationIDObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -76,6 +74,8 @@ import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.fabric3.spi.model.type.java.ManagementInfo;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.util.ParamTypes;
 
 /**

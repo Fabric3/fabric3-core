@@ -43,9 +43,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.AuthorizationException;
 import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.UsernamePasswordToken;
-import org.fabric3.spi.security.AuthorizationException;
 
 /**
  *

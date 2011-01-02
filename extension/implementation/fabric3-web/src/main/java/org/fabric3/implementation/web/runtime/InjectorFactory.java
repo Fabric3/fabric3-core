@@ -40,9 +40,9 @@ package org.fabric3.implementation.web.runtime;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.model.type.java.InjectionSite;
 
 /**
  * Creates Injector collections for injecting references, properties and context proxies into web application artifacts. These include servlets,

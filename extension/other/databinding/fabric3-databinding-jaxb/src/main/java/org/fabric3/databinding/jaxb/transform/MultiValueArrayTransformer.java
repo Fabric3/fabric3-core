@@ -37,8 +37,8 @@
 */
 package org.fabric3.databinding.jaxb.transform;
 
-import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transformer that delegates to other transformers to convert an array of multiple types. If the source array is null, null will be returned.

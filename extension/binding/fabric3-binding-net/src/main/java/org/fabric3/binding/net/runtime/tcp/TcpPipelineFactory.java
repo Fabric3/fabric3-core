@@ -42,13 +42,14 @@ import java.util.concurrent.TimeUnit;
 import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
-import static org.jboss.netty.channel.Channels.pipeline;
 import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.handler.timeout.ReadTimeoutHandler;
 import org.jboss.netty.handler.timeout.Timer;
 import org.jboss.netty.handler.timeout.WriteTimeoutHandler;
+
+import static org.jboss.netty.channel.Channels.pipeline;
 
 /**
  * Creates a TCP channel pipeline for both clients and service providers.

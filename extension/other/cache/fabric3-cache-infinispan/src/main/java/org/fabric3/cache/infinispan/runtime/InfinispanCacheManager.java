@@ -38,7 +38,6 @@
 package org.fabric3.cache.infinispan.runtime;
 
 import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
-
 import org.fabric3.cache.spi.CacheManager;
 
 /**

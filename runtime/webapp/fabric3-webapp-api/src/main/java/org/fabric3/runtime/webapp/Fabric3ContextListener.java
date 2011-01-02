@@ -67,7 +67,6 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.host.Names;
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.ValidationException;
@@ -81,9 +80,11 @@ import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
 import org.fabric3.host.stream.Source;
+
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_DEFAULT;
 import static org.fabric3.runtime.webapp.Constants.APPLICATION_COMPOSITE_PATH_PARAM;
 import static org.fabric3.runtime.webapp.Constants.COMPONENT_PARAM;

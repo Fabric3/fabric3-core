@@ -37,19 +37,6 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.implementation.java.introspection.JavaImplementationProcessor;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.timer.spi.Task;
-
 /**
  * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */

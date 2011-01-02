@@ -43,9 +43,9 @@
  */
 package org.fabric3.implementation.pojo.instancefactory;
 
-import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Interface for a factory that returns an injected component instance. This is used by a Component implementation to create new instances of

@@ -55,9 +55,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBEAN;
-
 import org.fabric3.datasource.spi.DataSourceRegistry;
+
+import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBEAN;
 
 /**
  * Resolves datasources configured in WebLogic via JMX and populates the {@link DataSourceRegistry}. Specifically, this implementation walks the

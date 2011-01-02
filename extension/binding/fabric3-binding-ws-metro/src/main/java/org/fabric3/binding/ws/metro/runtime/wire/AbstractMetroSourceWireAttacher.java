@@ -37,16 +37,11 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
-import java.net.URI;
-
 import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
-import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.binding.ws.metro.runtime.core.EndpointException;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Base source wire attacher that provisions web service endpoints.

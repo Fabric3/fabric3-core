@@ -42,15 +42,15 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.Confidentiality;
-import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY;
-import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY_MESSAGE;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Requires;
 
 import org.fabric3.model.type.PolicyAware;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.introspection.java.annotation.PolicyAnnotationProcessorImpl;
+
+import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY;
+import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY_MESSAGE;
 
 /**
  * @version $Rev$ $Date$

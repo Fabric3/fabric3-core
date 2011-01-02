@@ -59,6 +59,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -71,7 +72,6 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.spi.generator.EffectivePolicy;
 
 /**
  * @version $Rev$ $Date$

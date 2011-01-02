@@ -37,10 +37,11 @@
 */
 package org.fabric3.api.annotation;
 
-import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation used to mark intent annotation methods that contain metadata data for an intent. For example, an authorizaton intent annotation may

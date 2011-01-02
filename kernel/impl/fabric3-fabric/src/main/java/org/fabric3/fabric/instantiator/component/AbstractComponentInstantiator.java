@@ -58,8 +58,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;

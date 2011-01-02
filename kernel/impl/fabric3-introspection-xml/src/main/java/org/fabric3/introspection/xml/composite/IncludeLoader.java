@@ -55,9 +55,10 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.stream.Source;
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
+import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -72,7 +73,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 
 /**
  * Loader that handles &lt;include&gt; elements.

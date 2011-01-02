@@ -43,8 +43,8 @@ import java.net.URI;
 import java.net.URL;
 
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.InputStreamSource;
+import org.fabric3.host.stream.Source;
 
 /**
  * A ContributionSource that wraps an underlying input stream to avoid closing it. This implementation is used to handle streams that contain multiple

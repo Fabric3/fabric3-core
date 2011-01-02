@@ -39,8 +39,8 @@ package org.fabric3.datasource.model;
 
 import java.util.List;
 
-import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * @version $Rev$ $Date$

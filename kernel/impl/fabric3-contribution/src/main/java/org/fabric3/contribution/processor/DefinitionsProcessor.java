@@ -41,7 +41,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -52,6 +51,8 @@ import org.fabric3.spi.contribution.xml.XmlProcessor;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
+
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Processes a contributed definitions file.

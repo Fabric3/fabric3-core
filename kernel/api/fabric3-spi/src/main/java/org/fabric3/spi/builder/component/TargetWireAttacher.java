@@ -43,10 +43,10 @@
  */
 package org.fabric3.spi.builder.component;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
 /**

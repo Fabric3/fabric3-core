@@ -47,7 +47,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.net.provision.HttpSourceDefinition;
 import org.fabric3.binding.net.runtime.TransportService;
 import org.fabric3.binding.net.runtime.WireHolder;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.ParameterEncoder;
 import org.fabric3.spi.binding.format.ParameterEncoderFactory;
@@ -55,6 +54,7 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

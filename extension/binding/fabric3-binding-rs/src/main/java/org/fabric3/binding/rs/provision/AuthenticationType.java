@@ -37,10 +37,6 @@
 */
 package org.fabric3.binding.rs.provision;
 
-import java.net.URI;
-
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-
 /**
  * @version $Rev$ $Date$
  */

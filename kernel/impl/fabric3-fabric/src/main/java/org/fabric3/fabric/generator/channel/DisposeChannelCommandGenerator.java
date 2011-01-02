@@ -40,7 +40,6 @@ package org.fabric3.fabric.generator.channel;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;

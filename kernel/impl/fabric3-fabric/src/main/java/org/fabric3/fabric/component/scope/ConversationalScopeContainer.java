@@ -62,7 +62,6 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ConversationExpirationCallback;
@@ -76,6 +75,7 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
 import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Scope container for the standard CONVERSATIONAL scope.

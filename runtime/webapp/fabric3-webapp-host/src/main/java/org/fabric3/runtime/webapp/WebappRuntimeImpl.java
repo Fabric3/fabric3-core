@@ -53,15 +53,14 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.host.Names;
-import org.fabric3.host.runtime.RuntimeConfiguration;
-
-import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
-import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
-
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.runtime.RuntimeConfiguration;
+
+import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
+import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 
 /**
  * Bootstrapper for the Fabric3 runtime in a web application host. This listener manages one runtime per servlet context; the lifecycle of that

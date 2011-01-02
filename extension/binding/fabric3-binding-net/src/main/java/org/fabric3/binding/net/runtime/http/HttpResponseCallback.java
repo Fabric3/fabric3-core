@@ -37,11 +37,12 @@
 */
 package org.fabric3.binding.net.runtime.http;
 
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import org.fabric3.spi.binding.format.ResponseEncodeCallback;
+
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 
 /**
  * ResponseEncodeCallback for an HTTP response.

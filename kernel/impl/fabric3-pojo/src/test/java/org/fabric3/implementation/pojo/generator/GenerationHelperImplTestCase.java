@@ -47,13 +47,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
 
 /**
  * @version $Rev$ $Date$

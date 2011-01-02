@@ -45,6 +45,8 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluationException;
 import org.fabric3.policy.infoset.PolicyEvaluator;
+import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalAttachPoint;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -54,8 +56,6 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.generator.policy.PolicyAttacher;
-import org.fabric3.spi.generator.policy.PolicyRegistry;
 
 /**
  * @version $Rev$ $Date$

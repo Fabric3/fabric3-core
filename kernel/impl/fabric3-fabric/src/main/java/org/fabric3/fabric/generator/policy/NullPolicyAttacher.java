@@ -40,9 +40,9 @@ package org.fabric3.fabric.generator.policy;
 import java.util.List;
 
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 
 /**

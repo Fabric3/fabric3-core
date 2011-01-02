@@ -45,7 +45,6 @@ package org.fabric3.introspection.java.annotation;
 
 import org.osoa.sca.annotations.Scope;
 
-import org.fabric3.api.annotation.scope.Composite;
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;

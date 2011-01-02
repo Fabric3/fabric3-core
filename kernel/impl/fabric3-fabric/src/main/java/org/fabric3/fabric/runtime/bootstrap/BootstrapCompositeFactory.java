@@ -44,7 +44,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
@@ -55,6 +54,7 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;

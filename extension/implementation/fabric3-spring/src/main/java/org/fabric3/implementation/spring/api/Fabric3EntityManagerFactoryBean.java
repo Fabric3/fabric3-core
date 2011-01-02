@@ -43,9 +43,10 @@ import javax.persistence.PersistenceException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
-import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
+
+import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 
 /**
  * Integrates Fabric3 EntityManagerFactory parsing with Spring. This class can be configured in an end-user Spring application context to make entity

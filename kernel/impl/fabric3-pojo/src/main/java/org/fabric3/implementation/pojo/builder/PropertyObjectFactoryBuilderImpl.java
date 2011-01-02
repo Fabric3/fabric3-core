@@ -55,18 +55,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
-
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.ParamTypes;
+
+import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
  * @version $Rev$ $Date$

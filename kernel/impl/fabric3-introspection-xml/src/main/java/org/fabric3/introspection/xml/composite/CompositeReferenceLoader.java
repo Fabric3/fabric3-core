@@ -51,11 +51,9 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.common.BindingHelper;
@@ -73,6 +71,9 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a reference from a composite.

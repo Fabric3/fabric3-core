@@ -50,7 +50,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.oasisopen.sca.Constants;
-import static org.oasisopen.sca.Constants.SCA_NS;
 
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
@@ -61,6 +60,8 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $

@@ -38,7 +38,6 @@
 package org.fabric3.implementation.timer.runtime;
 
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.spi.component.InstanceDestructionException;
 
 /**
  * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $

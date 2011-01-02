@@ -40,11 +40,9 @@ package org.fabric3.introspection.xml.definitions;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.oasisopen.sca.Constants.SCA_NS;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -53,13 +51,15 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Indexer for definitions.

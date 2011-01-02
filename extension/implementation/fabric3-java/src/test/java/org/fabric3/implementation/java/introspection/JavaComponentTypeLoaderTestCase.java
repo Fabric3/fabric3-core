@@ -42,12 +42,12 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionException;
+import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.spi.introspection.java.HeuristicProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$

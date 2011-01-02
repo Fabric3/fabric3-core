@@ -47,8 +47,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.component.Component;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * The runtime representation of a Spring component. A Spring component has an associated application context that manages Spring beans.

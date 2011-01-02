@@ -61,14 +61,14 @@ import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$

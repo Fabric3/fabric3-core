@@ -52,11 +52,11 @@ import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

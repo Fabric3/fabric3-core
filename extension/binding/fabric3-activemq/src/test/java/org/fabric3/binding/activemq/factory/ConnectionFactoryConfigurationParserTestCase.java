@@ -39,21 +39,11 @@ package org.fabric3.binding.activemq.factory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.jms.ConnectionFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQXAConnectionFactory;
-import org.easymock.EasyMock;
-
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
  * @version $Rev$ $Date$

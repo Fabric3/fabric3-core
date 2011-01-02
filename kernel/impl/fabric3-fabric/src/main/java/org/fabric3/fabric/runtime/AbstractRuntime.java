@@ -43,7 +43,6 @@
  */
 package org.fabric3.fabric.runtime;
 
-import java.io.IOException;
 import java.net.URI;
 import javax.management.MBeanServer;
 import javax.xml.namespace.QName;

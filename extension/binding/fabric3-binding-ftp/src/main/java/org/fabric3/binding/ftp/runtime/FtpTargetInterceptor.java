@@ -49,10 +49,10 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.binding.ftp.provision.FtpSecurity;
-import org.fabric3.transport.ftp.api.FtpConstants;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.transport.ftp.api.FtpConstants;
 
 /**
  * @version $Rev$ $Date$

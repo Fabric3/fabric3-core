@@ -41,9 +41,9 @@ import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-import org.fabric3.spi.generator.PolicyMetadata;
 
 /**
  * Utility InterceptorGenerator that can be used to avoid generating an interceptor definition for interception-phase policy.

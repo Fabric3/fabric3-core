@@ -38,9 +38,9 @@
 package org.fabric3.binding.ws.metro.runtime.wire;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
@@ -56,12 +56,12 @@ import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

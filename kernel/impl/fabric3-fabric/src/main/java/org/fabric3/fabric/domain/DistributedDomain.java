@@ -55,9 +55,9 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

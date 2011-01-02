@@ -51,25 +51,26 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.model.type.PolicyAware;
-import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
+
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class JMSBindingLoaderTestCase extends TestCase {
     public void testLoaderJMSBindingElement() throws Exception {

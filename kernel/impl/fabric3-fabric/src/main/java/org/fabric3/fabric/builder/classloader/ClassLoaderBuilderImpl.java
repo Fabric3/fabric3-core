@@ -53,7 +53,6 @@ import java.util.List;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
@@ -65,6 +64,8 @@ import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
+
+import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 
 /**
  * Default implementation of ClassLoaderBuilder.

@@ -42,12 +42,12 @@ import java.net.URI;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**

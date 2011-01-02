@@ -45,7 +45,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import static org.oasisopen.sca.Constants.SCA_NS;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -53,6 +52,8 @@ import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+
+import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * @version $Rev$ $Date$

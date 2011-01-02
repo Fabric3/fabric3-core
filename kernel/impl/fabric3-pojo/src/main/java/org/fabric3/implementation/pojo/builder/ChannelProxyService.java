@@ -46,9 +46,9 @@ package org.fabric3.implementation.pojo.builder;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates proxies fronting event channel connections.

@@ -59,7 +59,6 @@ import org.fabric3.binding.net.NetBindingMonitor;
 import org.fabric3.binding.net.config.HttpConfig;
 import org.fabric3.binding.net.provision.HttpTargetDefinition;
 import org.fabric3.binding.net.runtime.OneWayClientHandler;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.binding.format.EncoderException;
 import org.fabric3.spi.binding.format.MessageEncoder;
 import org.fabric3.spi.binding.format.ParameterEncoder;
@@ -69,6 +68,7 @@ import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

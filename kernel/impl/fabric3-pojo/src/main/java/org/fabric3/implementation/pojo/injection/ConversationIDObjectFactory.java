@@ -37,11 +37,11 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 public class ConversationIDObjectFactory implements ObjectFactory<String> {
 

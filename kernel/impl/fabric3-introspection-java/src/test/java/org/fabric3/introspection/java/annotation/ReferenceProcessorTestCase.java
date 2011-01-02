@@ -53,13 +53,13 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.TypeMapping;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 @SuppressWarnings("unchecked")
 public class ReferenceProcessorTestCase extends TestCase {

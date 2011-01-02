@@ -45,9 +45,9 @@ import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.generator.PolicyMetadata;
 
 /**
  * Generates interceptors that perform role-based authorization checks for a service invocation.

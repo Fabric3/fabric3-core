@@ -60,8 +60,8 @@ import javax.xml.namespace.QName;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.classloader.ClassLoaderObjectInputStream;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.generator.EffectivePolicy;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**

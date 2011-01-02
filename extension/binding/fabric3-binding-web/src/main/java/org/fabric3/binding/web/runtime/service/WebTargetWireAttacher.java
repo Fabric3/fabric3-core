@@ -42,10 +42,10 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.web.provision.WebTargetDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 

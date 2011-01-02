@@ -51,9 +51,9 @@ import org.osoa.sca.annotations.Scope;
 import org.fabric3.api.annotation.scope.Composite;
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 import static org.fabric3.model.type.component.Scope.COMPOSITE;
 import static org.fabric3.model.type.component.Scope.DOMAIN;

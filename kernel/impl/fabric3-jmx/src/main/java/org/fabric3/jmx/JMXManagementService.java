@@ -65,13 +65,13 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.security.JmxSecurity;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
 import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 
 /**

@@ -52,8 +52,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
 import org.fabric3.host.runtime.Fabric3Runtime;
-import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import org.fabric3.runtime.weblogic.api.ServletRequestDispatcher;
+
+import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import static org.fabric3.runtime.weblogic.api.ServletRequestDispatcher.SERVLET_REQUEST_DISPATCHER;
 
 /**

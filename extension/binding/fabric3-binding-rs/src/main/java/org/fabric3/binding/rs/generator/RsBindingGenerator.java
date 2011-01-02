@@ -52,11 +52,11 @@ import org.fabric3.binding.rs.provision.RsTargetDefinition;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.generator.EffectivePolicy;
 
 /**
  * Implementation of the REST binding generator.

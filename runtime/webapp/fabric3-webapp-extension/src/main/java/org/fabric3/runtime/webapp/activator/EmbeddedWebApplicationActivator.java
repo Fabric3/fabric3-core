@@ -57,9 +57,9 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
+import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.host.ServletHost;
 
 /**
  * A WebApplicationActivator used in a runtime embedded in a WAR.

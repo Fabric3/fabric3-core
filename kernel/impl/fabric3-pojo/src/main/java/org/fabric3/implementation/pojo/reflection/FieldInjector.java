@@ -46,9 +46,9 @@ package org.fabric3.implementation.pojo.reflection;
 import java.lang.reflect.Field;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.Injector;
 
 /**
  * Injects a value created by an {@link ObjectFactory} on a given field.

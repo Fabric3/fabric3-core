@@ -44,13 +44,13 @@
 package org.fabric3.implementation.pojo.reflection;
 
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$
