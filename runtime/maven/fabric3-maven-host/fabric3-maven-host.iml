@@ -16,10 +16,9 @@
     <orderEntry type="module" module-name="fabric3-host-api" />
     <orderEntry type="module" module-name="fabric3-model" />
     <orderEntry type="module" module-name="fabric3-api" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
     <orderEntry type="module" module-name="fabric3-management-api" />
-    <orderEntry type="library" name="Maven: org.apache.maven.surefire:surefire-api:2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.surefire:surefire-api:2.6" level="project" />
     <orderEntry type="module" module-name="fabric3-fabric" />
     <orderEntry type="module" module-name="fabric3-spi" />
     <orderEntry type="module" module-name="fabric3-monitor" />
@@ -41,6 +40,7 @@
     <orderEntry type="library" name="Maven: org.apache.maven:maven-core:2.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-settings:2.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-model:2.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-container-default:1.0-alpha-9" level="project" />
     <orderEntry type="library" name="Maven: classworlds:classworlds:1.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.maven.wagon:wagon-file:1.0-alpha-7" level="project" />

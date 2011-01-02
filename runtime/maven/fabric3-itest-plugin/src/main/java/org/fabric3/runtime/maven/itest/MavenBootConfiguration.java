@@ -45,6 +45,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 
 public class MavenBootConfiguration {
+    private int mavenVersion;
     private File outputDirectory;
     private String systemConfigDir;
     private String systemConfig;
@@ -54,6 +55,14 @@ public class MavenBootConfiguration {
     private Set<Dependency> extensions;
     private Log log;
     private ExtensionHelper extensionHelper;
+
+    public void setMavenVersion(int mavenVersion) {
+        this.mavenVersion = mavenVersion;
+    }
+
+    public int getMavenVersion() {
+        return mavenVersion;
+    }
 
     public File getOutputDirectory() {
         return outputDirectory;

@@ -49,6 +49,7 @@ import java.util.Map;
 import org.apache.maven.surefire.report.ReportEntry;
 import org.apache.maven.surefire.report.ReporterException;
 import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.report.ReporterManagerFactory;
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 
@@ -66,28 +67,27 @@ public class SCATestSuite implements SurefireTestSuite {
         testCount += testSet.getTestCount();
     }
 
+    public void execute(ReporterManagerFactory reporterManagerFactory, ClassLoader classLoader) throws ReporterException, TestSetFailedException {
+        ReporterManager reporterManager = reporterManagerFactory.createReporterManager();
+        for (SCATestSet testSet : testSets.values()) {
+            execute(testSet, reporterManager, classLoader);
+        }
+    }
+
+    public void execute(String testSetName, ReporterManagerFactory reporterManagerFactory, ClassLoader classLoader)
+            throws ReporterException, TestSetFailedException {
+        ReporterManager reporterManager = reporterManagerFactory.createReporterManager();
+        for (SCATestSet testSet : testSets.values()) {
+            execute(testSet, reporterManager, classLoader);
+        }
+    }
+
     public int getNumTests() {
         return testCount;
     }
 
     public int getNumTestSets() {
         return testSetCount;
-    }
-
-    public void execute(ReporterManager reporterManager, ClassLoader classLoader)
-            throws ReporterException, TestSetFailedException {
-        for (SCATestSet testSet : testSets.values()) {
-            execute(testSet, reporterManager, classLoader);
-        }
-    }
-
-    public void execute(String name, ReporterManager reporterManager, ClassLoader classLoader)
-            throws ReporterException, TestSetFailedException {
-        SCATestSet testSet = testSets.get(name);
-        if (testSet == null) {
-            throw new TestSetFailedException("Suite does not contain TestSet: " + name);
-        }
-        execute(testSet, reporterManager, classLoader);
     }
 
     protected void execute(SCATestSet testSet, ReporterManager reporterManager, ClassLoader classLoader)

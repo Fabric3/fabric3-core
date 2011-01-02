@@ -78,7 +78,7 @@ public class ArtifactHelper {
 
     private MavenProject project;
     private ArtifactRepository localRepository;
-    private List<?> remoteRepositories;
+    private List<ArtifactRepository> remoteRepositories;
 
     /**
      * Sets the local repository.
@@ -99,11 +99,15 @@ public class ArtifactHelper {
         this.remoteRepositories = project.getRemoteArtifactRepositories();
     }
 
-    public Set<Artifact> calculateRuntimeArtifacts(String runtimeVersion) throws MojoExecutionException {
+    public Set<Artifact> calculateRuntimeArtifacts(String runtimeVersion, int mavenVersion) throws MojoExecutionException {
         List<Exclusion> exclusions = Collections.emptyList();
         Dependency dependency = new Dependency();
         dependency.setGroupId("org.codehaus.fabric3");
-        dependency.setArtifactId("fabric3-maven-host");
+        if (mavenVersion == 2) {
+            dependency.setArtifactId("fabric3-maven-host");
+        } else {
+            dependency.setArtifactId("fabric3-maven3-host");
+        }
         dependency.setVersion(runtimeVersion);
         dependency.setExclusions(exclusions);
         return resolveArtifacts(dependency, true);
@@ -115,7 +119,7 @@ public class ArtifactHelper {
      *
      * @param projectArtifacts the artifact set to determine module dependencies from
      * @param hostArtifacts    the set of host artifacts
-     * @return the set of URLs pointing to module depedencies.
+     * @return the set of URLs pointing to module dependencies.
      */
     public Set<URL> calculateModuleDependencies(Set<Artifact> projectArtifacts, Set<Artifact> hostArtifacts) {
         Set<URL> urls = new LinkedHashSet<URL>();
@@ -240,7 +244,7 @@ public class ArtifactHelper {
                 Artifact artifact =
                         artifactFactory.createArtifact(profile.getGroupId(), profile.getArtifactId(), profile.getVersion(), "compile", "jar");
                 ResolutionGroup resolutionGroup = metadataSource.retrieve(artifact, localRepository, remoteRepositories);
-                Set<Artifact> extensions = (Set<Artifact>) resolutionGroup.getArtifacts();
+                Set<Artifact> extensions = resolutionGroup.getArtifacts();
                 for (Artifact extension : extensions) {
                     Dependency dependency = new Dependency();
                     dependency.setGroupId(extension.getGroupId());
@@ -324,7 +328,7 @@ public class ArtifactHelper {
                                                                            remoteRepositories,
                                                                            metadataSource,
                                                                            filter);
-            return (Set<Artifact>) result.getArtifacts();
+            return result.getArtifacts();
 
         } catch (ArtifactResolutionException e) {
             throw new MojoExecutionException(e.getMessage(), e);

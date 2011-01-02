@@ -83,10 +83,12 @@ import org.fabric3.runtime.maven.MavenRuntime;
 public class MavenRuntimeBooter {
     private static final String SYSTEM_CONFIG_XML_FILE = "systemConfig.xml";
     private static final String DEFAULT_SYSTEM_CONFIG_DIR = "test-classes" + File.separator + "META-INF" + File.separator;
-    private static final String RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
+    private static final String MAVEN2_RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
+    private static final String MAVEN3_RUNTIME_IMPL = "org.fabric3.runtime.maven3.impl.Maven3RuntimeImpl";
     private static final String DOMAIN = "fabric3://domain";
 
     // configuration elements
+    private int mavenVersion;
     private File outputDirectory;
     private String systemConfigDir;
     private String systemConfig;
@@ -101,6 +103,7 @@ public class MavenRuntimeBooter {
     private ExtensionHelper extensionHelper;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
+        mavenVersion = configuration.getMavenVersion();
         outputDirectory = configuration.getOutputDirectory();
         systemConfigDir = configuration.getSystemConfigDir();
         systemConfig = configuration.getSystemConfig();
@@ -213,7 +216,12 @@ public class MavenRuntimeBooter {
 
     private MavenRuntime instantiateRuntime(RuntimeConfiguration configuration, ClassLoader cl) {
         try {
-            Class<?> implClass = cl.loadClass(RUNTIME_IMPL);
+            Class<?> implClass;
+            if (mavenVersion == 2) {
+                implClass = cl.loadClass(MAVEN2_RUNTIME_IMPL);
+            } else {
+                implClass = cl.loadClass(MAVEN3_RUNTIME_IMPL);
+            }
             return MavenRuntime.class.cast(implClass.getConstructor(RuntimeConfiguration.class).newInstance(configuration));
         } catch (ClassNotFoundException e) {
             // programming error

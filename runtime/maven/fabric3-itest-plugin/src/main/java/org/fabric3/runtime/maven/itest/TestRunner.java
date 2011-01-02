@@ -46,16 +46,15 @@ package org.fabric3.runtime.maven.itest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.surefire.report.BriefConsoleReporter;
 import org.apache.maven.surefire.report.BriefFileReporter;
-import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterException;
-import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.report.ReporterManagerFactory;
+import org.apache.maven.surefire.report.RunStatistics;
 import org.apache.maven.surefire.report.XMLReporter;
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.apache.maven.surefire.testset.TestSetFailedException;
@@ -69,7 +68,7 @@ import org.fabric3.runtime.maven.MavenRuntime;
  */
 public class TestRunner {
     private File reportsDirectory;
-    private boolean trimStackTrace;
+    private Boolean trimStackTrace;
     private Log log;
 
     public TestRunner(File reportsDirectory, boolean trimStackTrace, Log log) {
@@ -82,7 +81,6 @@ public class TestRunner {
         SurefireTestSuite testSuite;
         testSuite = runtime.createTestSuite();
         log.info("Executing tests...");
-
         boolean success = runTests(testSuite);
         if (!success) {
             String msg = "There were test failures";
@@ -90,12 +88,18 @@ public class TestRunner {
         }
     }
 
-    private boolean runTests(SurefireTestSuite testSuite) throws MojoExecutionException {
+    @SuppressWarnings({"unchecked"})
+    private boolean runTests(SurefireTestSuite suite) throws MojoExecutionException {
         try {
-            Properties status = new Properties();
-            boolean success = runTests(testSuite, status);
-            log.debug("Test results: " + status);
-            return success;
+            List definitions = new ArrayList();
+            Object[] params = new Object[]{reportsDirectory, trimStackTrace};
+            definitions.add(new Object[]{XMLReporter.class.getName(), params});
+            definitions.add(new Object[]{BriefFileReporter.class.getName(), params});
+            definitions.add(new Object[]{BriefConsoleReporter.class.getName(), new Object[]{trimStackTrace}});
+            ReporterManagerFactory factory = new ReporterManagerFactory(definitions, getClass().getClassLoader());
+            suite.execute(factory, null);
+            RunStatistics statistics = factory.getGlobalRunStatistics();
+            return statistics.getErrorSources().isEmpty() && statistics.getFailureSources().isEmpty();
         } catch (ReporterException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         } catch (TestSetFailedException e) {
@@ -104,26 +108,4 @@ public class TestRunner {
 
     }
 
-    private boolean runTests(SurefireTestSuite suite, Properties status) throws ReporterException, TestSetFailedException {
-        int totalTests = suite.getNumTests();
-
-        List<Reporter> reports = new ArrayList<Reporter>();
-        reports.add(new XMLReporter(reportsDirectory, trimStackTrace));
-        reports.add(new BriefFileReporter(reportsDirectory, trimStackTrace));
-        reports.add(new BriefConsoleReporter(trimStackTrace));
-        ReporterManager reporterManager = new ReporterManager(reports);
-        reporterManager.initResultsFromProperties(status);
-
-        reporterManager.runStarting(totalTests);
-
-        if (totalTests == 0) {
-            reporterManager.writeMessage("There are no tests to run.");
-        } else {
-            suite.execute(reporterManager, null);
-        }
-
-        reporterManager.runCompleted();
-        reporterManager.updateResultsProperties(status);
-        return reporterManager.getNumErrors() == 0 && reporterManager.getNumFailures() == 0;
-    }
 }

@@ -56,6 +56,7 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.execution.RuntimeInformation;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -63,13 +64,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
- * Run integration tests on a SCA composite using an embedded Fabric3 runtime.
+ * Runs an embedded Fabric3 runtime for integration testing.
  *
  * @version $Rev$ $Date$
  * @goal test
@@ -96,6 +96,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @required
      */
     protected MavenProject project;
+
 
     /**
      * The optional target namespace of the composite to activate.
@@ -221,6 +222,12 @@ public class Fabric3ITestMojo extends AbstractMojo {
      */
     public String[] hiddenPackages = new String[]{"javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap.", "org.springframework."};
 
+    /**
+     * @component
+     */
+    public RuntimeInformation runtimeInformation;
+
+
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip) {
@@ -271,8 +278,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @throws MojoExecutionException if there is an error creating the configuration
      */
     private MavenBootConfiguration createBootConfiguration() throws MojoExecutionException {
-
-        Set<Artifact> runtimeArtifacts = artifactHelper.calculateRuntimeArtifacts(runtimeVersion);
+        int mavenVersion = runtimeInformation.getApplicationVersion().getMajorVersion();
+        Set<Artifact> runtimeArtifacts = artifactHelper.calculateRuntimeArtifacts(runtimeVersion, mavenVersion);
         Set<Artifact> hostArtifacts = artifactHelper.calculateHostArtifacts(runtimeArtifacts, shared);
         Set<Artifact> dependencies = artifactHelper.calculateDependencies();
         Set<URL> moduleDependencies = artifactHelper.calculateModuleDependencies(dependencies, hostArtifacts);
@@ -293,6 +300,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
         ClassLoader bootClassLoader = createBootClassLoader(hostClassLoader, runtimeArtifacts);
 
         MavenBootConfiguration configuration = new MavenBootConfiguration();
+        configuration.setMavenVersion(mavenVersion);
         configuration.setBootClassLoader(bootClassLoader);
         configuration.setHostClassLoader(hostClassLoader);
         configuration.setLog(getLog());
@@ -435,11 +443,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
         extensions.add(dependency);
 
         return extensions;
-    }
-
-    public interface MojoMonitor {
-        @Severe
-        void runError(Exception e);
     }
 
 }

@@ -44,18 +44,13 @@
 package org.fabric3.runtime.maven.repository;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.maven.artifact.Artifact.SCOPE_RUNTIME;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -74,7 +69,6 @@ import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.Settings;
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.DefaultClassRealm;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -82,31 +76,22 @@ import org.codehaus.plexus.embed.Embedder;
 
 import org.fabric3.host.repository.RepositoryException;
 
+import static org.apache.maven.artifact.Artifact.SCOPE_RUNTIME;
+import static org.apache.maven.artifact.repository.ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN;
+import static org.apache.maven.artifact.repository.ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS;
+
 /**
  * Utility class for embedding Maven.
  *
  * @version $Rev$ $Date$
  */
 public class MavenHelper {
-    private final String[] remoteRepositoryUrls;
+    private static final String DEFAULT_REPO = "http://repo1.maven.org/maven2/";
     private ArtifactMetadataSource metadataSource;
     private ArtifactFactory artifactFactory;
     private ArtifactRepository localRepository;
     private List<ArtifactRepository> remoteRepositories = new LinkedList<ArtifactRepository>();
-    private List<ArtifactRepository> remoteMirrors = new LinkedList<ArtifactRepository>();
     private ArtifactResolver artifactResolver;
-    private boolean online;
-
-    /**
-     * Initialize the remote repository URLs.
-     *
-     * @param remoteRepositoryUrl Remote repository URLS.
-     * @param online              whether the runtime is online or not
-     */
-    public MavenHelper(String remoteRepositoryUrl, boolean online) {
-        this.remoteRepositoryUrls = remoteRepositoryUrl.split(",");
-        this.online = online;
-    }
 
     /**
      * Starts the embedder.
@@ -114,29 +99,11 @@ public class MavenHelper {
      * @throws RepositoryException If unable to start the embedder.
      */
     public void start() throws RepositoryException {
-
         try {
-
             Embedder embedder = new Embedder();
             ClassWorld classWorld = new ClassWorld();
 
             classWorld.newRealm("plexus.fabric", getClass().getClassLoader());
-
-            // Evil hack for Tomcat classloader issue - starts
-            Field realmsField = ClassWorld.class.getDeclaredField("realms");
-            realmsField.setAccessible(true);
-            Map realms = (Map) realmsField.get(classWorld);
-            DefaultClassRealm realm = (DefaultClassRealm) realms.get("plexus.fabric");
-
-            Class clazz = Class.forName("org.codehaus.classworlds.RealmClassLoader");
-            Constructor ctr = clazz.getDeclaredConstructor(DefaultClassRealm.class, ClassLoader.class);
-            ctr.setAccessible(true);
-            Object realmClassLoader = ctr.newInstance(realm, getClass().getClassLoader());
-
-            Field realmClassLoaderField = DefaultClassRealm.class.getDeclaredField("classLoader");
-            realmClassLoaderField.setAccessible(true);
-            realmClassLoaderField.set(realm, realmClassLoader);
-            // Evil hack for Tomcat classloader issue - ends
 
             embedder.start(classWorld);
 
@@ -154,18 +121,6 @@ public class MavenHelper {
             throw new RepositoryException(ex);
         } catch (ComponentLookupException ex) {
             throw new RepositoryException(ex);
-        } catch (NoSuchFieldException ex) {
-            throw new RepositoryException(ex);
-        } catch (IllegalAccessException ex) {
-            throw new RepositoryException(ex);
-        } catch (ClassNotFoundException ex) {
-            throw new RepositoryException(ex);
-        } catch (NoSuchMethodException ex) {
-            throw new RepositoryException(ex);
-        } catch (InstantiationException ex) {
-            throw new RepositoryException(ex);
-        } catch (InvocationTargetException ex) {
-            throw new RepositoryException(ex);
         }
 
     }
@@ -174,7 +129,7 @@ public class MavenHelper {
      * Resolves the dependencies transitively.
      *
      * @param rootArtifact Artifact whose dependencies need to be resolved.
-     * @return true if the artifact was succesfully resolved
+     * @return true if the artifact was successfully resolved
      * @throws RepositoryException If unable to resolve the dependencies.
      */
     public boolean resolveTransitively(Artifact rootArtifact) throws RepositoryException {
@@ -229,13 +184,10 @@ public class MavenHelper {
             ArtifactRepositoryFactory artifactRepositoryFactory =
                     (ArtifactRepositoryFactory) embedder.lookup(ArtifactRepositoryFactory.ROLE);
 
-            ArtifactRepositoryLayout layout =
-                    (ArtifactRepositoryLayout) embedder.lookup(ArtifactRepositoryLayout.ROLE, "default");
+            ArtifactRepositoryLayout layout = (ArtifactRepositoryLayout) embedder.lookup(ArtifactRepositoryLayout.ROLE, "default");
 
-            String updatePolicy = online ? ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS : ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER;
-            ArtifactRepositoryPolicy snapshotsPolicy =
-                    new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
-            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, UPDATE_POLICY_ALWAYS, CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, UPDATE_POLICY_ALWAYS, CHECKSUM_POLICY_WARN);
 
             MavenSettingsBuilder settingsBuilder = (MavenSettingsBuilder) embedder.lookup(MavenSettingsBuilder.ROLE);
 
@@ -245,10 +197,7 @@ public class MavenHelper {
             String fileUrl = new File(localRepo).toURI().toURL().toString();
             localRepository = artifactRepositoryFactory.createArtifactRepository("local", fileUrl, layout, snapshotsPolicy, releasesPolicy);
 
-            if (online) {
-                setupRemoteRepositories(settings, artifactRepositoryFactory, layout, snapshotsPolicy, releasesPolicy);
-                setupMirrors(settings, artifactRepositoryFactory, layout, snapshotsPolicy, releasesPolicy);
-            }
+            setupRemoteRepositories(settings, artifactRepositoryFactory, layout, snapshotsPolicy, releasesPolicy);
 
         } catch (Exception ex) {
             throw new RepositoryException(ex);
@@ -273,37 +222,13 @@ public class MavenHelper {
 
         // Read repository urls from settings file
         List<String> repositoryUrls = resolveActiveProfileRepositories(settings);
-        repositoryUrls.addAll(Arrays.asList(remoteRepositoryUrls));
+        repositoryUrls.add(DEFAULT_REPO);
 
         for (String url : repositoryUrls) {
             ArtifactRepository repository = createArtifactRepository(url, factory, layout, snapshotsPolicy, releasesPolicy);
             remoteRepositories.add(repository);
         }
     }
-
-    /**
-     * Read mirror URLs from settings and create artifact repositories
-     *
-     * @param settings
-     * @param factory
-     * @param layout
-     * @param snapshotsPolicy
-     * @param releasesPolicy
-     */
-    private void setupMirrors(Settings settings,
-                              ArtifactRepositoryFactory factory,
-                              ArtifactRepositoryLayout layout,
-                              ArtifactRepositoryPolicy snapshotsPolicy,
-                              ArtifactRepositoryPolicy releasesPolicy) {
-
-        List<String> mirrorUrls = resolveMirrorUrls(settings);
-        for (String mirrorUrl : mirrorUrls) {
-            ArtifactRepository repository = createArtifactRepository(mirrorUrl, factory, layout, snapshotsPolicy, releasesPolicy);
-            remoteMirrors.add(repository);
-        }
-
-    }
-
 
     private static ArtifactRepository createArtifactRepository(String repositoryUrl,
                                                                ArtifactRepositoryFactory artifactRepositoryFactory,

@@ -31,6 +31,7 @@
 
     <modules>
         <module>fabric3-maven-api</module>
+        <module>fabric3-maven3-host</module>
         <module>fabric3-maven-host</module>
         <module>fabric3-maven-extension</module>
         <module>fabric3-itest-plugin</module>

@@ -42,10 +42,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 
@@ -54,20 +50,11 @@ import org.fabric3.host.repository.RepositoryException;
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class MavenRepository implements Repository {
-    private static final String DEFAULT_REPO = "http://repo1.maven.org/maven2/";
-    private String remoteRepositories = DEFAULT_REPO;
     private MavenHelper helper;
 
-    @Property(required = false)
-    public void setRemoteRepositories(String remoteRepositories) {
-        this.remoteRepositories = remoteRepositories;
-    }
-
-    @Init
     public void init() throws RepositoryException {
-        helper = new MavenHelper(remoteRepositories, true);
+        helper = new MavenHelper();
         helper.start();
     }
 
@@ -103,7 +90,6 @@ public class MavenRepository implements Repository {
     }
 
     public void remove(URI uri) {
-        throw new UnsupportedOperationException();
     }
 
     public List<URI> list() {
