@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-runtime-tomcat-parent-pom</artifactId>
-        <version>1.7</version>
+        <version>1.8-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3.tomcat</groupId>
     <artifactId>fabric3-tomcat-extension</artifactId>
