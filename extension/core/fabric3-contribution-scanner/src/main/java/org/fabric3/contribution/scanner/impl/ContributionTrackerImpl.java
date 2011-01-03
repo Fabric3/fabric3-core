@@ -63,11 +63,6 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * Records contributions deployed via a deployment directory in a journal.
- * <p/>
- * Used to determine contributions that have been copied to a deployment directory while a runtime is offline (they will not be recorded in the
- * journal) so they may be properly deployed when the runtime recovers.
- *
  * @version $Rev$ $Date$
  */
 public class ContributionTrackerImpl implements ContributionTracker {

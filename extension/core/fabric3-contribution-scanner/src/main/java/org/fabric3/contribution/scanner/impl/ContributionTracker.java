@@ -38,16 +38,35 @@
 package org.fabric3.contribution.scanner.impl;
 
 /**
- * A directory resource.
+ * Records contributions deployed via a deployment directory in a journal.
+ * <p/>
+ * Used to determine contributions that have been copied to a deployment directory while a runtime is offline (they will not be recorded in the
+ * journal) so they may be properly deployed when the runtime recovers.
  *
  * @version $Rev: 9626 $ $Date: 2010-11-01 00:37:41 +0100 (Mon, 01 Nov 2010) $
  */
 public interface ContributionTracker {
 
+    /**
+     * Signals a resource should be tracked.
+     *
+     * @param name the resource name
+     */
     void addResource(String name);
 
+    /**
+     * Removes a resource from tracking.
+     *
+     * @param name the resource name
+     */
     void removeResource(String name);
 
+    /**
+     * Returns true if a resource is being tracked.
+     *
+     * @param name the resource name
+     * @return true if a resource is being tracked
+     */
     boolean isTracked(String name);
 
 
