@@ -40,10 +40,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-jmx-agent" />
     <orderEntry type="module" module-name="fabric3-host-api" />
-    <orderEntry type="module" module-name="fabric3-model" />
     <orderEntry type="module" module-name="fabric3-api" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-management-api" />
     <orderEntry type="library" name="Maven: javax.annotation:com.springsource.javax.annotation:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api:3.0.20100224" level="project" />
   </component>

@@ -37,11 +37,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="fabric3-spi" />
-    <orderEntry type="module" module-name="fabric3-api" />
-    <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" />
-    <orderEntry type="module" module-name="fabric3-model" />
-    <orderEntry type="module" module-name="fabric3-management-api" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />

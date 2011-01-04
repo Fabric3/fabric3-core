@@ -14,8 +14,8 @@ Public License. See the accompanying license file for details.
               f3:extension="true">
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="1.7"/>
-    <export.java package="org.fabric3.resource.jndi.*" version="1.7"/>
-    <export.java package="org.fabric3.resource.spi" version="1.7"/>
+    <import.java package="org.fabric3.spi.*" version="1.8"/>
+    <export.java package="org.fabric3.resource.jndi.*" version="1.8"/>
+    <export.java package="org.fabric3.resource.spi" version="1.8"/>
     <deployable composite="f3:ResourceExtension"/>
 </contribution>

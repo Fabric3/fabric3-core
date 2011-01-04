@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="library" name="Maven: org.codehaus.fabric3:fabric3-api:1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
   </component>

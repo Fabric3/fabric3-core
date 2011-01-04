@@ -148,11 +148,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final" level="project" />
     <orderEntry type="module" module-name="fabric3-pojo" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-resource" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-datasource" scope="PROVIDED" />
     <orderEntry type="module" module-name="fabric3-hibernate-library" scope="PROVIDED" />

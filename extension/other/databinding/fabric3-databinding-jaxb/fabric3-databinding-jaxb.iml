@@ -13,14 +13,14 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.xml.bind:jaxb-api-osgi:2.2-promoted-b50" level="project" />
-    <orderEntry type="module" module-name="fabric3-transform" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-transform:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-spi:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-api:1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-jaxb" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-host-api:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-model:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-management-api:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-jaxb:1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.xml.bind:jaxb-osgi:2.2-promoted-b50" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />

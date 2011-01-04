@@ -25,11 +25,6 @@
     </orderEntry>
     <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.1.0.BETA1" level="project" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
-    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
