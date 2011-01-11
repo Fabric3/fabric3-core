@@ -38,6 +38,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.jdt.core.compiler:ecj:3.5.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.jetty:jetty-websocket:8.0.0.M1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
+    <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="module" module-name="fabric3-container-web-spi" />
+    <orderEntry type="module" module-name="fabric3-jetty" />
   </component>
 </module>
 

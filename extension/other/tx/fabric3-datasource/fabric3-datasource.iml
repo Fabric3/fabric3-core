@@ -26,6 +26,11 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymockclassextension:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="module" module-name="fabric3-model" />
+    <orderEntry type="module" module-name="fabric3-resource" />
+    <orderEntry type="module" module-name="fabric3-api" />
   </component>
 </module>
 
