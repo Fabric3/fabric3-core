@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009-2011 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+
+ __________________________________________________
+ -->
+<project name="QuickFixJ-Installer">
+
+    <property name="quickfixj.version" value="1.5.0"/>
+
+    <target name="check-installed">
+        <condition property="already.installed">
+            <and>
+                <available file="${localRepository}/org/quickfixj/quickfixj-all/${quickfixj.version}/quickfixj-all-${quickfixj.version}.jar"/>
+            </and>
+        </condition>
+        <condition property="maven.suffix" value="">
+            <os family="unix"/>
+        </condition>
+        <condition property="maven.suffix" value=".bat">
+            <os family="windows"/>
+        </condition>
+    </target>
+
+    <target name="install-quickfixj" depends="check-installed" unless="already.installed">
+
+        <exec executable="${maven.home}/bin/mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+            <arg line="install:install-file -DgroupId=org.quickfixj  -DartifactId=quickfixj-all -Dversion=${quickfixj.version} -Dpackaging=jar -DgeneratePom=true -Dfile=&quot;${basedir}/src/repository/quickfixj-all-${quickfixj.version}.jar&quot;"/>
+        </exec>
+    </target>
+
+</project>
