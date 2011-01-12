@@ -32,6 +32,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="module" module-name="sca-spec" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
   </component>
 </module>
 
