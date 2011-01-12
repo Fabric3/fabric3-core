@@ -21,6 +21,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.transaction:com.springsource.javax.transaction:1.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
+    <orderEntry type="module" module-name="fabric3-spi" />
   </component>
 </module>
 

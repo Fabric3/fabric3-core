@@ -82,6 +82,9 @@
     <orderEntry type="module" module-name="fabric3-spring-spi" />
     <orderEntry type="module" module-name="sca-spec" />
     <orderEntry type="module" module-name="fabric3-model" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context:3.0.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:3.0.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:3.0.2.RELEASE" level="project" />
   </component>
 </module>
 
