@@ -23,6 +23,12 @@ Public License. See the accompanying license file for details.
 
     <dependencies>
         <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-quickfixj-install</artifactId>
+            <scope>provided</scope>
+        </dependency>
+ 
+        <dependency>
             <groupId>org.quickfixj</groupId>
             <artifactId>quickfixj-all</artifactId>
             <version>1.5.0</version>
