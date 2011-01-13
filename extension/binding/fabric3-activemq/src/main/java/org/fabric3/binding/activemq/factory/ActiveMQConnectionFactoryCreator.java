@@ -76,12 +76,12 @@ public class ActiveMQConnectionFactoryCreator implements ProviderConnectionFacto
         switch (type) {
 
         case XA:
-            ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(brokerUri);
+            ActiveMQXAConnectionFactory xaFactory = new ActiveMQXAConnectionFactory(getUri(configuration));
             xaFactory.setProperties(configuration.getFactoryProperties());
             return xaFactory;
         default:
             // default to local pooled
-            ActiveMQConnectionFactory wrapped = new ActiveMQConnectionFactory(brokerUri);
+            ActiveMQConnectionFactory wrapped= new ActiveMQConnectionFactory(getUri(configuration));
             wrapped.setProperties(configuration.getFactoryProperties());
             return new PooledConnectionFactory(wrapped);
         }
@@ -93,6 +93,13 @@ public class ActiveMQConnectionFactoryCreator implements ProviderConnectionFacto
             pooled.stop();
         }
 
+    }
+
+    private URI getUri(ConnectionFactoryConfiguration configuration) {
+        if (configuration.getBrokerUri() != null) {
+            return configuration.getBrokerUri();
+        }
+        return brokerUri;
     }
 
 

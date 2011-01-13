@@ -80,6 +80,7 @@ public class BrokerEngine {
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
     private MonitorService monitorService;
     private MBeanServer mBeanServer;
+    private boolean disabled;
 
     public BrokerEngine(@Reference HostInfo info) {
         tempDir = new File(info.getTempDir(), "activemq");
@@ -116,6 +117,11 @@ public class BrokerEngine {
         brokerConfiguration = parser.parse(reader);
     }
 
+    @Property(required = false)
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     @Reference(required = false)
     public void setMBeanServer(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
@@ -123,6 +129,9 @@ public class BrokerEngine {
 
     @Init
     public void init() throws Exception {
+        if (disabled) {
+            return;
+        }
         if (bindAddress == null) {
             // if the host address is not specified, use localhost address
             bindAddress = InetAddress.getLocalHost().getHostAddress();

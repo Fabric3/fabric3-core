@@ -24,6 +24,7 @@
     <component name="ActiveMQBrokerEngine">
         <f3:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
         <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
+        <property name="disabled" source="$systemConfig//jms/activemq/@broker.disabled"/>
         <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
         <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
         <property name="minPort" source="$systemConfig//jms/activemq/@min.port"/>
