@@ -38,7 +38,6 @@
         <module>fabric3-binding-ws-metro</module>
         <module>fabric3-binding-ws-policy</module>
         <module>fabric3-binding-ftp</module>
-        <module>fabric3-binding-net</module>
         <module>fabric3-activemq</module>
 	</modules>
 </project>
