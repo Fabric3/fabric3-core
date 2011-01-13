@@ -15,14 +15,6 @@ Public License. See the accompanying license file for details.
            name="JsonDatabindingExtension"
            autowire="true">
 
-    <component name="JsonParameterEncoderFactory" f3:key="json">
-        <f3:implementation.system class="org.fabric3.databinding.json.format.JsonParameterEncoderFactory"/>
-    </component>
-
-    <component name="JsonUnwrappedMessageFormatter" f3:key="json">
-        <f3:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
-    </component>
-
     <component name="String2ObjectJsonTransformerFactory">
         <f3:implementation.system class="org.fabric3.databinding.json.transform.String2ObjectJsonTransformerFactory"/>
     </component>

@@ -15,14 +15,6 @@ Public License. See the accompanying license file for details.
            targetNamespace="urn:fabric3.org"
            name="DataBindingJAXBExtension">
 
-    <component name="JAXBParameterEncoderFactory" f3:key="jaxb">
-        <f3:implementation.system class="org.fabric3.databinding.jaxb.format.JAXBParameterEncoderFactory"/>
-    </component>
-
-    <component name="JAXBUnwrappedMessageFormatter" f3:key="jaxb">
-        <f3:implementation.system class="org.fabric3.spi.binding.format.JDKUnwrappedMessageEncoder"/>
-    </component>
-
     <component name="JAXBTypeIntrospector">
         <f3:implementation.system class="org.fabric3.databinding.jaxb.introspection.JAXBTypeIntrospector"/>
     </component>
