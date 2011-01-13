@@ -87,12 +87,11 @@ public interface LoaderHelper {
     /**
      * Loads a property value configured in a composite or on a component using the @value attribute from a String.
      *
-     * @param reader  the stream reader
      * @param content String content
      * @return a document containing the values
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    Document loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException;
+    Document loadPropertyValue(String content) throws XMLStreamException;
 
     /**
      * Loads policy sets and intents. Errors will be collated in the IntrospectionContext.

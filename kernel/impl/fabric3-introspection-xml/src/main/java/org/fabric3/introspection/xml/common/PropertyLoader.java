@@ -125,7 +125,7 @@ public class PropertyLoader implements TypeLoader<Property> {
             context.addError(error);
         } else {
             if (valueAttribute != null) {
-                value = helper.loadPropertyValue(valueAttribute, reader);
+                value = helper.loadPropertyValue(valueAttribute);
             }
             property.setDefaultValue(value);
         }

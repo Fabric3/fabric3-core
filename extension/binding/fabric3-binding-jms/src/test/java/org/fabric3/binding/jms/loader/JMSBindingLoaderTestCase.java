@@ -99,7 +99,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
                 return null;
             }
 
-            public Document loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
+            public Document loadPropertyValue(String content) throws XMLStreamException {
                 return null;
             }
 

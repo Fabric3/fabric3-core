@@ -168,7 +168,7 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         }
 
         if (valueAttribute != null) {
-            value = helper.loadPropertyValue(valueAttribute, reader);
+            value = helper.loadPropertyValue(valueAttribute);
         }
 
         PropertyValue propertyValue = new PropertyValue(name, value, many);

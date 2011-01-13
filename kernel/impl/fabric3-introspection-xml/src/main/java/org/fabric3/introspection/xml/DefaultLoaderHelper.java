@@ -306,7 +306,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         }
     }
 
-    public Document loadPropertyValue(String content, XMLStreamReader reader) throws XMLStreamException {
+    public Document loadPropertyValue(String content) throws XMLStreamException {
         DocumentBuilder builder;
         try {
             builder = documentBuilderFactory.newDocumentBuilder();
