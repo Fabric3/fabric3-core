@@ -35,6 +35,5 @@
 		<module>tomcat</module>
 		<module>ant</module>
 		<module>weblogic</module>
-		<module>webapp</module>
 	</modules>
 </project>
