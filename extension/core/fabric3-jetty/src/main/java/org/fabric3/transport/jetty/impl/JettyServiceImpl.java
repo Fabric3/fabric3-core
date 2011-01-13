@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.eclipse.jetty.jsp.JettyLog;
@@ -318,10 +317,6 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     public int getHttpsPort() {
         return selectedHttps;
-    }
-
-    public ServletContext getServletContext() {
-        return servletHandler.getServletContext();
     }
 
     public boolean isHttpsEnabled() {

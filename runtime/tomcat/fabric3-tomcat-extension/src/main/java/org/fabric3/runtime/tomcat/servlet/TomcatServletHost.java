@@ -38,7 +38,6 @@
 package org.fabric3.runtime.tomcat.servlet;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.catalina.Container;
@@ -123,10 +122,6 @@ public class TomcatServletHost implements ServletHost {
 
     public int getHttpsPort() {
         return defaultHttpsPort;
-    }
-
-    public ServletContext getServletContext() {
-        throw new UnsupportedOperationException();
     }
 
     public boolean isHttpsEnabled() {

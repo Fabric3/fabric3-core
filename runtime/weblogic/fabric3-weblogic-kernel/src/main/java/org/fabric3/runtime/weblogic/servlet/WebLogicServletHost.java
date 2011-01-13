@@ -47,13 +47,13 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -79,7 +79,7 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
         this.mBeanServer = mBeanServer;
     }
 
-    @org.oasisopen.sca.annotation.Init
+    @Init
     public void start() throws JMException, ServletHostInitException, MalformedURLException {
         // determine the default HTTP and HTTPS URLs 
         ObjectName serverRuntimeMBean = (ObjectName) mBeanServer.getAttribute(Constants.WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
@@ -107,10 +107,6 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
 
     public int getHttpsPort() {
         return httpsPort;
-    }
-
-    public ServletContext getServletContext() {
-        throw new UnsupportedOperationException();
     }
 
     public boolean isHttpsEnabled() {

@@ -77,16 +77,6 @@ public interface ServletHost {
     int getHttpsPort();
 
     /**
-     * Returns the default servlet context associated with the host.
-     * <p/>
-     * NOTE: Remove when the webapp runtime is decommissioned
-     *
-     * @return the default servlet context associated with the host
-     */
-    @Deprecated
-    ServletContext getServletContext();
-
-    /**
      * True if HTTPS is enabled.
      *
      * @return true if HTTPS is enabled
