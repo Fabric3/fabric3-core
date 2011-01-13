@@ -854,7 +854,9 @@ public class AdaptiveMessageContainer {
             if (session == null) {
                 session = createSession(connection);
             }
-            consumer = createConsumer(session);
+            if (consumer == null) {
+                consumer = createConsumer(session);
+            }
             // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
             Message message = consumer.receive(receiveTimeout);
             if (message != null) {
@@ -903,8 +905,8 @@ public class AdaptiveMessageContainer {
 
         private void closeResources() {
             synchronized (connectionManager) {
-                JmsHelper.closeQuietly(consumer);
                 if (cacheLevel < CACHE_ADMINISTERED_OBJECTS) {
+                    JmsHelper.closeQuietly(consumer);
                     JmsHelper.closeQuietly(session);
                     consumer = null;
                     session = null;
