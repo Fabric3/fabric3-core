@@ -37,47 +37,55 @@
 */
 package org.fabric3.cache.infinispan.introspection;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayInputStream;
+
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
+
+import org.easymock.classextension.EasyMock;
 import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
- *
+ * Unit tests for infinispan configuration loader.
  * @version $Rev$ $Date$
  */
-public class CacheConfigurationLoader implements TypeLoader<InfinispanCacheConfiguration> {
+public class CacheConfigurationLoaderTest extends TestCase {
 
-	private LoaderHelper helper;
-
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
+	private static final String config = "<caches><cache>" +
+			"<namedCache name=\"dataIndexCache\">" +
+			"<loaders passivation=\"false\" preload=\"true\" shared=\"true\">" +
+			"	<loader purgeOnStartup=\"false\" class=\"org.infinispan.loaders.file.FileCacheStore\">" +
+			"	<properties>" +
+			"		<property name=\"location\" value=\"/tmp\" />" +
+			"		<property name=\"streamBufferSize\" value=\"4096\" />" +
+			"	</properties>" +
+			"	</loader>" +
+			"</loaders>" +
+			"</namedCache></cache></caches>";
+	
+	/**
+	 * Test method for {@link org.fabric3.cache.infinispan.introspection.CacheConfigurationLoader#load(javax.xml.stream.XMLStreamReader, org.fabric3.spi.introspection.IntrospectionContext)}.
+	 */
+	public final void testLoad() throws Exception {
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(config.getBytes()));
+        LoaderHelper loaderHelper = EasyMock.createMock(LoaderHelper.class);
+        Document doc = EasyMock.createMock(Document.class);
+        EasyMock.expect(loaderHelper.transform(reader)).andReturn(doc);
+        
+        EasyMock.replay(loaderHelper);
+        InfinispanCacheConfiguration resource = new CacheConfigurationLoader(loaderHelper).load(reader, context);
+        EasyMock.verify(loaderHelper);
 	}
 
-	public InfinispanCacheConfiguration load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanCacheConfiguration configurations = new InfinispanCacheConfiguration();
-
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
-	}
 }
+
 
 
 
