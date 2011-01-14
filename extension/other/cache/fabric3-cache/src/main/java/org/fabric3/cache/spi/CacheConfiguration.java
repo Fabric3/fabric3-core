@@ -37,14 +37,14 @@
 */
 package org.fabric3.cache.spi;
 
-import java.io.Serializable;
+import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * Base cache configuration object.
  *
  * @version $Rev$ $Date$
  */
-public class CacheConfiguration implements Serializable {
+public class CacheConfiguration extends ResourceDefinition {
 
     private static final long serialVersionUID = -6743311265670833364L;
 }

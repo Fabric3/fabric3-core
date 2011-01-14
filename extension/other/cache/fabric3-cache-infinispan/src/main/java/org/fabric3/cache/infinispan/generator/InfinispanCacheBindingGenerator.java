@@ -34,52 +34,36 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.infinispan.introspection;
+ */
+package org.fabric3.cache.infinispan.generator;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import java.util.List;
 
 import org.fabric3.cache.infinispan.model.InfinispanDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import org.fabric3.cache.infinispan.provision.InfinispanCacheResource;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.osoa.sca.annotations.EagerInit;
+import org.w3c.dom.Document;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
+ * Implementation of the Infinispan resource generator.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @EagerInit
-public class CacheConfigurationLoader implements TypeLoader<InfinispanDefinition> {
+public class InfinispanCacheBindingGenerator implements ResourceGenerator<InfinispanDefinition> {
 
-	private LoaderHelper helper;
 
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
-	}
-
-	public InfinispanDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanDefinition configurations = new InfinispanDefinition();
-
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
+	public PhysicalResourceDefinition generateResource(LogicalResource<InfinispanDefinition> resource) throws GenerationException {
+		List<Document> cacheConfigurations = resource.getDefinition().getCacheConfigurations();
+		return new InfinispanCacheResource(cacheConfigurations);
 	}
 }
+
+
 
 
 

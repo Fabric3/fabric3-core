@@ -35,51 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.infinispan.introspection;
+package org.fabric3.cache.infinispan.runtime;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.fabric3.cache.infinispan.model.InfinispanDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import junit.framework.TestCase;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
- *
+ * 
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class CacheConfigurationLoader implements TypeLoader<InfinispanDefinition> {
+public class InfinispanCacheManagerTest extends TestCase {
 
-	private LoaderHelper helper;
+	private InfinispanCacheManager cacheManager;
 
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
+	/**
+	 * 
+	 */
+	protected void setUp() throws Exception {
+		cacheManager = new InfinispanCacheManager();
+		
 	}
 
-	public InfinispanDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanDefinition configurations = new InfinispanDefinition();
-
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
+	/**
+	 * Test method for {@link org.fabric3.cache.infinispan.runtime.InfinispanCacheManager#create(org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration)}.
+	 */
+	public void testCreate() {
+		fail("Not yet implemented");
 	}
+
+	/**
+	 * Test method for {@link org.fabric3.cache.infinispan.runtime.InfinispanCacheManager#remove(org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration)}.
+	 */
+	public void testRemove() {
+		fail("Not yet implemented");
+	}
+
 }
-
-
-

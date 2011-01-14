@@ -34,52 +34,45 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.infinispan.introspection;
+ */
+package org.fabric3.cache.infinispan.runtime;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import org.fabric3.host.Fabric3Exception;
 
-import org.fabric3.cache.infinispan.model.InfinispanDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
+ * Cache exception.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class CacheConfigurationLoader implements TypeLoader<InfinispanDefinition> {
+public class Fabric3CacheException extends Fabric3Exception {
 
-	private LoaderHelper helper;
-
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
+	public Fabric3CacheException() {
+		super();
 	}
 
-	public InfinispanDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanDefinition configurations = new InfinispanDefinition();
+	public Fabric3CacheException(String message, String identifier,
+			Throwable cause) {
+		super(message, identifier, cause);
+	}
 
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
+	public Fabric3CacheException(String message, String identifier) {
+		super(message, identifier);
+	}
+
+	public Fabric3CacheException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public Fabric3CacheException(String message) {
+		super(message);
+	}
+
+	public Fabric3CacheException(Throwable cause) {
+		super(cause);
 	}
 }
+
 
 
 

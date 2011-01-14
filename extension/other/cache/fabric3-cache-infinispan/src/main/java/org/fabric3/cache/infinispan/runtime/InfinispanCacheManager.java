@@ -34,11 +34,28 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.fabric3.cache.infinispan.runtime;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.host.Fabric3Exception;
+import org.infinispan.manager.DefaultCacheManager;
+import org.w3c.dom.Document;
 
 /**
  * Manages Infinispan caches on a runtime.
@@ -47,11 +64,42 @@ import org.fabric3.cache.spi.CacheManager;
  */
 public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfiguration> {
 
-    public void create(InfinispanCacheConfiguration configuration) {
-        throw new UnsupportedOperationException();
-    }
+	private DefaultCacheManager cacheManager;
 
-    public void remove(InfinispanCacheConfiguration configuration) {
-        throw new UnsupportedOperationException();
-    }
+	public void create(InfinispanCacheConfiguration configuration) throws Fabric3Exception {
+		String config = "";
+		for (Document doc : configuration.getCacheConfigurations()) {
+			try {
+				Source source = new DOMSource(doc);
+				StringWriter writer = new StringWriter();
+				StreamResult result = new StreamResult(writer);
+				Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				transformer.transform(source, result);
+				config += writer.toString();
+			} catch (TransformerConfigurationException e) {
+				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+			} catch (TransformerException e) {
+				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+			} catch (TransformerFactoryConfigurationError e) {
+				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+			}
+		}
+		try {
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
+			cacheManager = new DefaultCacheManager(inputStream);
+			cacheManager.start();
+		} catch (UnsupportedEncodingException e) {
+			throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+		} catch (IOException e) {
+			throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+		}
+	}
+
+	public void remove(InfinispanCacheConfiguration configuration) {
+		cacheManager.stop();
+	}
 }
+
+
+
+

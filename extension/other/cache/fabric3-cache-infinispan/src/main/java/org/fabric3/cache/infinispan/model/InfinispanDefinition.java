@@ -35,51 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.cache.infinispan.introspection;
+package org.fabric3.cache.infinispan.model;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.fabric3.cache.infinispan.model.InfinispanDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import org.fabric3.model.type.component.ResourceDefinition;
+import org.w3c.dom.Document;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
+ * Infinispan cache definition.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class CacheConfigurationLoader implements TypeLoader<InfinispanDefinition> {
+public class InfinispanDefinition extends ResourceDefinition {
 
-	private LoaderHelper helper;
+	private static final long serialVersionUID = -7153867883574388002L;
+    
+    private List<Document> configurations = new ArrayList<Document>();
 
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
-	}
-
-	public InfinispanDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanDefinition configurations = new InfinispanDefinition();
-
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
-	}
+    public void addCacheConfiguration(Document configuration) {
+    	configurations.add(configuration);
+    }
+    
+    public List<Document> getCacheConfigurations() {
+    	return configurations;
+    }    
 }
+
 
 
 

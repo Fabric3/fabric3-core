@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.easymock.classextension.EasyMock;
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
+import org.fabric3.cache.infinispan.model.InfinispanDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.w3c.dom.Document;
@@ -80,7 +80,7 @@ public class CacheConfigurationLoaderTest extends TestCase {
         EasyMock.expect(loaderHelper.transform(reader)).andReturn(doc);
         
         EasyMock.replay(loaderHelper);
-        InfinispanCacheConfiguration resource = new CacheConfigurationLoader(loaderHelper).load(reader, context);
+        InfinispanDefinition resource = new CacheConfigurationLoader(loaderHelper).load(reader, context);
         EasyMock.verify(loaderHelper);
 	}
 
