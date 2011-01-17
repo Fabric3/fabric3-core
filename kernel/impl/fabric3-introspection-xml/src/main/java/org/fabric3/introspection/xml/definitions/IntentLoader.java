@@ -53,6 +53,7 @@ import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -80,6 +81,11 @@ public class IntentLoader implements TypeLoader<Intent> {
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
+
+        if (name != null && name.contains(".")) {
+            InvalidValue error = new InvalidValue("Profile intent names cannot contain a '.':" + qName, reader);
+            context.addError(error);
+        }
 
         String constrainsVal = reader.getAttributeValue(null, "constrains");
         QName constrains = null;
