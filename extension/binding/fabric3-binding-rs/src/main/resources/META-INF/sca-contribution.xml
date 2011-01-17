@@ -29,7 +29,8 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.ws.rs.ext" version="1.0"/>
     <import.java package="org.codehaus.jackson.*" version="1.5.5"/>
 
-    <export.java package="com.sun.jersey."/>
+    <export.java package="com.sun.jersey.*"/>
+    <export.java package="org.fabric3.binding.rs.runtime" version="1.8"/>
 
     <!-- provides required for JAXB support. Jersey loads JAXB implementation classes using Class.forName() -->
     <f3:provides name="jaxb"/>

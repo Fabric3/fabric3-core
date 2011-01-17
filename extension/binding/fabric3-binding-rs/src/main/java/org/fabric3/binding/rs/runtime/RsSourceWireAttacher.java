@@ -40,7 +40,6 @@ package org.fabric3.binding.rs.runtime;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -72,16 +71,18 @@ import org.fabric3.spi.wire.Wire;
 public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefinition> {
     private ServletHost servletHost;
     private ClassLoaderRegistry classLoaderRegistry;
+    private RsContainerManager containerManager;
     private RsWireAttacherMonitor monitor;
     private Authenticator basicAuthenticator;
-    private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();
 
     public RsSourceWireAttacher(@Reference AuthenticationService authenticationService,
                                 @Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
+                                @Reference RsContainerManager containerManager,
                                 @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
+        this.containerManager = containerManager;
         this.monitor = monitor;
         // TODO make realm configurable
         basicAuthenticator = new BasicAuthenticator(authenticationService, "fabric3");
@@ -89,10 +90,10 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
         URI sourceUri = source.getUri();
-        RsContainer container = containers.get(sourceUri);
+        RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
             container = new RsContainer(getClass().getClassLoader());
-            containers.put(sourceUri, container);
+            containerManager.register(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {
                 // wire reprovisioned
@@ -114,7 +115,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);
-        containers.remove(sourceUri);
+        containerManager.unregister(sourceUri);
         monitor.removedEndpoint(sourceUri);
     }
 
