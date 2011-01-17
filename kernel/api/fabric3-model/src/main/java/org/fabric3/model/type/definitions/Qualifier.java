@@ -68,4 +68,20 @@ public class Qualifier {
     public boolean isDefault() {
         return defaultQualifier;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Qualifier qualifier = (Qualifier) o;
+
+        return !(name != null ? !name.equals(qualifier.name) : qualifier.name != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
 }

@@ -141,7 +141,7 @@ public class IntentLoader implements TypeLoader<Intent> {
                     }
                     String defaultStr = reader.getAttributeValue(null, "default");
                     Boolean isDefault = Boolean.valueOf(defaultStr);
-                    if (isDefault){
+                    if (isDefault) {
                         if (defaultSet) {
                             DuplicateDefaultIntent error =
                                     new DuplicateDefaultIntent("More than one qualified intent is specified as the default for: " + qName, reader);
@@ -151,7 +151,12 @@ public class IntentLoader implements TypeLoader<Intent> {
                         }
                     }
                     Qualifier qualifier = new Qualifier(nameAttr, isDefault);
-                    qualifiers.add(qualifier);
+                    if (qualifiers.contains(qualifier)) {
+                        DuplicateQualifiedName error = new DuplicateQualifiedName("Duplicate qualified intent specified for:" + qName, reader);
+                        context.addError(error);
+                    } else {
+                        qualifiers.add(qualifier);
+                    }
                 }
                 break;
             case END_ELEMENT:

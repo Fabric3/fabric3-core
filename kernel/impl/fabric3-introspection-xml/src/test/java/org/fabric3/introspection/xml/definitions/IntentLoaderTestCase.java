@@ -77,6 +77,17 @@ public class IntentLoaderTestCase extends TestCase {
                     "    </intent>" +
                     "</definitions";
 
+    private String INVALID_DUPLICATE_NAMES_INTENT =
+            "<definitions xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'>" +
+                    "<intent name='serverAuthentication' constrains='sca:binding' intentType='interaction'>\n" +
+                    "        <description>" +
+                    "            Communication through the binding requires that the server is authenticated by the client\n" +
+                    "        </description>" +
+                    "        <qualifier name='transport' default='true'/>" +
+                    "        <qualifier name='transport' />" +
+                    "    </intent>" +
+                    "</definitions";
+
     private IntentLoader loader;
     private XMLInputFactory factory;
     private IntrospectionContext context;
@@ -98,6 +109,14 @@ public class IntentLoaderTestCase extends TestCase {
         reader.nextTag();
         loader.load(reader, context);
         assertTrue(context.getErrors().get(0) instanceof DuplicateDefaultIntent);
+    }
+
+    public void testDuplicateQualifiedNames() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(INVALID_DUPLICATE_NAMES_INTENT.getBytes()));
+        reader.nextTag();
+        reader.nextTag();
+        loader.load(reader, context);
+        assertTrue(context.getErrors().get(0) instanceof DuplicateQualifiedName);
     }
 
     protected void setUp() throws Exception {

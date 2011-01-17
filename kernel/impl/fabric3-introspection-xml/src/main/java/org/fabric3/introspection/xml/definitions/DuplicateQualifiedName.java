@@ -48,13 +48,13 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Denotes a multiple default attributes on qualfied intents.
+ * Denotes duplicate qualified intent names
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateDefaultIntent extends XmlValidationFailure {
+public class DuplicateQualifiedName extends XmlValidationFailure {
 
-    public DuplicateDefaultIntent(String message, XMLStreamReader reader) {
+    public DuplicateQualifiedName(String message, XMLStreamReader reader) {
         super(message, reader);
     }
 
