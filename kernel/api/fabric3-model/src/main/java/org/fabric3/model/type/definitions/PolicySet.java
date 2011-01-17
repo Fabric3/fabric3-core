@@ -63,6 +63,7 @@ public final class PolicySet extends AbstractPolicyDefinition {
     private final String attachTo;
     private final PolicyPhase phase;
     private URI contributionUri;
+    private Set<IntentMap> intentMaps;
 
     /**
      * Initializes the state for the policy set.
@@ -73,11 +74,20 @@ public final class PolicySet extends AbstractPolicyDefinition {
      * @param attachTo        the XPath expression for the attach to attribute.
      * @param expression      the policy set expression. The expression is a DOM representing the parsed policy configuration.
      * @param phase           the phase at which the policy is applied.
+     * @param intentMaps      the intent maps
      * @param uri             the URI of the contribution this policy set is contained in
      */
-    public PolicySet(QName name, Set<QName> providedIntents, String appliesTo, String attachTo, Element expression, PolicyPhase phase, URI uri) {
+    public PolicySet(QName name,
+                     Set<QName> providedIntents,
+                     String appliesTo,
+                     String attachTo,
+                     Element expression,
+                     PolicyPhase phase,
+                     Set<IntentMap> intentMaps,
+                     URI uri) {
         super(name);
         this.providedIntents = providedIntents;
+        this.intentMaps = intentMaps;
         this.attachTo = "".equals(attachTo) ? null : attachTo;
         this.appliesTo = "".equals(appliesTo) ? null : appliesTo;
         this.expression = expression;
@@ -148,6 +158,15 @@ public final class PolicySet extends AbstractPolicyDefinition {
      */
     public URI getContributionUri() {
         return contributionUri;
+    }
+
+    /**
+     * Returns the intent maps for the policy set.
+     *
+     * @return the intent maps for the policy set
+     */
+    public Set<IntentMap> getIntentMaps() {
+        return intentMaps;
     }
 
     @Override

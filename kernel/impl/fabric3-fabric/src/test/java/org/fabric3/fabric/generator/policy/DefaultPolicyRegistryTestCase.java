@@ -76,7 +76,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Resource resource = new Resource(contribution, source, "text/xml");
         QName name = new QName("test", "policyset");
         QNameSymbol symbol = new QNameSymbol(name);
-        PolicySet policySet = new PolicySet(name, null, null, null, null, null, null);
+        PolicySet policySet = new PolicySet(name, null, null, null, null, null, null, null);
         ResourceElement<QNameSymbol, PolicySet> element = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
         resource.addResourceElement(element);
         contribution.addResource(resource);

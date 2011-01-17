@@ -48,9 +48,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.model.type.definitions.IntentMap;
+import org.fabric3.model.type.definitions.IntentQualifier;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -76,8 +79,7 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
 
     public PolicySet load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
-        Element policyElement;
-        policyElement = helper.transform(reader).getDocumentElement();
+        Element policyElement = helper.transform(reader).getDocumentElement();
 
         String name = policyElement.getAttribute("name");
         QName qName = new QName(context.getTargetNamespace(), name);
@@ -88,10 +90,7 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
             try {
                 provides.add(helper.createQName(tok.nextToken(), reader));
             } catch (InvalidPrefixException e) {
-                String prefix = e.getPrefix();
-                URI uri = context.getContributionUri();
-                context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                        + " is invalid", reader));
+                raiseInvalidPrefix(reader, context, e);
                 return null;
             }
         }
@@ -100,15 +99,79 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
         String attachTo = policyElement.getAttribute("attachTo");
 
         Element extension = null;
+        Set<IntentMap> intentMaps = new HashSet<IntentMap>();
         NodeList children = policyElement.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            if (children.item(i) instanceof Element) {
-                extension = (Element) children.item(i);
-                break;
+            Node node = children.item(i);
+            String nodeName = node.getNodeName();
+            if (node instanceof Element) {
+                Element element = (Element) node;
+                if ("intentMap".equals(nodeName)) {
+                    parseIntentMaps(element, intentMaps, reader, context);
+                } else if ("policySetReference".equals(nodeName)) {
+                    // TODO
+                } else {
+                    // the node is not an intent map or policy set, it must be an extension element
+                    extension = (Element) children.item(i);
+                }
             }
         }
 
-        // Determine the phase: if the policy language is in the F3 namespace, default to interception phase. Otherwise default to provided phase.
+        PolicyPhase phase = parsePhase(extension, reader, context);
+        URI uri = context.getContributionUri();
+        return new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
+
+    }
+
+    /**
+     * Parses intent maps in a policy set configuration.
+     *
+     * @param element    the policy set contents to parse
+     * @param intentMaps the intent maps collection to populate
+     * @param reader     the StAX reader
+     * @param context    the current introspection context
+     */
+    private void parseIntentMaps(Element element, Set<IntentMap> intentMaps, XMLStreamReader reader, IntrospectionContext context) {
+        try {
+            QName providedIntent = helper.createQName(element.getAttribute("provides"), reader);
+            IntentMap intentMap = new IntentMap(providedIntent);
+            NodeList intentMapQualifiers = element.getElementsByTagName("qualifier");
+            for (int n = 0; n < intentMapQualifiers.getLength(); n++) {
+
+                Node qualifierNode = intentMapQualifiers.item(n);
+                if (!(qualifierNode instanceof Element)) {
+                    continue;
+                }
+                Element qualifier = (Element) qualifierNode;
+                String qualifierName = qualifier.getAttribute("name");
+                Element qualifierContents = null;
+                NodeList childNodes = qualifier.getChildNodes();
+                for (int n2 = 0; n2 < childNodes.getLength(); n2++) {
+                    if (childNodes.item(n2) instanceof Element) {
+                        qualifierContents = (Element) childNodes.item(n2);
+                        break;
+                    }
+                }
+                IntentQualifier intentQualifier = new IntentQualifier(qualifierName, qualifierContents);
+                intentMap.addQualifier(intentQualifier);
+                intentMaps.add(intentMap);
+            }
+
+        } catch (InvalidPrefixException e) {
+            raiseInvalidPrefix(reader, context, e);
+        }
+    }
+
+    /**
+     * Determines the phase: if the policy language is in the F3 namespace, default to interception phase. Otherwise default to provided phase.
+     *
+     * @param extension the extension element containing the policy set configuration
+     * @param reader    the StAX reader
+     * @param context   the introspection context
+     * @return the policy phase
+     */
+
+    private PolicyPhase parsePhase(Element extension, XMLStreamReader reader, IntrospectionContext context) {
         PolicyPhase phase = PolicyPhase.PROVIDED;
         if (extension != null && Namespaces.F3.equals(extension.getNamespaceURI())) {
             String phaseAttr = extension.getAttributeNS(Namespaces.F3, "phase");
@@ -118,16 +181,21 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
                 } catch (IllegalArgumentException e) {
                     UnrecognizedAttribute failure = new UnrecognizedAttribute("Invalid phase: " + phaseAttr, reader);
                     context.addError(failure);
-                    return null;
+                    phase = PolicyPhase.INTERCEPTION;
                 }
 
             } else {
                 phase = PolicyPhase.INTERCEPTION;
             }
         }
-        URI uri = context.getContributionUri();
-        return new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, uri);
+        return phase;
+    }
 
+    private void raiseInvalidPrefix(XMLStreamReader reader, IntrospectionContext context, InvalidPrefixException e) {
+        String prefix = e.getPrefix();
+        URI uri = context.getContributionUri();
+        context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                + " is invalid", reader));
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
