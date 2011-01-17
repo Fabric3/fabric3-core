@@ -13,6 +13,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
   </component>
 </module>
 

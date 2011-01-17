@@ -12,13 +12,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-spi:1.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-api:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-api" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3.spec:sca-api:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-host-api:1.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-model:1.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-management-api:1.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.fabric3:fabric3-cache:1.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="fabric3-host-api" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-model" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-management-api" scope="PROVIDED" />
+    <orderEntry type="module" module-name="fabric3-cache" scope="PROVIDED" />
     <orderEntry type="library" name="Maven: org.infinispan:infinispan-core:4.1.0.FINAL" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.marshalling:river:1.2.3.GA" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.marshalling:marshalling-api:1.2.3.GA" level="project" />
@@ -30,8 +30,9 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jgroups:jgroups:2.10.0.GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
-    <orderEntry type="module" module-name="fabric3-cache" />
-    <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymockclassextension:2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
   </component>
 </module>
 
