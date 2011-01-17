@@ -46,6 +46,7 @@ package org.fabric3.runtime.maven.itest;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -64,6 +65,15 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import org.fabric3.host.Names;
+import org.fabric3.host.contribution.ContributionNotFoundException;
+import org.fabric3.host.contribution.ContributionService;
+import org.fabric3.host.contribution.ContributionSource;
+import org.fabric3.host.contribution.FileContributionSource;
+import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
@@ -146,6 +156,13 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @parameter expression="RELEASE"
      */
     public String runtimeVersion;
+
+    /**
+     * Set of contributions that should be deployed to the runtime.
+     *
+     * @parameter
+     */
+    public Dependency[] contributions = new Dependency[0];
 
     /**
      * Set of runtime extension artifacts that should be deployed to the runtime.
@@ -246,6 +263,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
         MavenRuntime runtime = booter.boot();
         try {
+            // load the contributions
+            deployContributions(runtime);
             TestDeployer deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
             deployer.deploy(runtime);
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
@@ -256,6 +275,43 @@ public class Fabric3ITestMojo extends AbstractMojo {
             } catch (Exception e) {
                 // ignore
             }
+        }
+    }
+
+    /**
+     * Resolves and deploys configured contributions.
+     *
+     * @param runtime the runtime
+     * @throws MojoExecutionException if a deployment error occurs
+     */
+    private void deployContributions(MavenRuntime runtime) throws MojoExecutionException {
+        if (contributions.length <= 0) {
+            return;
+        }
+        try {
+            ContributionService contributionService = runtime.getComponent(ContributionService.class, Names.CONTRIBUTION_SERVICE_URI);
+            Domain domain = runtime.getComponent(Domain.class, Names.APPLICATION_DOMAIN_URI);
+            List<ContributionSource> sources = new ArrayList<ContributionSource>();
+            for (Dependency contribution : contributions) {
+                Artifact artifact = artifactHelper.resolve(contribution);
+                URL url = artifact.getFile().toURI().toURL();
+                URI uri = URI.create(new File(url.getFile()).getName());
+                ContributionSource source = new FileContributionSource(uri, url, -1, true);
+                sources.add(source);
+            }
+            List<URI> uris = contributionService.store(sources);
+            contributionService.install(uris);
+            domain.include(uris);
+        } catch (MalformedURLException e) {
+            throw new MojoExecutionException("Error installing contributions", e);
+        } catch (StoreException e) {
+            throw new MojoExecutionException("Error installing contributions", e);
+        } catch (DeploymentException e) {
+            throw new MojoExecutionException("Error installing contributions", e);
+        } catch (ContributionNotFoundException e) {
+            throw new MojoExecutionException("Error installing contributions", e);
+        } catch (InstallException e) {
+            throw new MojoExecutionException("Error installing contributions", e);
         }
     }
 
