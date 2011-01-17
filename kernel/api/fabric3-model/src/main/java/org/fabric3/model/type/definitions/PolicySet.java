@@ -114,16 +114,6 @@ public final class PolicySet extends AbstractPolicyDefinition {
     }
 
     /**
-     * Checks whether the specified intents is provided by this policy set.
-     *
-     * @param intents Intents that need to be checked.
-     * @return True if this policy set provides to the specified intent.
-     */
-    public boolean doesProvide(Set<QName> intents) {
-        return providedIntents.containsAll(intents);
-    }
-
-    /**
      * Returns the policy set expression. The expression is an opaque DOM containing the parsed policy expression, which may be a Fabric3 policy
      * expression, a WS-Policy expression, or a custom policy language.
      *
