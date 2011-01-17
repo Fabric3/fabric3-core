@@ -14,8 +14,8 @@ Public License. See the accompanying license file for details.
     <bindingType name="binding.ws" mayProvide="f3:messageOptimization
                                                 sca:SOAP.1_1
                                                 sca:SOAP.1_2
-                                                f3:protocolBinding.xsoap12
-                                                f3:protocolBinding.rest
+                                                f3:xsoap12
+                                                f3:metroRest
                                                 f3:schemaValidation
                                                 sca:oneWay
                                                 sca:atLeastOnce
@@ -34,13 +34,13 @@ Public License. See the accompanying license file for details.
         </description>
     </intent>
 
-    <intent name="f3:protocolBinding.xsoap12" constrains="binding">
+    <intent name="f3:xsoap12" constrains="binding">
         <description>
             Unqualified intent for using SOAP 1.2 and WSDL generation with Metro.
         </description>
     </intent>
 
-    <intent name="f3:protocolBinding.rest" constrains="binding">
+    <intent name="f3:metroRest" constrains="binding">
         <description>
             Unqualified intent for using HTTP.
         </description>

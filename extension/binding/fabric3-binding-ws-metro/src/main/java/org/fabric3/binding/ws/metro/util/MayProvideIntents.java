@@ -54,8 +54,8 @@ public class MayProvideIntents {
 
     public static QName SOAP1_1 = new QName(Constants.SCA_NS, "SOAP.1_1");
     public static QName SOAP1_2 = new QName(Constants.SCA_NS, "SOAP.1_2");
-    public static QName X_SOAP1_2 = new QName(Namespaces.F3, "protocolBinding.xsoap12");
-    public static QName REST = new QName(Namespaces.F3, "protocolBinding.rest");
+    public static QName X_SOAP1_2 = new QName(Namespaces.F3, "xsoap12");
+    public static QName REST = new QName(Namespaces.F3, "metroRest");
 
     public static QName AT_LEAST_ONCE = new QName(Constants.SCA_NS, "atLeastOnce");
     public static QName AT_MOST_ONCE = new QName(Constants.SCA_NS, "atMostOnce");
