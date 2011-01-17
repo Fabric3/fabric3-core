@@ -129,6 +129,7 @@ public class IntentLoader implements TypeLoader<Intent> {
         }
 
         Set<Qualifier> qualifiers = new HashSet<Qualifier>();
+        boolean defaultSet = false;
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
@@ -139,7 +140,17 @@ public class IntentLoader implements TypeLoader<Intent> {
                         return null;
                     }
                     String defaultStr = reader.getAttributeValue(null, "default");
-                    Qualifier qualifier = new Qualifier(nameAttr, Boolean.valueOf(defaultStr));
+                    Boolean isDefault = Boolean.valueOf(defaultStr);
+                    if (isDefault){
+                        if (defaultSet) {
+                            DuplicateDefaultIntent error =
+                                    new DuplicateDefaultIntent("More than one qualified intent is specified as the default for: " + qName, reader);
+                            context.addError(error);
+                        } else {
+                            defaultSet = true;
+                        }
+                    }
+                    Qualifier qualifier = new Qualifier(nameAttr, isDefault);
                     qualifiers.add(qualifier);
                 }
                 break;
