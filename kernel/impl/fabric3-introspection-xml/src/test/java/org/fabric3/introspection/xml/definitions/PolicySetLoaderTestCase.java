@@ -50,6 +50,7 @@ import org.fabric3.model.type.definitions.IntentQualifier;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
@@ -113,6 +114,44 @@ public class PolicySetLoaderTestCase extends TestCase {
             "</policySet>" +
             "</definitions>";
 
+    private static String INVALID_PROVIDES_INTENT_MAP = "<definitions xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            " xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'>" +
+            "<policySet name='SecureMessagingPolicies'" +
+            "           provides='confidentiality'" +
+            "           appliesTo='//binding.ws'" +
+            "           xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            "           xmlns:wsp='http://schemas.xmlsoap.org/ws/2004/09/policy'>" +
+            "    <intentMap provides='invalidname'>" +
+            "        <qualifier name='transport'>" +
+            "            <wsp:PolicyAttachment>" +
+            "            </wsp:PolicyAttachment>" +
+            "        </qualifier>" +
+            "    </intentMap>" +
+            "</policySet>" +
+            "</definitions>";
+
+    private static String INVALID_DUPLICATE_PROVIDES_INTENT_MAP = "<definitions xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            " xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'>" +
+            "<policySet name='SecureMessagingPolicies'" +
+            "           provides='confidentiality'" +
+            "           appliesTo='//binding.ws'" +
+            "           xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            "           xmlns:wsp='http://schemas.xmlsoap.org/ws/2004/09/policy'>" +
+            "    <intentMap provides='invalidname'>" +
+            "        <qualifier name='transport'>" +
+            "            <wsp:PolicyAttachment>" +
+            "            </wsp:PolicyAttachment>" +
+            "        </qualifier>" +
+            "    </intentMap>" +
+            "    <intentMap provides='invalidname'>" +
+            "        <qualifier name='transport'>" +
+            "            <wsp:PolicyAttachment>" +
+            "            </wsp:PolicyAttachment>" +
+            "        </qualifier>" +
+            "    </intentMap>" +
+            "</policySet>" +
+            "</definitions>";
+
     private PolicySetLoader loader;
     private XMLInputFactory factory;
     private IntrospectionContext context;
@@ -145,6 +184,22 @@ public class PolicySetLoaderTestCase extends TestCase {
             }
         }
         assertTrue(context.getErrors().isEmpty());
+    }
+
+    public void testInvalidProvidesInIntentMap() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(INVALID_PROVIDES_INTENT_MAP.getBytes()));
+        reader.nextTag();
+        reader.nextTag();
+        loader.load(reader, context);
+        assertTrue(context.getErrors().get(0) instanceof InvalidValue);
+    }
+
+    public void testInvalidDuplicateProvidesInIntentMaps() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(INVALID_DUPLICATE_PROVIDES_INTENT_MAP.getBytes()));
+        reader.nextTag();
+        reader.nextTag();
+        loader.load(reader, context);
+        assertTrue(context.getErrors().get(0) instanceof DuplicateIntentMap);
     }
 
 

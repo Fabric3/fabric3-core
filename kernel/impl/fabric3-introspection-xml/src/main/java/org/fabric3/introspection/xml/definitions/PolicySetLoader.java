@@ -59,6 +59,7 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
@@ -119,8 +120,9 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
 
         PolicyPhase phase = parsePhase(extension, reader, context);
         URI uri = context.getContributionUri();
-        return new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
-
+        PolicySet policySet = new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
+        validate(policySet, reader, context);
+        return policySet;
     }
 
     /**
@@ -135,6 +137,12 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
         try {
             QName providedIntent = helper.createQName(element.getAttribute("provides"), reader);
             IntentMap intentMap = new IntentMap(providedIntent);
+            if (intentMaps.contains(intentMap)) {
+                DuplicateIntentMap error = new DuplicateIntentMap("Duplicate intent map defined for " + providedIntent, reader);
+                context.addError(error);
+            } else {
+                intentMaps.add(intentMap);
+            }
             NodeList intentMapQualifiers = element.getElementsByTagName("qualifier");
             for (int n = 0; n < intentMapQualifiers.getLength(); n++) {
 
@@ -154,7 +162,6 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
                 }
                 IntentQualifier intentQualifier = new IntentQualifier(qualifierName, qualifierContents);
                 intentMap.addQualifier(intentQualifier);
-                intentMaps.add(intentMap);
             }
 
         } catch (InvalidPrefixException e) {
@@ -205,6 +212,18 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
+    }
+
+    private void validate(PolicySet policySet, XMLStreamReader reader, IntrospectionContext context) {
+        // validate intent maps
+        for (IntentMap intentMap : policySet.getIntentMaps()) {
+            if (!policySet.doesProvide(intentMap.getProvides())) {
+                InvalidValue error = new InvalidValue("Provides on intent map " + intentMap.getProvides()
+                        + " does not match a provides entry on the parent policy set: " + policySet.getName(), reader);
+                context.addError(error);
+            }
+        }
+
     }
 
 
