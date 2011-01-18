@@ -38,6 +38,7 @@
 package org.fabric3.policy.resolver;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -131,6 +132,20 @@ public class AbstractPolicyResolver {
 
     }
 
+    protected void filterMutuallyExclusiveIntents(Set<Intent> intents) {
+        Set<QName> excludedIntents = new HashSet<QName>();
+        for (Iterator<Intent> iterator = intents.iterator(); iterator.hasNext();) {
+            Intent intent = iterator.next();
+            if (excludedIntents.contains(intent.getName())) {
+                iterator.remove();
+            } else if (!intent.getExcludes().isEmpty()) {
+                excludedIntents.addAll(intent.getExcludes());
+            }
+
+        }
+    }
+
+
     /**
      * Aggregate intents from ancestors.
      *
@@ -138,13 +153,34 @@ public class AbstractPolicyResolver {
      * @return the aggregated intents
      */
     protected Set<QName> aggregateIntents(LogicalScaArtifact<?> scaArtifact) {
-        LogicalScaArtifact<?> temp = scaArtifact;
-        Set<QName> intentNames = new LinkedHashSet<QName>();
-        while (temp != null) {
-            intentNames.addAll(temp.getIntents());
-            temp = temp.getParent();
+        LogicalScaArtifact<?> current = scaArtifact;
+        Set<QName> aggregatedIntents = new LinkedHashSet<QName>();
+        while (current != null) {
+            Set<QName> currentIntents = current.getIntents();
+            for (QName currentIntent : currentIntents) {
+                String localPart = currentIntent.getLocalPart();
+                boolean exclude = false;
+                String namespace = currentIntent.getNamespaceURI();
+                for (Iterator<QName> iterator = aggregatedIntents.iterator(); iterator.hasNext();) {
+                    QName aggregatedIntent = iterator.next();
+                    if (namespace.equals(aggregatedIntent.getNamespaceURI()) && aggregatedIntent.getLocalPart().startsWith(localPart + ".")) {
+                        // if the parent intent is a profile intent of a qualified intent on the child element, ignore the profile intent
+                        exclude = true;
+                        break;
+                    } else if (namespace.equals(aggregatedIntent.getNamespaceURI()) && localPart.startsWith(aggregatedIntent.getLocalPart() + ".")) {
+                        // if the intent from the parent qualifies a profile intent on a child element, remove the child profile intent and add the
+                        // parent qualified intent to the aggregated intents
+                        iterator.remove();
+                        break;
+                    }
+                }
+                if (!exclude) {
+                    aggregatedIntents.add(currentIntent);
+                }
+            }
+            current = current.getParent();
         }
-        return intentNames;
+        return aggregatedIntents;
     }
 
     /**

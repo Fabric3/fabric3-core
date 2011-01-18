@@ -177,6 +177,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         Set<Intent> requiredIntents = resolveProfileIntents(intentNames);
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.BINDING, requiredIntents);
+        filterMutuallyExclusiveIntents(requiredIntents);
         return requiredIntents;
     }
 

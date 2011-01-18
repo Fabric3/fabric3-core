@@ -150,7 +150,8 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
 
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.IMPLEMENTATION, requiredIntents);
-
+        filterMutuallyExclusiveIntents(requiredIntents);
+        
         return requiredIntents;
 
     }
