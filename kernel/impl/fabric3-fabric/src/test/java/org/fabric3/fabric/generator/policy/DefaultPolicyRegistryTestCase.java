@@ -39,9 +39,7 @@ package org.fabric3.fabric.generator.policy;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -52,7 +50,6 @@ import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.IntentType;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.contribution.Contribution;
@@ -60,6 +57,9 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.generator.policy.PolicyActivationException;
+
+import static org.fabric3.model.type.definitions.IntentType.INTERACTION;
 
 /**
  * @version $Rev$ $Date$
@@ -84,13 +84,10 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
         EasyMock.replay(store);
 
-        List<URI> uris = new ArrayList<URI>();
-        uris.add(uri);
-
-        registry.activateDefinitions(uris);
+        registry.activateDefinitions(uri);
         assertNotNull(registry.getDefinition(name, PolicySet.class));
 
-        registry.deactivateDefinitions(uris);
+        registry.deactivateDefinitions(uri);
         assertNull(registry.getDefinition(name, PolicySet.class));
     }
 
@@ -102,7 +99,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Resource resource = new Resource(contribution, source, "text/xml");
         QName name = new QName("test", "intent");
         QNameSymbol symbol = new QNameSymbol(name);
-        Intent intent = new Intent(name, null, null, Collections.<Qualifier>emptySet(), false, null, IntentType.INTERACTION, false);
+        Intent intent = new Intent(name, null, Collections.<QName>emptySet(), Collections.<Qualifier>emptySet(), false, null, INTERACTION, false);
         ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
         resource.addResourceElement(element);
         contribution.addResource(resource);
@@ -110,15 +107,40 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
         EasyMock.replay(store);
 
-        List<URI> uris = new ArrayList<URI>();
-        uris.add(uri);
-
-        registry.activateDefinitions(uris);
+        registry.activateDefinitions(uri);
         assertNotNull(registry.getDefinition(name, Intent.class));
 
-        registry.deactivateDefinitions(uris);
+        registry.deactivateDefinitions(uri);
         assertNull(registry.getDefinition(name, Intent.class));
     }
+
+    public void testRequiredIntentsNotFound() throws Exception {
+        QName name = new QName("test", "intent");
+        QName required = new QName("test", "doesnotexist");
+        Intent intent = new Intent(name, null, Collections.singleton(required), Collections.<Qualifier>emptySet(), false, null, INTERACTION, false);
+
+        URI uri = URI.create("test");
+        Contribution contribution = new Contribution(uri);
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, "text/xml");
+        QNameSymbol symbol = new QNameSymbol(name);
+        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        resource.addResourceElement(element);
+        contribution.addResource(resource);
+
+        EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
+        EasyMock.replay(store);
+
+
+        try {
+            registry.activateDefinitions(uri);
+            fail("Non-existent required intent should raise an exception");
+        } catch (PolicyActivationException e) {
+            // expected
+        }
+    }
+
 
     public void testActivateDeactivateBindingType() throws Exception {
         URI uri = URI.create("test");
@@ -136,13 +158,10 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
         EasyMock.replay(store);
 
-        List<URI> uris = new ArrayList<URI>();
-        uris.add(uri);
-
-        registry.activateDefinitions(uris);
+        registry.activateDefinitions(uri);
         assertNotNull(registry.getDefinition(name, BindingType.class));
 
-        registry.deactivateDefinitions(uris);
+        registry.deactivateDefinitions(uri);
         assertNull(registry.getDefinition(name, BindingType.class));
     }
 
@@ -162,13 +181,10 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
         EasyMock.replay(store);
 
-        List<URI> uris = new ArrayList<URI>();
-        uris.add(uri);
-
-        registry.activateDefinitions(uris);
+        registry.activateDefinitions(uri);
         assertNotNull(registry.getDefinition(name, ImplementationType.class));
 
-        registry.deactivateDefinitions(uris);
+        registry.deactivateDefinitions(uri);
         assertNull(registry.getDefinition(name, ImplementationType.class));
     }
 

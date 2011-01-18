@@ -39,7 +39,6 @@ package org.fabric3.spi.generator.policy;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -63,7 +62,7 @@ public interface PolicyRegistry {
     <D extends AbstractPolicyDefinition> Collection<D> getAllDefinitions(Class<D> definitionClass);
 
     /**
-     * Returns the definition of specified type and qualified name.
+     * Returns the definition of the specified type and qualified name.
      *
      * @param <D>             dDefinition type.
      * @param name            qualified name of the definition object.
@@ -73,7 +72,7 @@ public interface PolicyRegistry {
     <D extends AbstractPolicyDefinition> D getDefinition(QName name, Class<D> definitionClass);
 
     /**
-     * Returns the definitions of specified type for the set of qualified names.
+     * Returns the definitions of the specified type for the set of qualified names.
      *
      * @param <D>             definition type.
      * @param names           qualified names of the definition object.
@@ -87,38 +86,24 @@ public interface PolicyRegistry {
      *
      * @return the PolicySets
      */
-    List<PolicySet> getExternalAttachmentPolicies();
+    Set<PolicySet> getExternalAttachmentPolicies();
 
     /**
-     * Activates all the policy definitions in the specified contributions.
+     * Activates all the policy definitions in the specified contribution.
      *
-     * @param contributionUris The URIs for the contribution.
+     * @param uri The contribution uri.
+     * @return the activated policy sets that need to be externally attached
      * @throws PolicyActivationException If unable to find definition.
      */
-    void activateDefinitions(List<URI> contributionUris) throws PolicyActivationException;
+    Set<PolicySet> activateDefinitions(URI uri) throws PolicyActivationException;
 
     /**
-     * Activates the policy definition.
+     * Deactivates all the policy definitions in the specified contribution.
      *
-     * @param definition the definition
+     * @param uri The contribution uri.
+     * @return the activated policy sets that need to be externally detached
      * @throws PolicyActivationException If unable to find definition.
      */
-    void activate(AbstractPolicyDefinition definition) throws PolicyActivationException;
-
-    /**
-     * Deactivates all the policy definitions in the specified contributions.
-     *
-     * @param contributionUris The URIs for the contribution.
-     * @throws PolicyActivationException If unable to find definition.
-     */
-    void deactivateDefinitions(List<URI> contributionUris) throws PolicyActivationException;
-
-    /**
-     * Deactivates the policy definition
-     *
-     * @param definition the definition
-     * @throws PolicyActivationException If unable to find definition.
-     */
-    void deactivate(AbstractPolicyDefinition definition) throws PolicyActivationException;
+    Set<PolicySet> deactivateDefinitions(URI uri) throws PolicyActivationException;
 
 }

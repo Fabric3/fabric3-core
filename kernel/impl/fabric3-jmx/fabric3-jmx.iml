@@ -15,6 +15,9 @@
     <orderEntry type="module" module-name="fabric3-spi" scope="PROVIDED" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.2" level="project" />
     <orderEntry type="module" module-name="fabric3-api" />
+    <orderEntry type="module" module-name="sca-spec" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
+    <orderEntry type="module" module-name="fabric3-model" />
   </component>
 </module>
 

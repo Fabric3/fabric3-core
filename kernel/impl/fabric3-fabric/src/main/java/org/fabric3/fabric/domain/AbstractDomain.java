@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -63,14 +62,12 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
-import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.Deployer;
@@ -293,16 +290,7 @@ public abstract class AbstractDomain implements Domain {
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
-        Set<AbstractPolicyDefinition> definitions = activateDefinitions(contribution);
-        List<PolicySet> policySets = new ArrayList<PolicySet>();
-        for (AbstractPolicyDefinition definition : definitions) {
-            if (definition instanceof PolicySet) {
-                PolicySet policySet = (PolicySet) definition;
-                if (policySet.getAttachTo() != null) {
-                    policySets.add(policySet);
-                }
-            }
-        }
+        Set<PolicySet> policySets = activateDefinitions(contribution);
         if (!policySets.isEmpty()) {
             deployPolicySets(policySets);
         }
@@ -313,30 +301,14 @@ public abstract class AbstractDomain implements Domain {
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
-        List<PolicySet> policySets = new ArrayList<PolicySet>();
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (!(element.getValue() instanceof AbstractPolicyDefinition)) {
-                    break;
-                }
-                AbstractPolicyDefinition definition = (AbstractPolicyDefinition) element.getValue();
-                try {
-                    policyRegistry.deactivate(definition);
-                    if (definition instanceof PolicySet) {
-                        PolicySet policySet = (PolicySet) definition;
-                        if (policySet.getAttachTo() != null) {
-                            policySets.add(policySet);
-                        }
-                    }
-                } catch (PolicyActivationException e) {
-                    throw new DeploymentException(e);
-                }
+        try {
+            Set<PolicySet> policySets = policyRegistry.deactivateDefinitions(uri);
+            if (!policySets.isEmpty()) {
+                undeployPolicySets(policySets);
             }
+        } catch (PolicyActivationException e) {
+            throw new DeploymentException(e);
         }
-        if (!policySets.isEmpty()) {
-            undeployPolicySets(policySets);
-        }
-
     }
 
     public void recover(Map<QName, String> deployables) throws DeploymentException {
@@ -619,34 +591,23 @@ public abstract class AbstractDomain implements Domain {
      * Activates policy definitions contained in the contribution.
      *
      * @param contribution the contribution
-     * @return the policy definitions activated
+     * @return the policy sets activated
      * @throws DeploymentException if an exception occurs when the definitions are activated
      */
-    private Set<AbstractPolicyDefinition> activateDefinitions(Contribution contribution) throws DeploymentException {
+    private Set<PolicySet> activateDefinitions(Contribution contribution) throws DeploymentException {
         if (policyRegistry == null) {
             // registry not available until after bootstrap
             return Collections.emptySet();
         }
-        Set<AbstractPolicyDefinition> definitions = new HashSet<AbstractPolicyDefinition>();
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (!(element.getValue() instanceof AbstractPolicyDefinition)) {
-                    break;
-                }
-                try {
-                    AbstractPolicyDefinition definition = (AbstractPolicyDefinition) element.getValue();
-                    definitions.add(definition);
-                    policyRegistry.activate(definition);
-                } catch (PolicyActivationException e) {
-                    // TODO rollback policy activation
-                    throw new DeploymentException(e);
-                }
-            }
+        try {
+            return policyRegistry.activateDefinitions(contribution.getUri());
+        } catch (PolicyActivationException e) {
+            // TODO rollback policy activation
+            throw new DeploymentException(e);
         }
-        return definitions;
     }
 
-    private void deployPolicySets(List<PolicySet> policySets) throws DeploymentException {
+    private void deployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);
@@ -670,7 +631,7 @@ public abstract class AbstractDomain implements Domain {
     }
 
 
-    private void undeployPolicySets(List<PolicySet> policySets) throws DeploymentException {
+    private void undeployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
             domain = CopyUtil.copy(domain);

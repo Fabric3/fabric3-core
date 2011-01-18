@@ -38,6 +38,7 @@
 package org.fabric3.fabric.generator.policy;
 
 import java.util.List;
+import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
@@ -56,11 +57,11 @@ public class NullPolicyAttacher implements PolicyAttacher {
         // no-op
     }
 
-    public void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException {
+    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException {
         // no-op
     }
 
-    public void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException {
+    public void detachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException {
         // no-op
     }
 

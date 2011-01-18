@@ -23,6 +23,7 @@
     <orderEntry type="module" module-name="fabric3-api" />
     <orderEntry type="module" module-name="fabric3-model" />
     <orderEntry type="module" module-name="fabric3-spi" />
+    <orderEntry type="module" module-name="fabric3-host-api" />
   </component>
 </module>
 

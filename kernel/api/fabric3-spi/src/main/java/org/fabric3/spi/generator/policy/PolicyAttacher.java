@@ -38,6 +38,7 @@
 package org.fabric3.spi.generator.policy;
 
 import java.util.List;
+import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -67,7 +68,7 @@ public interface PolicyAttacher {
      * @param incremental true if the attachment is performed as part of an incremental deployment
      * @throws PolicyResolutionException if an error occurs evaluating the policies
      */
-    void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException;
+    void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyResolutionException;
 
     /**
      * Detaches PolicySets (i.e. those that use external attachment) to the component hierarchy.
@@ -76,6 +77,6 @@ public interface PolicyAttacher {
      * @param component  the top-most component to evaluate external attachments against
      * @throws PolicyResolutionException if an error occurs evaluating the policies
      */
-    void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException;
+    void detachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyResolutionException;
 
 }

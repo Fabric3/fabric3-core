@@ -38,6 +38,7 @@
 package org.fabric3.policy;
 
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
@@ -70,11 +71,11 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
     }
 
     public void attachPolicies(LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
-        List<PolicySet> policySets = policyRegistry.getExternalAttachmentPolicies();
+        Set<PolicySet> policySets = policyRegistry.getExternalAttachmentPolicies();
         attachPolicies(policySets, component, incremental);
     }
 
-    public void attachPolicies(List<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
+    public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
             List<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
             // attach policy sets
@@ -84,7 +85,7 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
         }
     }
 
-    public void detachPolicies(List<PolicySet> policySets, LogicalComponent<?> component) throws PolicyEvaluationException {
+    public void detachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
             List<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
             // attach policy sets

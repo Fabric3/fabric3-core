@@ -38,11 +38,9 @@
 package org.fabric3.fabric.generator.policy;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,9 +88,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         return getSubCache(definitionClass).values();
     }
 
-    public List<PolicySet> getExternalAttachmentPolicies() {
+    public Set<PolicySet> getExternalAttachmentPolicies() {
         Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
-        List<PolicySet> policySets = new ArrayList<PolicySet>();
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
         for (PolicySet policySet : subCache.values()) {
             if (policySet.getAttachTo() != null) {
                 policySets.add(policySet);
@@ -113,67 +111,63 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         return new HashSet<D>(subCache.values());
     }
 
-    public void activateDefinitions(List<URI> contributionUris) throws PolicyActivationException {
-        for (URI uri : contributionUris) {
-            Contribution contribution = metaDataStore.find(uri);
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
-                    Object value = resourceElement.getValue();
-                    if (value instanceof AbstractPolicyDefinition) {
-                        activate((AbstractPolicyDefinition) value);
+    public Set<PolicySet> activateDefinitions(URI uri) throws PolicyActivationException {
+        Contribution contribution = metaDataStore.find(uri);
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        Set<Intent> intents = new HashSet<Intent>();
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
+                Object value = resourceElement.getValue();
+                if (value instanceof Intent) {
+                    Intent intent = (Intent) value;
+                    activate(intent);
+                    intents.add(intent);
+                } else if (value instanceof PolicySet) {
+                    PolicySet policySet = (PolicySet) value;
+                    activate(policySet);
+                    if (policySet.getAttachTo() != null) {
+                        policySets.add(policySet);
+                    }
+                } else if (value instanceof BindingType) {
+                    BindingType bindingType = (BindingType) value;
+                    activate(bindingType);
+                } else if (value instanceof ImplementationType) {
+                    ImplementationType implementationType = (ImplementationType) value;
+                    activate(implementationType);
+                }
+            }
+        }
+        validate(intents);
+        return policySets;
+    }
+
+    public Set<PolicySet> deactivateDefinitions(URI uri) throws PolicyActivationException {
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        Contribution contribution = metaDataStore.find(uri);
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
+                Object value = resourceElement.getValue();
+                if (value instanceof AbstractPolicyDefinition) {
+                    AbstractPolicyDefinition definition = (AbstractPolicyDefinition) value;
+                    deactivate(definition);
+                    if (definition instanceof PolicySet){
+                        PolicySet policySet = (PolicySet) definition;
+                        if (policySet.getAttachTo() != null) {
+                            policySets.add(policySet);
+                        }
                     }
                 }
             }
         }
+        return policySets;
     }
 
-    public void activate(AbstractPolicyDefinition definition) throws PolicyActivationException {
-        if (definition instanceof Intent) {
-            Map<QName, Intent> subCache = getSubCache(Intent.class);
-            QName name = definition.getName();
-            if (subCache.containsKey(name)) {
-                throw new PolicyActivationException("Duplicate intent found:" + name);
-            }
-            subCache.put(name, (Intent) definition);
-        } else if (definition instanceof PolicySet) {
-            Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
-            QName name = definition.getName();
-            if (subCache.containsKey(name)) {
-                throw new PolicyActivationException("Duplicate policy set found:" + name);
-            }
-            subCache.put(name, (PolicySet) definition);
-        } else if (definition instanceof BindingType) {
-            Map<QName, BindingType> subCache = getSubCache(BindingType.class);
-            QName name = definition.getName();
-            if (subCache.containsKey(name)) {
-                throw new PolicyActivationException("Duplicate binding type found:" + name);
-            }
-            subCache.put(name, (BindingType) definition);
-        } else if (definition instanceof ImplementationType) {
-            Map<QName, ImplementationType> subCache = getSubCache(ImplementationType.class);
-            QName name = definition.getName();
-            if (subCache.containsKey(name)) {
-                throw new PolicyActivationException("Duplicate implementation type found:" + name);
-            }
-            subCache.put(name, (ImplementationType) definition);
-        }
-    }
-
-    public void deactivateDefinitions(List<URI> contributionUris) throws PolicyActivationException {
-        for (URI uri : contributionUris) {
-            Contribution contribution = metaDataStore.find(uri);
-            for (Resource resource : contribution.getResources()) {
-                for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
-                    Object value = resourceElement.getValue();
-                    if (value instanceof AbstractPolicyDefinition) {
-                        deactivate((AbstractPolicyDefinition) value);
-                    }
-                }
-            }
-        }
-    }
-
-    public void deactivate(AbstractPolicyDefinition definition) throws PolicyActivationException {
+    /**
+     * Deactivates the policy definition.
+     *
+     * @param definition the definition
+     */
+    private void deactivate(AbstractPolicyDefinition definition) {
         if (definition instanceof Intent) {
             getSubCache(Intent.class).remove(definition.getName());
         } else if (definition instanceof PolicySet) {
@@ -184,6 +178,54 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
             getSubCache(ImplementationType.class).remove(definition.getName());
         }
     }
+
+    private void activate(Intent intent) throws PolicyActivationException {
+        Map<QName, Intent> subCache = getSubCache(Intent.class);
+        QName name = intent.getName();
+        if (subCache.containsKey(name)) {
+            throw new PolicyActivationException("Duplicate intent found:" + name);
+        }
+        subCache.put(name, intent);
+    }
+
+    private void activate(PolicySet policySet) throws PolicyActivationException {
+        Map<QName, PolicySet> subCache = getSubCache(PolicySet.class);
+        QName name = policySet.getName();
+        if (subCache.containsKey(name)) {
+            throw new PolicyActivationException("Duplicate policy set found:" + name);
+        }
+        subCache.put(name, policySet);
+    }
+
+    private void activate(BindingType bindingType) throws PolicyActivationException {
+        Map<QName, BindingType> subCache = getSubCache(BindingType.class);
+        QName name = bindingType.getName();
+        if (subCache.containsKey(name)) {
+            throw new PolicyActivationException("Duplicate binding type found:" + name);
+        }
+        subCache.put(name, bindingType);
+    }
+
+    private void activate(ImplementationType implementationType) throws PolicyActivationException {
+        Map<QName, ImplementationType> subCache = getSubCache(ImplementationType.class);
+        QName name = implementationType.getName();
+        if (subCache.containsKey(name)) {
+            throw new PolicyActivationException("Duplicate implementation type found:" + name);
+        }
+        subCache.put(name, implementationType);
+    }
+
+    private void validate(Set<Intent> intents) throws PolicyActivationException {
+        Map<QName, Intent> subCache = getSubCache(Intent.class);
+        for (Intent intent : intents) {
+            for (QName required : intent.getRequires()) {
+                if (!subCache.containsKey(required)) {
+                    throw new PolicyActivationException("Required intent specified in " + intent.getName() + " not found: " + required);
+                }
+            }
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     private <D extends AbstractPolicyDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {

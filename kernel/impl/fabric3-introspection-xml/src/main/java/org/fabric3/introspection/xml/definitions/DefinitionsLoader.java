@@ -178,7 +178,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
     }
 
     /**
-     * Creates Intent instances from qualifier entries defined in a unqualified (parent) intent.
+     * Creates Intent instances from qualifier entries defined in an unqualified (parent) intent.
      *
      * @param intent   the unqualified intent
      * @param resource the contribution resource containing the intents
