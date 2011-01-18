@@ -190,15 +190,21 @@ Public License. See the accompanying license file for details.
         </description>
     </intent>
 
+    <sca:intent name="EJB" constrains="sca:binding" intentType="interaction">
+        <sca:description>
+            Specifies that the EJB API is needed to communicate with the service or reference.
+        </sca:description>
+    </sca:intent>
+
+    <policySet name="allowsPassByReferencePolicy" provides="f3:allowsPassByReference">
+        <f3:allowsPassByReferencePolicy/>
+    </policySet>
+
     <intent name="f3:allowsPassByReference" constrains="sca:implementation" intentType="interaction">
         <description>
             Used to indicate the implementation allows pass-by-reference semantics.
         </description>
     </intent>
-
-    <policySet name="allowsPassByReferencePolicy" provides="f3:allowsPassByReference">
-        <f3:allowsPassByReferencePolicy/>
-    </policySet>
 
 
 </definitions>
