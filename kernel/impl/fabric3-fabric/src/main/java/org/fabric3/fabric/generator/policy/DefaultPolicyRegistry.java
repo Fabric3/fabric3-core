@@ -52,7 +52,10 @@ import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.model.type.definitions.IntentMap;
+import org.fabric3.model.type.definitions.IntentQualifier;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
@@ -113,8 +116,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     public Set<PolicySet> activateDefinitions(URI uri) throws PolicyActivationException {
         Contribution contribution = metaDataStore.find(uri);
-        Set<PolicySet> policySets = new HashSet<PolicySet>();
         Set<Intent> intents = new HashSet<Intent>();
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        Set<PolicySet> attachedPolicySets = new HashSet<PolicySet>();
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
                 Object value = resourceElement.getValue();
@@ -126,8 +130,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                     PolicySet policySet = (PolicySet) value;
                     activate(policySet);
                     if (policySet.getAttachTo() != null) {
-                        policySets.add(policySet);
+                        attachedPolicySets.add(policySet);
                     }
+                    policySets.add(policySet);
                 } else if (value instanceof BindingType) {
                     BindingType bindingType = (BindingType) value;
                     activate(bindingType);
@@ -137,8 +142,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                 }
             }
         }
-        validate(intents);
-        return policySets;
+        validateIntents(intents);
+        validatePolicySets(policySets);
+        return attachedPolicySets;
     }
 
     public Set<PolicySet> deactivateDefinitions(URI uri) throws PolicyActivationException {
@@ -150,7 +156,7 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                 if (value instanceof AbstractPolicyDefinition) {
                     AbstractPolicyDefinition definition = (AbstractPolicyDefinition) value;
                     deactivate(definition);
-                    if (definition instanceof PolicySet){
+                    if (definition instanceof PolicySet) {
                         PolicySet policySet = (PolicySet) definition;
                         if (policySet.getAttachTo() != null) {
                             policySets.add(policySet);
@@ -215,12 +221,48 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         subCache.put(name, implementationType);
     }
 
-    private void validate(Set<Intent> intents) throws PolicyActivationException {
+    private void validateIntents(Set<Intent> intents) throws PolicyActivationException {
         Map<QName, Intent> subCache = getSubCache(Intent.class);
         for (Intent intent : intents) {
+            // verify required intents exist
             for (QName required : intent.getRequires()) {
                 if (!subCache.containsKey(required)) {
                     throw new PolicyActivationException("Required intent specified in " + intent.getName() + " not found: " + required);
+                }
+            }
+            // verify excluded intents exist
+            for (QName excluded : intent.getExcludes()) {
+                if (!subCache.containsKey(excluded)) {
+                    throw new PolicyActivationException("Excluded intent specified in " + intent.getName() + " not found: " + excluded);
+                }
+            }
+        }
+    }
+
+    private void validatePolicySets(Set<PolicySet> policySets) throws PolicyActivationException {
+        Map<QName, Intent> intentCache = getSubCache(Intent.class);
+        for (PolicySet policySet : policySets) {
+            for (IntentMap intentMap : policySet.getIntentMaps()) {
+                QName provides = intentMap.getProvides();
+                Intent intent = intentCache.get(provides);
+                if (intent == null) {
+                    QName name = policySet.getName();
+                    throw new PolicyActivationException("Intent " + provides + " specified as the provided intent for " + name + " was not found");
+                }
+                for (Qualifier qualifier : intent.getQualifiers()) {
+                    String qualifierName = qualifier.getName();
+                    boolean found = false;
+                    for (IntentQualifier intentQualifier : intentMap.getQualifiers()) {
+                        if (intentQualifier.getName().equals(qualifierName)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        QName name = policySet.getName();
+                        throw new PolicyActivationException("Intent map that provides " + intentMap.getProvides() + " in policy set " + name
+                                + " does not specify the qualifier " + qualifierName);
+                    }
                 }
             }
         }

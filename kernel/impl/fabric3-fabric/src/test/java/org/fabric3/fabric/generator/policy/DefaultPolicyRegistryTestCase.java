@@ -50,6 +50,7 @@ import org.fabric3.host.stream.UrlSource;
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.model.type.definitions.IntentMap;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.contribution.Contribution;
@@ -76,7 +77,7 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Resource resource = new Resource(contribution, source, "text/xml");
         QName name = new QName("test", "policyset");
         QNameSymbol symbol = new QNameSymbol(name);
-        PolicySet policySet = new PolicySet(name, null, null, null, null, null, null, null);
+        PolicySet policySet = new PolicySet(name, null, null, null, null, null, Collections.<IntentMap>emptySet(), null);
         ResourceElement<QNameSymbol, PolicySet> element = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
         resource.addResourceElement(element);
         contribution.addResource(resource);
@@ -99,7 +100,14 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         Resource resource = new Resource(contribution, source, "text/xml");
         QName name = new QName("test", "intent");
         QNameSymbol symbol = new QNameSymbol(name);
-        Intent intent = new Intent(name, null, Collections.<QName>emptySet(), Collections.<Qualifier>emptySet(), false, null, INTERACTION, false);
+        Intent intent = new Intent(name,
+                                   null,
+                                   Collections.<QName>emptySet(),
+                                   Collections.<Qualifier>emptySet(),
+                                   false,
+                                   Collections.<QName>emptySet(),
+                                   INTERACTION,
+                                   false);
         ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
         resource.addResourceElement(element);
         contribution.addResource(resource);
@@ -117,7 +125,14 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
     public void testRequiredIntentsNotFound() throws Exception {
         QName name = new QName("test", "intent");
         QName required = new QName("test", "doesnotexist");
-        Intent intent = new Intent(name, null, Collections.singleton(required), Collections.<Qualifier>emptySet(), false, null, INTERACTION, false);
+        Intent intent = new Intent(name,
+                                   null,
+                                   Collections.singleton(required),
+                                   Collections.<Qualifier>emptySet(),
+                                   false,
+                                   Collections.<QName>emptySet(),
+                                   INTERACTION,
+                                   false);
 
         URI uri = URI.create("test");
         Contribution contribution = new Contribution(uri);
@@ -136,6 +151,84 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
         try {
             registry.activateDefinitions(uri);
             fail("Non-existent required intent should raise an exception");
+        } catch (PolicyActivationException e) {
+            // expected
+        }
+    }
+
+    public void testExcludedIntentsNotFound() throws Exception {
+        QName name = new QName("test", "intent");
+        QName excluded = new QName("test", "doesnotexist");
+        Intent intent = new Intent(name,
+                                   null,
+                                   Collections.<QName>emptySet(),
+                                   Collections.<Qualifier>emptySet(),
+                                   false,
+                                   Collections.<QName>singleton(excluded),
+                                   INTERACTION,
+                                   false);
+
+        URI uri = URI.create("test");
+        Contribution contribution = new Contribution(uri);
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, "text/xml");
+        QNameSymbol symbol = new QNameSymbol(name);
+        ResourceElement<QNameSymbol, Intent> element = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        resource.addResourceElement(element);
+        contribution.addResource(resource);
+
+        EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
+        EasyMock.replay(store);
+
+
+        try {
+            registry.activateDefinitions(uri);
+            fail("Non-existent excluded intent should raise an exception");
+        } catch (PolicyActivationException e) {
+            // expected
+        }
+    }
+
+
+    public void testIntentMapDoesNotSpecifyQualifier() throws Exception {
+        QName intentName = new QName("test", "intent");
+        Qualifier qualifier = new Qualifier("fooQualifier", true);
+        Intent intent = new Intent(intentName,
+                                   null,
+                                   Collections.<QName>emptySet(),
+                                   Collections.<Qualifier>singleton(qualifier),
+                                   false,
+                                   Collections.<QName>emptySet(),
+                                   INTERACTION,
+                                   false);
+
+        URI uri = URI.create("test");
+        Contribution contribution = new Contribution(uri);
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, "text/xml");
+        QNameSymbol symbol = new QNameSymbol(intentName);
+        ResourceElement<QNameSymbol, Intent> intentElement = new ResourceElement<QNameSymbol, Intent>(symbol, intent);
+        resource.addResourceElement(intentElement);
+        contribution.addResource(resource);
+
+        IntentMap intentMap = new IntentMap(intentName);
+        QName policySetName = new QName("test", "policySet");
+        PolicySet policySet = new PolicySet(policySetName, null, null, null, null, null, Collections.singleton(intentMap), null);
+        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
+        Resource policyResource = new Resource(contribution, source, "text/xml");
+        policyResource.addResourceElement(policyElement);
+        contribution.addResource(policyResource);
+
+
+        EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
+        EasyMock.replay(store);
+
+
+        try {
+            registry.activateDefinitions(uri);
+            fail("IntentMap does not specify the intent qualifier and should raise an exception");
         } catch (PolicyActivationException e) {
             // expected
         }
