@@ -40,6 +40,7 @@ package org.fabric3.fabric.generator.policy;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -279,6 +280,50 @@ public class DefaultPolicyRegistryTestCase extends TestCase {
 
         registry.deactivateDefinitions(uri);
         assertNull(registry.getDefinition(name, ImplementationType.class));
+    }
+
+
+    public void testPolicySetReferenceProvidesAnIntentNotProvidedByParentPolicySet() throws Exception {
+
+        URI uri = URI.create("test");
+        Contribution contribution = new Contribution(uri);
+        URL url = new URL("file://test");
+        Source source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, "text/xml");
+        contribution.addResource(resource);
+
+        QName policySetName = new QName("test", "policySet");
+        QName refPolicySetName = new QName("test", "referencedPolicySet");
+        Set<QName> provides = Collections.singleton(new QName("foo", "bar"));
+        PolicySet policySet = new PolicySet(policySetName, provides, null, null, null, null, Collections.<IntentMap>emptySet(), null);
+
+        Set<QName> refProvides = Collections.singleton(new QName("foo", "baz"));
+        PolicySet referencedPolicySet = new PolicySet(refPolicySetName, refProvides, null, null, null, null, Collections.<IntentMap>emptySet(), null);
+        policySet.setPolicySetReferences(Collections.singleton(refPolicySetName));
+
+        QNameSymbol symbol = new QNameSymbol(policySetName);
+        ResourceElement<QNameSymbol, PolicySet> policyElement = new ResourceElement<QNameSymbol, PolicySet>(symbol, policySet);
+        Resource policyResource = new Resource(contribution, source, "text/xml");
+        policyResource.addResourceElement(policyElement);
+        contribution.addResource(policyResource);
+
+
+        QNameSymbol refSymbol = new QNameSymbol(refPolicySetName);
+        ResourceElement<QNameSymbol, PolicySet> refPolicyElement = new ResourceElement<QNameSymbol, PolicySet>(refSymbol, referencedPolicySet);
+        Resource refPolicyResource = new Resource(contribution, source, "text/xml");
+        refPolicyResource.addResourceElement(refPolicyElement);
+        contribution.addResource(refPolicyResource);
+
+        EasyMock.expect(store.find(uri)).andReturn(contribution).atLeastOnce();
+        EasyMock.replay(store);
+
+
+        try {
+            registry.activateDefinitions(uri);
+            fail("Exception should have been raised as PolicyReference provides an intent not provided by the parent");
+        } catch (PolicyActivationException e) {
+            // expected
+        }
     }
 
     @Override

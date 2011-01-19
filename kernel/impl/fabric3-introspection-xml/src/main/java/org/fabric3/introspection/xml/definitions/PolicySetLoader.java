@@ -61,6 +61,7 @@ import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
@@ -101,6 +102,7 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
 
         Element extension = null;
         Set<IntentMap> intentMaps = new HashSet<IntentMap>();
+        Set<QName> policySetReferences = new HashSet<QName>();
         NodeList children = policyElement.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);
@@ -110,9 +112,9 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
                 if ("intentMap".equals(nodeName)) {
                     parseIntentMaps(element, intentMaps, reader, context);
                 } else if ("policySetReference".equals(nodeName)) {
-                    // TODO
+                    parsePolicyReference(element, policySetReferences, reader, context);
                 } else {
-                    // the node is not an intent map or policy set, it must be an extension element
+                    // the node is not an intent map or policy set reference, it must be an extension element
                     extension = (Element) children.item(i);
                 }
             }
@@ -121,6 +123,7 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
         PolicyPhase phase = parsePhase(extension, reader, context);
         URI uri = context.getContributionUri();
         PolicySet policySet = new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
+        policySet.setPolicySetReferences(policySetReferences);
         validate(policySet, reader, context);
         return policySet;
     }
@@ -164,6 +167,28 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
                 intentMap.addQualifier(intentQualifier);
             }
 
+        } catch (InvalidPrefixException e) {
+            raiseInvalidPrefix(reader, context, e);
+        }
+    }
+
+    /**
+     * Parses policy set references in a policy set configuration.
+     *
+     * @param element             the policy set contents to parse
+     * @param policySetReferences the collection of policy set references to update
+     * @param reader              the StAX reader
+     * @param context             the current introspection context
+     */
+    private void parsePolicyReference(Element element, Set<QName> policySetReferences, XMLStreamReader reader, IntrospectionContext context) {
+        try {
+            QName referenceName = helper.createQName(element.getAttribute("name"), reader);
+            if (referenceName == null) {
+                MissingAttribute error = new MissingAttribute("Policy reference must have a name", reader);
+                context.addError(error);
+            } else {
+                policySetReferences.add(referenceName);
+            }
         } catch (InvalidPrefixException e) {
             raiseInvalidPrefix(reader, context, e);
         }

@@ -44,6 +44,7 @@
 package org.fabric3.model.type.definitions;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -57,11 +58,12 @@ import org.w3c.dom.Element;
 public final class PolicySet extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -4507145141780962741L;
 
-    private final Set<QName> providedIntents;
-    private final Element expression;
-    private final String appliesTo;
-    private final String attachTo;
-    private final PolicyPhase phase;
+    private Set<QName> providedIntents;
+    private Set<QName> policySetReferences;
+    private Element expression;
+    private String appliesTo;
+    private String attachTo;
+    private PolicyPhase phase;
     private URI contributionUri;
     private Set<IntentMap> intentMaps;
 
@@ -93,6 +95,7 @@ public final class PolicySet extends AbstractPolicyDefinition {
         this.expression = expression;
         this.phase = phase;
         this.contributionUri = uri;
+        policySetReferences = Collections.emptySet();
     }
 
     /**
@@ -111,6 +114,15 @@ public final class PolicySet extends AbstractPolicyDefinition {
      */
     public String getAttachTo() {
         return attachTo;
+    }
+
+    /**
+     * Returns the intents provided by this policy set.
+     *
+     * @return the provided intents
+     */
+    public Set<QName> getProvidedIntents() {
+        return providedIntents;
     }
 
     /**
@@ -158,6 +170,24 @@ public final class PolicySet extends AbstractPolicyDefinition {
      */
     public URI getContributionUri() {
         return contributionUri;
+    }
+
+    /**
+     * Returns the policy set references contained in the policy set.
+     *
+     * @return
+     */
+    public Set<QName> getPolicySetReferences() {
+        return policySetReferences;
+    }
+
+    /**
+     * Overrides existing policy set references.
+     *
+     * @param references the new policy set references
+     */
+    public void setPolicySetReferences(Set<QName> references) {
+        policySetReferences = references;
     }
 
     /**

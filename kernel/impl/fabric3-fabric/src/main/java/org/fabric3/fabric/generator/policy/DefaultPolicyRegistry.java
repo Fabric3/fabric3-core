@@ -265,6 +265,23 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                     }
                 }
             }
+            if (!policySet.getPolicySetReferences().isEmpty()) {
+                Map<QName, PolicySet> policySetCache = getSubCache(PolicySet.class);
+                for (QName referenceName : policySet.getPolicySetReferences()) {
+                    PolicySet referencedPolicySet = policySetCache.get(referenceName);
+                    if (referencedPolicySet == null) {
+                        QName name = policySet.getName();
+                        throw new PolicyActivationException("Referenced policy set " + referenceName + " from " + name + " was not found");
+                    }
+                    for (QName provided : referencedPolicySet.getProvidedIntents()) {
+                        if (!policySet.doesProvide(provided)) {
+                            QName name = policySet.getName();
+                            throw new PolicyActivationException("Referenced policy set " + referenceName + " from " + name + " provides an intent "
+                                    + provided + " that is not provided by the parent policy set");
+                        }
+                    }
+                }
+            }
         }
     }
 

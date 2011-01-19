@@ -152,6 +152,19 @@ public class PolicySetLoaderTestCase extends TestCase {
             "</policySet>" +
             "</definitions>";
 
+
+    private static String POLICY_SET_REFERENCE = "<definitions xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            " xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'>" +
+            "<policySet name='SecureMessagingPolicies'" +
+            "           provides='confidentiality'" +
+            "           appliesTo='//binding.ws'" +
+            "           xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            "           xmlns:wsp='http://schemas.xmlsoap.org/ws/2004/09/policy'>" +
+            "    <policySetReference name='sca:ref1'/>" +
+            "    <policySetReference name='sca:ref2'/>" +
+            "</policySet>" +
+            "</definitions>";
+
     private PolicySetLoader loader;
     private XMLInputFactory factory;
     private IntrospectionContext context;
@@ -202,6 +215,18 @@ public class PolicySetLoaderTestCase extends TestCase {
         assertTrue(context.getErrors().get(0) instanceof DuplicateIntentMap);
     }
 
+
+    public void testPolicySetReferenceParse() throws Exception {
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(POLICY_SET_REFERENCE.getBytes()));
+        reader.nextTag();
+        reader.nextTag();
+        PolicySet policySet = loader.load(reader, context);
+        assertEquals(2, policySet.getPolicySetReferences().size());
+        for (QName name : policySet.getPolicySetReferences()) {
+            assertTrue("ref1".equals(name.getLocalPart()) || "ref2".equals(name.getLocalPart()));
+        }
+        assertTrue(context.getErrors().isEmpty());
+    }
 
     protected void setUp() throws Exception {
         super.setUp();
