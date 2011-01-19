@@ -60,6 +60,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.Constants;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -69,10 +72,13 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.PolicyAware;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
+import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 import static javax.xml.stream.XMLStreamConstants.CDATA;
@@ -95,10 +101,23 @@ import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
  */
 public class DefaultLoaderHelper implements LoaderHelper {
     private DocumentBuilderFactory documentBuilderFactory;
+    private PolicyRegistry policyRegistry;
+    private boolean strictValidation;
 
     public DefaultLoaderHelper() {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
+    }
+
+    @Constructor
+    public DefaultLoaderHelper(@Reference PolicyRegistry policyRegistry) {
+        this();
+        this.policyRegistry = policyRegistry;
+    }
+
+    @Property(required = false)
+    public void setStrictValidation(boolean strictValidation) {
+        this.strictValidation = strictValidation;
     }
 
     public String loadKey(XMLStreamReader reader) {
@@ -121,8 +140,11 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
     public void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context) {
         try {
-            policyAware.setIntents(parseListOfQNames(reader, "requires"));
-            policyAware.setPolicySets(parseListOfQNames(reader, "policySets"));
+            Set<QName> intentNames = parseListOfQNames(reader, "requires");
+            validateIntents(intentNames, reader, context);
+            policyAware.setIntents(intentNames);
+            policyAware.setPolicySets(policySets(reader));
+
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
@@ -130,7 +152,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
                     + " is invalid", reader));
         }
     }
-
 
     public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
         Set<QName> qNames = new HashSet<QName>();
@@ -371,7 +392,31 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 break;
             }
         }
+    }
 
+    private void validateIntents(Set<QName> intentNames, XMLStreamReader reader, IntrospectionContext context) {
+        if (!strictValidation || policyRegistry == null) {
+            return;
+        }
+        Set<QName> excluded = new HashSet<QName>();
+        // check for mutually exclusive intents
+        for (QName name : intentNames) {
+            Intent intent = policyRegistry.getDefinition(name, Intent.class);
+            if (!intent.getExcludes().isEmpty()) {
+                for (QName exclude : intent.getExcludes()) {
+                    if (excluded.contains(exclude) || intentNames.contains(exclude)) {
+                        InvalidValue error = new InvalidValue("Mutually exclusive intents configured: " + exclude, reader);
+                        context.addError(error);
+                    } else {
+                        excluded.add(exclude);
+                    }
+                }
+            }
+        }
+    }
+
+    private Set<QName> policySets(XMLStreamReader reader) throws InvalidPrefixException {
+        return parseListOfQNames(reader, "policySets");
     }
 
     private void populateNamespaces(XMLStreamReader reader, Element element) {
@@ -394,6 +439,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
     /*
      * Creates the element and populates the namespace declarations and attributes.
      */
+
     private Element createElement(XMLStreamReader reader, Document document, QName rootName) {
 
         Element root = document.createElementNS(rootName.getNamespaceURI(), rootName.getLocalPart());
