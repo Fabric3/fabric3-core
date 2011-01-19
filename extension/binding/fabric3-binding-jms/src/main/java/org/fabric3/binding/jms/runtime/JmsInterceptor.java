@@ -47,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.UUID;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -155,17 +156,21 @@ public class JmsInterceptor implements Interceptor {
 
             javax.jms.Message jmsMessage = createMessage(message, session);
 
+            String correlationId = null;
+            if (correlationScheme == CorrelationScheme.CORRELATION_ID) {
+                correlationId = UUID.randomUUID().toString();
+                jmsMessage.setJMSCorrelationID(correlationId);
+            }
+
             // enqueue the message
             producer.send(jmsMessage);
 
-            String correlationId = null;
-            switch (correlationScheme) {
-            case NONE:
-            case CORRELATION_ID:
-                throw new UnsupportedOperationException("Correlation scheme not supported");
-            case MESSAGE_ID:
+            // if the correlation scheme is configured to use the message id, the correlation id must set after the message is sent since the
+            // JMS provider may not have set it
+            if (correlationScheme == CorrelationScheme.MESSAGE_ID) {
                 correlationId = jmsMessage.getJMSMessageID();
             }
+
             if (!oneWay) {
                 // request-response, block on response
                 Message resp = receive(correlationId, session);

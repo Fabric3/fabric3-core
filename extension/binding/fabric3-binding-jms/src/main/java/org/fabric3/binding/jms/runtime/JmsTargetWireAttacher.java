@@ -52,6 +52,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
@@ -150,7 +151,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 ConnectionFactory responseConnectionFactory = resolver.resolve(connectionFactoryDefinition);
                 destinationDefinition = metadata.getResponseDestination();
                 Destination responseDestination = resolver.resolve(destinationDefinition, responseConnectionFactory);
-                ResponseListener listener = new ResponseListener(responseDestination);
+                CorrelationScheme scheme = metadata.getCorrelationScheme();
+                ResponseListener listener = new ResponseListener(responseDestination, scheme);
                 wireConfiguration.setResponseListener(listener);
             }
         } catch (JmsResolutionException e) {

@@ -51,6 +51,8 @@ import javax.jms.Session;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+
 /**
  * MessageListener that blocks for responses from a service provider. This listener is attached to the reference side of a wire.
  *
@@ -58,26 +60,36 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class ResponseListener {
     private Destination destination;
+    private CorrelationScheme scheme;
 
     /**
+     * Constructor.
+     *
      * @param destination the response destination
+     * @param scheme      the correlation scheme
      */
-    public ResponseListener(Destination destination) {
+    public ResponseListener(Destination destination, CorrelationScheme scheme) {
         this.destination = destination;
+        this.scheme = scheme;
     }
 
     /**
      * Performs a blocking receive, i.e. control will not be returned to application code until a response is received.
      *
-     * @param correlationId Correlation Id.
+     * @param correlationId Correlation id
      * @param session       the session to use for processing
      * @param timeout       the receive timeout
      * @return the received message or null if the operation timed out.
      */
     public Message receive(String correlationId, Session session, long timeout) {
         try {
-            String selector = "JMSCorrelationID = '" + correlationId + "'";
-            MessageConsumer consumer = session.createConsumer(destination, selector);
+            MessageConsumer consumer;
+            if (CorrelationScheme.MESSAGE_ID == scheme || CorrelationScheme.CORRELATION_ID == scheme) {
+                String selector = "JMSCorrelationID = '" + correlationId + "'";
+                consumer = session.createConsumer(destination, selector);
+            } else {
+                consumer = session.createConsumer(destination);
+            }
             return consumer.receive(timeout);
         } catch (JMSException e) {
             // bubble exception to the client
