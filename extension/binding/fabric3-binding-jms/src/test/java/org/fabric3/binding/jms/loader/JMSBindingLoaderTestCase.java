@@ -43,104 +43,149 @@
  */
 package org.fabric3.binding.jms.loader;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.util.List;
+import java.io.ByteArrayInputStream;
 import java.util.Map;
-import java.util.Set;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.w3c.dom.Document;
+import org.easymock.EasyMock;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.common.ActivationSpec;
+import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+import org.fabric3.binding.jms.spi.common.CreateOption;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
-import org.fabric3.model.type.PolicyAware;
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.Target;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.InvalidPrefixException;
-import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 public class JMSBindingLoaderTestCase extends TestCase {
-    public void testLoaderJMSBindingElement() throws Exception {
-        LoaderHelper loaderHelper = new LoaderHelper() {
+    // wireFormat; activation spec; messageSelection
+    private static final String JMS_BINDING =
+            "   <binding.jms correlationScheme='correlationID'>" +
+                    "      <destination jndiName='serviceQueue' type='queue' create='always'>" +
+                    "         <property name='prop1'>val</property>" +
+                    "      </destination>" +
+                    "      <connectionFactory jndiName='serviceQueue' create='always'>" +
+                    "         <property name='prop1'>val</property>" +
+                    "      </connectionFactory>" +
+                    "      <response>" +
+                    "          <destination jndiName='clientQueue' type='queue' create='always'/>" +
+                    "          <connectionFactory jndiName='clientQueue' create='always'>" +
+                    "             <property name='prop1'>val</property>" +
+                    "          </connectionFactory>" +
+                    "       </response>" +
+                    "       <headers type='jmstype' deliveryMode='persistent' timeToLive='10000' priority='1'>" +
+                    "          <property name='headerProp'>val</property>" +
+                    "       </headers>" +
+                    "       <operationProperties name='testOperationProperties1'>" +
+                    "          <property name='testHeadersPropertyProperty'>TestHeadersPropertyProperty</property>" +
+                    "          <headers>" +
+                    "             <property name='nested'>NestedHeader</property>" +
+                    "          </headers>" +
+                    "       </operationProperties>" +
+                    "       <operationProperties name='testOperationProperties2' selectedOperation='NativeName'/>" +
+                    "   </binding.jms>";
 
-            public QName createQName(String name, XMLStreamReader reader) throws InvalidPrefixException {
-                return null;
-            }
+    private static final String ACTIVATION_SPEC =
+            "   <binding.jms>" +
+                    "<activationSpec jndiName='serviceQueue' create='always'>" +
+                    "   <property name='prop1'>val</property>" +
+                    "</activationSpec>" +
+                    "   <response>" +
+                    "      <activationSpec jndiName='clientQueue' create='always'>" +
+                    "         <property name='prop1'>val</property>" +
+                    "      </activationSpec>" +
+                    "   </response>" +
+                    "</binding.jms>";
 
-            public URI parseUri(String target) {
-                return null;
-            }
+    private XMLInputFactory factory;
+    private JmsBindingLoader loader;
+    private IntrospectionContext context;
 
-            public Target parseTarget(String target, XMLStreamReader reader) throws InvalidTargetException {
-                return null;
-            }
+    public void testGeneralParse() throws Exception {
+        XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(JMS_BINDING.getBytes()));
+        streamReader.nextTag();
 
-            public String loadKey(XMLStreamReader reader) {
-                return null;
-            }
+        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBindingMetadata metadata = binding.getJmsMetadata();
 
-            public void loadPolicySetsAndIntents(PolicyAware policyAware, XMLStreamReader reader, IntrospectionContext context) {
-            }
+        // verify destination configuration
+        assertEquals(CorrelationScheme.CORRELATION_ID, metadata.getCorrelationScheme());
+        DestinationDefinition destination = metadata.getDestination();
+        assertEquals("serviceQueue", destination.getName());
+        assertEquals(DestinationType.QUEUE, destination.geType());
+        assertEquals(CreateOption.ALWAYS, destination.getCreate());
+        assertEquals(1, destination.getProperties().size());
+        assertEquals("val", destination.getProperties().get("prop1"));
 
-            public Document loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
-                return null;
-            }
 
-            public Document loadPropertyValue(String content) throws XMLStreamException {
-                return null;
-            }
+        // verify connection factory
+        ConnectionFactoryDefinition connectionFactory = metadata.getConnectionFactory();
+        assertEquals("serviceQueue", connectionFactory.getName());
+        assertEquals(CreateOption.ALWAYS, connectionFactory.getCreate());
+        assertEquals("val", connectionFactory.getProperties().get("prop1"));
 
-            public Set<QName> parseListOfQNames(XMLStreamReader reader, String attribute) throws InvalidPrefixException {
-                return null;
-            }
+        // verify response
+        DestinationDefinition responseDestination = metadata.getResponseDestination();
+        assertEquals("clientQueue", responseDestination.getName());
+        assertEquals(DestinationType.QUEUE, responseDestination.geType());
+        assertEquals(CreateOption.ALWAYS, responseDestination.getCreate());
+        ConnectionFactoryDefinition responseConnectionFactory = metadata.getResponse().getConnectionFactory();
+        assertEquals("clientQueue", responseConnectionFactory.getName());
+        assertEquals(CreateOption.ALWAYS, responseConnectionFactory.getCreate());
+        assertEquals("val", responseConnectionFactory.getProperties().get("prop1"));
 
-            public List<URI> parseListOfUris(XMLStreamReader reader, String attribute) {
-                return null;
-            }
-
-            public boolean canNarrow(Multiplicity first, Multiplicity second) {
-                return false;
-            }
-
-            public Document transform(XMLStreamReader reader) throws XMLStreamException {
-                return null;
-            }
-
-        };
-        JmsBindingLoader loader = new JmsBindingLoader(loaderHelper);
-        InputStream inputStream = JmsBindingLoader.class.getResourceAsStream("JMSBindingLoaderTest.xml");
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader streamReader = factory.createXMLStreamReader(new InputStreamReader(inputStream));
-        loaderHelper.loadKey(streamReader);
-        JmsBindingDefinition jmsBinding = null;
-        while (streamReader.hasNext()) {
-            if (START_ELEMENT == streamReader.next() && "binding.jms".equals(streamReader.getName().getLocalPart())) {
-                jmsBinding = loader.load(streamReader, new DefaultIntrospectionContext());
-                streamReader.close();
-                break;
-            }
-        }
-        JmsBindingMetadata metadata = jmsBinding.getJmsMetadata();
+        // verify headers
         HeadersDefinition headers = metadata.getHeaders();
-        assertEquals("TestHeadersProperty", headers.getProperties().get("testHeadersProperty"));
-        Map<String, OperationPropertiesDefinition> props = metadata.getOperationProperties();
-        assertEquals(2, props.size());
-        assertEquals("TestHeadersPropertyProperty", props.get("testOperationProperties1").getProperties().get("testHeadersPropertyProperty"));
-        assertEquals("NestedHeader", props.get("testOperationProperties1").getHeaders().getProperties().get("nested"));
-        assertEquals("NativeName", metadata.getOperationProperties().get("testOperationProperties2").getNativeOperation());
+        assertEquals("jmstype", headers.getType());
+        assertEquals(DeliveryMode.PERSISTENT, headers.getDeliveryMode());
+        assertEquals(10000, headers.getTimeToLive());
+        assertEquals(1, headers.getPriority());
+        assertEquals("val", headers.getProperties().get("headerProp"));
+
+        // verify operation properties
+        Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
+        assertEquals(2, properties.size());
+        assertEquals("TestHeadersPropertyProperty", properties.get("testOperationProperties1").getProperties().get("testHeadersPropertyProperty"));
+        assertEquals("NestedHeader", properties.get("testOperationProperties1").getHeaders().getProperties().get("nested"));
+        assertEquals("NativeName", properties.get("testOperationProperties2").getSelectedOperation());
     }
 
+    public void testActivationParse() throws Exception {
+        XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(ACTIVATION_SPEC.getBytes()));
+        streamReader.nextTag();
+
+        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBindingMetadata metadata = binding.getJmsMetadata();
+        ActivationSpec spec = metadata.getActivationSpec();
+        assertEquals("serviceQueue", spec.getName());
+        assertEquals(CreateOption.ALWAYS, spec.getCreate());
+        assertEquals("val", spec.getProperties().get("prop1"));
+
+        ActivationSpec responseSpec = metadata.getResponse().getActivationSpec();
+        assertEquals("clientQueue", responseSpec.getName());
+        assertEquals(CreateOption.ALWAYS, responseSpec.getCreate());
+        assertEquals("val", responseSpec.getProperties().get("prop1"));
+
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        factory = XMLInputFactory.newInstance();
+
+        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
+        EasyMock.replay(helper);
+
+        loader = new JmsBindingLoader(helper);
+        context = new DefaultIntrospectionContext();
+    }
 }

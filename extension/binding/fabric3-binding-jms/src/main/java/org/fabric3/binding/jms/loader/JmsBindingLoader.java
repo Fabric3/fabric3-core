@@ -57,7 +57,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
-import org.fabric3.binding.jms.spi.common.AdministeredObjectDefinition;
+import org.fabric3.binding.jms.spi.common.ActivationSpec;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
@@ -97,7 +97,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     static {
         ATTRIBUTES.add("uri");
-        ATTRIBUTES.add("correlationScheme");
+        ATTRIBUTES.add("activationSpec");
         ATTRIBUTES.add("jndiURL");
         ATTRIBUTES.add("initialContextFactory");
         ATTRIBUTES.add("requires");
@@ -106,15 +106,15 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("type");
         ATTRIBUTES.add("destination");
         ATTRIBUTES.add("connectionFactory");
+        ATTRIBUTES.add("messageSelection");
         ATTRIBUTES.add("connectionFactory.template");
         ATTRIBUTES.add("type");
         ATTRIBUTES.add("timeToLive");
+        ATTRIBUTES.add("resourceAdapter");
         ATTRIBUTES.add("priority");
         ATTRIBUTES.add("deliveryMode");
         ATTRIBUTES.add("correlationScheme");
         ATTRIBUTES.add("name");
-        ATTRIBUTES.add("requestConnection");
-        ATTRIBUTES.add("responseConnection");
         ATTRIBUTES.add("cache");
         ATTRIBUTES.add("idle.limit");
         ATTRIBUTES.add("transaction.timeout");
@@ -188,12 +188,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
         parseCorrelationScheme(metadata, namespace, targetNamespace, reader, context);
 
-        QName requestConnection = LoaderUtil.getQName("requestConnection", targetNamespace, namespace);
-        bd.setRequestConnection(requestConnection);
-
-        QName responseConnection = LoaderUtil.getQName("responseConnection", targetNamespace, namespace);
-        bd.setResponseConnection(responseConnection);
-
         metadata.setJndiUrl(reader.getAttributeValue(null, "jndiURL"));
         loaderHelper.loadPolicySetsAndIntents(bd, reader, context);
         if (uri != null) {
@@ -218,6 +212,9 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 } else if ("connectionFactory".equals(name)) {
                     ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
                     metadata.setConnectionFactory(connectionFactory);
+                } else if ("activationSpec".equals(name)) {
+                    ActivationSpec spec = loadActivationSpec(reader, context);
+                    metadata.setActivationSpec(spec);
                 } else if ("response".equals(name)) {
                     ResponseDefinition response = loadResponse(reader, context);
                     metadata.setResponse(response);
@@ -233,9 +230,13 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 name = reader.getName().getLocalPart();
                 if ("binding.jms".equals(name)) {
                     // needed for callbacks
-                    String destination = bd.getJmsMetadata().getDestination().getName();
-                    URI bindingUri = URI.create("jms://" + destination);
-                    bd.setGeneratedTargetUri(bindingUri);
+                    String target;
+                    DestinationDefinition destinationDefinition = metadata.getDestination();
+                    if (destinationDefinition != null) {
+                        target = destinationDefinition.getName();
+                        URI bindingUri = URI.create("jms://" + target);
+                        bd.setGeneratedTargetUri(bindingUri);
+                    } 
                     return bd;
                 }
                 break;
@@ -374,6 +375,15 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         }
     }
 
+    private ActivationSpec loadActivationSpec(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        String jndiName = reader.getAttributeValue(null, "jndiName");
+        CreateOption create = parseCreate(reader, context);
+        ActivationSpec spec = new ActivationSpec(jndiName, create);
+        loadProperties(reader, spec, "activationSpec");
+        return spec;
+    }
+
+
     private ResponseDefinition loadResponse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         ResponseDefinition response = new ResponseDefinition();
         String name;
@@ -384,6 +394,9 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 if ("destination".equals(name)) {
                     DestinationDefinition destination = loadDestination(reader, context);
                     response.setDestination(destination);
+                } else if ("activationSpec".equals(name)) {
+                    ActivationSpec spec = loadActivationSpec(reader, context);
+                    response.setActivationSpec(spec);
                 } else if ("connectionFactory".equals(name)) {
                     ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
                     response.setConnectionFactory(connectionFactory);
@@ -402,7 +415,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     private ConnectionFactoryDefinition loadConnectionFactory(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
         connectionFactory.setName(reader.getAttributeValue(null, "jndiName"));
-        parseCreate(reader, context, connectionFactory);
+        CreateOption create = parseCreate(reader, context);
+        connectionFactory.setCreate(create);
         loadProperties(reader, connectionFactory, "connectionFactory");
         return connectionFactory;
     }
@@ -420,7 +434,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(error);
             }
         }
-        parseCreate(reader, context, destination);
+        CreateOption create = parseCreate(reader, context);
+        destination.setCreate(create);
         String type = reader.getAttributeValue(null, "type");
         if (type != null) {
             if ("queue".equalsIgnoreCase(type)) {
@@ -436,20 +451,21 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         return destination;
     }
 
-    private void parseCreate(XMLStreamReader reader, IntrospectionContext context, AdministeredObjectDefinition definition) {
+    private CreateOption parseCreate(XMLStreamReader reader, IntrospectionContext context) {
         String create = reader.getAttributeValue(null, "create");
         if (create != null) {
             if ("always".equals(create)) {
-                definition.setCreate(CreateOption.ALWAYS);
+                return CreateOption.ALWAYS;
             } else if ("never".equalsIgnoreCase(create)) {
-                definition.setCreate(CreateOption.NEVER);
+                return CreateOption.NEVER;
             } else if ("ifNotExist".equalsIgnoreCase(create)) {
-                definition.setCreate(CreateOption.IF_NOT_EXIST);
+                return CreateOption.IF_NOT_EXIST;
             } else {
                 InvalidValue error = new InvalidValue("Invalid value specified for create attribute: " + create, reader);
                 context.addError(error);
             }
         }
+        return CreateOption.IF_NOT_EXIST;
     }
 
     private HeadersDefinition loadHeaders(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -491,7 +507,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     private OperationPropertiesDefinition loadOperationProperties(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         OperationPropertiesDefinition optProperties = new OperationPropertiesDefinition();
         optProperties.setName(reader.getAttributeValue(null, "name"));
-        optProperties.setNativeOperation(reader.getAttributeValue(null, "nativeOperation"));
+        optProperties.setSelectedOperation(reader.getAttributeValue(null, "selectedOperation"));
         String name;
         while (true) {
             switch (reader.next()) {

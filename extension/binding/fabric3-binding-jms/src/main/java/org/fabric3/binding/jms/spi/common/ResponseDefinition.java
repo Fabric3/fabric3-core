@@ -54,6 +54,7 @@ public class ResponseDefinition extends ModelObject {
     private static final long serialVersionUID = -3413442748842988653L;
     private DestinationDefinition destination;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
+    private ActivationSpec activationSpec;
 
     public ConnectionFactoryDefinition getConnectionFactory() {
         return connectionFactory;
@@ -69,5 +70,13 @@ public class ResponseDefinition extends ModelObject {
 
     public void setDestination(DestinationDefinition destination) {
         this.destination = destination;
+    }
+
+    public ActivationSpec getActivationSpec() {
+        return activationSpec;
+    }
+
+    public void setActivationSpec(ActivationSpec activationSpec) {
+        this.activationSpec = activationSpec;
     }
 }

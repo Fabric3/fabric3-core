@@ -51,7 +51,7 @@ package org.fabric3.binding.jms.spi.common;
 public class OperationPropertiesDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = -1325680761205311178L;
     private String name;
-    private String nativeOperation;
+    private String selectedOperation;
     private HeadersDefinition header;
 
     public String getName() {
@@ -62,12 +62,12 @@ public class OperationPropertiesDefinition extends PropertyAwareObject {
         this.name = name;
     }
 
-    public String getNativeOperation() {
-        return nativeOperation;
+    public String getSelectedOperation() {
+        return selectedOperation;
     }
 
-    public void setNativeOperation(String nativeOperation) {
-        this.nativeOperation = nativeOperation;
+    public void setSelectedOperation(String operation) {
+        this.selectedOperation = operation;
     }
 
     public HeadersDefinition getHeaders() {

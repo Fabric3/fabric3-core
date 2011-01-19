@@ -52,8 +52,8 @@ public class HeadersDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 831415808031924363L;
     private String type;
     private DeliveryMode deliveryMode = DeliveryMode.PERSISTENT;
-    private Long timeToLive;
-    private Integer priority;
+    private long timeToLive;
+    private int priority;
 
     public String getType() {
         return type;
@@ -71,19 +71,19 @@ public class HeadersDefinition extends PropertyAwareObject {
         this.deliveryMode = deliveryMode;
     }
 
-    public Long getTimeToLive() {
+    public long getTimeToLive() {
         return timeToLive;
     }
 
-    public void setTimeToLive(Long timeToLive) {
+    public void setTimeToLive(long timeToLive) {
         this.timeToLive = timeToLive;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

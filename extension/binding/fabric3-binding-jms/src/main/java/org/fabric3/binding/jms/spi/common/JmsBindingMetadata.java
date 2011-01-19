@@ -64,6 +64,7 @@ public class JmsBindingMetadata extends ModelObject {
     private ResponseDefinition response;
     private HeadersDefinition headers = new HeadersDefinition();
     private Map<String, OperationPropertiesDefinition> operationProperties;
+    private ActivationSpec activationSpec;
 
     // Fabric3-specific configuration settings
     private CacheLevel cacheLevel;
@@ -154,6 +155,14 @@ public class JmsBindingMetadata extends ModelObject {
             this.operationProperties = new HashMap<String, OperationPropertiesDefinition>();
         }
         this.operationProperties.put(name, operationProperties);
+    }
+
+    public ActivationSpec getActivationSpec() {
+        return activationSpec;
+    }
+
+    public void setActivationSpec(ActivationSpec activationSpec) {
+        this.activationSpec = activationSpec;
     }
 
     public boolean isResponse() {
@@ -289,6 +298,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.durable = this.durable;
         copy.localDelivery = this.localDelivery;
         copy.clientIdSpecifier = this.clientIdSpecifier;
+        copy.activationSpec = this.activationSpec;
         return copy;
     }
 
