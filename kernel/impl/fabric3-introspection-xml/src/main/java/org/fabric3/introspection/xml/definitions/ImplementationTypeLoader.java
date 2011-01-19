@@ -56,6 +56,7 @@ import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
@@ -80,6 +81,10 @@ public class ImplementationTypeLoader implements TypeLoader<ImplementationType> 
         try {
             String name = reader.getAttributeValue(null, "name");
             QName qName = helper.createQName(name, reader);
+            if (!qName.getLocalPart().startsWith("implementation.")){
+                InvalidValue error = new InvalidValue("Invalid implementation value", reader);
+                context.addError(error);
+            }
             Set<QName> alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
             Set<QName> mayProvide = helper.parseListOfQNames(reader, "mayProvide");
 

@@ -62,7 +62,7 @@ public class AbstractPolicyType extends AbstractPolicyDefinition {
      * @param alwaysProvide Intents this binding always provide.
      * @param mayProvide    Intents this binding may provide.
      */
-    public AbstractPolicyType(final QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
+    public AbstractPolicyType(QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
         super(name);
         this.alwaysProvide = alwaysProvide;
         this.mayProvide = mayProvide;

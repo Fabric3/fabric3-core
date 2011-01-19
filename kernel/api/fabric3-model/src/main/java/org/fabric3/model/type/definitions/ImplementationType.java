@@ -59,7 +59,7 @@ public class ImplementationType extends AbstractPolicyType {
      * @param alwaysProvide Intents this implementation always provide.
      * @param mayProvide    Intents this implementation may provide.
      */
-    public ImplementationType(final QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
+    public ImplementationType(QName name, Set<QName> alwaysProvide, Set<QName> mayProvide) {
         super(name, alwaysProvide, mayProvide);
     }
 
