@@ -39,6 +39,8 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 
+import org.osoa.sca.annotations.Property;
+
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.model.type.component.BindingDefinition;
@@ -67,6 +69,12 @@ import org.fabric3.spi.model.instance.LogicalService;
  * @version $Rev$ $Date$
  */
 public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiator implements AtomicComponentInstantiator {
+    private boolean componentTypeOverride;
+
+    @Property(required = false)
+    public void setComponentTypeOverride(boolean componentTypeOverride) {
+        this.componentTypeOverride = componentTypeOverride;
+    }
 
     @SuppressWarnings({"unchecked"})
     public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
@@ -74,6 +82,10 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         ComponentType componentType = impl.getComponentType();
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
         LogicalComponent<?> component = new LogicalComponent(uri, definition, parent);
+        if (componentTypeOverride) {
+            // SCA policy conformance: override policy sets configured on the component type
+            component.getPolicySets().removeAll(definition.getPolicySets());
+        }
         initializeProperties(component, definition, context);
         createServices(definition, component, componentType);
         createReferences(definition, component, componentType);

@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
@@ -78,6 +79,12 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
     private AtomicComponentInstantiator atomicInstantiator;
     private WireInstantiator wireInstantiator;
     private ChannelInstantiator channelInstantiator;
+    private boolean componentTypeOverride;
+
+    @Property(required = false)
+    public void setComponentTypeOverride(boolean componentTypeOverride) {
+        this.componentTypeOverride = componentTypeOverride;
+    }
 
     public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,
                                               @Reference WireInstantiator wireInstantiator,
@@ -95,6 +102,10 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         Composite composite = definition.getImplementation().getComponentType();
 
         LogicalCompositeComponent component = new LogicalCompositeComponent(uri, definition, parent);
+        if (componentTypeOverride) {
+            // SCA policy conformance: override policy sets configured on the component type
+            component.getPolicySets().removeAll(definition.getPolicySets());
+        }
         initializeProperties(component, definition, context);
         instantiateChildComponents(component, composite, context);
         instantiateCompositeServices(component, composite);
