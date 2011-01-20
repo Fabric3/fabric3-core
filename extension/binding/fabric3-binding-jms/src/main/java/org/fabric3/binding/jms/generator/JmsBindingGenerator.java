@@ -54,9 +54,12 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.common.ActivationSpec;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.ResponseDefinition;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
@@ -138,6 +141,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
 
         setDefaultFactoryConfigurations(metadata, transactionType, specifier);
+        processDestinationDefinitions(metadata);
 
         return definition;
     }
@@ -150,7 +154,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         TransactionType transactionType = getTransactionType(operations, policy);
 
         URI uri = binding.getDefinition().getTargetUri();
-        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata();
+        JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
         validateResponseDestination(metadata, contract);
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
@@ -171,6 +175,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         String specifier = JmsGeneratorHelper.getTargetSpecifier(binding.getParent().getUri());
         setDefaultFactoryConfigurations(metadata, transactionType, specifier);
+        processDestinationDefinitions(metadata);
 
         return definition;
     }
@@ -267,10 +272,44 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         // create the connection factory name if one not explicitly given
         ConnectionFactoryDefinition factory = metadata.getConnectionFactory();
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, trxType);
+
         ConnectionFactoryDefinition responseFactory = metadata.getResponseConnectionFactory();
         if (responseFactory != null) {
             JmsGeneratorHelper.generateDefaultFactoryConfiguration(responseFactory, specifier + "Response", trxType);
         }
+    }
+
+    private void processDestinationDefinitions(JmsBindingMetadata metadata) throws JmsGenerationException {
+        DestinationDefinition destination = metadata.getDestination();
+        if (destination == null) {
+            // create a definition from the activation spec
+            ActivationSpec spec = metadata.getActivationSpec();
+            if (spec != null) {
+                destination = populateActivationInformation(spec);
+                metadata.setDestination(destination);
+            }
+        }
+        DestinationDefinition responseDestination = metadata.getResponseDestination();
+        ResponseDefinition responseDefinition = metadata.getResponse();
+        if (responseDestination == null && responseDefinition != null && responseDefinition.getActivationSpec() != null) {
+            ActivationSpec spec = responseDefinition.getActivationSpec();
+            responseDestination = populateActivationInformation(spec);
+            responseDefinition.setDestination(responseDestination);
+        }
+    }
+
+    /**
+     * Creates a destination definition from an activation spec.
+     *
+     * @param spec the activation spec
+     * @return the definition
+     */
+    private DestinationDefinition populateActivationInformation(ActivationSpec spec) {
+        DestinationDefinition destination = new DestinationDefinition();
+        destination.setCreate(spec.getCreate());
+        destination.setName(spec.getName());
+        destination.addProperties(spec.getProperties());
+        return destination;
     }
 
 

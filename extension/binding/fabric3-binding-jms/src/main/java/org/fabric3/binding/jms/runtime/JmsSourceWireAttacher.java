@@ -49,6 +49,7 @@ import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Queue;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -60,6 +61,7 @@ import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
@@ -182,6 +184,8 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
             Destination requestDestination = resolver.resolve(requestDestinationDefinition, requestConnectionFactory);
 
+            validateDestination(requestDestination, requestDestinationDefinition);
+
             ConnectionFactory responseConnectionFactory = null;
             Destination responseDestination = null;
             if (metadata.isResponse()) {
@@ -189,10 +193,20 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
                 responseConnectionFactory = resolver.resolve(responseDefinition);
                 DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
                 responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
+                validateDestination(responseDestination, responseDestinationDefinition);
             }
             return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
         } catch (JmsResolutionException e) {
             throw new WiringException(e);
+        }
+    }
+
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws WiringException {
+        DestinationType requestDestinationType = requestDestinationDefinition.geType();
+        if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
+            throw new WiringException("Destination is not a queue: "+ requestDestinationDefinition.getName());
+        } else if (DestinationType.TOPIC == requestDestinationType) {
+            throw new WiringException("Destination is not a topic: "+ requestDestinationDefinition.getName());
         }
     }
 

@@ -175,7 +175,6 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             ConnectionFactoryDefinition definition = metadata.getConnectionFactory();
             ConnectionFactory requestConnectionFactory = resolver.resolve(definition);
             DestinationDefinition requestDestinationDefinition = metadata.getDestination();
-
             Destination requestDestination;
             if (metadata.isDurable()) {
                 requestDestination = resolver.resolve(requestDestinationDefinition, clientId, requestConnectionFactory);

@@ -46,6 +46,7 @@ package org.fabric3.binding.jms.runtime;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.Queue;
 import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
@@ -55,6 +56,7 @@ import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
@@ -144,7 +146,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             Destination requestDestination = resolver.resolve(destinationDefinition, requestConnectionFactory);
             wireConfiguration.setRequestConnectionFactory(requestConnectionFactory);
             wireConfiguration.setRequestDestination(requestDestination);
-
+            validateDestination(requestDestination, destinationDefinition);
             if (metadata.isResponse()) {
                 connectionFactoryDefinition = metadata.getResponseConnectionFactory();
 
@@ -154,11 +156,21 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 CorrelationScheme scheme = metadata.getCorrelationScheme();
                 ResponseListener listener = new ResponseListener(responseDestination, scheme);
                 wireConfiguration.setResponseListener(listener);
+                validateDestination(responseDestination, destinationDefinition);
             }
         } catch (JmsResolutionException e) {
             throw new WiringException(e);
         }
 
+    }
+
+    private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws WiringException {
+        DestinationType requestDestinationType = requestDestinationDefinition.geType();
+        if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
+            throw new WiringException("Destination is not a queue: " + requestDestinationDefinition.getName());
+        } else if (DestinationType.TOPIC == requestDestinationType) {
+            throw new WiringException("Destination is not a topic: " + requestDestinationDefinition.getName());
+        }
     }
 
     private OperationPayloadTypes resolveOperation(String operationName, List<OperationPayloadTypes> payloadTypes) {

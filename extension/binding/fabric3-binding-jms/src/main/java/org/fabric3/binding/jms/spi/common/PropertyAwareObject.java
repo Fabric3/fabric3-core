@@ -59,14 +59,25 @@ public abstract class PropertyAwareObject extends ModelObject {
     private Map<String, String> properties = null;
 
     /**
-     * Add a Property.
+     * Add a property.
      *
-     * @param name  Name of the property.
-     * @param value Value of the property.
+     * @param name  name of the property.
+     * @param value value of the property.
      */
     public void addProperty(String name, String value) {
         ensurePropertiesNotNull();
         properties.put(name, value);
+    }
+
+
+    /**
+     * Add a property.
+     *
+     * @param properties the properties.
+     */
+    public void addProperties(Map<String, String> properties) {
+        ensurePropertiesNotNull();
+        properties.putAll(properties);
     }
 
     /**
