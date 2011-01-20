@@ -65,6 +65,7 @@ public class JmsBindingMetadata extends ModelObject {
     private HeadersDefinition headers = new HeadersDefinition();
     private Map<String, OperationPropertiesDefinition> operationProperties;
     private ActivationSpec activationSpec;
+    private MessageSelection messageSelection;
 
     // Fabric3-specific configuration settings
     private CacheLevel cacheLevel;
@@ -163,6 +164,14 @@ public class JmsBindingMetadata extends ModelObject {
 
     public void setActivationSpec(ActivationSpec activationSpec) {
         this.activationSpec = activationSpec;
+    }
+
+    public MessageSelection getMessageSelection() {
+        return messageSelection;
+    }
+
+    public void setMessageSelection(MessageSelection messageSelection) {
+        this.messageSelection = messageSelection;
     }
 
     public boolean isResponse() {
@@ -270,6 +279,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.correlationScheme = this.correlationScheme;
         copy.jndiUrl = this.jndiUrl;
         copy.destination = this.destination;
+        copy.messageSelection = this.messageSelection;
         copy.connectionFactory.setCreate(this.connectionFactory.getCreate());
         copy.connectionFactory.setName(this.connectionFactory.getName());
         copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());

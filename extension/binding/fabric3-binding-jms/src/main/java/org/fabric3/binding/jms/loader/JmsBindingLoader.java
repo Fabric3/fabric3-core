@@ -68,6 +68,7 @@ import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
+import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
@@ -98,9 +99,11 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     static {
         ATTRIBUTES.add("uri");
         ATTRIBUTES.add("activationSpec");
+        ATTRIBUTES.add("wireFormat");
         ATTRIBUTES.add("jndiURL");
         ATTRIBUTES.add("initialContextFactory");
         ATTRIBUTES.add("requires");
+        ATTRIBUTES.add("messageSelection");
         ATTRIBUTES.add("policySets");
         ATTRIBUTES.add("create");
         ATTRIBUTES.add("type");
@@ -221,6 +224,9 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 } else if ("headers".equals(name)) {
                     HeadersDefinition headers = loadHeaders(reader, context);
                     metadata.setHeaders(headers);
+                } else if ("messageSelection".equals(name)) {
+                    MessageSelection messageSelection = loadMessageSelection(reader, context);
+                    metadata.setMessageSelection(messageSelection);
                 } else if ("operationProperties".equals(name)) {
                     OperationPropertiesDefinition operationProperties = loadOperationProperties(reader, context);
                     metadata.addOperationProperties(operationProperties.getName(), operationProperties);
@@ -236,7 +242,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                         target = destinationDefinition.getName();
                         URI bindingUri = URI.create("jms://" + target);
                         bd.setGeneratedTargetUri(bindingUri);
-                    } 
+                    }
                     return bd;
                 }
                 break;
@@ -503,6 +509,19 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         loadProperties(reader, headers, "headers");
         return headers;
     }
+
+    private MessageSelection loadMessageSelection(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        String selector = reader.getAttributeValue(null, "selector");
+        if (selector == null) {
+            MissingAttribute error = new MissingAttribute("Selector not specified for message selection", reader);
+            context.addError(error);
+            selector = "invalid";
+        }
+        MessageSelection messageSelection = new MessageSelection(selector);
+        loadProperties(reader, messageSelection, "messageSelection");
+        return messageSelection;
+    }
+
 
     private OperationPropertiesDefinition loadOperationProperties(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         OperationPropertiesDefinition optProperties = new OperationPropertiesDefinition();

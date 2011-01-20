@@ -61,6 +61,7 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -104,6 +105,13 @@ public class JMSBindingLoaderTestCase extends TestCase {
                     "         <property name='prop1'>val</property>" +
                     "      </activationSpec>" +
                     "   </response>" +
+                    "</binding.jms>";
+
+    private static final String MESSAGE_SELECTION =
+            "   <binding.jms>" +
+                    "   <messageSelection selector='select'>" +
+                    "      <property name='prop1'>val</property>" +
+                    "   </messageSelection>" +
                     "</binding.jms>";
 
     private XMLInputFactory factory;
@@ -174,6 +182,17 @@ public class JMSBindingLoaderTestCase extends TestCase {
         assertEquals("clientQueue", responseSpec.getName());
         assertEquals(CreateOption.ALWAYS, responseSpec.getCreate());
         assertEquals("val", responseSpec.getProperties().get("prop1"));
+    }
+
+    public void testMessageSelectionParse() throws Exception {
+        XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(MESSAGE_SELECTION.getBytes()));
+        streamReader.nextTag();
+
+        JmsBindingDefinition binding = loader.load(streamReader, context);
+        JmsBindingMetadata metadata = binding.getJmsMetadata();
+        MessageSelection messageSelection = metadata.getMessageSelection();
+        assertEquals("select", messageSelection.getSelector());
+        assertEquals("val", messageSelection.getProperties().get("prop1"));
 
     }
 
