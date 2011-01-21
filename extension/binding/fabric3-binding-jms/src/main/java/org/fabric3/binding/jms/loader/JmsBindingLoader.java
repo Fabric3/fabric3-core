@@ -582,6 +582,10 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     private void validate(JmsBindingDefinition definition, XMLStreamReader reader, IntrospectionContext context) {
         JmsBindingMetadata metadata = definition.getJmsMetadata();
+        if (metadata.getConnectionFactory().isConfigured() && metadata.getDestination() == null) {
+            InvalidJmsBinding error = new InvalidJmsBinding("A destination must be specified", reader);
+            context.addError(error);
+        }
         if (metadata.getActivationSpec() != null && metadata.getConnectionFactory().isConfigured()) {
             InvalidJmsBinding error =
                     new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", reader);
