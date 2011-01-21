@@ -180,13 +180,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
         metadata.setJndiUrl(reader.getAttributeValue(null, "jndiURL"));
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
-        if (uri != null) {
-            while (true) {
-                if (END_ELEMENT == reader.next() && "binding.jms".equals(reader.getName().getLocalPart())) {
-                    return definition;
-                }
-            }
-        }
 
         loadFabric3Attributes(metadata, reader, context);
 
@@ -197,6 +190,11 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("destination".equals(name)) {
+                    if (uri != null) {
+                        InvalidJmsBinding error =
+                                new InvalidJmsBinding("A destination cannot be defined in a JMS uri and as part of the binding.jms element", reader);
+                        context.addError(error);
+                    }
                     DestinationDefinition destination = loadDestination(reader, context);
                     metadata.setDestination(destination);
                 } else if ("connectionFactory".equals(name)) {
