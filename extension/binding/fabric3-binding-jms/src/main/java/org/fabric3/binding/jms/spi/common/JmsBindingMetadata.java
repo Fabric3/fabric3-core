@@ -66,6 +66,7 @@ public class JmsBindingMetadata extends ModelObject {
     private ActivationSpec activationSpec;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ResponseDefinition response;
+    private MessageSelection uriMessageSelection;
     private MessageSelection messageSelection;
     private CorrelationScheme correlationScheme = CorrelationScheme.MESSAGE_ID;
     private Map<String, OperationPropertiesDefinition> operationProperties = new HashMap<String, OperationPropertiesDefinition>();
@@ -154,12 +155,20 @@ public class JmsBindingMetadata extends ModelObject {
         this.activationSpec = activationSpec;
     }
 
+    public MessageSelection getUriMessageSelection() {
+        return uriMessageSelection;
+    }
+
+    public void setUriMessageSelection(MessageSelection selection) {
+        this.uriMessageSelection = selection;
+    }
+
     public MessageSelection getMessageSelection() {
         return messageSelection;
     }
 
-    public void setMessageSelection(MessageSelection messageSelection) {
-        this.messageSelection = messageSelection;
+    public void setMessageSelection(MessageSelection selection) {
+        this.messageSelection = selection;
     }
 
     public Map<String, OperationPropertiesDefinition> getOperationProperties() {

@@ -52,6 +52,8 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
  */
 public class ContainerConfiguration {
     private URI uri;
+    private String messageSelector;
+
     private MessageListener messageListener;
     private ExceptionListener exceptionListener;
     private TransactionType type = TransactionType.NONE;
@@ -79,6 +81,14 @@ public class ContainerConfiguration {
 
     public void setUri(URI uri) {
         this.uri = uri;
+    }
+
+    public String getMessageSelector() {
+        return messageSelector;
+    }
+
+    public void setMessageSelector(String messageSelector) {
+        this.messageSelector = messageSelector;
     }
 
     public MessageListener getMessageListener() {

@@ -139,6 +139,7 @@ public class AdaptiveMessageContainer {
         transactionType = configuration.getType();
         messageListener = configuration.getMessageListener();
         exceptionListener = configuration.getExceptionListener();
+        messageSelector = configuration.getMessageSelector();
 
         setReceiveTimeout(receiveTimeout);
         setMaxMessagesToProcess(configuration.getMaxMessagesToProcess());

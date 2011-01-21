@@ -51,9 +51,11 @@ import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 public class JmsLoaderHelperTestCase extends TestCase {
 
     public void testParse() throws Exception {
-        JmsBindingMetadata metadata = JmsLoaderHelper.parseUri("jms:destination?jndiConnectionFactoryName=factory&deliveryMode=nonpersistent");
+        String uri = "jms:destination?jndiConnectionFactoryName=factory&deliveryMode=nonpersistent&selector=select";
+        JmsBindingMetadata metadata = JmsLoaderHelper.parseUri(uri);
         assertEquals("destination", metadata.getDestination().getName());
         assertEquals("factory", metadata.getConnectionFactory().getName());
+        assertEquals("select", metadata.getUriMessageSelection().getSelector());
         assertEquals(DeliveryMode.NON_PERSISTENT, metadata.getUriHeaders().getDeliveryMode());
     }
 

@@ -194,7 +194,7 @@ public class JmsLoaderHelper {
         String selector = properties.get(MESSAGE_SELECTOR);
         if (selector != null) {
             MessageSelection selection = new MessageSelection(selector);
-            metadata.setMessageSelection(selection);
+            metadata.setUriMessageSelection(selection);
         }
 
         String replyTo = properties.get(REPLY_TO_NAME);

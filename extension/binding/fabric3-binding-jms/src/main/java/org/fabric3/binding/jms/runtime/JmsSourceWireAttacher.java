@@ -149,6 +149,12 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         configuration.setMinReceivers(metadata.getMinReceivers());
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
         configuration.setTransactionTimeout(metadata.getTransactionTimeout());
+
+        if (metadata.getUriMessageSelection() != null) {
+            configuration.setMessageSelector(metadata.getUriMessageSelection().getSelector());
+        } else if (metadata.getMessageSelection() != null) {
+            configuration.setMessageSelector(metadata.getMessageSelection().getSelector());
+        }
 //        configuration.setDeliveryMode();
 //        configuration.setDurableSubscriptionName();
 //        configuration.setExceptionListener();
@@ -204,9 +210,9 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     private void validateDestination(Destination requestDestination, DestinationDefinition requestDestinationDefinition) throws WiringException {
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
-            throw new WiringException("Destination is not a queue: "+ requestDestinationDefinition.getName());
+            throw new WiringException("Destination is not a queue: " + requestDestinationDefinition.getName());
         } else if (DestinationType.TOPIC == requestDestinationType) {
-            throw new WiringException("Destination is not a topic: "+ requestDestinationDefinition.getName());
+            throw new WiringException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
 
