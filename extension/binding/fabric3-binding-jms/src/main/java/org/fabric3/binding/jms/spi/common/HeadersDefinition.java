@@ -50,17 +50,18 @@ package org.fabric3.binding.jms.spi.common;
  */
 public class HeadersDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 831415808031924363L;
-    private String type;
-    private DeliveryMode deliveryMode = DeliveryMode.PERSISTENT;
+
+    private String jmsType;
+    private DeliveryMode deliveryMode;
     private long timeToLive;
     private int priority;
 
-    public String getType() {
-        return type;
+    public String getJmsType() {
+        return jmsType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setJmsType(String jmsType) {
+        this.jmsType = jmsType;
     }
 
     public DeliveryMode getDeliveryMode() {

@@ -52,7 +52,7 @@ public class OperationPropertiesDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = -1325680761205311178L;
     private String name;
     private String selectedOperation;
-    private HeadersDefinition header;
+    private HeadersDefinition header = new HeadersDefinition();
 
     public String getName() {
         return name;
@@ -72,10 +72,6 @@ public class OperationPropertiesDefinition extends PropertyAwareObject {
 
     public HeadersDefinition getHeaders() {
         return header;
-    }
-
-    public void setHeaders(HeadersDefinition header) {
-        this.header = header;
     }
 
 }

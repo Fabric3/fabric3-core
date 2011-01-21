@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.spi.common;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,15 +56,19 @@ import org.fabric3.model.type.ModelObject;
 public class JmsBindingMetadata extends ModelObject {
     private static final long serialVersionUID = 4623441503097788831L;
 
-    private CorrelationScheme correlationScheme = CorrelationScheme.MESSAGE_ID;
+    // headers specified in a JMS URI. URI headers have higher priority than plain headers
+    private HeadersDefinition uriHeaders = new HeadersDefinition();
+    // headers specified in the binding.jms/headers element
+    private HeadersDefinition headers = new HeadersDefinition();
+
     private String jndiUrl;
     private DestinationDefinition destination;
+    private ActivationSpec activationSpec;
     private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
     private ResponseDefinition response;
-    private HeadersDefinition headers = new HeadersDefinition();
-    private Map<String, OperationPropertiesDefinition> operationProperties;
-    private ActivationSpec activationSpec;
     private MessageSelection messageSelection;
+    private CorrelationScheme correlationScheme = CorrelationScheme.MESSAGE_ID;
+    private Map<String, OperationPropertiesDefinition> operationProperties = new HashMap<String, OperationPropertiesDefinition>();
 
     // Fabric3-specific configuration settings
     private CacheLevel cacheLevel;
@@ -139,23 +142,8 @@ public class JmsBindingMetadata extends ModelObject {
         return headers;
     }
 
-    public void setHeaders(HeadersDefinition headers) {
-        this.headers = headers;
-    }
-
-    public Map<String, OperationPropertiesDefinition> getOperationProperties() {
-        if (operationProperties == null) {
-            return Collections.emptyMap();
-        } else {
-            return operationProperties;
-        }
-    }
-
-    public void addOperationProperties(String name, OperationPropertiesDefinition operationProperties) {
-        if (this.operationProperties == null) {
-            this.operationProperties = new HashMap<String, OperationPropertiesDefinition>();
-        }
-        this.operationProperties.put(name, operationProperties);
+    public HeadersDefinition getUriHeaders() {
+        return uriHeaders;
     }
 
     public ActivationSpec getActivationSpec() {
@@ -172,6 +160,14 @@ public class JmsBindingMetadata extends ModelObject {
 
     public void setMessageSelection(MessageSelection messageSelection) {
         this.messageSelection = messageSelection;
+    }
+
+    public Map<String, OperationPropertiesDefinition> getOperationProperties() {
+        return operationProperties;
+    }
+
+    public void addOperationProperties(String name, OperationPropertiesDefinition definition) {
+        operationProperties.put(name, definition);
     }
 
     public boolean isResponse() {
@@ -285,11 +281,18 @@ public class JmsBindingMetadata extends ModelObject {
         copy.connectionFactory.setTemplateName(this.connectionFactory.getTemplateName());
         copy.connectionFactory.getProperties().putAll(this.connectionFactory.getProperties());
         copy.response = this.response;
+
         copy.headers.setDeliveryMode(this.headers.getDeliveryMode());
         copy.headers.getProperties().putAll(this.headers.getProperties());
         copy.headers.setPriority(this.headers.getPriority());
         copy.headers.setTimeToLive(this.headers.getTimeToLive());
-        copy.headers.setType(this.headers.getType());
+        copy.headers.setJmsType(this.headers.getJmsType());
+
+        copy.uriHeaders.setDeliveryMode(this.uriHeaders.getDeliveryMode());
+        copy.uriHeaders.getProperties().putAll(this.uriHeaders.getProperties());
+        copy.uriHeaders.setPriority(this.uriHeaders.getPriority());
+        copy.uriHeaders.setTimeToLive(this.uriHeaders.getTimeToLive());
+        copy.uriHeaders.setJmsType(this.uriHeaders.getJmsType());
 
         if (this.operationProperties != null) {
             copy.operationProperties = new HashMap<String, OperationPropertiesDefinition>();

@@ -69,4 +69,13 @@ public class ConnectionFactoryDefinition extends AdministeredObjectDefinition {
     public void setTemplateName(String name) {
         this.templateName = name;
     }
+
+    /**
+     * Returns true if the definition has been configured in the binding entry.
+     *
+     * @return true if the definition has been configured in the binding entry
+     */
+    public boolean isConfigured() {
+        return templateName != null || getName() != null;
+    }
 }

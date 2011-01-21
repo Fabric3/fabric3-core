@@ -249,7 +249,6 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
         //no transaction policy specified, use local
         return TransactionType.NONE;
-
     }
 
     /**

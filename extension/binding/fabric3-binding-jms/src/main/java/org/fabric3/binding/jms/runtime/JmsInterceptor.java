@@ -47,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -100,6 +101,11 @@ public class JmsInterceptor implements Interceptor {
     private TransactionManager tm;
     private long responseTimeout;
     private boolean persistent;
+    private int deliveryMode;
+    private long timeToLive;
+    private String jmsType;
+    private int priority;
+    private Map<String, String> properties;
 
     /**
      * Constructor.
@@ -120,6 +126,11 @@ public class JmsInterceptor implements Interceptor {
         this.oneWay = configuration.isOneWay();
         this.methodName = configuration.getOperationName();
         this.payloadTypes = configuration.getPayloadTypes();
+        this.deliveryMode = configuration.getDeliveryMode();
+        this.timeToLive = configuration.getTimeToLive();
+        this.jmsType = configuration.getJmsType();
+        this.priority = configuration.getPriority();
+        this.properties = configuration.getProperties();
 
     }
 
@@ -150,12 +161,16 @@ public class JmsInterceptor implements Interceptor {
 
             MessageProducer producer = session.createProducer(destination);
 
-            if (!persistent) {
+            if (!persistent || DeliveryMode.NON_PERSISTENT == deliveryMode) {
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             }
 
-            javax.jms.Message jmsMessage = createMessage(message, session);
+            if (timeToLive >= 0) {
+                producer.setTimeToLive(timeToLive);
+            }
 
+            javax.jms.Message jmsMessage = createMessage(message, session);
+            setHeaders(jmsMessage);
             String correlationId = null;
             if (correlationScheme == CorrelationScheme.CORRELATION_ID) {
                 correlationId = UUID.randomUUID().toString();
@@ -282,6 +297,26 @@ public class JmsInterceptor implements Interceptor {
             jmsMessage = MessageHelper.createBytesMessage(session, payload[0], payloadTypes.getInputType());
             setRoutingHeaders(message, jmsMessage);
             return jmsMessage;
+        }
+    }
+
+    /**
+     * Sets any configured JMS headers on the given message.
+     *
+     * @param message the message
+     * @throws JMSException if there is an error setting a header
+     */
+    private void setHeaders(javax.jms.Message message) throws JMSException {
+        if (priority >= 0) {
+            message.setJMSPriority(priority);
+        }
+        if (jmsType != null) {
+            message.setJMSType(jmsType);
+        }
+        if (!properties.isEmpty()) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                message.setStringProperty(entry.getKey(), entry.getValue());
+            }
         }
     }
 

@@ -153,7 +153,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
 
         // verify headers
         HeadersDefinition headers = metadata.getHeaders();
-        assertEquals("jmstype", headers.getType());
+        assertEquals("jmstype", headers.getJmsType());
         assertEquals(DeliveryMode.PERSISTENT, headers.getDeliveryMode());
         assertEquals(10000, headers.getTimeToLive());
         assertEquals(1, headers.getPriority());

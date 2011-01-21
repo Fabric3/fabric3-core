@@ -37,6 +37,9 @@
 */
 package org.fabric3.binding.jms.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 
 /**
@@ -49,6 +52,11 @@ public class InterceptorConfiguration {
     private OperationPayloadTypes payloadTypes;
     private boolean oneWay;
     private WireConfiguration wireConfiguration;
+    private int deliveryMode = -1;
+    private String jmsType;
+    private long timeToLive = -1;
+    private int priority = -1;
+    private Map<String, String> properties = new HashMap<String, String>();
 
     public InterceptorConfiguration(WireConfiguration wireConfiguration) {
         this.wireConfiguration = wireConfiguration;
@@ -80,5 +88,45 @@ public class InterceptorConfiguration {
 
     public void setOneWay(boolean oneWay) {
         this.oneWay = oneWay;
+    }
+
+    public void setDeliveryMode(int deliveryMode) {
+        this.deliveryMode = deliveryMode;
+    }
+
+    public int getDeliveryMode() {
+        return deliveryMode;
+    }
+
+    public void setJmsType(String type) {
+        this.jmsType = type;
+    }
+
+    public String getJmsType() {
+        return jmsType;
+    }
+
+    public void setTimeToLive(long time) {
+        this.timeToLive = time;
+    }
+
+    public long getTimeToLive() {
+        return timeToLive;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void addProperty(String key, String value) {
+        properties.put(key, value);
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

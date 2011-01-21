@@ -52,66 +52,21 @@ import java.util.regex.Pattern;
 /**
  * @version $Revision$ $Date$
  */
-public class JmsURIMetadata {
-    public final static String CONNECTIONFACORYNAME = "connectionFactoryName";
-    public final static String DESTINATIONTYPE = "destinationType";
-    public final static String DELIVERYMODE = "deliveryMode";
-    public final static String TIMETOLIVE = "timeToLive";
-    public final static String PRIORITY = "priority";
-    public final static String RESPONSEDESTINAT = "responseDestination";
-
+public class JmsUri {
     private String destination;
     private Map<String, String> properties;
+
+    public JmsUri(String destination) {
+        this.destination = destination;
+        properties = new HashMap<String, String>();
+    }
 
     public String getDestination() {
         return destination;
     }
 
-    private JmsURIMetadata(String destination) {
-        this.destination = destination;
-        properties = new HashMap<String, String>();
-    }
-
     public Map<String, String> getProperties() {
         return properties;
-    }
-
-    /**
-     * Parses metadata from an input string.
-     *
-     * @param uri string for /binding.jms/@uri
-     * @return a JmsURIMetadata
-     * @throws URISyntaxException when the URI is not a valid format required by /binding.jms/@uri.
-     */
-    public static JmsURIMetadata parseURI(String uri) throws URISyntaxException {
-        //TODO implement better validation
-        boolean matches = Pattern.matches("jms:(.*?)[\\?(.*?)=(.*?)((&(.*?)=(.*?))*)]?", uri);
-        if (!matches) {
-            throw new URISyntaxException(uri, "Not a valid URI format for binding.jms");
-        }
-        return doParse(uri);
-    }
-
-    private static JmsURIMetadata doParse(String uri) {
-        StringTokenizer token = new StringTokenizer(uri, ":?=&");
-        String current;
-        String propertyName = null;
-        int pos = 0;
-        JmsURIMetadata result = null;
-        while (token.hasMoreTokens()) {
-            current = token.nextToken();
-            if (1 == pos) {
-                result = new JmsURIMetadata(current);
-            } else if (pos % 2 == 0) {
-                propertyName = current;
-            } else if (0 != pos) {// ignore beginning 'jms'
-                assert propertyName != null;
-                assert result != null;
-                result.properties.put(propertyName.trim(), current.trim());
-            }
-            pos++;
-        }
-        return result;
     }
 
 }

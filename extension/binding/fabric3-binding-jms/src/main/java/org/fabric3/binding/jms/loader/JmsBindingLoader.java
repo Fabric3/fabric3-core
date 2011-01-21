@@ -44,7 +44,6 @@
 package org.fabric3.binding.jms.loader;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
@@ -67,7 +66,6 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
 import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
@@ -159,44 +157,33 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
 
-        JmsBindingMetadata metadata;
         String bindingName = reader.getAttributeValue(null, "name");
 
+        JmsBindingMetadata metadata;
         String uri = reader.getAttributeValue(null, "uri");
-        JmsBindingDefinition bd;
         if (uri != null) {
-            JmsURIMetadata uriMeta;
             try {
-                uriMeta = JmsURIMetadata.parseURI(uri);
-                metadata = JmsLoaderHelper.getJmsMetadataFromURI(uriMeta);
-            } catch (URISyntaxException e) {
+                metadata = JmsLoaderHelper.parseUri(uri);
+            } catch (JmsUriException e) {
                 InvalidValue failure = new InvalidValue("Invalid JMS binding URI: " + uri, reader, e);
                 context.addError(failure);
                 return null;
             }
-            URI targetURI = null;
-            try {
-                targetURI = loaderHelper.parseUri(uri);
-            } catch (URISyntaxException e) {
-                InvalidValue error = new InvalidValue("Invalid JMS binding URI: " + targetURI, reader, e);
-                context.addError(error);
-            }
-            bd = new JmsBindingDefinition(bindingName, targetURI, metadata);
         } else {
             metadata = new JmsBindingMetadata();
-            bd = new JmsBindingDefinition(bindingName, metadata);
         }
+        JmsBindingDefinition definition = new JmsBindingDefinition(bindingName, metadata);
         NamespaceContext namespace = reader.getNamespaceContext();
         String targetNamespace = context.getTargetNamespace();
 
         parseCorrelationScheme(metadata, namespace, targetNamespace, reader, context);
 
         metadata.setJndiUrl(reader.getAttributeValue(null, "jndiURL"));
-        loaderHelper.loadPolicySetsAndIntents(bd, reader, context);
+        loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         if (uri != null) {
             while (true) {
                 if (END_ELEMENT == reader.next() && "binding.jms".equals(reader.getName().getLocalPart())) {
-                    return bd;
+                    return definition;
                 }
             }
         }
@@ -222,8 +209,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                     ResponseDefinition response = loadResponse(reader, context);
                     metadata.setResponse(response);
                 } else if ("headers".equals(name)) {
-                    HeadersDefinition headers = loadHeaders(reader, context);
-                    metadata.setHeaders(headers);
+                    HeadersDefinition headers = metadata.getHeaders();
+                    loadHeaders(headers, reader, context);
                 } else if ("messageSelection".equals(name)) {
                     MessageSelection messageSelection = loadMessageSelection(reader, context);
                     metadata.setMessageSelection(messageSelection);
@@ -241,9 +228,14 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                     if (destinationDefinition != null) {
                         target = destinationDefinition.getName();
                         URI bindingUri = URI.create("jms://" + target);
-                        bd.setGeneratedTargetUri(bindingUri);
+                        definition.setGeneratedTargetUri(bindingUri);
+                    } else if (metadata.getActivationSpec() != null) {
+                        target = metadata.getActivationSpec().getName();
+                        URI bindingUri = URI.create("jms://" + target);
+                        definition.setGeneratedTargetUri(bindingUri);
                     }
-                    return bd;
+                    validate(definition, reader, context);
+                    return definition;
                 }
                 break;
             }
@@ -474,8 +466,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         return CreateOption.IF_NOT_EXIST;
     }
 
-    private HeadersDefinition loadHeaders(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        HeadersDefinition headers = new HeadersDefinition();
+    private void loadHeaders(HeadersDefinition headers, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         String deliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (deliveryMode != null) {
             if ("PERSISTENT".equalsIgnoreCase(deliveryMode)) {
@@ -490,7 +481,12 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         String priority = reader.getAttributeValue(null, "priority");
         if (priority != null) {
             try {
-                headers.setPriority(Integer.valueOf(priority));
+                Integer value = Integer.valueOf(priority);
+                headers.setPriority(value);
+                if (value < 0 || value > 9) {
+                    InvalidValue failure = new InvalidValue("Invalid priority: " + priority + ". Values must be from 0-9.", reader);
+                    context.addError(failure);
+                }
             } catch (NumberFormatException nfe) {
                 InvalidValue failure = new InvalidValue("Invalid priority: " + priority, reader, nfe);
                 context.addError(failure);
@@ -505,9 +501,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(failure);
             }
         }
-        headers.setType(reader.getAttributeValue(null, "type"));
+        headers.setJmsType(reader.getAttributeValue(null, "type"));
         loadProperties(reader, headers, "headers");
-        return headers;
     }
 
     private MessageSelection loadMessageSelection(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -533,8 +528,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("headers".equals(name)) {
-                    HeadersDefinition headers = loadHeaders(reader, context);
-                    optProperties.setHeaders(headers);
+                    HeadersDefinition headers = optProperties.getHeaders();
+                    loadHeaders(headers, reader, context);
                 } else if ("property".equals(name)) {
                     loadProperty(reader, optProperties);
                 }
@@ -584,5 +579,43 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             }
         }
     }
+
+    private void validate(JmsBindingDefinition definition, XMLStreamReader reader, IntrospectionContext context) {
+        JmsBindingMetadata metadata = definition.getJmsMetadata();
+        if (metadata.getActivationSpec() != null && metadata.getConnectionFactory().isConfigured()) {
+            InvalidJmsBinding error =
+                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", reader);
+            context.addError(error);
+        }
+        DestinationDefinition requestDestination = metadata.getDestination();
+        ActivationSpec requestSpec = metadata.getActivationSpec();
+        if (requestDestination != null && requestSpec != null) {
+            if (requestDestination.getName() != null && !requestDestination.getName().equals(requestSpec.getName())) {
+                InvalidJmsBinding error =
+                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", reader);
+                context.addError(error);
+            }
+        }
+
+        ResponseDefinition response = metadata.getResponse();
+        if (response != null) {
+            ActivationSpec responseSpec = response.getActivationSpec();
+            if (responseSpec != null && response.getConnectionFactory().isConfigured()) {
+                InvalidJmsBinding error =
+                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", reader);
+                context.addError(error);
+            }
+            DestinationDefinition responseDestination = response.getDestination();
+            if (responseDestination != null && responseSpec != null) {
+                if (responseDestination.getName() != null && !responseDestination.getName().equals(responseSpec.getName())) {
+                    InvalidJmsBinding error =
+                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", reader);
+                    context.addError(error);
+                }
+            }
+        }
+
+    }
+
 
 }

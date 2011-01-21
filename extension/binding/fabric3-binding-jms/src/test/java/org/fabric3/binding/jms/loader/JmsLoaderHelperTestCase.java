@@ -45,18 +45,17 @@ package org.fabric3.binding.jms.loader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.binding.jms.spi.common.CreateOption;
+import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.JmsURIMetadata;
 
 public class JmsLoaderHelperTestCase extends TestCase {
 
-    public void testGetJmsMetadataFromURI() throws Exception {
-        JmsURIMetadata meta = JmsURIMetadata.parseURI("jms:dest?connectionFactoryName=factory&deliveryMode=PERSISTENT");
-        JmsBindingMetadata bindingMetadata = JmsLoaderHelper.getJmsMetadataFromURI(meta);
-        assertEquals("dest", bindingMetadata.getDestination().getName());
-        assertEquals("factory", bindingMetadata.getConnectionFactory().getName());
-        assertEquals(CreateOption.NEVER, bindingMetadata.getDestination().getCreate());
+    public void testParse() throws Exception {
+        JmsBindingMetadata metadata = JmsLoaderHelper.parseUri("jms:destination?jndiConnectionFactoryName=factory&deliveryMode=nonpersistent");
+        assertEquals("destination", metadata.getDestination().getName());
+        assertEquals("factory", metadata.getConnectionFactory().getName());
+        assertEquals(DeliveryMode.NON_PERSISTENT, metadata.getUriHeaders().getDeliveryMode());
     }
+
 
 }

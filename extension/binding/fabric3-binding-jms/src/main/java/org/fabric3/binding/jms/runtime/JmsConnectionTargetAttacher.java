@@ -52,6 +52,7 @@ import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
@@ -82,7 +83,8 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         // resolve the connection factories and destinations for the wire
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
-        boolean persistent = DeliveryMode.PERSISTENT == metadata.getHeaders().getDeliveryMode();
+        HeadersDefinition headers = metadata.getHeaders();
+        boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode()  || headers.getDeliveryMode() == null;
         Destination destination;
         ConnectionFactory connectionFactory;
         try {

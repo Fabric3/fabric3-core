@@ -44,6 +44,7 @@
 package org.fabric3.binding.jms.runtime;
 
 import java.util.List;
+import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.Queue;
@@ -57,7 +58,9 @@ import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationType;
+import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
@@ -101,7 +104,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         wireConfiguration.setTransactionType(target.getTransactionType());
 
         JmsBindingMetadata metadata = target.getMetadata();
-        boolean persistent = DeliveryMode.PERSISTENT == metadata.getHeaders().getDeliveryMode();
+        HeadersDefinition headers = metadata.getHeaders();
+        boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode() || headers.getDeliveryMode() == null;
         wireConfiguration.setPersistent(persistent);
 
         // resolve the connection factories and destinations for the wire
@@ -115,6 +119,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             String operationName = op.getName();
             configuration.setOperationName(operationName);
             configuration.setOneWay(op.isOneWay());
+            processJmsHeaders(configuration, metadata);
             OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
             configuration.setPayloadType(payloadTypes);
             Interceptor interceptor = new JmsInterceptor(configuration);
@@ -133,6 +138,100 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
 
     public ObjectFactory<?> createObjectFactory(JmsTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Processes JMS headers for the interceptor configuration. URI headers are given precedence, followed by header values configured on operation
+     * properties and the binding.jms/headers element respectively.
+     *
+     * @param configuration the interceptor configuration
+     * @param metadata      the JMS binding metadata
+     * @throws WiringException if an error processing headers occurs
+     */
+    private void processJmsHeaders(InterceptorConfiguration configuration, JmsBindingMetadata metadata) throws WiringException {
+        HeadersDefinition uriHeaders = metadata.getUriHeaders();
+        HeadersDefinition headers = metadata.getHeaders();
+        Map<String, OperationPropertiesDefinition> properties = metadata.getOperationProperties();
+
+        // set the headers configured in the binding uri
+        setBindingHeaders(configuration, uriHeaders);
+
+        OperationPropertiesDefinition definition = properties.get(configuration.getOperationName());
+        if (definition != null) {
+            setOperationHeaders(configuration, definition);
+        }
+
+        // set the headers configured in the binding.jms/headers element
+        setBindingHeaders(configuration, headers);
+    }
+
+    private void setBindingHeaders(InterceptorConfiguration configuration, HeadersDefinition headers) {
+        String type = headers.getJmsType();
+        if (type != null && configuration.getJmsType() != null) {
+            configuration.setJmsType(type);
+        }
+        DeliveryMode deliveryMode = headers.getDeliveryMode();
+        if (deliveryMode != null && configuration.getDeliveryMode() == -1) {
+            setDeliveryMode(deliveryMode.toString(), configuration);
+        }
+
+        int priority = headers.getPriority();
+        if (priority >= 0 && configuration.getPriority() == -1) {
+            configuration.setPriority(priority);
+        }
+
+        long timeToLive = headers.getTimeToLive();
+        if (timeToLive >= 0 && configuration.getTimeToLive() == -1) {
+            configuration.setTimeToLive(timeToLive);
+        }
+        for (Map.Entry<String, String> entry : headers.getProperties().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (configuration.getProperties().containsKey(key)) {
+                // property already defined, skip
+                continue;
+            }
+            configuration.addProperty(key, value);
+        }
+    }
+
+    private void setOperationHeaders(InterceptorConfiguration configuration, OperationPropertiesDefinition definition) throws WiringException {
+        for (Map.Entry<String, String> entry : definition.getProperties().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (configuration.getJmsType() == null && "JMSType".equals(key)) {
+                if (configuration.getJmsType() != null) {
+                    configuration.setJmsType(value);
+                }
+            } else if (configuration.getDeliveryMode() == -1 && "JMSDeliveryMode".equals(key)) {
+                setDeliveryMode(value, configuration);
+            } else if (configuration.getTimeToLive() == -1 && "JMSTimeToLive".equals(key)) {
+                try {
+                    long time = Long.valueOf(value);
+                    configuration.setTimeToLive(time);
+                } catch (NumberFormatException e) {
+                    throw new WiringException(e);
+                }
+            } else if (configuration.getPriority() == -1 && "JMSPriority".equals(key)) {
+                try {
+                    int priority = Integer.valueOf(value);
+                    configuration.setPriority(priority);
+                } catch (NumberFormatException e) {
+                    throw new WiringException(e);
+                }
+            } else {
+                // user-defined property
+                configuration.addProperty(key, value);
+            }
+        }
+    }
+
+    private void setDeliveryMode(String value, InterceptorConfiguration configuration) {
+        if ("persistent".equalsIgnoreCase(value)) {
+            configuration.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+        } else if ("nonpersistent".equalsIgnoreCase(value)) {
+            configuration.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+        }
     }
 
     private void resolveAdministeredObjects(JmsTargetDefinition target, WireConfiguration wireConfiguration) throws WiringException {
