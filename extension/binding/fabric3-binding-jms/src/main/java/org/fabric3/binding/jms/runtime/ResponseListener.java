@@ -74,6 +74,15 @@ public class ResponseListener {
     }
 
     /**
+     * Returns the destination for the listener
+     *
+     * @return the destination
+     */
+    public Destination getDestination() {
+        return destination;
+    }
+
+    /**
      * Performs a blocking receive, i.e. control will not be returned to application code until a response is received.
      *
      * @param correlationId Correlation id

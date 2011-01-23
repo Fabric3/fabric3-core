@@ -46,6 +46,7 @@ package org.fabric3.binding.jms.spi.provision;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.model.type.contract.DataType;
@@ -61,6 +62,7 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
     private JmsBindingMetadata metadata;
     private TransactionType transactionType;
     private List<OperationPayloadTypes> payloadTypes;
+    private DestinationDefinition callbackDestination;
 
     /**
      * Constructor.
@@ -110,4 +112,11 @@ public class JmsTargetDefinition extends PhysicalTargetDefinition {
         return transactionType;
     }
 
+    public void setCallbackDestination(DestinationDefinition definition) {
+        this.callbackDestination = definition;
+    }
+
+    public DestinationDefinition getCallbackDestination() {
+        return callbackDestination;
+    }
 }

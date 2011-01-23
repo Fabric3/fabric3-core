@@ -56,6 +56,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ActivationSpec;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.binding.jms.spi.common.CreateOption;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
@@ -119,7 +120,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         String specifier = JmsGeneratorHelper.getSourceSpecifier(binding.getParent().getUri());
         metadata.setClientIdSpecifier(specifier);
 
-        validateResponseDestination(metadata, contract);
+        processServiceResponse(metadata, contract);
 
         generateIntents(binding, metadata);
 
@@ -141,7 +142,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
 
         setDefaultFactoryConfigurations(metadata, transactionType, specifier);
-        processDestinationDefinitions(metadata);
+        processDestinationDefinitions(metadata, false);
 
         return definition;
     }
@@ -155,7 +156,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
-        validateResponseDestination(metadata, contract);
+        processReferenceResponse(metadata, contract);
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
@@ -175,8 +176,17 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         String specifier = JmsGeneratorHelper.getTargetSpecifier(binding.getParent().getUri());
         setDefaultFactoryConfigurations(metadata, transactionType, specifier);
-        processDestinationDefinitions(metadata);
+        processDestinationDefinitions(metadata, true);
 
+        if (contract.getCallbackContract() != null) {
+            for (LogicalBinding<?> callbackBinding : binding.getParent().getCallbackBindings()) {
+                if (callbackBinding.getDefinition() instanceof JmsBindingDefinition) {
+                    JmsBindingDefinition callbackDefinition = (JmsBindingDefinition) callbackBinding.getDefinition();
+                    DestinationDefinition callbackDestination = callbackDefinition.getJmsMetadata().getDestination();
+                    definition.setCallbackDestination(callbackDestination);
+                }
+            }
+        }
         return definition;
     }
 
@@ -188,20 +198,54 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     }
 
     /**
-     * Validates a response destination is provided for request-response operations
+     * Verifies a response connection factory destination is provided on a reference for request-response MEP.  If not, the request connection factory
+     * is used and a response destination is manufactured by taking the request destination name and appending a "Response" suffix.
      *
      * @param metadata the JMS metadata
      * @param contract the service contract
-     * @throws GenerationException if a response destination was not provided
      */
-    private void validateResponseDestination(JmsBindingMetadata metadata, ServiceContract contract) throws GenerationException {
+    private void processReferenceResponse(JmsBindingMetadata metadata, ServiceContract contract) {
         if (metadata.isResponse()) {
             return;
         }
         for (Operation operation : contract.getOperations()) {
             if (!operation.getIntents().contains(ONEWAY)) {
-                throw new GenerationException("Response destination must be specified for operation " + operation.getName() + " on "
-                        + contract.getInterfaceName());
+                ResponseDefinition responseDefinition = new ResponseDefinition();
+                responseDefinition.setConnectionFactory(metadata.getConnectionFactory());
+                DestinationDefinition destinationDefinition = new DestinationDefinition();
+                destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
+                destinationDefinition.setName(metadata.getDestination().getName() + "Response");
+                responseDefinition.setDestination(destinationDefinition);
+                metadata.setResponse(responseDefinition);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Verifies a response connection factory destination is provided on a service for request-response MEP.  If not, the request connection factory
+     * is used.
+     * <p/>
+     * Note: a response destination is <strong>not</strong> manufactured as the service must use the response destination set in the JMSReplyTo header
+     * of the message request.
+     *
+     * @param metadata the JMS metadata
+     * @param contract the service contract
+     * @throws JmsGenerationException if there is an error processing the response
+     */
+    private void processServiceResponse(JmsBindingMetadata metadata, ServiceContract contract) throws JmsGenerationException {
+        if (metadata.isResponse()) {
+            if (metadata.getResponse().getActivationSpec() != null) {
+                throw new JmsGenerationException("Activation spec not allowed on a service binding response");
+            }
+            return;
+        }
+        for (Operation operation : contract.getOperations()) {
+            if (!operation.getIntents().contains(ONEWAY)) {
+                ResponseDefinition responseDefinition = new ResponseDefinition();
+                responseDefinition.setConnectionFactory(metadata.getConnectionFactory());
+                metadata.setResponse(responseDefinition);
+                break;
             }
         }
     }
@@ -278,12 +322,15 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
         }
     }
 
-    private void processDestinationDefinitions(JmsBindingMetadata metadata) throws JmsGenerationException {
+    private void processDestinationDefinitions(JmsBindingMetadata metadata, boolean reference) throws JmsGenerationException {
         DestinationDefinition destination = metadata.getDestination();
         if (destination == null) {
             // create a definition from the activation spec
             ActivationSpec spec = metadata.getActivationSpec();
             if (spec != null) {
+                if (reference) {
+                    throw new JmsGenerationException("Activation specification not allowed on a reference");
+                }
                 destination = populateActivationInformation(spec);
                 metadata.setDestination(destination);
             }

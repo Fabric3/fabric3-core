@@ -517,25 +517,25 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
 
     private OperationPropertiesDefinition loadOperationProperties(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        OperationPropertiesDefinition optProperties = new OperationPropertiesDefinition();
-        optProperties.setName(reader.getAttributeValue(null, "name"));
-        optProperties.setSelectedOperation(reader.getAttributeValue(null, "selectedOperation"));
+        OperationPropertiesDefinition operationProperties = new OperationPropertiesDefinition();
+        operationProperties.setName(reader.getAttributeValue(null, "name"));
+        operationProperties.setSelectedOperation(reader.getAttributeValue(null, "selectedOperation"));
         String name;
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("headers".equals(name)) {
-                    HeadersDefinition headers = optProperties.getHeaders();
+                    HeadersDefinition headers = operationProperties.getHeaders();
                     loadHeaders(headers, reader, context);
                 } else if ("property".equals(name)) {
-                    loadProperty(reader, optProperties);
+                    loadProperty(reader, operationProperties);
                 }
                 break;
             case END_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("operationProperties".equals(name)) {
-                    return optProperties;
+                    return operationProperties;
                 }
                 break;
             }
@@ -617,6 +617,17 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             }
         }
 
+        // validate operation properties
+        Set<String> seen = new HashSet<String>();
+        for (OperationPropertiesDefinition entry : metadata.getOperationProperties().values()) {
+            String name = entry.getSelectedOperation();
+            if (seen.contains(name)) {
+                InvalidJmsBinding error = new InvalidJmsBinding("Duplicate selected operation for property defined: " + name, reader);
+                context.addError(error);
+            } else {
+                seen.add(name);
+            }
+        }
     }
 
 

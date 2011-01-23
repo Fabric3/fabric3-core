@@ -198,8 +198,11 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
                 ConnectionFactoryDefinition responseDefinition = metadata.getResponseConnectionFactory();
                 responseConnectionFactory = resolver.resolve(responseDefinition);
                 DestinationDefinition responseDestinationDefinition = metadata.getResponseDestination();
-                responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
-                validateDestination(responseDestination, responseDestinationDefinition);
+                if (responseDestinationDefinition != null) {
+                    // it is legal to omit the response destination, in which case the service must use the JMSReplyTo header from the request message
+                    responseDestination = resolver.resolve(responseDestinationDefinition, responseConnectionFactory);
+                    validateDestination(responseDestination, responseDestinationDefinition);
+                }
             }
             return new ResolvedObjects(requestConnectionFactory, requestDestination, responseConnectionFactory, responseDestination);
         } catch (JmsResolutionException e) {

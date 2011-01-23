@@ -80,23 +80,23 @@ import org.fabric3.spi.wire.Interceptor;
  * @version $Revision$ $Date$
  */
 public class ServiceListener implements MessageListener {
-    protected WireHolder wireHolder;
-    protected Map<String, InvocationChainHolder> invocationChainMap;
-    protected InvocationChainHolder onMessageHolder;
-    private Destination responseDestination;
+    private WireHolder wireHolder;
+    private Map<String, InvocationChainHolder> invocationChainMap;
+    private InvocationChainHolder onMessageHolder;
+    private Destination defaultResponseDestination;
     private ConnectionFactory responseFactory;
     private TransactionType transactionType;
     private ClassLoader cl;
     private ListenerMonitor monitor;
 
     public ServiceListener(WireHolder wireHolder,
-                           Destination responseDestination,
+                           Destination defaultResponseDestination,
                            ConnectionFactory responseFactory,
                            TransactionType transactionType,
                            ClassLoader cl,
                            ListenerMonitor monitor) {
         this.wireHolder = wireHolder;
-        this.responseDestination = responseDestination;
+        this.defaultResponseDestination = defaultResponseDestination;
         this.responseFactory = responseFactory;
         this.transactionType = transactionType;
         this.cl = cl;
@@ -130,21 +130,21 @@ public class ServiceListener implements MessageListener {
                 if (payload != null && !payload.getClass().isArray()) {
                     payload = new Object[]{payload};
                 }
-                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                 break;
             case XML:
-                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                 break;
             case TEXT:
                 // non-encoded text
                 payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                 break;
             case STREAM:
                 throw new UnsupportedOperationException();
             default:
                 payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadTypes, responseDestination, oneWay, transactionType);
+                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                 break;
             }
         } catch (JMSException e) {
@@ -162,7 +162,6 @@ public class ServiceListener implements MessageListener {
                         Interceptor interceptor,
                         Object payload,
                         OperationPayloadTypes payloadTypes,
-                        Destination responseDestination,
                         boolean oneWay,
                         TransactionType transactionType) throws JMSException, JmsBadMessageException {
         WorkContext workContext = createWorkContext(request, wireHolder.getCallbackUri());
@@ -192,7 +191,7 @@ public class ServiceListener implements MessageListener {
                 returnType = payloadTypes.getOutputType();
             }
             Message response = createMessage(responsePayload, responseSession, returnType);
-            sendResponse(request, responseSession, responseDestination, outMessage, response);
+            sendResponse(request, responseSession, outMessage, response);
         } finally {
             if (responseSession != null) {
                 responseSession.close();
@@ -205,9 +204,8 @@ public class ServiceListener implements MessageListener {
 
     private void sendResponse(Message request,
                               Session responseSession,
-                              Destination responseDestination,
                               org.fabric3.spi.invocation.Message outMessage,
-                              Message response) throws JMSException {
+                              Message response) throws JMSException, JmsBadMessageException {
         CorrelationScheme correlationScheme = wireHolder.getCorrelationScheme();
         switch (correlationScheme) {
         case CORRELATION_ID: {
@@ -222,7 +220,16 @@ public class ServiceListener implements MessageListener {
         if (outMessage.isFault()) {
             response.setBooleanProperty(JmsConstants.FAULT_HEADER, true);
         }
-        MessageProducer producer = responseSession.createProducer(responseDestination);
+        MessageProducer producer;
+        if (request.getJMSReplyTo() != null) {
+            // if a reply to destination is set, use it
+            producer = responseSession.createProducer(request.getJMSReplyTo());
+        } else {
+            if (defaultResponseDestination == null) {
+                throw new JmsBadMessageException("JMSReplyTo must be set as no response destination was configured on the service");
+            }
+            producer = responseSession.createProducer(defaultResponseDestination);
+        }
         producer.send(response);
     }
 

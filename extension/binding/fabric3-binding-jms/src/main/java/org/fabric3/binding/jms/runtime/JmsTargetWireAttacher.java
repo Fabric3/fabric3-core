@@ -47,7 +47,9 @@ import java.util.List;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.Queue;
+import javax.jms.Topic;
 import javax.transaction.TransactionManager;
 
 import org.osoa.sca.annotations.Reference;
@@ -257,7 +259,24 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 wireConfiguration.setResponseListener(listener);
                 validateDestination(responseDestination, destinationDefinition);
             }
+            DestinationDefinition callbackDestinationDefinition = target.getCallbackDestination();
+            if (callbackDestinationDefinition != null) {
+                Destination callbackDestination = resolver.resolve(callbackDestinationDefinition, requestConnectionFactory);
+                wireConfiguration.setCallbackDestination(callbackDestination);
+                if (callbackDestination != null) {
+                    if (callbackDestination instanceof Queue) {
+                        String name = ((Queue) callbackDestination).getQueueName();
+                        wireConfiguration.setCallbackUri("jms:" + name);
+                    } else if (callbackDestination instanceof Topic) {
+                        String name = ((Topic) callbackDestination).getTopicName();
+                        wireConfiguration.setCallbackUri("jms:" + name);
+                    }
+                }
+
+            }
         } catch (JmsResolutionException e) {
+            throw new WiringException(e);
+        } catch (JMSException e) {
             throw new WiringException(e);
         }
 

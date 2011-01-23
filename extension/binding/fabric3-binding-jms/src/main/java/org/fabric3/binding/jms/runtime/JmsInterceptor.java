@@ -87,11 +87,15 @@ import org.fabric3.spi.wire.Interceptor;
  * @version $Revision$ $Date$
  */
 public class JmsInterceptor implements Interceptor {
+    private static final String SCA_CALLBACK_DESTINATION = "scaCallbackDestination";
     private static final Message ONE_WAY_RESPONSE = new MessageImpl();
+
     private Interceptor next;
     private String methodName;
     private OperationPayloadTypes payloadTypes;
     private Destination destination;
+    private Destination callbackDestination;
+    private String callbackUri;
     private ConnectionFactory connectionFactory;
     private CorrelationScheme correlationScheme;
     private ResponseListener responseListener;
@@ -115,6 +119,8 @@ public class JmsInterceptor implements Interceptor {
     public JmsInterceptor(InterceptorConfiguration configuration) {
         WireConfiguration wireConfig = configuration.getWireConfiguration();
         this.destination = wireConfig.getRequestDestination();
+        this.callbackDestination = wireConfig.getCallbackDestination();
+        this.callbackUri = wireConfig.getCallbackUri();
         this.connectionFactory = wireConfig.getRequestConnectionFactory();
         this.correlationScheme = wireConfig.getCorrelationScheme();
         this.cl = wireConfig.getClassloader();
@@ -140,7 +146,6 @@ public class JmsInterceptor implements Interceptor {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(cl);
-            // FIXME username/password
             connection = connectionFactory.createConnection();
             connection.start();
             int status = tm.getStatus();
@@ -207,12 +212,12 @@ public class JmsInterceptor implements Interceptor {
                 return ONE_WAY_RESPONSE;
             }
 
-        } catch (JMSException ex) {
-            throw new ServiceRuntimeException("Unable to receive response", ex);
-        } catch (IOException ex) {
-            throw new ServiceRuntimeException("Error serializing callframe", ex);
-        } catch (JmsBadMessageException ex) {
-            throw new ServiceRuntimeException("Unable to receive response", ex);
+        } catch (JMSException e) {
+            throw new ServiceRuntimeException("Unable to receive response", e);
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("Error serializing callframe", e);
+        } catch (JmsBadMessageException e) {
+            throw new ServiceRuntimeException("Unable to receive response", e);
         } catch (SystemException e) {
             throw new ServiceRuntimeException(e);
         } catch (NotSupportedException e) {
@@ -307,6 +312,9 @@ public class JmsInterceptor implements Interceptor {
      * @throws JMSException if there is an error setting a header
      */
     private void setHeaders(javax.jms.Message message) throws JMSException {
+        if (!oneWay) {
+            message.setJMSReplyTo(responseListener.getDestination());
+        }
         if (priority >= 0) {
             message.setJMSPriority(priority);
         }
@@ -316,6 +324,13 @@ public class JmsInterceptor implements Interceptor {
         if (!properties.isEmpty()) {
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 message.setStringProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        if (callbackDestination != null) {
+            if (oneWay) {
+                message.setJMSReplyTo(callbackDestination);
+            } else {
+                message.setStringProperty(SCA_CALLBACK_DESTINATION, callbackUri);
             }
         }
     }

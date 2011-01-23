@@ -53,12 +53,14 @@ public class WireConfiguration {
     private CorrelationScheme correlationScheme;
     private ConnectionFactory requestConnectionFactory;
     private Destination requestDestination;
+    private Destination callbackDestination;
     private ClassLoader classloader;
     private ResponseListener responseListener;
     private TransactionType transactionType;
     private TransactionManager tm;
     private long responseTimeout;
     boolean persistent = true;
+    private String callbackUri;
 
     public CorrelationScheme getCorrelationScheme() {
         return correlationScheme;
@@ -74,6 +76,22 @@ public class WireConfiguration {
 
     public void setRequestDestination(Destination requestDestination) {
         this.requestDestination = requestDestination;
+    }
+
+    public Destination getCallbackDestination() {
+        return callbackDestination;
+    }
+
+    public void setCallbackDestination(Destination callbackDestination) {
+        this.callbackDestination = callbackDestination;
+    }
+
+    public String getCallbackUri() {
+        return callbackUri;
+    }
+
+    public void setCallbackUri(String callbackUri) {
+        this.callbackUri = callbackUri;
     }
 
     public ConnectionFactory getRequestConnectionFactory() {
@@ -131,4 +149,5 @@ public class WireConfiguration {
     public void setPersistent(boolean persistent) {
         this.persistent = persistent;
     }
+
 }
