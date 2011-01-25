@@ -75,6 +75,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.xml.XMLFactory;
 
 import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
@@ -92,20 +93,23 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     private ClassLoaderRegistry classLoaderRegistry;
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
+    private XMLFactory xmlFactory;
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference MessageContainerManager containerManager,
+                                 @Reference XMLFactory xmlFactory,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.containerManager = containerManager;
+        this.xmlFactory = xmlFactory;
         this.monitor = monitor;
     }
 
     public void attach(JmsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         URI serviceUri = target.getUri();
-        ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
+        ClassLoader loader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
         TransactionType trxType = source.getTransactionType();
         WireHolder wireHolder = createWireHolder(wire, source, target, trxType);
 
@@ -117,7 +121,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             Destination requestDestination = objects.getRequestDestination();
             ConnectionFactory responseFactory = objects.getResponseFactory();
             Destination responseDestination = objects.getResponseDestination();
-            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, sourceClassLoader, monitor);
+            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, monitor);
             configuration.setDestination(requestDestination);
             configuration.setFactory(requestFactory);
             configuration.setMessageListener(listener);

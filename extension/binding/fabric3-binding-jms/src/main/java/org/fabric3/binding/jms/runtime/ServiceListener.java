@@ -50,6 +50,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -58,6 +59,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
 import org.fabric3.binding.jms.runtime.common.MessageHelper;
@@ -73,6 +78,7 @@ import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Listens for requests sent to a destination and dispatches them to a service, returning a response to the response destination.
@@ -86,20 +92,25 @@ public class ServiceListener implements MessageListener {
     private Destination defaultResponseDestination;
     private ConnectionFactory responseFactory;
     private TransactionType transactionType;
-    private ClassLoader cl;
+    private ClassLoader classLoader;
     private ListenerMonitor monitor;
+    private XMLFactory xmlFactory;
+    private XMLInputFactory xmlInputFactory;
+
 
     public ServiceListener(WireHolder wireHolder,
                            Destination defaultResponseDestination,
                            ConnectionFactory responseFactory,
                            TransactionType transactionType,
-                           ClassLoader cl,
+                           ClassLoader classLoader,
+                           XMLFactory xmlFactory,
                            ListenerMonitor monitor) {
         this.wireHolder = wireHolder;
         this.defaultResponseDestination = defaultResponseDestination;
         this.responseFactory = responseFactory;
         this.transactionType = transactionType;
-        this.cl = cl;
+        this.classLoader = classLoader;
+        this.xmlFactory = xmlFactory;
         this.monitor = monitor;
         invocationChainMap = new HashMap<String, InvocationChainHolder>();
         for (InvocationChainHolder chainHolder : wireHolder.getInvocationChains()) {
@@ -115,9 +126,8 @@ public class ServiceListener implements MessageListener {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
             // set the TCCL to the target service classloader
-            Thread.currentThread().setContextClassLoader(cl);
-            String opName = request.getStringProperty(JmsConstants.OPERATION_HEADER);
-            InvocationChainHolder holder = getInvocationChainHolder(opName);
+            Thread.currentThread().setContextClassLoader(classLoader);
+            InvocationChainHolder holder = getHolder(request);
             Interceptor interceptor = holder.getChain().getHeadInterceptor();
             boolean oneWay = holder.getChain().getPhysicalOperation().isOneWay();
             OperationPayloadTypes payloadTypes = holder.getPayloadTypes();
@@ -255,7 +265,8 @@ public class ServiceListener implements MessageListener {
         }
     }
 
-    private InvocationChainHolder getInvocationChainHolder(String opName) throws JmsBadMessageException {
+    private InvocationChainHolder getHolder(Message message) throws JmsBadMessageException, JMSException {
+        String opName = message.getStringProperty(JmsConstants.OPERATION_HEADER);
         List<InvocationChainHolder> chainHolders = wireHolder.getInvocationChains();
         if (chainHolders.size() == 1) {
             return chainHolders.get(0);
@@ -268,9 +279,39 @@ public class ServiceListener implements MessageListener {
         } else if (onMessageHolder != null) {
             return onMessageHolder;
         } else {
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                String payload = textMessage.getText();
+                return getHolderBasedOnElementName(payload.getBytes());
+
+            }
+            if (message instanceof BytesMessage) {
+                BytesMessage bytesMessage = (BytesMessage) message;
+                byte[] payload = new byte[(int) bytesMessage.getBodyLength()];
+                bytesMessage.readBytes(payload);
+                return getHolderBasedOnElementName(payload);
+
+            }
             throw new JmsBadMessageException("Unable to match operation on the service contract");
         }
+    }
 
+    private InvocationChainHolder getHolderBasedOnElementName(byte[] payload) throws JmsBadMessageException {
+        if (xmlInputFactory == null) {
+            xmlInputFactory = xmlFactory.newInputFactoryInstance();
+        }
+        try {
+            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(payload));
+            reader.nextTag();
+            String name = reader.getName().getLocalPart();
+            InvocationChainHolder chainHolder = invocationChainMap.get(name);
+            if (chainHolder == null) {
+                throw new JmsBadMessageException("Unable to match operation on for name: " + name);
+            }
+            return chainHolder;
+        } catch (XMLStreamException e) {
+            throw new JmsBadMessageException("Unable to process message", e);
+        }
     }
 
     /**
