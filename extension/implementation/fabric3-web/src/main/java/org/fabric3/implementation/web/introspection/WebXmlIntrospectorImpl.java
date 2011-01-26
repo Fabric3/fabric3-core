@@ -70,7 +70,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  */
 public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
     private static final QNameSymbol WEB_APP_NO_NAMESPACE = new QNameSymbol(new QName(null, "web-app"));
-    private static final QNameSymbol WEB_APP_NAMESPACE = new QNameSymbol(new QName("http://java.sun.com/xml/ns/j2ee", "web-app"));
+    private static final QNameSymbol WEB_APP_JAVAEE_NAMESPACE = new QNameSymbol(new QName("http://java.sun.com/xml/ns/javaee", "web-app"));
+    private static final QNameSymbol WEB_APP_J2EE_NAMESPACE = new QNameSymbol(new QName("http://java.sun.com/xml/ns/j2ee", "web-app"));
 
     private MetaDataStore store;
     private XMLInputFactory xmlFactory;
@@ -86,12 +87,15 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
         URI uri = context.getContributionUri();
         ResourceElement<QNameSymbol, ?> resourceElement;
         try {
-            resourceElement = store.resolve(uri, Serializable.class, WEB_APP_NAMESPACE, context);
+            resourceElement = store.resolve(uri, Serializable.class, WEB_APP_JAVAEE_NAMESPACE, context);
             if (resourceElement == null) {
-                resourceElement = store.resolve(uri, Serializable.class, WEB_APP_NO_NAMESPACE, context);
+                resourceElement = store.resolve(uri, Serializable.class, WEB_APP_J2EE_NAMESPACE, context);
                 if (resourceElement == null) {
-                    // tolerate no web.xml
-                    return artifacts;
+                    resourceElement = store.resolve(uri, Serializable.class, WEB_APP_NO_NAMESPACE, context);
+                    if (resourceElement == null) {
+                        // tolerate no web.xml
+                        return artifacts;
+                    }
                 }
             }
         } catch (StoreException e) {

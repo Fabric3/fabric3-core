@@ -207,10 +207,6 @@ public class WebComponent implements AtomicComponent {
         return false;
     }
 
-    public int getInitLevel() {
-        return 0;
-    }
-
     public long getMaxIdleTime() {
         return 0;
     }
@@ -234,19 +230,6 @@ public class WebComponent implements AtomicComponent {
         } else {
             return null;
         }
-    }
-
-    public <B> B getService(Class<B> type, String name) throws ObjectCreationException {
-        ObjectFactory<?> factory = referenceFactories.get(name);
-        if (factory == null) {
-            return null;
-        } else {
-            return type.cast(factory.getInstance());
-        }
-    }
-
-    public <B> ServiceReference<B> getServiceReference(Class<B> type, String name) {
-        throw new UnsupportedOperationException();
     }
 
     @SuppressWarnings({"unchecked"})

@@ -27,12 +27,17 @@ Public License. See the accompanying license file for details.
 
     <component name="WebXmlIndexer">
         <f3:implementation.system class="org.fabric3.contribution.war.WebXmlIndexer"/>
-        <property name="namespace">false</property>
+        <property name="namespace">none</property>
     </component>
 
-    <component name="WebXmlIndexerNamepsaceAware">
+    <component name="WebXmlIndexerJavaEE">
         <f3:implementation.system class="org.fabric3.contribution.war.WebXmlIndexer"/>
-        <property name="namespace">true</property>
+        <property name="namespace">javaee</property>
+    </component>
+
+    <component name="WebXmlIndexerJ2EE">
+        <f3:implementation.system class="org.fabric3.contribution.war.WebXmlIndexer"/>
+        <property name="namespace">j2ee</property>
     </component>
 
 </composite>

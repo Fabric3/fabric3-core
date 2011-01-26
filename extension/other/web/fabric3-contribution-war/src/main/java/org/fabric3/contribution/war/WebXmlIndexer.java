@@ -60,14 +60,21 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 @EagerInit
 public class WebXmlIndexer implements XmlIndexer {
     private static final QName WEB_APP_NO_NAMESPACE = new QName(null, "web-app");
-    private static final QName WEB_APP_NAMESPACE = new QName("http://java.sun.com/xml/ns/j2ee", "web-app");
+    private static final QName WEB_APP_J2EE_NAMESPACE = new QName("http://java.sun.com/xml/ns/j2ee", "web-app");
+    private static final QName WEB_APP_JAVAEE_NAMESPACE = new QName("http://java.sun.com/xml/ns/javaee", "web-app");
 
     private XmlIndexerRegistry registry;
-    private boolean namespace;
+    private QName qname;
 
-    public WebXmlIndexer(@Reference XmlIndexerRegistry registry, @Property(name = "namespace") boolean namespace) {
+    public WebXmlIndexer(@Reference XmlIndexerRegistry registry, @Property(name = "namespace") String namespace) {
         this.registry = registry;
-        this.namespace = namespace;
+        if ("none".equals(namespace)) {
+            qname = WEB_APP_NO_NAMESPACE;
+        } else if ("javaee".equals(namespace)) {
+            qname = WEB_APP_JAVAEE_NAMESPACE;
+        } else if ("j2ee".equals(namespace)) {
+            qname = WEB_APP_J2EE_NAMESPACE;
+        }
     }
 
     @Init
@@ -76,22 +83,14 @@ public class WebXmlIndexer implements XmlIndexer {
     }
 
     public QName getType() {
-        if (namespace) {
-            return WEB_APP_NAMESPACE;
-        } else {
-            return WEB_APP_NO_NAMESPACE;
-        }
+        return qname;
     }
 
     public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) {
-        QNameSymbol symbol;
-        if (namespace) {
-            symbol = new QNameSymbol(WEB_APP_NAMESPACE);
-        } else {
-            symbol = new QNameSymbol(WEB_APP_NO_NAMESPACE);
-        }
+        QNameSymbol symbol = new QNameSymbol(qname);
         WebXml webXml = new WebXml();
         ResourceElement<QNameSymbol, WebXml> element = new ResourceElement<QNameSymbol, WebXml>(symbol, webXml);
         resource.addResourceElement(element);
     }
+
 }

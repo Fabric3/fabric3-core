@@ -86,17 +86,6 @@ public class WebComponentContext implements ComponentContext {
         }
     }
 
-    // method is a proposed spec change
-    public <B> B createService(Class<B> interfaze, String referenceName) {
-        try {
-            return component.getService(interfaze, referenceName);
-        } catch (Fabric3RuntimeException e) {
-            throw new ServiceRuntimeException(e.getMessage(), e);
-        } catch (ObjectCreationException e) {
-            throw new ServiceRuntimeException(e.getMessage(), e);
-        }
-    }
-
     @SuppressWarnings({"unchecked"})
     public <B> ServiceReference<B> getServiceReference(Class<B> interfaze, String referenceName) {
         try {
