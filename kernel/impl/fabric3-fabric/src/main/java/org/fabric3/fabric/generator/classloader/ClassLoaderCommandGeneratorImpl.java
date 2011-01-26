@@ -80,8 +80,8 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  * instantiations.
  * <p/>
  * During undeployment, the process is reversed. Commands for releasing contribution classloaders are sent to the zones where components are being
- * undeployed. Invidual zones and runtimes are responsible for deciding when to dispose of classloaders. For example, a contribution classloader used
- * by two composites that is released when one composite is undeployed will not be removed until both composites are undeployed.
+ * undeployed. Individual zones and runtimes are responsible for deciding when to dispose of classloaders. For example, a contribution classloader
+ * used by two composites that is released when one composite is undeployed will not be removed until both composites are undeployed.
  */
 public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenerator {
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
@@ -119,7 +119,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         // generate commands to unprovision contribution classloaders
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             if (entry.getKey() == null) {
-                // Don't uprovision the contribution classloader for locally deployed components since it is shared by the contribution service
+                // Don't unprovision the contribution classloader for locally deployed components since it is shared by the contribution service
                 // In a multi-VM domain, the contribution classloaders are unprovisioned when they are no longer referenced by component classloaders.
                 // However, in a single-VM domain, the contribution classloader is used by runtime components.
                 // Consequently, the contribution classloader cannot be removed until the contribution is uninstalled.
@@ -220,7 +220,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
 
     /**
      * Creates classloader extension attachment commands. Extensions are used to allow contributions to dynamically load classes via reflection from
-     * other contribution classloaders without declaring a dependcy on them.
+     * other contribution classloaders without declaring a dependency on them.
      *
      * @param commands the commands being provisioned
      * @param collated the set of contributions being provisioned collated by zone

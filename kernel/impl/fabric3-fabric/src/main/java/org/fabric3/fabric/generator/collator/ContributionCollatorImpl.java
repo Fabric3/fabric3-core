@@ -82,22 +82,45 @@ public class ContributionCollatorImpl implements ContributionCollator {
                 contributionsPerZone.put(zone, contributions);
             }
             Contribution contribution = store.find(contributionUri);
-            // imported contributions must also be provisioned
-            List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
-            for (ContributionWire<?, ?> wire : contributionWires) {
-                URI importedUri = wire.getExportContributionUri();
-                Contribution imported = store.find(importedUri);
-                if (!contributions.contains(imported)
-                        && !Names.HOST_CONTRIBUTION.equals(importedUri)
-                        && !Names.BOOT_CONTRIBUTION.equals(importedUri)) {
-                    contributions.add(imported);
-                }
-            }
-            if (!contributions.contains(contribution)) {
-                contributions.add(contribution);
+            if (include(contribution, contributions)) {
+                collateDependencies(contribution, contributions);
             }
         }
         return contributionsPerZone;
+    }
+
+    /**
+     * Collates transitive dependencies for a contribution, including the contribution.
+     *
+     * @param contribution  the contribution
+     * @param contributions the list of transitive dependencies, including the contribution
+     */
+    private void collateDependencies(Contribution contribution, List<Contribution> contributions) {
+        // imported contributions must also be provisioned
+        List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
+        for (ContributionWire<?, ?> wire : contributionWires) {
+            URI importedUri = wire.getExportContributionUri();
+            Contribution imported = store.find(importedUri);
+            if (include(imported, contributions)) {
+                collateDependencies(imported, contributions);
+            }
+        }
+        if (!contributions.contains(contribution)) {
+            contributions.add(contribution);
+        }
+    }
+
+    /**
+     * Returns true if the contribution should be added to the list of contributions, i.e. it is not already present and is not the host or boot
+     * contribution.
+     *
+     * @param contribution  the contribution
+     * @param contributions the list of contributions
+     * @return true if the contribution should be included
+     */
+    private boolean include(Contribution contribution, List<Contribution> contributions) {
+        URI uri = contribution.getUri();
+        return !contributions.contains(contribution) && !Names.HOST_CONTRIBUTION.equals(uri) && !Names.BOOT_CONTRIBUTION.equals(uri);
     }
 
 }
