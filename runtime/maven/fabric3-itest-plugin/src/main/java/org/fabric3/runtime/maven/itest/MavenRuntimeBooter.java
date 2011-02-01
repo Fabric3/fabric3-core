@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -73,8 +74,6 @@ import org.fabric3.host.stream.InputStreamSource;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.jmx.agent.Agent;
-import org.fabric3.jmx.agent.DefaultAgent;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
@@ -174,9 +173,7 @@ public class MavenRuntimeBooter {
         File baseDir = new File(outputDirectory, "test-classes");
         MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, moduleDependencies, baseDir, tempDir);
 
-        // TODO Add better host JMX support from the next release
-        Agent agent = new DefaultAgent();
-        MBeanServer mBeanServer = agent.getMBeanServer();
+        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
         MavenMonitorEventDispatcher runtimeDispatcher = new MavenMonitorEventDispatcher(log);
         MavenMonitorEventDispatcher appDispatcher = new MavenMonitorEventDispatcher(log);

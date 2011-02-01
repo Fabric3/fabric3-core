@@ -35,51 +35,38 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jmx;
+package org.fabric3.jmx.management;
 
-import javax.management.Attribute;
-import javax.management.AttributeList;
-import javax.management.DynamicMBean;
-import javax.management.JMException;
-import javax.management.MBeanInfo;
+import java.lang.reflect.Method;
+import java.util.Set;
+
+import org.fabric3.api.Role;
 
 /**
+ * Holder for an MBean method and its associated security metadata.
+ *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractMBean implements DynamicMBean {
-    protected final MBeanInfo mbeanInfo;
+public class MethodHolder {
+    private Method method;
+    Set<Role> roles;
 
-    public AbstractMBean(MBeanInfo mbeanInfo) {
-        this.mbeanInfo = mbeanInfo;
+    /**
+     * Constructor.
+     *
+     * @param method the method
+     * @param roles  roles allowed to access the method
+     */
+    public MethodHolder(Method method, Set<Role> roles) {
+        this.method = method;
+        this.roles = roles;
     }
 
-    public MBeanInfo getMBeanInfo() {
-        return mbeanInfo;
+    public Method getMethod() {
+        return method;
     }
 
-    public AttributeList getAttributes(String[] strings) {
-        AttributeList list = new AttributeList(strings.length);
-        for (String s : strings) {
-            try {
-                Object value = getAttribute(s);
-                list.add(new Attribute(s, value));
-            } catch (JMException e) {
-                // ignore exceptions which means the attribute won't be in the result
-            }
-        }
-        return list;
-    }
-
-    public AttributeList setAttributes(AttributeList attributeList) {
-        AttributeList result = new AttributeList(attributeList.size());
-        for (Object o : attributeList) {
-            Attribute attribute = (Attribute) o;
-            try {
-                setAttribute(attribute);
-            } catch (JMException e) {
-                // ignore exceptions which means the attribute won't be in the result
-            }
-        }
-        return result;
+    public Set<Role> getRoles() {
+        return roles;
     }
 }

@@ -41,35 +41,47 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host.security;
+package org.fabric3.jmx.agent;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.Role;
+import org.fabric3.host.runtime.ParseException;
 
 /**
- * Delegates to a runtime extension to perform JMX authentication. Since a JMXAuthenticator is required to be created and passed to the JMX connector
- * during bootstrap, this implementation is used as a bridge to the actual JMXAuthenticator which is installed as a runtime extension and available
- * only after bootstrap.
- * <p/>
- * When it is created during bootstrap, this implementation will be registered as a component in the runtime domain, which enables it to be injected
- * when the delegate JMXAuthenticator becomes available.
+ * Delegates to a runtime extension to perform JMX authentication.
  *
  * @version $Rev$ $Date$
  */
+@Service(DelegatingJmxAuthenticator.class)
 public class DelegatingJmxAuthenticator implements JMXAuthenticator {
-    private JmxSecurity security;
-    private Set<Role> roles;
+    private JmxSecurity security = JmxSecurity.DISABLED;
+    private Set<Role> roles = new HashSet<Role>();
     private JMXAuthenticator delegate;
 
-    public DelegatingJmxAuthenticator(JmxSecurity security, Set<Role> roles) {
-        this.security = security;
-        this.roles = roles;
+    @Property(required = false)
+    public void setSecurity(String level) throws ParseException {
+        try {
+            security = JmxSecurity.valueOf(level.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid JMX security setting:" + level);
+        }
+    }
+
+    @Property(required = false)
+    public void setRoles(String rolesAttribute) {
+        String[] rolesString = rolesAttribute.split(",");
+        for (String s : rolesString) {
+            roles.add(new Role(s.trim()));
+        }
     }
 
     /**
@@ -80,6 +92,9 @@ public class DelegatingJmxAuthenticator implements JMXAuthenticator {
      */
     @Reference(required = false)
     public void setAuthenticators(List<JMXAuthenticator> authenticators) {
+        if (authenticators.isEmpty()) {
+            return;
+        }
         delegate = authenticators.get(0);
     }
 

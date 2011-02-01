@@ -114,15 +114,6 @@ public interface BootstrapService {
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException;
 
     /**
-     * Returns the JMX configuration. If not explicitly configured, security will be disabled and the default range (1199) will be returned.
-     *
-     * @param systemConfig the system configuration
-     * @return the JMX configuration
-     * @throws ParseException if there is an error parsing the JMX port range
-     */
-    JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException;
-
-    /**
      * Returns configured deployment directories or an empty collection.
      *
      * @param systemConfig the system configuration

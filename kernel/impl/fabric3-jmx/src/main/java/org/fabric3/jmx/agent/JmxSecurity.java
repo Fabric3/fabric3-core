@@ -35,53 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.runtime;
-
-import java.util.Set;
-
-import org.fabric3.api.Role;
-import org.fabric3.host.security.JmxSecurity;
+package org.fabric3.jmx.agent;
 
 /**
- * Configuration for the JMX server.
+ * Security settings for the JMX server.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8923 $ $Date: 2010-04-26 10:43:08 +0200 (Mon, 26 Apr 2010) $
  */
-public class JmxConfiguration {
-    private JmxSecurity security;
-    private Set<Role> roles;
-    private int minimum;
-    private int maximum;
-
-    /**
-     * Constructor.
-     *
-     * @param security the security setting
-     * @param roles    the roles allowed to access the JMX server when authorization is enabled
-     * @param minimum  the minimum port number
-     * @param maximum  the maximum port number
-     */
-    public JmxConfiguration(JmxSecurity security, Set<Role> roles, int minimum, int maximum) {
-        this.security = security;
-        this.roles = roles;
-        this.minimum = minimum;
-        this.maximum = maximum;
-    }
-
-    public JmxSecurity getSecurity() {
-        return security;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public int getMinimum() {
-        return minimum;
-    }
-
-    public int getMaximum() {
-        return maximum;
-    }
-
+public enum JmxSecurity {
+    DISABLED,
+    AUTHENTICATION,
+    AUTHORIZATION
 }

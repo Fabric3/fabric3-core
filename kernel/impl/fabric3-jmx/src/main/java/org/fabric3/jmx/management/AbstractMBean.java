@@ -35,22 +35,51 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jmx.agent;
+package org.fabric3.jmx.management;
 
-import javax.management.MBeanServer;
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.DynamicMBean;
+import javax.management.JMException;
+import javax.management.MBeanInfo;
 
 /**
- * Interface to a JMX agent.
- *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public interface Agent {
+public abstract class AbstractMBean implements DynamicMBean {
+    protected final MBeanInfo mbeanInfo;
 
-    /**
-     * Returns the MBean server used by the agent.
-     *
-     * @return MBean server used by the agent.
-     */
-    MBeanServer getMBeanServer();
+    public AbstractMBean(MBeanInfo mbeanInfo) {
+        this.mbeanInfo = mbeanInfo;
+    }
 
+    public MBeanInfo getMBeanInfo() {
+        return mbeanInfo;
+    }
+
+    public AttributeList getAttributes(String[] strings) {
+        AttributeList list = new AttributeList(strings.length);
+        for (String s : strings) {
+            try {
+                Object value = getAttribute(s);
+                list.add(new Attribute(s, value));
+            } catch (JMException e) {
+                // ignore exceptions which means the attribute won't be in the result
+            }
+        }
+        return list;
+    }
+
+    public AttributeList setAttributes(AttributeList attributeList) {
+        AttributeList result = new AttributeList(attributeList.size());
+        for (Object o : attributeList) {
+            Attribute attribute = (Attribute) o;
+            try {
+                setAttribute(attribute);
+            } catch (JMException e) {
+                // ignore exceptions which means the attribute won't be in the result
+            }
+        }
+        return result;
+    }
 }

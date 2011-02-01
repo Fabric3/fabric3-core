@@ -14,8 +14,20 @@ Public License. See the accompanying license file for details.
            name="JMXComposite"
            autowire="true">
 
+    <component name="RmiAgent">
+        <f3:implementation.system class="org.fabric3.jmx.agent.RmiAgent"/>
+        <property name="security" source="$systemConfig//runtime/@jmx.security"/>
+        <property name="jmxPort" source="$systemConfig//runtime/@jmx.port"/>
+    </component>
+
+    <component name="DelegatingJmxAuthenticator">
+        <f3:implementation.system class="org.fabric3.jmx.agent.DelegatingJmxAuthenticator"/>
+        <property name="security" source="$systemConfig//runtime/@jmx.security"/>
+        <property name="roles" source="$systemConfig//runtime/@jmx.access.roles"/>
+    </component>
+
     <component name="JMXManagementExtension">
-        <f3:implementation.system class="org.fabric3.jmx.JMXManagementExtension"/>
+        <f3:implementation.system class="org.fabric3.jmx.management.JMXManagementExtension"/>
         <property name="security" source="$systemConfig//runtime/@jmx.security"/>
     </component>
 

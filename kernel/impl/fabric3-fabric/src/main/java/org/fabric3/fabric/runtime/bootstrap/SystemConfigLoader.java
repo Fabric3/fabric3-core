@@ -50,10 +50,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -64,14 +61,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.fabric3.api.Role;
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
-import org.fabric3.host.runtime.JmxConfiguration;
 import org.fabric3.host.runtime.ParseException;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 
@@ -86,7 +80,6 @@ import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
     private static final String DEFAULT_ZONE = "default.zone";
-    private static final int DEFAULT_JMX_PORT = 1199;
     private DocumentLoader loader;
 
     public SystemConfigLoader() {
@@ -230,54 +223,6 @@ public class SystemConfigLoader {
     }
 
     /**
-     * Parses the JMX configuration. If not explicitly configured, security will be disabled and the default range (1199) will be returned.
-     *
-     * @param systemConfig the system configuration
-     * @return the JMX configuration
-     * @throws ParseException if there is an error parsing the JMX port range
-     */
-    public JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException {
-        Element root = systemConfig.getDocumentElement();
-        NodeList nodes = root.getElementsByTagName("runtime");
-        if (nodes.getLength() == 1) {
-            Element node = (Element) nodes.item(0);
-            JmxSecurity security = parseSecurity(node);
-
-
-            Set<Role> roles = parseRoles(node);
-
-            String ports = node.getAttribute("jmxPort");
-            if (ports.length() == 0) {
-                // support alternate syntax
-                ports = node.getAttribute("jmx.port");
-            }
-            if (ports.length() > 0) {
-                String[] tokens = ports.split("-");
-                int minPort;
-                int maxPort;
-                if (tokens.length == 1) {
-                    // port specified
-                    minPort = parsePortNumber(ports);
-                    maxPort = minPort;
-
-                } else if (tokens.length == 2) {
-                    // port range specified
-                    minPort = parsePortNumber(tokens[0]);
-                    maxPort = parsePortNumber(tokens[1]);
-                } else {
-                    throw new ParseException("Invalid JMX port specified in system configuration: " + ports);
-                }
-                return new JmxConfiguration(security, roles, minPort, maxPort);
-            } else {
-                return new JmxConfiguration(security, roles, DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
-            }
-        } else if (nodes.getLength() == 0) {
-            return new JmxConfiguration(JmxSecurity.DISABLED, Collections.<Role>emptySet(), DEFAULT_JMX_PORT, DEFAULT_JMX_PORT);
-        }
-        throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
-    }
-
-    /**
      * Returns the monitor configuration. If not set, null will be returned.
      *
      * @param elementName  the element name of the monitor configuration
@@ -357,39 +302,4 @@ public class SystemConfigLoader {
             }
         }
     }
-
-    private int parsePortNumber(String portVal) {
-        int port;
-        try {
-            port = Integer.parseInt(portVal);
-            if (port < 0) {
-                throw new IllegalArgumentException("Invalid JMX port number specified in runtime.properties:" + port);
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid JMX port", e);
-        }
-        return port;
-    }
-
-    private Set<Role> parseRoles(Element node) {
-        String[] rolesString = node.getAttribute("jmx.access.roles").split(",");
-        Set<Role> roles = new HashSet<Role>();
-        for (String s : rolesString) {
-            roles.add(new Role(s.trim()));
-        }
-        return roles;
-    }
-
-    private JmxSecurity parseSecurity(Element node) throws ParseException {
-        String securityString = node.getAttribute("jmx.security");
-        if (securityString.length() > 0) {
-            try {
-                return JmxSecurity.valueOf(securityString.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new ParseException("Invalid JMX security setting:" + securityString);
-            }
-        }
-        return JmxSecurity.DISABLED;
-    }
-
 }

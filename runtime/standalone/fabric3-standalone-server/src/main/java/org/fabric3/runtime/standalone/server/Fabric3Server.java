@@ -47,12 +47,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
-import javax.management.remote.JMXAuthenticator;
 
 import org.w3c.dom.Document;
 
@@ -66,20 +65,14 @@ import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.JmxConfiguration;
 import org.fabric3.host.runtime.MaskingClassLoader;
-import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.security.DelegatingJmxAuthenticator;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.jmx.agent.rmi.RmiAgent;
 
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
@@ -92,6 +85,7 @@ import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
  * @version $Rev$ $Date$
  */
 public class Fabric3Server implements Fabric3ServerMBean {
+    private static final String DOMAIN = "fabric3";
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";
 
     private RuntimeCoordinator coordinator;
@@ -157,9 +151,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             BootConfiguration configuration = new BootConfiguration();
 
-            RmiAgent agent = createJmxAgent(systemConfig, bootstrapService, configuration);
-
-            MBeanServer mbServer = agent.getMBeanServer();
+            MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
             // create and configure the monitor dispatchers
             MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig, hostInfo);
@@ -189,13 +181,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
             ObjectName objectName = new ObjectName(RUNTIME_MBEAN);
             mbServer.registerMBean(this, objectName);
 
-            agent.start();
             // create the shutdown daemon
             latch = new CountDownLatch(1);
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(mode.toString(), agent.getAssignedPort());
+            monitor.started(mode.toString());
 
             try {
                 latch.await();
@@ -215,17 +206,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
     public void shutdownRuntime() {
         latch.countDown();
         shutdown();
-    }
-
-    private RmiAgent createJmxAgent(Document systemConfig, BootstrapService bootstrapService, BootConfiguration configuration) throws ParseException {
-        JmxConfiguration jmxConfiguration = bootstrapService.parseJmxConfiguration(systemConfig);
-        if (JmxSecurity.DISABLED != jmxConfiguration.getSecurity()) {
-            JMXAuthenticator authenticator = new DelegatingJmxAuthenticator(jmxConfiguration.getSecurity(), jmxConfiguration.getRoles());
-            ComponentRegistration registration = new ComponentRegistration("JMXAuthenticator", JMXAuthenticator.class, authenticator, true);
-            configuration.addRegistrations(Collections.singletonList(registration));
-            return new RmiAgent(authenticator, jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());
-        }
-        return new RmiAgent(jmxConfiguration.getMinimum(), jmxConfiguration.getMaximum());
     }
 
     private void shutdown() {
@@ -306,8 +286,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
         @Severe("Shutdown error")
         void shutdownError(Exception e);
 
-        @Info("Fabric3 ready [Mode:{0}, JMX port:{1,number,#}]")
-        void started(String mode, int jmxPort);
+        @Info("Fabric3 ready [Mode:{0}]")
+        void started(String mode);
 
         @Info("Fabric3 shutdown")
         void stopped();

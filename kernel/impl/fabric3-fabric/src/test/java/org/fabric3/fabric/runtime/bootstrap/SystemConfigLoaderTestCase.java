@@ -52,10 +52,7 @@ import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.fabric3.api.Role;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.JmxConfiguration;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.host.stream.InputStreamSource;
 
 /**
@@ -64,14 +61,6 @@ import org.fabric3.host.stream.InputStreamSource;
  * @version $Revision$ $Date$
  */
 public class SystemConfigLoaderTestCase extends TestCase {
-
-    private static final String CONFIG_IMX_SECURITY = "<config>" +
-            "<runtime domain='mydomain' mode='controller' jmx.port='1111' jmx.security='authorization' jmx.access.roles='ROLE_FOO, ROLE_BAR'/>" +
-            "   <web.server>" +
-            "       <http port='8181'/>" +
-            "   </web.server>" +
-            "</config>";
-
 
     private static final String CONFIG = "<config>" +
             "<runtime domain='mydomain' mode='controller' jmxPort='1111'/>" +
@@ -84,13 +73,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "   <federation>" +
             "      <zoneName>zone1</zoneName>" +
             "   </federation>" +
-            "</config>";
-
-    private static final String CONFIG_JMX_RANGE = "<config>" +
-            "<runtime domain='mydomain' jmxPort='1111-2222'/>" +
-            "   <web.server>" +
-            "       <http port='8181'/>" +
-            "   </web.server>" +
             "</config>";
 
     private static final String CONFIG_DEFAULT = "<config>" +
@@ -169,50 +151,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
         Document systemConfig = loader.loadSystemConfig(source);
         assertEquals("default.zone", loader.parseZoneName(systemConfig));
     }
-
-    public void testParseJmxSecurity() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_IMX_SECURITY.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        JmxConfiguration configuration = loader.parseJmxConfiguration(systemConfig);
-        assertEquals(1111, configuration.getMinimum());
-        assertEquals(1111, configuration.getMaximum());
-        assertEquals(JmxSecurity.AUTHORIZATION, configuration.getSecurity());
-        assertTrue(configuration.getRoles().contains(new Role("ROLE_FOO")));
-        assertTrue(configuration.getRoles().contains(new Role("ROLE_BAR")));
-    }
-
-    public void testParseJmxPort() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        JmxConfiguration configuration = loader.parseJmxConfiguration(systemConfig);
-        assertEquals(1111, configuration.getMinimum());
-        assertEquals(1111, configuration.getMaximum());
-    }
-
-    public void testParseJmxPortRange() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_JMX_RANGE.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        JmxConfiguration configuration = loader.parseJmxConfiguration(systemConfig);
-        assertEquals(1111, configuration.getMinimum());
-        assertEquals(2222, configuration.getMaximum());
-    }
-
-    public void testParseDefaultJmxPort() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_DEFAULT.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        JmxConfiguration configuration = loader.parseJmxConfiguration(systemConfig);
-        assertEquals(1199, configuration.getMinimum());
-        assertEquals(1199, configuration.getMaximum());
-    }
-
 
     public void testParseDeployDirectories() throws Exception {
         SystemConfigLoader loader = new SystemConfigLoader();

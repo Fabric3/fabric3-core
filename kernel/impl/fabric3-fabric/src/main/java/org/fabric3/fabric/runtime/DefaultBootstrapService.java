@@ -60,7 +60,6 @@ import org.fabric3.host.runtime.BootConstants;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.JmxConfiguration;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
@@ -106,10 +105,6 @@ public class DefaultBootstrapService implements BootstrapService {
 
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseRuntimeMode(systemConfig);
-    }
-
-    public JmxConfiguration parseJmxConfiguration(Document systemConfig) throws ParseException {
-        return systemConfigLoader.parseJmxConfiguration(systemConfig);
     }
 
     public List<File> parseDeployDirectories(Document systemConfig) throws ParseException {
