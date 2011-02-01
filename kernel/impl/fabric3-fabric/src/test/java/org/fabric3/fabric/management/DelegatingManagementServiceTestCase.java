@@ -58,11 +58,12 @@ public class DelegatingManagementServiceTestCase extends TestCase {
         ClassLoader loader = getClass().getClassLoader();
 
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
         extension.export(uri, null, factory, loader);
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
-        managementService.setExtensions(Collections.singletonMap("test.extension", extension));
+        managementService.setExtensions(Collections.singletonList(extension));
 
         managementService.export(uri, null, factory, loader);
 
@@ -75,13 +76,14 @@ public class DelegatingManagementServiceTestCase extends TestCase {
         ClassLoader loader = getClass().getClassLoader();
 
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
         extension.export(uri, null, factory, loader);
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
         managementService.export(uri, null, factory, loader);
 
-        managementService.setExtensions(Collections.singletonMap("test.extension", extension));
+        managementService.setExtensions(Collections.singletonList(extension));
         EasyMock.verify(extension);
     }
 
@@ -89,11 +91,12 @@ public class DelegatingManagementServiceTestCase extends TestCase {
     public void testInstanceRegistration() throws Exception {
         Object instance = new Object();
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
         extension.export("name", "group", "desc", instance);
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
-        managementService.setExtensions(Collections.singletonMap("test.extension", extension));
+        managementService.setExtensions(Collections.singletonList(extension));
 
         managementService.export("name", "group", "desc", instance);
 
@@ -103,13 +106,14 @@ public class DelegatingManagementServiceTestCase extends TestCase {
     public void testDelayedInstanceRegistration() throws Exception {
         Object instance = new Object();
         ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
         extension.export("name", "group", "desc", instance);
         EasyMock.expectLastCall();
         EasyMock.replay(extension);
 
         managementService.export("name", "group", "desc", instance);
 
-        managementService.setExtensions(Collections.singletonMap("test.extension", extension));
+        managementService.setExtensions(Collections.singletonList(extension));
 
         EasyMock.verify(extension);
 

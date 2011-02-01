@@ -49,6 +49,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.management.ManagementService;
 
 /**
  * Interface for accessing services provided by a runtime.
@@ -74,7 +75,14 @@ public interface RuntimeServices {
     MonitorProxyService getMonitorProxyService();
 
     /**
-     * Returns the MBeanServer this runtime should use.
+     * Returns the runtime management service.
+     *
+     * @return the MBeanServer
+     */
+    ManagementService getManagementService();
+
+    /**
+     * Returns the runtime MBeanServer.
      *
      * @return the MBeanServer
      */

@@ -50,6 +50,13 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public interface ManagementExtension {
 
     /**
+     * Returns the unique extension identifier.
+     *
+     * @return the unique extension identifier
+     */
+    String getType();
+
+    /**
      * Exposes a component for management.
      *
      * @param componentUri  the component URI

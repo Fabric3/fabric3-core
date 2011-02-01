@@ -45,7 +45,7 @@ package org.fabric3.runtime.standalone.server;
 public interface Fabric3ServerMBean {
 
     /**
-     * Shuts down a runtime specified by the bootpath.
+     * Shuts down a runtime.
      */
     public void shutdownRuntime();
 

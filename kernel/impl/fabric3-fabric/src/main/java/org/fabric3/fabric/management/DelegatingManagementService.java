@@ -40,6 +40,7 @@ package org.fabric3.fabric.management;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,21 +60,23 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class DelegatingManagementService implements ManagementService {
-    private Map<String, ManagementExtension> extensions = Collections.emptyMap();
+    private Map<String, ManagementExtension> extensions = new HashMap<String, ManagementExtension>();
     private List<ComponentHolder> componentHolders = new ArrayList<ComponentHolder>();
     private List<InstanceHolder> instanceHolders = new ArrayList<InstanceHolder>();
 
     /**
      * Setter to allow for reinjection of new management extensions.
      *
-     * @param extensions the reinjected management extensions
+     * @param injected the reinjected management extensions
      * @throws ManagementException if an error is encountered registering previous export requests
      */
     @Reference(required = false)
-    public void setExtensions(Map<String, ManagementExtension> extensions) throws ManagementException {
-        this.extensions = extensions;
+    public void setExtensions(List<ManagementExtension> injected) throws ManagementException {
+        extensions.clear();
+        for (ManagementExtension extension : injected) {
+            extensions.put(extension.getType(), extension);
+        }
         exportComponents();
         exportInstances();
     }

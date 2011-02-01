@@ -89,6 +89,7 @@ import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
@@ -127,6 +128,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private ScopeContainer scopeContainer;
     private Repository repository;
     private MBeanServer mbeanServer;
+    private ManagementService managementService;
     private HostInfo hostInfo;
 
     private Domain runtimeDomain;
@@ -170,6 +172,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         scopeContainer = runtimeServices.getScopeContainer();
         repository = runtimeServices.getRepository();
         mbeanServer = runtimeServices.getMBeanServer();
+        managementService = runtimeServices.getManagementService();
         hostInfo = runtimeServices.getHostInfo();
 
         synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
@@ -189,6 +192,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               lcm,
                                                               channelManager,
                                                               metaDataStore,
+                                                              managementService,
                                                               hostInfo);
 
         // register the runtime domain component
@@ -235,6 +239,8 @@ public class DefaultBootstrapper implements Bootstrapper {
         if (mbeanServer != null) {
             registerComponent("MBeanServer", MBeanServer.class, mbeanServer, false);
         }
+        registerComponent("ManagementService", ManagementService.class, managementService, true);
+
 
         // services available through the inward facing RuntimeServices SPI
         registerComponent("ComponentManager", ComponentManager.class, componentManager, true);

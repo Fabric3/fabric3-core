@@ -127,7 +127,6 @@ import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
@@ -188,6 +187,7 @@ import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
@@ -222,14 +222,15 @@ public class BootstrapAssemblyFactory {
                                       LogicalComponentManager logicalComponentManager,
                                       ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
+                                      ManagementService managementService,
                                       HostInfo info) throws InitializationException {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
-                                                                                channelManager
-        );
+                                                                                channelManager,
+                                                                                managementService);
         DeployerMonitor monitor;
         try {
             monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
@@ -290,7 +291,8 @@ public class BootstrapAssemblyFactory {
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
-                                                                         ChannelManager channelManager) {
+                                                                         ChannelManager channelManager,
+                                                                         ManagementService managementService) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
@@ -299,7 +301,7 @@ public class BootstrapAssemblyFactory {
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
         BuildComponentCommandExecutor executor =
-                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry);
+                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -317,13 +319,13 @@ public class BootstrapAssemblyFactory {
     private static BuildComponentCommandExecutor createBuildComponentExecutor(ComponentManager componentManager,
                                                                               ScopeRegistry scopeRegistry,
                                                                               DefaultTransformerRegistry transformerRegistry,
-                                                                              ClassLoaderRegistry classLoaderRegistry) {
+                                                                              ClassLoaderRegistry classLoaderRegistry,
+                                                                              ManagementService managementService) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
         PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
-        DelegatingManagementService managementService = new DelegatingManagementService();
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                     factoryBuilder,
                                                                     classLoaderRegistry,

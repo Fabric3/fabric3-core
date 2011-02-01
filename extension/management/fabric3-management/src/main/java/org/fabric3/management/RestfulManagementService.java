@@ -57,6 +57,10 @@ public class RestfulManagementService implements ManagementExtension {
         this.containerManager = containerManager;
     }
 
+    public String getType() {
+        return "fabric3.rest";
+    }
+
     public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
     }
 

@@ -14,8 +14,8 @@ Public License. See the accompanying license file for details.
            name="JMXComposite"
            autowire="true">
 
-    <component name="JMXManagementService" f3:key="fabric3.jms">
-        <f3:implementation.system class="org.fabric3.jmx.JMXManagementService"/>
+    <component name="JMXManagementExtension">
+        <f3:implementation.system class="org.fabric3.jmx.JMXManagementExtension"/>
         <property name="security" source="$systemConfig//runtime/@jmx.security"/>
     </component>
 

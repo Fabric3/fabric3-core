@@ -78,7 +78,7 @@ import org.fabric3.spi.util.UriHelper;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JMXManagementService implements ManagementExtension {
+public class JMXManagementExtension implements ManagementExtension {
     private static final String DOMAIN = "fabric3";
     boolean authorization;
 
@@ -90,9 +90,13 @@ public class JMXManagementService implements ManagementExtension {
         authorization = "AUTHORIZATION".equals(security.toUpperCase());
     }
 
-    public JMXManagementService(@Reference MBeanServer mBeanServer, @Reference HostInfo info) {
+    public JMXManagementExtension(@Reference MBeanServer mBeanServer, @Reference HostInfo info) {
         this.mBeanServer = mBeanServer;
         this.applicationDomain = info.getDomain();
+    }
+
+    public String getType() {
+        return "fabric3.jmx";
     }
 
     public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {

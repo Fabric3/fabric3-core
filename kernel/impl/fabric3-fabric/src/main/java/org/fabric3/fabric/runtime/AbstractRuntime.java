@@ -61,6 +61,7 @@ import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.component.scope.ScopeRegistryImpl;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.Names;
 import org.fabric3.host.Namespaces;
@@ -92,6 +93,7 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.monitor.DispatcherWrapper;
 
@@ -110,6 +112,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private ClassLoaderRegistry classLoaderRegistry;
     private MetaDataStore metaDataStore;
     private ScopeRegistry scopeRegistry;
+    private ManagementService managementService;
     private MBeanServer mbServer;
     private MonitorEventDispatcher runtimeDispatcher;
     private MonitorEventDispatcher appDispatcher;
@@ -175,6 +178,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         scopeContainer.start();
         scopeRegistry = new ScopeRegistryImpl();
         scopeRegistry.register(scopeContainer);
+        managementService = new DelegatingManagementService();
         if (repository == null) {
             // if the runtime has not been configured with a repository, create one
             repository = createRepository();
@@ -256,6 +260,10 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public ScopeRegistry getScopeRegistry() {
         return scopeRegistry;
+    }
+
+    public ManagementService getManagementService() {
+        return managementService;
     }
 
     public Repository getRepository() {
