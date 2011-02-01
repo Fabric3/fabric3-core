@@ -54,7 +54,6 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -64,9 +63,8 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
 import org.fabric3.spi.model.type.java.Signature;
@@ -80,7 +78,7 @@ import org.fabric3.spi.util.UriHelper;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JMXManagementService implements ManagementService {
+public class JMXManagementService implements ManagementExtension {
     private static final String DOMAIN = "fabric3";
     boolean authorization;
 
@@ -92,16 +90,9 @@ public class JMXManagementService implements ManagementService {
         authorization = "AUTHORIZATION".equals(security.toUpperCase());
     }
 
-    @Constructor
     public JMXManagementService(@Reference MBeanServer mBeanServer, @Reference HostInfo info) {
         this.mBeanServer = mBeanServer;
         this.applicationDomain = info.getDomain();
-    }
-
-    public JMXManagementService(MBeanServer mBeanServer, HostInfo info, JmxSecurity security) {
-        this.mBeanServer = mBeanServer;
-        this.applicationDomain = info.getDomain();
-        authorization = security == JmxSecurity.AUTHORIZATION;
     }
 
     public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {

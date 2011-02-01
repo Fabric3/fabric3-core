@@ -33,4 +33,6 @@
 
     <include name="ContractComposite" scdlResource="META-INF/contract.composite"/>
 
+    <include name="ManagementComposite" scdlResource="META-INF/management.composite"/>
+
 </composite>

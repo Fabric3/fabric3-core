@@ -93,7 +93,7 @@ public abstract class AbstractAgent implements Agent {
         return mBeanServer;
     }
 
-    public final void start() throws ManagementException {
+    public void start() throws ManagementException {
         try {
             if (started.get()) {
                 throw new IllegalArgumentException("Agent already started");
@@ -114,19 +114,7 @@ public abstract class AbstractAgent implements Agent {
         }
     }
 
-    public final void run() {
-        while (started.get()) {
-            synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    // continue;
-                }
-            }
-        }
-    }
-
-    public final void shutdown() throws ManagementException {
+    public void stop() throws ManagementException {
         try {
             if (!started.get()) {
                 throw new IllegalArgumentException("Agent not started");

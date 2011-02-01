@@ -94,7 +94,7 @@ public final class LoaderUtil {
 
         int index = text.indexOf(':');
         if (index < 1 || index == text.length() - 1) {
-            // unqualifed form - use the default supplied
+            // unqualified form - use the default supplied
             return new QName(defaultNamespace, text);
         } else {
             String prefix = text.substring(0, index);

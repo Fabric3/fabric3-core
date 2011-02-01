@@ -43,14 +43,14 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.binding.rs.runtime.RsContainerManager;
 import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RestfulManagementService implements ManagementService {
+public class RestfulManagementService implements ManagementExtension {
     private RsContainerManager containerManager;
 
     public RestfulManagementService(@Reference RsContainerManager containerManager) {
@@ -58,10 +58,13 @@ public class RestfulManagementService implements ManagementService {
     }
 
     public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
-
     }
 
     public void export(String name, String group, String description, Object instance) throws ManagementException {
+//        Class<? extends Object> clazz = instance.getClass();
+//        RsContainer container = new RsContainer(clazz.getClassLoader());
+//        container.addResource(clazz, instance);
+//        containerManager.register(URI.create(name), container);
 
     }
 

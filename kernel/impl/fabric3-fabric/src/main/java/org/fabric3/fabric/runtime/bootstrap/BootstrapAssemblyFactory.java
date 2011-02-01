@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.management.MBeanServer;
 
 import org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl;
 import org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl;
@@ -128,6 +127,7 @@ import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
+import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
@@ -136,7 +136,6 @@ import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.security.JmxSecurity;
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
@@ -162,7 +161,6 @@ import org.fabric3.implementation.system.singleton.SingletonSourceWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonTargetDefinition;
 import org.fabric3.implementation.system.singleton.SingletonTargetWireAttacher;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.jmx.JMXManagementService;
 import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
@@ -224,18 +222,14 @@ public class BootstrapAssemblyFactory {
                                       LogicalComponentManager logicalComponentManager,
                                       ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
-                                      MBeanServer mBeanServer,
-                                      JmxSecurity security,
                                       HostInfo info) throws InitializationException {
 
         CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
-                                                                                channelManager,
-                                                                                mBeanServer,
-                                                                                security,
-                                                                                info);
+                                                                                channelManager
+        );
         DeployerMonitor monitor;
         try {
             monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
@@ -296,10 +290,7 @@ public class BootstrapAssemblyFactory {
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
-                                                                         ChannelManager channelManager,
-                                                                         MBeanServer mBeanServer,
-                                                                         JmxSecurity security,
-                                                                         HostInfo info) {
+                                                                         ChannelManager channelManager) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
@@ -308,7 +299,7 @@ public class BootstrapAssemblyFactory {
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
         BuildComponentCommandExecutor executor =
-                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, mBeanServer, security, info);
+                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry);
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -326,16 +317,13 @@ public class BootstrapAssemblyFactory {
     private static BuildComponentCommandExecutor createBuildComponentExecutor(ComponentManager componentManager,
                                                                               ScopeRegistry scopeRegistry,
                                                                               DefaultTransformerRegistry transformerRegistry,
-                                                                              ClassLoaderRegistry classLoaderRegistry,
-                                                                              MBeanServer mBeanServer,
-                                                                              JmxSecurity security,
-                                                                              HostInfo info) {
+                                                                              ClassLoaderRegistry classLoaderRegistry) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
         PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
-        JMXManagementService managementService = new JMXManagementService(mBeanServer, info, security);
+        DelegatingManagementService managementService = new DelegatingManagementService();
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                     factoryBuilder,
                                                                     classLoaderRegistry,
