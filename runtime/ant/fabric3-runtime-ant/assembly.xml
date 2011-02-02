@@ -87,7 +87,8 @@
         <!-- copy extension modules to the extensions directory-->
         <dependencySet>
             <includes>
-                <include>org.codehaus.fabric3:fabric3-jmx</include>
+                <include>org.codehaus.fabric3:fabric3-management-jmx</include>
+                <include>org.codehaus.fabric3:fabric3-management-jmx-agent</include>
                 <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
                 <include>org.codehaus.fabric3:fabric3-java</include>
                 <include>org.codehaus.fabric3:fabric3-async</include>

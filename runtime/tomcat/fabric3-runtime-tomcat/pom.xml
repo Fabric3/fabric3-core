@@ -57,12 +57,6 @@ Public License. See the accompanying license file for details.
         
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-jmx</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-policy</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -70,6 +64,12 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-recovery</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-management-jmx</artifactId>
             <version>${project.version}</version>
         </dependency>
 

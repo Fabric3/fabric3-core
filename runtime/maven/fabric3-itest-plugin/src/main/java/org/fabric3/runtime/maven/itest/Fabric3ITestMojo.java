@@ -444,7 +444,14 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
         dependency = new Dependency();
         dependency.setGroupId("org.codehaus.fabric3");
-        dependency.setArtifactId("fabric3-jmx");
+        dependency.setArtifactId("fabric3-management-jmx");
+        dependency.setVersion(runtimeVersion);
+        dependency.setType("jar");
+        extensions.add(dependency);
+
+        dependency = new Dependency();
+        dependency.setGroupId("org.codehaus.fabric3");
+        dependency.setArtifactId("fabric3-management-jmx-agent");
         dependency.setVersion(runtimeVersion);
         dependency.setType("jar");
         extensions.add(dependency);
