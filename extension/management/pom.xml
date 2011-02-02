@@ -30,7 +30,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-        <module>fabric3-management</module>
+        <module>fabric3-management-rest</module>
         <module>fabric3-management-jmx</module>
         <module>fabric3-management-jmx-agent</module>
 	</modules>
