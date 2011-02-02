@@ -31,5 +31,7 @@
 
 	<modules>
         <module>fabric3-management</module>
+        <module>fabric3-management-jmx</module>
+        <module>fabric3-management-jmx-agent</module>
 	</modules>
 </project>
