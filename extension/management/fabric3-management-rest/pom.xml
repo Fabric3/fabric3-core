@@ -16,9 +16,9 @@ Public License. See the accompanying license file for details.
         <version>1.8-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-management</artifactId>
-    <name>Fabric3 Management Extension</name>
-    <description>ZeroMQ Management Extension</description>
+    <artifactId>fabric3-management-rest</artifactId>
+    <name>Fabric3 RESTful Management Extension</name>
+    <description>RESTful Management Extension</description>
     <packaging>jar</packaging>
 
     <dependencies>
