@@ -63,7 +63,6 @@
                 <include>org.codehaus.fabric3:fabric3-introspection-java</include>
                 <include>org.codehaus.fabric3:fabric3-spi</include>
                 <include>org.codehaus.fabric3:fabric3-util</include>
-                <include>org.codehaus.fabric3:fabric3-jmx</include>
                 <include>org.codehaus.fabric3:fabric3-pojo</include>
                 <include>org.codehaus.fabric3:fabric3-transform</include>
                 <include>org.codehaus.fabric3:fabric3-introspection-xml</include>
@@ -85,6 +84,7 @@
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3.tomcat:fabric3-tomcat-extension</include>
+                <include>org.codehaus.fabric3:fabric3-jmx</include>
                 <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
                 <include>org.codehaus.fabric3:fabric3-java</include>
                 <include>org.codehaus.fabric3:fabric3-async</include>

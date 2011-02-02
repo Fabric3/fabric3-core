@@ -1,4 +1,4 @@
 <config>
-    <runtime mode="participant"/>
+    <runtime mode="participant" agent.disable="true"/>
     <tomcat httpPort="8181"/>
 </config>

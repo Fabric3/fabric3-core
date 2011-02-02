@@ -1,2 +1,3 @@
 <config>
+    <runtime agent.disable="true"/>
 </config>

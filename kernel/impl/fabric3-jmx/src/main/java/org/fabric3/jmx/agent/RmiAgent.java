@@ -49,6 +49,7 @@ import org.fabric3.host.runtime.ParseException;
 public class RmiAgent {
     private int minPort = 1199;
     private int maxPort = 1199;
+    private boolean disabled;
     private JmxSecurity security = JmxSecurity.DISABLED;
 
     private Registry registry;
@@ -93,8 +94,16 @@ public class RmiAgent {
         }
     }
 
+    @Property(required = false)
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     @Init
     public void init() throws ManagementException {
+        if (disabled) {
+            return;
+        }
         try {
             createRegistry();
             Map<String, Object> environment = initEnvironment();
@@ -109,6 +118,9 @@ public class RmiAgent {
 
     @Destroy
     public void destroy() throws ManagementException {
+        if (disabled) {
+            return;
+        }
         try {
             connectorServer.stop();
             removeRegistry();
@@ -127,7 +139,7 @@ public class RmiAgent {
     int getMaxPort() {
         return maxPort;
     }
-    
+
     private Map<String, Object> initEnvironment() {
         Map<String, Object> environment = new HashMap<String, Object>();
         if (JmxSecurity.DISABLED != security) {

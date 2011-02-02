@@ -18,6 +18,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.jmx.agent.RmiAgent"/>
         <property name="security" source="$systemConfig//runtime/@jmx.security"/>
         <property name="jmxPort" source="$systemConfig//runtime/@jmx.port"/>
+        <property name="disabled" source="$systemConfig//runtime/@agent.disable"/>
     </component>
 
     <component name="DelegatingJmxAuthenticator">
