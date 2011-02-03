@@ -14,8 +14,16 @@ Public License. See the accompanying license file for details.
            name="InfinispanCacheControllerExtension"
            autowire="true">
 
+    <component name="InfinispanCacheBindingGenerator" f3:key="org.fabric3.cache.infinispan.model.InfinispanDefinition">
+        <f3:implementation.system class="org.fabric3.cache.infinispan.generator.InfinispanCacheBindingGenerator"/>
+    </component>
+
     <component name="InfinispanCacheTypeLoader" f3:key="f3:caches">
         <f3:implementation.system class="org.fabric3.cache.infinispan.introspection.CacheConfigurationLoader"/>
+    </component>
+
+    <component name="CacheResourceBuilder" f3:key="org.fabric3.cache.infinispan.provision.InfinispanCacheResource">
+        <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceBuilder"/>
     </component>
 
 </composite>
