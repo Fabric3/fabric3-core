@@ -88,7 +88,7 @@ public abstract class AbstractDomainMBean {
     }
 
     @ManagementOperation(description = "Deploys a contribution to the domain.  All contained deployables will be included in the domain composite.")
-    public void deploy(URI uri) throws DeploymentManagementException {
+    public void deployDefaultPlan(URI uri) throws DeploymentManagementException {
         deploy(uri, null);
     }
 

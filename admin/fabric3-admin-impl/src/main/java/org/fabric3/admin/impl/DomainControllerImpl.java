@@ -187,7 +187,7 @@ public class DomainControllerImpl implements DomainController {
             }
             MBeanServerConnection conn = jmxc.getMBeanServerConnection();
             ObjectName oName = new ObjectName(DOMAIN_MBEAN);
-            conn.invoke(oName, "deploy", new URI[]{uri}, new String[]{URI.class.getName()});
+            conn.invoke(oName, "deployDefaultPlan", new URI[]{uri}, new String[]{URI.class.getName()});
         } catch (MBeanException e) {
             if (e.getTargetException() instanceof InvalidDeploymentException) {
                 throw (InvalidDeploymentException) e.getTargetException();
