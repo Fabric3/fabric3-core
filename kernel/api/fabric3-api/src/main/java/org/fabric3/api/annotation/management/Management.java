@@ -70,6 +70,13 @@ public @interface Management {
     String group() default "";
 
     /**
+     * Returns the managed resource path.
+     *
+     * @return the managed resource path.
+     */
+    String path() default "";
+
+    /**
      * Returns the management description.
      *
      * @return the management description

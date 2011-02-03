@@ -51,6 +51,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({METHOD})
 @Retention(RUNTIME)
 public @interface ManagementOperation {
+
+    /**
+     * Returns the operation path relative to the managed resource.
+     *
+     * @return the operation path.
+     */
+    String path() default "";
+
     /**
      * Returns the operation description.
      *
