@@ -88,7 +88,8 @@ public class ManagementOperationProcessor<I extends Implementation<? extends Inj
         for (String roleName : annotation.rolesAllowed()) {
             roles.add(new Role(roleName));
         }
-        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description, roles);
+        String path = annotation.path();
+        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, description, roles);
         info.addOperation(operationInfo);
     }
 

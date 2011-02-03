@@ -89,8 +89,8 @@ public class ManagementProcessor<I extends Implementation<? extends InjectingCom
         for (String roleName : annotation.writeRoles()) {
             writeRoles.add(new Role(roleName));
         }
-
-        ManagementInfo info = new ManagementInfo(name, group, description, type.getName(), readRoles, writeRoles);
+        String path = annotation.path();
+        ManagementInfo info = new ManagementInfo(name, group, path, description, type.getName(), readRoles, writeRoles);
         ManagementInfo overriden = componentType.getManagementInfo();
         if (overriden != null) {
             // A management annotation was defined in a super class - override it, preserving management operations

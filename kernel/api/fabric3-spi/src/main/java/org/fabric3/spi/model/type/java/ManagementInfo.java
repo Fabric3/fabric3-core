@@ -59,6 +59,7 @@ public class ManagementInfo extends ModelObject {
     private static final long serialVersionUID = 8421549578785177167L;
 
     private String name;
+    private String path;
     private String group;
     private String description;
     private String managementClass;
@@ -72,13 +73,15 @@ public class ManagementInfo extends ModelObject {
      *
      * @param name        the management name of this implementation
      * @param group       the management group of this implementation
+     * @param path        the resource path
      * @param description the management description of this implementation
      * @param clazz       the management class
      * @param readRoles   roles allowed access to getter attributes
      * @param writeRoles  roles allowed access to setter attributes and operations
      */
-    public ManagementInfo(String name, String group, String description, String clazz, Set<Role> readRoles, Set<Role> writeRoles) {
+    public ManagementInfo(String name, String group, String path, String description, String clazz, Set<Role> readRoles, Set<Role> writeRoles) {
         this.name = name;
+        this.path = path;
         this.description = description;
         this.group = group;
         this.managementClass = clazz;
@@ -102,6 +105,15 @@ public class ManagementInfo extends ModelObject {
      */
     public String getGroup() {
         return group;
+    }
+
+    /**
+     * Returns the management resource path.
+     *
+     * @return the management resource path
+     */
+    public String getPath() {
+        return path;
     }
 
     /**

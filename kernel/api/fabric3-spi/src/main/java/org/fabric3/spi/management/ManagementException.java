@@ -52,4 +52,8 @@ public class ManagementException extends Fabric3Exception {
     public ManagementException(Throwable cause) {
         super(cause);
     }
+
+    public ManagementException(String message) {
+        super(message);
+    }
 }

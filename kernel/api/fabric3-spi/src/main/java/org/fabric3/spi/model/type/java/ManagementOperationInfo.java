@@ -57,17 +57,23 @@ public class ManagementOperationInfo extends ModelObject {
     private static final long serialVersionUID = 138617917546848298L;
 
     private Signature signature;
+    private String path;
     private String description;
     private Set<Role> roles;
 
-    public ManagementOperationInfo(Signature signature, String description, Set<Role> roles) {
+    public ManagementOperationInfo(Signature signature, String path, String description, Set<Role> roles) {
         this.signature = signature;
+        this.path = path;
         this.description = description;
         this.roles = roles;
     }
 
     public Signature getSignature() {
         return signature;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getDescription() {
