@@ -124,6 +124,7 @@ public class JMXManagementExtension implements ManagementExtension {
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             Object managementBean;
             boolean isStandardMBean = isStandardMBean(instance);
+            String path = "";
             if (isStandardMBean) {
                 // use the instance if it is a Standard MBean
                 managementBean = instance;
@@ -144,6 +145,7 @@ public class JMXManagementExtension implements ManagementExtension {
                     for (String roleName : writeRoleNames) {
                         writeRoles.add(new Role(roleName));
                     }
+                    path = annotation.path();
                 }
 
                 if (readRoles.isEmpty()) {
@@ -153,7 +155,7 @@ public class JMXManagementExtension implements ManagementExtension {
                 if (writeRoles.isEmpty()) {
                     writeRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
                 }
-                ManagementInfo info = new ManagementInfo(name, group, description, clazz.getName(), readRoles, writeRoles);
+                ManagementInfo info = new ManagementInfo(name, group, path, description, clazz.getName(), readRoles, writeRoles);
                 introspect(instance, info);
                 managementBean = createOptimizedMBean(info, factory, loader);
             }
@@ -240,7 +242,8 @@ public class JMXManagementExtension implements ManagementExtension {
             for (String name : roleNames) {
                 roles.add(new Role(name));
             }
-            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, description, roles);
+            String path = annotation.path();
+            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, description, roles);
             info.addOperation(operationInfo);
         }
 

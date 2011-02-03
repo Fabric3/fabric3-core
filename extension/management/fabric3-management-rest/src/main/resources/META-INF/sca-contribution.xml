@@ -12,13 +12,9 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
-              f3:description="Management extension">
-    <f3:requires.capability name="rest" loaded="true"/>
+              f3:description="REST management extension">
     <f3:provides.capability name="management"/>
-
     <import.java package="org.fabric3.spi.*" version="1.8"/>
-    <import.java package="org.fabric3.binding.rs.runtime" version="1.8"/>
-
-    <deployable composite="f3:ManagementControllerExtension" modes="controller vm"/>
+    <deployable composite="f3:ManagementExtension"/>
 
 </contribution>

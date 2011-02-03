@@ -23,6 +23,13 @@ Public License. See the accompanying license file for details.
 
     <dependencies>
         <dependency>
+            <groupId>${servlet.groupId}</groupId>
+            <artifactId>${servlet.artifactId}</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
             <version>${jax.rs.version}</version>

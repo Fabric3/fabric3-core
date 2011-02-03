@@ -35,48 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management;
-
-import java.net.URI;
-
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.binding.rs.runtime.RsContainerManager;
-import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementExtension;
-import org.fabric3.spi.model.type.java.ManagementInfo;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+package org.fabric3.management.rest;
 
 /**
+ * Utilities for converting method names to resource metadata.
+ *
  * @version $Rev$ $Date$
  */
-public class RestfulManagementService implements ManagementExtension {
-    private RsContainerManager containerManager;
+public final class MethodHelper {
 
-    public RestfulManagementService(@Reference RsContainerManager containerManager) {
-        this.containerManager = containerManager;
+    private MethodHelper() {
     }
 
-    public String getType() {
-        return "fabric3.rest";
+    /**
+     * Converts a method name to a relative path.
+     *
+     * @param methodName the method name
+     * @return the relative path
+     */
+    public static String convertToPath(String methodName) {
+        if (methodName.length() > 6 && methodName.startsWith("delete") || (methodName.startsWith("create"))) {
+            return "/" + methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
+        } else if (methodName.length() > 3 && (methodName.startsWith("set") || (methodName.startsWith("get")))) {
+            return "/" + methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+        } else if (methodName.length() > 2 && (methodName.startsWith("is"))) {
+            return "/" + methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
+        } else {
+            return "/" + methodName;
+        }
     }
 
-    public void export(URI componentUri, ManagementInfo info, ObjectFactory<?> objectFactory, ClassLoader classLoader) throws ManagementException {
+    /**
+     * Converts a method name to an HTTP verb, e.g. GET, PUT, DELETE, POST.
+     *
+     * @param methodName the method name
+     * @return the HTTP verb
+     */
+    public static Verb convertToVerb(String methodName) {
+        if (methodName.startsWith("delete")) {
+            return Verb.DELETE;
+        } else if (methodName.startsWith("set")) {
+            return Verb.POST;
+        } else if (methodName.startsWith("create")) {
+            return Verb.PUT;
+        } else {
+            return Verb.GET;
+        }
     }
 
-    public void export(String name, String group, String description, Object instance) throws ManagementException {
-//        Class<? extends Object> clazz = instance.getClass();
-//        RsContainer container = new RsContainer(clazz.getClassLoader());
-//        container.addResource(clazz, instance);
-//        containerManager.register(URI.create(name), container);
-
-    }
-
-    public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
-
-    }
-
-    public void remove(String name, String group) throws ManagementException {
-
-    }
 }
