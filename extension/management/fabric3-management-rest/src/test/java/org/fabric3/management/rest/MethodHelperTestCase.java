@@ -37,50 +37,50 @@
 */
 package org.fabric3.management.rest;
 
+import junit.framework.TestCase;
+
 /**
  * Utilities for converting method names to resource metadata.
  *
  * @version $Rev$ $Date$
  */
-public final class MethodHelper {
+public final class MethodHelperTestCase extends TestCase {
 
-    private MethodHelper() {
+    public void testDeleteConvertToPath() throws Exception {
+        assertEquals("/foo", MethodHelper.convertToPath("deleteFoo"));
+        assertEquals("/delete", MethodHelper.convertToPath("delete"));
     }
 
-    /**
-     * Converts a method name to a relative path.
-     *
-     * @param methodName the method name
-     * @return the relative path
-     */
-    public static String convertToPath(String methodName) {
-        if (methodName.length() > 7 && (methodName.startsWith("delete") || (methodName.startsWith("create")))) {
-            return "/" + methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
-        } else if (methodName.length() > 3 && (methodName.startsWith("set") || (methodName.startsWith("get")))) {
-            return "/" + methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
-        } else if (methodName.length() > 2 && (methodName.startsWith("is"))) {
-            return "/" + methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
-        } else {
-            return "/" + methodName;
-        }
+    public void testCreateConvertToPath() throws Exception {
+        assertEquals("/foo", MethodHelper.convertToPath("createFoo"));
+        assertEquals("/create", MethodHelper.convertToPath("create"));
     }
 
-    /**
-     * Converts a method name to an HTTP verb, e.g. GET, PUT, DELETE, POST.
-     *
-     * @param methodName the method name
-     * @return the HTTP verb
-     */
-    public static Verb convertToVerb(String methodName) {
-        if (methodName.startsWith("delete")) {
-            return Verb.DELETE;
-        } else if (methodName.startsWith("set")) {
-            return Verb.POST;
-        } else if (methodName.startsWith("create")) {
-            return Verb.PUT;
-        } else {
-            return Verb.GET;
-        }
+    public void testGetConvertToPath() throws Exception {
+        assertEquals("/foo", MethodHelper.convertToPath("getFoo"));
+        assertEquals("/get", MethodHelper.convertToPath("get"));
+    }
+
+    public void testSetConvertToPath() throws Exception {
+        assertEquals("/foo", MethodHelper.convertToPath("setFoo"));
+        assertEquals("/set", MethodHelper.convertToPath("set"));
+    }
+
+    public void testIsConvertToPath() throws Exception {
+        assertEquals("/foo", MethodHelper.convertToPath("isFoo"));
+        assertEquals("/is", MethodHelper.convertToPath("is"));
+    }
+
+    public void testRandomConvertToPath() throws Exception {
+        assertEquals("/something", MethodHelper.convertToPath("something"));
+    }
+
+    public void testConvertToVerb() throws Exception {
+        assertEquals(Verb.DELETE, MethodHelper.convertToVerb("deleteFoo"));
+        assertEquals(Verb.GET, MethodHelper.convertToVerb("getFoo"));
+        assertEquals(Verb.POST, MethodHelper.convertToVerb("setFoo"));
+        assertEquals(Verb.PUT, MethodHelper.convertToVerb("createFoo"));
+        assertEquals(Verb.GET, MethodHelper.convertToVerb("something"));
     }
 
 }
