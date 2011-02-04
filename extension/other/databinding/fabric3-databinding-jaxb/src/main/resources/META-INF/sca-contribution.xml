@@ -22,4 +22,5 @@ Public License. See the accompanying license file for details.
 
     <deployable composite="f3:DataBindingJAXBExtension"/>
     <f3:provides name="jaxb"/>
+    <f3:provides.capability name="jaxb"/>
 </contribution>

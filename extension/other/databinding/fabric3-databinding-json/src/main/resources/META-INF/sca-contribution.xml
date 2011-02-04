@@ -16,4 +16,5 @@ Public License. See the accompanying license file for details.
     <export.java package="org.codehaus.jackson.*" version="1.5.5"/>
     <deployable composite="f3:JsonDatabindingExtension"/>
     <f3:provides name="json"/>
+    <f3:provides.capability name="json"/>
 </contribution>

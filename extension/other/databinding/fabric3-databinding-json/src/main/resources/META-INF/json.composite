@@ -27,4 +27,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.databinding.json.transform.Stream2ObjectJsonTransformerFactory"/>
     </component>
 
+    <component name="Object2BytesJsonTransformerFactory">
+        <f3:implementation.system class="org.fabric3.databinding.json.transform.Object2BytesJsonTransformerFactory"/>
+    </component>
+
 </composite>
