@@ -35,12 +35,9 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.runtime;
 
 import junit.framework.TestCase;
-
-import org.fabric3.management.rest.runtime.MethodHelper;
-import org.fabric3.management.rest.runtime.Verb;
 
 /**
  * Utilities for converting method names to resource metadata.

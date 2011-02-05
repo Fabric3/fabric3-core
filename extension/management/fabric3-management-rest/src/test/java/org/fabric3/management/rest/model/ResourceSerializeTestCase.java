@@ -39,77 +39,39 @@ package org.fabric3.management.rest.model;
 
 import java.net.URL;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import junit.framework.TestCase;
+import org.codehaus.jackson.jaxrs.Annotations;
+import org.codehaus.jackson.jaxrs.MapperConfigurator;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * A link to a resource.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
+ * @version $Rev: 9927 $ $Date: 2011-02-05 08:55:34 +0100 (Sat, 05 Feb 2011) $
  */
-public class Link {
-    @JsonProperty
-    private String name;
-    @JsonProperty
-    private String type;
-    @JsonProperty
-    private String rel;
-    @JsonProperty
-    private URL href;
+public final class ResourceSerializeTestCase extends TestCase {
+    private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
+    private ObjectMapper mapper;
 
-    /**
-     * Constructor for databinding.
-     */
-    protected Link() {
+    public void testResourceSerialize() throws Exception {
+        URL href = new URL("http://foo.com/resource");
+        Link link = new Link("self", "self", "self", href);
+        Resource resource = new Resource(link);
+        resource.setProperty("foo", "bar");
+        String serialized = mapper.writeValueAsString(resource);
+
+        Resource deserialized = mapper.readValue(serialized, Resource.class);
+        Link deserializedLink = deserialized.getSelfLink();
+        assertEquals("self", deserializedLink.getName());
+        assertEquals("self", deserializedLink.getRel());
+        assertEquals("self", deserializedLink.getType());
+        assertEquals(href, deserializedLink.getHref());
+        assertEquals(1,deserialized.getProperties().size());
+        assertEquals("bar",deserialized.getProperties().get("foo"));
     }
 
-    /**
-     * Constructor.
-     *
-     * @param name the link name
-     * @param type the type of link
-     * @param rel  the relationship the linked resource has to the enclosing entity
-     * @param href the linked resource URL
-     */
-    public Link(String name, String type, String rel, URL href) {
-        this.name = name;
-        this.type = type;
-        this.rel = rel;
-        this.href = href;
-    }
-
-    /**
-     * Returns the link name.
-     *
-     * @return the link name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the link type.
-     *
-     * @return the link type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Returns the link relationship.
-     *
-     * @return the link relationship
-     */
-    public String getRel() {
-        return rel;
-    }
-
-    /**
-     * Returns the linked resource URL.
-     *
-     * @return the linked resource URL
-     */
-    public URL getHref() {
-        return href;
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        MapperConfigurator configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
+        mapper = configurator.getDefaultMapper();
     }
 }

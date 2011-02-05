@@ -38,6 +38,13 @@
 package org.fabric3.management.rest.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.codehaus.jackson.annotate.JsonAnyGetter;
+import org.codehaus.jackson.annotate.JsonAnySetter;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 
 /**
  * A resource that is to be serialized to a specific representation such as JSON.
@@ -47,13 +54,51 @@ import java.io.Serializable;
 public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;
 
+    @JsonProperty
     private Link selfLink;
+    private Map<String, Object> properties;
+
+    /**
+     * Constructor for databinding.
+     */
+    protected Resource() {
+    }
 
     public Resource(Link selfLink) {
         this.selfLink = selfLink;
     }
 
+    /**
+     * Returns the URL for this resource.
+     *
+     * @return the URL for this resource
+     */
     public Link getSelfLink() {
         return selfLink;
     }
+
+    /**
+     * Returns extensible properties for the resource.
+     *
+     * @return extensible properties for the resource
+     */
+    @JsonAnyGetter
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    /**
+     * Sets an extensible property for the resource.
+     *
+     * @param key   the property name
+     * @param value the property value
+     */
+    @JsonAnySetter
+    public void setProperty(String key, Object value) {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        properties.put(key, value);
+    }
+
 }
