@@ -35,13 +35,14 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.management.rest.runtime.ManagedArtifactMapping;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -52,10 +53,10 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class RootResource {
+public class RootResourceInvoker {
     List<ManagedArtifactMapping> mappings;
 
-    public RootResource(List<ManagedArtifactMapping> mappings) {
+    public RootResourceInvoker(List<ManagedArtifactMapping> mappings) {
         this.mappings = mappings;
     }
 

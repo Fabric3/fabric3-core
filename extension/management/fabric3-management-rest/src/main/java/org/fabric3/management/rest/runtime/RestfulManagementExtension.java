@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.runtime;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.model.RootResourceInvoker;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.management.ManagementException;
@@ -89,7 +90,7 @@ public class RestfulManagementExtension implements ManagementExtension {
 
     @Init()
     public void init() throws NoSuchMethodException {
-        rootResourceMethod = RootResource.class.getMethod("invoke");
+        rootResourceMethod = RootResourceInvoker.class.getMethod("invoke");
         servletHost.registerMapping(MANAGEMENT_PATH, managementServlet);
     }
 
@@ -210,14 +211,14 @@ public class RestfulManagementExtension implements ManagementExtension {
      */
     private void createRootResource(String root, List<ManagedArtifactMapping> mappings) throws ManagementException {
         try {
-            RootResource resource = new RootResource(mappings);
+            RootResourceInvoker invoker = new RootResourceInvoker(mappings);
             List<Method> methods = new ArrayList<Method>();
             for (ManagedArtifactMapping mapping : mappings) {
                 methods.add(mapping.getMethod());
             }
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
-            ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, Verb.GET, rootResourceMethod, resource, jsonPair, jaxbPair);
+            ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
             managementServlet.register(mapping);
         } catch (TransformationException e) {
             throw new ManagementException(e);

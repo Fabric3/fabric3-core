@@ -35,17 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.model;
+
+import java.net.URL;
 
 /**
- * The HTTP verbs management operations may be mapped to.
+ * A link to a resource.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public enum Verb {
-    GET,
-    POST,
-    PUT,
-    DELETE
+public class Link {
+    private String name;
+    private String type;
+    private URL href;
 
+    public Link(String name, String type, URL href) {
+        this.name = name;
+        this.type = type;
+        this.href = href;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public URL getHref() {
+        return href;
+    }
 }

@@ -35,47 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.model;
 
-import java.io.InputStream;
-
-import org.fabric3.spi.transform.Transformer;
+import java.io.Serializable;
+import java.net.URL;
 
 /**
- * Transformers used to (de)serialize a request/response types.
+ * Resource data that is to be serialized to a specific representation such as JSON.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class TransformerPair {
-    private Transformer<InputStream, Object> deserializer;
-    private Transformer<Object, byte[]> serializer;
+public class Resource implements Serializable {
+    private static final long serialVersionUID = -7831162074975555876L;
 
-    /**
-     * Constructor.
-     *
-     * @param deserializer the transformer used to deserialize request types
-     * @param serializer   the transformer used to serialize response types
-     */
-    public TransformerPair(Transformer<InputStream, Object> deserializer, Transformer<Object, byte[]> serializer) {
-        this.deserializer = deserializer;
-        this.serializer = serializer;
+    private URL selfLink;
+
+    public Resource(URL selfLink) {
+        this.selfLink = selfLink;
     }
 
-    /**
-     * Returns the transformer used to deserialize request types.
-     *
-     * @return the transformer used to deserialize request types
-     */
-    public Transformer<InputStream, Object> getDeserializer() {
-        return deserializer;
-    }
-
-    /**
-     * Returns the transformer used to serialize response types.
-     *
-     * @return the transformer used to serialize response types
-     */
-    public Transformer<Object, byte[]> getSerializer() {
-        return serializer;
+    public URL getSelfLink() {
+        return selfLink;
     }
 }

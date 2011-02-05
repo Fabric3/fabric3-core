@@ -35,17 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
-
-import org.fabric3.spi.management.ManagementException;
+package org.fabric3.management.rest.runtime;
 
 /**
+ * Utilities for converting method names to resource metadata.
+ *
  * @version $Rev$ $Date$
  */
-public class DuplicateArtifactNameException extends ManagementException {
-    private static final long serialVersionUID = 1930062911837643976L;
+public final class MethodHelper {
 
-    public DuplicateArtifactNameException(String message) {
-        super(message);
+    private MethodHelper() {
     }
+
+    /**
+     * Converts a method name to a relative path.
+     *
+     * @param methodName the method name
+     * @return the relative path
+     */
+    public static String convertToPath(String methodName) {
+        if (methodName.length() > 7 && (methodName.startsWith("delete") || (methodName.startsWith("create")))) {
+            return "/" + methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
+        } else if (methodName.length() > 3 && (methodName.startsWith("set") || (methodName.startsWith("get")))) {
+            return "/" + methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+        } else if (methodName.length() > 2 && (methodName.startsWith("is"))) {
+            return "/" + methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
+        } else {
+            return "/" + methodName;
+        }
+    }
+
+    /**
+     * Converts a method name to an HTTP verb, e.g. GET, PUT, DELETE, POST.
+     *
+     * @param methodName the method name
+     * @return the HTTP verb
+     */
+    public static Verb convertToVerb(String methodName) {
+        if (methodName.startsWith("delete")) {
+            return Verb.DELETE;
+        } else if (methodName.startsWith("set")) {
+            return Verb.POST;
+        } else if (methodName.startsWith("create")) {
+            return Verb.PUT;
+        } else {
+            return Verb.GET;
+        }
+    }
+
 }

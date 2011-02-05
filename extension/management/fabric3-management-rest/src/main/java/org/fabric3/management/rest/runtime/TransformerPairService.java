@@ -35,52 +35,30 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.runtime;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.transform.TransformationException;
 
 /**
- * Utilities for converting method names to resource metadata.
+ * Returns a transformer pair for (de)serializing request/response types.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public final class MethodHelper {
-
-    private MethodHelper() {
-    }
+public interface TransformerPairService {
 
     /**
-     * Converts a method name to a relative path.
+     * Returns a transformer pair for serializing and deserializing request/response types for methods on a managed artifact.
      *
-     * @param methodName the method name
-     * @return the relative path
+     * @param methods    the methods
+     * @param inputType  the input (serialized) type
+     * @param outputType the type responses should be serialized to
+     * @return the pair
+     * @throws TransformationException if an error occurs returning the pair
      */
-    public static String convertToPath(String methodName) {
-        if (methodName.length() > 7 && (methodName.startsWith("delete") || (methodName.startsWith("create")))) {
-            return "/" + methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
-        } else if (methodName.length() > 3 && (methodName.startsWith("set") || (methodName.startsWith("get")))) {
-            return "/" + methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
-        } else if (methodName.length() > 2 && (methodName.startsWith("is"))) {
-            return "/" + methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
-        } else {
-            return "/" + methodName;
-        }
-    }
-
-    /**
-     * Converts a method name to an HTTP verb, e.g. GET, PUT, DELETE, POST.
-     *
-     * @param methodName the method name
-     * @return the HTTP verb
-     */
-    public static Verb convertToVerb(String methodName) {
-        if (methodName.startsWith("delete")) {
-            return Verb.DELETE;
-        } else if (methodName.startsWith("set")) {
-            return Verb.POST;
-        } else if (methodName.startsWith("create")) {
-            return Verb.PUT;
-        } else {
-            return Verb.GET;
-        }
-    }
+    TransformerPair getTransformerPair(List<Method> methods, DataType<?> inputType, DataType<?> outputType) throws TransformationException;
 
 }

@@ -35,46 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest;
+package org.fabric3.management.rest.runtime;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * @version $Rev$ $Date$
+ * Transformers used to (de)serialize a request/response types.
+ *
+ * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class TransformerPairServiceImpl implements TransformerPairService {
-    private static final JavaClass<?> JAVA_TYPE = new JavaClass<Object>(Object.class);
+public class TransformerPair {
+    private Transformer<InputStream, Object> deserializer;
+    private Transformer<Object, byte[]> serializer;
 
-    private TransformerRegistry registry;
-
-    public TransformerPairServiceImpl(@Reference TransformerRegistry registry) {
-        this.registry = registry;
+    /**
+     * Constructor.
+     *
+     * @param deserializer the transformer used to deserialize request types
+     * @param serializer   the transformer used to serialize response types
+     */
+    public TransformerPair(Transformer<InputStream, Object> deserializer, Transformer<Object, byte[]> serializer) {
+        this.deserializer = deserializer;
+        this.serializer = serializer;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public TransformerPair getTransformerPair(List<Method> methods, DataType<?> inputType, DataType<?> outputType) throws TransformationException {
-        List<Class<?>> list = new ArrayList<Class<?>>();
-        for (Method method : methods) {
-            list.addAll(Arrays.asList(method.getParameterTypes()));
-            list.addAll(Arrays.asList(method.getExceptionTypes()));
-            list.add(method.getReturnType());
-        }
-        Transformer<InputStream, Object> deserializer =
-                (Transformer<InputStream, Object>) registry.getTransformer(inputType, JAVA_TYPE, list, list);
-        Transformer<Object, byte[]> serializer = (Transformer<Object, byte[]>) registry.getTransformer(JAVA_TYPE, outputType, list, list);
-        return new TransformerPair(deserializer, serializer);
+    /**
+     * Returns the transformer used to deserialize request types.
+     *
+     * @return the transformer used to deserialize request types
+     */
+    public Transformer<InputStream, Object> getDeserializer() {
+        return deserializer;
     }
 
+    /**
+     * Returns the transformer used to serialize response types.
+     *
+     * @return the transformer used to serialize response types
+     */
+    public Transformer<Object, byte[]> getSerializer() {
+        return serializer;
+    }
 }

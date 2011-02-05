@@ -39,6 +39,9 @@ package org.fabric3.management.rest;
 
 import junit.framework.TestCase;
 
+import org.fabric3.management.rest.runtime.MethodHelper;
+import org.fabric3.management.rest.runtime.Verb;
+
 /**
  * Utilities for converting method names to resource metadata.
  *

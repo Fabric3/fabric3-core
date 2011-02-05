@@ -15,11 +15,11 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <component name="RestfulManagementExtension">
-        <f3:implementation.system class="org.fabric3.management.rest.RestfulManagementExtension"/>
+        <f3:implementation.system class="org.fabric3.management.rest.runtime.RestfulManagementExtension"/>
     </component>
 
     <component name="TransformerPairService">
-        <f3:implementation.system class="org.fabric3.management.rest.TransformerPairServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.management.rest.runtime.TransformerPairServiceImpl"/>
     </component>
 
 </composite>
