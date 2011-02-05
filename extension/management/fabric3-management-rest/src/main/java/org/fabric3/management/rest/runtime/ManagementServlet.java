@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.management.rest.Constants;
+import org.fabric3.management.rest.model.Resource;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -201,7 +202,14 @@ public class ManagementServlet extends HttpServlet {
         }
         ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
         try {
-            byte[] output = mapping.getJsonPair().getSerializer().transform(payload, loader);
+            Resource resource;
+            if (payload instanceof Resource) {
+                resource = (Resource) payload;
+            } else {
+                resource = new Resource(null);
+                resource.setProperty("name", payload);
+            }
+            byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
             response.getOutputStream().write(output);
         } catch (TransformationException e) {
             throw new IOException(e);

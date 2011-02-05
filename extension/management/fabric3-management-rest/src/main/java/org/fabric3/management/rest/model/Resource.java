@@ -61,7 +61,7 @@ public class Resource implements Serializable {
     /**
      * Constructor for databinding.
      */
-    protected Resource() {
+    private Resource() {
     }
 
     public Resource(Link selfLink) {

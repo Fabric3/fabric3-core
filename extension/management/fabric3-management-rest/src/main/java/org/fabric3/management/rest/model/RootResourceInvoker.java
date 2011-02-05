@@ -38,9 +38,7 @@
 package org.fabric3.management.rest.model;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.fabric3.management.rest.runtime.ManagedArtifactMapping;
 import org.fabric3.spi.invocation.WorkContext;
@@ -60,16 +58,16 @@ public class RootResourceInvoker {
         this.mappings = mappings;
     }
 
-    public Map<String, Object> invoke() {
+    public Resource invoke() {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
-            Map<String, Object> response = new HashMap<String, Object>();
+            Resource resource = new Resource(null);
             for (ManagedArtifactMapping mapping : mappings) {
                 Object object = invoke(mapping);
-                response.put(mapping.getPath(), object);
+                resource.setProperty(mapping.getPath(), object);
             }
-            return response;
+            return resource;
         } finally {
             WorkContextTunnel.setThreadWorkContext(old);
         }
