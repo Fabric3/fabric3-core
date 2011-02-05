@@ -38,10 +38,12 @@
 package org.fabric3.management.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,15 +52,16 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
 
 /**
+ * Responsible for dispatching requests to a managed artifact.
+ *
  * @version $Rev$ $Date$
  */
 public class ManagementServlet extends HttpServlet {
     private static final long serialVersionUID = 5554150494161533656L;
-
-    public final static String APPLICATION_JSON = "application/json";
-    public final static String APPLICATION_XML = "application/xml";
 
     private Map<String, ManagedArtifactMapping> getMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
     private Map<String, ManagedArtifactMapping> postMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
@@ -129,6 +132,7 @@ public class ManagementServlet extends HttpServlet {
             throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
         }
         mappings.put(path, mapping);
+        System.out.println("--->" + path);
     }
 
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -155,11 +159,11 @@ public class ManagementServlet extends HttpServlet {
         Object[] params = null;
         if (mapping.getMethod().getParameterTypes().length > 0) {
             // avoid derserialization if the method does not take parameters
-            params = deserialize(request);
+            params = deserialize(request, mapping);
         }
         Object ret = invoke(mapping, params);
         if (ret != null) {
-            serialize(ret, request, response);
+            serialize(ret, request, response, mapping);
         }
     }
 
@@ -167,19 +171,40 @@ public class ManagementServlet extends HttpServlet {
         return true;
     }
 
-    private Object[] deserialize(HttpServletRequest request) {
-        if (APPLICATION_JSON.equals(request.getContentType())) {
-
-        } else if (APPLICATION_XML.equals(request.getContentType())) {
-
+    private Object[] deserialize(HttpServletRequest request, ManagedArtifactMapping mapping) throws IOException {
+        Transformer<InputStream, Object> transformer;
+        if (Constants.APPLICATION_XML.equals(request.getContentType())) {
+            transformer = mapping.getJaxbPair().getDeserializer();
         } else {
-            // TODO throw illegal content type
+            // default to JSON
+            transformer = mapping.getJsonPair().getDeserializer();
         }
-        return new Object[0];
+
+        ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
+        ServletInputStream stream = request.getInputStream();
+        try {
+            return new Object[]{transformer.transform(stream, loader)};
+        } catch (TransformationException e) {
+            throw new IOException(e);
+        }
     }
 
-    private void serialize(Object payload, HttpServletRequest request, HttpServletResponse response) {
-        // TODO
+    private void serialize(Object payload, HttpServletRequest request, HttpServletResponse response, ManagedArtifactMapping mapping)
+            throws IOException {
+        String[] contentTypes;
+        String contentTypeValue = request.getHeader("Accept");
+        if (contentTypeValue == null) {
+            contentTypes = new String[]{Constants.APPLICATION_JSON};
+        } else {
+            contentTypes = contentTypeValue.split(",");
+        }
+        ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
+        try {
+            byte[] output = mapping.getJsonPair().getSerializer().transform(payload, loader);
+            response.getOutputStream().write(output);
+        } catch (TransformationException e) {
+            throw new IOException(e);
+        }
     }
 
     private Object invoke(ManagedArtifactMapping mapping, Object[] params) {

@@ -49,6 +49,8 @@ public class ManagedArtifactMapping {
     private Verb verb;
     private Method method;
     private Object instance;
+    private TransformerPair jsonPair;
+    private TransformerPair jaxbPair;
 
     /**
      * Constructor.
@@ -57,12 +59,16 @@ public class ManagedArtifactMapping {
      * @param verb     the HTTP verb the management operation is mapped to
      * @param method   the management operation
      * @param instance the managed artifact
+     * @param jsonPair the transformer pair used to (de)serialize JSON request/response types
+     * @param jaxbPair the transformer pair used to (de)serialize XML request/response types
      */
-    public ManagedArtifactMapping(String path, Verb verb, Method method, Object instance) {
+    public ManagedArtifactMapping(String path, Verb verb, Method method, Object instance, TransformerPair jsonPair, TransformerPair jaxbPair) {
         this.path = path;
         this.verb = verb;
         this.method = method;
         this.instance = instance;
+        this.jsonPair = jsonPair;
+        this.jaxbPair = jaxbPair;
     }
 
     /**
@@ -99,5 +105,23 @@ public class ManagedArtifactMapping {
      */
     public Object getInstance() {
         return instance;
+    }
+
+    /**
+     * Returns the pair for (de)serializing input and output parameters using a JSON representation.
+     *
+     * @return the pair for (de)serializing input and output parameters
+     */
+    public TransformerPair getJsonPair() {
+        return jsonPair;
+    }
+
+    /**
+     * Returns the pair for (de)serializing input and output parameters using an XML representation.
+     *
+     * @return the pair for (de)serializing input and output parameters
+     */
+    public TransformerPair getJaxbPair() {
+        return jaxbPair;
     }
 }
