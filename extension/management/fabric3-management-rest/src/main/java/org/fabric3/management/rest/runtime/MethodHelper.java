@@ -55,13 +55,13 @@ public final class MethodHelper {
      */
     public static String convertToPath(String methodName) {
         if (methodName.length() > 7 && (methodName.startsWith("delete") || (methodName.startsWith("create")))) {
-            return "/" + methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
+            return methodName.substring(6, 7).toLowerCase() + methodName.substring(7);
         } else if (methodName.length() > 3 && (methodName.startsWith("set") || (methodName.startsWith("get")))) {
-            return "/" + methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+            return methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
         } else if (methodName.length() > 2 && (methodName.startsWith("is"))) {
-            return "/" + methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
+            return methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
         } else {
-            return "/" + methodName;
+            return methodName;
         }
     }
 

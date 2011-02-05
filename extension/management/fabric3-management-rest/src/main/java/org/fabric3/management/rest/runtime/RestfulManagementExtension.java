@@ -192,14 +192,13 @@ public class RestfulManagementExtension implements ManagementExtension {
                                                  TransformerPair jsonPair,
                                                  TransformerPair jaxbPair) {
         String methodName = method.getName();
-        String pathInfo;
+        String rootPath;
         if (path.length() == 0) {
-            pathInfo = root + MethodHelper.convertToPath(methodName);
-        } else {
-            pathInfo = root + path;
+            path = MethodHelper.convertToPath(methodName);
         }
+        rootPath = root + "/" + path;
         Verb verb = MethodHelper.convertToVerb(methodName);
-        return new ManagedArtifactMapping(pathInfo, verb, method, instance, jsonPair, jaxbPair);
+        return new ManagedArtifactMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair);
     }
 
     /**
@@ -218,7 +217,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             }
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
-            ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
+            ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
             managementServlet.register(mapping);
         } catch (TransformationException e) {
             throw new ManagementException(e);

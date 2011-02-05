@@ -46,6 +46,7 @@ import java.lang.reflect.Method;
  */
 public class ManagedArtifactMapping {
     private String path;
+    String relativePath;
     private Verb verb;
     private Method method;
     private Object instance;
@@ -55,15 +56,24 @@ public class ManagedArtifactMapping {
     /**
      * Constructor.
      *
-     * @param path     the root resource path of the managed artifact
-     * @param verb     the HTTP verb the management operation is mapped to
-     * @param method   the management operation
-     * @param instance the managed artifact
-     * @param jsonPair the transformer pair used to (de)serialize JSON request/response types
-     * @param jaxbPair the transformer pair used to (de)serialize XML request/response types
+     * @param path         the resource path of the managed artifact relative to the base management URL
+     * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
+     *                     resource, the path will be relative to the base management URL.
+     * @param verb         the HTTP verb the management operation is mapped to
+     * @param method       the management operation
+     * @param instance     the managed artifact
+     * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
+     * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
      */
-    public ManagedArtifactMapping(String path, Verb verb, Method method, Object instance, TransformerPair jsonPair, TransformerPair jaxbPair) {
+    public ManagedArtifactMapping(String path,
+                                  String relativePath,
+                                  Verb verb,
+                                  Method method,
+                                  Object instance,
+                                  TransformerPair jsonPair,
+                                  TransformerPair jaxbPair) {
         this.path = path;
+        this.relativePath = relativePath;
         this.verb = verb;
         this.method = method;
         this.instance = instance;
@@ -72,12 +82,22 @@ public class ManagedArtifactMapping {
     }
 
     /**
-     * Returns the path relative to the management servlet the operation should be mapped to.
+     * Returns the path relative to the base management URL the operation should be mapped to.
      *
-     * @return the path relative to the management servlet the operation should be mapped to.
+     * @return the path relative to the base management URL the operation should be mapped to.
      */
     public String getPath() {
         return path;
+    }
+
+    /**
+     * Returns the path relative to its containing resource.  If the managed artifact is a top-level resource, the path will be relative to the base
+     * management URL.
+     *
+     * @return the path relative to its containing resource.
+     */
+    public String getRelativePath() {
+        return relativePath;
     }
 
     /**

@@ -47,32 +47,32 @@ import junit.framework.TestCase;
 public final class MethodHelperTestCase extends TestCase {
 
     public void testDeleteConvertToPath() throws Exception {
-        assertEquals("/foo", MethodHelper.convertToPath("deleteFoo"));
-        assertEquals("/delete", MethodHelper.convertToPath("delete"));
+        assertEquals("foo", MethodHelper.convertToPath("deleteFoo"));
+        assertEquals("delete", MethodHelper.convertToPath("delete"));
     }
 
     public void testCreateConvertToPath() throws Exception {
-        assertEquals("/foo", MethodHelper.convertToPath("createFoo"));
-        assertEquals("/create", MethodHelper.convertToPath("create"));
+        assertEquals("foo", MethodHelper.convertToPath("createFoo"));
+        assertEquals("create", MethodHelper.convertToPath("create"));
     }
 
     public void testGetConvertToPath() throws Exception {
-        assertEquals("/foo", MethodHelper.convertToPath("getFoo"));
-        assertEquals("/get", MethodHelper.convertToPath("get"));
+        assertEquals("foo", MethodHelper.convertToPath("getFoo"));
+        assertEquals("get", MethodHelper.convertToPath("get"));
     }
 
     public void testSetConvertToPath() throws Exception {
-        assertEquals("/foo", MethodHelper.convertToPath("setFoo"));
-        assertEquals("/set", MethodHelper.convertToPath("set"));
+        assertEquals("foo", MethodHelper.convertToPath("setFoo"));
+        assertEquals("set", MethodHelper.convertToPath("set"));
     }
 
     public void testIsConvertToPath() throws Exception {
-        assertEquals("/foo", MethodHelper.convertToPath("isFoo"));
-        assertEquals("/is", MethodHelper.convertToPath("is"));
+        assertEquals("foo", MethodHelper.convertToPath("isFoo"));
+        assertEquals("is", MethodHelper.convertToPath("is"));
     }
 
     public void testRandomConvertToPath() throws Exception {
-        assertEquals("/something", MethodHelper.convertToPath("something"));
+        assertEquals("something", MethodHelper.convertToPath("something"));
     }
 
     public void testConvertToVerb() throws Exception {

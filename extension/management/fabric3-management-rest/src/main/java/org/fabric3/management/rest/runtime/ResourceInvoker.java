@@ -72,7 +72,7 @@ public class ResourceInvoker {
             Resource resource = new Resource(selfLink);
             for (ManagedArtifactMapping mapping : mappings) {
                 Object object = invoke(mapping);
-                resource.setProperty(mapping.getPath(), object);
+                resource.setProperty(mapping.getRelativePath(), object);
             }
             return resource;
         } catch (MalformedURLException e) {
