@@ -38,23 +38,22 @@
 package org.fabric3.management.rest.model;
 
 import java.io.Serializable;
-import java.net.URL;
 
 /**
- * Resource data that is to be serialized to a specific representation such as JSON.
+ * A resource that is to be serialized to a specific representation such as JSON.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;
 
-    private URL selfLink;
+    private Link selfLink;
 
-    public Resource(URL selfLink) {
+    public Resource(Link selfLink) {
         this.selfLink = selfLink;
     }
 
-    public URL getSelfLink() {
+    public Link getSelfLink() {
         return selfLink;
     }
 }

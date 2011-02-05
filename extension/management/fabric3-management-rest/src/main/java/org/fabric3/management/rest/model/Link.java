@@ -47,11 +47,21 @@ import java.net.URL;
 public class Link {
     private String name;
     private String type;
+    private String rel;
     private URL href;
 
-    public Link(String name, String type, URL href) {
+    /**
+     * Constructor.
+     *
+     * @param name the link name
+     * @param type the type of link
+     * @param rel  the relationship the linked resource has to the enclosing entity
+     * @param href the linked resource URL
+     */
+    public Link(String name, String type, String rel, URL href) {
         this.name = name;
         this.type = type;
+        this.rel = rel;
         this.href = href;
     }
 
@@ -61,6 +71,10 @@ public class Link {
 
     public String getType() {
         return type;
+    }
+
+    public String getRel() {
+        return rel;
     }
 
     public URL getHref() {
