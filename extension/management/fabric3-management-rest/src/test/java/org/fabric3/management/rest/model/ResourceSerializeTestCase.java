@@ -53,7 +53,7 @@ public final class ResourceSerializeTestCase extends TestCase {
 
     public void testResourceSerialize() throws Exception {
         URL href = new URL("http://foo.com/resource");
-        Link link = new Link("self", "self", "self", href);
+        SelfLink link = new SelfLink(href);
         Resource resource = new Resource(link);
         resource.setProperty("foo", "bar");
         String serialized = mapper.writeValueAsString(resource);

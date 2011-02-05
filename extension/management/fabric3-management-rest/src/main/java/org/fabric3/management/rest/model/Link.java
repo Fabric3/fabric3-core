@@ -59,7 +59,7 @@ public class Link {
     /**
      * Constructor for databinding.
      */
-    private Link() {
+    protected Link() {
     }
 
     /**

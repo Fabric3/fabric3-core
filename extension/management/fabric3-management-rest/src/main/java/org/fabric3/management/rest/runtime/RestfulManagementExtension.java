@@ -43,6 +43,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
@@ -50,7 +51,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.management.rest.model.RootResourceInvoker;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.management.ManagementException;
@@ -90,7 +90,7 @@ public class RestfulManagementExtension implements ManagementExtension {
 
     @Init()
     public void init() throws NoSuchMethodException {
-        rootResourceMethod = RootResourceInvoker.class.getMethod("invoke");
+        rootResourceMethod = ResourceInvoker.class.getMethod("invoke", HttpServletRequest.class);
         servletHost.registerMapping(MANAGEMENT_PATH, managementServlet);
     }
 
@@ -211,7 +211,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      */
     private void createRootResource(String root, List<ManagedArtifactMapping> mappings) throws ManagementException {
         try {
-            RootResourceInvoker invoker = new RootResourceInvoker(mappings);
+            ResourceInvoker invoker = new ResourceInvoker(mappings);
             List<Method> methods = new ArrayList<Method>();
             for (ManagedArtifactMapping mapping : mappings) {
                 methods.add(mapping.getMethod());

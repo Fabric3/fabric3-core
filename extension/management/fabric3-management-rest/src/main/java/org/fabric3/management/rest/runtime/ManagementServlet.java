@@ -40,6 +40,7 @@ package org.fabric3.management.rest.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
@@ -50,6 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.management.rest.Constants;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -159,11 +161,12 @@ public class ManagementServlet extends HttpServlet {
             return;
         }
         Object[] params = null;
-        if (mapping.getMethod().getParameterTypes().length > 0) {
+        Class<?>[] types = mapping.getMethod().getParameterTypes();
+        if (types.length > 0) {
             // avoid derserialization if the method does not take parameters
             params = deserialize(request, mapping);
         }
-        Object ret = invoke(mapping, params);
+        Object ret = invoke(mapping, params, request);
         if (ret != null) {
             serialize(ret, request, response, mapping);
         }
@@ -174,6 +177,11 @@ public class ManagementServlet extends HttpServlet {
     }
 
     private Object[] deserialize(HttpServletRequest request, ManagedArtifactMapping mapping) throws IOException {
+        Class<?>[] types = mapping.getMethod().getParameterTypes();
+        if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
+            // if the parameter is HttpServletRequest, short-circuit deserialization
+            return new Object[]{request};
+        }
         Transformer<InputStream, Object> transformer;
         if (Constants.APPLICATION_XML.equals(request.getContentType())) {
             transformer = mapping.getJaxbPair().getDeserializer();
@@ -193,20 +201,22 @@ public class ManagementServlet extends HttpServlet {
 
     private void serialize(Object payload, HttpServletRequest request, HttpServletResponse response, ManagedArtifactMapping mapping)
             throws IOException {
-        String[] contentTypes;
-        String contentTypeValue = request.getHeader("Accept");
-        if (contentTypeValue == null) {
-            contentTypes = new String[]{Constants.APPLICATION_JSON};
-        } else {
-            contentTypes = contentTypeValue.split(",");
-        }
+//        String[] contentTypes;
+//        String contentTypeValue = request.getHeader("Accept");
+//        if (contentTypeValue == null) {
+//            contentTypes = new String[]{Constants.APPLICATION_JSON};
+//        } else {
+//            contentTypes = contentTypeValue.split(",");
+//        }
         ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
         try {
             Resource resource;
             if (payload instanceof Resource) {
                 resource = (Resource) payload;
             } else {
-                resource = new Resource(null);
+                URL url = new URL(request.getRequestURL().toString());
+                SelfLink link = new SelfLink(url);
+                resource = new Resource(link);
                 resource.setProperty("name", payload);
             }
             byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
@@ -216,7 +226,7 @@ public class ManagementServlet extends HttpServlet {
         }
     }
 
-    private Object invoke(ManagedArtifactMapping mapping, Object[] params) {
+    private Object invoke(ManagedArtifactMapping mapping, Object[] params, HttpServletRequest request) throws IOException {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {

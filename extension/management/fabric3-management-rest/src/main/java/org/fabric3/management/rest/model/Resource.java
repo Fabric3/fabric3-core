@@ -55,7 +55,7 @@ public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;
 
     @JsonProperty
-    private Link selfLink;
+    private SelfLink selfLink;
     private Map<String, Object> properties;
 
     /**
@@ -64,7 +64,7 @@ public class Resource implements Serializable {
     private Resource() {
     }
 
-    public Resource(Link selfLink) {
+    public Resource(SelfLink selfLink) {
         this.selfLink = selfLink;
     }
 
@@ -73,7 +73,7 @@ public class Resource implements Serializable {
      *
      * @return the URL for this resource
      */
-    public Link getSelfLink() {
+    public SelfLink getSelfLink() {
         return selfLink;
     }
 

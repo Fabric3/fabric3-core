@@ -37,59 +37,28 @@
 */
 package org.fabric3.management.rest.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import org.fabric3.management.rest.runtime.ManagedArtifactMapping;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.net.URL;
 
 /**
- * Collects and reports sub-resource information for a managed artifact.
+ * A resource self-link.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class RootResourceInvoker {
-    List<ManagedArtifactMapping> mappings;
+public class SelfLink extends Link {
 
-    public RootResourceInvoker(List<ManagedArtifactMapping> mappings) {
-        this.mappings = mappings;
+    /**
+     * Constructor for databinding.
+     */
+    private SelfLink() {
     }
 
-    public Resource invoke() {
-        WorkContext workContext = new WorkContext();
-        WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
-        try {
-            Resource resource = new Resource(null);
-            for (ManagedArtifactMapping mapping : mappings) {
-                Object object = invoke(mapping);
-                resource.setProperty(mapping.getPath(), object);
-            }
-            return resource;
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(old);
-        }
-    }
-
-    private Object invoke(ManagedArtifactMapping mapping) {
-        try {
-            Object instance = mapping.getInstance();
-            if (instance instanceof ObjectFactory) {
-                instance = ((ObjectFactory) instance).getInstance();
-            }
-            return mapping.getMethod().invoke(instance);
-        } catch (IllegalAccessException e) {
-            // TODO return error
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
-            // TODO return error
-            throw new AssertionError(e);
-        } catch (ObjectCreationException e) {
-            // TODO return error
-            throw new AssertionError(e);
-        }
+    /**
+     * Constructor.
+     *
+     * @param href the linked resource URL
+     */
+    public SelfLink(URL href) {
+        super("self", "self", "self", href);
     }
 
 }
