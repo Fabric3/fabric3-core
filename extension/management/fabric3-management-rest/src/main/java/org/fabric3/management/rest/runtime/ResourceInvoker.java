@@ -37,7 +37,6 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
