@@ -35,17 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.runtime;
+package org.fabric3.management.rest.spi;
 
 /**
- * The HTTP verbs management operations may be mapped to.
+ * Receives callbacks when resources are exported.
  *
  * @version $Rev$ $Date$
  */
-public enum Verb {
-    GET,
-    POST,
-    PUT,
-    DELETE
+public interface ResourceListener {
+
+    void onRootResourceExport(ManagedArtifactMapping mapping);
 
 }

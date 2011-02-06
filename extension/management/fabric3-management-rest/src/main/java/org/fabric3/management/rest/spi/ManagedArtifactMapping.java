@@ -35,9 +35,11 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.runtime;
+package org.fabric3.management.rest.spi;
 
 import java.lang.reflect.Method;
+
+import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
  * Maps an operation on a managed artifact to a path relative to the management servlet and REST verb.

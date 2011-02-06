@@ -51,6 +51,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.management.ManagementException;

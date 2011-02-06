@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.management.rest.spi.ManagedArtifactMapping;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
