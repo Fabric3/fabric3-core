@@ -44,6 +44,11 @@ package org.fabric3.management.rest.spi;
  */
 public interface ResourceListener {
 
+    /**
+     * Callback received when a root resource has been exported
+     *
+     * @param mapping the root resource mapping
+     */
     void onRootResourceExport(ManagedArtifactMapping mapping);
 
 }
