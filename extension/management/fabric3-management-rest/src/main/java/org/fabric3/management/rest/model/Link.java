@@ -47,10 +47,18 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class Link {
+
+    public static final String SELF_LINK = "self";
+    public static final String ALTERNATE_LINK = "alternate";
+    public static final String EDIT_LINK = "edit";
+    public static final String RELATED_LINK = "related";
+    public static final String PREVIOUS_LINK = "previous";
+    public static final String NEXT_LINK = "next";
+    public static final String FIRST_LINK = "first";
+    public static final String LAST_LINK = "last";
+
     @JsonProperty
     private String name;
-    @JsonProperty
-    private String type;
     @JsonProperty
     private String rel;
     @JsonProperty
@@ -66,13 +74,11 @@ public class Link {
      * Constructor.
      *
      * @param name the link name
-     * @param type the type of link
      * @param rel  the relationship the linked resource has to the enclosing entity
      * @param href the linked resource URL
      */
-    public Link(String name, String type, String rel, URL href) {
+    public Link(String name, String rel, URL href) {
         this.name = name;
-        this.type = type;
         this.rel = rel;
         this.href = href;
     }
@@ -84,15 +90,6 @@ public class Link {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the link type.
-     *
-     * @return the link type
-     */
-    public String getType() {
-        return type;
     }
 
     /**

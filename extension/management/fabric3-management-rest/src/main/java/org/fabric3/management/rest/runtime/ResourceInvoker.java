@@ -41,9 +41,11 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.invocation.WorkContext;
@@ -70,10 +72,16 @@ public class ResourceInvoker {
             URL url = new URL(request.getRequestURL().toString());
             SelfLink selfLink = new SelfLink(url);
             Resource resource = new Resource(selfLink);
+            List<Link> links = new ArrayList<Link>();
             for (ManagedArtifactMapping mapping : mappings) {
                 Object object = invoke(mapping);
-                resource.setProperty(mapping.getRelativePath(), object);
+                String relativePath = mapping.getRelativePath();
+                resource.setProperty(relativePath, object);
+                URL linkUrl = new URL(request.getRequestURL().append("/").append(relativePath).toString());
+                Link link = new Link(relativePath, Link.EDIT_LINK, linkUrl);
+                links.add(link);
             }
+            resource.setProperty("links", links);
             return resource;
         } catch (MalformedURLException e) {
             throw new IOException(e);

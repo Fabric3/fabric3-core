@@ -217,7 +217,7 @@ public class ManagementServlet extends HttpServlet {
                 URL url = new URL(request.getRequestURL().toString());
                 SelfLink link = new SelfLink(url);
                 resource = new Resource(link);
-                resource.setProperty("name", payload);
+                resource.setProperty("value", payload);
             }
             byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
             response.getOutputStream().write(output);

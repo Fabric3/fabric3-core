@@ -58,7 +58,7 @@ public class SelfLink extends Link {
      * @param href the linked resource URL
      */
     public SelfLink(URL href) {
-        super("self", "self", "self", href);
+        super("self", SELF_LINK, href);
     }
 
 }

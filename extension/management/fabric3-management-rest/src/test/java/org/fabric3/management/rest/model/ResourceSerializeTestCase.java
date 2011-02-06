@@ -62,7 +62,6 @@ public final class ResourceSerializeTestCase extends TestCase {
         Link deserializedLink = deserialized.getSelfLink();
         assertEquals("self", deserializedLink.getName());
         assertEquals("self", deserializedLink.getRel());
-        assertEquals("self", deserializedLink.getType());
         assertEquals(href, deserializedLink.getHref());
         assertEquals(1,deserialized.getProperties().size());
         assertEquals("bar",deserialized.getProperties().get("foo"));
