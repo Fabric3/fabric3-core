@@ -65,7 +65,25 @@ public class ResourceInvoker {
         this.mappings = mappings;
     }
 
-    public Resource invoke(HttpServletRequest request) throws IOException {
+    /**
+     * Invokes all GET operations managed artifact and returns values as a single (root) resource representation. The merged values will be included a
+     * properties where the property name is the relative path of the sub-resource. In addition to the merged values, the representation will contain
+     * a links property to sub-resources, keyed by sub-resource name (relative path). For example:
+     * <p/>
+     * <pre>
+     * {"selfLink":{...},
+     * "count":10,
+     * "links":[{"name":"count","rel":"edit","href":"...."}]
+     * }
+     * <p/>
+     * <p/>
+     * <pre>
+     *
+     * @param request the HTTP request
+     * @return the resource representation
+     * @throws ResourceProcessingException if there is an error processing the request
+     */
+    public Resource invoke(HttpServletRequest request) throws ResourceProcessingException {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
@@ -73,6 +91,7 @@ public class ResourceInvoker {
             SelfLink selfLink = new SelfLink(url);
             Resource resource = new Resource(selfLink);
             List<Link> links = new ArrayList<Link>();
+            // invoke the sub-resources and merge the responses into the root resource representation
             for (ManagedArtifactMapping mapping : mappings) {
                 Object object = invoke(mapping);
                 String relativePath = mapping.getRelativePath();
@@ -84,7 +103,7 @@ public class ResourceInvoker {
             resource.setProperty("links", links);
             return resource;
         } catch (MalformedURLException e) {
-            throw new IOException(e);
+            throw new ResourceProcessingException(e);
         } finally {
             WorkContextTunnel.setThreadWorkContext(old);
         }
