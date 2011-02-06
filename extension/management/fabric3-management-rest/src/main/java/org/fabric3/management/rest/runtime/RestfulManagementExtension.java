@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
@@ -52,6 +53,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
@@ -84,10 +86,22 @@ public class RestfulManagementExtension implements ManagementExtension {
     private ManagementServlet managementServlet;
     private TransformerPairService pairService;
 
+    private List<ResourceListener> listeners = Collections.emptyList();
+
     public RestfulManagementExtension(@Reference TransformerPairService pairService, @Reference ServletHost servletHost) {
         this.pairService = pairService;
         this.servletHost = servletHost;
         managementServlet = new ManagementServlet();
+    }
+
+    /**
+     * Setter to support re-injection of optional listeners.
+     *
+     * @param listeners the listeners
+     */
+    @Reference(required = false)
+    public void setListeners(List<ResourceListener> listeners) {
+        this.listeners = listeners;
     }
 
     @Init()
@@ -221,6 +235,9 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
             managementServlet.register(mapping);
+            for (ResourceListener listener : listeners) {
+                listener.onRootResourceExport(mapping);
+            }
         } catch (TransformationException e) {
             throw new ManagementException(e);
         }
