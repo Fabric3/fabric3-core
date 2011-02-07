@@ -212,7 +212,12 @@ public class RestfulManagementExtension implements ManagementExtension {
         if (path.length() == 0) {
             path = MethodHelper.convertToPath(methodName);
         }
-        rootPath = root + "/" + path;
+        if (ROOT_PATH.equals(path)) {
+            // if the path is for the root resource, there is no sub-path
+            rootPath = root;
+        } else {
+            rootPath = root + "/" + path;
+        }
         Verb verb = MethodHelper.convertToVerb(methodName);
         return new ManagedArtifactMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair);
     }
