@@ -35,26 +35,37 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.runtime;
+package org.fabric3.management.rest.framework.domain;
+
+import java.net.URI;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.AbstractDynamicResource;
+import org.fabric3.management.rest.model.Resource;
 
 /**
- * Listens for managed artifacts exported under the /runtime/transports path and registers them as sub-resources of the runtime resource.
+ * Listens for managed artifacts exported under the /domain path and registers them as sub-resources of the domain resource.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/runtime/transports")
-public class TransportResource extends AbstractDynamicResource {
-    private static final String TRANSPORTS_PATH = "/runtime/transports";
+@Management(path = "/domain")
+public class DistributedDomainResource extends AbstractDynamicResource {
+    private static final String RUNTIME_PATH = "/domain";
 
     @Override
     protected String getResourcePath() {
-        return TRANSPORTS_PATH;
+        return RUNTIME_PATH;
+    }
+
+    @Override
+    protected void populateResource(Resource resource) {
     }
 
 }

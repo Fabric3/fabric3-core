@@ -99,10 +99,12 @@ public abstract class AbstractDynamicResource implements ResourceListener {
     protected abstract String getResourcePath();
 
     /**
-     * Callback to populate the resource with additional sub-resources.
+     * Override to populate the resource with additional sub-resources.
      *
      * @param resource the resource to populate
      */
-    protected abstract void populateResource(Resource resource);
+    protected void populateResource(Resource resource) {
+
+    }
 
 }

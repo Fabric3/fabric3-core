@@ -22,5 +22,6 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.management.rest.spi" version="1.8"/>
 
     <deployable composite="f3:ManagementExtension"/>
+    <deployable composite="f3:ManagementControllerExtension" modes="controller vm"/>
 
 </contribution>
