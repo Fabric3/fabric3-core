@@ -60,6 +60,13 @@ public @interface ManagementOperation {
     String path() default "";
 
     /**
+     * Returns the type of operation.
+     *
+     * @return the operation type
+     */
+    OperationType type() default OperationType.UNDEFINED;
+
+    /**
      * Returns the operation description.
      *
      * @return the operation description
