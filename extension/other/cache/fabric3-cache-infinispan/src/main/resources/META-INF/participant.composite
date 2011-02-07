@@ -40,5 +40,4 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanWireAttacher"/>
     </component>
 
-
 </composite>

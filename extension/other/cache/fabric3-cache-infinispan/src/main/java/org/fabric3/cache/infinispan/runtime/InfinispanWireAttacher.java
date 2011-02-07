@@ -41,6 +41,7 @@ package org.fabric3.cache.infinispan.runtime;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
 import org.fabric3.cache.spi.CacheConfiguration;
 import org.fabric3.cache.spi.CacheNotFoundException;
+import org.fabric3.cache.spi.CacheRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -56,9 +57,9 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhysicalTargetDefinition> {
 
-    private InfinispanRegistry registry;
+    private CacheRegistry registry;
 
-    public InfinispanWireAttacher(@Reference InfinispanRegistry pRegistry) {
+    public InfinispanWireAttacher(@Reference CacheRegistry pRegistry) {
         registry = pRegistry;
     }
 

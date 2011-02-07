@@ -40,6 +40,7 @@ package org.fabric3.cache.infinispan.runtime;
 
 import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.spi.CacheManager;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
@@ -54,9 +55,9 @@ import java.util.List;
 @EagerInit
 public class InfinispanResourceBuilder implements ResourceBuilder<InfinispanPhysicalResourceDefinition> {
 
-    private InfinispanCacheManager manager;
+    private CacheManager<InfinispanConfiguration> manager;
 
-    public InfinispanResourceBuilder(@Reference InfinispanCacheManager manager) {
+    public InfinispanResourceBuilder(@Reference CacheManager<InfinispanConfiguration> manager) {
         this.manager = manager;
     }
 
