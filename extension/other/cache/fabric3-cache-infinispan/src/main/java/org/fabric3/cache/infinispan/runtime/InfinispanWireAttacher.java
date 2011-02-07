@@ -34,21 +34,46 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api.annotation;
+ */
+
+package org.fabric3.cache.infinispan.runtime;
+
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
+import org.fabric3.cache.spi.CacheConfiguration;
+import org.fabric3.cache.spi.CacheNotFoundException;
+import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Annotation used to indicate a cache should be provided to an implementation by the runtime.
- *
  * @version $Rev$ $Date$
  */
-public @interface Cache {
+public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhysicalTargetDefinition> {
 
-    /**
-     * Denotes the name of the cache to be provided.
-     *
-     * @return the name of the cache to be provided or the default cache if not specified
-     */
-    public abstract String name() default "default";
+    private InfinispanRegistry registry;
 
+    public InfinispanWireAttacher(@Reference InfinispanRegistry pRegistry) {
+        registry = pRegistry;
+    }
+
+    public void attach(PhysicalSourceDefinition source, InfinispanPhysicalTargetDefinition target, Wire wire) throws WiringException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void detach(PhysicalSourceDefinition source, InfinispanPhysicalTargetDefinition target) throws WiringException {
+        throw new UnsupportedOperationException();
+    }
+
+    public ObjectFactory<?> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
+        String cacheName = target.getCacheName();
+        CacheConfiguration source = registry.getCacheConfiguration(cacheName);
+        if (source == null) {
+            throw new CacheNotFoundException("Cache not found: " + cacheName);
+        }
+        return new SingletonObjectFactory<CacheConfiguration>(source);
+    }
 }

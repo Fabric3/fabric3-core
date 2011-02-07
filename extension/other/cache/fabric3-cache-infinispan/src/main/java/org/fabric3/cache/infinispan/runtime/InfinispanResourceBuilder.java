@@ -35,44 +35,44 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.fabric3.cache.infinispan.runtime;
 
+import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
 import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.resource.ResourceBuilder;
+import org.oasisopen.sca.annotation.Reference;
 
+import java.util.List;
 
 /**
- * Cache exception.
- *
  * @version $Rev$ $Date$
  */
-public class Fabric3CacheException extends Fabric3Exception {
+public class InfinispanResourceBuilder implements ResourceBuilder<InfinispanPhysicalResourceDefinition> {
 
-	public Fabric3CacheException() {
-		super();
-	}
+    private InfinispanCacheManager manager;
 
-	public Fabric3CacheException(String message, String identifier,
-			Throwable cause) {
-		super(message, identifier, cause);
-	}
+    public InfinispanResourceBuilder(@Reference InfinispanCacheManager manager) {
+        this.manager = manager;
+    }
 
-	public Fabric3CacheException(String message, String identifier) {
-		super(message, identifier);
-	}
+    public void build(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
+        List<InfinispanConfiguration> temp = definition.getCacheConfigurations();
+        for (InfinispanConfiguration configuration : temp) {
+            try {
+                manager.create(configuration);
+            } catch (Fabric3Exception e) {
+                throw new BuilderException("Cannot create infinispan cache.", e);
+            }
+        }
+    }
 
-	public Fabric3CacheException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public Fabric3CacheException(String message) {
-		super(message);
-	}
-
-	public Fabric3CacheException(Throwable cause) {
-		super(cause);
-	}
+    public void remove(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
+        List<InfinispanConfiguration> temp = definition.getCacheConfigurations();
+        for (InfinispanConfiguration configuration : temp) {
+            manager.remove(configuration);
+        }
+    }
 }
-
-
-
-

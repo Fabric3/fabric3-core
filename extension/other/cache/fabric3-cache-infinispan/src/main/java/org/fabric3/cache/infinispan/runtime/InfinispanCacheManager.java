@@ -37,36 +37,30 @@
  */
 package org.fabric3.cache.infinispan.runtime;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
 import org.fabric3.cache.spi.CacheManager;
 import org.fabric3.host.Fabric3Exception;
 import org.infinispan.manager.DefaultCacheManager;
 import org.w3c.dom.Document;
+
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Manages Infinispan caches on a runtime.
  *
  * @version $Rev$ $Date$
  */
-public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfiguration> {
+public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
 
 	private DefaultCacheManager cacheManager;
 
-	public void create(InfinispanCacheConfiguration configuration) throws Fabric3Exception {
+	public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
 		String config = "";
 		for (Document doc : configuration.getCacheConfigurations()) {
 			try {
@@ -77,11 +71,11 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
 				transformer.transform(source, result);
 				config += writer.toString();
 			} catch (TransformerConfigurationException e) {
-				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
 			} catch (TransformerException e) {
-				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
 			} catch (TransformerFactoryConfigurationError e) {
-				throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
 			}
 		}
 		try {
@@ -89,13 +83,13 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
 			cacheManager = new DefaultCacheManager(inputStream);
 			cacheManager.start();
 		} catch (UnsupportedEncodingException e) {
-			throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+			throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
 		} catch (IOException e) {
-			throw new Fabric3CacheException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+			throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
 		}
 	}
 
-	public void remove(InfinispanCacheConfiguration configuration) {
+	public void remove(InfinispanConfiguration configuration) {
 		cacheManager.stop();
 	}
 }

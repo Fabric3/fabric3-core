@@ -37,25 +37,23 @@
 */
 package org.fabric3.cache.infinispan.introspection;
 
-import java.io.ByteArrayInputStream;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
 import junit.framework.TestCase;
-
 import org.easymock.classextension.EasyMock;
-import org.fabric3.cache.infinispan.model.InfinispanDefinition;
+import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.w3c.dom.Document;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 
 /**
  * Unit tests for infinispan configuration loader.
  * @version $Rev$ $Date$
  */
-public class CacheConfigurationLoaderTest extends TestCase {
+public class InfinispanTypeLoaderTest extends TestCase {
 
 	private static final String config = "<caches><cache>" +
 			"<namedCache name=\"dataIndexCache\">" +
@@ -70,7 +68,7 @@ public class CacheConfigurationLoaderTest extends TestCase {
 			"</namedCache></cache></caches>";
 	
 	/**
-	 * Test method for {@link org.fabric3.cache.infinispan.introspection.CacheConfigurationLoader#load(javax.xml.stream.XMLStreamReader, org.fabric3.spi.introspection.IntrospectionContext)}.
+	 * Test method for {@link InfinispanTypeLoader#load(javax.xml.stream.XMLStreamReader, org.fabric3.spi.introspection.IntrospectionContext)}.
 	 */
 	public final void testLoad() throws Exception {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -80,7 +78,7 @@ public class CacheConfigurationLoaderTest extends TestCase {
         EasyMock.expect(loaderHelper.transform(reader)).andReturn(doc);
         
         EasyMock.replay(loaderHelper);
-        InfinispanDefinition resource = new CacheConfigurationLoader(loaderHelper).load(reader, context);
+        InfinispanResourceDefinition resource = new InfinispanTypeLoader(loaderHelper).load(reader, context);
         EasyMock.verify(loaderHelper);
 	}
 

@@ -34,53 +34,51 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.cache.introspection;
 
-import org.fabric3.api.annotation.Cache;
-import org.fabric3.model.type.component.Implementation;
+package org.fabric3.cache.infinispan.introspection;
+
+import org.fabric3.api.annotation.Resource;
+import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
+import org.fabric3.cache.introspection.MissingCacheName;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.resource.spi.ResourceTypeHandler;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import javax.sql.DataSource;
+import java.lang.reflect.Member;
 
 /**
- * Introspects fields, methods and constructor parameters annotated with {@link Cache}.
- *
  * @version $Rev$ $Date$
  */
-public class CacheProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Cache, I> {
-    private IntrospectionHelper helper;
+public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
 
-    public CacheProcessor(@Reference IntrospectionHelper helper) {
-        super(Cache.class);
-        this.helper = helper;
+    private ServiceContract contract;
+    private JavaContractProcessor contractProcessor;
+
+    public InfinispanResourceTypeHandler(@Reference JavaContractProcessor contractProcessor) {
+        this.contractProcessor = contractProcessor;
     }
 
-    public void visitField(Cache annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
-    }
-
-    public void visitMethod(Cache annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
-    }
-
-    public void visitConstructorParameter(Cache annotation,
-                                          Constructor<?> constructor,
-                                          int index,
-                                          Class<?> implClass,
-                                          I implementation,
-                                          IntrospectionContext context) {
+    @Init
+    public void init() {
+        // introspect the interface once
+        contract = contractProcessor.introspect(DataSource.class, new DefaultIntrospectionContext());
     }
 
 
+    public ResourceReferenceDefinition createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
+        String cacheName = annotation.name();
+        if (cacheName.length() == 0) {
+            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
+            context.addError(error);
+            return new InfinispanResourceReference(resourceName, contract, false, annotation.name());
+        }
+        return new InfinispanResourceReference(resourceName, contract, false, cacheName);
+    }
 }

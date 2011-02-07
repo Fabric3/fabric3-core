@@ -34,52 +34,26 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.infinispan.introspection;
+ */
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+package org.fabric3.cache.infinispan.model;
 
-import org.fabric3.cache.infinispan.model.InfinispanDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
- *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class CacheConfigurationLoader implements TypeLoader<InfinispanDefinition> {
+public class InfinispanResourceReference extends ResourceReferenceDefinition {
 
-	private LoaderHelper helper;
+    private String cacheName;
 
-	public CacheConfigurationLoader(@Reference LoaderHelper helper) {
-		this.helper = helper;
-	}
+    public InfinispanResourceReference(String name, ServiceContract serviceContract, boolean optional, String cacheName) {
+        super(name, serviceContract, optional);
+        this.cacheName = cacheName;
+    }
 
-	public InfinispanDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-		InfinispanDefinition configurations = new InfinispanDefinition();
-
-		while (true) {
-			switch (reader.next()) {
-			case XMLStreamConstants.START_ELEMENT:
-				if ("cache".equals(reader.getName().getLocalPart())) {
-					configurations.addCacheConfiguration(helper.transform(reader));
-				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				if ("caches".equals(reader.getName().getLocalPart())) {
-					return configurations;
-				}
-			}
-		}
-	}
+    public String getCacheName() {
+        return cacheName;
+    }
 }
-
-
-

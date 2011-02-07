@@ -35,20 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation;
+package org.fabric3.cache.infinispan.introspection;
+
+import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
+import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
- * Annotation used to indicate a cache should be provided to an implementation by the runtime.
+ * Loads an implementation-specific cache configurations specified as part of the cache element.
  *
  * @version $Rev$ $Date$
  */
-public @interface Cache {
+@EagerInit
+public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefinition> {
 
-    /**
-     * Denotes the name of the cache to be provided.
-     *
-     * @return the name of the cache to be provided or the default cache if not specified
-     */
-    public abstract String name() default "default";
+    private LoaderHelper helper;
 
+    public InfinispanTypeLoader(@Reference LoaderHelper helper) {
+        this.helper = helper;
+    }
+
+    public InfinispanResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        InfinispanResourceDefinition configurations = new InfinispanResourceDefinition();
+
+        while (true) {
+            switch (reader.next()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if ("cache".equals(reader.getName().getLocalPart())) {
+                        configurations.addCacheConfiguration(new InfinispanConfiguration(helper.transform(reader)));
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if ("caches".equals(reader.getName().getLocalPart())) {
+                        return configurations;
+                    }
+            }
+        }
+    }
 }
+
+
+

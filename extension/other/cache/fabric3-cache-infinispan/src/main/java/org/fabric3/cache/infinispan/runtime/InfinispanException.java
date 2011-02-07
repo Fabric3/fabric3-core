@@ -34,21 +34,45 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api.annotation;
+ */
+package org.fabric3.cache.infinispan.runtime;
+
+import org.fabric3.host.Fabric3Exception;
+
 
 /**
- * Annotation used to indicate a cache should be provided to an implementation by the runtime.
+ * Cache exception.
  *
  * @version $Rev$ $Date$
  */
-public @interface Cache {
+public class InfinispanException extends Fabric3Exception {
 
-    /**
-     * Denotes the name of the cache to be provided.
-     *
-     * @return the name of the cache to be provided or the default cache if not specified
-     */
-    public abstract String name() default "default";
+	public InfinispanException() {
+		super();
+	}
 
+	public InfinispanException(String message, String identifier,
+                               Throwable cause) {
+		super(message, identifier, cause);
+	}
+
+	public InfinispanException(String message, String identifier) {
+		super(message, identifier);
+	}
+
+	public InfinispanException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public InfinispanException(String message) {
+		super(message);
+	}
+
+	public InfinispanException(Throwable cause) {
+		super(cause);
+	}
 }
+
+
+
+

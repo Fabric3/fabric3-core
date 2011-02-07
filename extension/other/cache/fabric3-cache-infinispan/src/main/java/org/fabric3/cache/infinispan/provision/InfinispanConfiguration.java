@@ -34,21 +34,40 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api.annotation;
+ */
+
+package org.fabric3.cache.infinispan.provision;
+
+import org.fabric3.cache.spi.CacheConfiguration;
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Annotation used to indicate a cache should be provided to an implementation by the runtime.
+ * Infinispan cache configuration.
  *
  * @version $Rev$ $Date$
  */
-public @interface Cache {
+public class InfinispanConfiguration extends CacheConfiguration {
 
     /**
-     * Denotes the name of the cache to be provided.
      *
-     * @return the name of the cache to be provided or the default cache if not specified
      */
-    public abstract String name() default "default";
+    private static final long serialVersionUID = -4317772018610416411L;
 
+    private List<Document> configurations = new ArrayList<Document>();
+
+    public InfinispanConfiguration(Document configuration) {
+        addCacheConfiguration(configuration);
+    }
+
+    public void addCacheConfiguration(Document configuration) {
+        configurations.add(configuration);
+    }
+
+    public List<Document> getCacheConfigurations() {
+        return configurations;
+    }
 }
+

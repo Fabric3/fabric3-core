@@ -34,21 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api.annotation;
+ */
+
+package org.fabric3.cache.infinispan.runtime;
+
+import org.fabric3.cache.spi.CacheConfiguration;
+import org.fabric3.cache.spi.CacheRegistry;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * Annotation used to indicate a cache should be provided to an implementation by the runtime.
- *
  * @version $Rev$ $Date$
  */
-public @interface Cache {
+public class InfinispanRegistry implements CacheRegistry {
 
-    /**
-     * Denotes the name of the cache to be provided.
-     *
-     * @return the name of the cache to be provided or the default cache if not specified
-     */
-    public abstract String name() default "default";
+    ConcurrentMap<String, CacheConfiguration> caches = new ConcurrentHashMap<String, CacheConfiguration>();
 
+    public CacheConfiguration getCacheConfiguration(String name) {
+        return caches.get(name);
+    }
+
+    public Map<String, CacheConfiguration> getCacheConfigurations() {
+        return caches;
+    }
+
+    public void register(String name, CacheConfiguration cacheConfiguration) {
+        caches.put(name, cacheConfiguration);
+    }
+
+    public CacheConfiguration unregister(String name) {
+        return caches.remove(name);
+    }
 }

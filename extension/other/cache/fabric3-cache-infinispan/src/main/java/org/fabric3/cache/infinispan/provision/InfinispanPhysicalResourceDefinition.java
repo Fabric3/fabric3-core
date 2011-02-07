@@ -34,39 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.infinispan.runtime;
+ */
 
-import junit.framework.TestCase;
+package org.fabric3.cache.infinispan.provision;
+
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 
  * @version $Rev$ $Date$
  */
-public class InfinispanCacheManagerTest extends TestCase {
+public class InfinispanPhysicalResourceDefinition extends PhysicalResourceDefinition {
 
-	private InfinispanCacheManager cacheManager;
+    private static final long serialVersionUID = -6400612928297999316L;
 
-	/**
-	 * 
-	 */
-	protected void setUp() throws Exception {
-		cacheManager = new InfinispanCacheManager();
-		
-	}
+    private List<InfinispanConfiguration> configurations = new ArrayList<InfinispanConfiguration>();
 
-	/**
-	 * Test method for {@link org.fabric3.cache.infinispan.runtime.InfinispanCacheManager#create(org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration)}.
-	 */
-	public void testCreate() {
-		fail("Not yet implemented");
-	}
+    public InfinispanPhysicalResourceDefinition(List<InfinispanConfiguration> configurations) {
+        this.configurations = configurations;
+    }
 
-	/**
-	 * Test method for {@link org.fabric3.cache.infinispan.runtime.InfinispanCacheManager#remove(org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration)}.
-	 */
-	public void testRemove() {
-		fail("Not yet implemented");
-	}
+    public void addCacheConfiguration(InfinispanConfiguration configuration) {
+        configurations.add(configuration);
+    }
 
+    public List<InfinispanConfiguration> getCacheConfigurations() {
+        return configurations;
+    }
 }
+
+
+
+
