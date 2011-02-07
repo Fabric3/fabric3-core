@@ -52,6 +52,8 @@ import org.fabric3.management.rest.spi.ManagedArtifactMapping;
 import org.fabric3.management.rest.spi.ResourceListener;
 
 /**
+ * Base functionality for a resource that may be composed of extensible sub-resources.
+ *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @Management
@@ -89,8 +91,18 @@ public abstract class AbstractDynamicResource implements ResourceListener {
         return resource;
     }
 
+    /**
+     * Returns the root path for this resource.
+     *
+     * @return the root path for this resource
+     */
     protected abstract String getResourcePath();
 
+    /**
+     * Callback to populate the resource with additional sub-resources.
+     *
+     * @param resource the resource to populate
+     */
     protected abstract void populateResource(Resource resource);
 
 }
