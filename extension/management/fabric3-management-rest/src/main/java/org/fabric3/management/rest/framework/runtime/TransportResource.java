@@ -35,59 +35,31 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework;
-
-import java.net.URI;
+package org.fabric3.management.rest.framework.runtime;
 
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.management.rest.framework.AbstractDynamicResource;
 import org.fabric3.management.rest.model.Resource;
 
 /**
- * Listens for managed artifacts exported under the /runtime path and registers them as sub-resources of the runtime resource.
+ * Listens for managed artifacts exported under the /runtime/transports path and registers them as sub-resources of the runtime resource.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/runtime")
-public class RuntimeResource extends AbstractDynamicResource {
-    private static final String RUNTIME_PATH = "/runtime";
-    private HostInfo info;
-
-    public RuntimeResource(@Reference HostInfo info) {
-        this.info = info;
-    }
+@Management(path = "/runtime/transports")
+public class TransportResource extends AbstractDynamicResource {
+    private static final String TRANSPORTS_PATH = "/runtime/transports";
 
     @Override
     protected String getResourcePath() {
-        return RUNTIME_PATH;
+        return TRANSPORTS_PATH;
     }
 
     @Override
     protected void populateResource(Resource resource) {
-        resource.setProperty("name", getName());
-        resource.setProperty("domain", getDomain());
-        resource.setProperty("mode", getMode());
-    }
-
-    @ManagementOperation(description = "The runtime name")
-    public String getName() {
-        return info.getRuntimeName();
-    }
-
-    @ManagementOperation(description = "The domain URI this runtime is a part of ")
-    public URI getDomain() {
-        return info.getDomain();
-    }
-
-    @ManagementOperation(description = "The runtime mode")
-    public RuntimeMode getMode() {
-        return info.getRuntimeMode();
     }
 
 }
