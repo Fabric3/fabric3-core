@@ -37,15 +37,9 @@
 */
 package org.fabric3.management.rest.framework.domain;
 
-import java.net.URI;
-
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.AbstractDynamicResource;
 import org.fabric3.management.rest.model.Resource;
 
