@@ -248,7 +248,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
      *
      * @param conversational true if the service is conversational
      * @param method         the method being introspected
-     * @param context        the introspection context 
+     * @param context        the introspection context
      * @return the conversational sequence
      */
     private int introspectConversationSequence(boolean conversational, Method method, IntrospectionContext context) {
