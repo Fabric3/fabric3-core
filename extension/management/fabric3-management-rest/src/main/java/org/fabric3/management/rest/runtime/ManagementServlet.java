@@ -239,13 +239,15 @@ public class ManagementServlet extends HttpServlet {
             return mapping.getMethod().invoke(instance, params);
         } catch (IllegalAccessException e) {
             // TODO return error
-            throw new AssertionError(e);
+            throw new IOException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (InvocationTargetException e) {
             // TODO return error
-            throw new AssertionError(e);
+            Throwable target = e.getTargetException();
+            target.printStackTrace();
+            throw new IOException(target.getMessage(), target);
         } catch (ObjectCreationException e) {
             // TODO return error
-            throw new AssertionError(e);
+            throw new IOException("Error invoking operation: " + mapping.getMethod(), e);
         } finally {
             WorkContextTunnel.setThreadWorkContext(old);
         }

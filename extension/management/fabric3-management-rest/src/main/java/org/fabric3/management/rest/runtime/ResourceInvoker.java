@@ -109,22 +109,25 @@ public class ResourceInvoker {
         }
     }
 
-    private Object invoke(ManagedArtifactMapping mapping) {
+    private Object invoke(ManagedArtifactMapping mapping) throws ResourceProcessingException {
         try {
             Object instance = mapping.getInstance();
             if (instance instanceof ObjectFactory) {
                 instance = ((ObjectFactory) instance).getInstance();
             }
             return mapping.getMethod().invoke(instance);
+        } catch (IllegalArgumentException e) {
+            // TODO return error
+            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (IllegalAccessException e) {
             // TODO return error
-            throw new AssertionError(e);
+            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (InvocationTargetException e) {
             // TODO return error
-            throw new AssertionError(e);
+            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (ObjectCreationException e) {
             // TODO return error
-            throw new AssertionError(e);
+            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         }
     }
 
