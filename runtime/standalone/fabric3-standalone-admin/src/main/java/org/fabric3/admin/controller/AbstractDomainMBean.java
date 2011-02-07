@@ -66,6 +66,9 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
+import static org.fabric3.api.annotation.management.OperationType.DELETE;
+import static org.fabric3.api.annotation.management.OperationType.POST;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -87,13 +90,15 @@ public abstract class AbstractDomainMBean {
         this.monitor = monitor;
     }
 
-    @ManagementOperation(description = "Deploys a contribution to the domain.  All contained deployables will be included in the domain composite.")
+    @ManagementOperation(type = POST,
+                         description = "Deploys a contribution to the domain.  All contained deployables will be included in the domain composite.")
     public void deployDefaultPlan(URI uri) throws DeploymentManagementException {
         deploy(uri, null);
     }
 
-    @ManagementOperation(description = "Deploys a contribution to the domain using the specified deployment plan.  All contained deployables will be "
-            + "included in the domain composite.")
+    @ManagementOperation(type = POST,
+                         description = "Deploys a contribution to the domain using the specified deployment plan.  All contained deployables will be "
+                                 + "included in the domain composite.")
     public void deploy(URI uri, String plan) throws DeploymentManagementException {
         Contribution contribution = store.find(uri);
         if (contribution == null) {
@@ -131,7 +136,7 @@ public abstract class AbstractDomainMBean {
         }
     }
 
-    @ManagementOperation(description = "Undeploys deployables contained in a contribution")
+    @ManagementOperation(type = DELETE, description = "Undeploys deployables contained in a contribution")
     public void undeploy(URI uri, boolean force) throws DeploymentManagementException {
         Contribution contribution = store.find(uri);
         if (contribution == null) {
@@ -140,7 +145,7 @@ public abstract class AbstractDomainMBean {
         try {
             domain.undeploy(uri, force);
         } catch (DeploymentException e) {
-                reportError(uri, e);
+            reportError(uri, e);
         }
         try {
             domain.deactivateDefinitions(uri);

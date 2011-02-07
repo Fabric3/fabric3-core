@@ -56,10 +56,13 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 
+import static org.fabric3.api.annotation.management.OperationType.DELETE;
+import static org.fabric3.api.annotation.management.OperationType.POST;
+
 /**
  * @version $Rev$ $Date$
  */
-@Management(name = "RuntimeDomain", group = "kernel", description = "Manages the runtime domain")
+@Management(name = "RuntimeDomain", path = "/runtime/RuntimeDomain", group = "kernel", description = "Manages the runtime domain")
 public class RuntimeDomainMBeanImpl extends AbstractDomainMBean {
     private ContributionService contributionService;
 
@@ -73,7 +76,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean {
         this.contributionService = contributionService;
     }
 
-    @ManagementOperation(description = "Deploys a profile to the runtime")
+    @ManagementOperation(type = POST, description = "Deploys a profile to the runtime")
     public void deployProfile(URI profileUri) throws DeploymentManagementException {
         List<URI> uris = contributionService.getContributionsInProfile(profileUri);
         try {
@@ -91,7 +94,7 @@ public class RuntimeDomainMBeanImpl extends AbstractDomainMBean {
         }
     }
 
-    @ManagementOperation(description = "Undeploys a profile")
+    @ManagementOperation(type = DELETE, description = "Undeploys a profile")
     public void undeployProfile(URI uri) throws DeploymentManagementException {
         // the contributions must be undeployed by dependency
         List<URI> uris = contributionService.getSortedContributionsInProfile(uri);

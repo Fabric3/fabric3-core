@@ -75,11 +75,17 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.host.ServletHost;
 
+import static org.fabric3.api.annotation.management.OperationType.DELETE;
+import static org.fabric3.api.annotation.management.OperationType.PUT;
+
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Management(name = "ContributionService", group = "deployment", description = "Manages contributions in a domain")
+@Management(name = "ContributionService",
+            path = "/runtime/ContributionService",
+            group = "deployment",
+            description = "Manages contributions in a domain")
 public class ContributionServiceMBean {
     private static final String REPOSITORY = "/admin/repository";
     private static final String PROFILE = "/admin/profile";
@@ -150,7 +156,7 @@ public class ContributionServiceMBean {
         return infos;
     }
 
-    @ManagementOperation(description = "Installs a stored contribution")
+    @ManagementOperation(type = PUT, description = "Installs a stored contribution")
     public void install(URI uri) throws ContributionInstallException {
         try {
             contributionService.install(uri);
@@ -179,7 +185,7 @@ public class ContributionServiceMBean {
         }
     }
 
-    @ManagementOperation(description = "Uninstalls a contribution")
+    @ManagementOperation(type = DELETE, description = "Uninstalls a contribution")
     public void uninstall(URI uri) throws ContributionUninstallException {
         try {
             contributionService.uninstall(uri);
@@ -195,7 +201,7 @@ public class ContributionServiceMBean {
         }
     }
 
-    @ManagementOperation(description = "Removes a contribution")
+    @ManagementOperation(type = DELETE, description = "Removes a contribution")
     public void remove(URI uri) throws ContributionRemoveException {
         try {
             contributionService.remove(uri);
@@ -206,7 +212,7 @@ public class ContributionServiceMBean {
         }
     }
 
-    @ManagementOperation(description = "Installs a profile")
+    @ManagementOperation(type = PUT,description = "Installs a profile")
     public void installProfile(URI uri) throws ContributionInstallException {
         try {
             contributionService.installProfile(uri);
@@ -235,7 +241,7 @@ public class ContributionServiceMBean {
         }
     }
 
-    @ManagementOperation(description = "Uninstalls a profile")
+    @ManagementOperation(type = DELETE, description = "Uninstalls a profile")
     public void uninstallProfile(URI uri) throws ContributionUninstallException {
         try {
             contributionService.uninstallProfile(uri);
@@ -251,7 +257,7 @@ public class ContributionServiceMBean {
         }
     }
 
-    @ManagementOperation(description = "Removes a profile from the domain")
+    @ManagementOperation(type = DELETE, description = "Removes a profile from the domain")
     public void removeProfile(URI uri) throws ContributionRemoveException {
         try {
             contributionService.removeProfile(uri);

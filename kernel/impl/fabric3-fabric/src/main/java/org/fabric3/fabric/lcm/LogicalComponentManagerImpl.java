@@ -65,7 +65,10 @@ import org.fabric3.spi.util.UriHelper;
  *
  * @version $Rev$ $Date$
  */
-@Management(name = "LogicalComponentManager", group = "deployment", description = "Manages the logical domain")
+@Management(name = "LogicalComponentManager",
+            path = "/runtime/LogicalComponentManager",
+            group = "deployment",
+            description = "Manages the logical domain")
 public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;
     private String autowireValue;

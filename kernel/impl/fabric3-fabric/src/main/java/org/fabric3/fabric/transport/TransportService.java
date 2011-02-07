@@ -48,11 +48,13 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.transport.Transport;
 
+import static org.fabric3.api.annotation.management.OperationType.POST;
+
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Management(description = "Manages runtime binding transports")
+@Management(path = "/runtime/TransportService", description = "Manages runtime binding transports")
 public class TransportService {
     private TransportServiceMonitor monitor;
     private Map<String, Transport> transports = Collections.emptyMap();
@@ -66,7 +68,7 @@ public class TransportService {
         this.transports = transports;
     }
 
-    @ManagementOperation(description = "Suspend a transport from receiving requests")
+    @ManagementOperation(type = POST, description = "Suspend a transport from receiving requests")
     public void suspend(String name) {
         Transport transport = transports.get(name);
         if (transport == null) {
@@ -76,14 +78,14 @@ public class TransportService {
         transport.suspend();
     }
 
-    @ManagementOperation(description = "Suspend all transports from receiving requests")
+    @ManagementOperation(type = POST, description = "Suspend all transports from receiving requests")
     public void suspendAll() {
         for (Transport transport : transports.values()) {
             transport.suspend();
         }
     }
 
-    @ManagementOperation(description = "Resume receiving requests for a transport")
+    @ManagementOperation(type = POST, description = "Resume receiving requests for a transport")
     public void resume(String name) {
         Transport transport = transports.get(name);
         if (transport == null) {
@@ -93,7 +95,7 @@ public class TransportService {
         transport.resume();
     }
 
-    @ManagementOperation(description = "Resume receiving requests for all transports")
+    @ManagementOperation(type = POST, description = "Resume receiving requests for all transports")
     public void resumeAll() {
         for (Transport transport : transports.values()) {
             transport.resume();

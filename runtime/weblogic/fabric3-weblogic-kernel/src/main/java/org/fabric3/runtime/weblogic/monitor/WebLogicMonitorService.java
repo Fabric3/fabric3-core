@@ -56,7 +56,7 @@ import org.fabric3.spi.monitor.MonitorService;
  *
  * @version $Rev$ $Date$
  */
-@Management(name = "MonitorService", description = "Sets monitoring levels for the runtime")
+@Management(name = "MonitorService", path = "/runtime/MonitorService", description = "Sets monitoring levels for the runtime")
 public class WebLogicMonitorService implements MonitorService {
     private ComponentManager manager;
 
