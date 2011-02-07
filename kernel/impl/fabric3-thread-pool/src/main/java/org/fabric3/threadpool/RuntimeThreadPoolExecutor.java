@@ -67,7 +67,10 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Management(name = "RuntimeThreadPoolExecutor", group = "kernel", description = "Manages runtime thread pools")
+@Management(name = "RuntimeThreadPoolExecutor",
+            path = "/runtime/RuntimeThreadPoolExecutor",
+            group = "kernel",
+            description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 20;
     private long keepAliveTime = 60000;
@@ -251,7 +254,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     }
 
     @ManagementOperation
-    public int getCount(){
+    public int getCount() {
         return inFlight.size();
     }
 
