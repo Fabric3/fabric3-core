@@ -37,57 +37,60 @@
 */
 package org.fabric3.management.rest.framework;
 
-import java.net.URI;
-
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceListener;
 
 /**
- * Listens for managed artifacts exported under the /runtime path and registers them as sub-resources of the runtime resource.
- *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-@EagerInit
-@Management(path = "/runtime")
-public class RuntimeResource extends AbstractDynamicResource {
-    private static final String RUNTIME_PATH = "/runtime";
-    private HostInfo info;
+@Management
+public abstract class AbstractDynamicResource implements ResourceListener {
+    private List<ManagedArtifactMapping> subresources = new ArrayList<ManagedArtifactMapping>();
 
-    public RuntimeResource(@Reference HostInfo info) {
-        this.info = info;
+
+    public void onRootResourceExport(ManagedArtifactMapping mapping) {
+        if (mapping.getInstance() == this) {
+            // don't track requests for this instance
+            return;
+        }
+        if (!mapping.getPath().startsWith(getResourcePath() + "/")) {
+            // resource is not under /runtime, return
+            return;
+        }
+        subresources.add(mapping);
     }
 
-    @Override
-    protected String getResourcePath() {
-        return RUNTIME_PATH;
+    @ManagementOperation(path = "/")
+    public Resource getTransportResource(HttpServletRequest request) throws MalformedURLException {
+        String requestUrl = request.getRequestURL().toString();
+        URL selfHref = new URL(requestUrl);
+        SelfLink selfLink = new SelfLink(selfHref);
+        Resource resource = new Resource(selfLink);
+
+        populateResource(resource);
+
+        for (ManagedArtifactMapping mapping : subresources) {
+            String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
+            URL url = new URL(requestUrl + '/' + path);
+            Link link = new Link(path, Link.EDIT_LINK, url);
+            resource.setProperty(link.getName(), link);
+        }
+        return resource;
     }
 
-    @Override
-    protected void populateResource(Resource resource) {
-        resource.setProperty("name", getName());
-        resource.setProperty("domain", getDomain());
-        resource.setProperty("mode", getMode());
-    }
+    protected abstract String getResourcePath();
 
-    @ManagementOperation(description = "The runtime name")
-    public String getName() {
-        return info.getRuntimeName();
-    }
-
-    @ManagementOperation(description = "The domain URI this runtime is a part of ")
-    public URI getDomain() {
-        return info.getDomain();
-    }
-
-    @ManagementOperation(description = "The runtime mode")
-    public RuntimeMode getMode() {
-        return info.getRuntimeMode();
-    }
+    protected abstract void populateResource(Resource resource);
 
 }

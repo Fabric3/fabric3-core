@@ -216,11 +216,12 @@ public class RestfulManagementExtension implements ManagementExtension {
         if (path.length() == 0) {
             path = MethodHelper.convertToPath(methodName);
         }
+        path = path.toLowerCase();
         if (ROOT_PATH.equals(path)) {
             // if the path is for the root resource, there is no sub-path
-            rootPath = root;
+            rootPath = root.toLowerCase();
         } else {
-            rootPath = root + "/" + path;
+            rootPath = root.toLowerCase() + "/" + path;
         }
         Verb verb;
         if (OperationType.UNDEFINED == type) {
@@ -247,6 +248,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             }
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
+            root = root.toLowerCase();
             ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
             managementServlet.register(mapping);
             for (ResourceListener listener : listeners) {

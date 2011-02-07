@@ -138,11 +138,11 @@ public class ManagementServlet extends HttpServlet {
             throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
         }
         mappings.put(path, mapping);
-        System.out.println("--->" + path);
+//        System.out.println("--->" + path);
     }
 
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInfo = request.getPathInfo();
+        String pathInfo = request.getPathInfo().toLowerCase();
         ManagedArtifactMapping mapping;
         if (verb == Verb.GET) {
             mapping = getMappings.get(pathInfo);

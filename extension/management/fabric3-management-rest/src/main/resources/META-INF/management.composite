@@ -26,4 +26,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.management.rest.framework.RuntimeResource"/>
     </component>
 
+    <component name="TransportResource">
+        <f3:implementation.system class="org.fabric3.management.rest.framework.TransportResource"/>
+    </component>
+
 </composite>
