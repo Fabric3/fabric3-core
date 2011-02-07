@@ -47,11 +47,13 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhysicalTargetDefinition> {
 
     private InfinispanRegistry registry;

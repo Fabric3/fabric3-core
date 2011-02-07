@@ -44,12 +44,14 @@ import org.fabric3.host.Fabric3Exception;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.Reference;
+import org.osoa.sca.annotations.EagerInit;
 
 import java.util.List;
 
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class InfinispanResourceBuilder implements ResourceBuilder<InfinispanPhysicalResourceDefinition> {
 
     private InfinispanCacheManager manager;

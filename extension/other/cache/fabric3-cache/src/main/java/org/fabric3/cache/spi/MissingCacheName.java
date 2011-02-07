@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.cache.introspection;
+package org.fabric3.cache.spi;
 
 import org.fabric3.host.contribution.ValidationFailure;
 

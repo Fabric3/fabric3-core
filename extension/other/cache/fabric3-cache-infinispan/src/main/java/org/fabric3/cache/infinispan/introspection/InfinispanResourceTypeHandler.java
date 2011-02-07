@@ -40,7 +40,7 @@ package org.fabric3.cache.infinispan.introspection;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
-import org.fabric3.cache.introspection.MissingCacheName;
+import org.fabric3.cache.spi.MissingCacheName;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.resource.spi.ResourceTypeHandler;
