@@ -67,6 +67,7 @@ import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
+import org.fabric3.spi.model.type.java.OperationType;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
@@ -243,7 +244,7 @@ public class JMXManagementExtension implements ManagementExtension {
                 roles.add(new Role(name));
             }
             String path = annotation.path();
-            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, description, roles);
+            ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, OperationType.UNDEFINED, description, roles);
             info.addOperation(operationInfo);
         }
 

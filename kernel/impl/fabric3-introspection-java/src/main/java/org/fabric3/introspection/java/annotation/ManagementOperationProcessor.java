@@ -56,6 +56,7 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
+import org.fabric3.spi.model.type.java.OperationType;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
@@ -89,7 +90,11 @@ public class ManagementOperationProcessor<I extends Implementation<? extends Inj
             roles.add(new Role(roleName));
         }
         String path = annotation.path();
-        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, description, roles);
+
+        org.fabric3.api.annotation.management.OperationType operationType = annotation.type();
+        OperationType type = OperationType.valueOf(operationType.toString());
+
+        ManagementOperationInfo operationInfo = new ManagementOperationInfo(signature, path, type, description, roles);
         info.addOperation(operationInfo);
     }
 

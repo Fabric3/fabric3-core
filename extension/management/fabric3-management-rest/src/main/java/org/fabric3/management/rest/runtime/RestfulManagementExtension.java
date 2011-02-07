@@ -61,6 +61,7 @@ import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
+import org.fabric3.spi.model.type.java.OperationType;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.model.type.xsd.XSDType;
@@ -144,7 +145,8 @@ public class RestfulManagementExtension implements ManagementExtension {
                     // TODO support override of root resource path
                     rootResourcePathOverride = true;
                 }
-                ManagedArtifactMapping mapping = createMapping(root, path, method, objectFactory, jsonPair, jaxbPair);
+                OperationType type = operationInfo.getOperationType();
+                ManagedArtifactMapping mapping = createMapping(root, path, method, type, objectFactory, jsonPair, jaxbPair);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
@@ -163,7 +165,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     public void export(String name, String group, String description, Object instance) throws ManagementException {
-        String root = "/" + name;
+        String root = "/runtime/" + name;
         try {
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
@@ -172,8 +174,8 @@ public class RestfulManagementExtension implements ManagementExtension {
             for (Method method : methods) {
                 ManagementOperation annotation = method.getAnnotation(ManagementOperation.class);
                 if (annotation != null) {
-
-                    ManagedArtifactMapping mapping = createMapping(root, EMPTY_PATH, method, instance, jsonPair, jaxbPair);
+                    OperationType type = OperationType.valueOf(annotation.type().toString());
+                    ManagedArtifactMapping mapping = createMapping(root, EMPTY_PATH, method, type, instance, jsonPair, jaxbPair);
                     managementServlet.register(mapping);
                 }
             }
@@ -196,6 +198,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param root     the root path for the artifact
      * @param path     the relative path of the operation. The path may be blank, in which case one will be calculated from the method name
      * @param method   the management operation
+     * @param type     the operation type
      * @param instance the artifact
      * @param jsonPair the transformer pair for deserializing JSON requests and serializing responses as JSON
      * @param jaxbPair the transformer pair for deserializing XML-based requests and serializing responses as XML
@@ -204,6 +207,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     private ManagedArtifactMapping createMapping(String root,
                                                  String path,
                                                  Method method,
+                                                 OperationType type,
                                                  Object instance,
                                                  TransformerPair jsonPair,
                                                  TransformerPair jaxbPair) {
@@ -218,7 +222,12 @@ public class RestfulManagementExtension implements ManagementExtension {
         } else {
             rootPath = root + "/" + path;
         }
-        Verb verb = MethodHelper.convertToVerb(methodName);
+        Verb verb;
+        if (OperationType.UNDEFINED == type) {
+            verb = MethodHelper.convertToVerb(methodName);
+        } else {
+            verb = Verb.valueOf(type.toString());
+        }
         return new ManagedArtifactMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair);
     }
 
