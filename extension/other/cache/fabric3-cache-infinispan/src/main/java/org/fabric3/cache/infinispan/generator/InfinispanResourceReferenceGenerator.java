@@ -43,11 +43,13 @@ import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.osoa.sca.annotations.EagerInit;
 
 
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class InfinispanResourceReferenceGenerator implements ResourceReferenceGenerator<InfinispanResourceReference> {
 
     public InfinispanPhysicalTargetDefinition generateWireTarget(LogicalResourceReference<InfinispanResourceReference> logicalResourceReference) throws GenerationException {

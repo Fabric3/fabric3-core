@@ -47,15 +47,17 @@ import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
-import javax.sql.DataSource;
 import java.lang.reflect.Member;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
 
     private ServiceContract contract;
@@ -68,7 +70,7 @@ public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
     @Init
     public void init() {
         // introspect the interface once
-        contract = contractProcessor.introspect(DataSource.class, new DefaultIntrospectionContext());
+        contract = contractProcessor.introspect(ConcurrentMap.class, new DefaultIntrospectionContext());
     }
 
 

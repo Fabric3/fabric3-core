@@ -9,7 +9,7 @@ Public License. See the accompanying license file for details.
 
 
 
-    $Rev: 9131 $ $Date: 2010-06-13 00:37:12 +0200 (Sun, 13 Jun 2010) $
+    $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
@@ -18,22 +18,27 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
     <!--
-        Create and start default infinispan cache manager.
+        Used for creating/starting default infinispan cache manager.
     -->
     <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.provision.InfinispanConfiguration">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManager"/>
     </component>
 
     <!--
-        Create specific cache using infinispan configuration.
+        Create specific cache using infinispan cache manager.
     -->
-    <component name="InfinispanCacheManager"
+    <component name="InfinispanResourceBuilder"
                f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanResourceBuilder"/>
     </component>
 
-    <component name="DataSourceWireAttacher" f3:key="org.fabric3.datasource.provision.DataSourceTargetDefinition">
-        <f3:implementation.system class="org.fabric3.datasource.runtime.DataSourceWireAttacher"/>
+    <!--
+        Create cache via infinispan registry.
+    -->
+    <component name="InfinispanWireAttacher"
+               f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition">
+        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanWireAttacher"/>
     </component>
+
 
 </composite>
