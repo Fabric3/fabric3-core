@@ -83,6 +83,14 @@ public interface ZoneTopologyService {
     void deregister(TopologyListener listener);
 
     /**
+     * Registers runtime metadata that is propagated to the controller.
+     *
+     * @param key      the metadata key
+     * @param metadata the metadata
+     */
+    void registerMetadata(String key, Serializable metadata);
+
+    /**
      * Returns true if the domain controller is available.
      *
      * @return true if the domain controller is available

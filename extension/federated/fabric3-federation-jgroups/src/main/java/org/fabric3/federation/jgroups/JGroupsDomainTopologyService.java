@@ -37,6 +37,7 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,6 +69,8 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
+import org.fabric3.federation.deployment.command.RuntimeMetadataResponse;
+import org.fabric3.federation.deployment.command.RuntimeMetadataUpdateCommand;
 import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
@@ -159,13 +162,13 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     public List<RuntimeInstance> getRuntimes() {
-        List<RuntimeInstance> runtimes = new ArrayList<RuntimeInstance>();
-        for (Address member : domainChannel.getView().getMembers()) {
-            String name = org.jgroups.util.UUID.get(member);
-            RuntimeInstance runtime = new RuntimeInstance(name);
-            runtimes.add(runtime);
+        List<RuntimeInstance> list = new ArrayList<RuntimeInstance>();
+        for (Map<String, RuntimeInstance> map : runtimes.values()) {
+            for (RuntimeInstance runtime : map.values()) {
+                list.add(runtime);
+            }
         }
-        return runtimes;
+        return list;
     }
 
     public String getTransportMetaData(String zone, String transport) {
@@ -366,11 +369,12 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
                 public void run() {
                     try {
-                        ZoneMetadataUpdateCommand command = new ZoneMetadataUpdateCommand();
+                        ZoneMetadataUpdateCommand zoneCommand = new ZoneMetadataUpdateCommand();
+                        RuntimeMetadataUpdateCommand runtimeCommand = new RuntimeMetadataUpdateCommand();
                         for (Address address : newZoneLeaders) {
                             String name = UUID.get(address);
                             monitor.metadataUpdateRequest(name);
-                            Response value = sendSynchronous(name, command, defaultTimeout);
+                            Response value = sendSynchronous(name, zoneCommand, defaultTimeout);
                             ZoneMetadataResponse response = (ZoneMetadataResponse) value;
                             transportMetadata.put(response.getZone(), response.getMetadata());
                             for (TopologyListener listener : topologyListeners) {
@@ -391,7 +395,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                                 zones = new HashMap<String, RuntimeInstance>();
                                 runtimes.put(zoneName, zones);
                             }
-                            RuntimeInstance instance = new RuntimeInstance(name);
+                            monitor.metadataUpdateRequest(name);
+                            Response value = sendSynchronous(name, runtimeCommand, defaultTimeout);
+                            RuntimeMetadataResponse response = (RuntimeMetadataResponse) value;
+                            Map<String, Serializable> metadata = response.getMetadata();
+                            RuntimeInstance instance = new RuntimeInstance(name, metadata);
                             // TODO query metadata
                             zones.put(name, instance);
                         }

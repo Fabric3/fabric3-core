@@ -75,6 +75,8 @@ import org.osoa.sca.annotations.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.federation.FederationConstants;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.security.AuthenticationService;
@@ -103,6 +105,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ManagementService managementService;
     private HostInfo hostInfo;
     private TransportMonitor monitor;
+
+    private ZoneTopologyService topologyService;
 
     private KeyStoreManager keyStoreManager;
     private AuthenticationService authenticationService;
@@ -171,6 +175,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Reference(required = false)
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @Property(required = false)
@@ -246,6 +255,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 managementService.export("ServletsService", "HTTP", "Servlet management beans", servletHandler);
                 managementService.export("SessionManager", "HTTP", "Servlet session manager", sessionManager);
             }
+            registerHttpMetadata();
         } catch (Exception e) {
             throw new JettyInitializationException("Error starting Jetty service", e);
         } finally {
@@ -430,6 +440,18 @@ public class JettyServiceImpl implements JettyService, Transport {
             httpConnector.setPort(selectedHttp);
             httpConnector.setSoLingerTime(-1);
             server.setConnectors(new Connector[]{httpConnector});
+        }
+    }
+
+    /**
+     * Registers HTTP and HTTPS metadata with the topology service if it is available.
+     */
+    private void registerHttpMetadata() {
+        if (topologyService != null) {
+            topologyService.registerMetadata(FederationConstants.HTTP_PORT_METADATA, selectedHttp);
+            if (isHttpsEnabled()) {
+                topologyService.registerMetadata(FederationConstants.HTTPS_PORT_METADATA, selectedHttps);
+            }
         }
     }
 

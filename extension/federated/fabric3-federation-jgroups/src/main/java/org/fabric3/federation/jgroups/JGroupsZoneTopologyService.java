@@ -73,6 +73,8 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
+import org.fabric3.federation.deployment.command.RuntimeMetadataResponse;
+import org.fabric3.federation.deployment.command.RuntimeMetadataUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
@@ -114,6 +116,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private final Object viewLock = new Object();
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
+    private Map<String, Serializable> runtimeMetadata = new ConcurrentHashMap<String, Serializable>();
     private Map<String, String> transportMetadata = new ConcurrentHashMap<String, String>();
     private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
 
@@ -165,8 +168,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         if (!synchronize) {
             state = UPDATED;
         }
-        ZoneMetadataUpdateCommandExecutor metadataExecutor = new ZoneMetadataUpdateCommandExecutor();
-        executorRegistry.register(ZoneMetadataUpdateCommand.class, metadataExecutor);
+        ZoneMetadataUpdateCommandExecutor zoneMetadataExecutor = new ZoneMetadataUpdateCommandExecutor();
+        executorRegistry.register(ZoneMetadataUpdateCommand.class, zoneMetadataExecutor);
+
+        RuntimeMetadataUpdateCommandExecutor runtimeMetadataExecutor = new RuntimeMetadataUpdateCommandExecutor();
+        executorRegistry.register(RuntimeMetadataUpdateCommand.class, runtimeMetadataExecutor);
+
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
         executorRegistry.register(ControllerAvailableCommand.class, executor);
 
@@ -194,6 +201,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     public void deregister(TopologyListener listener) {
         topologyListeners.remove(listener);
+    }
+
+    public void registerMetadata(String key, Serializable metadata) {
+        runtimeMetadata.put(key, metadata);
     }
 
     @ManagementOperation(description = "True if the runtime is the zone leader")
@@ -492,6 +503,14 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
         public void execute(ZoneMetadataUpdateCommand command) throws ExecutionException {
             ZoneMetadataResponse response = new ZoneMetadataResponse(zoneName, transportMetadata);
+            command.setResponse(response);
+        }
+    }
+
+    private class RuntimeMetadataUpdateCommandExecutor implements CommandExecutor<RuntimeMetadataUpdateCommand> {
+
+        public void execute(RuntimeMetadataUpdateCommand command) throws ExecutionException {
+            RuntimeMetadataResponse response = new RuntimeMetadataResponse(runtimeMetadata);
             command.setResponse(response);
         }
     }

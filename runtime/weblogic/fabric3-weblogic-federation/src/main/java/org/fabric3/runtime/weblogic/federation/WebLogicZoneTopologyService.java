@@ -161,6 +161,10 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
 
     }
 
+    public void registerMetadata(String key, Serializable metadata) {
+
+    }
+
     public boolean isControllerAvailable() {
         return true;
     }
@@ -205,17 +209,14 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void closeChannel(String name) throws ZoneChannelException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void sendAsynchronous(String name, Serializable message) throws MessageException {
         throw new UnsupportedOperationException();
     }

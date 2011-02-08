@@ -35,68 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.federation.deployment.command;
 
-import java.io.Serializable;
-import java.util.Map;
+import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * An active runtime in the domain.
+ * Sent by a controller to a runtime to obtain its metadata.
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeInstance {
-    private String name;
-    private Map<String, Serializable> metadata;
+public class RuntimeMetadataUpdateCommand implements ResponseCommand {
+    private static final long serialVersionUID = 3056160587367640591L;
 
-    /**
-     * Constructor.
-     *
-     * @param name the unique runtime name.
-     * @param metadata the runtime metadata
-     */
-    public RuntimeInstance(String name, Map<String, Serializable> metadata) {
-        this.name = name;
-        this.metadata = metadata;
+    private RuntimeMetadataResponse response;
+
+    public void setResponse(RuntimeMetadataResponse response) {
+        this.response = response;
     }
 
-    /**
-     * The unique runtime name. Runtime names are persistent across restarts.
-     *
-     * @return the runtime name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns keyed metadata
-     *
-     * @param type the metadata type
-     * @param key  the key
-     * @return the metadata
-     */
-    public <T extends Serializable> T getMetadata(Class<T> type, String key) {
-        return type.cast(metadata.get(key));
-    }
-    
-    public Map<String, Serializable> getMetadata() {
-        return metadata;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        RuntimeInstance that = (RuntimeInstance) o;
-
-        return !(name != null ? !name.equals(that.name) : that.name != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+    public Response getResponse() {
+        return response;
     }
 }

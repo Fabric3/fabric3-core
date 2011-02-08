@@ -38,10 +38,12 @@
 package org.fabric3.runtime.weblogic.federation;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -136,7 +138,8 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
                 String runtimeName = channel.getRuntimeName();
-                RuntimeInstance runtimeInstance = new RuntimeInstance(runtimeName);
+                Map<String, Serializable> map = Collections.emptyMap();
+                RuntimeInstance runtimeInstance = new RuntimeInstance(runtimeName, map);
                 instances.add(runtimeInstance);
             }
         } catch (NamingException e) {

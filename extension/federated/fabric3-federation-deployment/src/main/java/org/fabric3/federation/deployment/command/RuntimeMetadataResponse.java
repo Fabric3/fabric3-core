@@ -35,68 +35,49 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.federation.deployment.command;
 
 import java.io.Serializable;
 import java.util.Map;
 
+import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.Response;
+
 /**
- * An active runtime in the domain.
+ * Returns runtime metadata to the controller as a response to a {@link RuntimeMetadataUpdateCommand}.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8589 $ $Date: 2010-01-20 09:52:59 -0800 (Wed, 20 Jan 2010) $
  */
-public class RuntimeInstance {
+public class RuntimeMetadataResponse implements Response, Command {
+    private static final long serialVersionUID = -4673533195524202455L;
+
     private String name;
     private Map<String, Serializable> metadata;
 
     /**
      * Constructor.
      *
-     * @param name the unique runtime name.
      * @param metadata the runtime metadata
      */
-    public RuntimeInstance(String name, Map<String, Serializable> metadata) {
-        this.name = name;
+    public RuntimeMetadataResponse(Map<String, Serializable> metadata) {
         this.metadata = metadata;
     }
 
-    /**
-     * The unique runtime name. Runtime names are persistent across restarts.
-     *
-     * @return the runtime name
-     */
-    public String getName() {
+
+    public String getRuntimeName() {
         return name;
+    }
+
+    public void setRuntimeName(String name) {
+        this.name = name;
     }
 
     /**
      * Returns keyed metadata
      *
-     * @param type the metadata type
-     * @param key  the key
      * @return the metadata
      */
-    public <T extends Serializable> T getMetadata(Class<T> type, String key) {
-        return type.cast(metadata.get(key));
-    }
-    
     public Map<String, Serializable> getMetadata() {
         return metadata;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        RuntimeInstance that = (RuntimeInstance) o;
-
-        return !(name != null ? !name.equals(that.name) : that.name != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
     }
 }
