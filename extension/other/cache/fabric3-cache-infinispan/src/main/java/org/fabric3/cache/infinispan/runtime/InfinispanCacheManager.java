@@ -58,40 +58,48 @@ import java.io.UnsupportedEncodingException;
  */
 public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
 
-	private DefaultCacheManager cacheManager;
+    private DefaultCacheManager cacheManager;
 
-	public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
-		String config = "";
-		for (Document doc : configuration.getCacheConfigurations()) {
-			try {
-				Source source = new DOMSource(doc);
-				StringWriter writer = new StringWriter();
-				StreamResult result = new StreamResult(writer);
-				Transformer transformer = TransformerFactory.newInstance().newTransformer();
-				transformer.transform(source, result);
-				config += writer.toString();
-			} catch (TransformerConfigurationException e) {
-				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-			} catch (TransformerException e) {
-				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-			} catch (TransformerFactoryConfigurationError e) {
-				throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-			}
-		}
-		try {
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
-			cacheManager = new DefaultCacheManager(inputStream);
-			cacheManager.start();
-		} catch (UnsupportedEncodingException e) {
-			throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-		} catch (IOException e) {
-			throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-		}
-	}
+    public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
+        String config = "";
+        for (Document doc : configuration.getCacheConfigurations()) {
+            try {
+                Source source = new DOMSource(doc);
+                StringWriter writer = new StringWriter();
+                StreamResult result = new StreamResult(writer);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.transform(source, result);
+                config += writer.toString();
+            } catch (TransformerConfigurationException e) {
+                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            } catch (TransformerException e) {
+                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            } catch (TransformerFactoryConfigurationError e) {
+                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            }
+        }
+        try {
+            /*
+            * A Infinispan workaround for "org.infinispan.CacheException: Unable to construct a GlobalComponentRegistry!"
+            *
+            * This will help find classes.
+            */
 
-	public void remove(InfinispanConfiguration configuration) {
-		cacheManager.stop();
-	}
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
+            cacheManager = new DefaultCacheManager(/*inputStream*/);
+            cacheManager.start();
+        } catch (UnsupportedEncodingException e) {
+            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+        } catch (IOException e) {
+            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+        }
+    }
+
+    public void remove(InfinispanConfiguration configuration) {
+        cacheManager.stop();
+    }
 }
 
 
