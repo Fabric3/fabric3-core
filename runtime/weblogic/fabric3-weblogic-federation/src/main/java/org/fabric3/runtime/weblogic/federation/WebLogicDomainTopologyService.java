@@ -42,6 +42,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -71,6 +72,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.RuntimeInstance;
+import org.fabric3.spi.federation.Zone;
 
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
@@ -122,7 +124,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         return runtimeName;
     }
 
-    public List<String> getZones() {
+    public Set<Zone> getZones() {
         return null;
     }
 

@@ -38,6 +38,7 @@
 package org.fabric3.spi.federation;
 
 import java.util.List;
+import java.util.Set;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
@@ -58,7 +59,7 @@ public interface DomainTopologyService {
      *
      * @return the active zones in the domain or an empty list if none are active
      */
-    List<String> getZones();
+    Set<Zone> getZones();
 
     /**
      * Returns the active runtimes in the domain.

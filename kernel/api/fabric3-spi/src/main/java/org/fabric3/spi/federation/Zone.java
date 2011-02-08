@@ -37,30 +37,44 @@
 */
 package org.fabric3.spi.federation;
 
+import java.util.List;
+
 /**
- * An active runtime in the domain.
+ * A domain zone.
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeInstance {
+public class Zone {
     private String name;
+    private List<RuntimeInstance> runtimes;
 
     /**
      * Constructor.
      *
-     * @param name the unique runtime name.
+     * @param name     the zone name
+     * @param runtimes the active runtimes in the zone
      */
-    public RuntimeInstance(String name) {
+    public Zone(String name, List<RuntimeInstance> runtimes) {
         this.name = name;
+        this.runtimes = runtimes;
     }
 
     /**
-     * The unique runtime name. Runtime names are persistent across restarts.
+     * Returns the zone name.
      *
-     * @return the runtime name
+     * @return the zone name
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the active runtimes in a zone.
+     *
+     * @return the active runtimes in a zone
+     */
+    public List<RuntimeInstance> getRuntimes() {
+        return runtimes;
     }
 
     @Override
@@ -68,9 +82,9 @@ public class RuntimeInstance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RuntimeInstance that = (RuntimeInstance) o;
+        Zone zone = (Zone) o;
 
-        return !(name != null ? !name.equals(that.name) : that.name != null);
+        return !(name != null ? !name.equals(zone.name) : zone.name != null);
 
     }
 

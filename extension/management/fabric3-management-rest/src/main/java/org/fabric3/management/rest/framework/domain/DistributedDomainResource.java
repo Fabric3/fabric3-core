@@ -37,11 +37,16 @@
 */
 package org.fabric3.management.rest.framework.domain;
 
+import java.util.Set;
+
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.management.rest.framework.AbstractDynamicResource;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.Zone;
 
 /**
  * Listens for managed artifacts exported under the /domain path and registers them as sub-resources of the domain resource.
@@ -52,6 +57,12 @@ import org.fabric3.management.rest.model.Resource;
 @Management(path = "/domain")
 public class DistributedDomainResource extends AbstractDynamicResource {
     private static final String RUNTIME_PATH = "/domain";
+    private DomainTopologyService topologyService;
+
+    @Reference(required = false)
+    public void setTopologyService(DomainTopologyService topologyService) {
+        this.topologyService = topologyService;
+    }
 
     @Override
     protected String getResourcePath() {
@@ -60,6 +71,12 @@ public class DistributedDomainResource extends AbstractDynamicResource {
 
     @Override
     protected void populateResource(Resource resource) {
+        if (topologyService == null) {
+            // running in single-VM mode, return
+            return;
+        }
+        Set<Zone> zones = topologyService.getZones();
+        resource.setProperty("zones", zones);
     }
 
 }

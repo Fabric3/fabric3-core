@@ -38,6 +38,8 @@
 package org.fabric3.federation.jgroups;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,6 +87,7 @@ import org.fabric3.spi.federation.MessageTimeoutException;
 import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.TopologyListener;
+import org.fabric3.spi.federation.Zone;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
@@ -101,6 +104,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
     private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
+    private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
 
     public JGroupsDomainTopologyService(@Reference HostInfo info,
                                         @Reference CommandExecutorRegistry executorRegistry,
@@ -139,7 +143,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     @ManagementOperation(description = "The zones in the domain")
-    public List<String> getZones() {
+    public Set<Zone> getZones() {
         View view = domainChannel.getView();
         return getZones(view);
     }
@@ -291,15 +295,18 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
      * @param view the view
      * @return the list of zones
      */
-    private List<String> getZones(View view) {
+    private Set<Zone> getZones(View view) {
         Address controller = domainChannel.getAddress();
-        List<String> zones = new ArrayList<String>();
+        Set<Zone> zones = new HashSet<Zone>();
         Vector<Address> members = view.getMembers();
         for (Address member : members) {
             if (!member.equals(controller)) {
                 String zoneName = helper.getZoneName(member);
-                if (zoneName != null && !zones.contains(zoneName)) {
-                    zones.add(zoneName);
+                Map<String, RuntimeInstance> instances = runtimes.get(zoneName);
+                List<RuntimeInstance> list = new ArrayList<RuntimeInstance>(instances.values());
+                Zone zone = new Zone(zoneName, list);
+                if (zoneName != null) {
+                    zones.add(zone);
                 }
             }
         }
@@ -375,6 +382,18 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                             for (TopologyListener listener : topologyListeners) {
                                 listener.onJoin(name);
                             }
+                            String zoneName = helper.getZoneName(address);
+                            if (zoneName == null) {
+                                continue;
+                            }
+                            Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
+                            if (zones == null) {
+                                zones = new HashMap<String, RuntimeInstance>();
+                                runtimes.put(zoneName, zones);
+                            }
+                            RuntimeInstance instance = new RuntimeInstance(name);
+                            // TODO query metadata
+                            zones.put(name, instance);
                         }
                     } catch (MessageException e) {
                         monitor.error("Error requesting zone metadata", e);
@@ -399,6 +418,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             }
             if (suspected.equals(helper.getZoneLeader(name, view))) {
                 transportMetadata.remove(name);
+            }
+            Map<String, RuntimeInstance> instances = runtimes.get(name);
+            instances.remove(runtimeName);
+            if (instances.isEmpty()) {
+                runtimes.remove(name);
             }
             for (TopologyListener listener : topologyListeners) {
                 listener.onLeave(runtimeName);
