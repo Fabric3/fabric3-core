@@ -78,22 +78,26 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
                 throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
             }
         }
+
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             /*
             * A Infinispan workaround for "org.infinispan.CacheException: Unable to construct a GlobalComponentRegistry!"
             *
             * This will help find classes.
             */
-
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
             ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
-            cacheManager = new DefaultCacheManager(/*inputStream*/);
+            cacheManager = new DefaultCacheManager(inputStream);
             cacheManager.start();
         } catch (UnsupportedEncodingException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
         } catch (IOException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+        } finally {
+            // Set previously class loader back to thread
+            Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
     }
 
