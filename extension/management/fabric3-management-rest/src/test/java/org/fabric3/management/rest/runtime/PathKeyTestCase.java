@@ -42,47 +42,27 @@ import junit.framework.TestCase;
 import org.fabric3.management.rest.spi.Verb;
 
 /**
- * Utilities for converting method names to resource metadata.
  *
  * @version $Rev$ $Date$
  */
-public class MethodHelperTestCase extends TestCase {
+public class PathKeyTestCase extends TestCase {
 
-    public void testDeleteConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("deleteFoo"));
-        assertEquals("delete", MethodHelper.convertToPath("delete"));
+    public void testNonWildCardMatch() throws Exception {
+        PathKey key1 = new PathKey("/foo", false);
+        PathKey key2 = new PathKey("/foo", false);
+        assertEquals(key1, key2);
     }
 
-    public void testCreateConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("createFoo"));
-        assertEquals("create", MethodHelper.convertToPath("create"));
+    public void testWildCardMatch() throws Exception {
+        PathKey key1 = new PathKey("/foo", true);
+        PathKey key2 = new PathKey("/foo/bar", true);
+        assertEquals(key1, key2);
     }
 
-    public void testGetConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("getFoo"));
-        assertEquals("get", MethodHelper.convertToPath("get"));
+    public void testWildCardReverseNoMatch() throws Exception {
+        PathKey key1 = new PathKey("/foo/bar", true);
+        PathKey key2 = new PathKey("/foo", true);
+        assertFalse(key1.equals(key2));
     }
-
-    public void testSetConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("setFoo"));
-        assertEquals("set", MethodHelper.convertToPath("set"));
-    }
-
-    public void testIsConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("isFoo"));
-        assertEquals("is", MethodHelper.convertToPath("is"));
-    }
-
-    public void testRandomConvertToPath() throws Exception {
-        assertEquals("something", MethodHelper.convertToPath("something"));
-    }
-
-    public void testConvertToVerb() throws Exception {
-        assertEquals(Verb.DELETE, MethodHelper.convertToVerb("deleteFoo"));
-        assertEquals(Verb.GET, MethodHelper.convertToVerb("getFoo"));
-        assertEquals(Verb.POST, MethodHelper.convertToVerb("setFoo"));
-        assertEquals(Verb.PUT, MethodHelper.convertToVerb("createFoo"));
-        assertEquals(Verb.GET, MethodHelper.convertToVerb("something"));
-    }
-
+    
 }

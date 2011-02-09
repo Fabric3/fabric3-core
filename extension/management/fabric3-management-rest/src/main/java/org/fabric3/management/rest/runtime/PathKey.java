@@ -37,52 +37,42 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import junit.framework.TestCase;
-
-import org.fabric3.management.rest.spi.Verb;
-
 /**
- * Utilities for converting method names to resource metadata.
+ * Key used to match resource paths.
  *
  * @version $Rev$ $Date$
  */
-public class MethodHelperTestCase extends TestCase {
+public class PathKey {
+    private String path;
+    boolean wildCard;
 
-    public void testDeleteConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("deleteFoo"));
-        assertEquals("delete", MethodHelper.convertToPath("delete"));
+    /**
+     * Constructor.
+     *
+     * @param path     the path
+     * @param wildCard true if a wildcard match should be made. For example, a wildcard path of /foo will match foo/bar and foo/baz
+     */
+    public PathKey(String path, boolean wildCard) {
+        this.path = path;
+        this.wildCard = wildCard;
     }
 
-    public void testCreateConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("createFoo"));
-        assertEquals("create", MethodHelper.convertToPath("create"));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PathKey other = (PathKey) o;
+
+        if (!wildCard) {
+            return path.equals(other.path);
+        }
+        return other.path.startsWith(path);
+
     }
 
-    public void testGetConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("getFoo"));
-        assertEquals("get", MethodHelper.convertToPath("get"));
+    @Override
+    public int hashCode() {
+        return path != null ? path.hashCode() : 0;
     }
-
-    public void testSetConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("setFoo"));
-        assertEquals("set", MethodHelper.convertToPath("set"));
-    }
-
-    public void testIsConvertToPath() throws Exception {
-        assertEquals("foo", MethodHelper.convertToPath("isFoo"));
-        assertEquals("is", MethodHelper.convertToPath("is"));
-    }
-
-    public void testRandomConvertToPath() throws Exception {
-        assertEquals("something", MethodHelper.convertToPath("something"));
-    }
-
-    public void testConvertToVerb() throws Exception {
-        assertEquals(Verb.DELETE, MethodHelper.convertToVerb("deleteFoo"));
-        assertEquals(Verb.GET, MethodHelper.convertToVerb("getFoo"));
-        assertEquals(Verb.POST, MethodHelper.convertToVerb("setFoo"));
-        assertEquals(Verb.PUT, MethodHelper.convertToVerb("createFoo"));
-        assertEquals(Verb.GET, MethodHelper.convertToVerb("something"));
-    }
-
 }
