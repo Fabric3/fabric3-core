@@ -54,6 +54,7 @@ public class ManagedArtifactMapping {
     private Object instance;
     private TransformerPair jsonPair;
     private TransformerPair jaxbPair;
+    private boolean wildcard;
 
     /**
      * Constructor.
@@ -145,5 +146,9 @@ public class ManagedArtifactMapping {
      */
     public TransformerPair getJaxbPair() {
         return jaxbPair;
+    }
+
+    public boolean isWildcard() {
+        return wildcard;
     }
 }

@@ -69,10 +69,10 @@ import org.fabric3.spi.transform.Transformer;
 public class ManagementServlet extends HttpServlet {
     private static final long serialVersionUID = 5554150494161533656L;
 
-    private Map<String, ManagedArtifactMapping> getMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
-    private Map<String, ManagedArtifactMapping> postMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
-    private Map<String, ManagedArtifactMapping> putMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
-    private Map<String, ManagedArtifactMapping> deleteMappings = new ConcurrentHashMap<String, ManagedArtifactMapping>();
+    private Map<PathKey, ManagedArtifactMapping> getMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
+    private Map<PathKey, ManagedArtifactMapping> postMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
+    private Map<PathKey, ManagedArtifactMapping> putMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
+    private Map<PathKey, ManagedArtifactMapping> deleteMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
 
     /**
      * Registers a mapping, making the managed resource available via HTTP.
@@ -132,26 +132,29 @@ public class ManagementServlet extends HttpServlet {
         handle(Verb.PUT, request, response);
     }
 
-    private void register(ManagedArtifactMapping mapping, Map<String, ManagedArtifactMapping> mappings) throws DuplicateArtifactNameException {
+    private void register(ManagedArtifactMapping mapping, Map<PathKey, ManagedArtifactMapping> mappings) throws DuplicateArtifactNameException {
         String path = mapping.getPath();
         if (mappings.containsKey(path)) {
             throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
         }
-        mappings.put(path, mapping);
+        boolean wildcard = mapping.isWildcard();
+        PathKey key = new PathKey(path, wildcard);
+        mappings.put(key, mapping);
 //        System.out.println("--->" + path);
     }
 
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo().toLowerCase();
+        PathKey key = new PathKey(pathInfo, false);
         ManagedArtifactMapping mapping;
         if (verb == Verb.GET) {
-            mapping = getMappings.get(pathInfo);
+            mapping = getMappings.get(key);
         } else if (verb == Verb.POST) {
-            mapping = postMappings.get(pathInfo);
+            mapping = postMappings.get(key);
         } else if (verb == Verb.PUT) {
-            mapping = putMappings.get(pathInfo);
+            mapping = putMappings.get(key);
         } else {
-            mapping = deleteMappings.get(pathInfo);
+            mapping = deleteMappings.get(key);
         }
 
         if (mapping == null) {
@@ -165,7 +168,7 @@ public class ManagementServlet extends HttpServlet {
         Object[] params = null;
         Class<?>[] types = mapping.getMethod().getParameterTypes();
         if (types.length > 0) {
-            // avoid derserialization if the method does not take parameters
+            // avoid deserialization if the method does not take parameters
             params = deserialize(request, mapping);
         }
         Object ret = invoke(mapping, params, request);
