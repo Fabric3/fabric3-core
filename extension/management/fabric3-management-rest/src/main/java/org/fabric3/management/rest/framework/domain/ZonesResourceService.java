@@ -37,26 +37,36 @@
 */
 package org.fabric3.management.rest.framework.domain;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.management.rest.framework.AbstractDynamicResource;
-import org.fabric3.management.rest.model.Resource;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.model.Link;
 import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.Zone;
 
+import static org.fabric3.management.rest.model.Link.EDIT_LINK;
+import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
+import static org.fabric3.spi.federation.FederationConstants.HTTP_PORT_METADATA;
+
 /**
- * Listens for managed artifacts exported under the /domain path and registers them as sub-resources of the domain resource.
+ * Produces the /domain/zones resource. This is a collection of links to active zone resources in the domain. The links correspond to zone leaders,
+ * which provide /zone resources.
+ * <p/>
+ * Note this resource is only present on the controller.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/domain")
-public class DistributedDomainResource extends AbstractDynamicResource {
-    private static final String RUNTIME_PATH = "/domain";
+@Management(path = "/domain/zones")
+public class ZonesResourceService {
     private DomainTopologyService topologyService;
 
     @Reference(required = false)
@@ -64,19 +74,25 @@ public class DistributedDomainResource extends AbstractDynamicResource {
         this.topologyService = topologyService;
     }
 
-    @Override
-    protected String getResourcePath() {
-        return RUNTIME_PATH;
-    }
-
-    @Override
-    protected void populateResource(Resource resource) {
-        if (topologyService == null) {
-            // running in single-VM mode, return
-            return;
+    @ManagementOperation(path = "/")
+    public Set<Link> getZones() {
+        try {
+            Set<Link> list = new HashSet<Link>();
+            Set<Zone> zones = topologyService.getZones();
+            for (Zone zone : zones) {
+                // calculate links for each zone by using the address of zone leaders
+                RuntimeInstance leader = zone.getRuntimes().get(0);
+                String httpPort = leader.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
+                String host = leader.getMetadata(String.class, HTTP_HOST_METADATA);
+                URL zoneUrl = new URL("http://" + host + ":" + httpPort + "/management/zone");
+                Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
+                list.add(link);
+            }
+            return list;
+        } catch (MalformedURLException e) {
+            // this should not happen
+            throw new AssertionError(e);
         }
-        Set<Zone> zones = topologyService.getZones();
-        resource.setProperty("zones", zones);
     }
 
 }

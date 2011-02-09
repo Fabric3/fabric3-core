@@ -39,6 +39,8 @@ package org.fabric3.management.rest.framework.runtime;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -46,7 +48,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.management.rest.framework.AbstractDynamicResource;
+import org.fabric3.management.rest.framework.AbstractResourceService;
 import org.fabric3.management.rest.model.Resource;
 
 /**
@@ -56,11 +58,11 @@ import org.fabric3.management.rest.model.Resource;
  */
 @EagerInit
 @Management(path = "/runtime")
-public class RuntimeResource extends AbstractDynamicResource {
+public class RuntimeResourceService extends AbstractResourceService {
     private static final String RUNTIME_PATH = "/runtime";
     private HostInfo info;
 
-    public RuntimeResource(@Reference HostInfo info) {
+    public RuntimeResourceService(@Reference HostInfo info) {
         this.info = info;
     }
 
@@ -70,7 +72,7 @@ public class RuntimeResource extends AbstractDynamicResource {
     }
 
     @Override
-    protected void populateResource(Resource resource) {
+    protected void populateResource(Resource resource, HttpServletRequest request) {
         resource.setProperty("name", getName());
         resource.setProperty("domain", getDomain());
         resource.setProperty("mode", getMode());

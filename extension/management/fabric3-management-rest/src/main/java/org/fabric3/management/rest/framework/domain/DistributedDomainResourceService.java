@@ -35,26 +35,60 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.runtime;
+package org.fabric3.management.rest.framework.domain;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.management.rest.framework.AbstractDynamicResource;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.model.Link;
+import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.spi.federation.DomainTopologyService;
+
+import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
- * Listens for managed artifacts exported under the /runtime/transports path and registers them as sub-resources of the runtime resource.
+ * Produces the /domain resource.
+ * <p/>
+ * Note this resource is only present on the controller.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/runtime/transports")
-public class TransportResource extends AbstractDynamicResource {
-    private static final String TRANSPORTS_PATH = "/runtime/transports";
+@Management(path = "/domain")
+public class DistributedDomainResourceService {
+    private DomainTopologyService topologyService;
 
-    @Override
-    protected String getResourcePath() {
-        return TRANSPORTS_PATH;
+    @Reference(required = false)
+    public void setTopologyService(DomainTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
+
+    @ManagementOperation(path = "/")
+    public Resource getTransportResource(HttpServletRequest request) throws MalformedURLException {
+        String requestUrl = request.getRequestURL().toString();
+        URL selfHref = new URL(requestUrl);
+        SelfLink selfLink = new SelfLink(selfHref);
+        Resource resource = new Resource(selfLink);
+        createZoneLinks(request, resource);
+        return resource;
+    }
+
+    private void createZoneLinks(HttpServletRequest request, Resource resource) throws MalformedURLException {
+        if (topologyService == null) {
+            // running in single-VM mode, return
+            return;
+        }
+        URL zonesUrl = new URL(request.getRequestURL().toString() + "/zones");
+        Link zonesLink = new Link("zones", EDIT_LINK, zonesUrl);
+        resource.setProperty("zones", zonesLink);
+    }
+
 
 }

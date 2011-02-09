@@ -52,12 +52,12 @@ import org.fabric3.management.rest.spi.ManagedArtifactMapping;
 import org.fabric3.management.rest.spi.ResourceListener;
 
 /**
- * Base functionality for a resource that may be composed of extensible sub-resources.
+ * Base functionality for a resource service that may be composed of extensible sub-resources.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @Management
-public abstract class AbstractDynamicResource implements ResourceListener {
+public abstract class AbstractResourceService implements ResourceListener {
     private List<ManagedArtifactMapping> subresources = new ArrayList<ManagedArtifactMapping>();
 
 
@@ -80,7 +80,7 @@ public abstract class AbstractDynamicResource implements ResourceListener {
         SelfLink selfLink = new SelfLink(selfHref);
         Resource resource = new Resource(selfLink);
 
-        populateResource(resource);
+        populateResource(resource, request);
 
         for (ManagedArtifactMapping mapping : subresources) {
             String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
@@ -102,8 +102,9 @@ public abstract class AbstractDynamicResource implements ResourceListener {
      * Override to populate the resource with additional sub-resources.
      *
      * @param resource the resource to populate
+     * @param request  the current HTTP request
      */
-    protected void populateResource(Resource resource) {
+    protected void populateResource(Resource resource, HttpServletRequest request) {
 
     }
 
