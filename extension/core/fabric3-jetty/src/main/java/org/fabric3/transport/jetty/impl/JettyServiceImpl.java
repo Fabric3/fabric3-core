@@ -45,7 +45,9 @@ package org.fabric3.transport.jetty.impl;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -445,10 +447,17 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     /**
      * Registers HTTP and HTTPS metadata with the topology service if it is available.
+     *
+     * @throws UnknownHostException if there is an error retrieving the host address
      */
-    private void registerHttpMetadata() {
+    private void registerHttpMetadata() throws UnknownHostException {
         if (topologyService != null) {
             topologyService.registerMetadata(FederationConstants.HTTP_PORT_METADATA, selectedHttp);
+            String host = httpConnector.getHost();
+            if (host == null) {
+                host = InetAddress.getLocalHost().getHostAddress();
+            }
+            topologyService.registerMetadata(FederationConstants.HTTP_HOST_METADATA, host);
             if (isHttpsEnabled()) {
                 topologyService.registerMetadata(FederationConstants.HTTPS_PORT_METADATA, selectedHttps);
             }

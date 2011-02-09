@@ -54,4 +54,8 @@ public interface FederationConstants {
      */
     String HTTPS_PORT_METADATA = "https.port";
 
+    /**
+     * The key for registering a runtime HTTP host address with the {@link ZoneTopologyService}
+     */
+    String HTTP_HOST_METADATA = "http.host";
 }
