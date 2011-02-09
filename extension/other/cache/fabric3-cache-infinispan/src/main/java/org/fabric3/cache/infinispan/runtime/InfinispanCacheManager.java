@@ -89,7 +89,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
             ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
-            cacheManager = new DefaultCacheManager(inputStream);
+            //TODO at this time we are not including any configuration, due to jaxb class loading problem
+            cacheManager = new DefaultCacheManager(/*inputStream*/);
             cacheManager.start();
         } catch (UnsupportedEncodingException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);

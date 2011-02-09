@@ -56,4 +56,9 @@ public class InfinispanPhysicalTargetDefinition extends PhysicalTargetDefinition
     public String getCacheName() {
         return cacheName;
     }
+
+    @Override
+    public boolean isOptimizable() {
+        return true;
+    }
 }
