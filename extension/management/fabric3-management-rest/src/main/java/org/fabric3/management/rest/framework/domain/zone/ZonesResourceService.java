@@ -35,9 +35,8 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.domain;
+package org.fabric3.management.rest.framework.domain.zone;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,6 +46,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.RuntimeInstance;
@@ -76,23 +76,18 @@ public class ZonesResourceService {
 
     @ManagementOperation(path = "/")
     public Set<Link> getZones() {
-        try {
-            Set<Link> list = new HashSet<Link>();
-            Set<Zone> zones = topologyService.getZones();
-            for (Zone zone : zones) {
-                // calculate links for each zone by using the address of zone leaders
-                RuntimeInstance leader = zone.getRuntimes().get(0);
-                String httpPort = leader.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
-                String host = leader.getMetadata(String.class, HTTP_HOST_METADATA);
-                URL zoneUrl = new URL("http://" + host + ":" + httpPort + "/management/zone");
-                Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
-                list.add(link);
-            }
-            return list;
-        } catch (MalformedURLException e) {
-            // this should not happen
-            throw new AssertionError(e);
+        Set<Link> list = new HashSet<Link>();
+        Set<Zone> zones = topologyService.getZones();
+        for (Zone zone : zones) {
+            // calculate links for each zone by using the address of zone leaders
+            RuntimeInstance leader = zone.getRuntimes().get(0);
+            String httpPort = leader.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
+            String host = leader.getMetadata(String.class, HTTP_HOST_METADATA);
+            URL zoneUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/zone");
+            Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
+            list.add(link);
         }
+        return list;
     }
 
 }

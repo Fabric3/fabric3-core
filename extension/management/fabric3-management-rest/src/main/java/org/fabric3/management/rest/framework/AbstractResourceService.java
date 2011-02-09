@@ -74,17 +74,16 @@ public abstract class AbstractResourceService implements ResourceListener {
     }
 
     @ManagementOperation(path = "/")
-    public Resource getTransportResource(HttpServletRequest request) throws MalformedURLException {
-        String requestUrl = request.getRequestURL().toString();
-        URL selfHref = new URL(requestUrl);
-        SelfLink selfLink = new SelfLink(selfHref);
+    public Resource getTransportResource(HttpServletRequest request) {
+        SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
 
         populateResource(resource, request);
 
+        String requestUrl = request.getRequestURL().toString();
         for (ManagedArtifactMapping mapping : subresources) {
             String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
-            URL url = new URL(requestUrl + '/' + path);
+            URL url = ResourceHelper.createUrl(requestUrl + '/' + path);
             Link link = new Link(path, Link.EDIT_LINK, url);
             resource.setProperty(link.getName(), link);
         }

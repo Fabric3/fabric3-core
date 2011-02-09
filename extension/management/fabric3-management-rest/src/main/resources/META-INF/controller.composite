@@ -19,7 +19,11 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="ZonesResourceService">
-        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.ZonesResourceService"/>
+        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.zone.ZonesResourceService"/>
+    </component>
+
+    <component name="ContributionsResourceService">
+        <f3:implementation.system class="org.fabric3.management.rest.framework.domain.contribution.ContributionsResourceService"/>
     </component>
 
 </composite>

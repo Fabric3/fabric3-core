@@ -35,9 +35,13 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.domain;
+package org.fabric3.management.rest.framework.domain.contribution;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -49,59 +53,55 @@ import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.MetaDataStore;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
- * Produces the /domain resource.
+ * Produces the /domain/contributions resource.
  * <p/>
  * Note this resource is only present on the controller.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/domain")
-public class DistributedDomainResourceService {
-    private DomainTopologyService topologyService;
+@Management(path = "/domain/contributions")
+public class ContributionsResourceService {
+    private MetaDataStore store;
 
-    @Reference(required = false)
-    public void setTopologyService(DomainTopologyService topologyService) {
-        this.topologyService = topologyService;
+    public ContributionsResourceService(@Reference MetaDataStore store) {
+        this.store = store;
     }
 
     @ManagementOperation(path = "/")
-    public Resource getTransportResource(HttpServletRequest request) {
+    public Resource getContributions(HttpServletRequest request) {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
 
-        createContributionsLink(request, resource);
-        createDeploymentsLink(request, resource);
-        createZoneLinks(request, resource);
-
+        Set<Contribution> contributions = store.getContributions();
+        List<ContributionStatus> list = new ArrayList<ContributionStatus>();
+        for (Contribution contribution : contributions) {
+            URI uri = contribution.getUri();
+            Link link = createContributionLink(uri, request);
+            String state = contribution.getState().toString();
+            ContributionStatus status = new ContributionStatus(uri, state, link);
+            list.add(status);
+        }
+        resource.setProperty("contributions", list);
         return resource;
     }
 
-    private void createZoneLinks(HttpServletRequest request, Resource resource) {
-        if (topologyService == null) {
-            // running in single-VM mode, return
-            return;
-        }
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/zones");
-        Link link = new Link("zones", EDIT_LINK, url);
-        resource.setProperty("zones", link);
+    @ManagementOperation(path = "/contribution")
+    public ContributionResource getContribution(HttpServletRequest request) {
+        // TODO implement when templates are supported
+        return null;
     }
 
-    private void createContributionsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/contributions");
-        Link link = new Link("contributions", EDIT_LINK, url);
-        resource.setProperty("contributions", link);
-    }
-
-    private void createDeploymentsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/deployments");
-        Link link = new Link("deployments", EDIT_LINK, url);
-        resource.setProperty("deployments", link);
+    private Link createContributionLink(URI contributionUri, HttpServletRequest request) {
+        String uri = contributionUri.toString();
+        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/contribution/" + uri);
+        return new Link(uri, EDIT_LINK, url);
     }
 
 
