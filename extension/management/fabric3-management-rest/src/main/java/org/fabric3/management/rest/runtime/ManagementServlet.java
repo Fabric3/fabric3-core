@@ -100,15 +100,17 @@ public class ManagementServlet extends HttpServlet {
      */
     public void unRegister(ManagedArtifactMapping mapping) {
         String path = mapping.getPath();
+        boolean wildcard = mapping.isWildcard();
+        PathKey key = new PathKey(path, wildcard);
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
-            getMappings.remove(path);
+            getMappings.remove(key);
         } else if (verb == Verb.POST) {
-            postMappings.remove(path);
+            postMappings.remove(key);
         } else if (verb == Verb.PUT) {
-            putMappings.remove(path);
+            putMappings.remove(key);
         } else if (verb == Verb.DELETE) {
-            deleteMappings.remove(path);
+            deleteMappings.remove(key);
         }
     }
 
@@ -134,11 +136,11 @@ public class ManagementServlet extends HttpServlet {
 
     private void register(ManagedArtifactMapping mapping, Map<PathKey, ManagedArtifactMapping> mappings) throws DuplicateArtifactNameException {
         String path = mapping.getPath();
-        if (mappings.containsKey(path)) {
-            throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
-        }
         boolean wildcard = mapping.isWildcard();
         PathKey key = new PathKey(path, wildcard);
+        if (mappings.containsKey(key)) {
+            throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
+        }
         mappings.put(key, mapping);
 //        System.out.println("--->" + path);
     }
@@ -171,7 +173,7 @@ public class ManagementServlet extends HttpServlet {
             // avoid deserialization if the method does not take parameters
             params = deserialize(request, mapping);
         }
-        Object ret = invoke(mapping, params, request);
+        Object ret = invoke(mapping, params);
         if (ret != null) {
             serialize(ret, request, response, mapping);
         }
@@ -231,7 +233,7 @@ public class ManagementServlet extends HttpServlet {
         }
     }
 
-    private Object invoke(ManagedArtifactMapping mapping, Object[] params, HttpServletRequest request) throws IOException {
+    private Object invoke(ManagedArtifactMapping mapping, Object[] params) throws IOException {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {

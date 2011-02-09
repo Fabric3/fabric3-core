@@ -62,6 +62,7 @@ public class ManagedArtifactMapping {
      * @param path         the resource path of the managed artifact relative to the base management URL
      * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
      *                     resource, the path will be relative to the base management URL.
+     * @param wildcard     true if the path should be treated as a wildcard path
      * @param verb         the HTTP verb the management operation is mapped to
      * @param method       the management operation
      * @param instance     the managed artifact
@@ -70,6 +71,7 @@ public class ManagedArtifactMapping {
      */
     public ManagedArtifactMapping(String path,
                                   String relativePath,
+                                  boolean wildcard,
                                   Verb verb,
                                   Method method,
                                   Object instance,
@@ -101,6 +103,15 @@ public class ManagedArtifactMapping {
      */
     public String getRelativePath() {
         return relativePath;
+    }
+
+    /**
+     * True if the path should be treated as a wildcard path. For example, /foo/* will match /foo/bar and /foo/baz.
+     *
+     * @return true if the path should be treated as a wildcard path
+     */
+    public boolean isWildcard() {
+        return wildcard;
     }
 
     /**
@@ -148,7 +159,4 @@ public class ManagedArtifactMapping {
         return jaxbPair;
     }
 
-    public boolean isWildcard() {
-        return wildcard;
-    }
 }
