@@ -41,9 +41,6 @@ package org.fabric3.cache.infinispan.provision;
 import org.fabric3.cache.spi.CacheConfiguration;
 import org.w3c.dom.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Infinispan cache configuration.
  *
@@ -51,23 +48,23 @@ import java.util.List;
  */
 public class InfinispanConfiguration extends CacheConfiguration {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -4317772018610416411L;
 
-    private List<Document> configurations = new ArrayList<Document>();
+    private String cacheName;
 
-    public InfinispanConfiguration(Document configuration) {
-        addCacheConfiguration(configuration);
+    private Document configuration;
+
+    public InfinispanConfiguration(String cacheName, Document configuration) {
+        this.cacheName = cacheName;
+        this.configuration = configuration;
     }
 
-    public void addCacheConfiguration(Document configuration) {
-        configurations.add(configuration);
+    public Document getCacheConfiguration() {
+        return configuration;
     }
 
-    public List<Document> getCacheConfigurations() {
-        return configurations;
+    public String getCacheName() {
+        return cacheName;
     }
 }
 

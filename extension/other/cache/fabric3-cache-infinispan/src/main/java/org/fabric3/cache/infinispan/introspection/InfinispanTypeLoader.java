@@ -44,6 +44,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -70,7 +71,14 @@ public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefini
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
                     if ("cache".equals(reader.getName().getLocalPart())) {
-                        configurations.addCacheConfiguration(new InfinispanConfiguration(helper.transform(reader)));
+                        String name = reader.getAttributeValue("", "name");
+
+                        if (null == name) {
+                            throw new XMLStreamException("You have to specify a cache name.");
+                        }
+
+                        Document document = helper.transform(reader);
+                        configurations.addCacheConfiguration(new InfinispanConfiguration(name, document));
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:

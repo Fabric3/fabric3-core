@@ -55,6 +55,6 @@ public class InfinispanResourceReferenceGenerator implements ResourceReferenceGe
     public InfinispanPhysicalTargetDefinition generateWireTarget(LogicalResourceReference<InfinispanResourceReference> logicalResourceReference) throws GenerationException {
         InfinispanResourceReference ref = logicalResourceReference.getDefinition();
 
-        return new InfinispanPhysicalTargetDefinition(ref.getName());
+        return new InfinispanPhysicalTargetDefinition(ref.getCacheName());
     }
 }

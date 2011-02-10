@@ -39,9 +39,11 @@ package org.fabric3.cache.infinispan.runtime;
 
 import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
 import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.cache.spi.CacheRegistry;
 import org.fabric3.host.Fabric3Exception;
 import org.infinispan.manager.DefaultCacheManager;
-import org.w3c.dom.Document;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -56,27 +58,32 @@ import java.io.UnsupportedEncodingException;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
 
     private DefaultCacheManager cacheManager;
 
+    private CacheRegistry cacheRegistry;
+
+    public InfinispanCacheManager(@Reference CacheRegistry pCacheRegistry) {
+        cacheRegistry = pCacheRegistry;
+    }
+
     public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
         String config = "";
-        for (Document doc : configuration.getCacheConfigurations()) {
-            try {
-                Source source = new DOMSource(doc);
-                StringWriter writer = new StringWriter();
-                StreamResult result = new StreamResult(writer);
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.transform(source, result);
-                config += writer.toString();
-            } catch (TransformerConfigurationException e) {
-                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-            } catch (TransformerException e) {
-                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-            } catch (TransformerFactoryConfigurationError e) {
-                throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
-            }
+        try {
+            Source source = new DOMSource(configuration.getCacheConfiguration());
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.transform(source, result);
+            config += writer.toString();
+        } catch (TransformerConfigurationException e) {
+            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+        } catch (TransformerException e) {
+            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+        } catch (TransformerFactoryConfigurationError e) {
+            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
         }
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
@@ -92,6 +99,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
             //TODO at this time we are not including any configuration, due to jaxb class loading problem
             cacheManager = new DefaultCacheManager(/*inputStream*/);
             cacheManager.start();
+
+            cacheRegistry.register(configuration.getCacheName(), configuration);
         } catch (UnsupportedEncodingException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
         } catch (IOException e) {
@@ -104,6 +113,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
 
     public void remove(InfinispanConfiguration configuration) {
         cacheManager.stop();
+        cacheRegistry.unregister(configuration.getCacheName());
     }
 }
 

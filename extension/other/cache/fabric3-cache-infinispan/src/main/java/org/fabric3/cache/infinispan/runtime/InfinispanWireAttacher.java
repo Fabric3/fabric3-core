@@ -51,6 +51,8 @@ import org.fabric3.spi.wire.Wire;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import java.text.MessageFormat;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -75,7 +77,7 @@ public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhys
         String cacheName = target.getCacheName();
         CacheConfiguration source = registry.getCacheConfiguration(cacheName);
         if (source == null) {
-            throw new CacheNotFoundException("Cache not found: " + cacheName);
+            throw new CacheNotFoundException(MessageFormat.format("Cache not found: {0}. Is this a typo or you forgot to specify this cache.", cacheName));
         }
         return new SingletonObjectFactory<CacheConfiguration>(source);
     }
