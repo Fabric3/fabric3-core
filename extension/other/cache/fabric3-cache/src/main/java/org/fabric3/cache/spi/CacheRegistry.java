@@ -38,15 +38,16 @@
 package org.fabric3.cache.spi;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 public interface CacheRegistry {
 
-    CacheConfiguration getCacheConfiguration(String name);
+    ConcurrentMap getCache(String name);
 
-    Map<String, CacheConfiguration> getCacheConfigurations();
+    Map<String, ConcurrentMap> getCaches();
 
-    void register(String name, CacheConfiguration dataSource);
+    void register(String name, ConcurrentMap cache);
 
-    CacheConfiguration unregister(String name);
+    ConcurrentMap unregister(String name);
 
 }

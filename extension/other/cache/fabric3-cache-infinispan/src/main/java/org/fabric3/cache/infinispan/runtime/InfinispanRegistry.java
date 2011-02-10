@@ -38,7 +38,6 @@
 
 package org.fabric3.cache.infinispan.runtime;
 
-import org.fabric3.cache.spi.CacheConfiguration;
 import org.fabric3.cache.spi.CacheRegistry;
 
 import java.util.Map;
@@ -50,21 +49,21 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class InfinispanRegistry implements CacheRegistry {
 
-    ConcurrentMap<String, CacheConfiguration> caches = new ConcurrentHashMap<String, CacheConfiguration>();
+    ConcurrentMap<String, ConcurrentMap> caches = new ConcurrentHashMap<String, ConcurrentMap>();
 
-    public CacheConfiguration getCacheConfiguration(String name) {
+    public ConcurrentMap getCache(String name) {
         return caches.get(name);
     }
 
-    public Map<String, CacheConfiguration> getCacheConfigurations() {
+    public Map<String, ConcurrentMap> getCaches() {
         return caches;
     }
 
-    public void register(String name, CacheConfiguration cacheConfiguration) {
-        caches.put(name, cacheConfiguration);
+    public void register(String name, ConcurrentMap cache) {
+        caches.put(name, cache);
     }
 
-    public CacheConfiguration unregister(String name) {
+    public ConcurrentMap unregister(String name) {
         return caches.remove(name);
     }
 }

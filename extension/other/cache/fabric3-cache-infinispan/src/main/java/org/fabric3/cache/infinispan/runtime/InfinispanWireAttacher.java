@@ -39,7 +39,6 @@
 package org.fabric3.cache.infinispan.runtime;
 
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
-import org.fabric3.cache.spi.CacheConfiguration;
 import org.fabric3.cache.spi.CacheNotFoundException;
 import org.fabric3.cache.spi.CacheRegistry;
 import org.fabric3.spi.builder.WiringException;
@@ -51,6 +50,7 @@ import org.fabric3.spi.wire.Wire;
 import org.oasisopen.sca.annotation.Reference;
 
 import java.text.MessageFormat;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @version $Rev$ $Date$
@@ -71,12 +71,12 @@ public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhys
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<CacheConfiguration> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
+    public ObjectFactory<ConcurrentMap> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
         String cacheName = target.getCacheName();
-        CacheConfiguration source = registry.getCacheConfiguration(cacheName);
+        ConcurrentMap source = registry.getCache(cacheName);
         if (source == null) {
             throw new CacheNotFoundException(MessageFormat.format("Cache not found: {0}. Is this a typo or you forgot to specify this cache.", cacheName));
         }
-        return new SingletonObjectFactory<CacheConfiguration>(source);
+        return new SingletonObjectFactory<ConcurrentMap>(source);
     }
 }

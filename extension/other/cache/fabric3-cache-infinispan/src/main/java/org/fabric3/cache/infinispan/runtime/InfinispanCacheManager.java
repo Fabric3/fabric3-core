@@ -41,7 +41,10 @@ import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
 import org.fabric3.cache.spi.CacheManager;
 import org.fabric3.cache.spi.CacheRegistry;
 import org.fabric3.host.Fabric3Exception;
+import org.infinispan.config.Configuration;
+import org.infinispan.config.GlobalConfiguration;
 import org.infinispan.manager.DefaultCacheManager;
+import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,12 +64,24 @@ import java.io.UnsupportedEncodingException;
 @EagerInit
 public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
 
-    private DefaultCacheManager cacheManager;
+    private static DefaultCacheManager cacheManager;
 
     private CacheRegistry cacheRegistry;
 
+    static {
+        //TODO <michal.capo> not sure this will create singleton instance of cache manager due to classloading feature
+        // we are just using the default configuration
+        cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
+        cacheManager.start();
+    }
+
     public InfinispanCacheManager(@Reference CacheRegistry pCacheRegistry) {
         cacheRegistry = pCacheRegistry;
+    }
+
+    @Destroy
+    public void stopManager() {
+        cacheManager.stop();
     }
 
     public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
@@ -94,13 +109,12 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
             * This will help find classes.
             */
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+            String cacheName = configuration.getCacheName();
 
             ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
-            //TODO at this time we are not including any configuration, due to jaxb class loading problem
-            cacheManager = new DefaultCacheManager(/*inputStream*/);
-            cacheManager.start();
-
-            cacheRegistry.register(configuration.getCacheName(), configuration);
+            //TODO <michal.capo> at this time we are not including any configuration, due to jaxb class loading problem
+            cacheManager.defineConfiguration(configuration.getCacheName(), new Configuration());
+            cacheRegistry.register(cacheName, cacheManager.getCache(cacheName));
         } catch (UnsupportedEncodingException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
         } catch (IOException e) {
@@ -112,8 +126,10 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
     }
 
     public void remove(InfinispanConfiguration configuration) {
-        cacheManager.stop();
-        cacheRegistry.unregister(configuration.getCacheName());
+        String cacheName = configuration.getCacheName();
+
+        cacheManager.startCache(cacheName);
+        cacheRegistry.unregister(cacheName);
     }
 }
 
