@@ -79,7 +79,7 @@ public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
         if (cacheName.length() == 0) {
             MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
             context.addError(error);
-            return new InfinispanResourceReference(resourceName, contract, false, "");
+            return new InfinispanResourceReference(resourceName, contract, false, "error");
         }
         return new InfinispanResourceReference(resourceName, contract, false, cacheName);
     }

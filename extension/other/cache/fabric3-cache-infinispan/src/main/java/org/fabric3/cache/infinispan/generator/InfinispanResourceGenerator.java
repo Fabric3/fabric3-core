@@ -61,8 +61,3 @@ public class InfinispanResourceGenerator implements ResourceGenerator<Infinispan
         return new InfinispanPhysicalResourceDefinition(cacheConfigurations);
     }
 }
-
-
-
-
-

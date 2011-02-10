@@ -48,7 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
-import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import java.text.MessageFormat;
@@ -56,7 +55,6 @@ import java.text.MessageFormat;
 /**
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhysicalTargetDefinition> {
 
     private CacheRegistry registry;
@@ -73,7 +71,7 @@ public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhys
         throw new UnsupportedOperationException();
     }
 
-    public ObjectFactory<?> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
+    public ObjectFactory<CacheConfiguration> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
         String cacheName = target.getCacheName();
         CacheConfiguration source = registry.getCacheConfiguration(cacheName);
         if (source == null) {

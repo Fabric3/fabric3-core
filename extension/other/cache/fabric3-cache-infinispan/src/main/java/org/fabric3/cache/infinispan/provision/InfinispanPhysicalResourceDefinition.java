@@ -56,10 +56,6 @@ public class InfinispanPhysicalResourceDefinition extends PhysicalResourceDefini
         this.configurations = configurations;
     }
 
-    public void addCacheConfiguration(InfinispanConfiguration configuration) {
-        configurations.add(configuration);
-    }
-
     public List<InfinispanConfiguration> getCacheConfigurations() {
         return configurations;
     }
