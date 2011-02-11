@@ -40,6 +40,7 @@ package org.fabric3.management.rest.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.fabric3.management.rest.Constants;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -62,25 +63,26 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * Responsible for dispatching requests to a managed artifact.
+ * Responsible for dispatching requests to a managed resource.
  *
  * @version $Rev$ $Date$
  */
 public class ManagementServlet extends HttpServlet {
     private static final long serialVersionUID = 5554150494161533656L;
+    private ParamDeserializer deserializer = new ParamDeserializer();
 
-    private Map<PathKey, ManagedArtifactMapping> getMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
-    private Map<PathKey, ManagedArtifactMapping> postMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
-    private Map<PathKey, ManagedArtifactMapping> putMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
-    private Map<PathKey, ManagedArtifactMapping> deleteMappings = new ConcurrentHashMap<PathKey, ManagedArtifactMapping>();
+    private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
+    private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
+    private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<String, ResourceMapping>();
+    private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<String, ResourceMapping>();
 
     /**
      * Registers a mapping, making the managed resource available via HTTP.
      *
      * @param mapping the mapping
-     * @throws DuplicateArtifactNameException if a managed resource has already been registered for the path
+     * @throws DuplicateResourceNameException if a managed resource has already been registered for the path
      */
-    public void register(ManagedArtifactMapping mapping) throws DuplicateArtifactNameException {
+    public void register(ResourceMapping mapping) throws DuplicateResourceNameException {
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
             register(mapping, getMappings);
@@ -98,19 +100,17 @@ public class ManagementServlet extends HttpServlet {
      *
      * @param mapping the mapping
      */
-    public void unRegister(ManagedArtifactMapping mapping) {
+    public void unRegister(ResourceMapping mapping) {
         String path = mapping.getPath();
-        boolean wildcard = mapping.isWildcard();
-        PathKey key = new PathKey(path, wildcard);
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
-            getMappings.remove(key);
+            getMappings.remove(path);
         } else if (verb == Verb.POST) {
-            postMappings.remove(key);
+            postMappings.remove(path);
         } else if (verb == Verb.PUT) {
-            putMappings.remove(key);
+            putMappings.remove(path);
         } else if (verb == Verb.DELETE) {
-            deleteMappings.remove(key);
+            deleteMappings.remove(path);
         }
     }
 
@@ -134,29 +134,46 @@ public class ManagementServlet extends HttpServlet {
         handle(Verb.PUT, request, response);
     }
 
-    private void register(ManagedArtifactMapping mapping, Map<PathKey, ManagedArtifactMapping> mappings) throws DuplicateArtifactNameException {
+    /**
+     * Registers a resource mapping with the servlet.
+     *
+     * @param mapping  the resource mapping
+     * @param mappings the resource mappings for an HTTP verb
+     * @throws DuplicateResourceNameException if a resource for the path is already registered
+     */
+    private void register(ResourceMapping mapping, Map<String, ResourceMapping> mappings) throws DuplicateResourceNameException {
         String path = mapping.getPath();
-        boolean wildcard = mapping.isWildcard();
-        PathKey key = new PathKey(path, wildcard);
-        if (mappings.containsKey(key)) {
-            throw new DuplicateArtifactNameException("Artifact already registered at: " + path);
+        if (mappings.containsKey(path)) {
+            throw new DuplicateResourceNameException("Resource already registered at: " + path);
         }
-        mappings.put(key, mapping);
-//        System.out.println("--->" + path);
+        mappings.put(path, mapping);
     }
 
+    /**
+     * Resolves the resource mapping for a request and handles it. An exact path match will be attempted first when resolving the mapping and, if not
+     * found, resolution will be done using the parent path. For example, a parameterized path such as /messages/message/1 will first attempt to
+     * resolve using the full path and when not found will resolve using /messages/message.
+     *
+     * @param verb     the HTTP verb
+     * @param request  the current request
+     * @param response the current response
+     * @throws IOException if an error handling the request occurs
+     */
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo().toLowerCase();
-        PathKey key = new PathKey(pathInfo, false);
-        ManagedArtifactMapping mapping;
+        ResourceMapping mapping;
         if (verb == Verb.GET) {
-            mapping = getMappings.get(key);
+            mapping = getMappings.get(pathInfo);
+            if (mapping == null) {
+                String base = getBasePath(pathInfo);
+                mapping = getMappings.get(base);
+            }
         } else if (verb == Verb.POST) {
-            mapping = postMappings.get(key);
+            mapping = postMappings.get(pathInfo);
         } else if (verb == Verb.PUT) {
-            mapping = putMappings.get(key);
+            mapping = putMappings.get(pathInfo);
         } else {
-            mapping = deleteMappings.get(key);
+            mapping = deleteMappings.get(pathInfo);
         }
 
         if (mapping == null) {
@@ -175,65 +192,23 @@ public class ManagementServlet extends HttpServlet {
         }
         Object ret = invoke(mapping, params);
         if (ret != null) {
-            serialize(ret, request, response, mapping);
+            serialize(ret, mapping, request, response);
         }
     }
 
-    private boolean securityCheck(ManagedArtifactMapping mapping, HttpServletResponse response) {
+    private boolean securityCheck(ResourceMapping mapping, HttpServletResponse response) {
         return true;
     }
 
-    private Object[] deserialize(HttpServletRequest request, ManagedArtifactMapping mapping) throws IOException {
-        Class<?>[] types = mapping.getMethod().getParameterTypes();
-        if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
-            // if the parameter is HttpServletRequest, short-circuit deserialization
-            return new Object[]{request};
-        }
-        Transformer<InputStream, Object> transformer;
-        if (Constants.APPLICATION_XML.equals(request.getContentType())) {
-            transformer = mapping.getJaxbPair().getDeserializer();
-        } else {
-            // default to JSON
-            transformer = mapping.getJsonPair().getDeserializer();
-        }
-
-        ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
-        ServletInputStream stream = request.getInputStream();
-        try {
-            return new Object[]{transformer.transform(stream, loader)};
-        } catch (TransformationException e) {
-            throw new IOException(e);
-        }
-    }
-
-    private void serialize(Object payload, HttpServletRequest request, HttpServletResponse response, ManagedArtifactMapping mapping)
-            throws IOException {
-//        String[] contentTypes;
-//        String contentTypeValue = request.getHeader("Accept");
-//        if (contentTypeValue == null) {
-//            contentTypes = new String[]{Constants.APPLICATION_JSON};
-//        } else {
-//            contentTypes = contentTypeValue.split(",");
-//        }
-        ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
-        try {
-            Resource resource;
-            if (payload instanceof Resource) {
-                resource = (Resource) payload;
-            } else {
-                URL url = new URL(request.getRequestURL().toString());
-                SelfLink link = new SelfLink(url);
-                resource = new Resource(link);
-                resource.setProperty("value", payload);
-            }
-            byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
-            response.getOutputStream().write(output);
-        } catch (TransformationException e) {
-            throw new IOException(e);
-        }
-    }
-
-    private Object invoke(ManagedArtifactMapping mapping, Object[] params) throws IOException {
+    /**
+     * Invokes a resource.
+     *
+     * @param mapping the resource mapping
+     * @param params  the deserialized request parameters
+     * @return a return value or null
+     * @throws IOException if an error invoking the resource occurs
+     */
+    private Object invoke(ResourceMapping mapping, Object[] params) throws IOException {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
@@ -256,6 +231,98 @@ public class ManagementServlet extends HttpServlet {
         } finally {
             WorkContextTunnel.setThreadWorkContext(old);
         }
+    }
+
+    /**
+     * Deserializes a request body.
+     *
+     * @param mapping the resource mapping
+     * @param request the current request
+     * @return the deserialized request body
+     * @throws IOException if an error handling the request occurs
+     */
+    private Object[] deserialize(HttpServletRequest request, ResourceMapping mapping) throws IOException {
+        Method method = mapping.getMethod();
+        Class<?>[] types = method.getParameterTypes();
+        if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
+            // if the parameter is HttpServletRequest, short-circuit deserialization
+            return new Object[]{request};
+        } else if (types.length == 1) {
+            // parameters are encoded in the request URL
+            StringBuffer requestUrl = request.getRequestURL();
+            int pos = requestUrl.lastIndexOf("/");
+            if (pos < 0) {
+                throw new IOException("Expected parameterized URL: " + requestUrl);
+            }
+            String value = requestUrl.substring(pos + 1);
+            Object deserialized = deserializer.deserialize(value, method);
+            return new Object[]{deserialized};
+        } else {
+            Transformer<InputStream, Object> transformer;
+            if (Constants.APPLICATION_XML.equals(request.getContentType())) {
+                transformer = mapping.getJaxbPair().getDeserializer();
+            } else {
+                // default to JSON
+                transformer = mapping.getJsonPair().getDeserializer();
+            }
+
+            ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
+            ServletInputStream stream = request.getInputStream();
+            try {
+                return new Object[]{transformer.transform(stream, loader)};
+            } catch (TransformationException e) {
+                throw new IOException(e);
+            }
+        }
+    }
+
+    /**
+     * Serializes a response value.
+     *
+     * @param value    the response value
+     * @param mapping  the resource mapping
+     * @param request  the current request
+     * @param response the current response
+     * @throws IOException if an error handling the request occurs
+     */
+    private void serialize(Object value, ResourceMapping mapping, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        String[] contentTypes;
+//        String contentTypeValue = request.getHeader("Accept");
+//        if (contentTypeValue == null) {
+//            contentTypes = new String[]{Constants.APPLICATION_JSON};
+//        } else {
+//            contentTypes = contentTypeValue.split(",");
+//        }
+        ClassLoader loader = mapping.getInstance().getClass().getClassLoader();
+        try {
+            Resource resource;
+            if (value instanceof Resource) {
+                resource = (Resource) value;
+            } else {
+                URL url = new URL(request.getRequestURL().toString());
+                SelfLink link = new SelfLink(url);
+                resource = new Resource(link);
+                resource.setProperty("value", value);
+            }
+            byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
+            response.getOutputStream().write(output);
+        } catch (TransformationException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Removes a trailing parameter from a path. For example, the base path of messages/message/1 is messages/message.
+     *
+     * @param path the path
+     * @return the base path
+     */
+    private String getBasePath(String path) {
+        int pos = path.lastIndexOf("/");
+        if (pos > 0) {
+            path = path.substring(0, pos);
+        }
+        return path;
     }
 
 

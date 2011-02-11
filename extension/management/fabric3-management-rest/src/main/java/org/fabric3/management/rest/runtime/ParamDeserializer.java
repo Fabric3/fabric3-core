@@ -37,15 +37,32 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import org.fabric3.spi.management.ManagementException;
+import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DuplicateArtifactNameException extends ManagementException {
-    private static final long serialVersionUID = 1930062911837643976L;
+public class ParamDeserializer {
 
-    public DuplicateArtifactNameException(String message) {
-        super(message);
+    public Object deserialize(String value, Method method) throws IOException {
+        if (method.getParameterTypes().length != 1) {
+            throw new IOException("Invalid number of parameters: " + method);
+        }
+        Class<?> type = method.getParameterTypes()[0];
+        if (String.class.equals(type)) {
+            return value;
+        } else if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
+            return Integer.parseInt(value);
+        } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
+            return Long.parseLong(value);
+        } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
+            return Double.parseDouble(value);
+        } else if (Short.class.equals(type) || Short.TYPE.equals(type)) {
+            return Short.parseShort(value);
+        } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
+            return Float.parseFloat(value);
+        }
+        throw new IOException("Unsupported parameter type: " + method);
     }
 }

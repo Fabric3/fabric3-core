@@ -52,7 +52,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.model.type.contract.DataType;
@@ -129,7 +129,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             Class<?> clazz = classLoader.loadClass(info.getManagementClass());
             List<Method> methods = new ArrayList<Method>();
             boolean rootResourcePathOverride = false;
-            List<ManagedArtifactMapping> getMappings = new ArrayList<ManagedArtifactMapping>();
+            List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
             for (ManagementOperationInfo operationInfo : info.getOperations()) {
                 Signature signature = operationInfo.getSignature();
                 Method method = signature.getMethod(clazz);
@@ -146,7 +146,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                     rootResourcePathOverride = true;
                 }
                 OperationType type = operationInfo.getOperationType();
-                ManagedArtifactMapping mapping = createMapping(root, path, method, type, objectFactory, jsonPair, jaxbPair);
+                ResourceMapping mapping = createMapping(root, path, method, type, objectFactory, jsonPair, jaxbPair);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
@@ -175,7 +175,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                 ManagementOperation annotation = method.getAnnotation(ManagementOperation.class);
                 if (annotation != null) {
                     OperationType type = OperationType.valueOf(annotation.type().toString());
-                    ManagedArtifactMapping mapping = createMapping(root, EMPTY_PATH, method, type, instance, jsonPair, jaxbPair);
+                    ResourceMapping mapping = createMapping(root, EMPTY_PATH, method, type, instance, jsonPair, jaxbPair);
                     managementServlet.register(mapping);
                 }
             }
@@ -204,7 +204,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param jaxbPair the transformer pair for deserializing XML-based requests and serializing responses as XML
      * @return the mapping
      */
-    private ManagedArtifactMapping createMapping(String root,
+    private ResourceMapping createMapping(String root,
                                                  String path,
                                                  Method method,
                                                  OperationType type,
@@ -229,8 +229,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         } else {
             verb = Verb.valueOf(type.toString());
         }
-        boolean wildcard = method.getParameterTypes().length > 0;
-        return new ManagedArtifactMapping(rootPath, path, wildcard, verb, method, instance, jsonPair, jaxbPair);
+        return new ResourceMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair);
     }
 
     /**
@@ -240,17 +239,17 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param mappings the sub-resource mappings
      * @throws ManagementException if an error occurs creating the root resource
      */
-    private void createRootResource(String root, List<ManagedArtifactMapping> mappings) throws ManagementException {
+    private void createRootResource(String root, List<ResourceMapping> mappings) throws ManagementException {
         try {
             ResourceInvoker invoker = new ResourceInvoker(mappings);
             List<Method> methods = new ArrayList<Method>();
-            for (ManagedArtifactMapping mapping : mappings) {
+            for (ResourceMapping mapping : mappings) {
                 methods.add(mapping.getMethod());
             }
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             root = root.toLowerCase();
-            ManagedArtifactMapping mapping = new ManagedArtifactMapping(root, root, false, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
+            ResourceMapping mapping = new ResourceMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
             managementServlet.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);

@@ -42,11 +42,11 @@ import java.lang.reflect.Method;
 import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
- * Maps an operation on a managed artifact to a path relative to the management servlet and REST verb.
+ * Maps an operation on a managed resource to a path relative to the management servlet and REST verb.
  *
  * @version $Rev$ $Date$
  */
-public class ManagedArtifactMapping {
+public class ResourceMapping {
     private String path;
     String relativePath;
     private Verb verb;
@@ -54,7 +54,6 @@ public class ManagedArtifactMapping {
     private Object instance;
     private TransformerPair jsonPair;
     private TransformerPair jaxbPair;
-    private boolean wildcard;
 
     /**
      * Constructor.
@@ -62,21 +61,19 @@ public class ManagedArtifactMapping {
      * @param path         the resource path of the managed artifact relative to the base management URL
      * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
      *                     resource, the path will be relative to the base management URL.
-     * @param wildcard     true if the path should be treated as a wildcard path
      * @param verb         the HTTP verb the management operation is mapped to
      * @param method       the management operation
      * @param instance     the managed artifact
      * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
      * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
      */
-    public ManagedArtifactMapping(String path,
-                                  String relativePath,
-                                  boolean wildcard,
-                                  Verb verb,
-                                  Method method,
-                                  Object instance,
-                                  TransformerPair jsonPair,
-                                  TransformerPair jaxbPair) {
+    public ResourceMapping(String path,
+                           String relativePath,
+                           Verb verb,
+                           Method method,
+                           Object instance,
+                           TransformerPair jsonPair,
+                           TransformerPair jaxbPair) {
         this.path = path;
         this.relativePath = relativePath;
         this.verb = verb;
@@ -103,15 +100,6 @@ public class ManagedArtifactMapping {
      */
     public String getRelativePath() {
         return relativePath;
-    }
-
-    /**
-     * True if the path should be treated as a wildcard path. For example, /foo/* will match /foo/bar and /foo/baz.
-     *
-     * @return true if the path should be treated as a wildcard path
-     */
-    public boolean isWildcard() {
-        return wildcard;
     }
 
     /**

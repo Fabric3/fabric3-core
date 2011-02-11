@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -59,9 +59,9 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class ResourceInvoker {
-    List<ManagedArtifactMapping> mappings;
+    List<ResourceMapping> mappings;
 
-    public ResourceInvoker(List<ManagedArtifactMapping> mappings) {
+    public ResourceInvoker(List<ResourceMapping> mappings) {
         this.mappings = mappings;
     }
 
@@ -92,7 +92,7 @@ public class ResourceInvoker {
             Resource resource = new Resource(selfLink);
             List<Link> links = new ArrayList<Link>();
             // invoke the sub-resources and merge the responses into the root resource representation
-            for (ManagedArtifactMapping mapping : mappings) {
+            for (ResourceMapping mapping : mappings) {
                 Object object = invoke(mapping);
                 String relativePath = mapping.getRelativePath();
                 resource.setProperty(relativePath, object);
@@ -109,7 +109,7 @@ public class ResourceInvoker {
         }
     }
 
-    private Object invoke(ManagedArtifactMapping mapping) throws ResourceProcessingException {
+    private Object invoke(ResourceMapping mapping) throws ResourceProcessingException {
         try {
             Object instance = mapping.getInstance();
             if (instance instanceof ObjectFactory) {

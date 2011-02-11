@@ -49,6 +49,6 @@ public interface ResourceListener {
      *
      * @param mapping the root resource mapping
      */
-    void onRootResourceExport(ManagedArtifactMapping mapping);
+    void onRootResourceExport(ResourceMapping mapping);
 
 }

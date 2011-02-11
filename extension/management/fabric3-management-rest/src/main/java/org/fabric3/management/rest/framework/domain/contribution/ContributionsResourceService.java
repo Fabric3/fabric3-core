@@ -92,8 +92,8 @@ public class ContributionsResourceService {
         return resource;
     }
 
-    @ManagementOperation(path = "/contribution")
-    public ContributionResource getContribution(HttpServletRequest request) {
+    @ManagementOperation(path = "contribution")
+    public ContributionResource getContribution(String param) {
         // TODO implement when templates are supported
         return null;
     }

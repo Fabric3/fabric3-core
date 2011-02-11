@@ -37,42 +37,15 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import org.fabric3.spi.management.ManagementException;
+
 /**
- * Key used to match resource paths.
- *
  * @version $Rev$ $Date$
  */
-public class PathKey {
-    private String path;
-    boolean wildCard;
+public class DuplicateResourceNameException extends ManagementException {
+    private static final long serialVersionUID = 1930062911837643976L;
 
-    /**
-     * Constructor.
-     *
-     * @param path     the path
-     * @param wildCard true if a wildcard match should be made. For example, a wildcard path of /foo will match foo/bar and foo/baz
-     */
-    public PathKey(String path, boolean wildCard) {
-        this.path = path;
-        this.wildCard = wildCard;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PathKey other = (PathKey) o;
-
-        if (!wildCard) {
-            return path.equals(other.path);
-        }
-        return other.path.startsWith(path);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return path != null ? path.hashCode() : 0;
+    public DuplicateResourceNameException(String message) {
+        super(message);
     }
 }

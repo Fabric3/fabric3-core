@@ -37,7 +37,6 @@
 */
 package org.fabric3.management.rest.framework;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.management.rest.spi.ManagedArtifactMapping;
+import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.ResourceListener;
 
 /**
@@ -58,10 +57,10 @@ import org.fabric3.management.rest.spi.ResourceListener;
  */
 @Management
 public abstract class AbstractResourceService implements ResourceListener {
-    private List<ManagedArtifactMapping> subresources = new ArrayList<ManagedArtifactMapping>();
+    private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
 
 
-    public void onRootResourceExport(ManagedArtifactMapping mapping) {
+    public void onRootResourceExport(ResourceMapping mapping) {
         if (mapping.getInstance() == this) {
             // don't track requests for this instance
             return;
@@ -81,7 +80,7 @@ public abstract class AbstractResourceService implements ResourceListener {
         populateResource(resource, request);
 
         String requestUrl = request.getRequestURL().toString();
-        for (ManagedArtifactMapping mapping : subresources) {
+        for (ResourceMapping mapping : subresources) {
             String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
             URL url = ResourceHelper.createUrl(requestUrl + '/' + path);
             Link link = new Link(path, Link.EDIT_LINK, url);
