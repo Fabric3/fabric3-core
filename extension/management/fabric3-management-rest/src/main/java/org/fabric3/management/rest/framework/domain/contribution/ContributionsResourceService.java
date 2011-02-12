@@ -37,7 +37,9 @@
 */
 package org.fabric3.management.rest.framework.domain.contribution;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +53,13 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
+import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.Deployable;
+import org.fabric3.host.contribution.DuplicateContributionException;
+import org.fabric3.host.contribution.InputStreamContributionSource;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.management.rest.framework.ResourceHelper;
@@ -67,7 +73,15 @@ import org.fabric3.spi.contribution.MetaDataStore;
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
- * Produces the /domain/contributions resource.
+ * Handles the /domain/contributions resource and its sub-resources:
+ * <pre>
+ * <ul>
+ *  <li>GET /contributions - Returns installed contributions</ul>
+ *  <li>PUT /contributions/contribution/{uri} - Installs a contribution</ul>
+ *  <li>GET /contributions/contribution/{uri} - Returns information on the installed contribution</ul>
+ *  <li>DELETE /contributions/contribution/{uri} - Removes the installed contribution</ul>
+ * </ul>
+ * </pre>
  * <p/>
  * Note this resource is only present on the controller.
  *
@@ -107,6 +121,31 @@ public class ContributionsResourceService {
     }
 
     @ManagementOperation(path = "contribution")
+    public void createContribution(HttpServletRequest request) throws ResourceException {
+        String path = request.getPathInfo();
+        int pos = path.lastIndexOf("/");
+        String name = path.substring(pos + 1);
+        try {
+            URI uri = new URI(name);  // remove the leading "/"
+            ContributionSource source = new InputStreamContributionSource(uri, request.getInputStream());
+            contributionService.store(source);
+            contributionService.install(uri);
+        } catch (URISyntaxException e) {
+            monitor.error("Invalid contribution URI:", e);
+            throw new ResourceException(500, "Invalid contribution URI: " + name);
+        } catch (DuplicateContributionException e) {
+            monitor.error("Duplicate contribution:" + name, e);
+            throw new ResourceException(500, "Error creating contribution: " + name);
+        } catch (ContributionException e) {
+            monitor.error("Error creating contribution: " + name, e);
+            throw new ResourceException(500, "Error creating contribution: " + name);
+        } catch (IOException e) {
+            monitor.error("Error creating contribution: " + name, e);
+            throw new ResourceException(500, "Error creating contribution: " + name);
+        }
+    }
+
+    @ManagementOperation(path = "contribution")
     public Resource getContribution(String uri) throws ResourceException {
         URI contributionUri = URI.create(uri);
         Contribution contribution = store.find(contributionUri);
@@ -131,10 +170,10 @@ public class ContributionsResourceService {
             contributionService.remove(contributionUri);
         } catch (UninstallException e) {
             // TODO report better error
-            monitor.error("Error removing contribution: "+ uri, e);
+            monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(500, "Error removing contribution: " + uri);
         } catch (RemoveException e) {
-            monitor.error("Error removing contribution: "+ uri, e);
+            monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(500, "Error removing contribution: " + uri);
         } catch (ContributionNotFoundException e) {
             throw new ResourceException(404, "Contribution not found: " + uri);
