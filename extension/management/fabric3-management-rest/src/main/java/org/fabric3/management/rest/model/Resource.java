@@ -54,14 +54,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;
 
-    @JsonProperty
     private SelfLink selfLink;
     private Map<String, Object> properties;
 
-    /**
-     * Constructor for databinding.
-     */
-    private Resource() {
+    public Resource() {
     }
 
     public Resource(SelfLink selfLink) {
@@ -75,6 +71,15 @@ public class Resource implements Serializable {
      */
     public SelfLink getSelfLink() {
         return selfLink;
+    }
+
+    /**
+     * Sets the URL for this resource.
+     *
+     * @param selfLink URL for this resource
+     */
+    public void setSelfLink(SelfLink selfLink) {
+        this.selfLink = selfLink;
     }
 
     /**

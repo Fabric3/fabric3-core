@@ -35,63 +35,46 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.domain.contribution;
+package org.fabric3.management.rest.model;
 
-import java.net.URI;
-import java.util.List;
-import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.fabric3.management.rest.model.Resource;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * A contribution in the domain.
+ * Raised by framework services when an exception is encountered processing a resource request that must be returned to the client.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class ContributionResource extends Resource {
-    private static final long serialVersionUID = -6091215638459429825L;
-    private URI uri;
-    private String state;
-    private List<QName> deployables;
+public class ResourceException extends Fabric3Exception {
+    private static final long serialVersionUID = 228120523405433691L;
 
-    /**
-     * Constructor.
-     *
-     * @param uri         the contribution URI
-     * @param state       the contribution state
-     * @param deployables the qualified names of deployable composites contained in the contribution
-     */
-    public ContributionResource(URI uri, String state, List<QName> deployables) {
-        this.uri = uri;
-        this.state = state;
-        this.deployables = deployables;
+    private int status;
+    private Map<String, String> headers;
+
+    public ResourceException(int status, String message) {
+        super(message);
+        this.status = status;
     }
 
-    /**
-     * Returns the contribution URI.
-     *
-     * @return the contribution URI
-     */
-    public URI getUri() {
-        return uri;
+    public ResourceException(int status, String message, Throwable t) {
+        super(message, t);
+        this.status = status;
     }
 
-    /**
-     * Returns the contribution state.
-     *
-     * @return the contribution state
-     */
-    public String getState() {
-        return state;
+    public int getStatus() {
+        return status;
     }
 
-    /**
-     * Returns the qualified names of deployable composites contained in the contribution
-     *
-     * @return the qualified names of deployable composites contained in the contribution
-     */
-    public List<QName> getDeployables() {
-        return deployables;
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
+    public void addHeader(String key, String value) {
+        if (headers == null) {
+            headers = new HashMap<String, String>();
+        }
+        headers.put(key, value);
+    }
 }

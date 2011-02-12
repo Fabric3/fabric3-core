@@ -43,15 +43,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.contribution.Deployable;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -93,9 +96,20 @@ public class ContributionsResourceService {
     }
 
     @ManagementOperation(path = "contribution")
-    public ContributionResource getContribution(String param) {
-        // TODO implement when templates are supported
-        return null;
+    public Resource getContribution(String uri) throws ResourceException {
+        URI contributionUri = URI.create(uri);
+        Contribution contribution = store.find(contributionUri);
+        if (contribution == null) {
+            throw new ResourceException(404, "Contribution not found: " + uri);
+        }
+        String state = contribution.getState().toString();
+        List<Deployable> deployables = contribution.getManifest().getDeployables();
+        List<QName> names = new ArrayList<QName>();
+        for (Deployable deployable : deployables) {
+            QName name = deployable.getName();
+            names.add(name);
+        }
+        return new ContributionResource(contributionUri, state, names);
     }
 
     private Link createContributionLink(URI contributionUri, HttpServletRequest request) {

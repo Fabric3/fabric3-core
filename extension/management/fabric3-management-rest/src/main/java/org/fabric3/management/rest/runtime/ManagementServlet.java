@@ -188,7 +188,11 @@ public class ManagementServlet extends HttpServlet {
         Class<?>[] types = mapping.getMethod().getParameterTypes();
         if (types.length > 0) {
             // avoid deserialization if the method does not take parameters
-            params = deserialize(request, mapping);
+            if (verb == Verb.GET) {
+                params = deserializeUrlParams(request, mapping);
+            } else if (verb == Verb.PUT | verb == Verb.POST) {
+                params = deserializeInputStream(request, mapping);
+            }
         }
         Object ret = invoke(mapping, params);
         if (ret != null) {
@@ -234,14 +238,14 @@ public class ManagementServlet extends HttpServlet {
     }
 
     /**
-     * Deserializes a request body.
+     * Deserializes resource parameters from a request URL.
      *
      * @param mapping the resource mapping
      * @param request the current request
      * @return the deserialized request body
      * @throws IOException if an error handling the request occurs
      */
-    private Object[] deserialize(HttpServletRequest request, ResourceMapping mapping) throws IOException {
+    private Object[] deserializeUrlParams(HttpServletRequest request, ResourceMapping mapping) throws IOException {
         Method method = mapping.getMethod();
         Class<?>[] types = method.getParameterTypes();
         if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
@@ -255,9 +259,33 @@ public class ManagementServlet extends HttpServlet {
                 throw new IOException("Expected parameterized URL: " + requestUrl);
             }
             String value = requestUrl.substring(pos + 1);
+            if (value.length() == 0) {
+                // FIXME set HTTP response error
+                throw new IOException("Parameter must be specified: " + requestUrl);
+            }
             Object deserialized = deserializer.deserialize(value, method);
             return new Object[]{deserialized};
         } else {
+            // FIXME set HTTP response error
+            throw new IOException("Multiple parameter types not supported: " + method);
+        }
+    }
+
+    /**
+     * Deserializes resource parameters from a request stream.
+     *
+     * @param mapping the resource mapping
+     * @param request the current request
+     * @return the deserialized request body
+     * @throws IOException if an error handling the request occurs
+     */
+    private Object[] deserializeInputStream(HttpServletRequest request, ResourceMapping mapping) throws IOException {
+        Method method = mapping.getMethod();
+        Class<?>[] types = method.getParameterTypes();
+        if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
+            // if the parameter is HttpServletRequest, short-circuit deserialization
+            return new Object[]{request};
+        } else if (types.length == 1) {
             Transformer<InputStream, Object> transformer;
             if (Constants.APPLICATION_XML.equals(request.getContentType())) {
                 transformer = mapping.getJaxbPair().getDeserializer();
@@ -273,8 +301,12 @@ public class ManagementServlet extends HttpServlet {
             } catch (TransformationException e) {
                 throw new IOException(e);
             }
+        } else {
+            // FIXME set HTTP response error
+            throw new IOException("Multiple parameter types not supported: " + method);
         }
     }
+
 
     /**
      * Serializes a response value.
@@ -298,6 +330,11 @@ public class ManagementServlet extends HttpServlet {
             Resource resource;
             if (value instanceof Resource) {
                 resource = (Resource) value;
+                if (resource.getSelfLink() == null) {
+                    URL url = new URL(request.getRequestURL().toString());
+                    SelfLink link = new SelfLink(url);
+                    resource.setSelfLink(link);
+                }
             } else {
                 URL url = new URL(request.getRequestURL().toString());
                 SelfLink link = new SelfLink(url);
