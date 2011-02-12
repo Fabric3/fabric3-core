@@ -170,10 +170,22 @@ public class ManagementServlet extends HttpServlet {
             }
         } else if (verb == Verb.POST) {
             mapping = postMappings.get(pathInfo);
+            if (mapping == null) {
+                String base = getBasePath(pathInfo);
+                mapping = postMappings.get(base);
+            }
         } else if (verb == Verb.PUT) {
             mapping = putMappings.get(pathInfo);
+            if (mapping == null) {
+                String base = getBasePath(pathInfo);
+                mapping = putMappings.get(base);
+            }
         } else {
             mapping = deleteMappings.get(pathInfo);
+            if (mapping == null) {
+                String base = getBasePath(pathInfo);
+                mapping = deleteMappings.get(base);
+            }
         }
 
         if (mapping == null) {
@@ -188,7 +200,7 @@ public class ManagementServlet extends HttpServlet {
         Class<?>[] types = mapping.getMethod().getParameterTypes();
         if (types.length > 0) {
             // avoid deserialization if the method does not take parameters
-            if (verb == Verb.GET) {
+            if (verb == Verb.GET || verb == Verb.DELETE) {
                 params = deserializeUrlParams(request, mapping);
             } else if (verb == Verb.PUT | verb == Verb.POST) {
                 params = deserializeInputStream(request, mapping);

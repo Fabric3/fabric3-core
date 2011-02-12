@@ -50,7 +50,12 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.contribution.ContributionNotFoundException;
+import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.Deployable;
+import org.fabric3.host.contribution.RemoveException;
+import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
@@ -71,10 +76,16 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 @EagerInit
 @Management(path = "/domain/contributions")
 public class ContributionsResourceService {
+    private ContributionService contributionService;
     private MetaDataStore store;
+    private ContributionsResourceMonitor monitor;
 
-    public ContributionsResourceService(@Reference MetaDataStore store) {
+    public ContributionsResourceService(@Reference ContributionService contributionService,
+                                        @Reference MetaDataStore store,
+                                        @Monitor ContributionsResourceMonitor monitor) {
+        this.contributionService = contributionService;
         this.store = store;
+        this.monitor = monitor;
     }
 
     @ManagementOperation(path = "/")
@@ -110,6 +121,24 @@ public class ContributionsResourceService {
             names.add(name);
         }
         return new ContributionResource(contributionUri, state, names);
+    }
+
+    @ManagementOperation(path = "contribution")
+    public void deleteContribution(String uri) throws ResourceException {
+        URI contributionUri = URI.create(uri);
+        try {
+            contributionService.uninstall(contributionUri);
+            contributionService.remove(contributionUri);
+        } catch (UninstallException e) {
+            // TODO report better error
+            monitor.error("Error removing contribution: "+ uri, e);
+            throw new ResourceException(500, "Error removing contribution: " + uri);
+        } catch (RemoveException e) {
+            monitor.error("Error removing contribution: "+ uri, e);
+            throw new ResourceException(500, "Error removing contribution: " + uri);
+        } catch (ContributionNotFoundException e) {
+            throw new ResourceException(404, "Contribution not found: " + uri);
+        }
     }
 
     private Link createContributionLink(URI contributionUri, HttpServletRequest request) {
