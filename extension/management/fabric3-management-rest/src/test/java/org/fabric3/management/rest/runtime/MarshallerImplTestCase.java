@@ -40,11 +40,12 @@ package org.fabric3.management.rest.runtime;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev: 9966 $ $Date: 2011-02-09 18:47:30 +0100 (Wed, 09 Feb 2011) $
  */
-public class ParamDeserializerTestCase extends TestCase {
+public class MarshallerImplTestCase extends TestCase {
     private Method testString;
     private Method testShort;
     private Method testInteger;
@@ -53,7 +54,8 @@ public class ParamDeserializerTestCase extends TestCase {
     private Method testFloat;
 
     public void testDeserialize() throws Exception {
-        ParamDeserializer deserializer = new ParamDeserializer();
+        ManagementMonitor monitor = EasyMock.createNiceMock(ManagementMonitor.class);
+        MarshallerImpl deserializer = new MarshallerImpl(monitor);
         assertEquals("test", deserializer.deserialize("test", testString));
         assertEquals((short) 1, deserializer.deserialize("1", testShort));
         assertEquals(1, deserializer.deserialize("1", testInteger));

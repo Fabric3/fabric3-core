@@ -35,9 +35,8 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.domain.contribution;
+package org.fabric3.management.rest.framework.domain.deployment;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -52,17 +51,20 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.ContributionNotFoundException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.contribution.DuplicateContributionException;
-import org.fabric3.host.contribution.InputStreamContributionSource;
-import org.fabric3.host.contribution.RemoveException;
-import org.fabric3.host.contribution.UninstallException;
+import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.host.domain.ContributionNotInstalledException;
+import org.fabric3.host.domain.DeployableNotFoundException;
+import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.host.domain.Domain;
+import org.fabric3.management.domain.ContributionNotInstalledManagementException;
+import org.fabric3.management.domain.InvalidDeploymentException;
 import org.fabric3.management.rest.framework.ResourceHelper;
+import org.fabric3.management.rest.framework.domain.contribution.ContributionStatus;
 import org.fabric3.management.rest.model.HttpHeaders;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
@@ -79,10 +81,9 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
  * Handles the /domain/contributions resource and its sub-resources:
  * <pre>
  * <ul>
- *  <li>GET /contributions - Returns installed contributions</ul>
- *  <li>PUT /contributions/contribution/{uri} - Installs a contribution</ul>
- *  <li>GET /contributions/contribution/{uri} - Returns information on the installed contribution</ul>
- *  <li>DELETE /contributions/contribution/{uri} - Removes the installed contribution</ul>
+ *  <li>GET /deployments - Returns deployed contributions</ul>
+ *  <li>PUT /deployments/contribution/{uri} - Deploys a contribution</ul>
+ *  <li>DELETE /deployments/contribution/{uri} - Un-deploys a contribution</ul>
  * </ul>
  * </pre>
  * <p/>
@@ -91,98 +92,106 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/domain/contributions")
-public class ContributionsResourceService {
-    private ContributionService contributionService;
+@Management(path = "/domain/deployments")
+public class DeploymentsResourceService {
+    private Domain domain;
+    private DomainResourceMonitor monitor;
     private MetaDataStore store;
-    private ContributionsResourceMonitor monitor;
 
-    public ContributionsResourceService(@Reference ContributionService contributionService,
-                                        @Reference MetaDataStore store,
-                                        @Monitor ContributionsResourceMonitor monitor) {
-        this.contributionService = contributionService;
-        this.store = store;
+    public DeploymentsResourceService(@Reference(name = "domain") Domain domain,
+                                      @Reference MetaDataStore store,
+                                      @Monitor DomainResourceMonitor monitor) {
+        this.domain = domain;
         this.monitor = monitor;
+        this.store = store;
     }
 
     @ManagementOperation(path = "/")
-    public Resource getContributions(HttpServletRequest request) {
+    public Resource getDeployments(HttpServletRequest request) {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
 
         Set<Contribution> contributions = store.getContributions();
-        List<ContributionStatus> list = new ArrayList<ContributionStatus>();
+        List<URI> list = new ArrayList<URI>();
         for (Contribution contribution : contributions) {
+            if (contribution.getLockOwners().isEmpty()) {
+                // not deployed
+                continue;
+            }
             URI uri = contribution.getUri();
-            Link link = createContributionLink(uri, request);
-            String state = contribution.getState().toString();
-            ContributionStatus status = new ContributionStatus(uri, state, link);
-            list.add(status);
+            list.add(uri);
         }
         resource.setProperty("contributions", list);
         return resource;
     }
 
-    @ManagementOperation(path = "contribution")
-    public Response createContribution(HttpServletRequest request) throws ResourceException {
+    @ManagementOperation(type = OperationType.POST, path = "contribution")
+    public Response deploy(HttpServletRequest request) throws ResourceException {
         String path = request.getPathInfo();
         int pos = path.lastIndexOf("/");
         String name = path.substring(pos + 1);
         try {
             URI uri = new URI(name);  // remove the leading "/"
-            ContributionSource source = new InputStreamContributionSource(uri, request.getInputStream());
-            contributionService.store(source);
-            contributionService.install(uri);
+
+            Contribution contribution = store.find(uri);
+            if (contribution == null) {
+                throw new ResourceException(HttpStatus.NOT_FOUND, "Contribution not found: " + uri);
+            }
+            try {
+                domain.activateDefinitions(uri);
+            } catch (DeploymentException e) {
+                throw new AssertionError(e);
+//                throw new ContributionNotInstalledManagementException(e.getMessage());
+            }
+            for (Deployable deployable : contribution.getManifest().getDeployables()) {
+                QName deployableName = deployable.getName();
+                try {
+                  //  if (plan == null) {
+                        domain.include(deployableName);
+                  //  } else {
+                  //      domain.include(deployableName, plan);
+                  //  }
+                } catch (ContributionNotInstalledException e) {
+                    throw new AssertionError(e);
+//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                } catch (AssemblyException e) {
+                    List<String> errors = new ArrayList<String>();
+                    for (AssemblyFailure error : e.getErrors()) {
+                        errors.add(error.getMessage() + " (" + error.getContributionUri() + ")");
+                    }
+                    throw new AssertionError(e);
+//                    throw new InvalidDeploymentException("Error deploying " + uri, errors);
+                } catch (CompositeAlreadyDeployedException e) {
+                    throw new AssertionError(e);
+//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                } catch (DeployableNotFoundException e) {
+                    throw new AssertionError(e);
+//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                } catch (DeploymentException e) {
+                    throw new AssertionError(e);
+//                   reportError(uri, e);
+                }
+
+            }
+
             Response response = new Response(HttpStatus.CREATED);
             response.addHeader(HttpHeaders.LOCATION, path);
             return response;
         } catch (URISyntaxException e) {
             monitor.error("Invalid contribution URI:", e);
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution URI: " + name);
-        } catch (DuplicateContributionException e) {
-            monitor.error("Duplicate contribution:" + name, e);
-            throw new ResourceException(HttpStatus.CONFLICT, "Contribution already exists: " + name);
-        } catch (ContributionException e) {
-            monitor.error("Error creating contribution: " + name, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
-        } catch (IOException e) {
-            monitor.error("Error creating contribution: " + name, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
         }
     }
 
-    @ManagementOperation(path = "contribution")
-    public Resource getContribution(String uri) throws ResourceException {
-        URI contributionUri = URI.create(uri);
-        Contribution contribution = store.find(contributionUri);
-        if (contribution == null) {
-            throw new ResourceException(HttpStatus.NOT_FOUND, "Contribution not found: " + uri);
-        }
-        String state = contribution.getState().toString();
-        List<Deployable> deployables = contribution.getManifest().getDeployables();
-        List<QName> names = new ArrayList<QName>();
-        for (Deployable deployable : deployables) {
-            QName name = deployable.getName();
-            names.add(name);
-        }
-        return new ContributionResource(contributionUri, state, names);
-    }
-
-    @ManagementOperation(path = "contribution")
-    public void deleteContribution(String uri) throws ResourceException {
+    @ManagementOperation(type = OperationType.DELETE, path = "contribution")
+    public void undeploy(String uri) throws ResourceException {
         URI contributionUri = URI.create(uri);
         try {
-            contributionService.uninstall(contributionUri);
-            contributionService.remove(contributionUri);
-        } catch (UninstallException e) {
+            domain.undeploy(contributionUri, false);
+        } catch (DeploymentException e) {
             // TODO report better error
             monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
-        } catch (RemoveException e) {
-            monitor.error("Error removing contribution: " + uri, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
-        } catch (ContributionNotFoundException e) {
-            throw new ResourceException(HttpStatus.NOT_FOUND, "Contribution not found: " + uri);
         }
     }
 

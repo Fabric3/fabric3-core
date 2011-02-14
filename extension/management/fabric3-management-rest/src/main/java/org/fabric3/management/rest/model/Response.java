@@ -40,49 +40,34 @@ package org.fabric3.management.rest.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
- * Raised by framework services when an exception is encountered processing a resource request that must be returned to the client.
+ * A response returned by a resource framework service.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class ResourceException extends Fabric3Exception {
-    private static final long serialVersionUID = 228120523405433691L;
-
+public class Response {
     private HttpStatus status;
     private Map<String, String> headers;
+    private Object entity;
 
     /**
      * Constructor.
      *
      * @param status the HTTP status that should be sent to the client
      */
-    public ResourceException(HttpStatus status) {
+    public Response(HttpStatus status) {
         this.status = status;
     }
 
     /**
      * Constructor.
      *
-     * @param status  the HTTP status that should be sent to the client
-     * @param message a message that should be returned to the client
+     * @param status the HTTP status that should be sent to the client
+     * @param entity the resource representation that should be returned to the client
      */
-    public ResourceException(HttpStatus status, String message) {
-        super(message);
+    public Response(HttpStatus status, Object entity) {
         this.status = status;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param status  the HTTP status that should be sent to the client
-     * @param message a message that should be returned to the client
-     * @param t       the root exception
-     */
-    public ResourceException(HttpStatus status, String message, Throwable t) {
-        super(message, t);
-        this.status = status;
+        this.entity = entity;
     }
 
     /**
@@ -101,6 +86,15 @@ public class ResourceException extends Fabric3Exception {
      */
     public Map<String, String> getHeaders() {
         return headers;
+    }
+
+    /**
+     * Returns the resource representation that should be returned to the client/
+     *
+     * @return the resource representation that should be returned to the client
+     */
+    public Object getEntity() {
+        return entity;
     }
 
     /**

@@ -52,8 +52,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.management.rest.spi.ResourceMapping;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.management.rest.spi.ResourceListener;
+import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
@@ -82,17 +83,21 @@ public class RestfulManagementExtension implements ManagementExtension {
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";
 
-    private Method rootResourceMethod;
-    private ServletHost servletHost;
-    private ManagementServlet managementServlet;
     private TransformerPairService pairService;
+    private ServletHost servletHost;
+
+    private Method rootResourceMethod;
+    private ManagementServlet managementServlet;
 
     private List<ResourceListener> listeners = Collections.emptyList();
 
-    public RestfulManagementExtension(@Reference TransformerPairService pairService, @Reference ServletHost servletHost) {
+    public RestfulManagementExtension(@Reference TransformerPairService pairService,
+                                      @Reference ServletHost servletHost,
+                                      @Reference Marshaller marshaller,
+                                      @Monitor ManagementMonitor monitor) {
         this.pairService = pairService;
         this.servletHost = servletHost;
-        managementServlet = new ManagementServlet();
+        managementServlet = new ManagementServlet(marshaller, monitor);
     }
 
     /**
@@ -205,12 +210,12 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @return the mapping
      */
     private ResourceMapping createMapping(String root,
-                                                 String path,
-                                                 Method method,
-                                                 OperationType type,
-                                                 Object instance,
-                                                 TransformerPair jsonPair,
-                                                 TransformerPair jaxbPair) {
+                                          String path,
+                                          Method method,
+                                          OperationType type,
+                                          Object instance,
+                                          TransformerPair jsonPair,
+                                          TransformerPair jaxbPair) {
         String methodName = method.getName();
         String rootPath;
         if (path.length() == 0) {
