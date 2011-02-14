@@ -114,8 +114,8 @@ public class DeploymentsResourceService {
         Set<Contribution> contributions = store.getContributions();
         List<URI> list = new ArrayList<URI>();
         for (Contribution contribution : contributions) {
-            if (contribution.getLockOwners().isEmpty()) {
-                // not deployed
+            if (contribution.getLockOwners().isEmpty() && !contribution.getManifest().isExtension()) {
+                // not deployed or not deployed to the application domain
                 continue;
             }
             URI uri = contribution.getUri();
