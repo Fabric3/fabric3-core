@@ -46,6 +46,11 @@
             <artifactId>fabric3-contribution-scanner-war</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
