@@ -71,13 +71,14 @@ public class DistributedDomainResourceService {
     }
 
     @ManagementOperation(path = "/")
-    public Resource getTransportResource(HttpServletRequest request) {
+    public Resource getDomainResource(HttpServletRequest request) {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
 
+        createZoneLinks(request, resource);
         createContributionsLink(request, resource);
         createDeploymentsLink(request, resource);
-        createZoneLinks(request, resource);
+        createComponentsLink(request, resource);
 
         return resource;
     }
@@ -102,6 +103,12 @@ public class DistributedDomainResourceService {
         URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/deployments");
         Link link = new Link("deployments", EDIT_LINK, url);
         resource.setProperty("deployments", link);
+    }
+
+    private void createComponentsLink(HttpServletRequest request, Resource resource) {
+        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/components");
+        Link link = new Link("components", EDIT_LINK, url);
+        resource.setProperty("components", link);
     }
 
 

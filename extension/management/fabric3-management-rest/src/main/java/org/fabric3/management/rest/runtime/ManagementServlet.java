@@ -159,7 +159,7 @@ public class ManagementServlet extends HttpServlet {
      */
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) {
         String pathInfo = request.getPathInfo().toLowerCase();
-        ResourceMapping mapping = getMapping(verb, pathInfo);
+        ResourceMapping mapping = resolveMapping(verb, pathInfo);
         if (mapping == null) {
             response.setStatus(404);
             try {
@@ -184,40 +184,48 @@ public class ManagementServlet extends HttpServlet {
     }
 
     /**
-     * Returns the resource mapping for a verb/path pair
+     * Resolves the resource mapping for a verb/path pair
      *
      * @param verb the HTTP verb
      * @param path the HTTP path
      * @return the resource mapping or null if not found
      */
-    private ResourceMapping getMapping(Verb verb, String path) {
+    private ResourceMapping resolveMapping(Verb verb, String path) {
         ResourceMapping mapping;
         if (verb == Verb.GET) {
-            mapping = getMappings.get(path);
-            if (mapping == null) {
-                String base = getBasePath(path);
-                mapping = getMappings.get(base);
-            }
+            mapping = resolve(path, getMappings);
         } else if (verb == Verb.POST) {
-            mapping = postMappings.get(path);
-            if (mapping == null) {
-                String base = getBasePath(path);
-                mapping = postMappings.get(base);
-            }
+            mapping = resolve(path, postMappings);
         } else if (verb == Verb.PUT) {
-            mapping = putMappings.get(path);
-            if (mapping == null) {
-                String base = getBasePath(path);
-                mapping = putMappings.get(base);
-            }
+            mapping = resolve(path, putMappings);
         } else {
-            mapping = deleteMappings.get(path);
-            if (mapping == null) {
-                String base = getBasePath(path);
-                mapping = deleteMappings.get(base);
-            }
+            mapping = resolve(path, deleteMappings);
         }
         return mapping;
+    }
+
+    /**
+     * Resolves a mapping by walking a path hierarchy and matching against registered mappings. For example, resolution of the path /foo/bar/baz will
+     * be done in the following order: /foo/bar/baz; /foo/bar; and /foo.
+     *
+     * @param path     the path
+     * @param mappings the registered mappings
+     * @return a mating mapping or null
+     */
+    private ResourceMapping resolve(String path, Map<String, ResourceMapping> mappings) {
+        while (path != null) {
+            ResourceMapping mapping = mappings.get(path);
+            if (mapping != null && mapping.isParameterized()) {
+                return mapping;
+            }
+            String current = getBasePath(path);
+            if (path.equals(current)) {
+                // reached the path hierarchy root
+                break;
+            }
+            path = current;
+        }
+        return null;
     }
 
     private boolean securityCheck(ResourceMapping mapping, HttpServletResponse response) {

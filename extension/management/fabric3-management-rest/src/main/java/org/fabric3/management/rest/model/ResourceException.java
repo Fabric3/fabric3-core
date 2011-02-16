@@ -37,6 +37,8 @@
 */
 package org.fabric3.management.rest.model;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,6 +102,9 @@ public class ResourceException extends Fabric3Exception {
      * @return the HTTP headers that should be sent to the client
      */
     public Map<String, String> getHeaders() {
+        if (headers == null) {
+            return Collections.emptyMap();
+        }
         return headers;
     }
 

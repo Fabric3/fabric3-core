@@ -35,82 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.model;
+package org.fabric3.management.rest.framework.domain.component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A response returned by a resource framework service.
+ * A deployed composite.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class Response {
-    private HttpStatus status;
-    private Map<String, String> headers;
-    private Object entity;
+public class CompositeResource extends ComponentResource {
+    private static final long serialVersionUID = -2376688479953947981L;
+    private List<ComponentResource> components = new ArrayList<ComponentResource>();
 
     /**
      * Constructor.
      *
-     * @param status the HTTP status that should be sent to the client
+     * @param uri the composite URI
      */
-    public Response(HttpStatus status) {
-        this.status = status;
+    public CompositeResource(URI uri) {
+        super(uri);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param status the HTTP status that should be sent to the client
-     * @param entity the resource representation that should be returned to the client
-     */
-    public Response(HttpStatus status, Object entity) {
-        this.status = status;
-        this.entity = entity;
+    public void addComponent(ComponentResource resource) {
+        components.add(resource);
     }
 
-    /**
-     * Returns the HTTP status that should be sent to the client.
-     *
-     * @return the HTTP status that should be sent to the client
-     */
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    /**
-     * Returns the resource representation that should be returned to the client/
-     *
-     * @return the resource representation that should be returned to the client
-     */
-    public Object getEntity() {
-        return entity;
-    }
-
-    /**
-     * Returns the HTTP headers that should be sent to the client.
-     *
-     * @return the HTTP headers that should be sent to the client
-     */
-    public Map<String, String> getHeaders() {
-        if (headers == null) {
-            return Collections.emptyMap();
-        }
-        return headers;
-    }
-
-    /**
-     * Adds an HTTP header.
-     *
-     * @param name  the header name
-     * @param value the header value
-     */
-    public void addHeader(String name, String value) {
-        if (headers == null) {
-            headers = new HashMap<String, String>();
-        }
-        headers.put(name, value);
+    public List<ComponentResource> getComponents() {
+        return components;
     }
 }

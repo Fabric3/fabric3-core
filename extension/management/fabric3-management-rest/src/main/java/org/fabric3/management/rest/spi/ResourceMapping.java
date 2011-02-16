@@ -86,7 +86,7 @@ public class ResourceMapping {
     /**
      * Returns the path relative to the base management URL the operation should be mapped to.
      *
-     * @return the path relative to the base management URL the operation should be mapped to.
+     * @return the path relative to the base management URL the operation should be mapped to
      */
     public String getPath() {
         return path;
@@ -96,25 +96,35 @@ public class ResourceMapping {
      * Returns the path relative to its containing resource.  If the managed artifact is a top-level resource, the path will be relative to the base
      * management URL.
      *
-     * @return the path relative to its containing resource.
+     * @return the path relative to its containing resource
      */
     public String getRelativePath() {
         return relativePath;
     }
 
     /**
+     * Returns true if the path is parameterized. That is, if the resource operation takes part of the URL as a parameter.
+     *
+     * @return true if the path is parameterized
+     */
+    public boolean isParameterized() {
+        return method.getParameterTypes().length > 0;
+    }
+
+    /**
      * Returns the verb the operation is mapped to.
      *
-     * @return the verb the operation is mapped to.
+     * @return the verb the operation is mapped to
      */
     public Verb getVerb() {
         return verb;
     }
 
+
     /**
      * Returns the operation.
      *
-     * @return the operation.
+     * @return the operation
      */
     public Method getMethod() {
         return method;
