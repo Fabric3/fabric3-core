@@ -63,7 +63,10 @@ public enum HttpStatus {
     PRECONDITION_FAILED(412, "Precondition Failed"),
     UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    SERVICE_UNAVAILABLE(503, "Service Unavailable");
+    SERVICE_UNAVAILABLE(503, "Service Unavailable"),
+
+    // custom status codes
+    VALIDATION_ERROR(420, "Validation Error");
 
 
     private int code;

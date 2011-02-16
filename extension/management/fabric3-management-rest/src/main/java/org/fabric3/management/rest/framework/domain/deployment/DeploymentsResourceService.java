@@ -57,14 +57,10 @@ import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.AssemblyFailure;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.host.domain.ContributionNotInstalledException;
 import org.fabric3.host.domain.DeployableNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.management.domain.ContributionNotInstalledManagementException;
-import org.fabric3.management.domain.InvalidDeploymentException;
 import org.fabric3.management.rest.framework.ResourceHelper;
-import org.fabric3.management.rest.framework.domain.contribution.ContributionStatus;
 import org.fabric3.management.rest.model.HttpHeaders;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
@@ -140,36 +136,26 @@ public class DeploymentsResourceService {
             try {
                 domain.activateDefinitions(uri);
             } catch (DeploymentException e) {
-                throw new AssertionError(e);
-//                throw new ContributionNotInstalledManagementException(e.getMessage());
+                monitor.error("Error activating definitions: " + uri, e);
+                return new Response(HttpStatus.BAD_REQUEST, "Error activating definitions " + uri + ": " + e.getMessage());
             }
             for (Deployable deployable : contribution.getManifest().getDeployables()) {
                 QName deployableName = deployable.getName();
                 try {
-                  //  if (plan == null) {
-                        domain.include(deployableName);
-                  //  } else {
-                  //      domain.include(deployableName, plan);
-                  //  }
-                } catch (ContributionNotInstalledException e) {
-                    throw new AssertionError(e);
-//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                    domain.include(deployableName);
                 } catch (AssemblyException e) {
                     List<String> errors = new ArrayList<String>();
                     for (AssemblyFailure error : e.getErrors()) {
                         errors.add(error.getMessage() + " (" + error.getContributionUri() + ")");
                     }
-                    throw new AssertionError(e);
-//                    throw new InvalidDeploymentException("Error deploying " + uri, errors);
+                    return new Response(HttpStatus.VALIDATION_ERROR, errors);
                 } catch (CompositeAlreadyDeployedException e) {
-                    throw new AssertionError(e);
-//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                    return new Response(HttpStatus.CONFLICT, "Composite already deployed: " + deployableName);
                 } catch (DeployableNotFoundException e) {
-                    throw new AssertionError(e);
-//                    throw new ContributionNotInstalledManagementException(e.getMessage());
+                    return new Response(HttpStatus.NOT_FOUND, "Composite not found: " + deployableName);
                 } catch (DeploymentException e) {
-                    throw new AssertionError(e);
-//                   reportError(uri, e);
+                    monitor.error("Error deploying composite " + deployableName, e);
+                    return new Response(HttpStatus.BAD_REQUEST, "Error deploying composite " + deployableName + ": " + e.getMessage());
                 }
 
             }
@@ -189,16 +175,9 @@ public class DeploymentsResourceService {
         try {
             domain.undeploy(contributionUri, false);
         } catch (DeploymentException e) {
-            // TODO report better error
             monitor.error("Error removing contribution: " + uri, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Error removing contribution " + uri + ": " + e.getMessage());
         }
-    }
-
-    private Link createContributionLink(URI contributionUri, HttpServletRequest request) {
-        String uri = contributionUri.toString();
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/contribution/" + uri);
-        return new Link(uri, EDIT_LINK, url);
     }
 
 

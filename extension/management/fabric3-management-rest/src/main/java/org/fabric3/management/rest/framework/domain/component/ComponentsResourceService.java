@@ -45,8 +45,10 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Response;
+import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -90,10 +92,15 @@ public class ComponentsResourceService {
         }
         if (root instanceof LogicalCompositeComponent) {
             CompositeResource domainResource = new CompositeResource(root.getUri(), root.getZone());
-            copy((LogicalCompositeComponent) root, domainResource);
+            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(request.getRequestURL().toString()));
+            domainResource.setSelfLink(selfLink);
+            String baseUrl = request.getScheme() + "://" + request.getServerName()+ ":"+request.getServerPort() +"/management" + COMPONENT_BASE_PATH;
+            copy((LogicalCompositeComponent) root, domainResource, baseUrl);
             return new Response(HttpStatus.OK, domainResource);
         } else {
             ComponentResource resource = new ComponentResource(root.getUri(), root.getZone());
+            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(request.getRequestURL().toString()));
+            resource.setSelfLink(selfLink);
             return new Response(HttpStatus.OK, resource);
         }
     }
@@ -103,15 +110,19 @@ public class ComponentsResourceService {
      *
      * @param composite the root logical component
      * @param resource  the resource
+     * @param baseUrl the base URL for calculating self-links
      */
-    private void copy(LogicalCompositeComponent composite, CompositeResource resource) {
+    private void copy(LogicalCompositeComponent composite, CompositeResource resource, String baseUrl) {
         for (LogicalComponent<?> component : composite.getComponents()) {
+            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(baseUrl + component.getUri().getPath().substring(1)));   // strip leading '/'
             if (component instanceof LogicalCompositeComponent) {
                 CompositeResource childResource = new CompositeResource(component.getUri(), component.getZone());
-                copy((LogicalCompositeComponent) component, childResource);
+                childResource.setSelfLink(selfLink);
+                copy((LogicalCompositeComponent) component, childResource, baseUrl);
                 resource.addComponent(childResource);
             } else {
                 ComponentResource childResource = new ComponentResource(component.getUri(), component.getZone());
+                childResource.setSelfLink(selfLink);
                 resource.addComponent(childResource);
             }
         }

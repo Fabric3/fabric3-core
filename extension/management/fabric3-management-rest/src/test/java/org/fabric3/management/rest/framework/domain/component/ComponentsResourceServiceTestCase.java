@@ -74,6 +74,10 @@ public class ComponentsResourceServiceTestCase extends TestCase {
         ComponentsResourceService service = new ComponentsResourceService(lcm);
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://localhost/management/components/foo/bar"));
+        EasyMock.expect(request.getScheme()).andReturn("http");
+        EasyMock.expect(request.getServerName()).andReturn("localhost");
+        EasyMock.expect(request.getServerPort()).andReturn(8080);
         EasyMock.expect(request.getPathInfo()).andReturn("/domain/components/foo/bar");
         EasyMock.replay(request);
 
