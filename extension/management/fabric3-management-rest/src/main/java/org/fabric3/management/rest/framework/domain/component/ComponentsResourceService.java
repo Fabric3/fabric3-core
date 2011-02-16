@@ -52,7 +52,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Handles the /domain/contributions resource and its sub-resources:
+ * Handles the /domain/components resource and its sub-resources:
  * <pre>
  * <ul>
  *  <li>GET /deployments - Returns deployed contributions</ul>
