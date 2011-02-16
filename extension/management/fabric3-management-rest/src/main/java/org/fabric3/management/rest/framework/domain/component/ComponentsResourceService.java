@@ -55,7 +55,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
  * Handles the /domain/components resource and its sub-resources:
  * <pre>
  * <ul>
- *  <li>GET /deployments - Returns deployed contributions</ul>
+ *  <li>GET /deployments - Returns deployed components</ul>
  * </ul>
  * </pre>
  * <p/>
