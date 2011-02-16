@@ -53,10 +53,11 @@ public class CompositeResource extends ComponentResource {
     /**
      * Constructor.
      *
-     * @param uri the composite URI
+     * @param uri  the composite URI
+     * @param zone the zone the composite is deployed to
      */
-    public CompositeResource(URI uri) {
-        super(uri);
+    public CompositeResource(URI uri, String zone) {
+        super(uri, zone);
     }
 
     public void addComponent(ComponentResource resource) {

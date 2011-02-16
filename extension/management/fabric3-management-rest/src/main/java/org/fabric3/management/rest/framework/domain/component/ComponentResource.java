@@ -49,14 +49,17 @@ import org.fabric3.management.rest.model.Resource;
 public class ComponentResource extends Resource {
     private static final long serialVersionUID = -1231963830775425265L;
     private URI uri;
+    private String zone;
 
     /**
      * Constructor.
      *
-     * @param uri the component URI
+     * @param uri  the component URI
+     * @param zone the zone the component is deployed to
      */
-    public ComponentResource(URI uri) {
+    public ComponentResource(URI uri, String zone) {
         this.uri = uri;
+        this.zone = zone;
     }
 
     /**
@@ -68,4 +71,12 @@ public class ComponentResource extends Resource {
         return uri;
     }
 
+    /**
+     * Return the zone the component is deployed to.
+     *
+     * @return the zone the component is deployed to
+     */
+    public String getZone() {
+        return zone;
+    }
 }

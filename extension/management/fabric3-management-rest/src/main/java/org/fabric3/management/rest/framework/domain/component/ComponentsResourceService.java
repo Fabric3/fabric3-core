@@ -89,11 +89,11 @@ public class ComponentsResourceService {
             return new Response(HttpStatus.NOT_FOUND);
         }
         if (root instanceof LogicalCompositeComponent) {
-            CompositeResource domainResource = new CompositeResource(root.getUri());
+            CompositeResource domainResource = new CompositeResource(root.getUri(), root.getZone());
             copy((LogicalCompositeComponent) root, domainResource);
             return new Response(HttpStatus.OK, domainResource);
         } else {
-            ComponentResource resource = new ComponentResource(root.getUri());
+            ComponentResource resource = new ComponentResource(root.getUri(), root.getZone());
             return new Response(HttpStatus.OK, resource);
         }
     }
@@ -107,11 +107,11 @@ public class ComponentsResourceService {
     private void copy(LogicalCompositeComponent composite, CompositeResource resource) {
         for (LogicalComponent<?> component : composite.getComponents()) {
             if (component instanceof LogicalCompositeComponent) {
-                CompositeResource childResource = new CompositeResource(component.getUri());
+                CompositeResource childResource = new CompositeResource(component.getUri(), component.getZone());
                 copy((LogicalCompositeComponent) component, childResource);
                 resource.addComponent(childResource);
             } else {
-                ComponentResource childResource = new ComponentResource(component.getUri());
+                ComponentResource childResource = new ComponentResource(component.getUri(), component.getZone());
                 resource.addComponent(childResource);
             }
         }
