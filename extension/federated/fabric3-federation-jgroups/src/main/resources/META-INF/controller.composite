@@ -18,7 +18,6 @@ Public License. See the accompanying license file for details.
 
     <component name="DomainTopologyService">
         <f3:implementation.system class="org.fabric3.federation.jgroups.JGroupsDomainTopologyService"/>
-        <property name="logLevel" source="$systemConfig//federation/@logging"/>
         <property name="defaultTimeout" source="$systemConfig//federation/@timeout"/>
         <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
     </component>

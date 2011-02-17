@@ -45,12 +45,13 @@ import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.MessageListener;
 import org.jgroups.blocks.RequestHandler;
-import org.jgroups.logging.LogFactory;
+import org.jgroups.logging.CustomLogFactory;
 import org.jgroups.protocols.TP;
 import org.jgroups.protocols.pbcast.GMS;
 import org.jgroups.stack.Protocol;
 import org.oasisopen.sca.annotation.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -86,7 +87,6 @@ public abstract class AbstractTopologyService {
 
     protected String defaultBindAddress;
     protected boolean printLocalAddress;
-    protected String logLevel = "error";
     protected long defaultTimeout = 10000;
     // TODO add properties from http://community.jboss.org/wiki/SystemProps
 
@@ -105,11 +105,6 @@ public abstract class AbstractTopologyService {
         this.monitor = monitor;
         runtimeName = info.getRuntimeName();
 
-    }
-
-    @Property(required = false)
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
     }
 
     @Property(required = false)
@@ -173,6 +168,10 @@ public abstract class AbstractTopologyService {
         return getDomainChannel().getReceivedBytes();
     }
 
+    @Reference
+    public void setFactory(CustomLogFactory factory) {
+        // reference needed to load custom log factory prior to JGroups classes
+    }
 
     @Init
     public void init() throws ChannelException {
@@ -180,7 +179,6 @@ public abstract class AbstractTopologyService {
         if (defaultBindAddress != null && System.getProperty("jgroups.bind_addr") == null) {
             System.setProperty("jgroups.bind_addr", defaultBindAddress);
         }
-        LogFactory.getLog(JChannel.class).setLevel(logLevel);
         domainName = info.getDomain().getAuthority();
 
         // setup runtime notifications
@@ -204,11 +202,7 @@ public abstract class AbstractTopologyService {
         // Replace the default thread pool
         transport.setDefaultThreadPool(executor);
 
-        // set the log level
-        transport.setLevel(logLevel);
-
         for (Protocol protocol : channel.getProtocolStack().getProtocols()) {
-            protocol.setLevel(logLevel);
             if (protocol instanceof GMS) {
                 ((GMS) protocol).setPrintLocalAddr(printLocalAddress);
             }

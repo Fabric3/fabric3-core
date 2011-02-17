@@ -21,7 +21,6 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.federation.jgroups.JGroupsZoneTopologyService"/>
         <property name="zoneName" source="$systemConfig//federation/zoneName"/>
         <property name="channelConfig" source="$systemConfig//federation/config"/>
-        <property name="logLevel" source="$systemConfig//federation/@logging"/>
         <property name="defaultTimeout" source="$systemConfig//federation/@timeout"/>
         <property name="synchronize" source="$systemConfig//federation/@synchronize"/>
         <property name="transportMetadata" source="$systemConfig//federation/transport/*"/>
