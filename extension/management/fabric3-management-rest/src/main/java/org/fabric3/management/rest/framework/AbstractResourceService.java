@@ -80,7 +80,7 @@ public abstract class AbstractResourceService implements ResourceListener {
 
         populateResource(resource, request);
 
-        String requestUrl = request.getRequestURL().toString();
+        String requestUrl = ResourceHelper.getRequestUrl(request);
         for (ResourceMapping mapping : subresources) {
             String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
             URL url = ResourceHelper.createUrl(requestUrl + '/' + path);

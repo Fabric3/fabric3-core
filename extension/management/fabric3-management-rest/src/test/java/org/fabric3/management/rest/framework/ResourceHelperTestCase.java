@@ -37,61 +37,30 @@
 */
 package org.fabric3.management.rest.framework;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
-import org.fabric3.management.rest.model.SelfLink;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
- * Framework helper methods.
- *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public final class ResourceHelper {
+public final class ResourceHelperTestCase extends TestCase {
 
-    private ResourceHelper() {
+    public void testGetUrlTrailingSlash() throws Exception {
+        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://foo/"));
+        EasyMock.replay(request);
+
+        assertEquals("http://foo", ResourceHelper.getRequestUrl(request));
     }
 
-    /**
-     * Creates a resource self link.
-     *
-     * @param request the current HTTP request
-     * @return the self link
-     */
-    public static SelfLink createSelfLink(HttpServletRequest request) {
-        String requestUrl = request.getRequestURL().toString();
-        URL selfHref = ResourceHelper.createUrl(requestUrl);
-        return new SelfLink(selfHref);
+    public void testGetUrlNoTrailingSlash() throws Exception {
+        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://foo"));
+        EasyMock.replay(request);
+
+        assertEquals("http://foo", ResourceHelper.getRequestUrl(request));
     }
-
-    /**
-     * Suppresses {@link MalformedURLException} when converting a String to a URL.
-     *
-     * @param url the URL as a String
-     * @return the URL
-     */
-    public static URL createUrl(String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
-     * Returns a request URL as a string with the trailing "/" removed.
-     *
-     * @param request the current HTTP request
-     * @return the request URL as a String
-     */
-    public static String getRequestUrl(HttpServletRequest request) {
-        String requestUrl = request.getRequestURL().toString();
-        if (requestUrl.endsWith("/") && requestUrl.length() > 1) {
-            requestUrl = requestUrl.substring(0, requestUrl.length() - 1);
-        }
-        return requestUrl;
-    }
-
-
+    
 }

@@ -81,7 +81,7 @@ public class ComponentsResourceService {
             CompositeResource domainResource = createCompositeResource(root, request);
             return new Response(HttpStatus.OK, domainResource);
         } else {
-            URL url = ResourceHelper.createUrl(request.getRequestURL().toString());
+            URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request));
             ComponentResource resource = createComponentResource(root, url);
             return new Response(HttpStatus.OK, resource);
         }
@@ -119,7 +119,7 @@ public class ComponentsResourceService {
      */
     private CompositeResource createCompositeResource(LogicalComponent composite, HttpServletRequest request) {
         CompositeResource compositeResource = new CompositeResource(composite.getUri(), composite.getZone());
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString());
+        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request));
         SelfLink selfLink = new SelfLink(url);
         compositeResource.setSelfLink(selfLink);
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/management" + COMPONENT_BASE_PATH;

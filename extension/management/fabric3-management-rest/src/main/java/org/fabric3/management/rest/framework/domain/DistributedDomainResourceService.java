@@ -94,19 +94,19 @@ public class DistributedDomainResourceService {
     }
 
     private void createContributionsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/contributions");
+        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/contributions");
         Link link = new Link("contributions", EDIT_LINK, url);
         resource.setProperty("contributions", link);
     }
 
     private void createDeploymentsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/deployments");
+        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/deployments");
         Link link = new Link("deployments", EDIT_LINK, url);
         resource.setProperty("deployments", link);
     }
 
     private void createComponentsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/components");
+        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/components");
         Link link = new Link("components", EDIT_LINK, url);
         resource.setProperty("components", link);
     }

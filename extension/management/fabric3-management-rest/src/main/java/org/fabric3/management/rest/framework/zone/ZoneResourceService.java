@@ -43,21 +43,28 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.runtime.TransformerPair;
+import org.fabric3.management.rest.spi.DuplicateResourceNameException;
+import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.ZoneTopologyService;
+
+import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
  * Produces the /zone resource.
@@ -67,20 +74,31 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 @EagerInit
 @Management(path = "/zone")
 public class ZoneResourceService implements ResourceListener {
-    private static final String RUNTIME_PATH = "/runtime";
+    private static final String RUNTIME_PATH = "/runtime/";
+    private ResourceHost resourceHost;
+    private ManagementMonitor monitor;
     private HostInfo info;
     private ZoneTopologyService topologyService;
 
     private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
 
 
-    public ZoneResourceService(@Reference HostInfo info) {
+    public ZoneResourceService(@Reference ResourceHost resourceHost, @Reference HostInfo info, @Monitor ManagementMonitor monitor) {
+        this.resourceHost = resourceHost;
         this.info = info;
+        this.monitor = monitor;
     }
 
     @Reference(required = false)
     public void setTopologyService(ZoneTopologyService topologyService) {
         this.topologyService = topologyService;
+    }
+
+    @Destroy
+    public void destroy() {
+        for (ResourceMapping mapping : subresources) {
+            resourceHost.unregister(mapping);
+        }
     }
 
     @ManagementOperation(path = "/")
@@ -90,10 +108,17 @@ public class ZoneResourceService implements ResourceListener {
         String leaderName = getLeader();
         resource.setProperty("name", info.getRuntimeName());
         resource.setProperty("leader", leaderName);
+        createRuntimeLink(request,resource);
+        return resource;
+    }
 
-        String requestUrl = request.getRequestURL().toString();
+    @ManagementOperation(path = "runtime")
+    public Resource getZoneRuntimeResource(HttpServletRequest request) {
+        SelfLink selfLink = ResourceHelper.createSelfLink(request);
+        Resource resource = new Resource(selfLink);
+        String requestUrl = ResourceHelper.getRequestUrl(request);
         for (ResourceMapping mapping : subresources) {
-            String path = mapping.getRelativePath().substring(RUNTIME_PATH.length() + 1); // +1 to remove leading '/' for relative link
+            String path = mapping.getRelativePath();
             URL url = ResourceHelper.createUrl(requestUrl + '/' + path);
             Link link = new Link(path, Link.EDIT_LINK, url);
             resource.setProperty(link.getName(), link);
@@ -101,15 +126,14 @@ public class ZoneResourceService implements ResourceListener {
         return resource;
     }
 
-
     public void onRootResourceExport(ResourceMapping mapping) {
-        if (!mapping.getPath().startsWith(RUNTIME_PATH + "/")) {
+        if (!mapping.getPath().startsWith(RUNTIME_PATH)) {
             // resource is not under runtime path, return
             return;
         }
 
         String path = "/zone" + mapping.getPath();
-        String relativePath = "/zone" + mapping.getRelativePath();
+        String relativePath = mapping.getRelativePath().substring(RUNTIME_PATH.length());
         Verb verb = mapping.getVerb();
         Method method = mapping.getMethod();
         Object instance = mapping.getInstance();
@@ -117,6 +141,11 @@ public class ZoneResourceService implements ResourceListener {
         TransformerPair jsonPair = mapping.getJsonPair();
         ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, jsonPair, jaxbPair);
         subresources.add(newMapping);
+        try {
+            resourceHost.register(newMapping);
+        } catch (DuplicateResourceNameException e) {
+            monitor.error("Duplicate mapping: " + path, e);
+        }
 
     }
 
@@ -128,5 +157,10 @@ public class ZoneResourceService implements ResourceListener {
         return topologyService.getZoneLeaderName();
     }
 
+    private void createRuntimeLink(HttpServletRequest request, Resource resource) {
+        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/runtime");
+        Link link = new Link("runtime", EDIT_LINK, url);
+        resource.setProperty("runtime", link);
+    }
 
 }

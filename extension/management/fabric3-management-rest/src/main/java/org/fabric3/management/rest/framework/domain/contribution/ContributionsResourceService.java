@@ -188,7 +188,8 @@ public class ContributionsResourceService {
 
     private Link createContributionLink(URI contributionUri, HttpServletRequest request) {
         String uri = contributionUri.toString();
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/contribution/" + uri);
+        String requestUrl = ResourceHelper.getRequestUrl(request);
+        URL url = ResourceHelper.createUrl(requestUrl + "/contribution/" + uri);
         return new Link(uri, EDIT_LINK, url);
     }
 
