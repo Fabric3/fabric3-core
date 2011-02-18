@@ -39,7 +39,6 @@ package org.fabric3.management.rest.framework.domain.deployment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -63,15 +62,12 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.HttpHeaders;
 import org.fabric3.management.rest.model.HttpStatus;
-import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
-
-import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
 /**
  * Handles the /domain/contributions resource and its sub-resources:
