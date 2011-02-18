@@ -64,8 +64,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Responsible for dispatching requests to a managed resource.
- *
  * @version $Rev$ $Date$
  */
 public class ResourceHostImpl extends HttpServlet implements ResourceHost {
