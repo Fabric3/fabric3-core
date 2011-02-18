@@ -213,11 +213,14 @@ public class ManagementServlet extends HttpServlet {
      * @return a mating mapping or null
      */
     private ResourceMapping resolve(String path, Map<String, ResourceMapping> mappings) {
+        // flag to allow exact matching on non-parameterized mappings. Only true for the first iteration, when an exact match is attempted
+        boolean start = true;
         while (path != null) {
             ResourceMapping mapping = mappings.get(path);
-            if (mapping != null && mapping.isParameterized()) {
+            if (mapping != null && (start || mapping.isParameterized())) {
                 return mapping;
             }
+            start = false;
             String current = getBasePath(path);
             if (path.equals(current)) {
                 // reached the path hierarchy root

@@ -39,6 +39,8 @@ package org.fabric3.management.rest.spi;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
