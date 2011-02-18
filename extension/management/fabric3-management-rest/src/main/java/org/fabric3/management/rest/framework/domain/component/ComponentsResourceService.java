@@ -55,12 +55,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Handles the /domain/components resource and its sub-resources:
- * <pre>
- * <ul>
- *  <li>GET /deployments - Returns deployed components</ul>
- * </ul>
- * </pre>
+ * Handles the /domain/components resource by mapping the HTTP GET URL to the logical component hierarchy for a domain.
  * <p/>
  * Note this resource is only present on the controller.
  *
