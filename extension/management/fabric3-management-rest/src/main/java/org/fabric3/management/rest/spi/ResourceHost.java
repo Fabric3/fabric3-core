@@ -35,17 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.runtime;
-
-import org.fabric3.spi.management.ManagementException;
+package org.fabric3.management.rest.spi;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DuplicateResourceNameException extends ManagementException {
-    private static final long serialVersionUID = 1930062911837643976L;
+public interface ResourceHost {
 
-    public DuplicateResourceNameException(String message) {
-        super(message);
-    }
+    /**
+     * Registers a mapping, making the managed resource available via HTTP.
+     *
+     * @param mapping the mapping
+     * @throws DuplicateResourceNameException if a managed resource has already been registered for the path
+     */
+    void register(ResourceMapping mapping) throws DuplicateResourceNameException;
+
+    /**
+     * Removes a mapping and the associated managed resource.
+     *
+     * @param mapping the mapping
+     */
+    void unregister(ResourceMapping mapping);
+
 }

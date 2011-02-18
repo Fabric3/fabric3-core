@@ -22,8 +22,16 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.management.rest.runtime.MarshallerImpl"/>
     </component>
 
+    <component name="ResourceHost">
+        <f3:implementation.system class="org.fabric3.management.rest.runtime.ResourceHostImpl"/>
+    </component>
+
     <component name="TransformerPairService">
         <f3:implementation.system class="org.fabric3.management.rest.runtime.TransformerPairServiceImpl"/>
+    </component>
+
+    <component name="ZoneResourceService">
+        <f3:implementation.system class="org.fabric3.management.rest.framework.zone.ZoneResourceService"/>
     </component>
 
     <component name="RuntimeResourceService">

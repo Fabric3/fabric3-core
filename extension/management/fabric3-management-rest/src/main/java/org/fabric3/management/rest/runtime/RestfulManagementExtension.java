@@ -47,17 +47,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
@@ -79,25 +77,21 @@ public class RestfulManagementExtension implements ManagementExtension {
     private static final DataType<?> XSD_INPUT_TYPE = new XSDType(InputStream.class, XSD_ANY);
     private static final DataType<?> XSD_OUTPUT_TYPE = new XSDType(byte[].class, XSD_ANY);
 
-    private static final String MANAGEMENT_PATH = "/management/*";
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";
 
     private TransformerPairService pairService;
-    private ServletHost servletHost;
 
     private Method rootResourceMethod;
-    private ManagementServlet managementServlet;
+    private ResourceHost resourceHost;
 
     private List<ResourceListener> listeners = Collections.emptyList();
 
     public RestfulManagementExtension(@Reference TransformerPairService pairService,
-                                      @Reference ServletHost servletHost,
                                       @Reference Marshaller marshaller,
-                                      @Monitor ManagementMonitor monitor) {
+                                      @Reference ResourceHost resourceHost) {
         this.pairService = pairService;
-        this.servletHost = servletHost;
-        managementServlet = new ManagementServlet(marshaller, monitor);
+        this.resourceHost = resourceHost;
     }
 
     /**
@@ -113,12 +107,6 @@ public class RestfulManagementExtension implements ManagementExtension {
     @Init()
     public void init() throws NoSuchMethodException {
         rootResourceMethod = ResourceInvoker.class.getMethod("invoke", HttpServletRequest.class);
-        servletHost.registerMapping(MANAGEMENT_PATH, managementServlet);
-    }
-
-    @Destroy()
-    public void destroy() {
-        servletHost.unregisterMapping(MANAGEMENT_PATH);
     }
 
     public String getType() {
@@ -155,7 +143,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
-                managementServlet.register(mapping);
+                resourceHost.register(mapping);
             }
             if (!rootResourcePathOverride) {
                 createRootResource(root, getMappings);
@@ -181,7 +169,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                 if (annotation != null) {
                     OperationType type = OperationType.valueOf(annotation.type().toString());
                     ResourceMapping mapping = createMapping(root, EMPTY_PATH, method, type, instance, jsonPair, jaxbPair);
-                    managementServlet.register(mapping);
+                    resourceHost.register(mapping);
                 }
             }
         } catch (TransformationException e) {
@@ -255,7 +243,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             root = root.toLowerCase();
             ResourceMapping mapping = new ResourceMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
-            managementServlet.register(mapping);
+            resourceHost.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);
             }

@@ -45,11 +45,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
+import org.fabric3.management.rest.spi.DuplicateResourceNameException;
+import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -60,27 +68,38 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class ManagementServlet extends HttpServlet {
+public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private static final long serialVersionUID = 5554150494161533656L;
+
+    private static final String MANAGEMENT_PATH = "/management/*";
 
     private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Marshaller marshaller;
+    private ServletHost servletHost;
     private ManagementMonitor monitor;
 
-    public ManagementServlet(Marshaller marshaller, ManagementMonitor monitor) {
+    public ResourceHostImpl(@Reference Marshaller marshaller, @Reference ServletHost servletHost, @Monitor ManagementMonitor monitor) {
         this.marshaller = marshaller;
+        this.servletHost = servletHost;
         this.monitor = monitor;
     }
 
-    /**
-     * Registers a mapping, making the managed resource available via HTTP.
-     *
-     * @param mapping the mapping
-     * @throws DuplicateResourceNameException if a managed resource has already been registered for the path
-     */
+    @Init
+    public void start() {
+        servletHost.registerMapping(MANAGEMENT_PATH, this);
+    }
+
+    @Destroy()
+    public void destroy() {
+        servletHost.unregisterMapping(MANAGEMENT_PATH);
+    }
+
+    public void init() {
+    }
+
     public void register(ResourceMapping mapping) throws DuplicateResourceNameException {
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
@@ -94,12 +113,7 @@ public class ManagementServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Removes a mapping and the associated managed resource.
-     *
-     * @param mapping the mapping
-     */
-    public void unRegister(ResourceMapping mapping) {
+    public void unregister(ResourceMapping mapping) {
         String path = mapping.getPath();
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {

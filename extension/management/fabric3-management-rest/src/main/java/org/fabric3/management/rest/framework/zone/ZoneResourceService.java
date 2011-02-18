@@ -35,54 +35,65 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework;
+package org.fabric3.management.rest.framework.zone;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.management.rest.runtime.TransformerPair;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
+import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * Base functionality for a resource service that may be composed of extensible sub-resources.
+ * Produces the /zone resource.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-@Management
-public abstract class AbstractResourceService implements ResourceListener {
+@EagerInit
+@Management(path = "/zone")
+public class ZoneResourceService implements ResourceListener {
+    private static final String RUNTIME_PATH = "/runtime";
+    private HostInfo info;
+    private ZoneTopologyService topologyService;
+
     private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
 
 
-    public void onRootResourceExport(ResourceMapping mapping) {
-        if (mapping.getInstance() == this) {
-            // don't track requests for this instance
-            return;
-        }
-        if (!mapping.getPath().startsWith(getResourcePath() + "/")) {
-            // resource is not under specified path, return
-            return;
-        }
-        mapping = convertMapping(mapping);
-        subresources.add(mapping);
+    public ZoneResourceService(@Reference HostInfo info) {
+        this.info = info;
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @ManagementOperation(path = "/")
-    public Resource getResource(HttpServletRequest request) {
+    public Resource getZoneResource(HttpServletRequest request) {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
-
-        populateResource(resource, request);
+        String leaderName = getLeader();
+        resource.setProperty("name", info.getRuntimeName());
+        resource.setProperty("leader", leaderName);
 
         String requestUrl = request.getRequestURL().toString();
         for (ResourceMapping mapping : subresources) {
-            String path = mapping.getRelativePath().substring(getResourcePath().length() + 1); // +1 to remove leading '/' for relative link
+            String path = mapping.getRelativePath().substring(RUNTIME_PATH.length() + 1); // +1 to remove leading '/' for relative link
             URL url = ResourceHelper.createUrl(requestUrl + '/' + path);
             Link link = new Link(path, Link.EDIT_LINK, url);
             resource.setProperty(link.getName(), link);
@@ -90,31 +101,32 @@ public abstract class AbstractResourceService implements ResourceListener {
         return resource;
     }
 
-    /**
-     * Returns the root path for this resource.
-     *
-     * @return the root path for this resource
-     */
-    protected abstract String getResourcePath();
 
-    /**
-     * Override to populate the resource with additional sub-resources.
-     *
-     * @param resource the resource to populate
-     * @param request  the current HTTP request
-     */
-    protected void populateResource(Resource resource, HttpServletRequest request) {
+    public void onRootResourceExport(ResourceMapping mapping) {
+        if (!mapping.getPath().startsWith(RUNTIME_PATH + "/")) {
+            // resource is not under runtime path, return
+            return;
+        }
+
+        String path = "/zone" + mapping.getPath();
+        String relativePath = "/zone" + mapping.getRelativePath();
+        Verb verb = mapping.getVerb();
+        Method method = mapping.getMethod();
+        Object instance = mapping.getInstance();
+        TransformerPair jaxbPair = mapping.getJaxbPair();
+        TransformerPair jsonPair = mapping.getJsonPair();
+        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, jsonPair, jaxbPair);
+        subresources.add(newMapping);
 
     }
 
-    /**
-     * Override to convert the resource mapping.
-     *
-     * @param mapping the resource mapping
-     * @return the converted resource mapping
-     */
-    protected ResourceMapping convertMapping(ResourceMapping mapping) {
-        return mapping;
+    private String getLeader() {
+        if (topologyService == null) {
+            // running in single-VM or controller mode, return current runtime
+            return info.getRuntimeName();
+        }
+        return topologyService.getZoneLeaderName();
     }
+
 
 }
