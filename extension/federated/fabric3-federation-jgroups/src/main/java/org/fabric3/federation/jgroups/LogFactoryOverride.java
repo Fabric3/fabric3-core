@@ -44,11 +44,13 @@ import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.federation.jgroups.log.Fabric3LogFactory;
+import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * Overrides the static JGroups log factory and redirects output to a Fabric3 monitor channel.
@@ -58,6 +60,7 @@ import org.fabric3.federation.jgroups.log.Fabric3LogFactory;
 @EagerInit
 public class LogFactoryOverride implements CustomLogFactory, Log {
     private MonitorLevel level = MonitorLevel.SEVERE;
+    private MonitorService monitorService;
     private MonitorChannel monitor;
 
     static {
@@ -69,7 +72,8 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
     }
 
     @Constructor
-    public LogFactoryOverride(@Monitor MonitorChannel monitor) {
+    public LogFactoryOverride(@Reference MonitorService monitorService, @Monitor MonitorChannel monitor) {
+        this.monitorService = monitorService;
         this.monitor = monitor;
         ((LogFactoryOverride) Fabric3LogFactory.log).setMonitor(monitor);
     }
@@ -87,6 +91,7 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
         try {
             level = MonitorLevel.valueOf(logLevel.toUpperCase());
             ((LogFactoryOverride) Fabric3LogFactory.log).setLevel(level);
+            monitorService.setDeployableLevel("{urn:fabric3.org}JGroupsFederationCommonExtension", level.toString());
         } catch (IllegalArgumentException e) {
             monitor.severe("Illegal log level: " + logLevel);
         }
@@ -186,7 +191,7 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
     }
 
     public void trace(Object msg) {
-        if (!isTraceEnabled()|| msg == null) {
+        if (!isTraceEnabled() || msg == null) {
             return;
         }
         monitor.trace(msg.toString());
