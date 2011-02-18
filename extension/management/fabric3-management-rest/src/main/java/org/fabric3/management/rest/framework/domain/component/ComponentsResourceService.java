@@ -38,6 +38,7 @@
 package org.fabric3.management.rest.framework.domain.component;
 
 import java.net.URI;
+import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -77,32 +78,72 @@ public class ComponentsResourceService {
 
     @ManagementOperation(path = "/")
     public Response getComponents(HttpServletRequest request) {
-        LogicalComponent root;
-        String pathInfo = request.getPathInfo();
-        if (pathInfo.startsWith(COMPONENT_BASE_PATH)) {
-            String name = pathInfo.substring(COMPONENT_BASE_PATH.length());
-            String base = lcm.getRootComponent().getUri().toString() + "/";
-            URI uri = URI.create(base + name);
-            root = lcm.getComponent(uri);
-        } else {
-            root = lcm.getRootComponent();
-        }
+        LogicalComponent root = findComponent(request);
         if (root == null) {
             return new Response(HttpStatus.NOT_FOUND);
         }
         if (root instanceof LogicalCompositeComponent) {
-            CompositeResource domainResource = new CompositeResource(root.getUri(), root.getZone());
-            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(request.getRequestURL().toString()));
-            domainResource.setSelfLink(selfLink);
-            String baseUrl = request.getScheme() + "://" + request.getServerName()+ ":"+request.getServerPort() +"/management" + COMPONENT_BASE_PATH;
-            copy((LogicalCompositeComponent) root, domainResource, baseUrl);
+            CompositeResource domainResource = createCompositeResource(root, request);
             return new Response(HttpStatus.OK, domainResource);
         } else {
-            ComponentResource resource = new ComponentResource(root.getUri(), root.getZone());
-            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(request.getRequestURL().toString()));
-            resource.setSelfLink(selfLink);
+            URL url = ResourceHelper.createUrl(request.getRequestURL().toString());
+            ComponentResource resource = createComponentResource(root, url);
             return new Response(HttpStatus.OK, resource);
         }
+    }
+
+    /**
+     * Resolves a logical component based on the HTTP GET URL. The URL path excluding the {@link #COMPONENT_BASE_PATH} is mapped to the logical
+     * component URI.
+     *
+     * @param request the current HTTP request
+     * @return the component or null if not found
+     */
+    private LogicalComponent findComponent(HttpServletRequest request) {
+        LogicalComponent component;
+        String pathInfo = request.getPathInfo();
+        if (pathInfo.startsWith(COMPONENT_BASE_PATH)) {
+            // exclude the base path and map the rest of the path to the domain hierarchy
+            String name = pathInfo.substring(COMPONENT_BASE_PATH.length());
+            String base = lcm.getRootComponent().getUri().toString() + "/";
+            URI uri = URI.create(base + name);
+            component = lcm.getComponent(uri);
+        } else {
+            // only the base path, the root (domain) component was requested
+            component = lcm.getRootComponent();
+        }
+        return component;
+    }
+
+    /**
+     * Recursively creates a component resource for a root composite component and its children.
+     *
+     * @param composite the composite component
+     * @param request   the current HTTP request
+     * @return the composite resource
+     */
+    private CompositeResource createCompositeResource(LogicalComponent composite, HttpServletRequest request) {
+        CompositeResource compositeResource = new CompositeResource(composite.getUri(), composite.getZone());
+        URL url = ResourceHelper.createUrl(request.getRequestURL().toString());
+        SelfLink selfLink = new SelfLink(url);
+        compositeResource.setSelfLink(selfLink);
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/management" + COMPONENT_BASE_PATH;
+        copy((LogicalCompositeComponent) composite, compositeResource, baseUrl);
+        return compositeResource;
+    }
+
+    /**
+     * Creates a component resource representation for an atomic component.
+     *
+     * @param component the atomic component
+     * @param url       the component resource URL
+     * @return the component resource representation
+     */
+    private ComponentResource createComponentResource(LogicalComponent component, URL url) {
+        ComponentResource resource = new ComponentResource(component.getUri(), component.getZone());
+        SelfLink selfLink = new SelfLink(url);
+        resource.setSelfLink(selfLink);
+        return resource;
     }
 
     /**
@@ -110,19 +151,19 @@ public class ComponentsResourceService {
      *
      * @param composite the root logical component
      * @param resource  the resource
-     * @param baseUrl the base URL for calculating self-links
+     * @param baseUrl   the base URL for calculating self-links
      */
     private void copy(LogicalCompositeComponent composite, CompositeResource resource, String baseUrl) {
         for (LogicalComponent<?> component : composite.getComponents()) {
-            SelfLink selfLink = new SelfLink(ResourceHelper.createUrl(baseUrl + component.getUri().getPath().substring(1)));   // strip leading '/'
+            URL url = ResourceHelper.createUrl(baseUrl + component.getUri().getPath().substring(1));     // strip leading '/'
             if (component instanceof LogicalCompositeComponent) {
                 CompositeResource childResource = new CompositeResource(component.getUri(), component.getZone());
+                SelfLink selfLink = new SelfLink(url);
                 childResource.setSelfLink(selfLink);
                 copy((LogicalCompositeComponent) component, childResource, baseUrl);
                 resource.addComponent(childResource);
             } else {
-                ComponentResource childResource = new ComponentResource(component.getUri(), component.getZone());
-                childResource.setSelfLink(selfLink);
+                ComponentResource childResource = createComponentResource(component, url);
                 resource.addComponent(childResource);
             }
         }
