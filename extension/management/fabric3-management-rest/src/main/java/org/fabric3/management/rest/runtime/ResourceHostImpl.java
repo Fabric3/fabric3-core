@@ -149,14 +149,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Mapping not found during zone broadcast: " + path);
             return;
         }
-        Class<?>[] types = mapping.getMethod().getParameterTypes();
         try {
-            if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
-                // TODO
-                monitor.error("Unsupported parameter type");
-            } else {
-                invoke(mapping, params, false);
-            }
+            invoke(mapping, params, false);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
         }
@@ -340,7 +334,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             // only replicate if running on a participant and request is not HTTP GET 
             ReplicationEnvelope envelope;
             if (params.length > 0 && params[0] instanceof HttpServletRequest) {
-                envelope = new ReplicationEnvelope(mapping.getPath(), mapping.getVerb(), null);
+                HttpServletRequest oldRequest = (HttpServletRequest) params[0];
+                ReplicatedHttpServletRequest request = copyRequest(oldRequest);
+                envelope = new ReplicationEnvelope(mapping.getPath(), mapping.getVerb(), new Object[]{request});
             } else {
                 envelope = new ReplicationEnvelope(mapping.getPath(), mapping.getVerb(), params);
             }
@@ -407,5 +403,25 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         return path;
     }
 
+    /**
+     * Copies the current request to a serializable representation used during replication.
+     *
+     * @param request the request
+     * @return the copied request
+     */
+    private ReplicatedHttpServletRequest copyRequest(HttpServletRequest request) {
+        ReplicatedHttpServletRequest newRequest = new ReplicatedHttpServletRequest();
+        newRequest.setLocalAddr(request.getLocalAddr());
+        newRequest.setContentType(request.getContentType());
+        newRequest.setMethod(request.getMethod());
+        newRequest.setPort(request.getLocalPort());
+        newRequest.setProtocol(request.getProtocol());
+        newRequest.setRequestUri(request.getRequestURI());
+        newRequest.setRequestUrl(request.getRequestURL());
+        newRequest.setScheme(request.getScheme());
+        newRequest.setServerName(request.getServerName());
+        newRequest.setServletPath(request.getServletPath());
+        return newRequest;
+    }
 
 }
