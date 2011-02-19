@@ -39,8 +39,6 @@ package org.fabric3.management.rest.spi;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
@@ -54,6 +52,7 @@ public class ResourceMapping {
     private Verb verb;
     private Method method;
     private Object instance;
+    private boolean replicate;
     private TransformerPair jsonPair;
     private TransformerPair jaxbPair;
 
@@ -76,11 +75,36 @@ public class ResourceMapping {
                            Object instance,
                            TransformerPair jsonPair,
                            TransformerPair jaxbPair) {
+        this(path, relativePath, verb, method, instance, false, jsonPair, jaxbPair);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param path         the resource path of the managed artifact relative to the base management URL
+     * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
+     *                     resource, the path will be relative to the base management URL.
+     * @param verb         the HTTP verb the management operation is mapped to
+     * @param method       the management operation
+     * @param instance     the managed artifact
+     * @param replicate    true if invocations should be replicated in a cluster
+     * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
+     * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
+     */
+    public ResourceMapping(String path,
+                           String relativePath,
+                           Verb verb,
+                           Method method,
+                           Object instance,
+                           boolean replicate,
+                           TransformerPair jsonPair,
+                           TransformerPair jaxbPair) {
         this.path = path;
         this.relativePath = relativePath;
         this.verb = verb;
         this.method = method;
         this.instance = instance;
+        this.replicate = replicate;
         this.jsonPair = jsonPair;
         this.jaxbPair = jaxbPair;
     }
@@ -139,6 +163,15 @@ public class ResourceMapping {
      */
     public Object getInstance() {
         return instance;
+    }
+
+    /**
+     * Returns true if invocations should be replicated in a cluster.
+     *
+     * @return true if invocations should be replicated in a cluster
+     */
+    public boolean isReplicate() {
+        return replicate;
     }
 
     /**

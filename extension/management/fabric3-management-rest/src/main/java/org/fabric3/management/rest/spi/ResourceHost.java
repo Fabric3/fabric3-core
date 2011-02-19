@@ -59,4 +59,14 @@ public interface ResourceHost {
      */
     void unregister(ResourceMapping mapping);
 
+    /**
+     * Dispatches a request directly to a managed resource.
+     *
+     * @param path   the resource path
+     * @param verb   the HTTP verb
+     * @param params the resource parameters
+     */
+    void dispatch(String path, Verb verb, Object[] params);
+
+
 }

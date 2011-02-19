@@ -62,6 +62,7 @@ import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
@@ -95,7 +96,7 @@ public class ZoneResourceService implements ResourceListener {
     }
 
     @Destroy
-    public void destroy() {
+    public void destroy() throws ZoneChannelException {
         for (ResourceMapping mapping : subresources) {
             resourceHost.unregister(mapping);
         }
@@ -108,7 +109,7 @@ public class ZoneResourceService implements ResourceListener {
         String leaderName = getLeader();
         resource.setProperty("name", info.getRuntimeName());
         resource.setProperty("leader", leaderName);
-        createRuntimeLink(request,resource);
+        createRuntimeLink(request, resource);
         return resource;
     }
 
@@ -135,12 +136,33 @@ public class ZoneResourceService implements ResourceListener {
         String path = "/zone" + mapping.getPath();
         String relativePath = mapping.getRelativePath().substring(RUNTIME_PATH.length());
         Verb verb = mapping.getVerb();
-        Method method = mapping.getMethod();
         Object instance = mapping.getInstance();
+        Method method = mapping.getMethod();
         TransformerPair jaxbPair = mapping.getJaxbPair();
         TransformerPair jsonPair = mapping.getJsonPair();
-        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, jsonPair, jaxbPair);
+        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair);
         subresources.add(newMapping);
+        try {
+            resourceHost.register(newMapping);
+        } catch (DuplicateResourceNameException e) {
+            monitor.error("Duplicate mapping: " + path, e);
+        }
+    }
+
+    public void onSubResource(ResourceMapping mapping) {
+        if (!mapping.getPath().startsWith(RUNTIME_PATH)) {
+            // resource is not under runtime path, return
+            return;
+        }
+
+        String path = "/zone" + mapping.getPath();
+        String relativePath = "/zone" + mapping.getRelativePath();
+        Verb verb = mapping.getVerb();
+        Object instance = mapping.getInstance();
+        Method method = mapping.getMethod();
+        TransformerPair jaxbPair = mapping.getJaxbPair();
+        TransformerPair jsonPair = mapping.getJsonPair();
+        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair);
         try {
             resourceHost.register(newMapping);
         } catch (DuplicateResourceNameException e) {

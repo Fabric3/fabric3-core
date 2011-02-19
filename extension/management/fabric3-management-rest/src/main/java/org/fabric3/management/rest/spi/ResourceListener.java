@@ -51,4 +51,11 @@ public interface ResourceListener {
      */
     void onRootResourceExport(ResourceMapping mapping);
 
+    /**
+     * Callback received when a sub-resource has been exported
+     *
+     * @param mapping the sub-resource mapping
+     */
+    void onSubResource(ResourceMapping mapping);
+
 }

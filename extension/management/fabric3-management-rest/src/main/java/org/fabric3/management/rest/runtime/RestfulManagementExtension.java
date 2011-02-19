@@ -144,6 +144,9 @@ public class RestfulManagementExtension implements ManagementExtension {
                     getMappings.add(mapping);
                 }
                 resourceHost.register(mapping);
+                for (ResourceListener listener : listeners) {
+                    listener.onSubResource(mapping);
+                }
             }
             if (!rootResourcePathOverride) {
                 createRootResource(root, getMappings);

@@ -37,17 +37,30 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.management.rest.spi.ResourceHost;
+import org.fabric3.spi.federation.MessageReceiver;
 
 /**
+ * Listens to {@link ReplicationEnvelope}s sent when a resource request is broadcast in a zone and dispatches the associated request to the managed
+ * resource hosted on the runtime.
+ *
  * @version $Rev$ $Date$
  */
-public interface ManagementMonitor {
+public class ResourceReplicationHandler implements MessageReceiver {
+    private ResourceHost resourceHost;
+    private ManagementMonitor monitor;
 
-    @Severe
-    void error(String message, Throwable t);
+    public ResourceReplicationHandler(ResourceHost resourceHost, ManagementMonitor monitor) {
+        this.resourceHost = resourceHost;
+        this.monitor = monitor;
+    }
 
-    @Severe
-    void error(String message);
-
+    public void onMessage(Object event) {
+        if (!(event instanceof ReplicationEnvelope)) {
+            monitor.error("Unknown resource request replication type: " + event.getClass());
+            return;
+        }
+        ReplicationEnvelope envelope = (ReplicationEnvelope) event;
+        resourceHost.dispatch(envelope.getPath(), envelope.getVerb(), envelope.getParams());
+    }
 }

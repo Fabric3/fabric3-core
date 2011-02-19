@@ -57,6 +57,9 @@ import org.fabric3.management.rest.spi.DuplicateResourceNameException;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.ZoneChannelException;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -69,6 +72,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private static final long serialVersionUID = 5554150494161533656L;
 
+    private static final String RESOURCE_CHANNEL = "resourceChannel";
     private static final String MANAGEMENT_PATH = "/management/*";
 
     private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
@@ -78,6 +82,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private Marshaller marshaller;
     private ServletHost servletHost;
     private ManagementMonitor monitor;
+    private ZoneTopologyService topologyService;
 
     public ResourceHostImpl(@Reference Marshaller marshaller, @Reference ServletHost servletHost, @Monitor ManagementMonitor monitor) {
         this.marshaller = marshaller;
@@ -85,14 +90,26 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         this.monitor = monitor;
     }
 
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
+    }
+
     @Init
-    public void start() {
+    public void start() throws ZoneChannelException {
         servletHost.registerMapping(MANAGEMENT_PATH, this);
+        if (topologyService != null) {
+            ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
+            topologyService.openChannel(RESOURCE_CHANNEL, null, handler);
+        }
     }
 
     @Destroy()
-    public void destroy() {
+    public void stop() throws ZoneChannelException {
         servletHost.unregisterMapping(MANAGEMENT_PATH);
+        if (topologyService != null) {
+            topologyService.closeChannel(RESOURCE_CHANNEL);
+        }
     }
 
     public void init() {
@@ -122,6 +139,15 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             putMappings.remove(path);
         } else if (verb == Verb.DELETE) {
             deleteMappings.remove(path);
+        }
+    }
+
+    public void dispatch(String path, Verb verb, Object[] params) {
+        ResourceMapping mapping = resolveMapping(verb, path);
+        if (mapping == null) {
+            // this should not happen
+            monitor.error("Mapping not found during zone broadcast: " + path);
+            return;
         }
     }
 
@@ -263,7 +289,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             if (instance instanceof ObjectFactory) {
                 instance = ((ObjectFactory) instance).getInstance();
             }
-            return mapping.getMethod().invoke(instance, params);
+            Object ret = mapping.getMethod().invoke(instance, params);
+            replicate(mapping, params);
+            return ret;
         } catch (IllegalAccessException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -278,8 +306,24 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } catch (ObjectCreationException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (MessageException e) {
+            monitor.error("Error replicating operation: " + mapping.getMethod(), e);
+            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
             WorkContextTunnel.setThreadWorkContext(old);
+        }
+    }
+
+    private void replicate(ResourceMapping mapping, Object[] params) throws MessageException {
+        if (topologyService != null && mapping.isReplicate() && mapping.getVerb() != Verb.GET) {
+            // only replicate if running on a participant and request is not HTTP GET 
+            ReplicationEnvelope envelope;
+            if (params.length > 0 && params[0] instanceof HttpServletRequest) {
+                envelope = new ReplicationEnvelope(mapping.getPath(), mapping.getVerb(), null);
+            } else {
+                envelope = new ReplicationEnvelope(mapping.getPath(), mapping.getVerb(), params);
+            }
+            topologyService.sendAsynchronous(RESOURCE_CHANNEL, envelope);
         }
     }
 

@@ -37,17 +37,43 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import org.fabric3.api.annotation.monitor.Severe;
+import java.io.Serializable;
+
+import org.fabric3.management.rest.spi.Verb;
 
 /**
- * @version $Rev$ $Date$
+ * Used to replicate resource requests to participants in a zone.
+ *
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface ManagementMonitor {
+public class ReplicationEnvelope implements Serializable {
+    private static final long serialVersionUID = -7548186506338136783L;
+    private String path;
+    private Verb verb;
+    private Object[] params;
 
-    @Severe
-    void error(String message, Throwable t);
+    /**
+     * Constructor.
+     *
+     * @param path   the request path
+     * @param verb   the HTTP request verb
+     * @param params the request params
+     */
+    public ReplicationEnvelope(String path, Verb verb, Object[] params) {
+        this.path = path;
+        this.verb = verb;
+        this.params = params;
+    }
 
-    @Severe
-    void error(String message);
+    public String getPath() {
+        return path;
+    }
 
+    public Verb getVerb() {
+        return verb;
+    }
+
+    public Object[] getParams() {
+        return params;
+    }
 }
