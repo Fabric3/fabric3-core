@@ -149,6 +149,17 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Mapping not found during zone broadcast: " + path);
             return;
         }
+        Class<?>[] types = mapping.getMethod().getParameterTypes();
+        try {
+            if (types.length == 1 && HttpServletRequest.class.isAssignableFrom(types[0])) {
+                // TODO
+                monitor.error("Unsupported parameter type");
+            } else {
+                invoke(mapping, params, false);
+            }
+        } catch (ResourceException e) {
+            monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
+        }
     }
 
     @Override
@@ -214,7 +225,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
 
         try {
             Object[] params = marshaller.deserialize(verb, request, mapping);
-            Object value = invoke(mapping, params);
+            Object value = invoke(mapping, params, true);
             respond(value, mapping, request, response);
         } catch (ResourceException e) {
             respondError(e, response);
@@ -276,12 +287,13 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     /**
      * Invokes a resource.
      *
-     * @param mapping the resource mapping
-     * @param params  the deserialized request parameters
+     * @param mapping   the resource mapping
+     * @param params    the deserialized request parameters
+     * @param replicate true if the request should be replicated
      * @return a return value or null
      * @throws ResourceException if an error invoking the resource occurs
      */
-    private Object invoke(ResourceMapping mapping, Object[] params) throws ResourceException {
+    private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate) throws ResourceException {
         WorkContext workContext = new WorkContext();
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
@@ -290,7 +302,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 instance = ((ObjectFactory) instance).getInstance();
             }
             Object ret = mapping.getMethod().invoke(instance, params);
-            replicate(mapping, params);
+            if (replicate) {
+                replicate(mapping, params);
+            }
             return ret;
         } catch (IllegalAccessException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
@@ -314,6 +328,13 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
+    /**
+     * Replicates a request to all participants in a zone.
+     *
+     * @param mapping the request mapping
+     * @param params  the request parameters
+     * @throws MessageException if there is a replication error
+     */
     private void replicate(ResourceMapping mapping, Object[] params) throws MessageException {
         if (topologyService != null && mapping.isReplicate() && mapping.getVerb() != Verb.GET) {
             // only replicate if running on a participant and request is not HTTP GET 
