@@ -56,6 +56,7 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.host.domain.ContributionNotFoundException;
 import org.fabric3.host.domain.ContributionNotInstalledException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
@@ -225,7 +226,7 @@ public abstract class AbstractDomain implements Domain {
     public synchronized void undeploy(URI uri, boolean force) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
         if (contribution == null) {
-            throw new DeploymentException("Contribution not found: " + uri);
+            throw new ContributionNotFoundException("Contribution not found: " + uri);
         }
         List<Deployable> deployables = contribution.getManifest().getDeployables();
         if (deployables.isEmpty()) {
