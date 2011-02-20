@@ -56,6 +56,7 @@ import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.AssemblyFailure;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.host.domain.ContributionNotFoundException;
 import org.fabric3.host.domain.DeployableNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
@@ -170,6 +171,8 @@ public class DeploymentsResourceService {
         URI contributionUri = URI.create(uri);
         try {
             domain.undeploy(contributionUri, false);
+        } catch (ContributionNotFoundException e) {
+            throw new ResourceException(HttpStatus.NOT_FOUND);
         } catch (DeploymentException e) {
             monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Error removing contribution " + uri + ": " + e.getMessage());

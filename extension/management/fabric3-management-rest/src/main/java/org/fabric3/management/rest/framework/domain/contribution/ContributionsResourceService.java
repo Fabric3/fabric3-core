@@ -127,9 +127,9 @@ public class ContributionsResourceService {
     public Response createContribution(HttpServletRequest request) throws ResourceException {
         String path = request.getPathInfo();
         int pos = path.lastIndexOf("/");
-        String name = path.substring(pos + 1);
+        String name = path.substring(pos + 1);   // remove the leading "/"
         try {
-            URI uri = new URI(name);  // remove the leading "/"
+            URI uri = new URI(name);
             ContributionSource source = new InputStreamContributionSource(uri, request.getInputStream());
             contributionService.store(source);
             contributionService.install(uri);

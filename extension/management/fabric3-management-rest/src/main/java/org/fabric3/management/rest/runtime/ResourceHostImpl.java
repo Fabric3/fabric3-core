@@ -381,7 +381,10 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
         response.setStatus(e.getStatus().getCode());
         try {
-            response.getWriter().write(e.getMessage());
+            String message = e.getMessage();
+            if (message != null) {
+                response.getWriter().write(e.getMessage());
+            }
         } catch (IOException ex) {
             monitor.error("Cannot write error response", ex);
             monitor.error("Response was ", e);
