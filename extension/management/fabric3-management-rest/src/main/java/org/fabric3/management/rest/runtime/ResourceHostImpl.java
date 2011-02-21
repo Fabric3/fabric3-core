@@ -39,7 +39,9 @@ package org.fabric3.management.rest.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +49,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.runtime.ParseException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
@@ -65,6 +70,9 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.security.AuthenticationException;
+import org.fabric3.spi.security.BasicAuthenticator;
+import org.fabric3.spi.security.NoCredentialsException;
 
 /**
  * @version $Rev$ $Date$
@@ -75,19 +83,46 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private static final String RESOURCE_CHANNEL = "resourceChannel";
     private static final String MANAGEMENT_PATH = "/management/*";
 
+    private Marshaller marshaller;
+    private ServletHost servletHost;
+    private BasicAuthenticator authenticator;
+    private ManagementMonitor monitor;
+
+    private ZoneTopologyService topologyService;
+
+    private ManagementSecurity security = ManagementSecurity.DISABLED;
+    private Set<Role> roles = new HashSet<Role>();
+
     private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<String, ResourceMapping>();
-    private Marshaller marshaller;
-    private ServletHost servletHost;
-    private ManagementMonitor monitor;
-    private ZoneTopologyService topologyService;
 
-    public ResourceHostImpl(@Reference Marshaller marshaller, @Reference ServletHost servletHost, @Monitor ManagementMonitor monitor) {
+    public ResourceHostImpl(@Reference Marshaller marshaller,
+                            @Reference ServletHost servletHost,
+                            @Reference BasicAuthenticator authenticator,
+                            @Monitor ManagementMonitor monitor) {
         this.marshaller = marshaller;
         this.servletHost = servletHost;
+        this.authenticator = authenticator;
         this.monitor = monitor;
+    }
+
+    @Property(required = false)
+    public void setSecurity(String level) throws ParseException {
+        try {
+            security = ManagementSecurity.valueOf(level.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid JMX security setting:" + level);
+        }
+    }
+
+    @Property(required = false)
+    public void setRoles(String rolesAttribute) {
+        String[] rolesString = rolesAttribute.split(",");
+        for (String s : rolesString) {
+            roles.add(new Role(s.trim()));
+        }
     }
 
     @Reference(required = false)
@@ -150,7 +185,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             return;
         }
         try {
-            invoke(mapping, params, false);
+            WorkContext workContext = new WorkContext();
+            invoke(mapping, params, false, workContext);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
         }
@@ -212,14 +248,15 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             }
             return;
         }
+        WorkContext workContext = new WorkContext();
 
-        if (!securityCheck(mapping, response)) {
+        if (!securityCheck(mapping, request, response, workContext)) {
             return;
         }
 
         try {
             Object[] params = marshaller.deserialize(verb, request, mapping);
-            Object value = invoke(mapping, params, true);
+            Object value = invoke(mapping, params, true, workContext);
             respond(value, mapping, request, response);
         } catch (ResourceException e) {
             respondError(e, response);
@@ -274,21 +311,33 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         return null;
     }
 
-    private boolean securityCheck(ResourceMapping mapping, HttpServletResponse response) {
+    private boolean securityCheck(ResourceMapping mapping, HttpServletRequest request, HttpServletResponse response, WorkContext workContext) {
+        if (security == ManagementSecurity.DISABLED) {
+            return true;
+        }
+        try {
+            authenticator.authenticate(request, workContext);
+        } catch (NoCredentialsException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.getCode());
+            response.setHeader("WWW-Authenticate", "Basic realm=\"fabric3\"");
+            return false;
+        } catch (AuthenticationException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.getCode());
+        }
         return true;
     }
 
     /**
      * Invokes a resource.
      *
-     * @param mapping   the resource mapping
-     * @param params    the deserialized request parameters
-     * @param replicate true if the request should be replicated
+     * @param mapping     the resource mapping
+     * @param params      the deserialized request parameters
+     * @param replicate   true if the request should be replicated
+     * @param workContext the current work context
      * @return a return value or null
      * @throws ResourceException if an error invoking the resource occurs
      */
-    private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate) throws ResourceException {
-        WorkContext workContext = new WorkContext();
+    private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate, WorkContext workContext) throws ResourceException {
         WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             Object instance = mapping.getInstance();
