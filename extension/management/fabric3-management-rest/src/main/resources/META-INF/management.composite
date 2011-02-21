@@ -26,6 +26,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.management.rest.runtime.ResourceHostImpl"/>
         <property name="security" source="$systemConfig//runtime/@management.security"/>
         <property name="roles" source="$systemConfig//runtime/@management.access.roles"/>
+        <property name="disableHttp" source="$systemConfig//runtime/@management.http.disabled"/>
     </component>
 
     <component name="TransformerPairService">

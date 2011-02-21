@@ -249,6 +249,15 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @param response the current response
      */
     private void handle(Verb verb, HttpServletRequest request, HttpServletResponse response) {
+        if (disableHttp && !request.isSecure()) {
+            response.setStatus(HttpStatus.FORBIDDEN.getCode());
+            try {
+                response.getWriter().write("Forbidden. Only HTTPS access is allowed");
+            } catch (IOException e) {
+                monitor.error("Error writing response");
+            }
+            return;
+        }
         String pathInfo = request.getPathInfo().toLowerCase();
         ResourceMapping mapping = resolveMapping(verb, pathInfo);
         if (mapping == null) {
@@ -343,19 +352,19 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             response.setHeader("WWW-Authenticate", "Basic realm=\"fabric3\"");
             return false;
         } catch (AuthenticationException e) {
-            setForbiddenResponse(response);
+            setUnauthorizedResponse(response);
             return false;
         }
         if (ManagementSecurity.AUTHORIZATION == security) {
             // check access to management interface
             if (!checkSubjectHasRole(workContext, roles)) {
-                setForbiddenResponse(response);
+                setUnauthorizedResponse(response);
                 return false;
             }
 
             // check access to the specific operation
             if (!checkSubjectHasRole(workContext, mapping.getRoles())) {
-                setForbiddenResponse(response);
+                setUnauthorizedResponse(response);
                 return false;
             }
         }
@@ -384,14 +393,14 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     /**
-     * Constructs an HTTP forbidden response.
+     * Constructs an HTTP unauthorized response.
      *
      * @param response the response
      */
-    private void setForbiddenResponse(HttpServletResponse response) {
-        response.setStatus(HttpStatus.FORBIDDEN.getCode());
+    private void setUnauthorizedResponse(HttpServletResponse response) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.getCode());
         try {
-            response.getWriter().write("Forbidden");
+            response.getWriter().write("Unauthorized");
         } catch (IOException e) {
             monitor.error("Error writing response", e);
         }

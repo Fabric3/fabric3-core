@@ -105,7 +105,7 @@ public class ResourceInvoker {
                 for (ResourceMapping mapping : mappings) {
                     for (Role role : mapping.getRoles()) {
                         if (!workContext.getSubject().getRoles().contains(role)) {
-                            throw new ResourceException(HttpStatus.FORBIDDEN, "Forbidden");
+                            throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
                         }
                     }
                 }
