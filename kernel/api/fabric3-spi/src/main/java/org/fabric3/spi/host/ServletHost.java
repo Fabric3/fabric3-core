@@ -44,7 +44,6 @@
 package org.fabric3.spi.host;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 
 /**
  * Interface implemented by host environments that allow Servlets to be registered.
