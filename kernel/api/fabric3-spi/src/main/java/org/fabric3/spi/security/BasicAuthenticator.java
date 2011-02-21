@@ -35,20 +35,19 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.security;
+package org.fabric3.spi.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.WebApplicationException;
 
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * Implementations support an authentication scheme such as HTTP basic auth.
+ * Handles HTTP basic auth.
  *
  * @version $Rev$ $Date$
  */
-public interface Authenticator {
+public interface BasicAuthenticator {
 
     /**
      * Perform the authentication. If successful, the work context will be updated with the authenticated security subject.
@@ -56,8 +55,10 @@ public interface Authenticator {
      * @param request  the current HTTP request
      * @param response the current HTTP response
      * @param context  the current work context
-     * @throws WebApplicationException if authentication failed or credentials were not supplied
+     * @throws NoCredentialsException  if authentication credentials were not supplied. Clients may be asked to supply credentials and retry.
+     * @throws AuthenticationException if authentication failed
      */
-    void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context) throws WebApplicationException;
+    void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context)
+            throws NoCredentialsException, AuthenticationException;
 
 }

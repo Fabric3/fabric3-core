@@ -35,6 +35,9 @@
         <f3:implementation.system class="org.fabric3.fabric.transport.TransportService"/>
     </component>
 
+    <component name="BasicAuthenticator">
+        <f3:implementation.system class="org.fabric3.fabric.security.BasicAuthenticatorImpl"/>
+    </component>
 
     <component name="KeyStoreManager">
         <f3:implementation.system class="org.fabric3.fabric.security.KeyStoreManagerImpl"/>

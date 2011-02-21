@@ -35,47 +35,48 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.security;
+package org.fabric3.fabric.security;
 
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.BasicAuthenticator;
+import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.security.UsernamePasswordToken;
 import org.fabric3.spi.util.Base64;
-
-import static javax.ws.rs.core.Response.Status.FORBIDDEN;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
  * Performs HTTP basic auth and populates the current work context with the authenticated subject.
  *
  * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
  */
-public class BasicAuthenticator implements Authenticator {
+public class BasicAuthenticatorImpl implements BasicAuthenticator {
     private AuthenticationService authenticationService;
-    private String realm;
 
-    public BasicAuthenticator(AuthenticationService authenticationService, String realm) {
+    @Reference(required = false)
+    public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.realm = realm;
     }
 
-    public void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context) throws WebApplicationException {
+    public void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context)
+            throws AuthenticationException, NoCredentialsException {
         if (context.getSubject() != null) {
             // subject was previously authenticated
             return;
         }
+        if (authenticationService == null) {
+            throw new AuthenticationException("Authentication service not installed");
+        }
         String header = request.getHeader("Authorization");
         if ((header == null) || !header.startsWith("Basic ")) {
-            Response rsResponse = Response.status(UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"" + realm + "\"").build();
-            throw new WebApplicationException(rsResponse);
+            throw new NoCredentialsException();
         }
         String base64Token = header.substring(6);
         try {
@@ -92,10 +93,7 @@ public class BasicAuthenticator implements Authenticator {
             context.setSubject(subject);
             // authorized
         } catch (UnsupportedEncodingException e) {
-            // TODO log
-        } catch (AuthenticationException e) {
-            // TODO log
-            throw new WebApplicationException(FORBIDDEN);
+            throw new AssertionError(e);
         }
 
     }

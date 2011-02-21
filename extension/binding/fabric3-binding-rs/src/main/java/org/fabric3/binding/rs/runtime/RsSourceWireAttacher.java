@@ -49,8 +49,6 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
-import org.fabric3.binding.rs.runtime.security.Authenticator;
-import org.fabric3.binding.rs.runtime.security.BasicAuthenticator;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
@@ -60,7 +58,7 @@ import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.security.AuthenticationService;
+import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -73,19 +71,19 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
     private RsWireAttacherMonitor monitor;
-    private Authenticator basicAuthenticator;
+    private BasicAuthenticator authenticator;
 
-    public RsSourceWireAttacher(@Reference AuthenticationService authenticationService,
-                                @Reference ServletHost servletHost,
+    public RsSourceWireAttacher(@Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
                                 @Reference RsContainerManager containerManager,
+                                @Reference BasicAuthenticator authenticator,
                                 @Monitor RsWireAttacherMonitor monitor) {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
         this.monitor = monitor;
         // TODO make realm configurable
-        basicAuthenticator = new BasicAuthenticator(authenticationService, "fabric3");
+        this.authenticator = authenticator;
     }
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
@@ -170,7 +168,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private MethodInterceptor createMethodInterceptor(RsSourceDefinition sourceDefinition, Map<String, InvocationChain> invocationChains) {
         MethodInterceptor methodInterceptor;
         if (AuthenticationType.BASIC == sourceDefinition.getAuthenticationType()) {
-            methodInterceptor = new RsMethodInterceptor(invocationChains, basicAuthenticator);
+            methodInterceptor = new RsMethodInterceptor(invocationChains, authenticator);
             for (InvocationChain chain : invocationChains.values()) {
                 RsAuthorizationInterceptor authInterceptor = new RsAuthorizationInterceptor();
                 chain.addInterceptor(0, authInterceptor);

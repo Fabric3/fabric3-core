@@ -35,12 +35,11 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime.security;
+package org.fabric3.fabric.security;
 
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.WebApplicationException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -52,6 +51,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthenticationToken;
 import org.fabric3.spi.security.BasicSecuritySubject;
+import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
@@ -79,7 +79,8 @@ public class BasicAuthenticatorTestCase extends TestCase {
         HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         EasyMock.replay(service, request, response);
-        BasicAuthenticator authenticator = new BasicAuthenticator(service, "fabric3");
+        BasicAuthenticatorImpl authenticator = new BasicAuthenticatorImpl();
+        authenticator.setAuthenticationService(service);
 
         WorkContext context = new WorkContext();
 
@@ -101,16 +102,16 @@ public class BasicAuthenticatorTestCase extends TestCase {
         HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         EasyMock.replay(service, request, response);
-        BasicAuthenticator authenticator = new BasicAuthenticator(service, "fabric3");
+        BasicAuthenticatorImpl authenticator = new BasicAuthenticatorImpl();
+        authenticator.setAuthenticationService(service);
 
         WorkContext context = new WorkContext();
 
         try {
             authenticator.authenticate(request, response, context);
             fail();
-        } catch (WebApplicationException e) {
-            assertEquals(401, e.getResponse().getStatus());
-            assertNotNull(e.getResponse().getMetadata().get("WWW-Authenticate"));
+        } catch (NoCredentialsException e) {
+            // expected
         }
 
         EasyMock.verify(service, request);

@@ -42,18 +42,26 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.binding.rs.runtime.security.Authenticator;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.security.AuthenticationException;
+import org.fabric3.spi.security.BasicAuthenticator;
+import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 
 /**
  * Dispatches an invocation from Jersey to the Fabric3 invocation chain fronting a component instance.
@@ -64,13 +72,13 @@ public class RsMethodInterceptor implements MethodInterceptor {
     private static final String FABRIC3_SUBJECT = "fabric3.subject";
 
     private Map<String, InvocationChain> invocationChains;
-    private Authenticator authenticator;
+    private BasicAuthenticator authenticator;
 
     public RsMethodInterceptor(Map<String, InvocationChain> invocationChains) {
         this.invocationChains = invocationChains;
     }
 
-    public RsMethodInterceptor(Map<String, InvocationChain> invocationChains, Authenticator authenticator) {
+    public RsMethodInterceptor(Map<String, InvocationChain> invocationChains, BasicAuthenticator authenticator) {
         this.invocationChains = invocationChains;
         this.authenticator = authenticator;
     }
@@ -114,7 +122,14 @@ public class RsMethodInterceptor implements MethodInterceptor {
                 return;
             }
         }
-        authenticator.authenticate(request, response, context);
+        try {
+            authenticator.authenticate(request, response, context);
+        } catch (NoCredentialsException e) {
+            Response rsResponse = Response.status(UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"fabric3\"").build();
+            throw new WebApplicationException(rsResponse);
+        } catch (AuthenticationException e) {
+            throw new WebApplicationException(FORBIDDEN);
+        }
     }
 
 }

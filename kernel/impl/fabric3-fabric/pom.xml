@@ -78,6 +78,13 @@
         </dependency>
 
         <dependency>
+            <groupId>${servlet.groupId}</groupId>
+            <artifactId>${servlet.artifactId}</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>${woodstox.version}</version>
