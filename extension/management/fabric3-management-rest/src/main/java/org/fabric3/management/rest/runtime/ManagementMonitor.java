@@ -37,6 +37,7 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -49,5 +50,11 @@ public interface ManagementMonitor {
 
     @Severe
     void error(String message);
+
+    @Info("Management security is not enabled. This should be enabled on production systems.")
+    void securityDisabled();
+
+    @Info("Management operations are available over HTTP. HTTPS should be enabled on production systems.")
+    void httpEnabled();
 
 }

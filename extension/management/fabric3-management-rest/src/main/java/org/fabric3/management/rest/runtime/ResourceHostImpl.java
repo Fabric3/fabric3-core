@@ -92,6 +92,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
 
     private ManagementSecurity security = ManagementSecurity.DISABLED;
     private Set<Role> roles = new HashSet<Role>();
+    private boolean disableHttp;
 
     private Map<String, ResourceMapping> getMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
@@ -125,6 +126,11 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
+    @Property(required = false)
+    public void setDisableHttp(boolean disableHttp) {
+        this.disableHttp = disableHttp;
+    }
+
     @Reference(required = false)
     public void setTopologyService(ZoneTopologyService topologyService) {
         this.topologyService = topologyService;
@@ -136,6 +142,12 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         if (topologyService != null) {
             ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
             topologyService.openChannel(RESOURCE_CHANNEL, null, handler);
+        }
+        if (ManagementSecurity.DISABLED == security) {
+            monitor.securityDisabled();
+        }
+        if (!disableHttp) {
+            monitor.httpEnabled();
         }
     }
 
