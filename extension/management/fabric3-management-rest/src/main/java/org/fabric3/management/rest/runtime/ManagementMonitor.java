@@ -54,7 +54,7 @@ public interface ManagementMonitor {
     @Info("Management security is not enabled. This should be enabled on production systems.")
     void securityDisabled();
 
-    @Info("Management operations are available over HTTP. HTTPS should be enabled on production systems.")
+    @Info("Management operations are available over HTTP. Only HTTPS should be enabled on production systems.")
     void httpEnabled();
 
 }
