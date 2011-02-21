@@ -43,13 +43,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.Role;
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
@@ -130,6 +134,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             }
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
+
             for (ManagementOperationInfo operationInfo : info.getOperations()) {
                 Signature signature = operationInfo.getSignature();
                 Method method = signature.getMethod(clazz);
@@ -139,7 +144,18 @@ public class RestfulManagementExtension implements ManagementExtension {
                     rootResourcePathOverride = true;
                 }
                 OperationType type = operationInfo.getOperationType();
-                ResourceMapping mapping = createMapping(root, path, method, type, objectFactory, jsonPair, jaxbPair);
+                Verb verb = getVerb(method, type);
+
+                Set<Role> roles = operationInfo.getRoles();
+                if (roles.isEmpty()) {
+                    // No roles specified for operation. Default to read/write roles specified on the class. 
+                    if (Verb.GET == verb) {
+                        roles = info.getReadRoles();
+                    } else {
+                        roles = info.getWriteRoles();
+                    }
+                }
+                ResourceMapping mapping = createMapping(root, path, method, verb, objectFactory, jsonPair, jaxbPair, roles);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
@@ -163,15 +179,35 @@ public class RestfulManagementExtension implements ManagementExtension {
     public void export(String name, String group, String description, Object instance) throws ManagementException {
         String root = "/runtime/" + name;
         try {
+            Set<Role> readRoles = new HashSet<Role>();
+            Set<Role> writeRoles = new HashSet<Role>();
+
+            parseRoles(instance, readRoles, writeRoles);
+
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
-
+            Set<Role> roles;
             for (Method method : methods) {
-                ManagementOperation annotation = method.getAnnotation(ManagementOperation.class);
-                if (annotation != null) {
-                    OperationType type = OperationType.valueOf(annotation.type().toString());
-                    ResourceMapping mapping = createMapping(root, EMPTY_PATH, method, type, instance, jsonPair, jaxbPair);
+                ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
+                if (opAnnotation != null) {
+                    OperationType type = OperationType.valueOf(opAnnotation.type().toString());
+                    Verb verb = getVerb(method, type);
+                    String[] rolesAllowed = opAnnotation.rolesAllowed();
+                    if (rolesAllowed.length == 0) {
+                        if (Verb.GET == verb) {
+                            roles = readRoles;
+                        } else {
+                            roles = writeRoles;
+                        }
+                    } else {
+                        roles = new HashSet<Role>();
+                        for (String roleName : rolesAllowed) {
+                            roles.add(new Role(roleName));
+                        }
+                    }
+
+                    ResourceMapping mapping = createMapping(root, EMPTY_PATH, method, verb, instance, jsonPair, jaxbPair, roles);
                     resourceHost.register(mapping);
                 }
             }
@@ -189,24 +225,42 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     /**
+     * Returns the HTTP verb for the operation.
+     *
+     * @param method the method name
+     * @param type   the operation type
+     * @return the HTTP verb
+     */
+    private Verb getVerb(Method method, OperationType type) {
+        String methodName = method.getName();
+        if (OperationType.UNDEFINED == type) {
+            return MethodHelper.convertToVerb(methodName);
+        } else {
+            return Verb.valueOf(type.toString());
+        }
+    }
+
+    /**
      * Creates a managed artifact mapping.
      *
      * @param root     the root path for the artifact
      * @param path     the relative path of the operation. The path may be blank, in which case one will be calculated from the method name
      * @param method   the management operation
-     * @param type     the operation type
+     * @param verb     the HTTP verb the operation uses
      * @param instance the artifact
      * @param jsonPair the transformer pair for deserializing JSON requests and serializing responses as JSON
      * @param jaxbPair the transformer pair for deserializing XML-based requests and serializing responses as XML
+     * @param roles    the roles required to invoke the operation
      * @return the mapping
      */
     private ResourceMapping createMapping(String root,
                                           String path,
                                           Method method,
-                                          OperationType type,
+                                          Verb verb,
                                           Object instance,
                                           TransformerPair jsonPair,
-                                          TransformerPair jaxbPair) {
+                                          TransformerPair jaxbPair,
+                                          Set<Role> roles) {
         String methodName = method.getName();
         String rootPath;
         if (path.length() == 0) {
@@ -219,13 +273,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         } else {
             rootPath = root.toLowerCase() + "/" + path;
         }
-        Verb verb;
-        if (OperationType.UNDEFINED == type) {
-            verb = MethodHelper.convertToVerb(methodName);
-        } else {
-            verb = Verb.valueOf(type.toString());
-        }
-        return new ResourceMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair);
+        return new ResourceMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair, roles);
     }
 
     /**
@@ -245,13 +293,44 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             root = root.toLowerCase();
-            ResourceMapping mapping = new ResourceMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair);
+            Set<Role> roles = Collections.emptySet();
+            ResourceMapping mapping = new ResourceMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair, roles);
             resourceHost.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);
             }
         } catch (TransformationException e) {
             throw new ManagementException(e);
+        }
+    }
+
+    /**
+     * Parses read and write roles specified on an {@link Management} annotation.
+     *
+     * @param instance   the instance containing the annotation
+     * @param readRoles  the collection of read roles to populate
+     * @param writeRoles the collection of write roles to populate
+     */
+    private void parseRoles(Object instance, Set<Role> readRoles, Set<Role> writeRoles) {
+        Management annotation = instance.getClass().getAnnotation(Management.class);
+        if (annotation != null) {
+            String[] readRoleNames = annotation.readRoles();
+            for (String roleName : readRoleNames) {
+                readRoles.add(new Role(roleName));
+            }
+            String[] writeRoleNames = annotation.writeRoles();
+            for (String roleName : writeRoleNames) {
+                writeRoles.add(new Role(roleName));
+            }
+        }
+
+        // set default roles if none specified
+        if (readRoles.isEmpty()) {
+            readRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
+            readRoles.add(new Role(Management.FABRIC3_OBSERVER_ROLE));
+        }
+        if (writeRoles.isEmpty()) {
+            writeRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
         }
     }
 

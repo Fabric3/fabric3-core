@@ -44,8 +44,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fabric3.api.Role;
+import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.spi.invocation.WorkContext;
@@ -60,9 +63,17 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  */
 public class ResourceInvoker {
     List<ResourceMapping> mappings;
+    boolean securityCheck;
 
     public ResourceInvoker(List<ResourceMapping> mappings) {
         this.mappings = mappings;
+        for (ResourceMapping mapping : mappings) {
+            if (!mapping.getRoles().isEmpty()) {
+                securityCheck = true;
+                break;
+            }
+        }
+
     }
 
     /**
@@ -82,11 +93,23 @@ public class ResourceInvoker {
      * @param request the HTTP request
      * @return the resource representation
      * @throws ResourceProcessingException if there is an error processing the request
+     * @throws ResourceException           if the client is not authorized to invoke an operation
      */
-    public Resource invoke(HttpServletRequest request) throws ResourceProcessingException {
-        WorkContext workContext = new WorkContext();
-        WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
+    public Resource invoke(HttpServletRequest request) throws ResourceProcessingException, ResourceException {
         try {
+            WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+            if (workContext == null) {
+                throw new AssertionError("Work context not set");
+            }
+            if (securityCheck) {
+                for (ResourceMapping mapping : mappings) {
+                    for (Role role : mapping.getRoles()) {
+                        if (!workContext.getSubject().getRoles().contains(role)) {
+                            throw new ResourceException(HttpStatus.FORBIDDEN, "Forbidden");
+                        }
+                    }
+                }
+            }
             URL url = new URL(request.getRequestURL().toString());
             SelfLink selfLink = new SelfLink(url);
             Resource resource = new Resource(selfLink);
@@ -104,8 +127,6 @@ public class ResourceInvoker {
             return resource;
         } catch (MalformedURLException e) {
             throw new ResourceProcessingException(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(old);
         }
     }
 
@@ -117,16 +138,12 @@ public class ResourceInvoker {
             }
             return mapping.getMethod().invoke(instance);
         } catch (IllegalArgumentException e) {
-            // TODO return error
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (IllegalAccessException e) {
-            // TODO return error
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (InvocationTargetException e) {
-            // TODO return error
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (ObjectCreationException e) {
-            // TODO return error
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         }
     }

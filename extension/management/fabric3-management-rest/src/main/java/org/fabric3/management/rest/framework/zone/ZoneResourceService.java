@@ -41,12 +41,14 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -140,7 +142,8 @@ public class ZoneResourceService implements ResourceListener {
         Method method = mapping.getMethod();
         TransformerPair jaxbPair = mapping.getJaxbPair();
         TransformerPair jsonPair = mapping.getJsonPair();
-        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair);
+        Set<Role> roles = mapping.getRoles();
+        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
         subresources.add(newMapping);
         try {
             resourceHost.register(newMapping);
@@ -162,7 +165,8 @@ public class ZoneResourceService implements ResourceListener {
         Method method = mapping.getMethod();
         TransformerPair jaxbPair = mapping.getJaxbPair();
         TransformerPair jsonPair = mapping.getJsonPair();
-        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair);
+        Set<Role> roles = mapping.getRoles();
+        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
         try {
             resourceHost.register(newMapping);
         } catch (DuplicateResourceNameException e) {

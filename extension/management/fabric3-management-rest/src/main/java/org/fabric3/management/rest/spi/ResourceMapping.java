@@ -38,7 +38,9 @@
 package org.fabric3.management.rest.spi;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 
+import org.fabric3.api.Role;
 import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
@@ -55,6 +57,7 @@ public class ResourceMapping {
     private boolean replicate;
     private TransformerPair jsonPair;
     private TransformerPair jaxbPair;
+    private Set<Role> roles;
 
     /**
      * Constructor.
@@ -67,6 +70,7 @@ public class ResourceMapping {
      * @param instance     the managed artifact
      * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
      * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
+     * @param roles        the roles required to invoke the operation
      */
     public ResourceMapping(String path,
                            String relativePath,
@@ -74,8 +78,9 @@ public class ResourceMapping {
                            Method method,
                            Object instance,
                            TransformerPair jsonPair,
-                           TransformerPair jaxbPair) {
-        this(path, relativePath, verb, method, instance, false, jsonPair, jaxbPair);
+                           TransformerPair jaxbPair,
+                           Set<Role> roles) {
+        this(path, relativePath, verb, method, instance, false, jsonPair, jaxbPair, roles);
     }
 
     /**
@@ -90,6 +95,7 @@ public class ResourceMapping {
      * @param replicate    true if invocations should be replicated in a cluster
      * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
      * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
+     * @param roles        the roles required to invoke the operation
      */
     public ResourceMapping(String path,
                            String relativePath,
@@ -98,7 +104,8 @@ public class ResourceMapping {
                            Object instance,
                            boolean replicate,
                            TransformerPair jsonPair,
-                           TransformerPair jaxbPair) {
+                           TransformerPair jaxbPair,
+                           Set<Role> roles) {
         this.path = path;
         this.relativePath = relativePath;
         this.verb = verb;
@@ -107,6 +114,7 @@ public class ResourceMapping {
         this.replicate = replicate;
         this.jsonPair = jsonPair;
         this.jaxbPair = jaxbPair;
+        this.roles = roles;
     }
 
     /**
@@ -192,4 +200,12 @@ public class ResourceMapping {
         return jaxbPair;
     }
 
+    /**
+     * Returns the roles required to execute the management operation.
+     *
+     * @return the roles required to execute the management operation.
+     */
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }

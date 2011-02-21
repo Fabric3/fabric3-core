@@ -323,8 +323,17 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         return null;
     }
 
+    /**
+     * checks the current client has credentials to execute the management operation if security is enabled.
+     *
+     * @param mapping     the resource mapping
+     * @param request     the current request
+     * @param response    the response
+     * @param workContext the current work context
+     * @return true if the clients has the required credentials
+     */
     private boolean securityCheck(ResourceMapping mapping, HttpServletRequest request, HttpServletResponse response, WorkContext workContext) {
-        if (security == ManagementSecurity.DISABLED) {
+        if (ManagementSecurity.DISABLED == security) {
             return true;
         }
         try {
@@ -334,9 +343,58 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             response.setHeader("WWW-Authenticate", "Basic realm=\"fabric3\"");
             return false;
         } catch (AuthenticationException e) {
-            response.setStatus(HttpStatus.FORBIDDEN.getCode());
+            setForbiddenResponse(response);
+            return false;
+        }
+        if (ManagementSecurity.AUTHORIZATION == security) {
+            // check access to management interface
+            if (!checkSubjectHasRole(workContext, roles)) {
+                setForbiddenResponse(response);
+                return false;
+            }
+
+            // check access to the specific operation
+            if (!checkSubjectHasRole(workContext, mapping.getRoles())) {
+                setForbiddenResponse(response);
+                return false;
+            }
         }
         return true;
+    }
+
+    /**
+     * Checks if the current subject has a role in the set of provided roles if the latter is not empty.
+     *
+     * @param workContext the current work context
+     * @param roles       the roles to check
+     * @return true if the current subject has a role
+     */
+    private boolean checkSubjectHasRole(WorkContext workContext, Set<Role> roles) {
+        if (roles.isEmpty()) {
+            return true;
+        }
+        boolean authorized = false;
+        for (Role role : workContext.getSubject().getRoles()) {
+            if (roles.contains(role)) {
+                authorized = true;
+                break;
+            }
+        }
+        return authorized;
+    }
+
+    /**
+     * Constructs an HTTP forbidden response.
+     *
+     * @param response the response
+     */
+    private void setForbiddenResponse(HttpServletResponse response) {
+        response.setStatus(HttpStatus.FORBIDDEN.getCode());
+        try {
+            response.getWriter().write("Forbidden");
+        } catch (IOException e) {
+            monitor.error("Error writing response", e);
+        }
     }
 
     /**
