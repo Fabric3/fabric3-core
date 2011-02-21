@@ -40,7 +40,6 @@ package org.fabric3.binding.rs.runtime;
 import java.lang.reflect.Method;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -107,7 +106,6 @@ public class RsMethodInterceptor implements MethodInterceptor {
             return;
         }
         HttpServletRequest request = (HttpServletRequest) context.getHeaders().get("fabric3.httpRequest");
-        HttpServletResponse response = (HttpServletResponse) context.getHeaders().get("fabric3.httpResponse");
         if (!"https".equals(request.getScheme())) {
             // authentication must be done over HTTPS
             //throw new WebApplicationException(Response.Status.FORBIDDEN);
@@ -123,7 +121,7 @@ public class RsMethodInterceptor implements MethodInterceptor {
             }
         }
         try {
-            authenticator.authenticate(request, response, context);
+            authenticator.authenticate(request, context);
         } catch (NoCredentialsException e) {
             Response rsResponse = Response.status(UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"fabric3\"").build();
             throw new WebApplicationException(rsResponse);

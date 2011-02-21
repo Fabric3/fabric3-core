@@ -38,7 +38,6 @@
 package org.fabric3.spi.security;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.spi.invocation.WorkContext;
 
@@ -52,13 +51,11 @@ public interface BasicAuthenticator {
     /**
      * Perform the authentication. If successful, the work context will be updated with the authenticated security subject.
      *
-     * @param request  the current HTTP request
-     * @param response the current HTTP response
-     * @param context  the current work context
+     * @param request the current HTTP request
+     * @param context the current work context
      * @throws NoCredentialsException  if authentication credentials were not supplied. Clients may be asked to supply credentials and retry.
      * @throws AuthenticationException if authentication failed
      */
-    void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context)
-            throws NoCredentialsException, AuthenticationException;
+    void authenticate(HttpServletRequest request, WorkContext context) throws NoCredentialsException, AuthenticationException;
 
 }

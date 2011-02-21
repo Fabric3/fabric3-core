@@ -39,7 +39,6 @@ package org.fabric3.fabric.security;
 
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -65,8 +64,7 @@ public class BasicAuthenticatorImpl implements BasicAuthenticator {
         this.authenticationService = authenticationService;
     }
 
-    public void authenticate(HttpServletRequest request, HttpServletResponse response, WorkContext context)
-            throws AuthenticationException, NoCredentialsException {
+    public void authenticate(HttpServletRequest request, WorkContext context) throws AuthenticationException, NoCredentialsException {
         if (context.getSubject() != null) {
             // subject was previously authenticated
             return;

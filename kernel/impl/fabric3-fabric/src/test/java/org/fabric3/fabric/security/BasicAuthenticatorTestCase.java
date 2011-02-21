@@ -39,7 +39,6 @@ package org.fabric3.fabric.security;
 
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -76,15 +75,13 @@ public class BasicAuthenticatorTestCase extends TestCase {
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getHeader("Authorization")).andReturn("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
-
-        EasyMock.replay(service, request, response);
+        EasyMock.replay(service, request);
         BasicAuthenticatorImpl authenticator = new BasicAuthenticatorImpl();
         authenticator.setAuthenticationService(service);
 
         WorkContext context = new WorkContext();
 
-        authenticator.authenticate(request, response, context);
+        authenticator.authenticate(request, context);
 
         EasyMock.verify(service, request);
 
@@ -99,16 +96,14 @@ public class BasicAuthenticatorTestCase extends TestCase {
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getHeader("Authorization")).andReturn(null);
 
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
-
-        EasyMock.replay(service, request, response);
+        EasyMock.replay(service, request);
         BasicAuthenticatorImpl authenticator = new BasicAuthenticatorImpl();
         authenticator.setAuthenticationService(service);
 
         WorkContext context = new WorkContext();
 
         try {
-            authenticator.authenticate(request, response, context);
+            authenticator.authenticate(request, context);
             fail();
         } catch (NoCredentialsException e) {
             // expected
