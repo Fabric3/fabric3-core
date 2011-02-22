@@ -48,7 +48,12 @@ import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import javax.xml.transform.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
@@ -59,29 +64,34 @@ import java.io.UnsupportedEncodingException;
 /**
  * Manages Infinispan caches on a runtime.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9971 $ $Date: 2011-02-10 15:55:52 +0100 (Thu, 10 Feb 2011) $
  */
 @EagerInit
-public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
+public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanConfiguration> {
 
-    private static DefaultCacheManager cacheManager;
+    private DefaultCacheManager cacheManager;
 
     private CacheRegistry cacheRegistry;
 
-    static {
-        //TODO <michal.capo> not sure this will create singleton instance of cache manager due to classloading feature
-        // we are just using the default configuration
-        cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
-        cacheManager.start();
-    }
+    public InfinispanCacheManagerWrapper(@Reference CacheRegistry cacheRegistry) throws InfinispanException {
+        this.cacheRegistry = cacheRegistry;
 
-    public InfinispanCacheManager(@Reference CacheRegistry pCacheRegistry) {
-        cacheRegistry = pCacheRegistry;
+        cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
+        cacheManager.addListener(cacheRegistry);
     }
 
     @Destroy
     public void stopManager() {
-        cacheManager.stop();
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+            cacheManager.removeListener(cacheRegistry);
+            cacheManager.stop();
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassLoader);
+        }
+
+        cacheRegistry.clear();
     }
 
     public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
@@ -109,11 +119,15 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
             * This will help find classes.
             */
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            String cacheName = configuration.getCacheName();
 
             ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
             //TODO <michal.capo> at this time we are not including any configuration, due to jaxb class loading problem
-            cacheManager.defineConfiguration(configuration.getCacheName(), new Configuration());
+
+            Configuration cacheConfiguration = new Configuration();
+            cacheConfiguration.setCacheMode(Configuration.CacheMode.DIST_SYNC);
+
+            String cacheName = configuration.getCacheName();
+            cacheManager.defineConfiguration(cacheName, cacheConfiguration);
             cacheRegistry.register(cacheName, cacheManager.getCache(cacheName));
         } catch (UnsupportedEncodingException e) {
             throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
@@ -128,9 +142,16 @@ public class InfinispanCacheManager implements CacheManager<InfinispanConfigurat
     public void remove(InfinispanConfiguration configuration) {
         String cacheName = configuration.getCacheName();
 
-        cacheManager.startCache(cacheName);
-        cacheRegistry.unregister(cacheName);
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+            cacheManager.getCache(cacheName).stop();
+            cacheRegistry.unregister(cacheName);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassLoader);
+        }
     }
+
 }
 
 

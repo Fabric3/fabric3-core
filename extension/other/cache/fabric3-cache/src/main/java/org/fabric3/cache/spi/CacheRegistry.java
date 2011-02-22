@@ -50,4 +50,6 @@ public interface CacheRegistry {
 
     ConcurrentMap unregister(String name);
 
+    void clear();
+
 }
