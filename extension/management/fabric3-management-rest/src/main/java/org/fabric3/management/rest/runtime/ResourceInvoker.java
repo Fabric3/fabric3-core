@@ -101,20 +101,7 @@ public class ResourceInvoker {
             if (workContext == null) {
                 throw new AssertionError("Work context not set");
             }
-            if (securityCheck) {
-                for (ResourceMapping mapping : mappings) {
-                    boolean found = false;
-                    for (Role role : mapping.getRoles()) {
-                        if (workContext.getSubject().getRoles().contains(role)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found){
-                        throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
-                    }
-                }
-            }
+            checkSecurity(workContext);
             URL url = new URL(request.getRequestURL().toString());
             SelfLink selfLink = new SelfLink(url);
             Resource resource = new Resource(selfLink);
@@ -132,6 +119,23 @@ public class ResourceInvoker {
             return resource;
         } catch (MalformedURLException e) {
             throw new ResourceProcessingException(e);
+        }
+    }
+
+    private void checkSecurity(WorkContext workContext) throws ResourceException {
+        if (securityCheck) {
+            for (ResourceMapping mapping : mappings) {
+                boolean found = false;
+                for (Role role : mapping.getRoles()) {
+                    if (workContext.getSubject().getRoles().contains(role)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found){
+                    throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+                }
+            }
         }
     }
 
