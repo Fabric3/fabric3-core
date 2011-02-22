@@ -103,10 +103,15 @@ public class ResourceInvoker {
             }
             if (securityCheck) {
                 for (ResourceMapping mapping : mappings) {
+                    boolean found = false;
                     for (Role role : mapping.getRoles()) {
-                        if (!workContext.getSubject().getRoles().contains(role)) {
-                            throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+                        if (workContext.getSubject().getRoles().contains(role)) {
+                            found = true;
+                            break;
                         }
+                    }
+                    if (!found){
+                        throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
                     }
                 }
             }
