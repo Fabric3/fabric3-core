@@ -53,6 +53,7 @@ public class ResourceException extends Fabric3Exception {
 
     private HttpStatus status;
     private Map<String, String> headers;
+    private Object entity;
 
     /**
      * Constructor.
@@ -118,5 +119,13 @@ public class ResourceException extends Fabric3Exception {
             headers = new HashMap<String, String>();
         }
         headers.put(name, value);
+    }
+
+    public Object getEntity() {
+        return entity;
+    }
+
+    public void setEntity(Object entity) {
+        this.entity = entity;
     }
 }

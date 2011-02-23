@@ -73,6 +73,8 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
 
 /**
  * @version $Rev$ $Date$
@@ -280,7 +282,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             Object value = invoke(mapping, params, true, workContext);
             respond(value, mapping, request, response);
         } catch (ResourceException e) {
-            respondError(e, response);
+            respondError(e, mapping, response);
         }
     }
 
@@ -498,23 +500,35 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     /**
-     * Returns an error response to the client
+     * Returns an error response to the client.
      *
      * @param e        the error
+     * @param mapping  the resource mapping
      * @param response the current response
      */
-    private void respondError(ResourceException e, HttpServletResponse response) {
+    private void respondError(ResourceException e, ResourceMapping mapping, HttpServletResponse response) {
         for (Map.Entry<String, String> entry : e.getHeaders().entrySet()) {
             response.setHeader(entry.getKey(), entry.getValue());
         }
         response.setStatus(e.getStatus().getCode());
         try {
             String message = e.getMessage();
-            if (message != null) {
-                response.getWriter().write(e.getMessage());
+            Object entity = e.getEntity();
+            if (entity != null) {
+                // transform the error entity
+                Transformer<Object, byte[]> transformer = mapping.getJsonPair().getSerializer();
+                byte[] serialized = transformer.transform(entity, entity.getClass().getClassLoader());
+                response.getOutputStream().write(serialized);
+            } else {
+                if (message != null) {
+                    response.getWriter().write(e.getMessage());
+                }
             }
         } catch (IOException ex) {
             monitor.error("Cannot write error response", ex);
+            monitor.error("Response was ", e);
+        } catch (TransformationException ex) {
+            monitor.error("Cannot serialize error response", ex);
             monitor.error("Response was ", e);
         }
     }

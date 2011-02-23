@@ -42,7 +42,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
@@ -53,6 +55,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
@@ -62,6 +65,7 @@ import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.InputStreamContributionSource;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.UninstallException;
+import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.HttpHeaders;
 import org.fabric3.management.rest.model.HttpStatus;
@@ -72,6 +76,7 @@ import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.introspection.validation.InvalidContributionException;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
@@ -142,6 +147,10 @@ public class ContributionsResourceService {
         } catch (DuplicateContributionException e) {
             monitor.error("Duplicate contribution:" + name, e);
             throw new ResourceException(HttpStatus.CONFLICT, "Contribution already exists: " + name);
+        } catch (InvalidContributionException e) {
+            ResourceException resourceException = new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution: " + name);
+            propagate(e, resourceException);
+            throw resourceException;
         } catch (ContributionException e) {
             monitor.error("Error creating contribution: " + name, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
@@ -193,5 +202,26 @@ public class ContributionsResourceService {
         return new Link(uri, EDIT_LINK, url);
     }
 
+    private void propagate(InvalidContributionException e, ResourceException resourceException) {
+        Map<String, List<String>> errors = new HashMap<String, List<String>>();
+        for (ValidationFailure failure : e.getErrors()) {
+            if (failure instanceof ArtifactValidationFailure) {
+                ArtifactValidationFailure avf = (ArtifactValidationFailure) failure;
+                List<String> artifactErrors = new ArrayList<String>();
+                errors.put(avf.getArtifactName(), artifactErrors);
+                for (ValidationFailure entry : avf.getFailures()) {
+                    artifactErrors.add(entry.getMessage());
+                }
+            } else {
+                List<String> generalErrors = errors.get("General");
+                if (generalErrors == null) {
+                    generalErrors = new ArrayList<String>();
+                    errors.put("General", generalErrors);
+                }
+                generalErrors.add(failure.getMessage());
+            }
+        }
+        resourceException.setEntity(errors);
+    }
 
 }
