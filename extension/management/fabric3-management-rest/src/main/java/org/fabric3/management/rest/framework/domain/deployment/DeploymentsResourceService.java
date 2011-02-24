@@ -71,7 +71,7 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
- * Handles the /domain/contributions resource and its sub-resources:
+ * Handles the /domain/deployments resource and its sub-resources:
  * <pre>
  * <ul>
  *  <li>GET /deployments - Returns deployed contributions</ul>
