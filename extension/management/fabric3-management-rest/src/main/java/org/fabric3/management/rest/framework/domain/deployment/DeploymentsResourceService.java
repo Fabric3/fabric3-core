@@ -152,7 +152,7 @@ public class DeploymentsResourceService {
                     return new Response(HttpStatus.NOT_FOUND, "Composite not found: " + deployableName);
                 } catch (DeploymentException e) {
                     monitor.error("Error deploying composite " + deployableName, e);
-                    return new Response(HttpStatus.BAD_REQUEST, "Error deploying composite " + deployableName + ": " + e.getMessage());
+                    return new Response(HttpStatus.INTERNAL_SERVER_ERROR, "Error deploying composite " + deployableName + ": " + e.getMessage());
                 }
 
             }

@@ -153,8 +153,7 @@ public class ProfilesResourceService {
             contributionService.uninstallProfile(profileUri);
             contributionService.removeProfile(profileUri);
         } catch (UninstallException e) {
-            // TODO report better error
-            monitor.error("Error removing contribution: " + uri, e);
+            monitor.error("Error removing profile: " + uri, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing profile: " + uri);
         } catch (RemoveException e) {
             monitor.error("Error removing contribution: " + uri, e);

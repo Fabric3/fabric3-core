@@ -64,6 +64,7 @@ import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.InputStreamContributionSource;
 import org.fabric3.host.contribution.RemoveException;
+import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.management.rest.framework.ResourceHelper;
@@ -133,28 +134,34 @@ public class ContributionsResourceService {
         String path = request.getPathInfo();
         int pos = path.lastIndexOf("/");
         String name = path.substring(pos + 1);   // remove the leading "/"
+        URI uri;
         try {
-            URI uri = new URI(name);
+            uri = new URI(name);
             ContributionSource source = new InputStreamContributionSource(uri, request.getInputStream());
             contributionService.store(source);
+        } catch (URISyntaxException e) {
+            monitor.error("Invalid contribution URI:", e);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution URI: " + name);
+        } catch (IOException e) {
+            monitor.error("Error creating contribution: " + name, e);
+            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
+        } catch (DuplicateContributionException e) {
+            monitor.error("Duplicate contribution:" + name, e);
+            throw new ResourceException(HttpStatus.CONFLICT, "Contribution already exists: " + name);
+        } catch (StoreException e) {
+            monitor.error("Error creating contribution: " + name, e);
+            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
+        }
+        try {
             contributionService.install(uri);
             Response response = new Response(HttpStatus.CREATED);
             response.addHeader(HttpHeaders.LOCATION, path);
             return response;
-        } catch (URISyntaxException e) {
-            monitor.error("Invalid contribution URI:", e);
-            throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution URI: " + name);
-        } catch (DuplicateContributionException e) {
-            monitor.error("Duplicate contribution:" + name, e);
-            throw new ResourceException(HttpStatus.CONFLICT, "Contribution already exists: " + name);
         } catch (InvalidContributionException e) {
-            ResourceException resourceException = new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution: " + name);
+            ResourceException resourceException = new ResourceException(HttpStatus.VALIDATION_ERROR, "Invalid contribution: " + name);
             propagate(e, resourceException);
             throw resourceException;
         } catch (ContributionException e) {
-            monitor.error("Error creating contribution: " + name, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
-        } catch (IOException e) {
             monitor.error("Error creating contribution: " + name, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
         }
