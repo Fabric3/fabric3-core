@@ -45,31 +45,30 @@ import java.io.PrintStream;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.admin.api.DomainController;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class UseTestCase extends TestCase {
-    private static final String DOMAIN_ADDRESS = "service:jmx:rmi:///jndi/rmi://localhost:1199/server";
+    private static final String DOMAIN_ADDRESS = "http://localhost:8180/management/domain";
 
     public void testUse() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.setDomainAddress(DOMAIN_ADDRESS);
-        controller.setProtocolPackages(null);
-        EasyMock.replay(controller);
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        domainConnection.setDomainAddress(DOMAIN_ADDRESS);
+        EasyMock.replay(domainConnection);
 
         Settings settings = new TransientSettings();
-        DomainConfiguration configuration = new DomainConfiguration("MyDomain", DOMAIN_ADDRESS, null, null, null);
+        DomainConfiguration configuration = new DomainConfiguration("MyDomain", DOMAIN_ADDRESS, null, null);
         settings.addConfiguration(configuration);
-        Interpreter interpreter = new InterpreterImpl(controller, settings);
+        Interpreter interpreter = new InterpreterImpl(domainConnection, settings);
 
         InputStream in = new ByteArrayInputStream("use MyDomain \n quit".getBytes());
         PrintStream out = new PrintStream(new ByteArrayOutputStream());
         interpreter.processInteractive(in, out);
 
-        EasyMock.verify(controller);
+        EasyMock.verify(domainConnection);
     }
 
 }

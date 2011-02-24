@@ -40,11 +40,11 @@ package org.fabric3.admin.interpreter.parser;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.UndeployCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
@@ -53,10 +53,10 @@ public class UndeployCommandParser implements CommandParser {
     private static final String FORCE = "-force";
     private static final String FORCE_ABBREVIATED = "-f";
 
-    private DomainController controller;
+    private DomainConnection domainConnection;
 
-    public UndeployCommandParser(DomainController controller) {
-        this.controller = controller;
+    public UndeployCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public String getUsage() {
@@ -68,7 +68,7 @@ public class UndeployCommandParser implements CommandParser {
         if (tokens.length != 1 && tokens.length != 2 && tokens.length != 5 && tokens.length != 6) {
             throw new ParseException("Illegal number of arguments");
         }
-        UndeployCommand command = new UndeployCommand(controller);
+        UndeployCommand command = new UndeployCommand(domainConnection);
         try {
             command.setContributionUri(new URI(tokens[0]));
         } catch (URISyntaxException e) {

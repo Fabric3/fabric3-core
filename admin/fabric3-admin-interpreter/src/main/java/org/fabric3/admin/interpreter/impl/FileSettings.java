@@ -103,8 +103,7 @@ public class FileSettings implements Settings {
                             String url = reader.getAttributeValue(null, "url");
                             String username = reader.getAttributeValue(null, "username");
                             String password = reader.getAttributeValue(null, "password");
-                            String protocolPackages = reader.getAttributeValue(null, "protocolPackages");
-                            DomainConfiguration configuration = new DomainConfiguration(name, url, username, password, protocolPackages);
+                            DomainConfiguration configuration = new DomainConfiguration(name, url, username, password);
                             addConfiguration(configuration);
                             break;
                         }

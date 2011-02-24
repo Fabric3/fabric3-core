@@ -35,42 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.interpreter.command;
+package org.fabric3.admin.interpreter;
 
-import java.io.PrintStream;
-
-import org.fabric3.admin.interpreter.Command;
-import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.admin.interpreter.communication.DomainConnection;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AuthCommand implements Command {
-    private DomainConnection domainConnection;
-    private String username;
-    private String password;
-
-    public AuthCommand(DomainConnection domainConnection) {
-        this.domainConnection = domainConnection;
+public class MockConnection extends HttpURLConnection {
+    private int responseCode = 200;
+    
+    public MockConnection() {
+        super(null);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public MockConnection(int responseCode) {
+        super(null);
+        this.responseCode = responseCode;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public int getResponseCode() {
+        return responseCode;
     }
 
-    public boolean execute(PrintStream out) throws CommandException {
-        if (username != null) {
-            domainConnection.setUsername(username);
-        }
-        if (password != null) {
-            domainConnection.setPassword(password);
-        }
-        return true;
+    @Override
+    public void disconnect() {
+
     }
 
+    @Override
+    public boolean usingProxy() {
+        return false;
+    }
+
+    @Override
+    public void connect() throws IOException {
+
+    }
+
+    private URL create() {
+        return null;
+    }
 }

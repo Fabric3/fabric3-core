@@ -42,26 +42,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.InstallProfileCommand;
 import org.fabric3.admin.interpreter.command.UninstallProfileCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ProfileCommandParser implements CommandParser {
-    private DomainController controller;
+    private DomainConnection domainConnection;
 
-    public ProfileCommandParser(DomainController controller) {
-        this.controller = controller;
+    public ProfileCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public String getUsage() {
         return "profile (pf): Installs a profile to the domain repository.\n" +
-                "usage: profile install <profile> [-u username -p password]";
+                "usage: profile [install | uninstall] <profile> [-u username -p password]";
     }
 
     public Command parse(String[] tokens) throws ParseException {
@@ -78,7 +78,7 @@ public class ProfileCommandParser implements CommandParser {
     }
 
     private Command uninstall(String[] tokens) throws ParseException {
-        UninstallProfileCommand command = new UninstallProfileCommand(controller);
+        UninstallProfileCommand command = new UninstallProfileCommand(domainConnection);
         try {
             command.setProfileUri(new URI(tokens[1]));
         } catch (URISyntaxException e) {
@@ -91,7 +91,7 @@ public class ProfileCommandParser implements CommandParser {
     }
 
     private Command install(String[] tokens) throws ParseException {
-        InstallProfileCommand command = new InstallProfileCommand(controller);
+        InstallProfileCommand command = new InstallProfileCommand(domainConnection);
         try {
             URL url = ParserHelper.parseUrl(tokens[1]);
             command.setProfile(url);

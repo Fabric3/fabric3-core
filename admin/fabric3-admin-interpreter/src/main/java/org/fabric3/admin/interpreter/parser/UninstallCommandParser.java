@@ -35,42 +35,46 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.interpreter;
+package org.fabric3.admin.interpreter.parser;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.admin.api.DomainController;
-import org.fabric3.admin.interpreter.impl.InterpreterImpl;
+import org.fabric3.admin.interpreter.Command;
+import org.fabric3.admin.interpreter.CommandParser;
+import org.fabric3.admin.interpreter.ParseException;
+import org.fabric3.admin.interpreter.command.UninstallCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RemoveTestCase extends TestCase {
+public class UninstallCommandParser implements CommandParser {
+    private DomainConnection domainConnection;
 
-    public void testRemove() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.setUsername("username");
-        controller.setPassword("password");
-        EasyMock.expect(controller.isConnected()).andReturn(true);
-        URI uri = URI.create("foo.jar");
-        controller.uninstall(uri);
-        controller.remove(uri);
-        EasyMock.replay(controller);
+    public UninstallCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
+    }
 
-        Interpreter interpreter = new InterpreterImpl(controller);
+    public String getUsage() {
+        return "uninstall (uin): Removes a stored contribution.\n" +
+                "usage: uninstall <contribution file> [-u username -p password]";
+    }
 
-        InputStream in = new ByteArrayInputStream("uninstall foo.jar -u username -p password \n quit".getBytes());
-        PrintStream out = new PrintStream(new ByteArrayOutputStream());
-        interpreter.processInteractive(in, out);
-
-        EasyMock.verify(controller);
+    public Command parse(String[] tokens) throws ParseException {
+        if (tokens.length != 1 && tokens.length != 5) {
+            throw new ParseException("Illegal number of arguments");
+        }
+        UninstallCommand command = new UninstallCommand(domainConnection);
+        try {
+            command.setContributionUri(new URI(tokens[0]));
+        } catch (URISyntaxException e) {
+            throw new ParseException("Invalid contribution name", e);
+        }
+        if (tokens.length == 5) {
+            ParserHelper.parseAuthorization(command, tokens, 1);
+        }
+        return command;
     }
 
 }

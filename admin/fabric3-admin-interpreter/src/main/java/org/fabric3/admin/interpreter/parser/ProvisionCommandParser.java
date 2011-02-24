@@ -40,32 +40,32 @@ package org.fabric3.admin.interpreter.parser;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.ProvisionCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ProvisionCommandParser implements CommandParser {
-    private DomainController controller;
+    private DomainConnection domainConnection;
 
-    public ProvisionCommandParser(DomainController controller) {
-        this.controller = controller;
+    public ProvisionCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public String getUsage() {
         return "provision (pr): Installs and deploys a contribution.\n" +
-                "usage: provision <contribution file> <plan name>|-plan <plan file> [-u username -p password]";
+                "usage: provision <contribution file> [-u username -p password]";
     }
 
     public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 1 && tokens.length != 2 && tokens.length != 3 && tokens.length != 5 && tokens.length != 6 && tokens.length != 7) {
+        if (tokens.length != 1 && tokens.length != 5) {
             throw new ParseException("Illegal number of arguments");
         }
-        ProvisionCommand command = new ProvisionCommand(controller);
+        ProvisionCommand command = new ProvisionCommand(domainConnection);
         try {
             URL contributionUrl = ParserHelper.parseUrl(tokens[0]);
             command.setContribution(contributionUrl);
@@ -75,27 +75,8 @@ public class ProvisionCommandParser implements CommandParser {
         } catch (MalformedURLException e) {
             throw new ParseException("Invalid contribution URL", e);
         }
-        if ("-plan".equals(tokens[1])) {
-            try {
-                URL url = ParserHelper.parseUrl(tokens[2]);
-                command.setPlanFile(url);
-            } catch (MalformedURLException e) {
-                throw new ParseException("Invalid plan URL", e);
-            }
-            if (tokens.length == 7) {
-                ParserHelper.parseAuthorization(command, tokens, 3);
-            }
-        } else {
-            if (tokens.length == 5) {
-                ParserHelper.parseAuthorization(command, tokens, 1);
-            } else if (tokens.length == 6) {
-                command.setPlanName(tokens[1]);
-                ParserHelper.parseAuthorization(command, tokens, 2);
-            } else {
-                if (tokens.length == 6) {
-                    ParserHelper.parseAuthorization(command, tokens, 2);
-                }
-            }
+        if (tokens.length == 5) {
+            ParserHelper.parseAuthorization(command, tokens, 1);
         }
         return command;
     }

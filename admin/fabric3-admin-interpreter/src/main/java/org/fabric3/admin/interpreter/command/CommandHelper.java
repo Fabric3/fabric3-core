@@ -37,13 +37,8 @@
 */
 package org.fabric3.admin.interpreter.command;
 
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URL;
-
-import org.fabric3.management.contribution.ArtifactErrorInfo;
-import org.fabric3.management.contribution.ErrorInfo;
-import org.fabric3.management.contribution.InvalidContributionException;
 
 /**
  * @version $Rev$ $Date$
@@ -66,10 +61,10 @@ public class CommandHelper {
         if (pos < 0) {
             contributionName = path;
         } else if (pos == path.length() - 1) {
-            String substr = path.substring(0, pos);
-            pos = substr.lastIndexOf('/');
+            String substring = path.substring(0, pos);
+            pos = substring.lastIndexOf('/');
             if (pos < 0) {
-                contributionName = substr;
+                contributionName = substring;
             } else {
                 contributionName = path.substring(pos + 1, path.length() - 1);
             }
@@ -79,18 +74,4 @@ public class CommandHelper {
         return URI.create(contributionName);
     }
 
-    public static void printErrors(PrintStream out, InvalidContributionException e) {
-        for (ErrorInfo info : e.getErrors()) {
-            if (info instanceof ArtifactErrorInfo) {
-                ArtifactErrorInfo aei = (ArtifactErrorInfo) info;
-                out.println("Errors in " + aei.getName() + " \n");
-                for (ErrorInfo errorInfo : aei.getErrors()) {
-                    out.println("  " + errorInfo.getError() + "\n");
-                }
-            } else {
-                out.println(info.getError());
-            }
-        }
-
-    }
 }

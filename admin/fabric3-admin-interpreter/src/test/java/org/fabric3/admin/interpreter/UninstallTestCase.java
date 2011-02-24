@@ -35,25 +35,39 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.api;
+package org.fabric3.admin.interpreter;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.net.URI;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.admin.interpreter.communication.DomainConnection;
+import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 
 /**
- * Denotes an exception installing a contribution.
- *
  * @version $Rev$ $Date$
  */
-public class CommunicationException extends Exception {
-    private static final long serialVersionUID = -351731887104971407L;
+public class UninstallTestCase extends TestCase {
 
-    public CommunicationException(String message) {
-        super(message);
+    public void testRemove() throws Exception {
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        domainConnection.setUsername("username");
+        domainConnection.setPassword("password");
+        EasyMock.expect(domainConnection.createConnection(EasyMock.isA(String.class), EasyMock.eq("DELETE"))).andReturn(new MockConnection());
+        EasyMock.replay(domainConnection);
+
+        Interpreter interpreter = new InterpreterImpl(domainConnection);
+
+        InputStream in = new ByteArrayInputStream("uninstall foo.jar -u username -p password \n quit".getBytes());
+        PrintStream out = new PrintStream(new ByteArrayOutputStream());
+        interpreter.processInteractive(in, out);
+
+        EasyMock.verify(domainConnection);
     }
 
-    public CommunicationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public CommunicationException(Throwable cause) {
-        super(cause);
-    }
 }

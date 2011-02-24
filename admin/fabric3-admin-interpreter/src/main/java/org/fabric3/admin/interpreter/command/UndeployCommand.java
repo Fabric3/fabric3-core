@@ -39,30 +39,26 @@ package org.fabric3.admin.interpreter.command;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 
-import org.fabric3.admin.api.CommunicationException;
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.management.domain.DeploymentManagementException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class UndeployCommand implements Command {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private URI contributionUri;
     private String username;
     private String password;
     private boolean force = false;
 
-    public UndeployCommand(DomainController controller) {
-        this.controller = controller;
-    }
-
-    public URI getContributionUri() {
-        return contributionUri;
+    public UndeployCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setContributionUri(URI uri) {
@@ -73,16 +69,8 @@ public class UndeployCommand implements Command {
         this.force = force;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -91,37 +79,45 @@ public class UndeployCommand implements Command {
 
     public boolean execute(PrintStream out) throws CommandException {
         if (username != null) {
-            controller.setUsername(username);
+            domainConnection.setUsername(username);
         }
         if (password != null) {
-            controller.setPassword(password);
+            domainConnection.setPassword(password);
         }
-        boolean disconnected = !controller.isConnected();
+        String path = "/deployments/contribution/" + contributionUri;
+        HttpURLConnection connection = null;
         try {
-            if (disconnected) {
-                controller.connect();
+            connection = domainConnection.createConnection(path, "DELETE");
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR: Not authorized");
+                return false;
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                return false;
+            } else if (HttpStatus.NOT_FOUND.getCode() == code) {
+                out.println("ERROR: Contribution not found: " + contributionUri);
+                return false;
+            } else if (HttpStatus.OK.getCode() != code) {
+                out.println("ERROR: Error undeploying contribution: " + code);
+                return false;
             }
-            controller.undeploy(contributionUri, force);
+            out.println("Contribution undeployed");
             return true;
         } catch (IOException e) {
             out.println("ERROR: Error connecting to domain controller");
             e.printStackTrace(out);
-        } catch (CommunicationException ex) {
+            return false;
+        } catch (CommunicationException e) {
             out.println("ERROR: Error connecting to domain controller");
-            ex.printStackTrace(out);
-        } catch (DeploymentManagementException ex) {
-            out.println("ERROR: Error undeploying contribution");
-            out.println("       " + ex.getMessage());
+            e.printStackTrace(out);
+            return false;
         } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (connection != null) {
+                connection.disconnect();
             }
         }
-        return false;
     }
 
 

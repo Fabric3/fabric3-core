@@ -37,22 +37,32 @@
 */
 package org.fabric3.admin.interpreter.command;
 
+import java.io.IOException;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AuthCommand implements Command {
+public class UninstallCommand implements Command {
     private DomainConnection domainConnection;
+    private URI contributionUri;
     private String username;
     private String password;
 
-    public AuthCommand(DomainConnection domainConnection) {
+    public UninstallCommand(DomainConnection domainConnection) {
         this.domainConnection = domainConnection;
+    }
+
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
     }
 
     public void setUsername(String username) {
@@ -70,7 +80,41 @@ public class AuthCommand implements Command {
         if (password != null) {
             domainConnection.setPassword(password);
         }
-        return true;
+
+        String path = "/contributions/contribution/" + contributionUri;
+        HttpURLConnection connection = null;
+        try {
+            connection = domainConnection.createConnection(path, "DELETE");
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR: Not authorized");
+                return false;
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                return false;
+            } else if (HttpStatus.NOT_FOUND.getCode() == code) {
+                out.println("ERROR: Contribution not found: " + contributionUri);
+                return false;
+            } else if (HttpStatus.OK.getCode() != code) {
+                out.println("ERROR: Server error: " + code);
+                return false;
+            }
+            out.println("Contribution uninstalled");
+            return true;
+        } catch (IOException e) {
+            out.println("ERROR: Error connecting to domain controller");
+            e.printStackTrace(out);
+            return false;
+        } catch (CommunicationException e) {
+            out.println("ERROR: Error connecting to domain controller");
+            e.printStackTrace(out);
+            return false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
 }

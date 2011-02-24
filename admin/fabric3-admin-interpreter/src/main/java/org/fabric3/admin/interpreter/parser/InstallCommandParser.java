@@ -40,20 +40,20 @@ package org.fabric3.admin.interpreter.parser;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.InstallCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InstallCommandParser implements CommandParser {
-    private DomainController controller;
+    private DomainConnection domainConnection;
 
-    public InstallCommandParser(DomainController controller) {
-        this.controller = controller;
+    public InstallCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public String getUsage() {
@@ -65,7 +65,7 @@ public class InstallCommandParser implements CommandParser {
         if (tokens.length != 1 && tokens.length != 5) {
             throw new ParseException("Illegal number of arguments");
         }
-        InstallCommand command = new InstallCommand(controller);
+        InstallCommand command = new InstallCommand(domainConnection);
         try {
             URL contributionUrl = ParserHelper.parseUrl(tokens[0]);
             command.setContribution(contributionUrl);

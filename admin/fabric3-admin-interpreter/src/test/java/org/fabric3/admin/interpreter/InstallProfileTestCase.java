@@ -39,84 +39,75 @@ package org.fabric3.admin.interpreter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.admin.api.DomainController;
+import org.fabric3.admin.interpreter.command.HttpStatus;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InstallProfileTestCase extends TestCase {
-    private URL contributionUrl;
 
     public void testInstallWithNoNameNoPath() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.setUsername("username");
-        controller.setPassword("password");
-        EasyMock.expect(controller.isConnected()).andReturn(true);
-        URI uri = URI.create("foo.jar");
-        controller.storeProfile(contributionUrl, uri);
-        controller.installProfile(uri);
-        EasyMock.replay(controller);
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        domainConnection.setUsername("username");
+        domainConnection.setPassword("password");
+        MockConnection connection = new MockConnection(HttpStatus.CREATED.getCode());
+        EasyMock.expect(domainConnection.put(EasyMock.isA(String.class), EasyMock.isA(URL.class))).andReturn(connection);
+        EasyMock.replay(domainConnection);
 
-        Interpreter interpreter = new InterpreterImpl(controller);
+        Interpreter interpreter = new InterpreterImpl(domainConnection);
 
         InputStream in = new ByteArrayInputStream("profile install foo.jar -u username -p password \n quit".getBytes());
         PrintStream out = new PrintStream(new ByteArrayOutputStream());
         interpreter.processInteractive(in, out);
 
-        EasyMock.verify(controller);
+        EasyMock.verify(domainConnection);
     }
 
     public void testInstallWithNoNameWithPath() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.setUsername("username");
-        controller.setPassword("password");
-        EasyMock.expect(controller.isConnected()).andReturn(true);
-        URI uri = URI.create("foo.jar");
-        controller.storeProfile(new URL("file://bar/foo.jar"), uri);
-        controller.installProfile(uri);
-        EasyMock.replay(controller);
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        domainConnection.setUsername("username");
+        domainConnection.setPassword("password");
+        MockConnection connection = new MockConnection(HttpStatus.CREATED.getCode());
+        EasyMock.expect(domainConnection.put(EasyMock.isA(String.class), EasyMock.isA(URL.class))).andReturn(connection);
+        EasyMock.replay(domainConnection);
 
-        Interpreter interpreter = new InterpreterImpl(controller);
+        Interpreter interpreter = new InterpreterImpl(domainConnection);
 
         InputStream in = new ByteArrayInputStream("pf install file://bar/foo.jar -u username -p password \n quit".getBytes());
         PrintStream out = new PrintStream(new ByteArrayOutputStream());
         interpreter.processInteractive(in, out);
 
-        EasyMock.verify(controller);
+        EasyMock.verify(domainConnection);
     }
 
     public void testInstallWithNoNameWithSlashAtEnd() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.setUsername("username");
-        controller.setPassword("password");
-        EasyMock.expect(controller.isConnected()).andReturn(true);
-        URI uri = URI.create("foo.jar");
-        controller.storeProfile(new URL("file://bar/foo.jar/"), uri);
-        controller.installProfile(uri);
-        EasyMock.replay(controller);
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        domainConnection.setUsername("username");
+        domainConnection.setPassword("password");
+        MockConnection connection = new MockConnection(HttpStatus.CREATED.getCode());
+        EasyMock.expect(domainConnection.put(EasyMock.isA(String.class), EasyMock.isA(URL.class))).andReturn(connection);
+        EasyMock.replay(domainConnection);
 
-        Interpreter interpreter = new InterpreterImpl(controller);
+        Interpreter interpreter = new InterpreterImpl(domainConnection);
 
         InputStream in = new ByteArrayInputStream("profile install file://bar/foo.jar/ -u username -p password \n quit".getBytes());
         PrintStream out = new PrintStream(new ByteArrayOutputStream());
         interpreter.processInteractive(in, out);
 
-        EasyMock.verify(controller);
+        EasyMock.verify(domainConnection);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        contributionUrl = new File("foo.jar").toURI().toURL();
     }
 }

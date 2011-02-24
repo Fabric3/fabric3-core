@@ -40,45 +40,33 @@ package org.fabric3.admin.interpreter.command;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 
-import org.fabric3.admin.api.CommunicationException;
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.management.contribution.ContributionManagementException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class UninstallProfileCommand implements Command {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private URI profileUri;
     private String username;
     private String password;
 
-    public UninstallProfileCommand(DomainController controller) {
-        this.controller = controller;
-    }
-
-    public URI getProfileUri() {
-        return profileUri;
+    public UninstallProfileCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setProfileUri(URI uri) {
         this.profileUri = uri;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -86,43 +74,53 @@ public class UninstallProfileCommand implements Command {
     }
 
     public boolean execute(PrintStream out) throws CommandException {
-        boolean disconnected = !controller.isConnected();
+        if (username != null) {
+            domainConnection.setUsername(username);
+        }
+        if (password != null) {
+            domainConnection.setPassword(password);
+        }
+        removeProfile(profileUri, out);
+        out.println("Uninstalled " + profileUri);
+        return true;
+    }
+
+    public boolean removeProfile(URI uri, PrintStream out) {
+        String path =  "/contributions/profiles/profile/" + uri;
+        HttpURLConnection connection = null;
         try {
-            if (username != null) {
-                controller.setUsername(username);
-            }
-            if (password != null) {
-                controller.setPassword(password);
-            }
-            if (disconnected) {
-                controller.connect();
-            }
-            controller.uninstallProfile(profileUri);
-            controller.removeProfile(profileUri);
-            out.println("Uninstalled " + profileUri);
-            return true;
-        } catch (CommunicationException e) {
-            if (e.getCause() instanceof FileNotFoundException) {
-                out.println("ERROR: File not found:" + e.getMessage());
+            connection = domainConnection.createConnection(path, "DELETE");
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR: Not authorized");
+                return false;
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                return false;
+            } else if (HttpStatus.NOT_FOUND.getCode() == code) {
+                out.println("ERROR: Profile not found: " + uri);
+                return false;
+            } else if (HttpStatus.OK.getCode() != code) {
+                out.println("ERROR: Error uninstalling profile: " + code);
                 return false;
             }
-            throw new CommandException(e);
+            out.println("Profile uninstalled");
+            return true;
+        } catch (FileNotFoundException e) {
+            out.println("ERROR: File not found:" + e.getMessage());
+            return false;
         } catch (IOException e) {
-            out.println("ERROR: Unable to connect to the domain controller");
-            e.printStackTrace(out);
-        } catch (ContributionManagementException e) {
-            out.println("ERROR: Error uninstalling contribution");
-            out.println("       " + e.getMessage());
+            out.println("ERROR: removing profile:" + e.getMessage());
+            return false;
+        } catch (CommunicationException e) {
+            out.println("ERROR: removing profile:" + e.getMessage());
+            return false;
         } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (connection != null) {
+                connection.disconnect();
             }
         }
-        return false;
     }
 
 

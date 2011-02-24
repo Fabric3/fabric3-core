@@ -42,29 +42,26 @@ import java.io.PrintStream;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.Interpreter;
-import org.fabric3.admin.interpreter.InterpreterException;
+import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.Settings;
 import org.fabric3.admin.interpreter.TransientSettings;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 import org.fabric3.admin.interpreter.parser.ParserFactory;
 
 /**
- * Default interpreter implementation. This implementation constructs a parse tree from an instruction as defined by the domain adminsitration
- * grammar. This tree is then transformed into an AST which is traversed to produce a set of commands to execute against the DomainController.
- * <p/>
- * Antlr3 is used as the parser technology to construct the parse tree and AST.
+ * Default interpreter implementation.
  *
  * @version $Rev$ $Date$
  */
 public class InterpreterImpl implements Interpreter {
     private static final String PROMPT = "\nf3>";
     private static final String HELP = "help";
-    private static final String HELP_TEXT = "Type help <subcommand> for more information: \n\n"
+    private static final String HELP_TEXT = "Type help <command> for more information: \n\n"
             + "   authenticate (au) \n"
             + "   deploy (de) \n"
             + "   install (ins) \n"
@@ -77,18 +74,18 @@ public class InterpreterImpl implements Interpreter {
             + "   use \n"
             + "   run (r) \n";
 
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private Settings settings;
     private Map<String, CommandParser> parsers;
 
-    public InterpreterImpl(DomainController controller) {
-        this(controller, new TransientSettings());
+    public InterpreterImpl(DomainConnection domainConnection) {
+        this(domainConnection, new TransientSettings());
     }
 
-    public InterpreterImpl(DomainController controller, Settings settings) {
-        this.controller = controller;
+    public InterpreterImpl(DomainConnection domainConnection, Settings settings) {
+        this.domainConnection = domainConnection;
         this.settings = settings;
-        parsers = ParserFactory.createParsers(controller, this, settings);
+        parsers = ParserFactory.createParsers(domainConnection, this, settings);
         setDefaultConfiguration();
     }
 
@@ -97,18 +94,14 @@ public class InterpreterImpl implements Interpreter {
         while (true) {
             out.print(PROMPT);
             String line = scanner.nextLine().trim();
-            if ("quit".equals(line) || "exit".equals(line)) break;
-            try {
-                process(line, out);
-            } catch (InterpreterException e) {
-                // TODO handle this better
-                e.printStackTrace();
+            if ("quit".equals(line) || "exit".equals(line)) {
+                break;
             }
+            process(line, out);
         }
     }
 
-
-    public void process(String line, PrintStream out) throws InterpreterException {
+    public void process(String line, PrintStream out) {
         // parse the command, strip whitespace and tokenize the command line
         line = line.trim();
         String commandString;
@@ -128,22 +121,26 @@ public class InterpreterImpl implements Interpreter {
             } else {
                 CommandParser parser = parsers.get(tokens[0]);
                 if (parser == null) {
-                    throw new InterpreterException("Unrecognized command: " + commandString);
+                    out.println("Unrecognized command: " + commandString);
+                } else {
+                    out.println(parser.getUsage());
                 }
-                out.println(parser.getUsage());
             }
 
             return;
         }
         CommandParser parser = parsers.get(commandString);
         if (parser == null) {
-            throw new InterpreterException("Unrecognized command: " + commandString);
+            out.println("Unrecognized command: " + commandString);
+            return;
         }
-        Command command = parser.parse(tokens);
         try {
+            Command command = parser.parse(tokens);
             command.execute(out);
+        } catch (ParseException e) {
+            out.println("ERROR: " + e.getMessage());
         } catch (CommandException e) {
-            out.println("ERORR: An error was encountered");
+            out.println("ERROR: An error was encountered");
             e.printStackTrace(out);
         }
     }
@@ -154,10 +151,9 @@ public class InterpreterImpl implements Interpreter {
     private void setDefaultConfiguration() {
         DomainConfiguration configuration = settings.getDomainConfiguration("default");
         if (configuration != null) {
-            controller.setDomainAddress(configuration.getAddress());
-            controller.setUsername(configuration.getUsername());
-            controller.setPassword(configuration.getPassword());
-            controller.setProtocolPackages(configuration.getProtocolPackages());
+            domainConnection.setDomainAddress(configuration.getAddress());
+            domainConnection.setUsername(configuration.getUsername());
+            domainConnection.setPassword(configuration.getPassword());
         }
     }
 

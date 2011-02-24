@@ -37,23 +37,23 @@
 */
 package org.fabric3.admin.interpreter.parser;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.Settings;
 import org.fabric3.admin.interpreter.command.UseCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class UseCommandParser implements CommandParser {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private Settings settings;
 
-    public UseCommandParser(DomainController controller, Settings settings) {
-        this.controller = controller;
+    public UseCommandParser(DomainConnection domainConnection, Settings settings) {
+        this.domainConnection = domainConnection;
         this.settings = settings;
     }
 
@@ -66,7 +66,7 @@ public class UseCommandParser implements CommandParser {
         if (tokens.length != 1) {
             throw new ParseException("Illegal number of arguments");
         }
-        UseCommand command = new UseCommand(controller);
+        UseCommand command = new UseCommand(domainConnection);
         String domain = tokens[0];
         DomainConfiguration configuration = settings.getDomainConfiguration(domain);
         if (configuration == null) {
@@ -75,7 +75,6 @@ public class UseCommandParser implements CommandParser {
         command.setDomainAddress(configuration.getAddress());
         command.setUsername(configuration.getUsername());
         command.setPassword(configuration.getPassword());
-        command.setProtocolPackages(configuration.getProtocolPackages());
         return command;
     }
 

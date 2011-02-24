@@ -70,7 +70,7 @@ public class RunCommand implements Command {
     }
 
     public boolean execute(PrintStream out) throws CommandException {
-        InputStreamReader reader = null;
+        InputStreamReader reader;
         BufferedReader buffered = null;
 
         try {

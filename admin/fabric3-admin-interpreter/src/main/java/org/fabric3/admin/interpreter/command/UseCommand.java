@@ -39,23 +39,22 @@ package org.fabric3.admin.interpreter.command;
 
 import java.io.PrintStream;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class UseCommand implements Command {
 
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private String domainAddress;
-    private String protocolPackages;
     private String username;
     private String password;
 
-    public UseCommand(DomainController controller) {
-        this.controller = controller;
+    public UseCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setUsername(String username) {
@@ -70,18 +69,13 @@ public class UseCommand implements Command {
         this.domainAddress = domainAddress;
     }
 
-    public void setProtocolPackages(String protocolPackages) {
-        this.protocolPackages = protocolPackages;
-    }
-
     public boolean execute(PrintStream out) throws CommandException {
-        controller.setDomainAddress(domainAddress);
-        controller.setProtocolPackages(protocolPackages);
+        domainConnection.setDomainAddress(domainAddress);
         if (username != null) {
-            controller.setUsername(username);
+            domainConnection.setUsername(username);
         }
         if (password != null) {
-            controller.setPassword(password);
+            domainConnection.setPassword(password);
         }
 
         return true;

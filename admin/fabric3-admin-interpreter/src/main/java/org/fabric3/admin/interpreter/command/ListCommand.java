@@ -38,28 +38,28 @@
 package org.fabric3.admin.interpreter.command;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URI;
+import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Map;
 
-import org.fabric3.admin.api.CommunicationException;
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.management.domain.ComponentInfo;
-import org.fabric3.management.domain.InvalidPathException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ListCommand implements Command {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private String path;
     private String username;
     private String password;
 
-    public ListCommand(DomainController controller) {
-        this.controller = controller;
+    public ListCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setUsername(String username) {
@@ -76,52 +76,66 @@ public class ListCommand implements Command {
 
     public boolean execute(PrintStream out) throws CommandException {
         if (username != null) {
-            controller.setUsername(username);
+            domainConnection.setUsername(username);
         }
         if (password != null) {
-            controller.setPassword(password);
+            domainConnection.setPassword(password);
         }
-        boolean disconnected = !controller.isConnected();
+        HttpURLConnection connection = null;
         try {
-            if (disconnected) {
-                try {
-                    controller.connect();
-                } catch (IOException e) {
-                    out.println("ERROR: Error connecting to domain controller");
-                    e.printStackTrace(out);
-                    return false;
+            if (path == null) {
+                connection = domainConnection.createConnection("/components", "GET");
+            } else {
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
                 }
+                connection = domainConnection.createConnection("/components" + path, "GET");
             }
-            try {
-                List<ComponentInfo> infos = controller.getDeployedComponents(path);
-                if (infos.isEmpty()) {
-                    out.println("No components found");
-                    return true;
-                }
-                out.println("Deployed components (" + path + "):");
-                for (ComponentInfo info : infos) {
-                    URI uri = info.getUri();
-                    URI contributionUri = info.getContributionUri();
-                    String zone = info.getZone();
-                    out.println("   " + uri + " [Contribution: " + contributionUri + ", Zone: " + zone + "]");
-                }
-                return true;
-            } catch (CommunicationException e) {
-                out.println("ERROR: Error connecting to domain controller");
-                e.printStackTrace(out);
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR:Not authorized");
                 return false;
-            } catch (InvalidPathException e) {
-                out.println("Path was invalid: " + e.getMessage());
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: Attempt made to connect using HTTP but the domain requires HTTPS.");
                 return false;
+            } else if (HttpStatus.NOT_FOUND.getCode() == code) {
+                out.println("No components found");
+                return false;
+            } else if (HttpStatus.OK.getCode() != code) {
+                out.println("ERROR: Server error: " + code);
+                return false;
+            }
+            InputStream stream = connection.getInputStream();
+            Map<String, List<Map<String, String>>> value = domainConnection.parse(Object.class, stream);
 
-            }
-        } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (value.get("components") == null) {
+                // single component returned
+                out.println("   " + value.get("uri") + " [Zone: " + value.get("zone") + "]");
+            } else {
+                List<Map<String, String>> components = value.get("components");
+                if (components.isEmpty()) {
+                    out.println("No components found");
+                } else {
+                    out.println("Components:\n");
+                    for (Map<String, String> component : components) {
+                        out.println("   " + component.get("uri") + " [Zone: " + component.get("zone") + "]");
+
+                    }
                 }
+            }
+            return true;
+        } catch (CommunicationException e) {
+            out.println("ERROR: Error connecting to domain");
+            e.printStackTrace(out);
+            return false;
+        } catch (IOException e) {
+            out.println("ERROR: Error connecting to domain");
+            e.printStackTrace(out);
+            return false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
             }
         }
     }

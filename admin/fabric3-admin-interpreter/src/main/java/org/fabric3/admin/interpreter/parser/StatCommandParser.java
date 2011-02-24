@@ -37,20 +37,20 @@
 */
 package org.fabric3.admin.interpreter.parser;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.StatCommand;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class StatCommandParser implements CommandParser {
-    private DomainController controller;
+    private DomainConnection domainConnection;
 
-    public StatCommandParser(DomainController controller) {
-        this.controller = controller;
+    public StatCommandParser(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public String getUsage() {
@@ -62,7 +62,7 @@ public class StatCommandParser implements CommandParser {
         if (tokens.length != 0 && tokens.length != 4) {
             throw new ParseException("Illegal number of arguments");
         }
-        StatCommand command = new StatCommand(controller);
+        StatCommand command = new StatCommand(domainConnection);
         if (tokens.length == 4) {
             ParserHelper.parseAuthorization(command, tokens, 0);
         }

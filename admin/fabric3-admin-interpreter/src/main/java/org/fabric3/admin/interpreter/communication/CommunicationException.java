@@ -35,46 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.interpreter.parser;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.fabric3.admin.api.DomainController;
-import org.fabric3.admin.interpreter.Command;
-import org.fabric3.admin.interpreter.CommandParser;
-import org.fabric3.admin.interpreter.ParseException;
-import org.fabric3.admin.interpreter.command.RemoveCommand;
+package org.fabric3.admin.interpreter.communication;
 
 /**
+ * A non-recoverable exception connecting to the domain.
+ *
  * @version $Rev$ $Date$
  */
-public class RemoveCommandParser implements CommandParser {
-    private DomainController controller;
+public class CommunicationException extends Exception {
+    private static final long serialVersionUID = -351731887104971407L;
 
-    public RemoveCommandParser(DomainController controller) {
-        this.controller = controller;
+    public CommunicationException(String message) {
+        super(message);
     }
 
-    public String getUsage() {
-        return "uninstall (uin): Removes a stored contribution.\n" +
-                "usage: uninstall <contribution file> [-u username -p password]";
+    public CommunicationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 1 && tokens.length != 5) {
-            throw new ParseException("Illegal number of arguments");
-        }
-        RemoveCommand command = new RemoveCommand(controller);
-        try {
-            command.setContributionUri(new URI(tokens[0]));
-        } catch (URISyntaxException e) {
-            throw new ParseException("Invalid contribution name", e);
-        }
-        if (tokens.length == 5) {
-            ParserHelper.parseAuthorization(command, tokens, 1);
-        }
-        return command;
+    public CommunicationException(Throwable cause) {
+        super(cause);
     }
-
 }

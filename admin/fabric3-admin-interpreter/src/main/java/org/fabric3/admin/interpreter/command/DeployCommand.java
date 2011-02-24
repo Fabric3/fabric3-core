@@ -38,212 +38,91 @@
 package org.fabric3.admin.interpreter.command;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.List;
+import java.util.Map;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.fabric3.admin.api.CommunicationException;
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.management.contribution.ContributionManagementException;
-import org.fabric3.management.contribution.DuplicateContributionManagementException;
-import org.fabric3.management.contribution.InvalidContributionException;
-import org.fabric3.management.domain.DeploymentManagementException;
-import org.fabric3.management.domain.InvalidDeploymentException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DeployCommand implements Command {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private URI contributionUri;
     private String username;
     private String password;
-    private String planName;
-    private URL planFile;
 
-    public DeployCommand(DomainController controller) {
-        this.controller = controller;
-    }
-
-    public URI getContributionUri() {
-        return contributionUri;
+    public DeployCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setContributionUri(URI uri) {
         this.contributionUri = uri;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setPlanName(String plan) {
-        this.planName = plan;
-    }
-
-    public void setPlanFile(URL planFile) {
-        this.planFile = planFile;
-    }
-
     public boolean execute(PrintStream out) throws CommandException {
         if (username != null) {
-            controller.setUsername(username);
+            domainConnection.setUsername(username);
         }
         if (password != null) {
-            controller.setPassword(password);
+            domainConnection.setPassword(password);
         }
-        boolean disconnected = !controller.isConnected();
+        String path = "/deployments/contribution/" + contributionUri;
+        HttpURLConnection connection = null;
         try {
-            if (disconnected) {
-                try {
-                    controller.connect();
-                } catch (IOException e) {
-                    out.println("ERROR: Error connecting to domain controller");
-                    e.printStackTrace(out);
-                    return false;
+            connection = domainConnection.createConnection(path, "POST");
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR: Not authorized");
+                return false;
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                return false;
+            } else if (HttpStatus.NOT_FOUND.getCode() == code) {
+                out.println("ERROR: Contribution not found: " + contributionUri);
+                return false;
+            } else if (HttpStatus.VALIDATION_ERROR.getCode() == code) {
+                InputStream stream = connection.getErrorStream();
+                Map<String, List<String>> value = domainConnection.parse(Map.class, stream);
+                out.println("\nERROR: The contribution contains deployment errors:");
+                for (String error : value.get("value")) {
+                    out.println("  " + error + "\n");
                 }
+                return false;
+            } else if (HttpStatus.CREATED.getCode() != code) {
+                out.println("ERROR: Server error: " + code);
+                return false;
             }
-            if (planName != null) {
-                return deployByName(out);
-            } else if (planFile != null) {
-                return deployByFile(out);
-            } else {
-                return deployNoPlan(out);
-            }
-        } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private boolean deployByName(PrintStream out) {
-        try {
-            controller.deploy(contributionUri, planName);
-            out.println("Deployed " + contributionUri);
+            out.println("Deployed" + contributionUri);
             return true;
-        } catch (CommunicationException e) {
-            out.println("ERROR: Error connecting to domain controller");
-            e.printStackTrace(out);
-        } catch (InvalidDeploymentException e) {
-            out.println("The following deployment errors were reported:");
-            for (String desc : e.getErrors()) {
-                out.println("ERROR: " + desc);
-            }
-        } catch (DeploymentManagementException e) {
-            out.println("ERROR: Error deploying contribution");
-            out.println("       " + e.getMessage());
-        }
-        return false;
-    }
-
-    private boolean deployByFile(PrintStream out) {
-        URI planContributionUri = CommandHelper.parseContributionName(planFile);
-        try {
-            // store and install plan
-            controller.store(planFile, planContributionUri);
-            controller.install(planContributionUri);
-            String installedPlanName = parsePlanName();
-            controller.deploy(contributionUri, installedPlanName);
-            out.println("Deployed " + contributionUri);
-            return true;
-        } catch (InvalidDeploymentException e) {
-            out.println("The following deployment errors were reported:");
-            for (String desc : e.getErrors()) {
-                out.println("ERROR: " + desc);
-            }
-        } catch (DeploymentManagementException e) {
-            out.println("ERROR: Error deploying contribution");
-            out.println("       " + e.getMessage());
-            revertPlan(planContributionUri, out);
-        } catch (CommunicationException e) {
-            out.println("ERROR: Error connecting to domain controller");
-            e.printStackTrace(out);
-        } catch (InvalidContributionException e) {
-            out.println("The following errors were found in the deployment plan:\n");
-            CommandHelper.printErrors(out, e);
-            revertPlan(planContributionUri, out);
-        } catch (DuplicateContributionManagementException e) {
-            out.println("ERROR: Deployment plan already exists");
-        } catch (ContributionManagementException e) {
-            out.println("ERROR: There was a problem installing the deployment plan: " + planFile);
-            out.println("       " + e.getMessage());
-            revertPlan(planContributionUri, out);
         } catch (IOException e) {
-            out.println("ERROR: Unable to read deployment plan: " + planFile);
+            out.println("ERROR: Error connecting to the domain");
             e.printStackTrace(out);
-        } catch (ParserConfigurationException e) {
-            out.println("ERROR: Unable to read deployment plan: " + planFile);
-            e.printStackTrace(out);
-        } catch (SAXException e) {
-            out.println("ERROR: Unable to read deployment plan: " + planFile);
-            e.printStackTrace(out);
-        }
-        return false;
-    }
-
-    private boolean deployNoPlan(PrintStream out) {
-        try {
-            controller.deploy(contributionUri);
-            out.println("Deployed " + contributionUri);
-            return true;
-        } catch (InvalidDeploymentException e) {
-            out.println("The following deployment errors were reported:");
-            for (String desc : e.getErrors()) {
-                out.println("ERROR: " + desc);
-            }
-        } catch (DeploymentManagementException e) {
-            out.println("ERROR: Error deploying contribution");
-            out.println("       " + e.getMessage());
+            return false;
         } catch (CommunicationException e) {
-            out.println("ERROR: Error connecting to domain controller");
+            out.println("ERROR: Error connecting to the domain");
             e.printStackTrace(out);
-        }
-        return false;
-    }
-
-    private String parsePlanName() throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-        DocumentBuilder b = f.newDocumentBuilder();
-        Document d = b.parse(planFile.openStream());
-        return d.getDocumentElement().getAttribute("name");
-    }
-
-    private void revertPlan(URI planContributionUri, PrintStream out) {
-        // remove the plan from the persistent store
-        try {
-            controller.uninstall(planContributionUri);
-            controller.remove(planContributionUri);
-        } catch (CommunicationException ex) {
-            out.println("ERROR: Error connecting to domain controller");
-            ex.printStackTrace(out);
-        } catch (ContributionManagementException ex) {
-            out.println("ERROR: Error reverting deployment plan");
-            out.println("       " + ex.getMessage());
+            return false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 

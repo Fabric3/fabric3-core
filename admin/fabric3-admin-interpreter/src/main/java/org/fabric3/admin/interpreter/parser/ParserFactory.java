@@ -40,10 +40,10 @@ package org.fabric3.admin.interpreter.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.CommandParser;
 import org.fabric3.admin.interpreter.Interpreter;
 import org.fabric3.admin.interpreter.Settings;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
@@ -56,34 +56,34 @@ public class ParserFactory {
     /**
      * Initializes the command parsers
      */
-    public static Map<String, CommandParser> createParsers(DomainController controller, Interpreter interpreter, Settings settings) {
+    public static Map<String, CommandParser> createParsers(DomainConnection domainConnection, Interpreter interpreter, Settings settings) {
         Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
-        AuthCommandParser authenticateParser = new AuthCommandParser(controller);
+        AuthCommandParser authenticateParser = new AuthCommandParser(domainConnection);
         parsers.put("au", authenticateParser);
         parsers.put("authenticate", authenticateParser);
-        InstallCommandParser installParser = new InstallCommandParser(controller);
+        InstallCommandParser installParser = new InstallCommandParser(domainConnection);
         parsers.put("install", installParser);
         parsers.put("ins", installParser);
-        StatCommandParser statusParser = new StatCommandParser(controller);
+        StatCommandParser statusParser = new StatCommandParser(domainConnection);
         parsers.put("status", statusParser);
         parsers.put("st", statusParser);
-        DeployCommandParser deployParser = new DeployCommandParser(controller);
+        DeployCommandParser deployParser = new DeployCommandParser(domainConnection);
         parsers.put("deploy", deployParser);
         parsers.put("de", deployParser);
-        UndeployCommandParser undeployParser = new UndeployCommandParser(controller);
+        UndeployCommandParser undeployParser = new UndeployCommandParser(domainConnection);
         parsers.put("undeploy", undeployParser);
         parsers.put("ude", undeployParser);
-        RemoveCommandParser removeParser = new RemoveCommandParser(controller);
-        parsers.put("uninstall", removeParser);
-        parsers.put("uin", removeParser);
-        parsers.put("use", new UseCommandParser(controller, settings));
-        ProvisionCommandParser provisionParser = new ProvisionCommandParser(controller);
+        UninstallCommandParser uninstallParser = new UninstallCommandParser(domainConnection);
+        parsers.put("uninstall", uninstallParser);
+        parsers.put("uin", uninstallParser);
+        parsers.put("use", new UseCommandParser(domainConnection, settings));
+        ProvisionCommandParser provisionParser = new ProvisionCommandParser(domainConnection);
         parsers.put("pr", provisionParser);
         parsers.put("provision", provisionParser);
-        ListCommandParser listCommandParser = new ListCommandParser(controller);
+        ListCommandParser listCommandParser = new ListCommandParser(domainConnection);
         parsers.put("ls", listCommandParser);
         parsers.put("list", listCommandParser);
-        ProfileCommandParser profileCommandParser = new ProfileCommandParser(controller);
+        ProfileCommandParser profileCommandParser = new ProfileCommandParser(domainConnection);
         parsers.put("profile", profileCommandParser);
         parsers.put("pf", profileCommandParser);
         RunCommandParser runCommandParser = new RunCommandParser(interpreter);

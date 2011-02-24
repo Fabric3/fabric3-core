@@ -40,56 +40,35 @@ package org.fabric3.admin.interpreter.command;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.admin.api.CommunicationException;
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
-import org.fabric3.management.contribution.ContributionManagementException;
-import org.fabric3.management.contribution.DuplicateContributionManagementException;
+import org.fabric3.admin.interpreter.communication.CommunicationException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
 public class InstallProfileCommand implements Command {
-    private DomainController controller;
+    private DomainConnection domainConnection;
     private URL profile;
     private URI profileUri;
     private String username;
     private String password;
 
-    public InstallProfileCommand(DomainController controller) {
-        this.controller = controller;
-    }
-
-    public URL getProfile() {
-        return profile;
+    public InstallProfileCommand(DomainConnection domainConnection) {
+        this.domainConnection = domainConnection;
     }
 
     public void setProfile(URL profile) {
         this.profile = profile;
     }
 
-    public URI getProfileUri() {
-        return profileUri;
-    }
-
-    public void setProfileUri(URI uri) {
-        this.profileUri = uri;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -97,49 +76,63 @@ public class InstallProfileCommand implements Command {
     }
 
     public boolean execute(PrintStream out) throws CommandException {
-        boolean disconnected = !controller.isConnected();
-        try {
-            if (username != null) {
-                controller.setUsername(username);
-            }
-            if (password != null) {
-                controller.setPassword(password);
-            }
-            if (disconnected) {
-                controller.connect();
-            }
-            if (profileUri == null) {
-                profileUri = CommandHelper.parseContributionName(profile);
-            }
-            controller.storeProfile(profile, profileUri);
-            controller.installProfile(profileUri);
-            out.println("Installed " + profileUri);
-            return true;
-        } catch (DuplicateContributionManagementException e) {
-            out.println("ERROR: A profile with that name already exists");
-        } catch (CommunicationException e) {
-            if (e.getCause() instanceof FileNotFoundException) {
-                out.println("ERROR: File not found:" + e.getMessage());
-                return false;
-            }
-            throw new CommandException(e);
-        } catch (IOException e) {
-            out.println("ERROR: Unable to connect to the domain controller");
-            e.printStackTrace(out);
-        } catch (ContributionManagementException e) {
-            out.println("ERROR: Error installing profile");
-            out.println("       " + e.getMessage());
-        } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        if (username != null) {
+            domainConnection.setUsername(username);
         }
-        return false;
+        if (password != null) {
+            domainConnection.setPassword(password);
+        }
+        if (profileUri == null) {
+            profileUri = CommandHelper.parseContributionName(profile);
+        }
+        storeProfile(profile, profileUri, out);
+        installProfile(profileUri);
+        return true;
     }
 
+    public boolean storeProfile(URL profile, URI uri, PrintStream out) {
+        HttpURLConnection connection = null;
+        try {
+            String path =  "/contributions/profiles/profile/" + uri;
+            connection = domainConnection.put(path, profile);
+            int code = connection.getResponseCode();
+            if (HttpStatus.UNAUTHORIZED.getCode() == code) {
+                out.println("ERROR: Not authorized");
+                return false;
+            } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
+                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                return false;
+            } else if (HttpStatus.CONFLICT.getCode() == code) {
+                out.println("ERROR: A profile already exists for " + uri);
+                return false;
+            } else if (HttpStatus.CREATED.getCode() != code) {
+                out.println("ERROR: Error storing profile: " + code);
+                return false;
+            }
+            out.println("Installed " + profileUri);
+            return true;
+        } catch (FileNotFoundException e) {
+            out.println("ERROR: File not found:" + e.getMessage());
+            return false;
+        }catch (CommunicationException e) {
+            out.println("ERROR: Error connecting to domain");
+            e.printStackTrace(out);
+            return false;
+        } catch (IOException e) {
+            out.println("ERROR: Error installing profile");
+            out.println("       " + e.getMessage());
+            return false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+
+    public boolean installProfile(URI uri) {
+        // NO-OP for now
+        return true;
+    }
 
 }

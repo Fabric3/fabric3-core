@@ -35,40 +35,64 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.interpreter;
+package org.fabric3.admin.interpreter.command;
 
 /**
- * Configuration used to connect to the domain via JMX.
+ * HTTP status codes.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public class DomainConfiguration {
-    private String name;
-    private String address;
-    private String username;
-    private String password;
+@SuppressWarnings({"UnusedDeclaration"})
+public enum HttpStatus {
 
-    public DomainConfiguration(String name, String address, String username, String password) {
-        this.name = name;
-        this.address = address;
-        this.username = username;
-        this.password = password;
+    OK(200, "OK"),
+    CREATED(201, "Created"),
+    ACCEPTED(202, "Accepted"),
+    NO_CONTENT(204, "No Content"),
+    MOVED_PERMANENTLY(301, "Moved Permanently"),
+    SEE_OTHER(303, "See Other"),
+    NOT_MODIFIED(304, "Not Modified"),
+    TEMPORARY_REDIRECT(307, "Temporary Redirect"),
+    BAD_REQUEST(400, "Bad Request"),
+    UNAUTHORIZED(401, "Unauthorized"),
+    FORBIDDEN(403, "Forbidden"),
+    NOT_FOUND(404, "Not Found"),
+    NOT_ACCEPTABLE(406, "Not Acceptable"),
+    CONFLICT(409, "Conflict"),
+    GONE(410, "Gone"),
+    PRECONDITION_FAILED(412, "Precondition Failed"),
+    UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    SERVICE_UNAVAILABLE(503, "Service Unavailable"),
+
+    // custom status codes
+    VALIDATION_ERROR(420, "Validation Error");
+
+
+    private int code;
+    private String message;
+
+    HttpStatus(int code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Returns the HTTP status code.
+     *
+     * @return the HTTP status code.
+     */
+    public int getCode() {
+        return code;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
+    /**
+     * Returns the HTTP status message.
+     *
+     * @return the HTTP status message
+     */
+    public String getMessage() {
+        return message;
     }
 
 }

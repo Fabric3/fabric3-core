@@ -37,14 +37,13 @@
 */
 package org.fabric3.admin.interpreter.command;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.admin.api.DomainController;
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
@@ -52,12 +51,10 @@ import org.fabric3.admin.interpreter.CommandException;
 public class ProvisionCommand implements Command {
     private DeployCommand deployCommand;
     private InstallCommand installCommand;
-    private DomainController controller;
 
-    public ProvisionCommand(DomainController controller) {
-        this.controller = controller;
-        installCommand = new InstallCommand(controller);
-        deployCommand = new DeployCommand(controller);
+    public ProvisionCommand(DomainConnection domainConnection) {
+        installCommand = new InstallCommand(domainConnection);
+        deployCommand = new DeployCommand(domainConnection);
     }
 
     public void setUsername(String username) {
@@ -75,32 +72,8 @@ public class ProvisionCommand implements Command {
         deployCommand.setContributionUri(contributionUri);
     }
 
-    public void setContributionUri(URI uri) {
-        installCommand.setContributionUri(uri);
-        deployCommand.setContributionUri(uri);
-    }
-
-    public void setPlanFile(URL planFile) {
-        deployCommand.setPlanFile(planFile);
-    }
-
-    public void setPlanName(String name) {
-        deployCommand.setPlanName(name);
-    }
-
     public boolean execute(PrintStream out) throws CommandException {
-        boolean disconnected = !controller.isConnected();
-        try {
-            return installCommand.execute(out) && deployCommand.execute(out);
-        } finally {
-            if (disconnected && controller.isConnected()) {
-                try {
-                    controller.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return installCommand.execute(out) && deployCommand.execute(out);
     }
 
 

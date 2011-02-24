@@ -54,7 +54,7 @@ public class ParserHelper {
      *
      * @param command the command being parsed.
      * @param tokens  the input parameters in token form
-     * @param index   the starting paramter index to parse
+     * @param index   the starting parameter index to parse
      * @throws ParseException if there is an error parsing the parameters
      */
     public static void parseAuthorization(Command command, String[] tokens, int index) throws ParseException {

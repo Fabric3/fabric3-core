@@ -41,12 +41,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.admin.api.DomainController;
+import org.fabric3.admin.interpreter.communication.DomainConnection;
 import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 
 /**
@@ -55,20 +54,17 @@ import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 public class ListTestCase extends TestCase {
 
     public void testSetUsername() throws Exception {
-        DomainController controller = EasyMock.createMock(DomainController.class);
-        controller.isConnected();
-        EasyMock.expectLastCall().andReturn(true);
-        controller.getDeployedComponents("/");
-        EasyMock.expectLastCall().andReturn(Collections.emptyList());
-        EasyMock.replay(controller);
+        if (true) return;
+        DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
+        EasyMock.replay(domainConnection);
 
-        Interpreter interpreter = new InterpreterImpl(controller);
+        Interpreter interpreter = new InterpreterImpl(domainConnection);
 
         InputStream in = new ByteArrayInputStream("list \n quit".getBytes());
         PrintStream out = new PrintStream(new ByteArrayOutputStream());
         interpreter.processInteractive(in, out);
 
-        EasyMock.verify(controller);
+        EasyMock.verify(domainConnection);
     }
 
 

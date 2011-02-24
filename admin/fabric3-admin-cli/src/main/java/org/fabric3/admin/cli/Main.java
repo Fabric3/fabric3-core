@@ -53,32 +53,33 @@ import java.util.jar.JarFile;
 
 
 /**
- * Launcher for the domain administation command line tool.
+ * Launcher for the domain administration command line tool.
  *
  * @version $Rev$ $Date$
  */
 public class Main {
-    private static final String JMX_URL = "service:jmx:rmi:///jndi/rmi://localhost:1199/server";
+    private static final String DOMAIN_URL = "http://localhost:8181/management/domain";
+//    private static final String DOMAIN_URL = "https://localhost:8585/management/domain";
 
     /**
      * Executes either a single instruction passed from the command line or enters into interactive mode.
      * <p/>
      * The interpreter is loaded in a child classloader so the contents of the /lib directory can be dynamically placed on the classpath. This allows
-     * the interpreter to be extended with alternative JMX protocol providers than those present in the JDK.
+     * the interpreter to be extended.
      *
-     * @param args the instruction to execture or an empty array
+     * @param args the instruction to execute or an empty array
      * @throws Exception if there is an error executing the instruction or entering interactive mode
      */
     public static void main(String[] args) throws Exception {
         ClassLoader loader = createClassLoader(Main.class.getClassLoader());
 
-        // set the context classloader as some JMX provders require it
+        // set the context classloader as some libraries may require it
         Thread.currentThread().setContextClassLoader(loader);
 
-        Class<?> controllerInterface = loader.loadClass("org.fabric3.admin.api.DomainController");
+        Class<?> controllerInterface = loader.loadClass("org.fabric3.admin.interpreter.communication.DomainConnection");
         Class<?> settingsInterface = loader.loadClass("org.fabric3.admin.interpreter.Settings");
         Class<?> settingsClass = loader.loadClass("org.fabric3.admin.interpreter.impl.FileSettings");
-        Class<?> controllerImplClass = loader.loadClass("org.fabric3.admin.impl.DomainControllerImpl");
+        Class<?> controllerImplClass = loader.loadClass("org.fabric3.admin.interpreter.communication.DomainConnectionImpl");
         Class<?> interpreterClass = loader.loadClass("org.fabric3.admin.interpreter.impl.InterpreterImpl");
         Class<?> domainConfigClass = loader.loadClass("org.fabric3.admin.interpreter.DomainConfiguration");
 
@@ -96,8 +97,8 @@ public class Main {
         if (domainConfiguration == null) {
             // create a default configuration if one does not exist
             Method addMethod = settingsClass.getMethod("addConfiguration", domainConfigClass);
-            Constructor<?> ctor = domainConfigClass.getConstructor(String.class, String.class, String.class, String.class, String.class);
-            Object configuration = ctor.newInstance("default", JMX_URL, null, null, null);
+            Constructor<?> ctor = domainConfigClass.getConstructor(String.class, String.class, String.class, String.class);
+            Object configuration = ctor.newInstance("default", DOMAIN_URL, null, null);
             addMethod.invoke(settings, configuration);
         }
 
@@ -109,7 +110,7 @@ public class Main {
         Object interpreter = ctor.newInstance(controller, settings);
         if (args.length == 0) {
             // interactive mode
-            System.out.println("\nFabric3 Admininstration Interface");
+            System.out.println("\nFabric3 Administration Interface");
             Method method = interpreterClass.getMethod("processInteractive", InputStream.class, PrintStream.class);
             method.invoke(interpreter, System.in, System.out);
         } else {
@@ -124,8 +125,8 @@ public class Main {
     }
 
     /**
-     * Returns the location of the settings.xml file by introspecting the location of the current class. It is assumed the settings file is
-     * contained in a sibling directory named "config".
+     * Returns the location of the settings.xml file by introspecting the location of the current class. It is assumed the settings file is contained
+     * in a sibling directory named "config".
      *
      * @return the location of the settings file
      * @throws IllegalStateException if the class cannot be introspected
@@ -163,10 +164,10 @@ public class Main {
 
     /**
      * Create a classloader from all the jar files lib directory. The classpath for the returned classloader will comprise all jar files and
-     * subdirectories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
+     * sub-directories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
      *
      * @param parent the parent for the new classloader
-     * @return a classloader whose classpath includes all jar files and subdirectories of the supplied directory
+     * @return a classloader whose classpath includes all jar files and sub-directories of the supplied directory
      */
     public static ClassLoader createClassLoader(ClassLoader parent) {
         File directory = getLibDirectory();
