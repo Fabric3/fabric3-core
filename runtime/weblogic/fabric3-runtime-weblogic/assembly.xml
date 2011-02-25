@@ -74,7 +74,6 @@
                 <include>org.codehaus.fabric3:fabric3-recovery</include>
                 <include>org.codehaus.fabric3:fabric3-federation-deployment</include>
                 <include>org.codehaus.fabric3:fabric3-federation-provisioning</include>
-                <include>org.codehaus.fabric3.standalone:fabric3-standalone-admin</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-federation</include>
                 <include>org.codehaus.fabric3:fabric3-tx</include>

@@ -32,7 +32,6 @@
 	<modules>
 		<module>fabric3-standalone-server</module>
 		<module>fabric3-standalone-shutdown</module>
-		<module>fabric3-standalone-admin</module>
 		<module>runtime-standalone</module>
 	</modules>
 </project>

@@ -120,7 +120,6 @@
                 <include>org.codehaus.fabric3:fabric3-federation-deployment</include>
                 <include>org.codehaus.fabric3:fabric3-jgroups</include>
                 <include>org.codehaus.fabric3:fabric3-federation-jgroups</include>
-                <include>org.codehaus.fabric3.standalone:fabric3-standalone-admin</include>
                 <include>javax.transaction:com.springsource.javax.transaction</include>
             </includes>
             <outputDirectory>extensions</outputDirectory>

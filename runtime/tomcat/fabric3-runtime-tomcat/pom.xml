@@ -252,12 +252,6 @@ Public License. See the accompanying license file for details.
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.fabric3.standalone</groupId>
-            <artifactId>fabric3-standalone-admin</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
     </dependencies>
 
     <build>
