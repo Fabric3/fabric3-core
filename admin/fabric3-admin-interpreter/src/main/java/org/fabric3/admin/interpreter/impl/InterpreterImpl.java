@@ -104,7 +104,7 @@ public class InterpreterImpl implements Interpreter {
         }
         try {
             ConsoleReader reader = createReader();
-
+            reader.setInput(in);
             String line;
             while ((line = reader.readLine(PROMPT)) != null) {
                 if ("quit".equals(line) || "exit".equals(line)) {
