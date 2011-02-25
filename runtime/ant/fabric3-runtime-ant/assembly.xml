@@ -37,7 +37,6 @@
                 <include>org.codehaus.fabric3:fabric3-api</include>
                 <include>org.codehaus.fabric3:fabric3-model</include>
                 <include>org.codehaus.fabric3:fabric3-host-api</include>
-                <include>org.codehaus.fabric3:fabric3-management-api</include>
                 <include>${servlet.groupId}:${servlet.artifactId}</include>
                 <include>org.codehaus.fabric3:fabric3-ant-api</include>
                 <include>org.codehaus.fabric3:fabric3-ant-host</include>

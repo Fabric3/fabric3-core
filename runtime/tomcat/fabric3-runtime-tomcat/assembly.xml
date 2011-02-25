@@ -39,7 +39,6 @@
                 <include>org.codehaus.fabric3:fabric3-api</include>
                 <include>org.codehaus.fabric3:fabric3-model</include>
                 <include>org.codehaus.fabric3:fabric3-host-api</include>
-                <include>org.codehaus.fabric3:fabric3-management-api</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
