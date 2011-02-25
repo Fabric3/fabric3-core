@@ -109,7 +109,7 @@ public class DeployCommand implements Command {
                 out.println("ERROR: Server error: " + code);
                 return false;
             }
-            out.println("Deployed" + contributionUri);
+            out.println("Deployed " + contributionUri);
             return true;
         } catch (IOException e) {
             out.println("ERROR: Error connecting to the domain");

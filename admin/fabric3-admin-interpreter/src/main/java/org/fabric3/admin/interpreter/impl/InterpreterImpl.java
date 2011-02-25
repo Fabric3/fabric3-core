@@ -37,10 +37,18 @@
 */
 package org.fabric3.admin.interpreter.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+
+import jline.ArgumentCompletor;
+import jline.Completor;
+import jline.ConsoleReader;
+import jline.FileNameCompletor;
+import jline.SimpleCompletor;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
@@ -90,15 +98,27 @@ public class InterpreterImpl implements Interpreter {
     }
 
     public void processInteractive(InputStream in, PrintStream out) {
-        Scanner scanner = new Scanner(in);
-        while (true) {
-            out.print(PROMPT);
-            String line = scanner.nextLine().trim();
-            if ("quit".equals(line) || "exit".equals(line)) {
-                break;
-            }
-            process(line, out);
+        DomainConfiguration configuration = settings.getDomainConfiguration("default");
+        if (configuration != null) {
+            out.println("Domain address: " + configuration.getAddress());
         }
+        try {
+            ConsoleReader reader = createReader();
+
+            String line;
+            while ((line = reader.readLine(PROMPT)) != null) {
+                if ("quit".equals(line) || "exit".equals(line)) {
+                    break;
+                } else if (line.trim().length() == 0) {
+                    continue;
+                }
+                process(line, out);
+            }
+        } catch (IOException e) {
+            out.println("Error launching interpreter");
+            e.printStackTrace();
+        }
+
     }
 
     public void process(String line, PrintStream out) {
@@ -156,5 +176,20 @@ public class InterpreterImpl implements Interpreter {
             domainConnection.setPassword(configuration.getPassword());
         }
     }
+
+    private ConsoleReader createReader() throws IOException {
+        ConsoleReader reader = new ConsoleReader();
+        List<Completor> completors = new ArrayList<Completor>();
+        String[] commands =
+                {"authenticate", "deploy", "install", "list", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
+        SimpleCompletor simpleCompletor = new SimpleCompletor(commands);
+        completors.add(simpleCompletor);
+        FileNameCompletor fileCompletor = new FileNameCompletor();
+        completors.add(fileCompletor);
+        ArgumentCompletor argumentCompletor = new ArgumentCompletor(completors);
+        reader.addCompletor(argumentCompletor);
+        return reader;
+    }
+
 
 }

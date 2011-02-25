@@ -63,6 +63,12 @@
             <artifactId>jackson-xc</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>0.9.94</version>
+        </dependency>
         
     </dependencies>
 

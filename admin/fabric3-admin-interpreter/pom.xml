@@ -54,12 +54,11 @@ Public License. See the accompanying license file for details.
         </dependency>
 
 
-        <!-- 
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
-            <version>0.9.9</version>
-        </dependency> -->
+            <version>0.9.94</version>
+        </dependency>
     </dependencies>
 
     <repositories>
