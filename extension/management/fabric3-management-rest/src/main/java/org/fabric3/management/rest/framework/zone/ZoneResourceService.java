@@ -84,6 +84,7 @@ public class ZoneResourceService implements ResourceListener {
     private ZoneTopologyService topologyService;
 
     private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
+    private List<ResourceMapping> registered = new ArrayList<ResourceMapping>();
 
 
     public ZoneResourceService(@Reference ResourceHost resourceHost, @Reference HostInfo info, @Monitor ManagementMonitor monitor) {
@@ -99,8 +100,8 @@ public class ZoneResourceService implements ResourceListener {
 
     @Destroy
     public void destroy() throws ZoneChannelException {
-        for (ResourceMapping mapping : subresources) {
-            resourceHost.unregister(mapping);
+        for (ResourceMapping mapping : registered) {
+            resourceHost.unregister(mapping.getPath());
         }
     }
 
@@ -135,6 +136,7 @@ public class ZoneResourceService implements ResourceListener {
             return;
         }
 
+        String identifier = "zone" + mapping.getIdentifier();
         String path = "/zone" + mapping.getPath();
         String relativePath = mapping.getRelativePath().substring(RUNTIME_PATH.length());
         Verb verb = mapping.getVerb();
@@ -143,21 +145,23 @@ public class ZoneResourceService implements ResourceListener {
         TransformerPair jaxbPair = mapping.getJaxbPair();
         TransformerPair jsonPair = mapping.getJsonPair();
         Set<Role> roles = mapping.getRoles();
-        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
+        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
         subresources.add(newMapping);
         try {
             resourceHost.register(newMapping);
+            registered.add(newMapping);
         } catch (DuplicateResourceNameException e) {
             monitor.error("Duplicate mapping: " + path, e);
         }
     }
 
-    public void onSubResource(ResourceMapping mapping) {
+    public void onSubResourceExport(ResourceMapping mapping) {
         if (!mapping.getPath().startsWith(RUNTIME_PATH)) {
             // resource is not under runtime path, return
             return;
         }
 
+        String identifier = "zone" + mapping.getIdentifier();
         String path = "/zone" + mapping.getPath();
         String relativePath = "/zone" + mapping.getRelativePath();
         Verb verb = mapping.getVerb();
@@ -166,13 +170,22 @@ public class ZoneResourceService implements ResourceListener {
         TransformerPair jaxbPair = mapping.getJaxbPair();
         TransformerPair jsonPair = mapping.getJsonPair();
         Set<Role> roles = mapping.getRoles();
-        ResourceMapping newMapping = new ResourceMapping(path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
+        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
         try {
             resourceHost.register(newMapping);
+            registered.add(newMapping);
         } catch (DuplicateResourceNameException e) {
             monitor.error("Duplicate mapping: " + path, e);
         }
 
+    }
+
+    public void onRootResourceRemove(String identifier) {
+        resourceHost.unregister("zone" + identifier);
+    }
+
+    public void onSubResourceRemove(String identifier) {
+        resourceHost.unregister("zone" + identifier);
     }
 
     private String getLeader() {

@@ -56,6 +56,20 @@ public interface ResourceListener {
      *
      * @param mapping the sub-resource mapping
      */
-    void onSubResource(ResourceMapping mapping);
+    void onSubResourceExport(ResourceMapping mapping);
+
+    /**
+     * Callback received when a root resource has been removed
+     *
+     * @param identifier the resource registration identifier
+     */
+    void onRootResourceRemove(String identifier);
+
+    /**
+     * Callback received when a sub-resource has been removed
+     *
+     * @param identifier the resource registration identifier
+     */
+    void onSubResourceRemove(String identifier);
 
 }

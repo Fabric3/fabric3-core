@@ -49,8 +49,9 @@ import org.fabric3.management.rest.runtime.TransformerPair;
  * @version $Rev$ $Date$
  */
 public class ResourceMapping {
+    private String identifier;
     private String path;
-    String relativePath;
+    private String relativePath;
     private Verb verb;
     private Method method;
     private Object instance;
@@ -62,6 +63,7 @@ public class ResourceMapping {
     /**
      * Constructor.
      *
+     * @param identifier   the identifier used to group a set of mappings during deployment and undeployment
      * @param path         the resource path of the managed artifact relative to the base management URL
      * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
      *                     resource, the path will be relative to the base management URL.
@@ -72,7 +74,8 @@ public class ResourceMapping {
      * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
      * @param roles        the roles required to invoke the operation
      */
-    public ResourceMapping(String path,
+    public ResourceMapping(String identifier,
+                           String path,
                            String relativePath,
                            Verb verb,
                            Method method,
@@ -80,12 +83,13 @@ public class ResourceMapping {
                            TransformerPair jsonPair,
                            TransformerPair jaxbPair,
                            Set<Role> roles) {
-        this(path, relativePath, verb, method, instance, false, jsonPair, jaxbPair, roles);
+        this(identifier, path, relativePath, verb, method, instance, false, jsonPair, jaxbPair, roles);
     }
 
     /**
      * Constructor.
      *
+     * @param identifier   the identifier used to group a set of mappings during deployment and undeployment
      * @param path         the resource path of the managed artifact relative to the base management URL
      * @param relativePath the resource path of the managed artifact relative to the containing resource. If the managed artifact is a top-level
      *                     resource, the path will be relative to the base management URL.
@@ -97,7 +101,8 @@ public class ResourceMapping {
      * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
      * @param roles        the roles required to invoke the operation
      */
-    public ResourceMapping(String path,
+    public ResourceMapping(String identifier,
+                           String path,
                            String relativePath,
                            Verb verb,
                            Method method,
@@ -106,6 +111,7 @@ public class ResourceMapping {
                            TransformerPair jsonPair,
                            TransformerPair jaxbPair,
                            Set<Role> roles) {
+        this.identifier = identifier;
         this.path = path;
         this.relativePath = relativePath;
         this.verb = verb;
@@ -115,6 +121,15 @@ public class ResourceMapping {
         this.jsonPair = jsonPair;
         this.jaxbPair = jaxbPair;
         this.roles = roles;
+    }
+
+    /**
+     * Returns the identifier used to group a set of mappings during deployment and undeployment.
+     *
+     * @return the identifier used to group a set of mappings during deployment and undeployment
+     */
+    public String getIdentifier() {
+        return identifier;
     }
 
     /**

@@ -39,7 +39,9 @@ package org.fabric3.management.rest.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,6 +102,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private Map<String, ResourceMapping> postMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> putMappings = new ConcurrentHashMap<String, ResourceMapping>();
     private Map<String, ResourceMapping> deleteMappings = new ConcurrentHashMap<String, ResourceMapping>();
+
+    private Map<String, List<ResourceMapping>> registered = new ConcurrentHashMap<String, List<ResourceMapping>>();
 
     public ResourceHostImpl(@Reference Marshaller marshaller,
                             @Reference ServletHost servletHost,
@@ -177,17 +181,23 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
-    public void unregister(ResourceMapping mapping) {
-        String path = mapping.getPath();
-        Verb verb = mapping.getVerb();
-        if (verb == Verb.GET) {
-            getMappings.remove(path);
-        } else if (verb == Verb.POST) {
-            postMappings.remove(path);
-        } else if (verb == Verb.PUT) {
-            putMappings.remove(path);
-        } else if (verb == Verb.DELETE) {
-            deleteMappings.remove(path);
+    public void unregister(String identifier) {
+        List<ResourceMapping> list = registered.remove(identifier);
+        if (list == null) {
+            throw new AssertionError("Mappings not found for " + identifier);
+        }
+        for (ResourceMapping mapping : list) {
+            String path = mapping.getPath();
+            Verb verb = mapping.getVerb();
+            if (verb == Verb.GET) {
+                getMappings.remove(path);
+            } else if (verb == Verb.POST) {
+                postMappings.remove(path);
+            } else if (verb == Verb.PUT) {
+                putMappings.remove(path);
+            } else if (verb == Verb.DELETE) {
+                deleteMappings.remove(path);
+            }
         }
     }
 
@@ -238,8 +248,21 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         if (mappings.containsKey(path)) {
             throw new DuplicateResourceNameException("Resource already registered at: " + path);
         }
+        String identifier = mapping.getIdentifier();
+        List<ResourceMapping> registered = getRegistered(identifier);
+        registered.add(mapping);
         mappings.put(path, mapping);
     }
+
+    private List<ResourceMapping> getRegistered(String name) {
+        List<ResourceMapping> list = registered.get(name);
+        if (list == null) {
+            list = new ArrayList<ResourceMapping>();
+            registered.put(name, list);
+        }
+        return list;
+    }
+
 
     /**
      * Resolves the resource mapping for a request and handles it. An exact path match will be attempted first when resolving the mapping and, if not
@@ -521,7 +544,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 response.getOutputStream().write(serialized);
             } else {
                 if (message != null) {
-                    response.getWriter().write(e.getMessage());
+                    response.getWriter().write(message);
                 }
             }
         } catch (IOException ex) {

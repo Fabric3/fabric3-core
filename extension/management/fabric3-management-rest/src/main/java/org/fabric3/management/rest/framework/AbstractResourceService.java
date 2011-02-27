@@ -73,7 +73,15 @@ public abstract class AbstractResourceService implements ResourceListener {
         subresources.add(mapping);
     }
 
-    public void onSubResource(ResourceMapping mapping) {
+    public void onSubResourceExport(ResourceMapping mapping) {
+        // no-op
+    }
+
+    public void onRootResourceRemove(String identifier) {
+        // no-op
+    }
+
+    public void onSubResourceRemove(String identifier) {
         // no-op
     }
 

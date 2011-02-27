@@ -53,11 +53,11 @@ public interface ResourceHost {
     void register(ResourceMapping mapping) throws DuplicateResourceNameException;
 
     /**
-     * Removes a mapping and the associated managed resource.
+     * Removes mappings associated with the given identifier.
      *
-     * @param mapping the mapping
+     * @param identifier the identifier
      */
-    void unregister(ResourceMapping mapping);
+    void unregister(String identifier);
 
     /**
      * Dispatches a request directly to a managed resource.

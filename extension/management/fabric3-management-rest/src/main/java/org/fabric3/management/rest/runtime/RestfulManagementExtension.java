@@ -135,6 +135,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
 
+            String identifier = componentUri.toString();
             for (ManagementOperationInfo operationInfo : info.getOperations()) {
                 Signature signature = operationInfo.getSignature();
                 Method method = signature.getMethod(clazz);
@@ -155,17 +156,17 @@ public class RestfulManagementExtension implements ManagementExtension {
                         roles = info.getWriteRoles();
                     }
                 }
-                ResourceMapping mapping = createMapping(root, path, method, verb, objectFactory, jsonPair, jaxbPair, roles);
+                ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, jsonPair, jaxbPair, roles);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
                 resourceHost.register(mapping);
                 for (ResourceListener listener : listeners) {
-                    listener.onSubResource(mapping);
+                    listener.onSubResourceExport(mapping);
                 }
             }
             if (!rootResourcePathOverride) {
-                createRootResource(root, getMappings);
+                createRootResource(identifier, root, getMappings);
             }
         } catch (ClassNotFoundException e) {
             throw new ManagementException(e);
@@ -188,6 +189,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             Set<Role> roles;
+
             for (Method method : methods) {
                 ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
                 if (opAnnotation != null) {
@@ -207,7 +209,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                         }
                     }
 
-                    ResourceMapping mapping = createMapping(root, EMPTY_PATH, method, verb, instance, jsonPair, jaxbPair, roles);
+                    ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, jsonPair, jaxbPair, roles);
                     resourceHost.register(mapping);
                 }
             }
@@ -217,11 +219,12 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
-
+        resourceHost.unregister(componentUri.toString());
     }
 
-    public void remove(String name, String group) throws ManagementException {
 
+    public void remove(String name, String group) throws ManagementException {
+        resourceHost.unregister(name);
     }
 
     /**
@@ -243,17 +246,19 @@ public class RestfulManagementExtension implements ManagementExtension {
     /**
      * Creates a managed artifact mapping.
      *
-     * @param root     the root path for the artifact
-     * @param path     the relative path of the operation. The path may be blank, in which case one will be calculated from the method name
-     * @param method   the management operation
-     * @param verb     the HTTP verb the operation uses
-     * @param instance the artifact
-     * @param jsonPair the transformer pair for deserializing JSON requests and serializing responses as JSON
-     * @param jaxbPair the transformer pair for deserializing XML-based requests and serializing responses as XML
-     * @param roles    the roles required to invoke the operation
+     * @param identifier the identifier used to group a set of mappings during deployment and undeployment
+     * @param root       the root path for the artifact
+     * @param path       the relative path of the operation. The path may be blank, in which case one will be calculated from the method name
+     * @param method     the management operation
+     * @param verb       the HTTP verb the operation uses
+     * @param instance   the artifact
+     * @param jsonPair   the transformer pair for deserializing JSON requests and serializing responses as JSON
+     * @param jaxbPair   the transformer pair for deserializing XML-based requests and serializing responses as XML
+     * @param roles      the roles required to invoke the operation
      * @return the mapping
      */
-    private ResourceMapping createMapping(String root,
+    private ResourceMapping createMapping(String identifier,
+                                          String root,
                                           String path,
                                           Method method,
                                           Verb verb,
@@ -273,17 +278,18 @@ public class RestfulManagementExtension implements ManagementExtension {
         } else {
             rootPath = root.toLowerCase() + "/" + path;
         }
-        return new ResourceMapping(rootPath, path, verb, method, instance, jsonPair, jaxbPair, roles);
+        return new ResourceMapping(identifier, rootPath, path, verb, method, instance, jsonPair, jaxbPair, roles);
     }
 
     /**
      * Creates a root resource that aggreggates information from sub-resources.
      *
-     * @param root     the root path
-     * @param mappings the sub-resource mappings
-     * @throws ManagementException if an error occurs creating the root resource
+     * @param identifier the identifier used to group a set of mappings during deployment and undeployment
+     * @param root       the root path
+     * @param mappings   the sub-resource mappings   @throws ManagementException if an error occurs creating the root resource
+     * @throws ManagementException if there is an error creating the mapping
      */
-    private void createRootResource(String root, List<ResourceMapping> mappings) throws ManagementException {
+    private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ManagementException {
         try {
             ResourceInvoker invoker = new ResourceInvoker(mappings);
             List<Method> methods = new ArrayList<Method>();
@@ -294,7 +300,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
             root = root.toLowerCase();
             Set<Role> roles = Collections.emptySet();
-            ResourceMapping mapping = new ResourceMapping(root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair, roles);
+            ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair, roles);
             resourceHost.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);
