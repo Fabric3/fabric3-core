@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
@@ -71,12 +72,16 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     private ScopeContainer compositeScopeContainer;
     private ScopeContainer domainScopeContainer;
     private CommandExecutorRegistry commandExecutorRegistry;
+    private ContextMonitor monitor;
 
     @Constructor
-    public StartContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+    public StartContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
+                                       @Reference ScopeRegistry scopeRegistry,
+                                       @Monitor ContextMonitor monitor) {
         this.commandExecutorRegistry = executorRegistry;
         this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
+        this.monitor = monitor;
     }
 
     public StartContextCommandExecutor(ScopeRegistry scopeRegistry) {
@@ -99,6 +104,9 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
             if (domainScopeContainer != null) {
                 // domain scope not available during bootstrap
                 domainScopeContainer.startContext(workContext);
+            }
+            if (monitor != null && command.isLog()) {
+                monitor.deployed(deployable);
             }
         } catch (ComponentException e) {
             throw new ExecutionException("Error executing command", e);

@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.executor;
 
-import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -48,14 +48,14 @@ public interface DeploymentCommandExecutorMonitor {
     /**
      * Callback when a deployment is received.
      */
-    @Info("Deployment received")
+    @Debug("Deployment received")
     void received();
 
     /**
-     * Callback when a deployment is processed.
+     * Callback when a deployment is completed.
      */
-    @Info("Processing deployment")
-    void processing();
+    @Debug("Completed deployment")
+    void completed();
 
     /**
      * Callback when an error is thrown processing a deployment.

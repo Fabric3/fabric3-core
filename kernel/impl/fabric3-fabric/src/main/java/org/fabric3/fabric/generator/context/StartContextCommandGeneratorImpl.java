@@ -47,10 +47,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.fabric.command.StartContextCommand;
+import org.fabric3.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -68,7 +70,10 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
         Map<String, List<CompensatableCommand>> commands = new HashMap<String, List<CompensatableCommand>>();
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.NEW || !incremental) {
-                StartContextCommand command = new StartContextCommand(component.getDeployable());
+                QName deployable = component.getDeployable();
+                // only log application composite deployments
+                boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);
+                StartContextCommand command = new StartContextCommand(deployable, log);
                 String zone = component.getZone();
                 List<CompensatableCommand> list = getCommands(zone, commands);
                 if (!list.contains(command)) {

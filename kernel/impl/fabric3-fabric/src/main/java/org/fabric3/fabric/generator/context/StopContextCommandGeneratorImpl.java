@@ -41,15 +41,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.command.StopContextCommand;
+import org.fabric3.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
 /**
- *
  * @version $Rev$ $Date$
  */
 public class StopContextCommandGeneratorImpl implements StopContextCommandGenerator {
@@ -59,7 +60,10 @@ public class StopContextCommandGeneratorImpl implements StopContextCommandGenera
         for (LogicalComponent<?> component : components) {
             if (component.getState() == LogicalState.MARKED) {
                 List<CompensatableCommand> list = getCommands(component.getZone(), commands);
-                StopContextCommand command = new StopContextCommand(component.getDeployable());
+                QName deployable = component.getDeployable();
+                // only log application composite deployments
+                boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);
+                StopContextCommand command = new StopContextCommand(deployable, log);
                 if (!list.contains(command)) {
                     list.add(command);
                 }

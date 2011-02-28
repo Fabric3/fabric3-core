@@ -34,53 +34,28 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.fabric.domain;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.fabric.executor;
 
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
-
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.domain.DomainListener;
+import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * Listener that sends deployment and undeployment events to a monitor on the controller.
- *
  * @version $Rev$ $Date$
  */
-public class DomainMonitorListener implements DomainListener {
-    private boolean enabled;
-    private DomainMonitor monitor;
+public interface ContextMonitor {
 
-    public DomainMonitorListener(@Reference HostInfo info, @Monitor DomainMonitor monitor) {
-        enabled = RuntimeMode.CONTROLLER == info.getRuntimeMode();
-        this.monitor = monitor;
-    }
+    @Info("Composite {0} deployed")
+    void deployed(QName composite);
 
-    public void onDeploy(QName deployable, String plan) {
-        if (enabled) {
-            monitor.deploy(deployable);
-        }
-    }
+    @Info("Composite {0} undeployed")
+    void undeployed(QName composite);
 
-    public void onDeployCompleted(QName deployable, String plan) {
-        if (enabled) {
-            monitor.deploymentCompleted(deployable);
-        }
-    }
-
-    public void onUndeploy(QName undeployed) {
-        if (enabled) {
-            monitor.undeploy(undeployed);
-        }
-    }
-
-    public void onUndeployCompleted(QName undeployed) {
-        if (enabled) {
-            monitor.undeployCompleted(undeployed);
-        }
-    }
 }

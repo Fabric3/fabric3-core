@@ -152,8 +152,6 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                     return;
                 }
 
-                monitor.processing();
-
                 // Execute the provision extension commands first before deserializing the others deployment commands.
                 // Provision and extension commands resolve required artifacts, setup classloaders and initialize extensions.
                 SerializedDeploymentUnit currentDeploymentUnit = command.getCurrentDeploymentUnit();
@@ -176,6 +174,7 @@ public class DeploymentCommandExecutor implements CommandExecutor<DeploymentComm
                     return;
                 }
                 cacheDeployment(command);
+                monitor.completed();
             } catch (RuntimeException e) {
                 monitor.errorMessage("Error performing deployment", e);
                 throw e;

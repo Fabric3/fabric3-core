@@ -78,12 +78,20 @@ public class FSDomainTracker implements DomainListener {
         domainLog = new File(info.getDataDir(), "domain.xml");
     }
 
-    public void onInclude(QName included, String plan) {
+    public void onDeploy(QName included, String plan) {
         if (plan == null) {
             plan = NO_PLAN;
         }
         deployables.put(included, plan);
         persist();
+    }
+
+    public void onDeployCompleted(QName deployable, String plan) {
+        // no-op
+    }
+
+    public void onUndeployCompleted(QName undeployed) {
+        // no-op
     }
 
     public void onUndeploy(QName undeployed) {

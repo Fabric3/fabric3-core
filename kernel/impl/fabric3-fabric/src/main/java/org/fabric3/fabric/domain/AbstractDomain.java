@@ -175,15 +175,18 @@ public abstract class AbstractDomain implements Domain {
             }
         }
         for (DomainListener listener : listeners) {
-            listener.onInclude(deployable, plan.getName());
+            listener.onDeploy(deployable, plan.getName());
         }
         instantiateAndDeploy(wrapper, plan);
+        for (DomainListener listener : listeners) {
+            listener.onDeployCompleted(deployable, plan.getName());
+        }
     }
 
     public synchronized void include(Composite composite) throws DeploymentException {
         QName name = composite.getName();
         for (DomainListener listener : listeners) {
-            listener.onInclude(name, SYNTHETIC_PLAN_NAME);
+            listener.onDeploy(name, SYNTHETIC_PLAN_NAME);
         }
         instantiateAndDeploy(composite, SYNTHETIC_PLAN);
     }
@@ -208,18 +211,31 @@ public abstract class AbstractDomain implements Domain {
                 for (DomainListener listener : listeners) {
                     URI uri = deployable.getContributionUri();
                     DeploymentPlan plan = plans.get(uri);
-                    listener.onInclude(name, plan.getName());
+                    listener.onDeploy(name, plan.getName());
                 }
             }
             instantiateAndDeploy(deployables, contributions, merged, false);
+            for (Composite deployable : deployables) {
+                QName name = deployable.getName();
+                for (DomainListener listener : listeners) {
+                    URI uri = deployable.getContributionUri();
+                    DeploymentPlan plan = plans.get(uri);
+                    listener.onDeployCompleted(name, plan.getName());
+                }
+            }
         } else {
             // notify listeners
             for (Composite deployable : deployables) {
                 for (DomainListener listener : listeners) {
-                    listener.onInclude(deployable.getName(), SYNTHETIC_PLAN_NAME);
+                    listener.onDeploy(deployable.getName(), SYNTHETIC_PLAN_NAME);
                 }
             }
             instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, false);
+            for (Composite deployable : deployables) {
+                for (DomainListener listener : listeners) {
+                    listener.onDeployCompleted(deployable.getName(), SYNTHETIC_PLAN_NAME);
+                }
+            }
         }
     }
 
@@ -284,6 +300,11 @@ public abstract class AbstractDomain implements Domain {
             contribution.releaseLock(deployable);
         }
         logicalComponentManager.replaceRootComponent(domain);
+        for (QName deployable : names) {
+            for (DomainListener listener : listeners) {
+                listener.onUndeployCompleted(deployable);
+            }
+        }
     }
 
     public synchronized void activateDefinitions(URI uri) throws DeploymentException {

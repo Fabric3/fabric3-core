@@ -43,6 +43,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.StopContextCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
@@ -63,10 +64,14 @@ import org.fabric3.spi.invocation.WorkContext;
 public class StopContextCommandExecutor implements CommandExecutor<StopContextCommand> {
     private ScopeContainer container;
     private CommandExecutorRegistry executorRegistry;
+    private ContextMonitor monitor;
 
-    public StopContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ScopeRegistry scopeRegistry) {
+    public StopContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
+                                      @Reference ScopeRegistry scopeRegistry,
+                                      @Monitor ContextMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.monitor = monitor;
     }
 
     @Init
@@ -81,6 +86,9 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
         workContext.addCallFrame(frame);
         try {
             container.stopContext(workContext);
+            if (monitor != null && command.isLog()) {
+                monitor.undeployed(deployable);
+            }
         } catch (ComponentException e) {
             throw new ExecutionException(e);
         }

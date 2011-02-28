@@ -55,20 +55,26 @@ import org.fabric3.spi.command.CompensatableCommand;
 public class StartContextCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2132991925467598257L;
 
-    private final QName deployable;
+    private QName deployable;
+    private boolean log;
 
-    public StartContextCommand(QName deployable) {
+    public StartContextCommand(QName deployable, boolean log) {
         this.deployable = deployable;
+        this.log = log;
     }
 
     public QName getDeployable() {
         return deployable;
     }
 
-    public StopContextCommand getCompensatingCommand() {
-        return new StopContextCommand(deployable);
+    public boolean isLog() {
+        return log;
     }
-    
+
+    public StopContextCommand getCompensatingCommand() {
+        return new StopContextCommand(deployable, log);
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) {

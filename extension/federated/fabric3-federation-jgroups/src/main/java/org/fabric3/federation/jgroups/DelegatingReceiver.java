@@ -62,7 +62,6 @@ public class DelegatingReceiver implements Receiver {
         this.monitor = monitor;
     }
 
-    @Override
     public void receive(Message message) {
         if (message.getSrc() != channel.getAddress()) {
             try {
@@ -74,27 +73,22 @@ public class DelegatingReceiver implements Receiver {
         }
     }
 
-    @Override
     public void viewAccepted(View new_view) {
 
     }
 
-    @Override
     public void suspect(Address suspected_mbr) {
 
     }
 
-    @Override
     public void block() {
 
     }
 
-    @Override
     public byte[] getState() {
         return new byte[0];
     }
 
-    @Override
     public void setState(byte[] state) {
 
     }

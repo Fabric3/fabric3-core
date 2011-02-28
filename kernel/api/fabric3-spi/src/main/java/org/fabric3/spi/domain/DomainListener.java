@@ -47,12 +47,20 @@ import javax.xml.namespace.QName;
 public interface DomainListener {
 
     /**
-     * Called when a composite is included in the domain.
+     * Called when a composite is deployed to the domain.
      *
      * @param deployable the composite qualified name
      * @param plan       the deployment plan or null if none is specified
      */
-    void onInclude(QName deployable, String plan);
+    void onDeploy(QName deployable, String plan);
+
+    /**
+     * Called when a composite has been deployed to the domain.
+     *
+     * @param deployable the composite qualified name
+     * @param plan       the deployment plan or null if none is specified
+     */
+    void onDeployCompleted(QName deployable, String plan);
 
     /**
      * Called when a composite is undeployed from the domain.
@@ -60,4 +68,12 @@ public interface DomainListener {
      * @param undeployed the composite qualified name
      */
     void onUndeploy(QName undeployed);
+
+    /**
+     * Called when a composite is undeployed from the domain.
+     *
+     * @param undeployed the composite qualified name
+     */
+    void onUndeployCompleted(QName undeployed);
+
 }

@@ -49,7 +49,13 @@ public interface DomainMonitor {
     @Info("Deploying composite {0}")
     void deploy(QName deployable);
 
-    @Info("Un-deploying composite {0}")
+    @Info("Composite {0} deployed")
+    void deploymentCompleted(QName deployable);
+
+    @Info("Undeploying composite {0}")
     void undeploy(QName deployable);
+
+    @Info("Undeployed composite {0}")
+    void undeployCompleted(QName deployable);
 
 }
