@@ -94,7 +94,7 @@ public class ListCommand implements Command {
             connection.connect();
             int code = connection.getResponseCode();
             if (HttpStatus.UNAUTHORIZED.getCode() == code) {
-                out.println("ERROR:Not authorized");
+                out.println("ERROR: Not authorized");
                 return false;
             } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
                 out.println("ERROR: Attempt made to connect using HTTP but the domain requires HTTPS.");
