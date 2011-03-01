@@ -46,4 +46,8 @@ public interface ContributionsResourceMonitor {
 
     @Severe
     void error(String message, Throwable t);
+
+    @Severe
+    void error(String message);
+
 }

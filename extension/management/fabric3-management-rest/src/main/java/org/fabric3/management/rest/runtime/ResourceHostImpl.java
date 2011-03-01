@@ -544,7 +544,10 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 response.getOutputStream().write(serialized);
             } else {
                 if (message != null) {
-                    response.getWriter().write(message);
+                    // transform the error message
+                    Transformer<Object, byte[]> transformer = mapping.getJsonPair().getSerializer();
+                    byte[] serialized = transformer.transform(message, this.getClass().getClassLoader());
+                    response.getOutputStream().write(serialized);
                 }
             }
         } catch (IOException ex) {

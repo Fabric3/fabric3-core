@@ -104,7 +104,7 @@ public class InstallCommand implements Command {
                 out.println("An attempt was made to connect using HTTP but the domain requires HTTPS.");
                 return false;
             } else if (HttpStatus.CONFLICT.getCode() == code) {
-                out.println("A contribution already exists for " + contributionUri);
+                out.println("The contribution is already installed: " + contributionUri);
                 return false;
             } else if (HttpStatus.VALIDATION_ERROR.getCode() == code) {
                 InputStream stream = connection.getErrorStream();

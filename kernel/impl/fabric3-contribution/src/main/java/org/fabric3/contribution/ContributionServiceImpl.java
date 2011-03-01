@@ -81,6 +81,7 @@ import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;
@@ -494,6 +495,8 @@ public class ContributionServiceImpl implements ContributionService {
             String description = contribution.getManifest().getDescription();
             if (description != null) {
                 monitor.installed(description);
+            } else if (!contribution.getManifest().isExtension()) {
+                monitor.installed(uri.toString());
             }
         }
         return uris;
@@ -537,6 +540,8 @@ public class ContributionServiceImpl implements ContributionService {
         String description = contribution.getManifest().getDescription();
         if (description != null) {
             monitor.uninstalled(description);
+        } else if (!contribution.getManifest().isExtension()) {
+            monitor.uninstalled(uri.toString());
         }
     }
 

@@ -56,13 +56,15 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
-import org.fabric3.host.contribution.ContributionException;
+import org.fabric3.host.contribution.ContributionInUseException;
+import org.fabric3.host.contribution.ContributionLockedException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.InputStreamContributionSource;
+import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
@@ -75,8 +77,11 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;
 import org.fabric3.management.rest.model.SelfLink;
+import org.fabric3.spi.UnsupportedContentTypeException;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.UnresolvedImportException;
 import org.fabric3.spi.introspection.validation.InvalidContributionException;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
@@ -140,13 +145,13 @@ public class ContributionsResourceService {
             ContributionSource source = new InputStreamContributionSource(uri, request.getInputStream());
             contributionService.store(source);
         } catch (URISyntaxException e) {
-            monitor.error("Invalid contribution URI:", e);
+            monitor.error("Invalid contribution URI: " + e.getReason());
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Invalid contribution URI: " + name);
         } catch (IOException e) {
             monitor.error("Error creating contribution: " + name, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
         } catch (DuplicateContributionException e) {
-            monitor.error("Duplicate contribution:" + name, e);
+            monitor.error("Duplicate contribution:" + name);
             throw new ResourceException(HttpStatus.CONFLICT, "Contribution already exists: " + name);
         } catch (StoreException e) {
             monitor.error("Error creating contribution: " + name, e);
@@ -157,13 +162,30 @@ public class ContributionsResourceService {
             Response response = new Response(HttpStatus.CREATED);
             response.addHeader(HttpHeaders.LOCATION, path);
             return response;
+        } catch (ContributionNotFoundException e) {
+            String message = "Contribution not found: " + name;
+            monitor.error(message);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, message);
+        } catch (ContributionAlreadyInstalledException e) {
+            String message = "Contribution already installed: " + name;
+            monitor.error(message);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, message);
+        } catch (UnresolvedImportException e) {
+            String message = "The import " + e.getImport() + " could not be resolved: " + name;
+            monitor.error(message);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, message);
+        } catch (UnsupportedContentTypeException e) {
+            String message = "Unknown contribution type: " + name;
+            monitor.error(message);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, message);
         } catch (InvalidContributionException e) {
             ResourceException resourceException = new ResourceException(HttpStatus.VALIDATION_ERROR, "Invalid contribution: " + name);
             propagate(e, resourceException);
             throw resourceException;
-        } catch (ContributionException e) {
-            monitor.error("Error creating contribution: " + name, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating contribution: " + name);
+        } catch (InstallException e) {
+            String message = "Error creating contribution: " + name;
+            monitor.error(message, e);
+            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, message);
         }
     }
 
@@ -190,8 +212,13 @@ public class ContributionsResourceService {
         try {
             contributionService.uninstall(contributionUri);
             contributionService.remove(contributionUri);
+        } catch (ContributionInUseException e) {
+            monitor.error("Contribution must be undeployed before it is uninstalled: " + uri);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Contribution must be undeployed before it is uninstalled: " + uri);
+        } catch (ContributionLockedException e) {
+            monitor.error("Unable to uninstall contribution in use: " + uri);
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Unable to uninstall contribution in use: " + uri);
         } catch (UninstallException e) {
-            // TODO report better error
             monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
         } catch (RemoveException e) {

@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
@@ -95,6 +94,10 @@ public class UninstallCommand implements Command {
                 return false;
             } else if (HttpStatus.NOT_FOUND.getCode() == code) {
                 out.println("ERROR: Contribution not found: " + contributionUri);
+                return false;
+            } else if (code >= 400 && code < 500) {
+                String message = domainConnection.parse(String.class, connection.getErrorStream());
+                out.println("ERROR: "+ message);
                 return false;
             } else if (HttpStatus.OK.getCode() != code) {
                 out.println("ERROR: Server error: " + code);

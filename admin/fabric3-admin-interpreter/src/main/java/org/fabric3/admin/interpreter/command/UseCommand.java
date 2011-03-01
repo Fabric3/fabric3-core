@@ -77,7 +77,7 @@ public class UseCommand implements Command {
         if (password != null) {
             domainConnection.setPassword(password);
         }
-
+        out.println("Domain address: " + domainAddress);
         return true;
     }
 

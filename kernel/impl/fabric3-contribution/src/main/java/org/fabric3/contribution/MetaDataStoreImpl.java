@@ -259,7 +259,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         if (wires.isEmpty()) {
-            throw new UnresolvedImportException("Unable to resolve import: " + imprt);
+            throw new UnresolvedImportException(imprt.toString());
         }
         return wires;
     }

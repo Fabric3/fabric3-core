@@ -44,8 +44,14 @@ import org.fabric3.host.contribution.InstallException;
  */
 public class UnresolvedImportException extends InstallException {
     private static final long serialVersionUID = -1442853849509129572L;
+    private String imprt;
 
-    public UnresolvedImportException(String message) {
-        super(message);
+    public UnresolvedImportException(String imprt) {
+        super("Unable to resolve import: " + imprt);
+        this.imprt = imprt;
+    }
+
+    public String getImport() {
+        return imprt;
     }
 }
