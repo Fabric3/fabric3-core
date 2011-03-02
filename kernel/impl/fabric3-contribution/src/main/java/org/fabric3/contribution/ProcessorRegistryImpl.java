@@ -46,7 +46,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
-import org.fabric3.spi.UnsupportedContentTypeException;
+import org.fabric3.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;

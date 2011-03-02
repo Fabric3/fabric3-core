@@ -35,23 +35,15 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
-
-import org.fabric3.host.contribution.InstallException;
+package org.fabric3.host.contribution;
 
 /**
  * @version $Rev$ $Date$
  */
-public class UnresolvedImportException extends InstallException {
-    private static final long serialVersionUID = -1442853849509129572L;
-    private String imprt;
+public class ContributionAlreadyInstalledException extends InstallException {
+    private static final long serialVersionUID = 1236610771089236696L;
 
-    public UnresolvedImportException(String imprt) {
-        super("Unable to resolve import: " + imprt);
-        this.imprt = imprt;
-    }
-
-    public String getImport() {
-        return imprt;
+    public ContributionAlreadyInstalledException(String message) {
+        super(message);
     }
 }

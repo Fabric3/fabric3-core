@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.contribution.UnresolvedImportException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

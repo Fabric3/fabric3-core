@@ -35,26 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi;
-
-import org.fabric3.host.contribution.InstallException;
+package org.fabric3.host.contribution;
 
 /**
- * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain. The Content-Type value supplied will be returned as the
- * message text for this exception.
- *
  * @version $Rev$ $Date$
  */
-public class UnsupportedContentTypeException extends InstallException {
-    private static final long serialVersionUID = -1831797280021355672L;
+public class UnresolvedImportException extends InstallException {
+    private static final long serialVersionUID = -1442853849509129572L;
+    private String imprt;
 
-    /**
-     * Constructor specifying the Content-Type value that is not supported and an identifier to use with this exception (typically the resource being
-     * processed).
-     *
-     * @param message    the error message
-     */
-    public UnsupportedContentTypeException(String message) {
-        super(message);
+    public UnresolvedImportException(String imprt) {
+        super("Unable to resolve import: " + imprt);
+        this.imprt = imprt;
+    }
+
+    public String getImport() {
+        return imprt;
     }
 }

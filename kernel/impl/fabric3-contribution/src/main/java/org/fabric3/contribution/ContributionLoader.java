@@ -38,8 +38,8 @@
 package org.fabric3.contribution;
 
 import org.fabric3.host.contribution.ContributionInUseException;
+import org.fabric3.host.contribution.UnresolvedImportException;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.UnresolvedImportException;
 
 /**
  * Loads an installed contribution.

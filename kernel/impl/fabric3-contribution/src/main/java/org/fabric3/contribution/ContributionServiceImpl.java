@@ -81,7 +81,7 @@ import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionAlreadyInstalledException;
+import org.fabric3.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;

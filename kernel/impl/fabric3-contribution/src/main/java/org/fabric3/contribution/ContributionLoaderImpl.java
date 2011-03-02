@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.host.contribution.ContributionInUseException;
+import org.fabric3.host.contribution.UnresolvedImportException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -60,7 +61,6 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.UnresolvedImportException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
