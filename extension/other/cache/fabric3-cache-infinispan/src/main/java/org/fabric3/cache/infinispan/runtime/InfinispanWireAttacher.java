@@ -75,7 +75,7 @@ public class InfinispanWireAttacher implements TargetWireAttacher<InfinispanPhys
         String cacheName = target.getCacheName();
         ConcurrentMap source = registry.getCache(cacheName);
         if (source == null) {
-            throw new CacheNotFoundException(MessageFormat.format("Cache not found: {0}. Is this a typo or you forgot to specify this cache.", cacheName));
+            throw new CacheNotFoundException(MessageFormat.format("Cache not found: {0} for classloader id: {1}. Is this a typo or you forgot to specify this cache.", cacheName, target.getClassLoaderId()));
         }
         return new SingletonObjectFactory<ConcurrentMap>(source);
     }
