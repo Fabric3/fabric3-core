@@ -38,8 +38,10 @@
 package org.fabric3.management.rest.framework.domain.zone;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -51,6 +53,7 @@ import org.fabric3.management.rest.model.Link;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.Zone;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
@@ -75,7 +78,21 @@ public class ZonesResourceService {
     }
 
     @ManagementOperation(path = "/")
-    public Set<Link> getZones() {
+    public Set<Link> getZones(HttpServletRequest request) {
+        if (topologyService == null) {
+            return createLocalZoneLink(request);
+        }
+        return createDistributedZonesLink();
+    }
+
+    private Set<Link> createLocalZoneLink(HttpServletRequest request) {
+        StringBuffer requestUrl = request.getRequestURL();
+        URL zoneUrl = ResourceHelper.createUrl(requestUrl.substring(0, requestUrl.toString().indexOf("/management/") + 12) + "zone");
+        Link link = new Link(LogicalComponent.LOCAL_ZONE, EDIT_LINK, zoneUrl);
+        return Collections.singleton(link);
+    }
+
+    private Set<Link> createDistributedZonesLink() {
         Set<Link> list = new HashSet<Link>();
         Set<Zone> zones = topologyService.getZones();
         for (Zone zone : zones) {
