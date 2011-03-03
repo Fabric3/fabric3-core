@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.transport;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -66,6 +67,11 @@ public class TransportService {
     @Reference(required = false)
     public void setTransports(Map<String, Transport> transports) {
         this.transports = transports;
+    }
+
+    @ManagementOperation(path = "/")
+    public Collection<String> getTransports() {
+        return transports.keySet();
     }
 
     @ManagementOperation(type = POST, description = "Suspend a transport from receiving requests")
