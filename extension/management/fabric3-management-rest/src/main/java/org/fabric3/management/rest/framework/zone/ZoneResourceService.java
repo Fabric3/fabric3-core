@@ -138,7 +138,13 @@ public class ZoneResourceService implements ResourceListener {
 
         String identifier = "zone" + mapping.getIdentifier();
         String path = "/zone" + mapping.getPath();
-        String relativePath = mapping.getRelativePath().substring(RUNTIME_PATH.length());
+        String relativePath;
+        if ("/".equals(mapping.getRelativePath())) {
+            // root resource
+            relativePath = mapping.getPath().substring(RUNTIME_PATH.length());
+        } else {
+            relativePath = mapping.getRelativePath().substring(RUNTIME_PATH.length());
+        }
         Verb verb = mapping.getVerb();
         Object instance = mapping.getInstance();
         Method method = mapping.getMethod();
