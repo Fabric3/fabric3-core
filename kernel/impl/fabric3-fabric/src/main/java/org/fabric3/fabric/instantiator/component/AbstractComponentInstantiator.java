@@ -86,7 +86,7 @@ public abstract class AbstractComponentInstantiator {
      *
      * @param component  the component to initialize
      * @param definition the definition of the component
-     * @param context    the instantiation conte
+     * @param context    the instantiation context
      */
     protected void initializeProperties(LogicalComponent<?> component, ComponentDefinition<?> definition, InstantiationContext context) {
 
