@@ -44,8 +44,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.api.annotation.management.Management;
-import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
@@ -65,10 +63,6 @@ import org.fabric3.spi.util.UriHelper;
  *
  * @version $Rev$ $Date$
  */
-@Management(name = "LogicalComponentManager",
-            path = "/runtime/LogicalComponentManager",
-            group = "deployment",
-            description = "Manages the logical domain")
 public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;
     private String autowireValue;
@@ -144,11 +138,6 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
 
     public void replaceRootComponent(LogicalCompositeComponent component) {
         domain = component;
-    }
-
-    @ManagementOperation(description = "Returns the URI of this domain")
-    public String getDomainURI() {
-        return domain.getUri().toString();
     }
 
     private void initializeDomainComposite() {
