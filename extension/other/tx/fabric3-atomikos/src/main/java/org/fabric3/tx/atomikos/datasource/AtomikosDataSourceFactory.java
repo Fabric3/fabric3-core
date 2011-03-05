@@ -115,7 +115,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setXaProperties(properties);
             bean.setXaDataSourceClassName(configuration.getDriverClass());
             setBeanProperties(configuration, bean);
-            registerJMX(bean);
+            registerManagement(bean);
             beans.put(name, bean);
             registry.register(name, bean);
         } else {
@@ -126,7 +126,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setUser(configuration.getUsername());
             bean.setPassword(configuration.getPassword());
             setBeanProperties(configuration, bean);
-            registerJMX(bean);
+            registerManagement(bean);
             beans.put(name, bean);
             registry.register(name, bean);
         }
@@ -183,11 +183,11 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             throw new DataSourceFactoryException("DataSource not registered: " + name);
         }
         registry.unregister(name);
-        unRegisterJMX(bean);
+        unRegisterManagement(bean);
         bean.close();
     }
 
-    private void registerJMX(AbstractDataSourceBean bean) throws DataSourceFactoryException {
+    private void registerManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
         String name = bean.getUniqueResourceName();
         try {
             DataSourceWrapper wrapper = new DataSourceWrapper(bean);
@@ -197,7 +197,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         }
     }
 
-    private void unRegisterJMX(AbstractDataSourceBean bean) throws DataSourceFactoryException {
+    private void unRegisterManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
         try {
             String name = bean.getUniqueResourceName();
             managementService.remove(name, "datasources");
