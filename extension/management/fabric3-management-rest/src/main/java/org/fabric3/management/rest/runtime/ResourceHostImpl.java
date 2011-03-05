@@ -284,6 +284,10 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             return;
         }
         String pathInfo = request.getPathInfo().toLowerCase();
+        if (pathInfo.endsWith("/")) {
+            // strip trailing '/'
+            pathInfo = pathInfo.substring(0, pathInfo.length() - 1);
+        }
         ResourceMapping mapping = resolveMapping(verb, pathInfo);
         if (mapping == null) {
             response.setStatus(404);

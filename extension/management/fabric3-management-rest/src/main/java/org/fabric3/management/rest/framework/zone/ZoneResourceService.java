@@ -56,6 +56,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
+import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.runtime.TransformerPair;
@@ -106,7 +107,7 @@ public class ZoneResourceService implements ResourceListener {
     }
 
     @ManagementOperation(path = "/")
-    public Resource getZoneResource(HttpServletRequest request) {
+    public Resource getZoneResource(HttpServletRequest request) throws ResourceException {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
         String leaderName = getLeader();
@@ -117,7 +118,7 @@ public class ZoneResourceService implements ResourceListener {
     }
 
     @ManagementOperation(path = "runtime")
-    public Resource getZoneRuntimeResource(HttpServletRequest request) {
+    public Resource getZoneRuntimeResource(HttpServletRequest request) throws ResourceException {
         SelfLink selfLink = ResourceHelper.createSelfLink(request);
         Resource resource = new Resource(selfLink);
         String requestUrl = ResourceHelper.getRequestUrl(request);

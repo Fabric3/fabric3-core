@@ -40,6 +40,8 @@ package org.fabric3.management.rest.spi;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.fabric3.api.Role;
 import org.fabric3.management.rest.runtime.TransformerPair;
 
@@ -157,7 +159,7 @@ public class ResourceMapping {
      * @return true if the path is parameterized
      */
     public boolean isParameterized() {
-        return method.getParameterTypes().length > 0;
+        return method.getParameterTypes().length > 0 && !(HttpServletRequest.class.isAssignableFrom(method.getParameterTypes()[0]));
     }
 
     /**
