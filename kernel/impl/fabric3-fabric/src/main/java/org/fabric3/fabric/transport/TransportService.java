@@ -49,13 +49,14 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.transport.Transport;
 
+import static org.fabric3.api.annotation.management.OperationType.DELETE;
 import static org.fabric3.api.annotation.management.OperationType.POST;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Management(path = "/runtime/TransportService", description = "Manages runtime binding transports")
+@Management(path = "/runtime/transports", description = "Manages runtime binding transports")
 public class TransportService {
     private TransportServiceMonitor monitor;
     private Map<String, Transport> transports = Collections.emptyMap();
@@ -74,7 +75,7 @@ public class TransportService {
         return transports.keySet();
     }
 
-    @ManagementOperation(type = POST, description = "Suspend a transport from receiving requests")
+    @ManagementOperation(type = DELETE, description = "Suspend a transport from receiving requests")
     public void suspend(String name) {
         Transport transport = transports.get(name);
         if (transport == null) {
@@ -84,7 +85,7 @@ public class TransportService {
         transport.suspend();
     }
 
-    @ManagementOperation(type = POST, description = "Suspend all transports from receiving requests")
+    @ManagementOperation(type = DELETE, description = "Suspend all transports from receiving requests")
     public void suspendAll() {
         for (Transport transport : transports.values()) {
             transport.suspend();
