@@ -61,6 +61,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
@@ -219,17 +220,18 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         if (candidates.isEmpty()) {
             return false;
         }
+
+        // use the leaf component reference since the reference may be a composite reference and only leaf/atomic references are generated
+        LogicalReference leafReference = logicalReference.getLeafReference();
+        LogicalComponent<?> parent = leafReference.getParent();
+        LogicalCompositeComponent parentComposite = parent.getParent();
+        List<LogicalWire> existingWires = parentComposite.getWires(leafReference);
+        
         // create the wires
         for (LogicalService target : candidates) {
-            // for autowires, the deployable of the wire is the target since the wire must be removed when the target is undeployed
+            // for autowire, the deployable of the wire is the target since the wire must be removed when the target is undeployed
             QName deployable = target.getParent().getDeployable();
-            // Set the wire on the leaf component reference since the reference may be a composite reference and only leaf/atomic references
-            // are generated.
-            LogicalReference leafReference = logicalReference.getLeafReference();
-            LogicalComponent<?> parent = leafReference.getParent();
-            LogicalCompositeComponent parentComposite = parent.getParent();
             // check to see if the wire already exists, in which case do not create a duplicate
-            List<LogicalWire> existingWires = parentComposite.getWires(leafReference);
             boolean skip = false;
             for (LogicalWire existingWire : existingWires) {
                 if (target.equals(existingWire.getTarget())) {
@@ -240,6 +242,12 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             if (!skip) {
                 LogicalWire wire = new LogicalWire(parentComposite, leafReference, target, deployable, true);
                 parentComposite.addWire(leafReference, wire);
+                for (LogicalWire existingWire : existingWires) {
+                    // existing wires must be marked as new so they can be reinjected 
+                    if (LogicalState.PROVISIONED == existingWire.getTarget().getLeafComponent().getState()) {
+                        existingWire.setState(LogicalState.NEW);
+                    }
+                }
             }
         }
         return true;
