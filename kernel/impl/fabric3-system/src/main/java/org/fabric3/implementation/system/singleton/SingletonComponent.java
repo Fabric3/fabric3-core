@@ -48,7 +48,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +56,10 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
@@ -63,6 +67,7 @@ import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -152,11 +157,16 @@ public class SingletonComponent implements AtomicComponent {
     /**
      * Adds an ObjectFactory to be reinjected
      *
-     * @param attribute    the InjectableAttribute describing the site to reinject
-     * @param paramFactory the object factory responsible for supplying a value to reinject
+     * @param injectable    the InjectableAttribute describing the site to reinject
+     * @param objectFactory the object factory responsible for supplying a value to reinject
      */
-    public void addObjectFactory(Injectable attribute, ObjectFactory paramFactory) {
-        reinjectionMappings.put(paramFactory, attribute);
+    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory) {
+        if (InjectableType.REFERENCE == injectable.getType()) {
+            setFactory(injectable, objectFactory);
+        } else {
+            // the factory corresponds to a property or context, which will override previous values if reinjected
+            reinjectionMappings.put(objectFactory, injectable);
+        }
     }
 
     public String toString() {
@@ -198,6 +208,79 @@ public class SingletonComponent implements AtomicComponent {
                 // ignore other injection sites
             }
         }
+    }
+
+    private void setFactory(Injectable injectable, ObjectFactory objectFactory) {
+        ObjectFactory<?> factory = findFactory(injectable);
+        if (factory == null) {
+            Class<?> type = getMemberType(injectable);
+            if (Map.class.equals(type)) {
+                throw new AssertionError("Map references not supported on Singleton components");
+            } else if (Set.class.equals(type)) {
+                SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
+                setFactory.addObjectFactory(objectFactory, null);
+                reinjectionMappings.put(setFactory, injectable);
+            } else if (List.class.equals(type)) {
+                ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.addObjectFactory(objectFactory, null);
+                reinjectionMappings.put(listFactory, injectable);
+            } else if (Collection.class.equals(type)) {
+                ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.addObjectFactory(objectFactory, null);
+                reinjectionMappings.put(listFactory, injectable);
+            } else if (type.isArray()) {
+                ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
+                arrayFactory.addObjectFactory(objectFactory, null);
+                reinjectionMappings.put(arrayFactory, injectable);
+            } else {
+                reinjectionMappings.put(objectFactory, injectable);
+            }
+        } else if (factory instanceof MultiplicityObjectFactory) {
+            MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
+            multiplicityObjectFactory.addObjectFactory(objectFactory, null);
+        } else {
+            //update or overwrite  the factory
+            reinjectionMappings.put(objectFactory, injectable);
+        }
+    }
+
+    /**
+     * Finds the mapped object factory for the injectable.
+     *
+     * @param injectable the injectable
+     * @return the object factory
+     */
+    private ObjectFactory<?> findFactory(Injectable injectable) {
+        ObjectFactory<?> factory = null;
+        for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
+            if (injectable.equals(entry.getValue())) {
+                factory = entry.getKey();
+                break;
+            }
+        }
+        return factory;
+    }
+
+    /**
+     * Returns the injectable type.
+     *
+     * @param injectable the injectable
+     * @return the type
+     */
+    private Class<?> getMemberType(Injectable injectable) {
+        for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
+            if (injectable.equals(entry.getValue())) {
+                Member member = entry.getKey();
+                if (member instanceof Method) {
+                    return ((Method) member).getParameterTypes()[0];
+                } else if (member instanceof Field) {
+                    return ((Field) member).getType();
+                } else {
+                    throw new AssertionError("Unsupported injection site type for singleton components");
+                }
+            }
+        }
+        return null;
     }
 
     private Field getField(String name) throws NoSuchFieldException {
@@ -268,12 +351,6 @@ public class SingletonComponent implements AtomicComponent {
                         try {
                             Object param = factory.getInstance();
                             Method method = (Method) member;
-                            Class<?> type = method.getParameterTypes()[0];
-                            if (Set.class.equals(type)) {
-                                param = Collections.singleton(param);
-                            } else if (List.class.equals(type)) {
-                                param = Collections.singletonList(param);
-                            }
                             method.invoke(instance, param);
                         } catch (IllegalAccessException e) {
                             // should not happen as accessibility is already set
