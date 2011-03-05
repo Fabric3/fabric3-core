@@ -59,7 +59,7 @@ import org.fabric3.spi.monitor.MonitorService;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Management(name = "MonitorService", path = "/runtime/MonitorService", description = "Sets monitoring levels for the runtime")
+@Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
 public class LogBackMonitorService implements MonitorService {
     private ComponentManager manager;
     private MonitorLevel defaultLevel = MonitorLevel.WARNING;
