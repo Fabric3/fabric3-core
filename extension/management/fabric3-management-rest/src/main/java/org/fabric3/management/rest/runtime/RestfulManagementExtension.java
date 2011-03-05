@@ -161,15 +161,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                     getMappings.add(mapping);
                 }
                 resourceHost.register(mapping);
-                if (ROOT_PATH.equals(path)) {
-                    for (ResourceListener listener : listeners) {
-                        listener.onRootResourceExport(mapping);
-                    }
-                } else {
-                    for (ResourceListener listener : listeners) {
-                        listener.onSubResourceExport(mapping);
-                    }
-                }
+                notifyExport(path, mapping);
             }
             if (!rootResourcePathOverride) {
                 createRootResource(identifier, root, getMappings);
@@ -186,17 +178,20 @@ public class RestfulManagementExtension implements ManagementExtension {
     public void export(String name, String group, String description, Object instance) throws ManagementException {
         String root = "/runtime/" + name;
         try {
+
             Set<Role> readRoles = new HashSet<Role>();
             Set<Role> writeRoles = new HashSet<Role>();
-
             parseRoles(instance, readRoles, writeRoles);
 
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
-            Set<Role> roles;
+
+            boolean rootResourcePathOverride = false;
+            List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
 
             for (Method method : methods) {
+                Set<Role> roles;
                 ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
                 if (opAnnotation != null) {
                     OperationType type = OperationType.valueOf(opAnnotation.type().toString());
@@ -216,8 +211,16 @@ public class RestfulManagementExtension implements ManagementExtension {
                     }
 
                     ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, jsonPair, jaxbPair, roles);
+                    if (Verb.GET == mapping.getVerb()) {
+                        getMappings.add(mapping);
+                    }
                     resourceHost.register(mapping);
+                    notifyExport(mapping.getRelativePath(), mapping);
+
                 }
+            }
+            if (!rootResourcePathOverride) {
+                createRootResource(name, root, getMappings);
             }
         } catch (TransformationException e) {
             throw new ManagementException(e);
@@ -248,6 +251,25 @@ public class RestfulManagementExtension implements ManagementExtension {
             return Verb.valueOf(type.toString());
         }
     }
+
+    /**
+     * Notifies listeners of a root or sub- resource export event
+     *
+     * @param path    the resource path
+     * @param mapping the resource mapping
+     */
+    private void notifyExport(String path, ResourceMapping mapping) {
+        if (ROOT_PATH.equals(path)) {
+            for (ResourceListener listener : listeners) {
+                listener.onRootResourceExport(mapping);
+            }
+        } else {
+            for (ResourceListener listener : listeners) {
+                listener.onSubResourceExport(mapping);
+            }
+        }
+    }
+
 
     /**
      * Creates a managed artifact mapping.
