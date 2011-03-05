@@ -68,7 +68,7 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
  */
 @EagerInit
 @Management(name = "RuntimeThreadPoolExecutor",
-            path = "/runtime/RuntimeThreadPoolExecutor",
+            path = "/runtime/threadpool",
             group = "kernel",
             description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
