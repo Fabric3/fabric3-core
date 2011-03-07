@@ -45,6 +45,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.Role;
+import org.fabric3.api.SecuritySubject;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
@@ -124,15 +125,19 @@ public class ResourceInvoker {
 
     private void checkSecurity(WorkContext workContext) throws ResourceException {
         if (securityCheck) {
+            SecuritySubject subject = workContext.getSubject();
+            if (subject == null) {
+                throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
             for (ResourceMapping mapping : mappings) {
                 boolean found = false;
                 for (Role role : mapping.getRoles()) {
-                    if (workContext.getSubject().getRoles().contains(role)) {
+                    if (subject.getRoles().contains(role)) {
                         found = true;
                         break;
                     }
                 }
-                if (!found){
+                if (!found) {
                     throw new ResourceException(HttpStatus.UNAUTHORIZED, "Unauthorized");
                 }
             }
