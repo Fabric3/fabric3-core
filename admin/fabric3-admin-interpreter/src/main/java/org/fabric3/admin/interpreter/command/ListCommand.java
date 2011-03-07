@@ -84,12 +84,12 @@ public class ListCommand implements Command {
         HttpURLConnection connection = null;
         try {
             if (path == null) {
-                connection = domainConnection.createConnection("/components", "GET");
+                connection = domainConnection.createConnection("/domain/components", "GET");
             } else {
                 if (!path.startsWith("/")) {
                     path = "/" + path;
                 }
-                connection = domainConnection.createConnection("/components" + path, "GET");
+                connection = domainConnection.createConnection("/domain/components" + path, "GET");
             }
             connection.connect();
             int code = connection.getResponseCode();

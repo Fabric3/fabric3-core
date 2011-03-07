@@ -86,7 +86,7 @@ public class UninstallProfileCommand implements Command {
     }
 
     public boolean removeProfile(URI uri, PrintStream out) {
-        String path =  "/contributions/profiles/profile/" + uri;
+        String path =  "/domain/contributions/profiles/profile/" + uri;
         HttpURLConnection connection = null;
         try {
             connection = domainConnection.createConnection(path, "DELETE");

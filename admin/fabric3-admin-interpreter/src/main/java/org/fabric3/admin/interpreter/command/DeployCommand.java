@@ -82,7 +82,7 @@ public class DeployCommand implements Command {
         if (password != null) {
             domainConnection.setPassword(password);
         }
-        String path = "/deployments/contribution/" + contributionUri;
+        String path = "/domain/deployments/contribution/" + contributionUri;
         HttpURLConnection connection = null;
         try {
             connection = domainConnection.createConnection(path, "POST");

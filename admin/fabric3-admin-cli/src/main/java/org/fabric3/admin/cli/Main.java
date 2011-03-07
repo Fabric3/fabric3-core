@@ -58,7 +58,7 @@ import java.util.jar.JarFile;
  * @version $Rev$ $Date$
  */
 public class Main {
-    private static final String DOMAIN_URL = "http://localhost:8181/management/domain";
+    private static final String DOMAIN_URL = "http://localhost:8181/management";
 
     /**
      * Executes either a single instruction passed from the command line or enters into interactive mode.

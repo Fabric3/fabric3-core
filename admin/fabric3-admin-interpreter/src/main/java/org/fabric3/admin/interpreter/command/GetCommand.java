@@ -38,9 +38,11 @@
 package org.fabric3.admin.interpreter.command;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
+import java.util.Collection;
+import java.util.Map;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
@@ -50,23 +52,31 @@ import org.fabric3.admin.interpreter.communication.DomainConnection;
 /**
  * @version $Rev$ $Date$
  */
-public class UndeployCommand implements Command {
+public class GetCommand implements Command {
+    private static final String SELF_LINK = "selfLink";
+    private static final String LINKS = "links";
+
     private DomainConnection domainConnection;
-    private URI contributionUri;
+    private String path;
+    private boolean verbose;
     private String username;
     private String password;
-    private boolean force = false;
 
-    public UndeployCommand(DomainConnection domainConnection) {
+    public GetCommand(DomainConnection domainConnection) {
         this.domainConnection = domainConnection;
     }
 
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
+    public void setPath(String path) {
+        //  accept relative and absolute forms
+        if (!path.startsWith("/")) {
+            this.path = "/" + path;
+        } else {
+            this.path = path;
+        }
     }
 
-    public void setForce(boolean force) {
-        this.force = force;
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     public void setUsername(String username) {
@@ -84,33 +94,31 @@ public class UndeployCommand implements Command {
         if (password != null) {
             domainConnection.setPassword(password);
         }
-        String path = "/domain/deployments/contribution/" + contributionUri;
         HttpURLConnection connection = null;
         try {
-            connection = domainConnection.createConnection(path, "DELETE");
-            connection.connect();
+            connection = domainConnection.createConnection(path, "GET");
             int code = connection.getResponseCode();
             if (HttpStatus.UNAUTHORIZED.getCode() == code) {
                 out.println("ERROR: Not authorized");
                 return false;
             } else if (HttpStatus.FORBIDDEN.getCode() == code && "http".equals(connection.getURL().getProtocol())) {
-                out.println("ERROR: An attempt was made to connect using HTTP but the domain requires HTTPS.");
+                out.println("An attempt was made to connect using HTTP but the domain requires HTTPS.");
                 return false;
             } else if (HttpStatus.NOT_FOUND.getCode() == code) {
-                out.println("ERROR: Contribution not found: " + contributionUri);
+                out.println("Resource not found");
                 return false;
-            } else if (HttpStatus.OK.getCode() != code) {
-                out.println("ERROR: Error undeploying contribution: " + code);
-                return false;
+            } else {
+                InputStream stream = connection.getInputStream();
+                Object value = domainConnection.parse(Object.class, stream);
+                printOutput("", value, code, 0, out);
+                return true;
             }
-            out.println("Contribution undeployed");
-            return true;
-        } catch (IOException e) {
-            out.println("ERROR: Error connecting to domain controller");
+        } catch (CommunicationException e) {
+            out.println("ERROR: Error connecting to domain");
             e.printStackTrace(out);
             return false;
-        } catch (CommunicationException e) {
-            out.println("ERROR: Error connecting to domain controller");
+        } catch (IOException e) {
+            out.println("ERROR: Error connecting to domain");
             e.printStackTrace(out);
             return false;
         } finally {
@@ -120,5 +128,58 @@ public class UndeployCommand implements Command {
         }
     }
 
+    private void printOutput(Object key, Object value, int code, int indent, PrintStream out) {
+        String space = "";
+        for (int i = 0; i <= indent; i++) {
+            space = space + " ";
+        }
+        if (value instanceof Map) {
+            Map<?, ?> map = (Map<?, ?>) value;
+            if (map.isEmpty()) {
+                if (indent == 0) {
+                    out.println(space + "Response code: " + code);
+                }
+            } else {
+                if (SELF_LINK.equals(key)) {
+                    return;
+                }
+                if (indent > 0) {
+                    out.println(space + key + ":");
+                }
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    if (SELF_LINK.equals(entry.getKey())) {
+                        continue;
+                    }
+                    Object contained = entry.getValue();
+                    if (contained instanceof Map) {
+                        Map<?, ?> subMap = (Map<?, ?>) contained;
+                        if (isLink(subMap)) {
+                            if (!verbose) {
+                                // skip links
+                                continue;
+                            }
+                            out.println(space + entry.getKey() + " : " + subMap.get("href"));
+                        } else {
+                            printOutput(entry.getKey(), contained, code, indent + 3, out);
+                        }
+                    } else if (contained instanceof Collection && !verbose && LINKS.equals(entry.getKey())) {
+                        // skip links
+                        continue;
+                    } else {
+                        out.println(space + entry.getKey() + " : " + contained);
+                    }
+                }
+            }
+
+        } else {
+            if (!SELF_LINK.equals(key)) {
+                out.println(space + key + " : " + value);
+            }
+        }
+    }
+
+    private boolean isLink(Map<?, ?> map) {
+        return map.containsKey("name") && map.containsKey("rel") && map.containsKey("href");
+    }
 
 }

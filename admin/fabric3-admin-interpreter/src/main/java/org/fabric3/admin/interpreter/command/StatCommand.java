@@ -78,7 +78,7 @@ public class StatCommand implements Command {
         }
         HttpURLConnection connection = null;
         try {
-            connection = domainConnection.createConnection("/contributions", "GET");
+            connection = domainConnection.createConnection("/domain/contributions", "GET");
             connection.connect();
             int code = connection.getResponseCode();
             if (HttpStatus.UNAUTHORIZED.getCode() == code) {

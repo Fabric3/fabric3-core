@@ -71,7 +71,7 @@ public class DomainConnectionImpl implements DomainConnection {
     private static final String KEY_STORE = "javax.net.ssl.keyStore";
     private static final String TRUST_STORE = "javax.net.ssl.trustStore";
 
-    private String domainAddress = "http://localhost:8180/management/domain";
+    private String domainAddress = "http://localhost:8180/management";
     private String username;
     private String password;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
     <domains>
-        <domain name="vm" url="http://localhost:8181/management/domain"/>
-        <domain name="controller" url="http://localhost:8180/management/domain"/>
+        <domain name="vm" url="http://localhost:8181/management"/>
+        <domain name="controller" url="http://localhost:8180/management"/>
     </domains>
 </settings>

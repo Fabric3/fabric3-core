@@ -72,10 +72,12 @@ public class InterpreterImpl implements Interpreter {
     private static final String HELP_TEXT = "Type help <command> for more information: \n\n"
             + "   authenticate (au) \n"
             + "   deploy (de) \n"
+            + "   get (g) \n"
             + "   install (ins) \n"
             + "   list (ls) \n"
             + "   profile (pf) \n"
             + "   provision (pr) \n"
+            + "   quit (q) \n"
             + "   status (st) \n"
             + "   undeploy (ude) \n"
             + "   uninstall (uin) \n"
@@ -107,9 +109,9 @@ public class InterpreterImpl implements Interpreter {
             reader.setInput(in);
             String line;
             while ((line = reader.readLine(PROMPT)) != null) {
-                if ("quit".equals(line) || "exit".equals(line)) {
+                if ("quit".equals(line) ||"q".equals(line) || "exit".equals(line)){
                     break;
-                } else if (line.trim().length() == 0) {
+                }else if (line.trim().length() == 0) {
                     continue;
                 }
                 process(line, out);

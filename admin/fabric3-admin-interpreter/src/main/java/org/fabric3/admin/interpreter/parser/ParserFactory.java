@@ -53,14 +53,14 @@ public class ParserFactory {
     private ParserFactory() {
     }
 
-    /**
-     * Initializes the command parsers
-     */
     public static Map<String, CommandParser> createParsers(DomainConnection domainConnection, Interpreter interpreter, Settings settings) {
         Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
         AuthCommandParser authenticateParser = new AuthCommandParser(domainConnection);
         parsers.put("au", authenticateParser);
         parsers.put("authenticate", authenticateParser);
+        GetCommandParser getParser = new GetCommandParser(domainConnection);
+        parsers.put("get", getParser);
+        parsers.put("g", getParser);
         InstallCommandParser installParser = new InstallCommandParser(domainConnection);
         parsers.put("install", installParser);
         parsers.put("ins", installParser);

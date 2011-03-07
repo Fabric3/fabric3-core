@@ -80,7 +80,7 @@ public class UninstallCommand implements Command {
             domainConnection.setPassword(password);
         }
 
-        String path = "/contributions/contribution/" + contributionUri;
+        String path = "/domain/contributions/contribution/" + contributionUri;
         HttpURLConnection connection = null;
         try {
             connection = domainConnection.createConnection(path, "DELETE");
