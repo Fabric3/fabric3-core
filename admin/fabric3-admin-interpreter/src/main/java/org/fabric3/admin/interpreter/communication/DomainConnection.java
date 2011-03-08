@@ -39,6 +39,7 @@ package org.fabric3.admin.interpreter.communication;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -140,6 +141,8 @@ public interface DomainConnection {
      * @throws IOException if there is a parsing error
      */
     <T> T parse(Class<?> type, InputStream stream) throws IOException;
+
+    void serialize(String message, OutputStream stream) throws IOException;
 
 
 }

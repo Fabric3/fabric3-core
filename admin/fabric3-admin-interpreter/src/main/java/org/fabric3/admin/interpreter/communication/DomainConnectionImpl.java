@@ -133,6 +133,11 @@ public class DomainConnectionImpl implements DomainConnection {
         return (T) mapper.readValue(jp, type);
     }
 
+    public void serialize(String message, OutputStream stream) throws IOException {
+        byte[] bytes = mapper.writeValueAsBytes(message);
+        stream.write(bytes);
+    }
+
     public HttpURLConnection createControllerConnection(String path, String verb) throws CommunicationException {
         return createAddressConnection(addresses.getFirst(), path, verb);
     }

@@ -83,6 +83,9 @@ public class ParserFactory {
         parsers.put("uninstall", uninstallParser);
         parsers.put("uin", uninstallParser);
         parsers.put("use", new UseCommandParser(domainConnection, settings));
+        PostCommandParser postParser = new PostCommandParser(domainConnection);
+        parsers.put("p", postParser);
+        parsers.put("post", postParser);
         ProvisionCommandParser provisionParser = new ProvisionCommandParser(domainConnection);
         parsers.put("pr", provisionParser);
         parsers.put("provision", provisionParser);

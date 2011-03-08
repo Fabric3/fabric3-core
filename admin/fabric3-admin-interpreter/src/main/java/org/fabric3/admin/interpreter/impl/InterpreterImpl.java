@@ -77,6 +77,7 @@ public class InterpreterImpl implements Interpreter {
             + "   get (g) \n"
             + "   install (ins) \n"
             + "   list (ls) \n"
+            + "   post (p) \n"
             + "   profile (pf) \n"
             + "   provision (pr) \n"
             + "   quit (q) \n"
@@ -185,7 +186,7 @@ public class InterpreterImpl implements Interpreter {
         ConsoleReader reader = new ConsoleReader();
         List<Completor> completors = new ArrayList<Completor>();
         String[] commands =
-                {"authenticate", "back", "deploy", "follow", "get", "install", "list", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
+                {"authenticate", "back", "deploy", "follow", "get", "install", "list", "post", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
         SimpleCompletor simpleCompletor = new SimpleCompletor(commands);
         completors.add(simpleCompletor);
         FileNameCompletor fileCompletor = new FileNameCompletor();
