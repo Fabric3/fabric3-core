@@ -103,8 +103,8 @@ public class RuntimesResourceService {
             for (RuntimeInstance runtime : zone.getRuntimes()) {
                 String httpPort = runtime.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
                 String host = runtime.getMetadata(String.class, HTTP_HOST_METADATA);
-                URL zoneUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/runtime");
-                Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
+                URL runtimeUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/runtime");
+                Link link = new Link(runtime.getName(), EDIT_LINK, runtimeUrl);
                 list.add(link);
             }
         }
