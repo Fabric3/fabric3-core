@@ -39,7 +39,6 @@ package org.fabric3.management.rest.spi;
 
 import java.lang.reflect.Method;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.Role;
@@ -58,8 +57,7 @@ public class ResourceMapping {
     private Method method;
     private Object instance;
     private boolean replicate;
-    private TransformerPair jsonPair;
-    private TransformerPair jaxbPair;
+    private TransformerPair pair;
     private Set<Role> roles;
 
     /**
@@ -72,8 +70,7 @@ public class ResourceMapping {
      * @param verb         the HTTP verb the management operation is mapped to
      * @param method       the management operation
      * @param instance     the managed artifact
-     * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
-     * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
+     * @param pair         the transformer pair used to (de)serialize request/response types
      * @param roles        the roles required to invoke the operation
      */
     public ResourceMapping(String identifier,
@@ -82,10 +79,9 @@ public class ResourceMapping {
                            Verb verb,
                            Method method,
                            Object instance,
-                           TransformerPair jsonPair,
-                           TransformerPair jaxbPair,
+                           TransformerPair pair,
                            Set<Role> roles) {
-        this(identifier, path, relativePath, verb, method, instance, false, jsonPair, jaxbPair, roles);
+        this(identifier, path, relativePath, verb, method, instance, false, pair, roles);
     }
 
     /**
@@ -99,8 +95,7 @@ public class ResourceMapping {
      * @param method       the management operation
      * @param instance     the managed artifact
      * @param replicate    true if invocations should be replicated in a cluster
-     * @param jsonPair     the transformer pair used to (de)serialize JSON request/response types
-     * @param jaxbPair     the transformer pair used to (de)serialize XML request/response types
+     * @param pair         the transformer pair used to (de)serialize request/response types
      * @param roles        the roles required to invoke the operation
      */
     public ResourceMapping(String identifier,
@@ -110,8 +105,7 @@ public class ResourceMapping {
                            Method method,
                            Object instance,
                            boolean replicate,
-                           TransformerPair jsonPair,
-                           TransformerPair jaxbPair,
+                           TransformerPair pair,
                            Set<Role> roles) {
         this.identifier = identifier;
         this.path = path;
@@ -120,8 +114,7 @@ public class ResourceMapping {
         this.method = method;
         this.instance = instance;
         this.replicate = replicate;
-        this.jsonPair = jsonPair;
-        this.jaxbPair = jaxbPair;
+        this.pair = pair;
         this.roles = roles;
     }
 
@@ -200,21 +193,12 @@ public class ResourceMapping {
     }
 
     /**
-     * Returns the pair for (de)serializing input and output parameters using a JSON representation.
+     * Returns the pair for (de)serializing input and output parameters.
      *
      * @return the pair for (de)serializing input and output parameters
      */
-    public TransformerPair getJsonPair() {
-        return jsonPair;
-    }
-
-    /**
-     * Returns the pair for (de)serializing input and output parameters using an XML representation.
-     *
-     * @return the pair for (de)serializing input and output parameters
-     */
-    public TransformerPair getJaxbPair() {
-        return jaxbPair;
+    public TransformerPair getPair() {
+        return pair;
     }
 
     /**

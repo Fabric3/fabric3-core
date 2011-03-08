@@ -99,7 +99,7 @@ public class MarshallerImpl implements Marshaller {
                 resource = new Resource(link);
                 resource.setProperty("value", value);
             }
-            byte[] output = mapping.getJsonPair().getSerializer().transform(resource, loader);
+            byte[] output = mapping.getPair().getSerializer().transform(resource, loader);
             response.getOutputStream().write(output);
         } catch (TransformationException e) {
             Method method = mapping.getMethod();
@@ -168,11 +168,10 @@ public class MarshallerImpl implements Marshaller {
             return new Object[]{request};
         } else if (types.length == 1) {
             Transformer<InputStream, Object> transformer;
-            if (Constants.APPLICATION_XML.equals(request.getContentType())) {
-                transformer = mapping.getJaxbPair().getDeserializer();
+            if (Constants.APPLICATION_JSON.equals(request.getContentType())) {
+                transformer = mapping.getPair().getDeserializer();
             } else {
-                // default to JSON
-                transformer = mapping.getJsonPair().getDeserializer();
+                throw new ResourceException(HttpStatus.BAD_REQUEST, "Content type not supported: " + request.getContentType());
             }
 
             try {

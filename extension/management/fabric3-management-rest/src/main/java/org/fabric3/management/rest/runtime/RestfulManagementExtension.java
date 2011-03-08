@@ -47,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -61,7 +60,6 @@ import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
@@ -69,7 +67,6 @@ import org.fabric3.spi.model.type.java.ManagementOperationInfo;
 import org.fabric3.spi.model.type.java.OperationType;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.model.type.json.JsonType;
-import org.fabric3.spi.model.type.xsd.XSDType;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformationException;
 
@@ -79,9 +76,6 @@ import org.fabric3.spi.transform.TransformationException;
 public class RestfulManagementExtension implements ManagementExtension {
     private static final JsonType<?> JSON_INPUT_TYPE = new JsonType<Object>(InputStream.class, Object.class);
     private static final JsonType<?> JSON_OUTPUT_TYPE = new JsonType<Object>(byte[].class, Object.class);
-    private static final QName XSD_ANY = new QName(XSDType.XSD_NS, "anyType");
-    private static final DataType<?> XSD_INPUT_TYPE = new XSDType(InputStream.class, XSD_ANY);
-    private static final DataType<?> XSD_OUTPUT_TYPE = new XSDType(byte[].class, XSD_ANY);
 
     private static final String EMPTY_PATH = "";
     private static final String ROOT_PATH = "/";
@@ -136,16 +130,8 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
         try {
             Class<?> clazz = classLoader.loadClass(info.getManagementClass());
-            List<Method> methods = new ArrayList<Method>();
             boolean rootResourcePathOverride = false;
             List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
-            for (ManagementOperationInfo operationInfo : info.getOperations()) {
-                Signature signature = operationInfo.getSignature();
-                Method method = signature.getMethod(clazz);
-                methods.add(method);
-            }
-            TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-            TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
 
             String identifier = componentUri.toString();
             for (ManagementOperationInfo operationInfo : info.getOperations()) {
@@ -168,7 +154,8 @@ public class RestfulManagementExtension implements ManagementExtension {
                         roles = info.getWriteRoles();
                     }
                 }
-                ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, jsonPair, jaxbPair, roles);
+                TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+                ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, pair, roles);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
                 }
@@ -196,8 +183,6 @@ public class RestfulManagementExtension implements ManagementExtension {
             parseRoles(instance, readRoles, writeRoles);
 
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
-            TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-            TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
 
             boolean rootResourcePathOverride = false;
             List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
@@ -222,7 +207,8 @@ public class RestfulManagementExtension implements ManagementExtension {
                         }
                     }
 
-                    ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, jsonPair, jaxbPair, roles);
+                    TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+                    ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, pair, roles);
                     if (Verb.GET == mapping.getVerb()) {
                         getMappings.add(mapping);
                     }
@@ -292,8 +278,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      * @param method     the management operation
      * @param verb       the HTTP verb the operation uses
      * @param instance   the artifact
-     * @param jsonPair   the transformer pair for deserializing JSON requests and serializing responses as JSON
-     * @param jaxbPair   the transformer pair for deserializing XML-based requests and serializing responses as XML
+     * @param pair       the transformer pair for deserializing JSON requests and serializing responses
      * @param roles      the roles required to invoke the operation
      * @return the mapping
      */
@@ -303,8 +288,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                                           Method method,
                                           Verb verb,
                                           Object instance,
-                                          TransformerPair jsonPair,
-                                          TransformerPair jaxbPair,
+                                          TransformerPair pair,
                                           Set<Role> roles) {
         String methodName = method.getName();
         String rootPath;
@@ -318,7 +302,7 @@ public class RestfulManagementExtension implements ManagementExtension {
         } else {
             rootPath = root.toLowerCase() + "/" + path;
         }
-        return new ResourceMapping(identifier, rootPath, path, verb, method, instance, jsonPair, jaxbPair, roles);
+        return new ResourceMapping(identifier, rootPath, path, verb, method, instance, pair, roles);
     }
 
     /**
@@ -336,11 +320,10 @@ public class RestfulManagementExtension implements ManagementExtension {
             for (ResourceMapping mapping : mappings) {
                 methods.add(mapping.getMethod());
             }
-            TransformerPair jsonPair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
-            TransformerPair jaxbPair = pairService.getTransformerPair(methods, XSD_INPUT_TYPE, XSD_OUTPUT_TYPE);
+            TransformerPair pair = pairService.getTransformerPair(methods, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
             root = root.toLowerCase();
             Set<Role> roles = Collections.emptySet();
-            ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, jsonPair, jaxbPair, roles);
+            ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, pair, roles);
             resourceHost.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);

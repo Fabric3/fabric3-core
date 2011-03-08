@@ -149,10 +149,9 @@ public class ZoneResourceService implements ResourceListener {
         Verb verb = mapping.getVerb();
         Object instance = mapping.getInstance();
         Method method = mapping.getMethod();
-        TransformerPair jaxbPair = mapping.getJaxbPair();
-        TransformerPair jsonPair = mapping.getJsonPair();
+        TransformerPair pair = mapping.getPair();
         Set<Role> roles = mapping.getRoles();
-        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
+        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, pair, roles);
         subresources.add(newMapping);
         try {
             resourceHost.register(newMapping);
@@ -174,10 +173,9 @@ public class ZoneResourceService implements ResourceListener {
         Verb verb = mapping.getVerb();
         Object instance = mapping.getInstance();
         Method method = mapping.getMethod();
-        TransformerPair jaxbPair = mapping.getJaxbPair();
-        TransformerPair jsonPair = mapping.getJsonPair();
+        TransformerPair pair = mapping.getPair();
         Set<Role> roles = mapping.getRoles();
-        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, jsonPair, jaxbPair, roles);
+        ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, pair, roles);
         try {
             resourceHost.register(newMapping);
             registered.add(newMapping);

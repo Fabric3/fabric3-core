@@ -547,13 +547,13 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             Object entity = e.getEntity();
             if (entity != null) {
                 // transform the error entity
-                Transformer<Object, byte[]> transformer = mapping.getJsonPair().getSerializer();
+                Transformer<Object, byte[]> transformer = mapping.getPair().getSerializer();
                 byte[] serialized = transformer.transform(entity, entity.getClass().getClassLoader());
                 response.getOutputStream().write(serialized);
             } else {
                 if (message != null) {
                     // transform the error message
-                    Transformer<Object, byte[]> transformer = mapping.getJsonPair().getSerializer();
+                    Transformer<Object, byte[]> transformer = mapping.getPair().getSerializer();
                     byte[] serialized = transformer.transform(message, this.getClass().getClassLoader());
                     response.getOutputStream().write(serialized);
                 }
