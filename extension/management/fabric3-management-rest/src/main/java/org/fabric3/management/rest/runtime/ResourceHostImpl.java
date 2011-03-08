@@ -120,7 +120,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         try {
             security = ManagementSecurity.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid JMX security setting:" + level);
+            throw new ParseException("Invalid management security setting:" + level);
         }
     }
 
@@ -281,6 +281,10 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             } catch (IOException e) {
                 monitor.error("Error writing response");
             }
+            return;
+        }
+        if (request.getPathInfo() == null) {
+            response.setStatus(HttpStatus.NOT_FOUND.getCode());
             return;
         }
         String pathInfo = request.getPathInfo().toLowerCase();
