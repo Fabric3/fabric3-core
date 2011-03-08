@@ -72,8 +72,18 @@ public interface DomainConnection {
      */
     String popAddress();
 
+    /**
+     * Returns the current name (alias) of the runtime this connection is associated with.
+     *
+     * @return the current runtime name
+     */
     String getAlias();
 
+    /**
+     * Returns the current address of the runtime this connection is associated with.
+     *
+     * @return the current runtime address
+     */
     String getAddress();
 
     /**
