@@ -16,6 +16,7 @@ Public License. See the accompanying license file for details.
 
     <component name="RestfulManagementExtension">
         <f3:implementation.system class="org.fabric3.management.rest.runtime.RestfulManagementExtension"/>
+        <property name="security" source="$systemConfig//runtime/@management.security"/>
     </component>
 
     <component name="Marshaller">
