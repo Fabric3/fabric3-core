@@ -35,9 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.framework.domain;
+package org.fabric3.management.rest.framework.domain.runtime;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -45,25 +48,33 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.management.rest.model.Resource;
-import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.RuntimeInstance;
+import org.fabric3.spi.federation.Zone;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
+import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
+import static org.fabric3.spi.federation.FederationConstants.HTTP_PORT_METADATA;
 
 /**
- * Produces the /domain resource.
+ * Produces the /domain/runtimes resource. This is a collection of links to active runtime resources in the domain.
  * <p/>
  * Note this resource is only present on the controller.
  *
  * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
-@Management(path = "/domain")
-public class DistributedDomainResourceService {
+@Management(path = "/domain/runtimes")
+public class RuntimesResourceService {
+    private HostInfo info;
     private DomainTopologyService topologyService;
+
+    public RuntimesResourceService(@Reference HostInfo info) {
+        this.info = info;
+    }
 
     @Reference(required = false)
     public void setTopologyService(DomainTopologyService topologyService) {
@@ -71,56 +82,33 @@ public class DistributedDomainResourceService {
     }
 
     @ManagementOperation(path = "/")
-    public Resource getDomainResource(HttpServletRequest request) {
-        SelfLink selfLink = ResourceHelper.createSelfLink(request);
-        Resource resource = new Resource(selfLink);
-
-        createZoneLinks(request, resource);
-        createRuntimeLinks(request, resource);
-        createContributionsLink(request, resource);
-        createDeploymentsLink(request, resource);
-        createComponentsLink(request, resource);
-
-        return resource;
-    }
-
-    private void createZoneLinks(HttpServletRequest request, Resource resource) {
+    public Set<Link> getRuntimes(HttpServletRequest request) {
         if (topologyService == null) {
-            // running in single-VM mode, return
-            return;
+            return createLocalRuntimeLink(request);
         }
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/zones");
-        Link link = new Link("zones", EDIT_LINK, url);
-        resource.setProperty("zones", link);
+        return createDistributedRuntimesLink();
     }
 
-    private void createRuntimeLinks(HttpServletRequest request, Resource resource) {
-        if (topologyService == null) {
-            // running in single-VM mode, return
-            return;
+    private Set<Link> createLocalRuntimeLink(HttpServletRequest request) {
+        StringBuffer requestUrl = request.getRequestURL();
+        URL runtimeUrl = ResourceHelper.createUrl(requestUrl.substring(0, requestUrl.toString().indexOf("/management/") + 12) + "runtime");
+        Link link = new Link(info.getRuntimeName(), EDIT_LINK, runtimeUrl);
+        return Collections.singleton(link);
+    }
+
+    private Set<Link> createDistributedRuntimesLink() {
+        Set<Link> list = new HashSet<Link>();
+        Set<Zone> zones = topologyService.getZones();
+        for (Zone zone : zones) {
+            for (RuntimeInstance runtime : zone.getRuntimes()) {
+                String httpPort = runtime.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
+                String host = runtime.getMetadata(String.class, HTTP_HOST_METADATA);
+                URL zoneUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/runtime");
+                Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
+                list.add(link);
+            }
         }
-        URL url = ResourceHelper.createUrl(request.getRequestURL().toString() + "/runtimes");
-        Link link = new Link("runtimes", EDIT_LINK, url);
-        resource.setProperty("runtimes", link);
+        return list;
     }
-
-    private void createContributionsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/contributions");
-        Link link = new Link("contributions", EDIT_LINK, url);
-        resource.setProperty("contributions", link);
-    }
-
-    private void createDeploymentsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/deployments");
-        Link link = new Link("deployments", EDIT_LINK, url);
-        resource.setProperty("deployments", link);
-    }
-
-    private void createComponentsLink(HttpServletRequest request, Resource resource) {
-        URL url = ResourceHelper.createUrl(ResourceHelper.getRequestUrl(request) + "/components");
-        Link link = new Link("components", EDIT_LINK, url);
-        resource.setProperty("components", link);
-    }
-
 
 }
