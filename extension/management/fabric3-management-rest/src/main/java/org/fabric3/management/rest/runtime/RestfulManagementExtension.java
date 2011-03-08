@@ -50,11 +50,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.runtime.ParseException;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
@@ -88,6 +90,7 @@ public class RestfulManagementExtension implements ManagementExtension {
 
     private Method rootResourceMethod;
     private ResourceHost resourceHost;
+    private ManagementSecurity security = ManagementSecurity.DISABLED;
 
     private List<ResourceListener> listeners = Collections.emptyList();
 
@@ -96,6 +99,15 @@ public class RestfulManagementExtension implements ManagementExtension {
                                       @Reference ResourceHost resourceHost) {
         this.pairService = pairService;
         this.resourceHost = resourceHost;
+    }
+
+    @Property(required = false)
+    public void setSecurity(String level) throws ParseException {
+        try {
+            security = ManagementSecurity.valueOf(level.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid management security setting:" + level);
+        }
     }
 
     /**
@@ -319,7 +331,7 @@ public class RestfulManagementExtension implements ManagementExtension {
      */
     private void createRootResource(String identifier, String root, List<ResourceMapping> mappings) throws ManagementException {
         try {
-            ResourceInvoker invoker = new ResourceInvoker(mappings);
+            ResourceInvoker invoker = new ResourceInvoker(mappings, security);
             List<Method> methods = new ArrayList<Method>();
             for (ResourceMapping mapping : mappings) {
                 methods.add(mapping.getMethod());

@@ -66,15 +66,18 @@ public class ResourceInvoker {
     List<ResourceMapping> mappings;
     boolean securityCheck;
 
-    public ResourceInvoker(List<ResourceMapping> mappings) {
+    public ResourceInvoker(List<ResourceMapping> mappings, ManagementSecurity security) {
         this.mappings = mappings;
-        for (ResourceMapping mapping : mappings) {
-            if (!mapping.getRoles().isEmpty()) {
-                securityCheck = true;
-                break;
+        if (security == ManagementSecurity.DISABLED) {
+            securityCheck = false;
+        } else {
+            for (ResourceMapping mapping : mappings) {
+                if (!mapping.getRoles().isEmpty()) {
+                    securityCheck = true;
+                    break;
+                }
             }
         }
-
     }
 
     /**
