@@ -54,7 +54,7 @@ public class PostCommandParser implements CommandParser {
     }
 
     public String getUsage() {
-        return "get (g): Gets a resource.\n usage: post <path> <content> [-u username -p password]";
+        return "post (p): Posts to a resource.\n usage: post <path> <content> [-u username -p password]";
     }
 
     public Command parse(String[] tokens) throws ParseException {
