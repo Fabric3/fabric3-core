@@ -49,7 +49,8 @@ import org.fabric3.admin.interpreter.communication.DomainConnection;
 public class UseCommand implements Command {
 
     private DomainConnection domainConnection;
-    private String domainAddress;
+    private String alias;
+    private String address;
     private String username;
     private String password;
 
@@ -65,19 +66,26 @@ public class UseCommand implements Command {
         this.password = password;
     }
 
-    public void setDomainAddress(String domainAddress) {
-        this.domainAddress = domainAddress;
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public boolean execute(PrintStream out) throws CommandException {
-        domainConnection.setDomainAddress(domainAddress);
+        if (alias == null) {
+            out.println("Using " + domainConnection.getAlias() + " [" + domainConnection.getAddress() + "]");
+            return true;
+        }
+        domainConnection.setAddress(alias, address);
         if (username != null) {
             domainConnection.setUsername(username);
         }
         if (password != null) {
             domainConnection.setPassword(password);
         }
-        out.println("Domain address: " + domainAddress);
         return true;
     }
 

@@ -45,6 +45,10 @@ package org.fabric3.admin.interpreter;
 public class CommandException extends InterpreterException {
     private static final long serialVersionUID = 793863388384348302L;
 
+    public CommandException(String message) {
+        super(message);
+    }
+
     public CommandException(String message, Throwable cause) {
         super(message, cause);
     }

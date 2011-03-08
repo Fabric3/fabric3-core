@@ -50,11 +50,31 @@ import java.net.URL;
 public interface DomainConnection {
 
     /**
-     * Sets the base domain admin address.
+     * Sets the base admin address, clearing previous addresses on the stack.
      *
+     * @param alias   the alias for the address
      * @param address the domain admin address
      */
-    void setDomainAddress(String address);
+    void setAddress(String alias, String address);
+
+    /**
+     * Push the address on the admin address stack and use it for management operations.
+     *
+     * @param alias   the alias for the address
+     * @param address the address
+     */
+    void pushAddress(String alias, String address);
+
+    /**
+     * Remove that current admin address from the stack.
+     *
+     * @return the new current domain address
+     */
+    String popAddress();
+
+    String getAlias();
+
+    String getAddress();
 
     /**
      * Sets the username to authenticate with.
@@ -69,6 +89,16 @@ public interface DomainConnection {
      * @param password a valid domain admin password
      */
     void setPassword(String password);
+
+    /**
+     * Creates an HTTP(S) connection to a domain resource.
+     *
+     * @param path the relative resource path
+     * @param verb the HTTP verb
+     * @return the connection
+     * @throws CommunicationException if there is a non-recoverable connection error
+     */
+    HttpURLConnection createControllerConnection(String path, String verb) throws CommunicationException;
 
     /**
      * Creates an HTTP(S) connection to a domain resource.

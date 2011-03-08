@@ -39,48 +39,44 @@ package org.fabric3.admin.interpreter.parser;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
-import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.ParseException;
-import org.fabric3.admin.interpreter.Settings;
-import org.fabric3.admin.interpreter.command.UseCommand;
+import org.fabric3.admin.interpreter.command.FollowCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
  * @version $Rev$ $Date$
  */
-public class UseCommandParser implements CommandParser {
+public class FollowCommandParser implements CommandParser {
     private DomainConnection domainConnection;
-    private Settings settings;
 
-    public UseCommandParser(DomainConnection domainConnection, Settings settings) {
+    public FollowCommandParser(DomainConnection domainConnection) {
         this.domainConnection = domainConnection;
-        this.settings = settings;
     }
 
     public String getUsage() {
-        return "use: Sets the working domain.\n usage: use <domain>";
+        return "use: Sets remote address.\n" +
+                "usage: follow <zone name>";
     }
 
     public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 0 && tokens.length != 1) {
+        if (tokens.length != 1 && tokens.length != 2) {
             throw new ParseException("Illegal number of arguments");
         }
-
-        if (tokens.length == 0) {
-            return new UseCommand(domainConnection);
+        FollowCommand command = new FollowCommand(domainConnection);
+        if (tokens.length == 1) {
+            String address = tokens[0];
+            command.setZone(address);
         } else {
-            UseCommand command = new UseCommand(domainConnection);
-            String domain = tokens[0];
-            DomainConfiguration configuration = settings.getDomainConfiguration(domain);
-            if (configuration == null) {
-                throw new UnknownDomainException("The domain has not been configured: " + domain);
+            String address = tokens[1];
+            if ("-z".equals(tokens[0])) {
+                command.setZone(address);
+            } else if ("-r".equals(tokens[0])) {
+                command.setRuntime(address);
+            } else {
+                throw new ParseException("Invalid parameter: " + tokens[1]);
             }
-            command.setAlias(domain);
-            command.setAddress(configuration.getAddress());
-            command.setUsername(configuration.getUsername());
-            command.setPassword(configuration.getPassword());
-            return command;
         }
+        return command;
     }
 
 }

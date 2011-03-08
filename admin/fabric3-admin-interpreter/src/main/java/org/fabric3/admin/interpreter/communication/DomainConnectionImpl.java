@@ -52,6 +52,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.LinkedList;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -66,12 +67,14 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @version $Rev$ $Date$
  */
 public class DomainConnectionImpl implements DomainConnection {
+    private static final String ADDRESS = "http://localhost:8180/management";
     private static final int TIMEOUT = 20000;
     private static final Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
     private static final String KEY_STORE = "javax.net.ssl.keyStore";
     private static final String TRUST_STORE = "javax.net.ssl.trustStore";
 
-    private String domainAddress = "http://localhost:8180/management";
+    private LinkedList<String> aliases;
+    private LinkedList<String> addresses;
     private String username;
     private String password;
 
@@ -81,10 +84,39 @@ public class DomainConnectionImpl implements DomainConnection {
     public DomainConnectionImpl() {
         MapperConfigurator configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
         mapper = configurator.getDefaultMapper();
+        aliases = new LinkedList<String>();
+        addresses = new LinkedList<String>();
+        aliases.add("default");
+        addresses.add(ADDRESS);
     }
 
-    public void setDomainAddress(String address) {
-        domainAddress = address;
+    public void setAddress(String alias, String address) {
+        aliases.clear();
+        addresses.clear();
+        aliases.add(alias);
+        addresses.add(address);
+    }
+
+    public void pushAddress(String alias, String address) {
+        aliases.add(alias);
+        addresses.add(address);
+    }
+
+    public String popAddress() {
+        if (addresses.size() == 1) {
+            return null;
+        }
+        aliases.removeLast();
+        addresses.removeLast();
+        return aliases.getLast();
+    }
+
+    public String getAlias() {
+        return aliases.getLast();
+    }
+
+    public String getAddress() {
+        return addresses.getLast();
     }
 
     public void setUsername(String username) {
@@ -101,32 +133,17 @@ public class DomainConnectionImpl implements DomainConnection {
         return (T) mapper.readValue(jp, type);
     }
 
+    public HttpURLConnection createControllerConnection(String path, String verb) throws CommunicationException {
+        return createAddressConnection(addresses.getFirst(), path, verb);
+    }
+
     public HttpURLConnection createConnection(String path, String verb) throws CommunicationException {
-        try {
-            URL url = createUrl(domainAddress + path);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setRequestMethod(verb);
-            connection.setRequestProperty("Content-type", "application/json");
-            connection.setReadTimeout(TIMEOUT);
-
-            setBasicAuth(connection);
-
-            if (connection instanceof HttpsURLConnection) {
-                HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
-                setSocketFactory(httpsConnection);
-            }
-
-            return connection;
-        } catch (IOException e) {
-            throw new CommunicationException(e);
-        }
+        return createAddressConnection(addresses.getLast(), path, verb);
     }
 
     public HttpURLConnection put(String path, URL resource) throws CommunicationException {
         try {
-            URL url = createUrl(domainAddress + path);
+            URL url = createUrl(addresses.getLast() + path);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setChunkedStreamingMode(4096);
             connection.setDoOutput(true);
@@ -154,6 +171,30 @@ public class DomainConnectionImpl implements DomainConnection {
                 if (is != null) {
                     is.close();
                 }
+            }
+
+            return connection;
+        } catch (IOException e) {
+            throw new CommunicationException(e);
+        }
+    }
+
+    private HttpURLConnection createAddressConnection(String address, String path, String verb) throws CommunicationException {
+
+        try {
+            URL url = createUrl(address + path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestMethod(verb);
+            connection.setRequestProperty("Content-type", "application/json");
+            connection.setReadTimeout(TIMEOUT);
+
+            setBasicAuth(connection);
+
+            if (connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+                setSocketFactory(httpsConnection);
             }
 
             return connection;

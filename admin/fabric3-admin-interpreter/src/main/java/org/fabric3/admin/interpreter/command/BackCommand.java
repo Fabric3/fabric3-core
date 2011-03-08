@@ -35,52 +35,41 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.admin.interpreter.parser;
+package org.fabric3.admin.interpreter.command;
+
+import java.io.PrintStream;
 
 import org.fabric3.admin.interpreter.Command;
-import org.fabric3.admin.interpreter.CommandParser;
-import org.fabric3.admin.interpreter.DomainConfiguration;
-import org.fabric3.admin.interpreter.ParseException;
-import org.fabric3.admin.interpreter.Settings;
-import org.fabric3.admin.interpreter.command.UseCommand;
+import org.fabric3.admin.interpreter.CommandException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 10047 $ $Date: 2011-03-01 18:51:15 -0500 (Tue, 01 Mar 2011) $
  */
-public class UseCommandParser implements CommandParser {
+public class BackCommand implements Command {
     private DomainConnection domainConnection;
-    private Settings settings;
 
-    public UseCommandParser(DomainConnection domainConnection, Settings settings) {
+    public BackCommand(DomainConnection domainConnection) {
         this.domainConnection = domainConnection;
-        this.settings = settings;
     }
 
-    public String getUsage() {
-        return "use: Sets the working domain.\n usage: use <domain>";
+    public void setUsername(String username) {
+        // no-op
     }
 
-    public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 0 && tokens.length != 1) {
-            throw new ParseException("Illegal number of arguments");
+    public void setPassword(String password) {
+        // no-op
+    }
+
+    public boolean execute(PrintStream out) throws CommandException {
+        String alias = domainConnection.popAddress();
+        if (alias == null) {
+            out.println("Cannot go back. Managing domain controller.");
+            return false;
         }
-
-        if (tokens.length == 0) {
-            return new UseCommand(domainConnection);
-        } else {
-            UseCommand command = new UseCommand(domainConnection);
-            String domain = tokens[0];
-            DomainConfiguration configuration = settings.getDomainConfiguration(domain);
-            if (configuration == null) {
-                throw new UnknownDomainException("The domain has not been configured: " + domain);
-            }
-            command.setAlias(domain);
-            command.setAddress(configuration.getAddress());
-            command.setUsername(configuration.getUsername());
-            command.setPassword(configuration.getPassword());
-            return command;
-        }
+        out.println("Set management to " + alias);
+        return true;
     }
+
 
 }

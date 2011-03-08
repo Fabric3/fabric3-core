@@ -56,7 +56,7 @@ public class UseTestCase extends TestCase {
 
     public void testUse() throws Exception {
         DomainConnection domainConnection = EasyMock.createMock(DomainConnection.class);
-        domainConnection.setDomainAddress(DOMAIN_ADDRESS);
+        domainConnection.setAddress("MyDomain", DOMAIN_ADDRESS);
         EasyMock.replay(domainConnection);
 
         Settings settings = new TransientSettings();

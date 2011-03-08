@@ -71,7 +71,9 @@ public class InterpreterImpl implements Interpreter {
     private static final String HELP = "help";
     private static final String HELP_TEXT = "Type help <command> for more information: \n\n"
             + "   authenticate (au) \n"
+            + "   back (b) \n"
             + "   deploy (de) \n"
+            + "   follow (f) \n"
             + "   get (g) \n"
             + "   install (ins) \n"
             + "   list (ls) \n"
@@ -102,16 +104,16 @@ public class InterpreterImpl implements Interpreter {
     public void processInteractive(InputStream in, PrintStream out) {
         DomainConfiguration configuration = settings.getDomainConfiguration("default");
         if (configuration != null) {
-            out.println("Domain address: " + configuration.getAddress());
+            out.println("Using " + configuration.getName() + " [" + configuration.getAddress() + "]");
         }
         try {
             ConsoleReader reader = createReader();
             reader.setInput(in);
             String line;
             while ((line = reader.readLine(PROMPT)) != null) {
-                if ("quit".equals(line) ||"q".equals(line) || "exit".equals(line)){
+                if ("quit".equals(line) || "q".equals(line) || "exit".equals(line)) {
                     break;
-                }else if (line.trim().length() == 0) {
+                } else if (line.trim().length() == 0) {
                     continue;
                 }
                 process(line, out);
@@ -173,7 +175,7 @@ public class InterpreterImpl implements Interpreter {
     private void setDefaultConfiguration() {
         DomainConfiguration configuration = settings.getDomainConfiguration("default");
         if (configuration != null) {
-            domainConnection.setDomainAddress(configuration.getAddress());
+            domainConnection.setAddress(configuration.getName(), configuration.getAddress());
             domainConnection.setUsername(configuration.getUsername());
             domainConnection.setPassword(configuration.getPassword());
         }
@@ -183,7 +185,7 @@ public class InterpreterImpl implements Interpreter {
         ConsoleReader reader = new ConsoleReader();
         List<Completor> completors = new ArrayList<Completor>();
         String[] commands =
-                {"authenticate", "deploy", "install", "list", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
+                {"authenticate", "back", "deploy", "follow", "get", "install", "list", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
         SimpleCompletor simpleCompletor = new SimpleCompletor(commands);
         completors.add(simpleCompletor);
         FileNameCompletor fileCompletor = new FileNameCompletor();

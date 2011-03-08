@@ -39,48 +39,29 @@ package org.fabric3.admin.interpreter.parser;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandParser;
-import org.fabric3.admin.interpreter.DomainConfiguration;
 import org.fabric3.admin.interpreter.ParseException;
-import org.fabric3.admin.interpreter.Settings;
-import org.fabric3.admin.interpreter.command.UseCommand;
+import org.fabric3.admin.interpreter.command.BackCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 10038 $ $Date: 2011-02-24 16:55:38 -0500 (Thu, 24 Feb 2011) $
  */
-public class UseCommandParser implements CommandParser {
+public class BackCommandParser implements CommandParser {
     private DomainConnection domainConnection;
-    private Settings settings;
 
-    public UseCommandParser(DomainConnection domainConnection, Settings settings) {
+    public BackCommandParser(DomainConnection domainConnection) {
         this.domainConnection = domainConnection;
-        this.settings = settings;
     }
 
     public String getUsage() {
-        return "use: Sets the working domain.\n usage: use <domain>";
+        return "use: Pops the management address.\n usage: back";
     }
 
     public Command parse(String[] tokens) throws ParseException {
-        if (tokens.length != 0 && tokens.length != 1) {
+        if (tokens.length != 0) {
             throw new ParseException("Illegal number of arguments");
         }
-
-        if (tokens.length == 0) {
-            return new UseCommand(domainConnection);
-        } else {
-            UseCommand command = new UseCommand(domainConnection);
-            String domain = tokens[0];
-            DomainConfiguration configuration = settings.getDomainConfiguration(domain);
-            if (configuration == null) {
-                throw new UnknownDomainException("The domain has not been configured: " + domain);
-            }
-            command.setAlias(domain);
-            command.setAddress(configuration.getAddress());
-            command.setUsername(configuration.getUsername());
-            command.setPassword(configuration.getPassword());
-            return command;
-        }
+        return new BackCommand(domainConnection);
     }
 
 }

@@ -58,6 +58,12 @@ public class ParserFactory {
         AuthCommandParser authenticateParser = new AuthCommandParser(domainConnection);
         parsers.put("au", authenticateParser);
         parsers.put("authenticate", authenticateParser);
+        BackCommandParser backParser = new BackCommandParser(domainConnection);
+        parsers.put("back", backParser);
+        parsers.put("b", backParser);
+        FollowCommandParser followParser = new FollowCommandParser(domainConnection);
+        parsers.put("follow", followParser);
+        parsers.put("f", followParser);
         GetCommandParser getParser = new GetCommandParser(domainConnection);
         parsers.put("get", getParser);
         parsers.put("g", getParser);
