@@ -487,7 +487,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         try {
             if (!portAllocator.isPoolEnabled()) {
                 if (configuredHttpsPort == -1) {
-                    selectedHttps = DEFAULT_HTTP_PORT;
+                    selectedHttps = DEFAULT_HTTPS_PORT;
                 } else {
                     selectedHttps = configuredHttpsPort;
                 }
