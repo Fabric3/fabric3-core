@@ -44,9 +44,7 @@
 package org.fabric3.transport.jetty.impl;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +77,8 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.federation.FederationConstants;
 import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.host.PortAllocationException;
+import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.security.AuthenticationService;
@@ -100,11 +100,14 @@ import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
 public class JettyServiceImpl implements JettyService, Transport {
     private static final String ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS = "org.eclipse.jetty.util.log.class";
     private static final String HTTP_SERVLETS = "HTTP/servlets";
+    private static final int DEFAULT_HTTP_PORT = 8080;
+    private static final int DEFAULT_HTTPS_PORT = 8484;
 
     private static final String ROOT = "/";
 
     private ExecutorService executorService;
     private ManagementService managementService;
+    private PortAllocator portAllocator;
     private HostInfo hostInfo;
     private TransportMonitor monitor;
 
@@ -115,11 +118,9 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private final Object joinLock = new Object();
     private boolean enableHttps;
-    private int minHttpPort = 8080;
-    private int maxHttpPort = -1;
+    private int configuredHttpPort = -1;
     private int selectedHttp = -1;
-    private int minHttpsPort = 8484;
-    private int maxHttpsPort = -1;
+    private int configuredHttpsPort = -1;
     private int selectedHttps = -1;
     //    private String keystore;
     private boolean sendServerVersion;
@@ -143,10 +144,12 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Constructor
     public JettyServiceImpl(@Reference ExecutorService executorService,
                             @Reference ManagementService managementService,
+                            @Reference PortAllocator portAllocator,
                             @Reference HostInfo hostInfo,
                             @Monitor TransportMonitor monitor) {
         this.executorService = executorService;
         this.managementService = managementService;
+        this.portAllocator = portAllocator;
         this.hostInfo = hostInfo;
         this.monitor = monitor;
         // Re-route the Jetty logger to use a monitor
@@ -164,7 +167,8 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    public JettyServiceImpl(TransportMonitor monitor, HostInfo hostInfo) {
+    public JettyServiceImpl(PortAllocator portAllocator, TransportMonitor monitor, HostInfo hostInfo) {
+        this.portAllocator = portAllocator;
         this.monitor = monitor;
         this.hostInfo = hostInfo;
     }
@@ -194,14 +198,9 @@ public class JettyServiceImpl implements JettyService, Transport {
         String[] tokens = httpPort.split("-");
         if (tokens.length == 1) {
             // port specified
-            minHttpPort = parsePortNumber(tokens[0], "HTTP");
-
+            configuredHttpPort = parsePortNumber(tokens[0], "HTTP");
         } else if (tokens.length == 2) {
-            // port range specified
-            minHttpPort = parsePortNumber(tokens[0], "HTTP");
-            maxHttpPort = parsePortNumber(tokens[1], "HTTP");
-        } else {
-            throw new IllegalArgumentException("Invalid HTTP port specified in system configuration");
+            throw new IllegalArgumentException("Port ranges no longer supported via HTTP configuration. Use the runtime port.range attribute");
         }
     }
 
@@ -210,14 +209,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         String[] tokens = httpsPort.split("-");
         if (tokens.length == 1) {
             // port specified
-            minHttpsPort = parsePortNumber(tokens[0], "HTTPS");
+            configuredHttpsPort = parsePortNumber(tokens[0], "HTTPS");
 
         } else if (tokens.length == 2) {
-            // port range specified
-            minHttpsPort = parsePortNumber(tokens[0], "HTTPS");
-            maxHttpsPort = parsePortNumber(tokens[1], "HTTPS");
-        } else {
-            throw new IllegalArgumentException("Invalid HTTPS port specified in system configuration");
+            throw new IllegalArgumentException("Port ranges no longer supported via HTTP configuration. Use the runtime port.range attribute");
         }
     }
 
@@ -283,6 +278,10 @@ public class JettyServiceImpl implements JettyService, Transport {
             }
         }
         server.stop();
+        portAllocator.release("HTTP");
+        if (enableHttps) {
+            portAllocator.release("HTTPS");
+        }
     }
 
     public String getHostType() {
@@ -465,49 +464,40 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     private void selectHttpPort() throws IOException, JettyInitializationException {
-        if (maxHttpPort == -1) {
-            selectedHttp = minHttpPort;
-            return;
-        }
-        // A bit of a hack to select the port. Normally, we should select the Jetty Connector and look for a bind exception. However, Jetty does not
-        // attempt to bind to the port until the server is started. Creating a disposable socket avoids having to start the Jetty server to determine
-        // if the address is taken
-        selectedHttp = minHttpPort;
-        while (selectedHttp <= maxHttpPort) {
-            try {
-                ServerSocket socket = new ServerSocket(selectedHttp);
-                socket.close();
-                return;
-            } catch (BindException e) {
-                selectedHttp++;
+        try {
+            if (!portAllocator.isPoolEnabled()) {
+                if (configuredHttpPort == -1) {
+                    selectedHttp = DEFAULT_HTTP_PORT;
+                } else {
+                    selectedHttp = configuredHttpPort;
+                }
+                portAllocator.reserve("HTTP", selectedHttp);
+            } else {
+                selectedHttp = portAllocator.allocate("HTTP");
             }
+        } catch (PortAllocationException e) {
+            throw new JettyInitializationException("Error allocating HTTP port", e);
         }
-        selectedHttp = -1;
-        throw new JettyInitializationException(
-                "Unable to find an available HTTP port. Check to ensure the system configuration specifies an open HTTP port or port range.");
     }
 
     private void selectHttpsPort() throws IOException, JettyInitializationException {
         if (!enableHttps) {
             return;
         }
-        if (maxHttpsPort == -1) {
-            selectedHttps = minHttpsPort;
-            return;
-        }
-        selectedHttps = minHttpsPort;
-        while (selectedHttps <= maxHttpsPort) {
-            try {
-                ServerSocket socket = new ServerSocket(selectedHttps);
-                socket.close();
-                return;
-            } catch (BindException e) {
-                selectedHttps++;
+        try {
+            if (!portAllocator.isPoolEnabled()) {
+                if (configuredHttpsPort == -1) {
+                    selectedHttps = DEFAULT_HTTP_PORT;
+                } else {
+                    selectedHttps = configuredHttpsPort;
+                }
+                portAllocator.reserve("HTTPS", selectedHttps);
+            } else {
+                selectedHttps = portAllocator.allocate("HTTPS");
             }
+        } catch (PortAllocationException e) {
+            throw new JettyInitializationException("Error allocating HTTPS port", e);
         }
-        selectedHttps = -1;
-        throw new JettyInitializationException(
-                "Unable to find an available HTTPS port. Check to ensure the system configuration specifies an open HTTPS port or port range.");
     }
 
     private void initializeThreadPool() {

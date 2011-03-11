@@ -1,8 +1,5 @@
 <config>
-    <runtime mode="participant" jmx.port="8000-9000"/>
-    <web.server>
-        <http port="8181-8281"/>
-    </web.server>
+    <runtime mode="participant" jmx.port="8000-9000" port.range="8181-8282"/>
     <federation>
         <transport>
             <value>

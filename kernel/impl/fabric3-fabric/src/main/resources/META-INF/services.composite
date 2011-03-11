@@ -39,6 +39,11 @@
         <f3:implementation.system class="org.fabric3.fabric.security.BasicAuthenticatorImpl"/>
     </component>
 
+    <component name="PortAllocator">
+        <f3:implementation.system class="org.fabric3.fabric.host.PortAllocatorImpl"/>
+        <property name="range" source="$systemConfig/runtime/@port.range"/>
+    </component>
+
     <component name="KeyStoreManager">
         <f3:implementation.system class="org.fabric3.fabric.security.KeyStoreManagerImpl"/>
         <property name="keyStoreLocationProperty" source="$systemConfig/security/keystore.property"/>
