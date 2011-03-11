@@ -140,10 +140,10 @@ public abstract class AbstractProvisionCommandExecutor implements CommandExecuto
     }
 
     /**
-     * Returns a servlet that is resposible for dereferencing a contribution artifact from a store.
+     * Returns a servlet that is responsible for de-referencing a contribution artifact from a store.
      *
      * @param secure true if the servlet should enforce secure provisioning
-     * @return a servlet that is resposible for dereferencing a contribution artifact from a store
+     * @return a servlet that is responsible for de-referencing a contribution artifact from a store
      */
     protected abstract HttpServlet getResolverServlet(boolean secure);
 
