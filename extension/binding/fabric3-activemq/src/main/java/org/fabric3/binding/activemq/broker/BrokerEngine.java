@@ -40,7 +40,6 @@ package org.fabric3.binding.activemq.broker;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.URI;
 import javax.management.MBeanServer;
 import javax.xml.stream.XMLStreamException;
@@ -58,6 +57,8 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.host.PortAllocationException;
+import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
@@ -67,14 +68,17 @@ import org.fabric3.spi.monitor.MonitorService;
  */
 @EagerInit
 public class BrokerEngine {
+    private static final int DEFAULT_PORT = 61616;
+
+    private PortAllocator portAllocator;
     private HostInfo info;
+
     private String brokerName;
     private BrokerService broker;
     private File tempDir;
-    private int selectedPort = 61616;
+    private int selectedPort = -1;
+    private int jmsPort = -1;
     private String bindAddress;
-    private int maxPort = 71717;
-    private int minPort = 61616;
     private File dataDir;
     private BrokerConfiguration brokerConfiguration;
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
@@ -82,7 +86,8 @@ public class BrokerEngine {
     private MBeanServer mBeanServer;
     private boolean disabled;
 
-    public BrokerEngine(@Reference HostInfo info) {
+    public BrokerEngine(@Reference PortAllocator portAllocator, @Reference HostInfo info) {
+        this.portAllocator = portAllocator;
         tempDir = new File(info.getTempDir(), "activemq");
         // sets the directory where persistent messages are written
         File baseDataDir = info.getDataDir();
@@ -92,12 +97,17 @@ public class BrokerEngine {
 
     @Property(required = false)
     public void setMinPort(int minPort) {
-        this.minPort = minPort;
+        throw new IllegalArgumentException("Port ranges no longer supported via JMS configuration. Use the runtime port.range attribute");
     }
 
     @Property(required = false)
     public void setMaxPort(int maxPort) {
-        this.maxPort = maxPort;
+        throw new IllegalArgumentException("Port ranges no longer supported via JMS configuration. Use the runtime port.range attribute");
+    }
+
+    @Property(required = false)
+    public void setJmsPort(int port) {
+        this.jmsPort = port;
     }
 
 
@@ -132,6 +142,7 @@ public class BrokerEngine {
         if (disabled) {
             return;
         }
+        selectPort();
         if (bindAddress == null) {
             // if the host address is not specified, use localhost address
             bindAddress = InetAddress.getLocalHost().getHostAddress();
@@ -146,16 +157,7 @@ public class BrokerEngine {
             // default configuration
             broker.setBrokerName(brokerName);
             createManagementContext(brokerName);
-            boolean loop = true;
-            TransportConnector connector = null;
-            while (loop) {
-                try {
-                    connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort);
-                    loop = false;
-                } catch (IOException e) {
-                    selectPort();
-                }
-            }
+            TransportConnector connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort);
             String group = info.getDomain().getAuthority();
             connector.setDiscoveryUri(URI.create("multicast://default?group=" + group));
             broker.addNetworkConnector("multicast://default?group=" + group);
@@ -207,24 +209,21 @@ public class BrokerEngine {
         }
     }
 
-    private void selectPort() throws IOException {
-        if (maxPort == -1) {
-            selectedPort = minPort;
-            return;
-        }
-        selectedPort = minPort;
-        while (selectedPort <= maxPort) {
-            try {
-                ServerSocket socket = new ServerSocket(selectedPort, 0, InetAddress.getByName(bindAddress));
-                socket.close();
-                return;
-            } catch (IOException e) {
-                selectedPort++;
+    private void selectPort() throws IOException, PortAllocationException {
+        if (jmsPort == -1) {
+            // port not assigned, get one from the allocator
+            if (portAllocator.isPoolEnabled()) {
+                selectedPort = portAllocator.allocate("JMS");
+            } else {
+                portAllocator.reserve("JMS", DEFAULT_PORT);
+                selectedPort = DEFAULT_PORT;
             }
+        } else {
+            // port is explicitly assigned
+            portAllocator.reserve("JMS", jmsPort);
+            selectedPort = jmsPort;
         }
-        selectedPort = -1;
-        throw new IOException(
-                "Unable to find an available port. Check to ensure the system configuration specifies an open port or port range.");
+
     }
 
 

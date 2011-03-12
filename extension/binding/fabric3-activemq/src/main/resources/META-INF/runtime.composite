@@ -27,6 +27,8 @@
         <property name="disabled" source="$systemConfig//jms/activemq/@broker.disabled"/>
         <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
         <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
+        <property name="jmsPort" source="$systemConfig//jms/activemq/@port"/>
+        <!-- used to raise backward compatibility error -->
         <property name="minPort" source="$systemConfig//jms/activemq/@min.port"/>
         <property name="maxPort" source="$systemConfig//jms/activemq/@max.port"/>
     </component>
