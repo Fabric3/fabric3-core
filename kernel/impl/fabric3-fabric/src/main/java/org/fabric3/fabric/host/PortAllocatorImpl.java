@@ -45,7 +45,10 @@ package org.fabric3.fabric.host;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -76,7 +79,7 @@ public class PortAllocatorImpl implements PortAllocator {
             min = parsePortNumber(tokens[0]);
             max = parsePortNumber(tokens[1]);
         } else {
-            throw new IllegalArgumentException("Invalid port range specified in system configuration");
+            throw new IllegalArgumentException("Invalid port range specified in the runtime system configuration");
         }
     }
 
@@ -159,45 +162,68 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    private boolean checkAvailability(int port) {
+    private boolean checkAvailability(int port) throws PortAllocationException {
+
+        try {
+            // try the wildcard address first
+            if (!checkPortOnHost(null, port)) {
+                return false;
+            }
+            String localhost = InetAddress.getLocalHost().getCanonicalHostName();
+            InetAddress[] addresses = InetAddress.getAllByName(localhost);
+            for (InetAddress address : addresses) {
+                if (!checkPortOnHost(address, port)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (UnknownHostException e) {
+            throw new PortAllocationException(e);
+        }
+    }
+
+    private boolean checkPortOnHost(InetAddress address, int port) {
         ServerSocket serverSocket = null;
         DatagramSocket datagramSocket = null;
         try {
-            serverSocket = new ServerSocket(port);
-            serverSocket.setReuseAddress(true);
-            datagramSocket = new DatagramSocket(port);
+            serverSocket = new ServerSocket();
+            InetSocketAddress socketAddress = new InetSocketAddress(address, port);
+            serverSocket.bind(socketAddress);
+            datagramSocket = new DatagramSocket(port, address);
             datagramSocket.setReuseAddress(true);
             return true;
         } catch (IOException e) {
             // ignore
         } finally {
+            close(serverSocket);
             if (datagramSocket != null) {
                 datagramSocket.close();
             }
-
-            if (serverSocket != null) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
         }
-
         return false;
     }
 
     private int parsePortNumber(String portVal) {
-        int port;
         try {
-            port = Integer.parseInt(portVal);
+            int port = Integer.parseInt(portVal);
             if (port < 0) {
-                throw new IllegalArgumentException("Invalid port range specified in the system configuration" + port);
+                throw new IllegalArgumentException("Invalid port range specified in the runtime system configuration: " + port);
             }
+            return port;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid port range specified in the system configuration", e);
+            throw new IllegalArgumentException("Invalid port range specified in the runtime system configuration: ", e);
         }
-        return port;
     }
+
+    private void close(ServerSocket serverSocket) {
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
 
 }
