@@ -184,7 +184,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     public void unregister(String identifier) {
         List<ResourceMapping> list = registered.remove(identifier);
         if (list == null) {
-            throw new AssertionError("Mappings not found for " + identifier);
+            return;
         }
         for (ResourceMapping mapping : list) {
             String path = mapping.getPath();
