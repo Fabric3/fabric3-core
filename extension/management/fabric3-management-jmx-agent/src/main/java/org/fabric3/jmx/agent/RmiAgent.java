@@ -19,7 +19,6 @@
 package org.fabric3.jmx.agent;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -41,29 +40,36 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.ParseException;
+import org.fabric3.spi.host.PortAllocationException;
+import org.fabric3.spi.host.PortAllocator;
 
 /**
  * @version $Revision$ $Date$
  */
 @EagerInit
 public class RmiAgent {
-    private int minPort = 1199;
-    private int maxPort = 1199;
+    private static final int DEFAULT_JMX_PORT = 1199;
+    private int port = -1;
     private boolean disabled;
     private JmxSecurity security = JmxSecurity.DISABLED;
 
     private Registry registry;
     private int assignedPort;
     private MBeanServer mBeanServer;
+    private PortAllocator portAllocator;
     private RmiAgentMonitor monitor;
 
     private DelegatingJmxAuthenticator authenticator;
     private JMXConnectorServer connectorServer;
 
-    public RmiAgent(@Reference MBeanServer mBeanServer, @Reference DelegatingJmxAuthenticator authenticator, @Monitor RmiAgentMonitor monitor) {
+    public RmiAgent(@Reference MBeanServer mBeanServer,
+                    @Reference DelegatingJmxAuthenticator authenticator,
+                    @Reference PortAllocator portAllocator,
+                    @Monitor RmiAgentMonitor monitor) {
         this.mBeanServer = mBeanServer;
-        this.monitor = monitor;
         this.authenticator = authenticator;
+        this.portAllocator = portAllocator;
+        this.monitor = monitor;
     }
 
     @Property(required = false)
@@ -81,15 +87,10 @@ public class RmiAgent {
             String[] tokens = ports.split("-");
             if (tokens.length == 1) {
                 // port specified
-                minPort = parsePortNumber(ports);
-                maxPort = minPort;
+                port = parsePortNumber(ports);
 
             } else if (tokens.length == 2) {
-                // port range specified
-                minPort = parsePortNumber(tokens[0]);
-                maxPort = parsePortNumber(tokens[1]);
-            } else {
-                throw new IllegalArgumentException("Invalid JMX port specified in system configuration: " + ports);
+                throw new IllegalArgumentException("Port ranges no longer supported via JMX configuration. Use the runtime port.range attribute");
             }
         }
     }
@@ -124,20 +125,13 @@ public class RmiAgent {
         try {
             connectorServer.stop();
             removeRegistry();
+            portAllocator.release("JMX");
             synchronized (this) {
                 notify();
             }
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
-    }
-
-    int getMinPort() {
-        return minPort;
-    }
-
-    int getMaxPort() {
-        return maxPort;
     }
 
     private Map<String, Object> initEnvironment() {
@@ -156,29 +150,33 @@ public class RmiAgent {
     }
 
     private void createRegistry() throws ManagementException {
-        int port = minPort;
-        if (maxPort == -1) {
+        if (port == -1) {
+            // port not assigned, get one from the allocator
             try {
-                registry = LocateRegistry.createRegistry(minPort);
-                assignedPort = minPort;
-            } catch (RemoteException ex) {
-                throw new ManagementException(ex);
+                if (portAllocator.isPoolEnabled()) {
+                    assignedPort = portAllocator.allocate("JMX");
+                } else {
+                    portAllocator.reserve("JMX", DEFAULT_JMX_PORT);
+                    assignedPort = DEFAULT_JMX_PORT;
+                }
+                registry = LocateRegistry.createRegistry(assignedPort);
+            } catch (RemoteException e) {
+                throw new ManagementException(e);
+            } catch (PortAllocationException e) {
+                throw new ManagementException(e);
             }
         } else {
-            assignedPort = minPort;
-            while (port <= maxPort) {
-                try {
-                    registry = LocateRegistry.createRegistry(assignedPort);
-                    return;
-                } catch (ExportException ex) {
-                    if (ex.getCause() instanceof BindException) {
-                        ++assignedPort;
-                        continue;
-                    }
-                    throw new ManagementException(ex);
-                } catch (RemoteException ex) {
-                    throw new ManagementException(ex);
-                }
+            // port is explicitly assigned
+            try {
+                portAllocator.reserve("JMX", port);
+                assignedPort = port;
+                registry = LocateRegistry.createRegistry(assignedPort);
+            } catch (PortAllocationException e) {
+                throw new ManagementException(e);
+            } catch (ExportException e) {
+                throw new ManagementException(e);
+            } catch (RemoteException e) {
+                throw new ManagementException(e);
             }
         }
     }

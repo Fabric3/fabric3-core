@@ -1,5 +1,5 @@
 <config>
-    <runtime mode="participant" jmx.port="8000-9000" port.range="8181-8282"/>
+    <runtime mode="participant" port.range="8181-8282"/>
     <federation>
         <transport>
             <value>

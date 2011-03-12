@@ -18,25 +18,54 @@
  */
 package org.fabric3.jmx.agent;
 
+import javax.management.MBeanServer;
+
 import junit.framework.TestCase;
+import org.easymock.classextension.EasyMock;
+
+import org.fabric3.spi.host.PortAllocator;
 
 /**
  * @version $Revision: 9250 $ $Date: 2010-07-30 12:52:01 +0200 (Fri, 30 Jul 2010) $
  */
 public class RmiAgentTestCase extends TestCase {
 
-    public void testPortParse() throws Exception {
-        RmiAgent agent = new RmiAgent(null, null, null);
-        agent.setJmxPort("1111");
-        assertEquals(1111, agent.getMinPort());
-        assertEquals(1111, agent.getMaxPort());
+    public void testConfiguredPort() throws Exception {
+        MBeanServer mBeanServer = EasyMock.createNiceMock(MBeanServer.class);
+        DelegatingJmxAuthenticator authenticator = EasyMock.createNiceMock(DelegatingJmxAuthenticator.class);
+        RmiAgentMonitor monitor = EasyMock.createNiceMock(RmiAgentMonitor.class);
+
+        PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
+        portAllocator.reserve("JMX", 9001);
+        portAllocator.release("JMX");
+        EasyMock.expectLastCall();
+
+        EasyMock.replay(mBeanServer, monitor, portAllocator);
+
+        RmiAgent agent = new RmiAgent(mBeanServer, authenticator, portAllocator, monitor);
+        agent.setJmxPort("9001");
+        agent.init();
+        agent.destroy();
+        EasyMock.verify(portAllocator);
     }
 
-    public void testPortRangeParse() throws Exception {
-        RmiAgent agent = new RmiAgent(null, null, null);
-        agent.setJmxPort("1000-1200");
-        assertEquals(1000, agent.getMinPort());
-        assertEquals(1200, agent.getMaxPort());
+    public void testPortRange() throws Exception {
+        MBeanServer mBeanServer = EasyMock.createNiceMock(MBeanServer.class);
+        DelegatingJmxAuthenticator authenticator = EasyMock.createNiceMock(DelegatingJmxAuthenticator.class);
+        RmiAgentMonitor monitor = EasyMock.createNiceMock(RmiAgentMonitor.class);
+
+        PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
+        EasyMock.expect(portAllocator.isPoolEnabled()).andReturn(true);
+        EasyMock.expect(portAllocator.allocate("JMX")).andReturn(9001);
+        portAllocator.release("JMX");
+        EasyMock.expectLastCall();
+
+        EasyMock.replay(mBeanServer, monitor, portAllocator);
+
+        RmiAgent agent = new RmiAgent(mBeanServer, authenticator, portAllocator, monitor);
+        agent.init();
+        agent.destroy();
+        EasyMock.verify(portAllocator);
     }
 
 }
