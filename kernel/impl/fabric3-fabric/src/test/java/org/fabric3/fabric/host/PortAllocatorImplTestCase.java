@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.host;
 
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 import org.fabric3.spi.host.PortAllocationException;
@@ -147,9 +149,31 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testIsPoolNotEnabled() throws Exception {
-         PortAllocatorImpl allocator = new PortAllocatorImpl();
-         allocator.init();
-         assertFalse(allocator.isPoolEnabled());
-     }
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.init();
+        assertFalse(allocator.isPoolEnabled());
+    }
+
+    public void testGetPortTypes() throws Exception {
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.setRange("8900-8901");
+        allocator.init();
+        allocator.allocate("HTTP");
+        Set<String> types = allocator.getPortTypes();
+        assertEquals(1, types.size());
+        assertTrue(types.contains("HTTP"));
+    }
+
+    public void testReleasePort() throws Exception {
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.setRange("8900-8900");
+        allocator.init();
+        int port = allocator.allocate("HTTP");
+        allocator.release(port);
+        assertFalse(allocator.getPortTypes().contains("HTTP"));
+        // verify the port can be re-allocated
+        allocator.allocate("HTTP");
+    }
+
 
 }

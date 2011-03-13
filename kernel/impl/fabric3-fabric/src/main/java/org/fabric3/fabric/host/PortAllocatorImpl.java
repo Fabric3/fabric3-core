@@ -50,8 +50,10 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -153,6 +155,21 @@ public class PortAllocatorImpl implements PortAllocator {
             return NOT_ALLOCATED;
         }
         return port;
+    }
+
+    public Set<String> getPortTypes() {
+        return allocated.keySet();
+    }
+
+    public void release(int port) {
+        for (Iterator<Map.Entry<String, Integer>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            if (entry.getValue() == port) {
+                iterator.remove();
+                unallocated.add(port);
+                return;
+            }
+        }
     }
 
     public void release(String type) {
