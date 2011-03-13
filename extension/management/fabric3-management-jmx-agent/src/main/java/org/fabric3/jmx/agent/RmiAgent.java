@@ -154,9 +154,9 @@ public class RmiAgent {
             // port not assigned, get one from the allocator
             try {
                 if (portAllocator.isPoolEnabled()) {
-                    assignedPort = portAllocator.allocate("JMX");
+                    assignedPort = portAllocator.allocate("JMX", "JMX");
                 } else {
-                    portAllocator.reserve("JMX", DEFAULT_JMX_PORT);
+                    portAllocator.reserve("JMX", "JMX", DEFAULT_JMX_PORT);
                     assignedPort = DEFAULT_JMX_PORT;
                 }
                 registry = LocateRegistry.createRegistry(assignedPort);
@@ -168,7 +168,7 @@ public class RmiAgent {
         } else {
             // port is explicitly assigned
             try {
-                portAllocator.reserve("JMX", port);
+                portAllocator.reserve("JMX", "JMX", port);
                 assignedPort = port;
                 registry = LocateRegistry.createRegistry(assignedPort);
             } catch (PortAllocationException e) {

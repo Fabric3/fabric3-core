@@ -213,14 +213,14 @@ public class BrokerEngine {
         if (jmsPort == -1) {
             // port not assigned, get one from the allocator
             if (portAllocator.isPoolEnabled()) {
-                selectedPort = portAllocator.allocate("JMS");
+                selectedPort = portAllocator.allocate("JMS", "JMS");
             } else {
-                portAllocator.reserve("JMS", DEFAULT_PORT);
+                portAllocator.reserve("JMS", "JMS", DEFAULT_PORT);
                 selectedPort = DEFAULT_PORT;
             }
         } else {
             // port is explicitly assigned
-            portAllocator.reserve("JMS", jmsPort);
+            portAllocator.reserve("JMS", "JMS", jmsPort);
             selectedPort = jmsPort;
         }
 

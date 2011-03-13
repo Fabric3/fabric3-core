@@ -48,10 +48,10 @@ import org.fabric3.spi.host.PortAllocationException;
 /**
  * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
  */
-public class PortTypeAllocatedException extends PortAllocationException {
+public class PortNameAllocatedException extends PortAllocationException {
     private static final long serialVersionUID = -7957326229957513400L;
 
-    public PortTypeAllocatedException(String type) {
+    public PortNameAllocatedException(String type) {
         super("Port already allocated for: " + type);
     }
 

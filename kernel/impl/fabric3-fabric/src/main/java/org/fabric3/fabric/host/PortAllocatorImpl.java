@@ -49,9 +49,12 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,7 +73,7 @@ import org.fabric3.spi.host.PortAllocator;
 public class PortAllocatorImpl implements PortAllocator {
     private int min = NOT_ALLOCATED;
     private int max = NOT_ALLOCATED;
-    private Map<String, Integer> allocated = new HashMap<String, Integer>();
+    private Map<String, List<Pair>> allocated = new HashMap<String, List<Pair>>();
     private LinkedList<Integer> unallocated = new LinkedList<Integer>();
 
     @Property(required = false)
@@ -106,39 +109,44 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     @ManagementOperation(path = "/")
-    public Map<String, Integer> getAllocatedPorts() {
+    public Map<String, List<Pair>> getAllocatedPorts() {
         return allocated;
     }
 
     @ManagementOperation
-    public Integer getAllocatedPorts(String type) {
-        return allocated.get(type);
+    public List<Pair> getAllocatedPorts(String type) {
+        List<Pair> pairs = allocated.get(type);
+        if (pairs == null) {
+            return Collections.emptyList();
+        }
+        return pairs;
     }
 
     public boolean isPoolEnabled() {
         return min != NOT_ALLOCATED && max != NOT_ALLOCATED;
     }
 
-    public int allocate(String type) throws PortAllocationException {
-        if (allocated.containsKey(type)) {
-            throw new PortTypeAllocatedException(type);
-        }
+    public int allocate(String name, String type) throws PortAllocationException {
+        List<Pair> pairs = checkAllocated(name, type);
         while (true) {
             if (unallocated.isEmpty()) {
                 throw new PortAllocationException("No ports available");
             }
             int port = unallocated.remove();
             if (checkAvailability(port)) {
-                allocated.put(type, port);
+                Pair pair = new Pair(name, port);
+                if (pairs == null) {
+                    pairs = new ArrayList<Pair>();
+                    allocated.put(type, pairs);
+                }
+                pairs.add(pair);
                 return port;
             }
         }
     }
 
-    public void reserve(String type, int port) throws PortAllocationException {
-        if (allocated.containsKey(type)) {
-            throw new PortTypeAllocatedException(type);
-        }
+    public void reserve(String name, String type, int port) throws PortAllocationException {
+        List<Pair> pairs = checkAllocated(name, type);
         if (!checkAvailability(port)) {
             throw new PortAllocatedException(port);
         }
@@ -146,15 +154,24 @@ public class PortAllocatorImpl implements PortAllocator {
         if (pos >= 0) {
             unallocated.remove(pos);
         }
-        allocated.put(type, port);
+
+        Pair pair = new Pair(name, port);
+        if (pairs == null) {
+            pairs = new ArrayList<Pair>();
+            allocated.put(type, pairs);
+        }
+        pairs.add(pair);
     }
 
-    public int getAllocatedPort(String type) {
-        Integer port = allocated.get(type);
-        if (port == null) {
-            return NOT_ALLOCATED;
+    public int getAllocatedPort(String name) {
+        for (List<Pair> pairs : allocated.values()) {
+            for (Pair pair : pairs) {
+                if (pair.getName().equals(name)) {
+                    return pair.getPort();
+                }
+            }
         }
-        return port;
+        return NOT_ALLOCATED;
     }
 
     public Set<String> getPortTypes() {
@@ -162,21 +179,62 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     public void release(int port) {
-        for (Iterator<Map.Entry<String, Integer>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            if (entry.getValue() == port) {
-                iterator.remove();
-                unallocated.add(port);
-                return;
+        for (Iterator<Map.Entry<String, List<Pair>>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, List<Pair>> entry = iterator.next();
+            final List<Pair> pairs = entry.getValue();
+            for (Iterator<Pair> pairIter = pairs.iterator(); pairIter.hasNext();) {
+                Pair pair = pairIter.next();
+                if (pair.getPort() == port) {
+                    pairIter.remove();
+                    unallocated.add(port);
+                    if (pairs.isEmpty()) {
+                        iterator.remove();
+                    }
+                    return;
+                }
+            }
+
+        }
+    }
+
+    public void release(String name) {
+        for (Iterator<Map.Entry<String, List<Pair>>> iterator = allocated.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, List<Pair>> entry = iterator.next();
+            final List<Pair> pairs = entry.getValue();
+            for (Iterator<Pair> pairIter = pairs.iterator(); pairIter.hasNext();) {
+                Pair pair = pairIter.next();
+                if (pair.getName().equals(name)) {
+                    pairIter.remove();
+                    unallocated.add(pair.getPort());
+                    if (pairs.isEmpty()) {
+                        iterator.remove();
+                    }
+                    return;
+                }
+            }
+
+        }
+    }
+
+    public void releaseAll(String type) {
+        List<Pair> pairs = allocated.remove(type);
+        if (pairs != null) {
+            for (Pair pair : pairs) {
+                unallocated.add(pair.getPort());
             }
         }
     }
 
-    public void release(String type) {
-        Integer port = allocated.remove(type);
-        if (port != null && (port > min && port < max)) {
-            unallocated.add(port);
+    private List<Pair> checkAllocated(String name, String type) throws PortNameAllocatedException {
+        List<Pair> pairs = allocated.get(type);
+        if (pairs != null) {
+            for (Pair pair : pairs) {
+                if (pair.getName().equals(name)) {
+                    throw new PortNameAllocatedException(type);
+                }
+            }
         }
+        return pairs;
     }
 
     private boolean checkAvailability(int port) throws PortAllocationException {
@@ -242,5 +300,22 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
+    private class Pair {
+        private String name;
+        private int port;
+
+        private Pair(String name, int port) {
+            this.name = name;
+            this.port = port;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPort() {
+            return port;
+        }
+    }
 
 }

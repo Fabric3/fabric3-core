@@ -43,8 +43,6 @@
  */
 package org.fabric3.fabric.host;
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.fabric3.spi.host.PortAllocationException;
@@ -59,25 +57,49 @@ public class PortAllocatorImplTestCase extends TestCase {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.setRange("8900-8901");
         allocator.init();
-        int port = allocator.allocate("http");
+        int port = allocator.allocate("http", "http");
         assertTrue(port != PortAllocator.NOT_ALLOCATED);
         assertTrue(allocator.getAllocatedPorts().containsKey("http"));
         allocator.release("http");
         assertFalse(allocator.getAllocatedPorts().containsKey("http"));
 
-        allocator.allocate("http");
+        allocator.allocate("http", "http");
         assertTrue(allocator.getAllocatedPorts().containsKey("http"));
+    }
+
+    public void testMultiplePortAllocation() throws Exception {
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.setRange("8900-8901");
+        allocator.init();
+        int port1 = allocator.allocate("http1", "http");
+        int port2 = allocator.allocate("http2", "http");
+        assertTrue(port1 != PortAllocator.NOT_ALLOCATED);
+        assertTrue(port1 != port2);
+        assertEquals(2, allocator.getAllocatedPorts("http").size());
+        allocator.release("http1");
+        assertEquals(1, allocator.getAllocatedPorts("http").size());
+    }
+
+    public void testGetPortTypes() throws Exception {
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.setRange("8900-8901");
+        allocator.init();
+        allocator.allocate("http1", "http");
+        allocator.allocate("http2", "http");
+        assertEquals(1, allocator.getPortTypes().size());
+        allocator.release("http1");
+        assertEquals(1, allocator.getPortTypes().size());
     }
 
     public void testPortReserve() throws Exception {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.setRange("8900-8901");
         allocator.init();
-        allocator.reserve("http", 8900);
+        allocator.reserve("http", "http", 8900);
         try {
-            allocator.allocate("http");
+            allocator.allocate("http", "http");
             fail();
-        } catch (PortTypeAllocatedException e) {
+        } catch (PortNameAllocatedException e) {
             //expected
         }
     }
@@ -86,7 +108,7 @@ public class PortAllocatorImplTestCase extends TestCase {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.init();
         try {
-            allocator.allocate("http");
+            allocator.allocate("http", "http");
             fail();
         } catch (PortAllocationException e) {
             // expected
@@ -97,7 +119,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     public void testPortReserveNotConfigured() throws Exception {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.init();
-        allocator.reserve("http", 8900);
+        allocator.reserve("http", "http", 8900);
         assertTrue(PortAllocator.NOT_ALLOCATED != allocator.getAllocatedPort("http"));
     }
 
@@ -105,11 +127,11 @@ public class PortAllocatorImplTestCase extends TestCase {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.setRange("8900-8900");
         allocator.init();
-        int port = allocator.allocate("http");
+        int port = allocator.allocate("http", "http");
         assertTrue(port != PortAllocator.NOT_ALLOCATED);
         assertTrue(allocator.getAllocatedPorts().containsKey("http"));
         try {
-            allocator.allocate("https");
+            allocator.allocate("https", "https");
             fail();
         } catch (PortAllocationException e) {
             // expected
@@ -154,25 +176,25 @@ public class PortAllocatorImplTestCase extends TestCase {
         assertFalse(allocator.isPoolEnabled());
     }
 
-    public void testGetPortTypes() throws Exception {
-        PortAllocatorImpl allocator = new PortAllocatorImpl();
-        allocator.setRange("8900-8901");
-        allocator.init();
-        allocator.allocate("HTTP");
-        Set<String> types = allocator.getPortTypes();
-        assertEquals(1, types.size());
-        assertTrue(types.contains("HTTP"));
-    }
-
     public void testReleasePort() throws Exception {
         PortAllocatorImpl allocator = new PortAllocatorImpl();
         allocator.setRange("8900-8900");
         allocator.init();
-        int port = allocator.allocate("HTTP");
+        int port = allocator.allocate("http", "http");
         allocator.release(port);
         assertFalse(allocator.getPortTypes().contains("HTTP"));
         // verify the port can be re-allocated
-        allocator.allocate("HTTP");
+        allocator.allocate("http", "http");
+    }
+
+    public void testReleaseAll() throws Exception {
+        PortAllocatorImpl allocator = new PortAllocatorImpl();
+        allocator.setRange("8900-8901");
+        allocator.init();
+        allocator.allocate("http", "http1");
+        allocator.allocate("http", "http2");
+        allocator.releaseAll("http");
+        assertTrue(allocator.getAllocatedPorts("http").isEmpty());
     }
 
 

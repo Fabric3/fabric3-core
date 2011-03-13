@@ -43,10 +43,12 @@
  */
 package org.fabric3.spi.host;
 
+import java.util.Set;
+
 /**
  * Responsible for allocating ports for use by a binding transport or other extension. A runtime can be configured with a range of ports, which serves
- * as a pool for transports to obtain on open port using {@link #allocate(String)}. If the runtime is not configured with a port range, services
- * requiring sockets should use #{link #reserve} to reserve a port.
+ * as a pool for transports to obtain on open port using {@link #allocate(String, String)}. If the runtime is not configured with a port range,
+ * services requiring sockets should use #{link #reserve} to reserve a port.
  *
  * @version $Rev$ $Date$
  */
@@ -64,35 +66,58 @@ public interface PortAllocator {
     /**
      * Allocates a port for the given transport.
      *
+     * @param name the port name. Used when a transport uses a port per endpoint
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
      * @return the allocated port number
      * @throws PortAllocationException if there was an error allocating a port
      */
-    int allocate(String type) throws PortAllocationException;
+    int allocate(String name, String type) throws PortAllocationException;
 
     /**
      * Requests a specific port number to be reserved. This may be outside the configured port range. If so, the allocator will check availability and
      * track the port as being allocated if available.
      *
+     * @param name the port name. Used when a transport uses a port per endpoint
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
      * @param port the requested port number
      * @throws PortAllocationException if there was an error reserving the port
      */
-    void reserve(String type, int port) throws PortAllocationException;
+    void reserve(String name, String type, int port) throws PortAllocationException;
 
     /**
-     * Returns the port number in use by the given transport.
+     * Returns the port number associated with the name.
      *
-     * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
+     * @param name the port name
      * @return the allocated port number or {@link #NOT_ALLOCATED} if a port has not been allocated
      */
-    int getAllocatedPort(String type);
+    int getAllocatedPort(String name);
+
+    /**
+     * Returns a list of allocated port types.
+     *
+     * @return a list of allocated port types
+     */
+    Set<String> getPortTypes();
+
+    /**
+     * Releases the given port and makes it available for re-allocation.
+     *
+     * @param port the port
+     */
+    void release(int port);
 
     /**
      * Releases a port for the given transport and makes it available for re-allocation.
      *
-     * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
+     * @param name the port name
      */
-    void release(String type);
+    void release(String name);
+
+    /**
+     * Releases a port for the given transport and makes it available for re-allocation.
+     *
+     * @param type the transport type
+     */
+    void releaseAll(String type);
 
 }

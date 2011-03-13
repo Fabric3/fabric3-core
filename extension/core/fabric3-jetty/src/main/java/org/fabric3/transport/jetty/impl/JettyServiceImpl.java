@@ -471,9 +471,9 @@ public class JettyServiceImpl implements JettyService, Transport {
                 } else {
                     selectedHttp = configuredHttpPort;
                 }
-                portAllocator.reserve("HTTP", selectedHttp);
+                portAllocator.reserve("HTTP", "HTTP", selectedHttp);
             } else {
-                selectedHttp = portAllocator.allocate("HTTP");
+                selectedHttp = portAllocator.allocate("HTTP", "HTTP");
             }
         } catch (PortAllocationException e) {
             throw new JettyInitializationException("Error allocating HTTP port", e);
@@ -491,9 +491,9 @@ public class JettyServiceImpl implements JettyService, Transport {
                 } else {
                     selectedHttps = configuredHttpsPort;
                 }
-                portAllocator.reserve("HTTPS", selectedHttps);
+                portAllocator.reserve("HTTPS", "HTTPS", selectedHttps);
             } else {
-                selectedHttps = portAllocator.allocate("HTTPS");
+                selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
             }
         } catch (PortAllocationException e) {
             throw new JettyInitializationException("Error allocating HTTPS port", e);
