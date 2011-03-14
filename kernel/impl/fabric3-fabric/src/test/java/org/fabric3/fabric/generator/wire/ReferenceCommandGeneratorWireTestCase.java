@@ -62,9 +62,9 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class WireCommandGeneratorTestCase extends TestCase {
+public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("foo", "bar");
-    private WireCommandGenerator generator;
+    private ReferenceCommandGenerator generator;
     private WireGenerator wireGenerator;
     private LogicalComponentManager lcm;
 
@@ -257,7 +257,7 @@ public class WireCommandGeneratorTestCase extends TestCase {
         super.setUp();
         wireGenerator = EasyMock.createMock(WireGenerator.class);
         lcm = EasyMock.createMock(LogicalComponentManager.class);
-        generator = new WireCommandGenerator(wireGenerator, 0);
+        generator = new ReferenceCommandGenerator(wireGenerator, 0);
     }
 
 }

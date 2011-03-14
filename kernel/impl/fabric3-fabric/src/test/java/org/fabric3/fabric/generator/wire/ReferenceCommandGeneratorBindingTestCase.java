@@ -57,9 +57,9 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class BoundReferenceCommandGeneratorTestCase extends TestCase {
+public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
-    private BoundReferenceCommandGenerator generator;
+    private ReferenceCommandGenerator generator;
     private WireGenerator wireGenerator;
 
     @SuppressWarnings({"unchecked"})
@@ -220,7 +220,7 @@ public class BoundReferenceCommandGeneratorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wireGenerator = EasyMock.createMock(WireGenerator.class);
-        generator = new BoundReferenceCommandGenerator(wireGenerator, 0);
+        generator = new ReferenceCommandGenerator(wireGenerator, 0);
     }
 
 }

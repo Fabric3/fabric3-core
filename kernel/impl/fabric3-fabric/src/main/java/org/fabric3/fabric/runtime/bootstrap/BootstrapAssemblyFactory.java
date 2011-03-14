@@ -105,8 +105,8 @@ import org.fabric3.fabric.generator.wire.BoundServiceCommandGenerator;
 import org.fabric3.fabric.generator.wire.OperationResolverImpl;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl;
+import org.fabric3.fabric.generator.wire.ReferenceCommandGenerator;
 import org.fabric3.fabric.generator.wire.ResourceReferenceCommandGenerator;
-import org.fabric3.fabric.generator.wire.WireCommandGenerator;
 import org.fabric3.fabric.generator.wire.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
@@ -461,7 +461,7 @@ public class BootstrapAssemblyFactory {
         OperationResolver operationResolver = new OperationResolverImpl();
         PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
         WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
-        commandGenerators.add(new WireCommandGenerator(wireGenerator, 2));
+        commandGenerators.add(new ReferenceCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator, 2));
 

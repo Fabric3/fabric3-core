@@ -37,6 +37,8 @@
 */
 package org.fabric3.fabric.generator.wire;
 
+import java.util.List;
+
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -46,6 +48,7 @@ import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -55,11 +58,11 @@ import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * Generate commands to attach local wires between components.
+ * Generates a command to bind or attach a wire to a reference.
  *
  * @version $Rev$ $Date$
  */
-public class WireCommandGenerator implements CommandGenerator {
+public class ReferenceCommandGenerator implements CommandGenerator {
     private WireGenerator wireGenerator;
     private int order;
 
@@ -69,7 +72,7 @@ public class WireCommandGenerator implements CommandGenerator {
      * @param wireGenerator the physical wire generator
      * @param order         the order for this command generator
      */
-    public WireCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public ReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
     }
@@ -84,8 +87,13 @@ public class WireCommandGenerator implements CommandGenerator {
         }
         ConnectionCommand command = new ConnectionCommand();
 
-        for (LogicalReference logicalReference : component.getReferences()) {
-            generateWires(logicalReference, command, incremental);
+        for (LogicalReference reference : component.getReferences()) {
+            if (!reference.getWires().isEmpty()) {
+                generateWires(reference, command, incremental);
+            } else {
+                generateBindings(reference, component, incremental, command);
+            }
+
         }
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;
@@ -93,10 +101,64 @@ public class WireCommandGenerator implements CommandGenerator {
         return command;
     }
 
+    private void generateBindings(LogicalReference reference, LogicalComponent<?> component, boolean incremental, ConnectionCommand command)
+            throws GenerationException {
+        boolean reinjection = isBoundReinjection(reference, incremental);
+
+        for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
+            generateBinding(component, logicalBinding, command, incremental, reinjection, false);
+        }
+        if (reference.getServiceContract().getCallbackContract() != null) {
+            boolean bindings = reference.isConcreteBound();
+            if (bindings) {
+                List<LogicalBinding<?>> callbackBindings = reference.getCallbackBindings();
+                if (callbackBindings.size() != 1) {
+                    // if the reference is explicitly bound, it must have one callback binding
+                    String uri = reference.getUri().toString();
+                    throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be " +
+                            "specified on reference: " + uri);
+                }
+                LogicalBinding<?> callbackBinding = callbackBindings.get(0);
+                generateBinding(component, callbackBinding, command, incremental, reinjection, true);
+            }
+        }
+    }
+
+    private void generateBinding(LogicalComponent<?> component,
+                                 LogicalBinding<?> logicalBinding,
+                                 ConnectionCommand command,
+                                 boolean incremental,
+                                 boolean reinjection,
+                                 boolean callback) throws GenerationException {
+        if (LogicalState.MARKED == component.getState() || LogicalState.MARKED == logicalBinding.getState()) {
+            PhysicalWireDefinition wireDefinition;
+            if (callback) {
+                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+            } else {
+                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
+            }
+            DetachWireCommand wireCommand = new DetachWireCommand();
+            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            command.add(wireCommand);
+
+        } else if (LogicalState.NEW == logicalBinding.getState() || !incremental || reinjection) {
+            PhysicalWireDefinition wireDefinition;
+            if (callback) {
+                wireDefinition = wireGenerator.generateBoundReferenceCallback(logicalBinding);
+            } else {
+                wireDefinition = wireGenerator.generateBoundReference(logicalBinding);
+            }
+            AttachWireCommand wireCommand = new AttachWireCommand();
+            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            command.add(wireCommand);
+        }
+
+    }
+
     private void generateWires(LogicalReference reference, ConnectionCommand command, boolean incremental) throws GenerationException {
 
         // if the reference is a multiplicity and one of the wires has changed, all of the wires need to be regenerated for reinjection
-        boolean reinjection = isReinjection(reference, incremental);
+        boolean reinjection = isWireReinjection(reference, incremental);
 
         for (LogicalWire wire : reference.getWires()) {
             LogicalService service = wire.getTarget();
@@ -137,7 +199,7 @@ public class WireCommandGenerator implements CommandGenerator {
 
     }
 
-    private boolean isReinjection(LogicalReference logicalReference, boolean incremental) {
+    private boolean isWireReinjection(LogicalReference logicalReference, boolean incremental) {
         Multiplicity multiplicity = logicalReference.getDefinition().getMultiplicity();
         if (incremental && multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
             for (LogicalWire wire : logicalReference.getWires()) {
@@ -153,5 +215,18 @@ public class WireCommandGenerator implements CommandGenerator {
         }
         return false;
     }
+
+    private boolean isBoundReinjection(LogicalReference logicalReference, boolean incremental) {
+        Multiplicity multiplicity = logicalReference.getDefinition().getMultiplicity();
+        if (incremental && multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
+            for (LogicalBinding<?> binding : logicalReference.getBindings()) {
+                if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
 }

@@ -95,13 +95,8 @@
         <property name="order">2</property>
     </component>
 
-    <component name="WireCommandGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.wire.WireCommandGenerator"/>
-        <property name="order">3</property>
-    </component>
-
-    <component name="BoundReferenceCommandGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.wire.BoundReferenceCommandGenerator"/>
+    <component name="ReferenceCommandGenerator">
+        <f3:implementation.system class="org.fabric3.fabric.generator.wire.ReferenceCommandGenerator"/>
         <property name="order">3</property>
     </component>
 
