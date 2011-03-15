@@ -61,6 +61,7 @@ import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.transport.Transport;
+import org.fabric3.spi.util.UriHelper;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 
@@ -165,9 +166,12 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
     }
 
     public void register(ContainerConfiguration configuration) throws JMSException {
+        URI uri = configuration.getUri();
+        if (containers.containsKey(uri)) {
+            throw new JMSException("Container already registered: " + uri);
+        }
         ConnectionFactory factory = configuration.getFactory();
         TransactionType type = configuration.getType();
-        URI uri = configuration.getUri();
         String clientId = configuration.getClientId();
         boolean durable = configuration.isDurable();
         int cacheLevel = configuration.getCacheLevel();
@@ -189,8 +193,9 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         containers.put(uri, container);
 
         try {
-            String encoded = encode(uri);
-            managementService.export(uri.getFragment(), encoded, "JMS message container", container);
+            String encodedName = encodeName(uri);
+            String encodedGroup = encodeGroup(uri);
+            managementService.export(encodedName, encodedGroup, "JMS message container", container);
         } catch (ManagementException e) {
             throw new JMSException(e.getMessage());
         }
@@ -205,8 +210,9 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         if (container != null) {
             container.shutdown();
             try {
-                String encoded = encode(uri);
-                managementService.export(uri.getFragment(), encoded, "JMS message container", container);
+                String encodedName = encodeName(uri);
+                String encodedGroup = encodeGroup(uri);
+                managementService.remove(encodedName, encodedGroup);
             } catch (ManagementException e) {
                 throw new JMSException(e.getMessage());
             }
@@ -214,7 +220,11 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         }
     }
 
-    private String encode(URI uri) {
+    private String encodeName(URI uri) {
+        return "transports/jms/consumers/" + UriHelper.getBaseName(uri).replace("#", "/").toLowerCase();
+    }
+
+    private String encodeGroup(URI uri) {
         String path = uri.getPath();
         if (path.length() != 0) {
             return "JMS/message containers/" + path.substring(1);
