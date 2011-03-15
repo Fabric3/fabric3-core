@@ -38,22 +38,53 @@
 package org.fabric3.binding.zeromq.model;
 
 import java.net.URI;
+
 import javax.xml.namespace.QName;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * A ZeroMQ binding configuration set on a channel, reference, or composite.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ZeroMQBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 4154636613386389578L;
+	private static final long serialVersionUID = 4154636613386389578L;
 
-    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
+	public static final QName BINDING_0MQ = new QName(Namespaces.F3,
+			"binding.zeromq");
 
-    public ZeroMQBindingDefinition(String name, URI targetUri) {
-        super(name, targetUri, BINDING_0MQ);
-    }             
+	private ZeroMQMetadata metadata;
+
+	public ZeroMQBindingDefinition(ZeroMQMetadata metadata) {
+		this(null, metadata);
+	}
+
+	public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
+		this(bindingName, null, metadata);
+	}
+
+	public ZeroMQBindingDefinition(String bindingName, URI targetUri,
+			ZeroMQMetadata metadata) {
+		super(bindingName, targetUri, BINDING_0MQ);
+		this.metadata = metadata;
+	}
+
+	/**
+	 * @return the metadata
+	 */
+	public ZeroMQMetadata getZerMQMetadata() {
+		return metadata;
+	}
+
+	/**
+	 * @param metadata
+	 *            the metadata to set
+	 */
+	public void setZeroMQMetadata(ZeroMQMetadata metadata) {
+		this.metadata = metadata;
+	}
+
 }

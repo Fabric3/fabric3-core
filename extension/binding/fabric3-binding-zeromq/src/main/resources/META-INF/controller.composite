@@ -6,6 +6,8 @@ Copyright (c) 2009-2011 Metaform Systems
 Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912 http://docs.oasis-open.org/opencsa/sca-assembly/sca-1.1-cd06.xsd "
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
@@ -14,13 +16,19 @@ Public License. See the accompanying license file for details.
            name="ZeroMQControllerExtension"
            autowire="true">
 
+    
+    
     <component name="ZeroMQBindingLoader" f3:key="f3:binding.zeromq">
         <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQBindingLoader"/>
     </component>
-
-    <!--<component name="ZeroMQBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">-->
-        <!--<f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQBindingGenerator"/>-->
-    <!--</component>-->
-
-
+    
+    <component name="ZeroMQBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQBindingGenerator"/>
+    </component>
+    
+    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
+    </component>
+    
+    
 </composite>

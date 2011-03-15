@@ -45,49 +45,65 @@ package org.fabric3.binding.zeromq.introspection;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
 
+import org.easymock.classextension.EasyMock;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.validation.ValidationUtils;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 public class ZeroMQBindingLoaderTestCase extends TestCase {
-    private static final String BINDING_CONFIG = "<binding.zeromq name='zeromq1' uri='testtarget'/>";
+	private static final String BINDING_CONFIG = "<binding.zeromq name='zeromq1'>"
+			+ "<host name='blabla'/>"
+			+ "<port number='123'/>"
+			+ "</binding.zeromq>";
+	// private static final String BINDING_CONFIG =
+	// "<binding.zeromq name='zeromq1'/>";
+	// private static final String BINDING_CONFIG = "<binding.zeromq/>";
+	private XMLInputFactory xmlFactory;
+	private ZeroMQBindingLoader loader;
 
-    private XMLInputFactory xmlFactory;
-    private ZeroMQBindingLoader loader;
+	public void testLoadZeroMQBindingElement() throws Exception {
+		XMLStreamReader reader = createReader(BINDING_CONFIG);
+		IntrospectionContext context = new DefaultIntrospectionContext();
+		ZeroMQBindingDefinition definition = loader.load(reader, context);
 
-    public void testLoadZeroMQBindingElement() throws Exception {
-        XMLStreamReader reader = createReader(BINDING_CONFIG);
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        ZeroMQBindingDefinition definition = loader.load(reader, context);
+		// TODO verify
+		if (context.hasWarnings())
+			System.out.println("Context has following warnings :\n"
+					+ ValidationUtils.outputWarnings(context.getWarnings()));
+		if (context.hasErrors())
+			System.out.println("Context has following errors :\n"
+					+ ValidationUtils.outputErrors(context.getErrors()));
 
-// TODO verify        
-//        assertEquals("testtarget", definition.getTargetUri().toString());
-//        assertEquals("zeromq1", definition.getName());
-    }
+		assertEquals("zeromq1", definition.getName());
+		assertEquals("blabla", definition.getZerMQMetadata().getHost());
+		assertEquals(123, definition.getZerMQMetadata().getPort());
 
+		// assertEquals("testtarget", definition.getTargetUri().toString());
+	}
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        xmlFactory = XMLInputFactory.newInstance();
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        EasyMock.replay(helper);
-        loader = new ZeroMQBindingLoader(helper);
-    }
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		xmlFactory = XMLInputFactory.newInstance();
+		LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
+		EasyMock.replay(helper);
+		loader = new ZeroMQBindingLoader(helper);
+	}
 
-    private XMLStreamReader createReader(String xml) throws XMLStreamException {
-        InputStream in = new ByteArrayInputStream(xml.getBytes());
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(in);
-        reader.nextTag();
-        return reader;
-    }
+	private XMLStreamReader createReader(String xml) throws XMLStreamException {
+		InputStream in = new ByteArrayInputStream(xml.getBytes());
+		XMLStreamReader reader = xmlFactory.createXMLStreamReader(in);
+		reader.nextTag();
+		return reader;
+	}
 
 }

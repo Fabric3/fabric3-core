@@ -18,6 +18,6 @@ Public License. See the accompanying license file for details.
     <f3:provides.capability name="zeromq"/>
 
     <deployable composite="f3:ZeroMQControllerExtension" modes="controller vm"/>
-    <!--<deployable composite="f3:ZeroMQParticipantExtension" modes="participant vm/>-->
+    <deployable composite="f3:ZeroMQParticipantExtension" modes="participant vm"/>
 
 </contribution>

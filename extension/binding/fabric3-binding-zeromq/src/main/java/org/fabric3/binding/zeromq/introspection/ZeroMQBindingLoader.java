@@ -37,41 +37,145 @@
  */
 package org.fabric3.binding.zeromq.introspection;
 
-import java.net.URI;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
- *
+ * 
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> {
-    private final LoaderHelper loaderHelper;
+    private final LoaderHelper       loaderHelper;
+    private static final Set<String> ATTRIBUTES = new HashSet<String>();
+
+    static {
+        ATTRIBUTES.add("uri");
+        ATTRIBUTES.add("host");
+        ATTRIBUTES.add("port");
+        ATTRIBUTES.add("name");
+    }
 
     public ZeroMQBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
     }
 
+    @Override
     public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        String bindingName = null;
-        URI uri = null;
 
-        // TODO implement
+        validateAttributes(reader, context);
 
-        ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition(bindingName, uri);
+        ZeroMQMetadata metadata = null;
+
+        String uriStr = reader.getAttributeValue(null, "uri");
+        String bindingName = reader.getAttributeValue(null, "name");
+
+        if (uriStr != null) {
+            // Add code to actually parse the uri
+            // will be implemented once the basic behavior is in place
+        } else {
+            metadata = new ZeroMQMetadata();
+        }
+
+        ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition(bindingName, metadata);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
-        LoaderUtil.skipToEndElement(reader);
+
+        // now start parsing the xml subtree and see what
+        // elements and set the values inside the ZeroMQMetadata.
+
+        String name;
+        String value;
+        test: while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("host".equalsIgnoreCase(name)) {
+                        value = reader.getAttributeValue(null, "name");
+                        if (value == null)
+                            metadata.setHost("localhost");
+                        else
+                            metadata.setHost(value);
+                    } else if ("port".equalsIgnoreCase(name)) {
+                        value = reader.getAttributeValue(null, "number");
+                        if (value == null) {
+                            InvalidValue error = new InvalidValue("No port set for binding.zmq", reader);
+                            context.addError(error);
+                        }
+                        try {
+                            int p = Integer.parseInt(value);
+                            metadata.setPort(p);
+                        } catch (NumberFormatException e) {
+                            InvalidValue error = new InvalidValue("The port :[" + value + "] is not a number", reader,
+                                    e);
+                            context.addError(error);
+                        }
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if (name.equalsIgnoreCase("binding.zeromq")) {
+                        // System.out.println("Done with parsing binding.zeromq");
+                        break test;
+                    }
+            }
+        }
         return definition;
+
+        // URI uri = null;
+        //
+        // if (bindingName == null || uriStr == null) {
+        // if (uriStr == null) {
+        // MissingAttribute ma = new MissingAttribute(
+        // "Missing Attribute [uri] for binding.zeromq", reader);
+        // context.addError(ma);
+        // }
+        // if (bindingName == null) {
+        // MissingAttribute ma = new MissingAttribute(
+        // "Missing Attribute [name] for binding.zeromq", reader);
+        // context.addError(ma);
+        // }
+        // return null;
+        // }
+        //
+        // try {
+        // uri = new URI(uriStr);
+        // } catch (URISyntaxException e) {
+        // InvalidValue failure = new InvalidValue("Invalid URI :" + uriStr
+        // + " for binding.zeromq", reader, e);
+        // context.addError(failure);
+        // return null;
+        // }
+
+        // ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition(
+        // bindingName, uri);
+        //
+        // loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+        // LoaderUtil.skipToEndElement(reader);
+    }
+
+    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!ATTRIBUTES.contains(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
     }
 }

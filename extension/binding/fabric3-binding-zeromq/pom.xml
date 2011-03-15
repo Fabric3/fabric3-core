@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- Fabric3
- Copyright (c) 2009-2011 Metaform Systems
-
-Fabric3 is licensed under modified terms of the GNU General
-Public License. See the accompanying license file for details.
-
-
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Fabric3 Copyright (c) 2009-2011 Metaform Systems Fabric3 is licensed 
+    under modified terms of the GNU General Public License. See the accompanying 
+    license file for details. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
@@ -20,33 +15,55 @@ Public License. See the accompanying license file for details.
     <name>Fabric3 ZeroMQ Binding Extension</name>
     <description>ZeroMQ Binding Extension</description>
     <packaging>jar</packaging>
-
-    <dependencies>        
+    <dependencies>
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
             <scope>test</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jgroups</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>${woodstox.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*ITest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

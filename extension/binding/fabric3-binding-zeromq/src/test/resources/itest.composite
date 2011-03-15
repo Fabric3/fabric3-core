@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912 
+    http://docs.oasis-open.org/opencsa/sca-assembly/sca-1.1-cd06.xsd"?> xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" -->
+
+<composite
+    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+    xmlns:f3="urn:fabric3.org"
+    name="TestComposite"
+    targetNamespace="urn:fabric3.org">
+
+    <channel
+        name="testingChannel">
+        <f3:binding.zeromq
+            name="testBinding"
+            uri="urn:jb.testing">
+        </f3:binding.zeromq>
+    </channel>
+
+
+</composite>
