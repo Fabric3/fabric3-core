@@ -428,9 +428,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 transportMetadata.remove(name);
             }
             Map<String, RuntimeInstance> instances = runtimes.get(name);
-            instances.remove(runtimeName);
-            if (instances.isEmpty()) {
-                runtimes.remove(name);
+            if (instances != null) {
+                instances.remove(runtimeName);
+                if (instances.isEmpty()) {
+                    runtimes.remove(name);
+                }
             }
             for (TopologyListener listener : topologyListeners) {
                 listener.onLeave(runtimeName);
