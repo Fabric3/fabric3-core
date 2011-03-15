@@ -98,6 +98,9 @@ import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
 @EagerInit
 @Service(interfaces = {JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
+    private static final String STATISTICS = "transports/http/statistics";
+    private static final String SERVLETS = "transports/http/servlets";
+    private static final String SESSIONS = "transports/http/sessions";
     private static final String ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS = "org.eclipse.jetty.util.log.class";
     private static final String HTTP_SERVLETS = "HTTP/servlets";
     private static final int DEFAULT_HTTP_PORT = 8080;
@@ -248,9 +251,9 @@ public class JettyServiceImpl implements JettyService, Transport {
             }
             server.start();
             if (managementService != null) {
-                managementService.export("StatisticsService", "HTTP", "HTTP transport statistics", statisticsHandler);
-                managementService.export("ServletsService", "HTTP", "Servlet management beans", servletHandler);
-                managementService.export("SessionManager", "HTTP", "Servlet session manager", sessionManager);
+                managementService.export(STATISTICS, "HTTP", "HTTP transport statistics", statisticsHandler);
+                managementService.export(SERVLETS, "HTTP", "Servlet management beans", servletHandler);
+                managementService.export(SESSIONS, "HTTP", "Servlet session manager", sessionManager);
             }
             registerHttpMetadata();
         } catch (Exception e) {
@@ -266,9 +269,9 @@ public class JettyServiceImpl implements JettyService, Transport {
             joinLock.notifyAll();
         }
         if (managementService != null) {
-            managementService.remove("StatisticsService", "HTTP");
-            managementService.remove("ServletsService", "HTTP");
-            managementService.remove("SessionManager", "HTTP");
+            managementService.remove(STATISTICS, "HTTP");
+            managementService.remove(SERVLETS, "HTTP");
+            managementService.remove(SESSIONS, "HTTP");
         }
         if (servletHandler != null && servletHandler.getServlets() != null) {
             for (ServletHolder holder : servletHandler.getServlets()) {

@@ -100,8 +100,8 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 /**
  * @version $Rev$ $Date$
  */
-@Management
 @EagerInit
+@Management(name = "ZoneTopologyService", path = "/runtime/federation/zone/view")
 public class JGroupsZoneTopologyService extends AbstractTopologyService implements ZoneTopologyService {
     private static final int NOT_UPDATED = -1;
     private static final int UPDATED = 1;

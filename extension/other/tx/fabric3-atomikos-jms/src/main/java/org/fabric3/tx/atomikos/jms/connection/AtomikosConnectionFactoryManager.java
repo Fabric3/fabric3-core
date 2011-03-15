@@ -38,6 +38,7 @@
 
 package org.fabric3.tx.atomikos.jms.connection;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,7 @@ import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.util.UriHelper;
 
 /**
  * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA
@@ -190,7 +192,7 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         if (managementService != null) {
             ConnectionFactoryWrapper wrapper = new ConnectionFactoryWrapper(bean);
             try {
-                managementService.export(name, JMS_XA_CONNECTION_POOLS, "Configured connection pool", wrapper);
+                managementService.export(encodeName(name), JMS_XA_CONNECTION_POOLS, "Configured connection pool", wrapper);
             } catch (ManagementException e) {
                 throw new FactoryRegistrationException("Error exporting " + name, e);
             }
@@ -217,9 +219,12 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
     private void remove(AtomikosConnectionFactoryBean bean) throws ManagementException {
         if (managementService != null) {
             String name = bean.getUniqueResourceName();
-            managementService.remove(name, JMS_XA_CONNECTION_POOLS);
+            managementService.remove(encodeName(name), JMS_XA_CONNECTION_POOLS);
         }
     }
 
-
+    private String encodeName(String name) {
+        return "transports/jms/pools/" + name.toLowerCase();
+    }
+    
 }

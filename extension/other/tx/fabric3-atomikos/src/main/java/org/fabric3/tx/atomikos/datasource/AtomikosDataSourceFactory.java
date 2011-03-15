@@ -191,7 +191,7 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         String name = bean.getUniqueResourceName();
         try {
             DataSourceWrapper wrapper = new DataSourceWrapper(bean);
-            managementService.export(name, "datasources", "Configured datasources", wrapper);
+            managementService.export(encode(name), "datasources", "Configured datasources", wrapper);
         } catch (ManagementException e) {
             throw new DataSourceFactoryException(e);
         }
@@ -200,10 +200,14 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
     private void unRegisterManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
         try {
             String name = bean.getUniqueResourceName();
-            managementService.remove(name, "datasources");
+            managementService.remove(encode(name), "datasources");
         } catch (ManagementException e) {
             throw new DataSourceFactoryException(e);
         }
+    }
+
+    private String encode(String name) {
+        return "datasources/" + name.toLowerCase();
     }
 
 }

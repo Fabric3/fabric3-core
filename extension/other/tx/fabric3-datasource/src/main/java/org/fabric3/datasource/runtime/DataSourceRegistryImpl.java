@@ -38,9 +38,12 @@
 package org.fabric3.datasource.runtime;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
@@ -48,8 +51,14 @@ import org.fabric3.datasource.spi.DataSourceRegistry;
  *
  * @version $Rev$ $Date$
  */
+@Management(name = "DataSourceRegistry", path = "/runtime/datasources")
 public class DataSourceRegistryImpl implements DataSourceRegistry {
     private Map<String, DataSource> dataSources = new ConcurrentHashMap<String, DataSource>();
+
+    @ManagementOperation(path = "/")
+    public Set<String> getDataSourceNames() {
+        return dataSources.keySet();
+    }
 
     public DataSource getDataSource(String name) {
         return dataSources.get(name);

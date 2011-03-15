@@ -45,6 +45,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
@@ -58,7 +59,10 @@ import org.fabric3.spi.executor.ExecutionException;
 /**
  * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
  */
-@Management(name = "RollbackService", group = "deployment", description = "Performs deployment rollback operations")
+@Management(name = "RollbackService",
+            path = "/runtime/deployment/rollback",
+            group = "deployment",
+            description = "Performs deployment rollback operations")
 public class RollbackServiceImpl implements RollbackService {
     private DeploymentCache cache;
     private CommandExecutorRegistry executorRegistry;
@@ -76,7 +80,7 @@ public class RollbackServiceImpl implements RollbackService {
     }
 
     @SuppressWarnings({"unchecked"})
-    @ManagementOperation(description = "Rollbacks the previous deployment")
+    @ManagementOperation(path = "/", type = OperationType.POST, description = "Rollbacks the previous deployment")
     public void rollback() throws RollbackException {
         DeploymentCommand command = cache.undo();
         if (command == null) {

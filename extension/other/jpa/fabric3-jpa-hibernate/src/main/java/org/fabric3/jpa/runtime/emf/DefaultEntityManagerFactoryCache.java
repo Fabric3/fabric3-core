@@ -140,7 +140,7 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
         statistics.setSessionFactory(((HibernateEntityManagerFactory) factory).getSessionFactory());
         statistics.setStatisticsEnabled(true);
         try {
-            managementService.export(unitName, "Hibernate", "Hibernate session factory MBeans", statistics);
+            managementService.export(encodeName(unitName), "Hibernate", "Hibernate session factory MBeans", statistics);
         } catch (ManagementException e) {
             throw new JpaResolutionException("Error exporting management bean for persistence unit: " + unitName, e);
         }
@@ -152,10 +152,15 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
             return;
         }
         try {
-            managementService.remove(unitName, "Hibernate");
+            managementService.remove(encodeName(unitName), "Hibernate");
         } catch (ManagementException e) {
             monitor.error(unitName, e);
         }
     }
+
+    private String encodeName(String name) {
+        return "hibernate/sessions/" + name;
+    }
+
 
 }

@@ -97,8 +97,8 @@ import org.fabric3.spi.federation.Zone;
  *
  * @version $Rev$ $Date$
  */
-@Management
 @EagerInit
+@Management(name = "DomainTopologyService", path = "/runtime/federation/controller/view")
 public class JGroupsDomainTopologyService extends AbstractTopologyService implements DomainTopologyService {
     private JChannel domainChannel;
     private MessageDispatcher dispatcher;

@@ -194,22 +194,29 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     private void export(WebAppContext context) throws ManagementException {
-        String webAppName = context.getDisplayName();
-        managementService.export("WebAppContext", "webapps/" + webAppName, "web application", context);
+        String webAppName = encodeName(context.getDisplayName());
+        managementService.export(webAppName, "webapps/" + webAppName, "web application", context);
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
-            managementService.export(servletHolder.getName(), "webapps/" + webAppName + "/servlets", "web application", servletHolder);
+            final String group = "webapps/" + webAppName + "/servlets";
+            managementService.export(webAppName+"/"+servletHolder.getName(), group, "web application", servletHolder);
         }
     }
 
     private void remove(WebAppContext context) throws ManagementException {
-        String webAppName = context.getDisplayName();
-        managementService.remove("WebAppContext", "webapps/" + webAppName);
+        String webAppName = encodeName(context.getDisplayName());
+        managementService.remove(webAppName, "webapps/" + webAppName);
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
-            managementService.remove(servletHolder.getName(), "webapps/" + webAppName + "/servlets");
+            final String group = "webapps/" + webAppName + "/servlets";
+            managementService.remove(webAppName+"/"+servletHolder.getName(), group);
         }
     }
+
+    private String encodeName(String name) {
+        return "webapps/" + name.toLowerCase();
+    }
+
 
     private static class Holder {
         private String contextPath;

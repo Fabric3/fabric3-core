@@ -113,7 +113,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         statisticsCache.put(poolName, statistics);
         if (managementService != null) {
             try {
-                managementService.export(poolName, "timer pools", "Timer pools", statistics);
+                managementService.export(encodeName(poolName), "timer pools", "Timer pools", statistics);
             } catch (ManagementException e) {
                 throw new PoolAllocationException("Error allocating pool " + poolName, e);
             }
@@ -127,7 +127,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         }
         if (managementService != null) {
             try {
-                managementService.remove(poolName, "timer pools");
+                managementService.remove(encodeName(poolName), "timer pools");
             } catch (ManagementException e) {
                 throw new PoolAllocationException("Error allocating pool " + poolName, e);
             }
@@ -237,6 +237,11 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
         }
         return executor;
     }
+
+    private String encodeName(String name) {
+        return "timer/pools/" + name.toLowerCase();
+    }
+
 
     /**
      * Implements a recurring task by wrapping an runnable and rescheduling with the executor service after an iteration has completed.
