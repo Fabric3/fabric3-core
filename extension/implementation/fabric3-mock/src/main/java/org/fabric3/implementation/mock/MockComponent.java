@@ -90,6 +90,14 @@ public class MockComponent implements AtomicComponent {
 
     }
 
+    public void startUpdate() {
+
+    }
+
+    public void endUpdate() {
+
+    }
+
     public QName getDeployable() {
         return null;
     }

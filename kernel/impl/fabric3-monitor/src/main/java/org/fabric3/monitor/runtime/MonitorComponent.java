@@ -102,6 +102,14 @@ public class MonitorComponent implements Component {
         dispatcher.stop();
     }
 
+    public void startUpdate() {
+
+    }
+
+    public void endUpdate() {
+
+    }
+
     public void attach(ChannelConnection connection) {
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);

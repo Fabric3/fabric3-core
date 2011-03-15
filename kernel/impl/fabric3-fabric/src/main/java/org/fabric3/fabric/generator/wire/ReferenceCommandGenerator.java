@@ -85,7 +85,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         if (component instanceof LogicalCompositeComponent) {
             return null;
         }
-        ConnectionCommand command = new ConnectionCommand();
+        ConnectionCommand command = new ConnectionCommand(component.getUri());
 
         for (LogicalReference reference : component.getReferences()) {
             if (!reference.getWires().isEmpty()) {

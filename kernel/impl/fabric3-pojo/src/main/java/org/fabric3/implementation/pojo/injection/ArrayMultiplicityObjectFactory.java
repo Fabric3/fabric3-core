@@ -58,6 +58,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory<Object> {
     private List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
     private Class interfaceType;
+    private boolean cleared = true;
 
     public ArrayMultiplicityObjectFactory(Class interfaceType) {
         assert interfaceType != null : "Interface type was null";
@@ -74,10 +75,22 @@ public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory
     }
 
     public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
-       factories.add(objectFactory);
+        if (!cleared) {
+            clear();
+        }
+        factories.add(objectFactory);
     }
 
     public void clear() {
-       factories.clear();
+        factories.clear();
+        cleared = true;
+    }
+
+    public void startUpdate() {
+        cleared = false;
+    }
+
+    public void endUpdate() {
+        cleared = true;
     }
 }

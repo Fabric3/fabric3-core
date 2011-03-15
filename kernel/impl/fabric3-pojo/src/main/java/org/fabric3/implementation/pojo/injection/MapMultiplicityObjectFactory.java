@@ -52,6 +52,7 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
 
     // Object factories
     private Map<Object, ObjectFactory<?>> factories = new ConcurrentHashMap<Object, ObjectFactory<?>>();
+    private boolean cleared = true;
 
     public Map<Object, Object> getInstance() throws ObjectCreationException {
         Map<Object, Object> map = new ConcurrentHashMap<Object, Object>();
@@ -66,11 +67,24 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
             // programming error as null keys are checked during wire resolution
             throw new IllegalArgumentException("Key was null");
         }
+        if (!cleared) {
+            clear();
+        }
         factories.put(key, objectFactory);
     }
 
     public void clear() {
         factories.clear();
+        cleared = true;
     }
+
+    public void startUpdate() {
+        cleared = false;
+    }
+
+    public void endUpdate() {
+        cleared = true;
+    }
+
 
 }

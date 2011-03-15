@@ -50,6 +50,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  */
 public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<Set<?>> {
     private Set<ObjectFactory<?>> factories = new CopyOnWriteArraySet<ObjectFactory<?>>();
+    private boolean cleared = true;
 
     public Set<Object> getInstance() throws ObjectCreationException {
         Set<Object> set = new CopyOnWriteArraySet<Object>();
@@ -60,11 +61,24 @@ public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<S
     }
 
     public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+        if (!cleared) {
+            clear();
+        }
         factories.add(objectFactory);
     }
 
     public void clear() {
         factories.clear();
+        cleared = true;
     }
+
+    public void startUpdate() {
+        cleared = false;
+    }
+
+    public void endUpdate() {
+        cleared = true;
+    }
+
 
 }

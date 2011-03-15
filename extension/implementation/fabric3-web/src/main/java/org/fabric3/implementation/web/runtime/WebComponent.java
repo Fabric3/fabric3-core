@@ -172,6 +172,14 @@ public class WebComponent implements AtomicComponent {
         }
     }
 
+    public void startUpdate() {
+
+    }
+
+    public void endUpdate() {
+
+    }
+
     public void attachWire(String name, InteractionType interactionType, Wire wire) throws ObjectCreationException {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {

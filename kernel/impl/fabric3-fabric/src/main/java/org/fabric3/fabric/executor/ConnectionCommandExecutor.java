@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.executor;
 
+import java.net.URI;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -50,6 +52,8 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.DetachWireCommand;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -61,9 +65,11 @@ import org.fabric3.spi.executor.ExecutionException;
  */
 @EagerInit
 public class ConnectionCommandExecutor implements CommandExecutor<ConnectionCommand> {
+    private ComponentManager componentManager;
     private CommandExecutorRegistry commandExecutorRegistry;
 
-    public ConnectionCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry) {
+    public ConnectionCommandExecutor(@Reference ComponentManager componentManager, @Reference CommandExecutorRegistry commandExecutorRegistry) {
+        this.componentManager = componentManager;
         this.commandExecutorRegistry = commandExecutorRegistry;
     }
 
@@ -73,6 +79,12 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
     }
 
     public void execute(ConnectionCommand command) throws ExecutionException {
+        final URI uri = command.getComponentUri();
+        Component component = componentManager.getComponent(uri);
+        if (component == null) {
+            throw new ExecutionException("Component not found: " + uri);
+        }
+        component.startUpdate();
         // detach must be executed first so wire attachers can drop connection prior to adding new ones
         for (DetachWireCommand detachWireCommand : command.getDetachCommands()) {
             commandExecutorRegistry.execute(detachWireCommand);
@@ -80,6 +92,6 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
         for (AttachWireCommand attachWireCommand : command.getAttachCommands()) {
             commandExecutorRegistry.execute(attachWireCommand);
         }
-
+        component.endUpdate();
     }
 }

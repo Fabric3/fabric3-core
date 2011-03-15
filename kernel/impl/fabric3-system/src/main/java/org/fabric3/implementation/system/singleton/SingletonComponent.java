@@ -118,6 +118,22 @@ public class SingletonComponent implements AtomicComponent {
     public void stop() {
     }
 
+    public void startUpdate() {
+        for (ObjectFactory factory : reinjectionMappings.keySet()) {
+            if (factory instanceof MultiplicityObjectFactory) {
+                ((MultiplicityObjectFactory) factory).startUpdate();
+            }
+        }
+    }
+
+    public void endUpdate() {
+        for (ObjectFactory factory : reinjectionMappings.keySet()) {
+            if (factory instanceof MultiplicityObjectFactory) {
+                ((MultiplicityObjectFactory) factory).endUpdate();
+            }
+        }
+    }
+
     public QName getDeployable() {
         return null;
     }

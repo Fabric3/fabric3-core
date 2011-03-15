@@ -150,6 +150,14 @@ public class SpringComponent implements Component {
         }
     }
 
+    public void startUpdate() {
+
+    }
+
+    public void endUpdate() {
+
+    }
+    
     public ClassLoader getClassLoader() {
         return classLoader;
     }

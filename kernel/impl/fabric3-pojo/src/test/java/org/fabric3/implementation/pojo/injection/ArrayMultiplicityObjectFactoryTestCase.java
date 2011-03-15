@@ -34,77 +34,43 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.component;
+*/
+package org.fabric3.implementation.pojo.injection;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
+import java.lang.reflect.Array;
 
-import org.fabric3.host.monitor.Monitorable;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * The runtime instantiation of an SCA component
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface Component extends Monitorable {
+public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
 
-    /**
-     * Returns the QName of the deployable composite this component was deployed with.
-     *
-     * @return the group containing this component
-     */
-    QName getDeployable();
+    public void testReinjection() throws Exception {
+        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
+        EasyMock.replay(mockFactory);
 
-    /**
-     * Returns the component URI.
-     *
-     * @return the component URI
-     */
-    URI getUri();
+        ArrayMultiplicityObjectFactory factory = new ArrayMultiplicityObjectFactory(Object.class);
+        factory.addObjectFactory(mockFactory, null);
+        
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory, null);
+        factory.endUpdate();
+        Object instance = factory.getInstance();
+        assertEquals(1, Array.getLength(instance));
 
-    /**
-     * Returns the classloader the component is associated with.
-     *
-     * @return the classloader the component is associated with.
-     */
-    URI getClassLoaderId();
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory, null);
+        factory.endUpdate();
+        instance = factory.getInstance();
+        assertEquals(1, Array.getLength(instance));
 
-    /**
-     * Sets the classloader the component is associated with.
-     *
-     * @param classLoaderId the classloader the component is associated with.
-     */
-    void setClassLoaderId(URI classLoaderId);
+        EasyMock.verify(mockFactory);
+    }
 
-    /**
-     * Starts the component;
-     *
-     * @throws ComponentException if an error occurs starting the component
-     */
-    void start() throws ComponentException;
-
-    /**
-     * Stops the component.
-     *
-     * @throws ComponentException if an error occurs stopping the component
-     */
-    void stop() throws ComponentException;
-
-    /**
-     * Used to signal the start of a component configuration update.
-     */
-    void startUpdate();
-
-    /**
-     * Used to signal when a component configuration update is complete.
-     */
-    void endUpdate();
 
 }

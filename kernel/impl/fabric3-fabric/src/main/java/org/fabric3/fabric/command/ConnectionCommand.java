@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.command;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -44,22 +45,28 @@ import java.util.ListIterator;
 import org.fabric3.spi.command.CompensatableCommand;
 
 /**
- * Contains commands for attaching and detaching wires.
+ * Contains commands for attaching and detaching wires for a component.
  *
  * @version $Rev$ $Date$
  */
 public class ConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2313380946362271104L;
+    private URI componentUri;
     private List<AttachWireCommand> attachCommands;
     private List<DetachWireCommand> detachCommands;
 
-    public ConnectionCommand() {
+    public ConnectionCommand(URI componentUri) {
+        this();
+        this.componentUri = componentUri;
+    }
+
+    protected ConnectionCommand() {
         attachCommands = new ArrayList<AttachWireCommand>();
         detachCommands = new ArrayList<DetachWireCommand>();
     }
 
     public ConnectionCommand getCompensatingCommand() {
-        ConnectionCommand compensating = new ConnectionCommand();
+        ConnectionCommand compensating = new ConnectionCommand(componentUri);
         if (!attachCommands.isEmpty()){
             ListIterator<AttachWireCommand> iter = attachCommands.listIterator(attachCommands.size());
             while(iter.hasPrevious()){
@@ -78,6 +85,10 @@ public class ConnectionCommand implements CompensatableCommand {
         }
 
         return compensating;
+    }
+
+    public URI getComponentUri() {
+        return componentUri;
     }
 
     public List<AttachWireCommand> getAttachCommands() {

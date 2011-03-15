@@ -99,7 +99,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             return null;
         }
 
-        ConnectionCommand command = new ConnectionCommand();
+        ConnectionCommand command = new ConnectionCommand(component.getUri());
         generatePhysicalWires(component, command, incremental);
         if (command.getAttachCommands().isEmpty() && command.getDetachCommands().isEmpty()) {
             return null;

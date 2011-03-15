@@ -49,15 +49,28 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
+ * Creates configured instances of a component implementation.
+ *
  * @version $Rev$ $Date$
  */
 public interface InstanceFactoryProvider {
+
     /**
      * Return the implementation class.
      *
      * @return the implementation class.
      */
     Class<?> getImplementationClass();
+
+    /**
+     * Used to signal the start of a component configuration update.
+     */
+    void startUpdate();
+
+    /**
+     * Used to signal when a component configuration update is complete.
+     */
+    void endUpdate();
 
     /**
      * Sets an object factory for an injection site.
@@ -70,7 +83,7 @@ public interface InstanceFactoryProvider {
     /**
      * Sets an object factory for an injection site that is associated with a key.
      *
-     * @param name     the injection site
+     * @param name          the injection site
      * @param objectFactory the object factory
      * @param key           the key for Map-based injection sites
      */

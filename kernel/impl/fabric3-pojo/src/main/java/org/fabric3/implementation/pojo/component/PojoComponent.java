@@ -101,6 +101,14 @@ public abstract class PojoComponent implements AtomicComponent {
         scopeContainer.unregister(this);
     }
 
+    public void startUpdate() {
+       provider.startUpdate();
+    }
+
+    public void endUpdate() {
+        provider.endUpdate();
+    }
+
     public URI getUri() {
         return uri;
     }

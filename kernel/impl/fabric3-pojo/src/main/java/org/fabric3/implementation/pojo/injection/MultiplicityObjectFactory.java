@@ -43,7 +43,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * Common interface for all multiplicity object factories.
  *
  * @version $Rev$ $Date$
- * @param <T>
+ * @param <T> the instance type
  */
 public interface MultiplicityObjectFactory<T> extends ObjectFactory<T> {
 
@@ -59,4 +59,15 @@ public interface MultiplicityObjectFactory<T> extends ObjectFactory<T> {
      * Clears the contents of the object factory
      */
     void clear();
+
+    /**
+     * Used to signal the start of an atomic update to the object factory.
+     */
+    void startUpdate();
+
+    /**
+     * Used to signal when an atomic update is complete.
+     */
+    void endUpdate();
+
 }

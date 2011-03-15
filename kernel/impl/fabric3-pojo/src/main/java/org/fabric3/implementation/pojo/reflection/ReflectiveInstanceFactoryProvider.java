@@ -108,6 +108,34 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
 
     }
 
+    public void startUpdate() {
+        for (Map.Entry<Injectable, ObjectFactory<?>> entry : factories.entrySet()) {
+            // signal to multiplicity factories that previous contents should be overwritten if the factory is updated (e.g. during reinjection)
+            Injectable injectable = entry.getKey();
+            ObjectFactory<?> factory = entry.getValue();
+            if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
+                if (factory instanceof MultiplicityObjectFactory) {
+                    MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
+                    multiplicityObjectFactory.startUpdate();
+                }
+            }
+        }
+    }
+
+    public void endUpdate() {
+        for (Map.Entry<Injectable, ObjectFactory<?>> entry : factories.entrySet()) {
+            // signal to multiplicity factories updates are complete
+            Injectable injectable = entry.getKey();
+            ObjectFactory<?> factory = entry.getValue();
+            if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
+                if (factory instanceof MultiplicityObjectFactory) {
+                    MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
+                    multiplicityObjectFactory.endUpdate();
+                }
+            }
+        }
+    }
+
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
         setObjectFactory(injectable, objectFactory, null);
     }

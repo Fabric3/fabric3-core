@@ -305,7 +305,7 @@ public class BootstrapAssemblyFactory {
         commandRegistry.register(BuildComponentCommand.class, executor);
         commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
-        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(commandRegistry));
+        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
         commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
         commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry));
 
