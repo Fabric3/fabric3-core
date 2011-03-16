@@ -42,7 +42,7 @@ import java.util.List;
 import org.fabric3.spi.contribution.Contribution;
 
 /**
- * Processes contribution dependencies
+ * Orders contribution dependencies.
  *
  * @version $Rev$ $Date$
  */
