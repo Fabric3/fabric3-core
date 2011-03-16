@@ -65,8 +65,11 @@ public abstract class AbstractResourceService implements ResourceListener {
             // don't track requests for this instance
             return;
         }
-        if (!mapping.getPath().startsWith(getResourcePath() + "/")) {
+        String path = getResourcePath() + "/";
+        if (!mapping.getPath().startsWith(path)) {
             // resource is not under specified path, return
+            return;
+        } else if (!mapping.isParameterized() && mapping.getPath().substring(path.length()).contains("/")) {
             return;
         }
         mapping = convertMapping(mapping);
@@ -97,7 +100,7 @@ public abstract class AbstractResourceService implements ResourceListener {
             String path;
             if ("/".equals(mapping.getRelativePath())) {
                 // root resource, use the path setting
-                path = mapping.getPath().substring(getResourcePath().length() +1);
+                path = mapping.getPath().substring(getResourcePath().length() + 1);
             } else {
                 path = mapping.getRelativePath().substring(getResourcePath().length() + 1);
             }
@@ -135,4 +138,7 @@ public abstract class AbstractResourceService implements ResourceListener {
         return mapping;
     }
 
+    protected List<ResourceMapping> getSubresources() {
+        return subresources;
+    }
 }
