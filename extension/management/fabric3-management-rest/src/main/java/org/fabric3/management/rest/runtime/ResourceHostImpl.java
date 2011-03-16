@@ -179,7 +179,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } else if (verb == Verb.DELETE) {
             register(mapping, deleteMappings);
         }
-        System.out.println("-->" +mapping.getPath());
+        //System.out.println("-->" +mapping.getPath());
     }
 
     public void unregister(String identifier) {
