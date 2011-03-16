@@ -117,7 +117,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
      * @throws BuilderException if an exception building is encountered
      */
     @SuppressWarnings("unchecked")
-    public Component build(PhysicalComponentDefinition definition) throws BuilderException {
+    private Component build(PhysicalComponentDefinition definition) throws BuilderException {
 
         ComponentBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
