@@ -35,55 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.spi;
+package org.fabric3.management.rest.framework;
 
 /**
- * Responsible for dispatching requests to a managed resource.
+ * A resource service that is created at runtime, without an explicit configuration being provided. Dynamic resources are created for parents of a
+ * sub-resource so that they are navigable via hyperlinks from the /domain, /runtime, or /zone hierarchies.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
-public interface ResourceHost {
+public class DynamicResourceService extends AbstractResourceService {
+    private String path;
 
-    /**
-     * Returns true if the path is registered.
-     *
-     * @param path the resource path
-     * @param verb the HTTP verb for the path as paths may be registered for multiple verbs
-     * @return true if the path is registered
-     */
-    boolean isPathRegistered(String path, Verb verb);
+    public DynamicResourceService(String path) {
+        this.path = path;
+    }
 
-    /**
-     * Registers a mapping, making the managed resource available via HTTP.
-     *
-     * @param mapping the mapping
-     * @throws DuplicateResourceNameException if a managed resource has already been registered for the path
-     */
-    void register(ResourceMapping mapping) throws DuplicateResourceNameException;
-
-    /**
-     * Removes mappings for the given resource identifier. Multiple path/verb associations may be removed.
-     *
-     * @param identifier the identifier
-     */
-    void unregister(String identifier);
-
-    /**
-     * Removes a mapping for the given path.
-     *
-     * @param path the resource path
-     * @param verb the HTTP verb for the path as paths may be registered for multiple verbs
-     */
-    void unregisterPath(String path, Verb verb);
-
-    /**
-     * Dispatches a request directly to a managed resource.
-     *
-     * @param path   the resource path
-     * @param verb   the HTTP verb
-     * @param params the resource parameters
-     */
-    void dispatch(String path, Verb verb, Object[] params);
-
-
+    @Override
+    protected String getResourcePath() {
+        return path;
+    }
 }

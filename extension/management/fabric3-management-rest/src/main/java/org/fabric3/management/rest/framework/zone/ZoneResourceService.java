@@ -137,7 +137,7 @@ public class ZoneResourceService implements ResourceListener {
             return;
         }
 
-        String identifier = "zone" + mapping.getIdentifier();
+        String identifier = "zone" + mapping.getPath();
         String path = "/zone" + mapping.getPath();
         String relativePath;
         if ("/".equals(mapping.getRelativePath())) {
@@ -154,6 +154,10 @@ public class ZoneResourceService implements ResourceListener {
         ResourceMapping newMapping = new ResourceMapping(identifier, path, relativePath, verb, method, instance, true, pair, roles);
         subresources.add(newMapping);
         try {
+            if (resourceHost.isPathRegistered(path, verb)) {
+                // a dynamic resource may have been previously registered - remove it
+                resourceHost.unregisterPath(path, verb);
+            }
             resourceHost.register(newMapping);
             registered.add(newMapping);
         } catch (DuplicateResourceNameException e) {

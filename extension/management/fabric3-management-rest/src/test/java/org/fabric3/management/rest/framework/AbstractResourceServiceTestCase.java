@@ -49,6 +49,7 @@ import org.fabric3.management.rest.spi.Verb;
  */
 public class AbstractResourceServiceTestCase extends TestCase {
     private AbstractResourceService service;
+    private AbstractResourceService hierarchicalPathService;
 
     public void testRootMapping() throws Exception {
         Method method = getClass().getDeclaredMethod("method");
@@ -71,6 +72,27 @@ public class AbstractResourceServiceTestCase extends TestCase {
         assertFalse(service.getSubresources().contains(mapping));
     }
 
+    public void testHierarchicalRootMapping() throws Exception {
+        Method method = getClass().getDeclaredMethod("method");
+        ResourceMapping mapping = new ResourceMapping("foo", "/runtime/subpath/foo", "/", Verb.GET, method, null, null, null);
+        hierarchicalPathService.onRootResourceExport(mapping);
+        assertTrue(hierarchicalPathService.getSubresources().contains(mapping));
+    }
+
+    public void testHierarchicalParameterizedMapping() throws Exception {
+        Method method = getClass().getDeclaredMethod("paramMethod", String.class);
+        ResourceMapping mapping = new ResourceMapping("foo", "/runtime/subpath/foo/param", "/", Verb.GET, method, null, null, null);
+        hierarchicalPathService.onRootResourceExport(mapping);
+        assertTrue(hierarchicalPathService.getSubresources().contains(mapping));
+    }
+
+    public void testHierarchicalSubMapping() throws Exception {
+        Method method = getClass().getDeclaredMethod("method");
+        ResourceMapping mapping = new ResourceMapping("foo", "/runtime/subpath/foo/bar", "/", Verb.GET, method, null, null, null);
+        hierarchicalPathService.onRootResourceExport(mapping);
+        assertFalse(hierarchicalPathService.getSubresources().contains(mapping));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
 
@@ -82,6 +104,16 @@ public class AbstractResourceServiceTestCase extends TestCase {
             }
 
         };
+
+        hierarchicalPathService = new AbstractResourceService() {
+
+            @Override
+            protected String getResourcePath() {
+                return "/runtime/subpath";
+            }
+
+        };
+
     }
 
     private void method() {

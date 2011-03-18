@@ -168,6 +168,18 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     public void init() {
     }
 
+    public boolean isPathRegistered(String path, Verb verb) {
+        if (verb == Verb.GET) {
+            return getMappings.containsKey(path);
+        } else if (verb == Verb.POST) {
+            return postMappings.containsKey(path);
+        } else if (verb == Verb.PUT) {
+            return putMappings.containsKey(path);
+        } else {
+            return verb == Verb.DELETE && deleteMappings.containsKey(path);
+        }
+    }
+
     public void register(ResourceMapping mapping) throws DuplicateResourceNameException {
         Verb verb = mapping.getVerb();
         if (verb == Verb.GET) {
@@ -179,7 +191,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } else if (verb == Verb.DELETE) {
             register(mapping, deleteMappings);
         }
-        //System.out.println("-->" +mapping.getPath());
     }
 
     public void unregister(String identifier) {
@@ -199,6 +210,24 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             } else if (verb == Verb.DELETE) {
                 deleteMappings.remove(path);
             }
+        }
+    }
+
+    public void unregisterPath(String path, Verb verb) {
+        ResourceMapping mapping;
+        if (verb == Verb.GET) {
+            mapping = getMappings.remove(path);
+        } else if (verb == Verb.POST) {
+            mapping = postMappings.remove(path);
+        } else if (verb == Verb.PUT) {
+            mapping = putMappings.remove(path);
+        } else {
+            mapping = deleteMappings.remove(path);
+        }
+        if (mapping != null) {
+            String identifier = mapping.getIdentifier();
+            List<ResourceMapping> mappings = registered.get(identifier);
+            mappings.remove(mapping);
         }
     }
 
@@ -263,7 +292,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
         return list;
     }
-
 
     /**
      * Resolves the resource mapping for a request and handles it. An exact path match will be attempted first when resolving the mapping and, if not
@@ -356,7 +384,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 return mapping;
             }
             start = false;
-            String current = getBasePath(path);
+            String current = PathHelper.getParentPath(path);
             if (path.equals(current)) {
                 // reached the path hierarchy root
                 break;
@@ -568,20 +596,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
     }
 
-
-    /**
-     * Removes a trailing parameter from a path. For example, the base path of messages/message/1 is messages/message.
-     *
-     * @param path the path
-     * @return the base path
-     */
-    private String getBasePath(String path) {
-        int pos = path.lastIndexOf("/");
-        if (pos > 0) {
-            path = path.substring(0, pos);
-        }
-        return path;
-    }
 
     /**
      * Copies the current request to a serializable representation used during replication.

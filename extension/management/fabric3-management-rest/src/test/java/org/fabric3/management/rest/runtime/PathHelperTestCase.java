@@ -35,55 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.spi;
+package org.fabric3.management.rest.runtime;
+
+import junit.framework.TestCase;
 
 /**
- * Responsible for dispatching requests to a managed resource.
- *
  * @version $Rev$ $Date$
  */
-public interface ResourceHost {
+public final class PathHelperTestCase extends TestCase {
 
-    /**
-     * Returns true if the path is registered.
-     *
-     * @param path the resource path
-     * @param verb the HTTP verb for the path as paths may be registered for multiple verbs
-     * @return true if the path is registered
-     */
-    boolean isPathRegistered(String path, Verb verb);
+    public void testNoTrailing() throws Exception {
+        assertEquals("foo/bar", PathHelper.getParentPath("foo/bar/baz"));
+    }
 
-    /**
-     * Registers a mapping, making the managed resource available via HTTP.
-     *
-     * @param mapping the mapping
-     * @throws DuplicateResourceNameException if a managed resource has already been registered for the path
-     */
-    void register(ResourceMapping mapping) throws DuplicateResourceNameException;
+    public void testTrailing() throws Exception {
+        assertEquals("foo/bar/baz", PathHelper.getParentPath("foo/bar/baz/"));
+    }
 
-    /**
-     * Removes mappings for the given resource identifier. Multiple path/verb associations may be removed.
-     *
-     * @param identifier the identifier
-     */
-    void unregister(String identifier);
-
-    /**
-     * Removes a mapping for the given path.
-     *
-     * @param path the resource path
-     * @param verb the HTTP verb for the path as paths may be registered for multiple verbs
-     */
-    void unregisterPath(String path, Verb verb);
-
-    /**
-     * Dispatches a request directly to a managed resource.
-     *
-     * @param path   the resource path
-     * @param verb   the HTTP verb
-     * @param params the resource parameters
-     */
-    void dispatch(String path, Verb verb, Object[] params);
-
+    public void testRoot() throws Exception {
+        assertEquals("/", PathHelper.getParentPath("/"));
+    }
 
 }

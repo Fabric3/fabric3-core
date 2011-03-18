@@ -45,7 +45,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osoa.sca.annotations.Init;
@@ -56,6 +58,7 @@ import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.host.runtime.ParseException;
+import org.fabric3.management.rest.framework.DynamicResourceService;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
@@ -71,6 +74,12 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
+ * Responsible for exporting components and instances as management resources.
+ * <p/>
+ * As part of this process, a fully-navigable management resource hierarchy will be dynamically created. For example, if a component is exported to
+ * /runtime/foo/bar and a /runtime/foo resource is not configured, one will be created dynamically with a link to runtime/foo/bar. If a configured
+ * resource is later exported, any previously generated dynamic resource will be overriden.
+ *
  * @version $Rev$ $Date$
  */
 public class RestfulManagementExtension implements ManagementExtension {
@@ -83,10 +92,13 @@ public class RestfulManagementExtension implements ManagementExtension {
     private TransformerPairService pairService;
 
     private Method rootResourceMethod;
+    private Method dynamicGetResourceMethod;
+
     private ResourceHost resourceHost;
     private ManagementSecurity security = ManagementSecurity.DISABLED;
 
     private List<ResourceListener> listeners = Collections.emptyList();
+    private Map<String, ResourceMapping> dynamicResources = new ConcurrentHashMap<String, ResourceMapping>();
 
     public RestfulManagementExtension(@Reference TransformerPairService pairService,
                                       @Reference Marshaller marshaller,
@@ -117,6 +129,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     @Init()
     public void init() throws NoSuchMethodException {
         rootResourceMethod = ResourceInvoker.class.getMethod("invoke", HttpServletRequest.class);
+        dynamicGetResourceMethod = DynamicResourceService.class.getMethod("getResource", HttpServletRequest.class);
     }
 
     public String getType() {
@@ -139,7 +152,6 @@ public class RestfulManagementExtension implements ManagementExtension {
                 Method method = signature.getMethod(clazz);
                 String path = operationInfo.getPath();
                 if (ROOT_PATH.equals(path)) {
-                    // TODO support override of root resource path
                     rootResourcePathOverride = true;
                 }
                 OperationType type = operationInfo.getOperationType();
@@ -158,6 +170,12 @@ public class RestfulManagementExtension implements ManagementExtension {
                 ResourceMapping mapping = createMapping(identifier, root, path, method, verb, objectFactory, pair, roles);
                 if (Verb.GET == mapping.getVerb()) {
                     getMappings.add(mapping);
+                }
+
+                createDynamicResources(mapping);
+
+                if (dynamicResources.remove(mapping.getPath()) != null) {
+                    resourceHost.unregisterPath(mapping.getPath(), mapping.getVerb());
                 }
                 resourceHost.register(mapping);
                 notifyExport(path, mapping);
@@ -182,11 +200,10 @@ public class RestfulManagementExtension implements ManagementExtension {
             Set<Role> writeRoles = new HashSet<Role>();
             parseRoles(instance, readRoles, writeRoles);
 
-            List<Method> methods = Arrays.asList(instance.getClass().getMethods());
-
             boolean rootResourcePathOverride = false;
             List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
 
+            List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             for (Method method : methods) {
                 Set<Role> roles;
                 ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
@@ -207,11 +224,20 @@ public class RestfulManagementExtension implements ManagementExtension {
                         }
                     }
 
+                    String path = opAnnotation.path();
+                    if (ROOT_PATH.equals(path)) {
+                        rootResourcePathOverride = true;
+                    }
+
                     TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
                     ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, pair, roles);
+
                     if (Verb.GET == mapping.getVerb()) {
                         getMappings.add(mapping);
                     }
+
+                    createDynamicResources(mapping);
+
                     resourceHost.register(mapping);
                     notifyExport(mapping.getRelativePath(), mapping);
 
@@ -228,7 +254,6 @@ public class RestfulManagementExtension implements ManagementExtension {
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
         resourceHost.unregister(componentUri.toString());
     }
-
 
     public void remove(String name, String group) throws ManagementException {
         resourceHost.unregister(name);
@@ -324,10 +349,15 @@ public class RestfulManagementExtension implements ManagementExtension {
             root = root.toLowerCase();
             Set<Role> roles = Collections.emptySet();
             ResourceMapping mapping = new ResourceMapping(identifier, root, root, Verb.GET, rootResourceMethod, invoker, pair, roles);
+            ResourceMapping previous = dynamicResources.remove(root);
+            if (previous != null) {
+                resourceHost.unregisterPath(previous.getPath(), Verb.GET);
+            }
             resourceHost.register(mapping);
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);
             }
+            createDynamicResources(mapping);
         } catch (TransformationException e) {
             throw new ManagementException(e);
         }
@@ -362,5 +392,75 @@ public class RestfulManagementExtension implements ManagementExtension {
             writeRoles.add(new Role(Management.FABRIC3_ADMIN_ROLE));
         }
     }
+
+    /**
+     * Creates parent resources dynamically for the given mapping if they do not already exist.
+     *
+     * @param mapping the mapping
+     * @throws ManagementException if there was an error creating parent resources
+     */
+    private void createDynamicResources(ResourceMapping mapping) throws ManagementException {
+        ResourceMapping previous = dynamicResources.remove(mapping.getPath());
+        if (previous != null) {
+            // A dynamic resource service was already registered. Remove it since it is being replaced by a configured resource service.
+            resourceHost.unregisterPath(previous.getPath(), previous.getVerb());
+        } else {
+            List<ResourceMapping> dynamicMappings = createDynamicResourceMappings(mapping);
+            for (ResourceMapping dynamicMapping : dynamicMappings) {
+                // add the resources as listeners first as parents need to be notified of children in order to generate links during registration
+                listeners.add((ResourceListener) dynamicMapping.getInstance());
+            }
+            for (ResourceMapping dynamicMapping : dynamicMappings) {
+                if (!resourceHost.isPathRegistered(dynamicMapping.getPath(), dynamicMapping.getVerb())) {
+                    resourceHost.register(dynamicMapping);
+                    notifyExport(dynamicMapping.getRelativePath(), dynamicMapping);
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a collection of parent resources dynamically for the given mapping if they do not already exist.
+     *
+     * @param mapping the mapping
+     * @return the an ordered collection of resources starting with the top-most resource in the hierarchy
+     */
+    private List<ResourceMapping> createDynamicResourceMappings(ResourceMapping mapping) {
+        String path = mapping.getPath();
+        List<ResourceMapping> mappings = new ArrayList<ResourceMapping>();
+        while (path != null) {
+            String current = PathHelper.getParentPath(path);
+            if (path.equals(current)) {
+                // reached the path hierarchy root or the top
+                break;
+            } else if (dynamicResources.containsKey(current)) {
+                break;
+            } else if (resourceHost.isPathRegistered(current, Verb.GET)) {
+                break;
+            }
+            path = current;
+            try {
+                DynamicResourceService resourceService = new DynamicResourceService(current);
+                List<Method> list = Collections.singletonList(dynamicGetResourceMethod);
+                TransformerPair pair = pairService.getTransformerPair(list, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
+                ResourceMapping dynamicMapping = new ResourceMapping(current,
+                                                                     current,
+                                                                     ROOT_PATH,
+                                                                     Verb.GET,
+                                                                     dynamicGetResourceMethod,
+                                                                     resourceService,
+                                                                     pair,
+                                                                     mapping.getRoles());
+                mappings.add(dynamicMapping);
+                dynamicResources.put(dynamicMapping.getPath(), dynamicMapping);
+            } catch (TransformationException e) {
+                throw new AssertionError(e);
+            }
+        }
+        // reverse the collection to register the top-most parent first
+        Collections.reverse(mappings);
+        return mappings;
+    }
+
 
 }

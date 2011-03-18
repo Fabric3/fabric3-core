@@ -73,6 +73,7 @@ public abstract class AbstractResourceService implements ResourceListener {
             return;
         }
         mapping = convertMapping(mapping);
+        subresources.remove(mapping);
         subresources.add(mapping);
     }
 
