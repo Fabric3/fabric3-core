@@ -44,6 +44,8 @@
 package org.fabric3.fabric.executor;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
@@ -55,6 +57,7 @@ import org.fabric3.fabric.builder.BuilderNotFoundException;
 import org.fabric3.fabric.command.BuildComponentCommand;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
 import org.fabric3.spi.component.Component;
@@ -74,6 +77,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
     private ComponentManager componentManager;
     private CommandExecutorRegistry commandExecutorRegistry;
     private Map<Class<?>, ComponentBuilder> builders;
+    private List<ComponentBuilderListener> listeners = Collections.emptyList();
 
     @Constructor
     public BuildComponentCommandExecutor(@Reference ComponentManager componentManager, @Reference CommandExecutorRegistry commandExecutorRegistry) {
@@ -95,6 +99,11 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
         this.builders = builders;
     }
 
+    @Reference(required = false)
+    public void setListeners(List<ComponentBuilderListener> listeners) {
+        this.listeners = listeners;
+    }
+
     public void execute(BuildComponentCommand command) throws ExecutionException {
         try {
             PhysicalComponentDefinition definition = command.getDefinition();
@@ -102,6 +111,9 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
             URI classLoaderId = definition.getClassLoaderId();
             component.setClassLoaderId(classLoaderId);
             componentManager.register(component);
+            for (ComponentBuilderListener listener : listeners) {
+                listener.onBuild(component, definition);
+            }
         } catch (BuilderException e) {
             throw new ExecutionException(e.getMessage(), e);
         } catch (RegistrationException e) {
@@ -124,7 +136,6 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
             throw new BuilderNotFoundException("Builder not found for " + definition.getClass().getName());
         }
         return builder.build(definition);
-
     }
 
 

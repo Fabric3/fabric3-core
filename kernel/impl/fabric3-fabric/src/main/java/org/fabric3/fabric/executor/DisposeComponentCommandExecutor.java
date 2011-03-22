@@ -44,6 +44,8 @@
 package org.fabric3.fabric.executor;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.EagerInit;
@@ -54,6 +56,7 @@ import org.fabric3.fabric.builder.BuilderNotFoundException;
 import org.fabric3.fabric.command.DisposeComponentCommand;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
 import org.fabric3.spi.component.Component;
@@ -72,6 +75,7 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
     private CommandExecutorRegistry executorRegistry;
     private ComponentManager componentManager;
     private Map<Class<?>, ComponentBuilder> builders;
+    private List<ComponentBuilderListener> listeners = Collections.emptyList();
 
     public DisposeComponentCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ComponentManager componentManager) {
         this.executorRegistry = executorRegistry;
@@ -81,6 +85,11 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
     @Reference(required = false)
     public void setBuilders(Map<Class<?>, ComponentBuilder> builders) {
         this.builders = builders;
+    }
+
+    @Reference(required = false)
+    public void setListeners(List<ComponentBuilderListener> listeners) {
+        this.listeners = listeners;
     }
 
     @Init
@@ -99,6 +108,9 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
                 throw new BuilderNotFoundException("Builder not found for " + definition.getClass().getName());
             }
             builder.dispose(definition, component);
+            for (ComponentBuilderListener listener : listeners) {
+                listener.onDispose(component, definition);
+            }
         } catch (RegistrationException e) {
             throw new ExecutionException("Unexpected exception un-registering component: " + uri, e);
         } catch (BuilderNotFoundException e) {
