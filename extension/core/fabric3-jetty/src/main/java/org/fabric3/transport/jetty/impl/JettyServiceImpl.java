@@ -98,9 +98,10 @@ import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
 @EagerInit
 @Service(interfaces = {JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
-    private static final String STATISTICS = "transports/http/statistics";
-    private static final String SERVLETS = "transports/http/servlets";
-    private static final String SESSIONS = "transports/http/sessions";
+    private static final String STATISTICS = "transports/http/container/statistics";
+    private static final String MAPPINGS = "transports/http/container/mappings";
+    private static final String SERVLETS = "transports/http/container/servlets";
+    private static final String SESSIONS = "transports/http/container/sessions";
     private static final String ORG_ECLIPSE_JETTY_UTIL_LOG_CLASS = "org.eclipse.jetty.util.log.class";
     private static final String HTTP_SERVLETS = "HTTP/servlets";
     private static final int DEFAULT_HTTP_PORT = 8080;
@@ -252,7 +253,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             server.start();
             if (managementService != null) {
                 managementService.export(STATISTICS, "HTTP", "HTTP transport statistics", statisticsHandler);
-                managementService.export(SERVLETS, "HTTP", "Servlet management beans", servletHandler);
+                managementService.export(MAPPINGS, "HTTP", "Servlet management beans", servletHandler);
                 managementService.export(SESSIONS, "HTTP", "Servlet session manager", sessionManager);
             }
             registerHttpMetadata();
@@ -270,7 +271,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
         if (managementService != null) {
             managementService.remove(STATISTICS, "HTTP");
-            managementService.remove(SERVLETS, "HTTP");
+            managementService.remove(MAPPINGS, "HTTP");
             managementService.remove(SESSIONS, "HTTP");
         }
         if (servletHandler != null && servletHandler.getServlets() != null) {
@@ -347,10 +348,24 @@ public class JettyServiceImpl implements JettyService, Transport {
         contextHandler.addServlet(holder, path);
         if (managementService != null) {
             try {
-                managementService.export(holder.getName(), HTTP_SERVLETS, "Registered transport servlets", holder);
+                ServletManager manager = new ServletManager(holder);
+                managementService.export(encode(path), HTTP_SERVLETS, "Registered transport servlets", manager);
             } catch (ManagementException e) {
                 monitor.exception("Exception exporting servlet management object:" + holder.getContextPath(), e);
             }
+        }
+    }
+
+    private String encode(String path) {
+        if (path.endsWith("/*")) {
+            path = path.substring(0, path.length() - 2);
+        } else if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        if (path.startsWith("/")) {
+            return SERVLETS + "/" + path.substring(1).replace("/", "-");
+        } else {
+            return SERVLETS + "/" + path.replace("/", "-");
         }
     }
 
@@ -376,7 +391,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 try {
                     servlet = holder.getServlet();
                     if (managementService != null) {
-                        managementService.remove(holder.getName(), HTTP_SERVLETS);
+                        managementService.remove(encode(path), HTTP_SERVLETS);
                     }
                 } catch (ServletException e) {
                     monitor.exception("Exception getting servlet:" + holder.getContextPath(), e);
