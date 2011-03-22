@@ -46,7 +46,7 @@ package org.fabric3.spi.executor;
 import org.fabric3.spi.command.Command;
 
 /**
- * CommandExecutors are responsible for executing {@link org.fabric3.spi.command.Command}s sent to a runtime.
+ * Responsible for executing {@link org.fabric3.spi.command.Command}s sent to a runtime.
  *
  * @version $Rev$ $Date$
  */
