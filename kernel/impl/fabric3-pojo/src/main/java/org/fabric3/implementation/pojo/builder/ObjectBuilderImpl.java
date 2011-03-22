@@ -38,29 +38,45 @@
 
 package org.fabric3.implementation.pojo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerRegistry;
+
+import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
- * Creates ObjectFactory instances for property values.
- *
  * @version $Rev$ $Date$
  */
-public interface PropertyObjectFactoryBuilder {
+public class ObjectBuilderImpl extends AbstractPropertyBuilder implements ObjectBuilder {
 
-    /**
-     * Create the ObjectFactory from the given DOM value.
-     *
-     * @param name        the property name
-     * @param dataType    the property type
-     * @param value       the DOM to transform
-     * @param many        true if the property is many-valued
-     * @param classLoader the classloader for the target type
-     * @return the ObjectFactory
-     * @throws BuilderException if there is an error building the factory
-     */
-    ObjectFactory<?> createFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader) throws BuilderException;
+    public ObjectBuilderImpl(@Reference TransformerRegistry transformerRegistry) {
+        super(transformerRegistry);
+    }
+
+    public ObjectFactory<?> createFactory(String name, DataType<?> type, Document value, ClassLoader classLoader)
+            throws PropertyTransformException {
+        try {
+            Class<?> physical = type.getPhysical();
+            List<Class<?>> types = new ArrayList<Class<?>>();
+            types.add(physical);
+            Transformer<Node, ?> transformer = getTransformer(name, PROPERTY_TYPE, type, types);
+            Element element = (Element) value.getDocumentElement().getFirstChild();
+            Object instance = transformer.transform(element, classLoader);
+            return new SingletonObjectFactory<Object>(instance);
+        } catch (TransformationException e) {
+            throw new PropertyTransformException("Unable to transform property value: " + name, e);
+        }
+    }
+
 }

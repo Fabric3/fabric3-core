@@ -41,26 +41,25 @@ package org.fabric3.implementation.pojo.builder;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates ObjectFactory instances for property values.
+ * Builds an object factory that creates a property value array from a DOM.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-public interface PropertyObjectFactoryBuilder {
+public interface ArrayBuilder {
 
     /**
-     * Create the ObjectFactory from the given DOM value.
+     * Creates the object factory for the property value.
      *
      * @param name        the property name
-     * @param dataType    the property type
-     * @param value       the DOM to transform
-     * @param many        true if the property is many-valued
-     * @param classLoader the classloader for the target type
-     * @return the ObjectFactory
-     * @throws BuilderException if there is an error building the factory
+     * @param type        the property type
+     * @param value       the DOM
+     * @param classLoader the classloader to deserialize the property value
+     * @return the object factory
+     * @throws PropertyTransformException if there is an error creating the object factory
      */
-    ObjectFactory<?> createFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader) throws BuilderException;
+    ObjectFactory<?> createFactory(String name, DataType type, Document value, ClassLoader classLoader) throws PropertyTransformException;
+
 }

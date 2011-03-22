@@ -135,7 +135,15 @@ import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.implementation.pojo.builder.ArrayBuilder;
+import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
+import org.fabric3.implementation.pojo.builder.CollectionBuilder;
+import org.fabric3.implementation.pojo.builder.CollectionBuilderImpl;
+import org.fabric3.implementation.pojo.builder.MapBuilder;
+import org.fabric3.implementation.pojo.builder.MapBuilderImpl;
+import org.fabric3.implementation.pojo.builder.ObjectBuilder;
+import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
@@ -322,7 +330,15 @@ public class BootstrapAssemblyFactory {
                                                                               ClassLoaderRegistry classLoaderRegistry,
                                                                               ManagementService managementService) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
-        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(transformerRegistry);
+
+        ArrayBuilder arrayBuilder = new ArrayBuilderImpl(transformerRegistry);
+        CollectionBuilder collectionBuilder = new CollectionBuilderImpl(transformerRegistry);
+        MapBuilder mapBuilder = new MapBuilderImpl(transformerRegistry);
+        ObjectBuilder objectBuilder = new ObjectBuilderImpl(transformerRegistry);
+
+        PropertyObjectFactoryBuilder propertyBuilder =
+                new PropertyObjectFactoryBuilderImpl(arrayBuilder, collectionBuilder, mapBuilder, objectBuilder);
+
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
         ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);

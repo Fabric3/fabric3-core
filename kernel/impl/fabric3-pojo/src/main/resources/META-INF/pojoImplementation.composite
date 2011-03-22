@@ -33,4 +33,20 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl"/>
     </component>
 
+    <component name="ArrayBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.ArrayBuilderImpl"/>
+    </component>
+
+    <component name="CollectionBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.CollectionBuilderImpl"/>
+    </component>
+
+    <component name="MapBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.MapBuilderImpl"/>
+    </component>
+
+    <component name="ObjectBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.ObjectBuilderImpl"/>
+    </component>
+
 </composite>

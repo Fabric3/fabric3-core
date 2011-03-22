@@ -115,7 +115,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
 
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
             boolean many = propertyDefinition.isMany();
-            ObjectFactory<?> objectFactory = propertyBuilder.createObjectFactory(name, dataType, value, many, classLoader);
+            ObjectFactory<?> objectFactory = propertyBuilder.createFactory(name, dataType, value, many, classLoader);
             provider.setObjectFactory(source, objectFactory);
         }
     }

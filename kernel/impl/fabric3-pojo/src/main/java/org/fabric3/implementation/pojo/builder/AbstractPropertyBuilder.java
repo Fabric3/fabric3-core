@@ -38,29 +38,32 @@
 
 package org.fabric3.implementation.pojo.builder;
 
-import org.w3c.dom.Document;
+import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * Creates ObjectFactory instances for property values.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-public interface PropertyObjectFactoryBuilder {
+public abstract class AbstractPropertyBuilder {
+    private TransformerRegistry transformerRegistry;
 
-    /**
-     * Create the ObjectFactory from the given DOM value.
-     *
-     * @param name        the property name
-     * @param dataType    the property type
-     * @param value       the DOM to transform
-     * @param many        true if the property is many-valued
-     * @param classLoader the classloader for the target type
-     * @return the ObjectFactory
-     * @throws BuilderException if there is an error building the factory
-     */
-    ObjectFactory<?> createFactory(String name, DataType<?> dataType, Document value, boolean many, ClassLoader classLoader) throws BuilderException;
+    public AbstractPropertyBuilder(TransformerRegistry transformerRegistry) {
+        this.transformerRegistry = transformerRegistry;
+    }
+
+
+    @SuppressWarnings({"unchecked"})
+    protected <T> Transformer<T, ?> getTransformer(String name, DataType<?> sourceType, DataType<?> targetType, List<Class<?>> types)
+            throws TransformationException, PropertyTransformException {
+        Transformer<T, ?> transformer = (Transformer<T, ?>) transformerRegistry.getTransformer(sourceType, targetType, types, types);
+        if (transformer == null) {
+            throw new PropertyTransformException("No transformer for property " + name + " of type: " + targetType);
+        }
+        return transformer;
+    }
+
 }
