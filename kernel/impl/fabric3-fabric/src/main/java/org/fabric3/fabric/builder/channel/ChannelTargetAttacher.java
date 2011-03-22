@@ -70,8 +70,7 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         channel.attach(connection);
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target)
-            throws ConnectionAttachException {
+    public void detach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target) throws ConnectionAttachException {
         // no-op since channel do not maintain references to incoming handlers
     }
 
