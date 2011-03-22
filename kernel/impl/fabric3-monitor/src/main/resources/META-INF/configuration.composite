@@ -18,6 +18,9 @@
     <component name="MonitorService">
         <f3:implementation.system class="org.fabric3.monitor.runtime.LogBackMonitorService"/>
         <property name="defaultLevel" source="$systemConfig//runtime/@monitor.level"/>
+        <property name="deployableLevels" source="$systemConfig//runtime/monitor/deployables"/>
+        <property name="applicationComponentLevels" source="$systemConfig//runtime/monitor/application.components"/>
+        <property name="runtimeComponentLevels" source="$systemConfig//runtime/monitor/runtime.components"/>
     </component>
 
 </composite>

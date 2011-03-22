@@ -39,20 +39,28 @@ package org.fabric3.monitor.runtime;
 
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 import org.slf4j.Logger;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.host.Names;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
@@ -60,23 +68,107 @@ import org.fabric3.spi.monitor.MonitorService;
  */
 @EagerInit
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
-public class LogBackMonitorService implements MonitorService {
+@Service(interfaces = {MonitorService.class, ComponentBuilderListener.class})
+public class LogBackMonitorService implements MonitorService, ComponentBuilderListener {
     private ComponentManager manager;
+    private HostInfo info;
     private MonitorLevel defaultLevel = MonitorLevel.WARNING;
+    private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
+    private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
+    private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
 
-    public LogBackMonitorService(@Reference ComponentManager manager) {
+    public LogBackMonitorService(@Reference ComponentManager manager, @Reference HostInfo info) {
         this.manager = manager;
+        this.info = info;
     }
 
-    @Property
+    @Property(required = false)
     public void setDefaultLevel(String defaultLevel) {
         this.defaultLevel = MonitorLevel.valueOf(defaultLevel);
+    }
+
+    /**
+     * Used at runtime startup to set the monitor levels for application components under a URI. Components are specified using a relative URI, which
+     * is made resolved against the application domain.
+     *
+     * @param levels the mapping of relative URI to monitor level.
+     */
+    @Property(required = false)
+    public void setApplicationComponentLevels(Map<String, String> levels) {
+        this.applicationComponentLevels = new HashMap<URI, MonitorLevel>();
+        // add the application domain prefix
+        String base = info.getDomain().toString();
+        for (Map.Entry<String, String> entry : levels.entrySet()) {
+            URI uri;
+            if (entry.getKey().length() == 0) {
+                // root domain component specified
+                uri = info.getDomain();
+
+            } else {
+                uri = URI.create(base + "/" + entry.getKey());
+            }
+            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
+            applicationComponentLevels.put(uri, level);
+        }
+    }
+
+    /**
+     * Used at runtime startup to set the monitor levels for runtime components under a URI. Components are specified using a relative URI, which is
+     * made resolved against the runtime domain.
+     *
+     * @param levels the mapping of relative URI to monitor level.
+     */
+    @Property(required = false)
+    public void setRuntimeComponentLevels(Map<String, String> levels) {
+        this.runtimeComponentLevels = new HashMap<URI, MonitorLevel>();
+        // add the runtime domain prefix
+        for (Map.Entry<String, String> entry : levels.entrySet()) {
+            URI uri;
+            if (entry.getKey().length() == 0) {
+                // root domain component specified
+                uri = Names.RUNTIME_URI;
+
+            } else {
+                uri = URI.create(Names.RUNTIME_NAME + "/" + entry.getKey());
+            }
+            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
+            runtimeComponentLevels.put(uri, level);
+        }
+    }
+
+    /**
+     * Used at runtime startup to set the monitor levels for components contained in a deployable composite.
+     *
+     * @param levels the mapping of composite name to monitor level.
+     */
+    @Property(required = false)
+    public void setDeployableLevels(Map<QName, String> levels) {
+        this.deployableLevels = new HashMap<QName, MonitorLevel>();
+        for (Map.Entry<QName, String> entry : levels.entrySet()) {
+            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
+            deployableLevels.put(entry.getKey(), level);
+        }
     }
 
     @Init
     public void init() {
         ch.qos.logback.classic.Level level = LevelConverter.getLogbackLevel(defaultLevel);
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(level);
+        for (Map.Entry<QName, MonitorLevel> entry : deployableLevels.entrySet()) {
+            for (Component component : manager.getDeployedComponents(entry.getKey())) {
+                component.setLevel(entry.getValue());
+            }
+        }
+        for (Map.Entry<URI, MonitorLevel> entry : applicationComponentLevels.entrySet()) {
+            for (Component component : manager.getComponentsInHierarchy(entry.getKey())) {
+                component.setLevel(entry.getValue());
+            }
+        }
+        for (Map.Entry<URI, MonitorLevel> entry : runtimeComponentLevels.entrySet()) {
+            for (Component component : manager.getComponentsInHierarchy(entry.getKey())) {
+                component.setLevel(entry.getValue());
+            }
+        }
     }
 
     @ManagementOperation(description = "Sets the monitoring level for a component")
@@ -105,4 +197,27 @@ public class LogBackMonitorService implements MonitorService {
 
     }
 
+    public void onBuild(Component component, PhysicalComponentDefinition definition) {
+        String strUri = component.getUri().toString();
+        for (Map.Entry<URI, MonitorLevel> entry : runtimeComponentLevels.entrySet()) {
+            if (entry.getKey().toString().startsWith(strUri)) {
+                component.setLevel(entry.getValue());
+                return;
+            }
+        }
+        for (Map.Entry<URI, MonitorLevel> entry : applicationComponentLevels.entrySet()) {
+            if (entry.getKey().toString().startsWith(strUri)) {
+                component.setLevel(entry.getValue());
+                return;
+            }
+        }
+        MonitorLevel level = deployableLevels.get(component.getDeployable());
+        if (level != null) {
+            component.setLevel(level);
+        }
+    }
+
+    public void onDispose(Component component, PhysicalComponentDefinition definition) {
+        // no-op
+    }
 }
