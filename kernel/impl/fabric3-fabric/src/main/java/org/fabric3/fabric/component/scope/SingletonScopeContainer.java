@@ -159,7 +159,8 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         synchronized (destroyQueues) {
             List<InstanceWrapper> list = destroyQueues.get(deployable);
             if (list == null) {
-                throw new IllegalStateException("Context does not exist: " + deployable);
+                // this can happen with domain scope where a non-leader runtime does not activate a context
+                return;
             }
             destroyInstances(list, workContext);
         }
