@@ -52,13 +52,12 @@ public class PhysicalClassLoaderDefinition implements Serializable {
 
     private URI uri;
     private boolean provisionArtifact;
-    private URI contributionUri;
     private Set<PhysicalClassLoaderWireDefinition> wireDefinitions = new LinkedHashSet<PhysicalClassLoaderWireDefinition>();
 
     /**
      * Constructor.
      *
-     * @param uri               the classloader name
+     * @param uri               the URI of the contribution associated with the classloader
      * @param provisionArtifact true if the associated contribution should be provisioned. Synthetic contributions do not need to be provisioned.
      */
     public PhysicalClassLoaderDefinition(URI uri, boolean provisionArtifact) {
@@ -102,24 +101,6 @@ public class PhysicalClassLoaderDefinition implements Serializable {
         return wireDefinitions;
     }
 
-    /**
-     * Sets the contribution asociated with the classloader.
-     *
-     * @param uri the URI to add
-     */
-    public void setContributionUri(URI uri) {
-        contributionUri = uri;
-    }
-
-    /**
-     * Returns the URI of the contribution associated with this classloader.
-     *
-     * @return the URI
-     */
-    public URI getContributionUri() {
-        return contributionUri;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -127,7 +108,6 @@ public class PhysicalClassLoaderDefinition implements Serializable {
 
         PhysicalClassLoaderDefinition that = (PhysicalClassLoaderDefinition) o;
 
-        if (contributionUri != null ? !contributionUri.equals(that.contributionUri) : that.contributionUri != null) return false;
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
         if (wireDefinitions != null ? !wireDefinitions.equals(that.wireDefinitions) : that.wireDefinitions != null) return false;
 
@@ -137,7 +117,6 @@ public class PhysicalClassLoaderDefinition implements Serializable {
     @Override
     public int hashCode() {
         int result = uri != null ? uri.hashCode() : 0;
-        result = 31 * result + (contributionUri != null ? contributionUri.hashCode() : 0);
         result = 31 * result + (wireDefinitions != null ? wireDefinitions.hashCode() : 0);
         return result;
     }

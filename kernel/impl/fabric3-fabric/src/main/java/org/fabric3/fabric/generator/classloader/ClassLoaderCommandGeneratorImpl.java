@@ -185,7 +185,6 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
         }
         boolean provisionArtifact = contribution.getLocation() != null;  // don't provision synthetic artifacts;
         PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, provisionArtifact);
-        definition.setContributionUri(uri);
         List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
         for (ContributionWire<?, ?> wire : contributionWires) {
             ClassLoaderWireGenerator generator = generators.get(wire.getClass());

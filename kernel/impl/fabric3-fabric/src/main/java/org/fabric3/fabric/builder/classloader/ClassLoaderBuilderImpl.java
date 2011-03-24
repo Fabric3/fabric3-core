@@ -108,16 +108,17 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     public void build(PhysicalClassLoaderDefinition definition) throws ClassLoaderBuilderException {
         URI uri = definition.getUri();
         int count = tracker.increment(uri);
-        if (classLoaderRegistry.getClassLoader(uri) != null) {
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        if (classLoader != null) {
             // The classloader was already loaded. The classloader will already be created if: it is the boot classloader; the environment is
             // single-VM as classloaders are shared between the contribution and runtime infrastructure; two composites are deployed individually
             // from the same contribution.
             for (PhysicalClassLoaderWireDefinition wireDefinition : definition.getWireDefinitions()) {
                 URI target = wireDefinition.getTargetClassLoader();
-                ClassLoader classLoader = classLoaderRegistry.getClassLoader(target);
+                classLoader = classLoaderRegistry.getClassLoader(target);
                 tracker.incrementImported(classLoader);
             }
-            notifyListenersBuild(uri, count);
+            notifyListenersBuild(count, classLoader);
             return;
         }
         if (info.supportsClassLoaderIsolation()) {
@@ -125,7 +126,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         } else {
             buildCommonClassLoaderEnvironment(definition);
         }
-        notifyListenersBuild(uri, count);
+        notifyListenersBuild(count, classLoader);
     }
 
     public void destroy(URI uri) throws ClassLoaderBuilderException {
@@ -152,9 +153,8 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         }
     }
 
-    private void notifyListenersBuild(URI uri, int count) {
+    private void notifyListenersBuild(int count, ClassLoader classLoader) {
         if (count == 1) {
-            ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
             for (ClassLoaderListener listener : listeners) {
                 listener.onDeploy(classLoader);
             }
@@ -175,7 +175,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         MultiParentClassLoader loader;
         if (definition.isProvisionArtifact()) {
-            URL[] classpath = resolveClasspath(definition.getContributionUri());
+            URL[] classpath = resolveClasspath(definition.getUri());
             loader = new MultiParentClassLoader(uri, classpath, hostClassLoader);
         } else {
             loader = new MultiParentClassLoader(uri, hostClassLoader);
