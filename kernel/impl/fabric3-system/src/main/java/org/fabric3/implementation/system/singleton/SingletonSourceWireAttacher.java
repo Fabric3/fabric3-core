@@ -58,7 +58,7 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * A SourceWireAttacher used to reinject singleton components after the runtime bootstrap.
+ * Reinjects singleton components after the runtime bootstrap.
  *
  * @version $Rev$ $Date$
  */
@@ -78,6 +78,10 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
     }
 
     public void detachObjectFactory(SingletonSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
+        URI sourceName = UriHelper.getDefragmentedName(source.getUri());
+        SingletonComponent component = (SingletonComponent) manager.getComponent(sourceName);
+        Injectable injectable = source.getInjectable();
+        component.removeObjectFactory(injectable);
     }
 
     public void attachObjectFactory(SingletonSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)

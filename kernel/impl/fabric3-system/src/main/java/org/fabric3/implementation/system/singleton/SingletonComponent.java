@@ -50,9 +50,11 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
@@ -87,6 +89,7 @@ public class SingletonComponent implements AtomicComponent {
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
+    private AtomicBoolean started = new AtomicBoolean(false);
 
     public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
@@ -113,9 +116,11 @@ public class SingletonComponent implements AtomicComponent {
     }
 
     public void start() {
+        started.set(true);
     }
 
     public void stop() {
+        started.set(false);
     }
 
     public void startUpdate() {
@@ -182,6 +187,16 @@ public class SingletonComponent implements AtomicComponent {
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
             reinjectionMappings.put(objectFactory, injectable);
+        }
+    }
+
+    public void removeObjectFactory(Injectable injectable) {
+        for (Iterator<Map.Entry<ObjectFactory, Injectable>> iterator = reinjectionMappings.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<ObjectFactory, Injectable> entry = iterator.next();
+            if (injectable.equals(entry.getValue())) {
+                iterator.remove();
+                break;
+            }
         }
     }
 
@@ -324,7 +339,7 @@ public class SingletonComponent implements AtomicComponent {
         }
 
         public boolean isStarted() {
-            return true;
+            return started.get();
         }
 
         public void start(WorkContext workContext) throws InstanceInitializationException {
