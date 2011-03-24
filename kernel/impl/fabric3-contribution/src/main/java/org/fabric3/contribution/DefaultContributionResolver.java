@@ -79,36 +79,36 @@ public class DefaultContributionResolver implements ContributionResolver {
         this.extensions = extensions;
     }
 
-    public URL resolve(URI uri) throws ResolutionException {
-        Contribution contribution = store.find(uri);
+    public URL resolve(URI contributionUri) throws ResolutionException {
+        Contribution contribution = store.find(contributionUri);
         if (contribution != null) {
             return contribution.getLocation();
         }
 
-        URL url = cache.get(uri);
+        URL url = cache.get(contributionUri);
         if (url != null) {
             return url;
         }
 
         for (ContributionResolverExtension extension : extensions) {
             // provision and cache the contribution
-            InputStream stream = extension.resolve(uri);
+            InputStream stream = extension.resolve(contributionUri);
             if (stream != null) {
                 try {
-                    return cache.cache(uri, stream);
+                    return cache.cache(contributionUri, stream);
                 } catch (CacheException e) {
-                    throw new ResolutionException("Error resolving contribution: " + uri, e);
+                    throw new ResolutionException("Error resolving contribution: " + contributionUri, e);
                 }
             }
         }
-        throw new ResolutionException("Contribution not found: " + uri);
+        throw new ResolutionException("Contribution not found: " + contributionUri);
     }
 
-    public void release(URI uri) throws ResolutionException {
+    public void release(URI contributionUri) throws ResolutionException {
         try {
-            cache.remove(uri);
+            cache.remove(contributionUri);
         } catch (CacheException e) {
-            throw new ResolutionException("Error releasing artifact: " + uri, e);
+            throw new ResolutionException("Error releasing artifact: " + contributionUri, e);
         }
     }
 

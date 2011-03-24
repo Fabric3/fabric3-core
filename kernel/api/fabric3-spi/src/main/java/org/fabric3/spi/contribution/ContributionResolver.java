@@ -51,18 +51,18 @@ public interface ContributionResolver {
     /**
      * Resolves the contribution artifact associated with the URI, returning a local URL by which it may be dereferenced.
      *
-     * @param contributionURI the contribution URI
+     * @param contributionUri the contribution URI
      * @return the local dereferenceable URL for the artifact
      * @throws ResolutionException if an error occurs resolving the artifact
      */
-    URL resolve(URI contributionURI) throws ResolutionException;
+    URL resolve(URI contributionUri) throws ResolutionException;
 
     /**
      * Releases a previously resolved contribution.
      *
-     * @param uri the contribution  URI.
+     * @param contributionUri the contribution  URI.
      * @throws ResolutionException if an error occurs releasing the artifact
      */
-    void release(URI uri) throws ResolutionException;
+    void release(URI contributionUri) throws ResolutionException;
 
 }
