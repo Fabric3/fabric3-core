@@ -45,7 +45,9 @@ package org.fabric3.fabric.domain;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -66,6 +68,7 @@ import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
+import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -77,6 +80,7 @@ import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -202,6 +206,72 @@ public class DistributedDomainTestCase extends TestCase {
         control.verify();
     }
 
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    public void testActivateDeactivateDefinitions() throws Exception {
+        Composite composite = createComposite();
+
+        IAnswer<InstantiationContext> answer = createAnswer();
+        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        EasyMock.expectLastCall().times(2);
+
+
+        PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
+        Set<PolicySet> set = new HashSet<PolicySet>();
+        set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
+        EasyMock.expect(policyRegistry.activateDefinitions(CONTRIBUTION_URI)).andReturn(set);
+        EasyMock.expect(policyRegistry.deactivateDefinitions(CONTRIBUTION_URI)).andReturn(set);
+        domain.setPolicyRegistry(policyRegistry);
+
+        policyAttacher.attachPolicies(EasyMock.isA(Set.class), EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+        policyAttacher.detachPolicies(EasyMock.isA(Set.class), EasyMock.isA(LogicalCompositeComponent.class));
+
+        control.replay();
+
+        domain.activateDefinitions(CONTRIBUTION_URI);
+
+        domain.deactivateDefinitions(CONTRIBUTION_URI);
+        control.verify();
+    }
+
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    public void testActivateDefinitionsError() throws Exception {
+        Composite composite = createComposite();
+
+        IAnswer<InstantiationContext> answer = createAnswer();
+        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        // simulate a deployment exception
+        EasyMock.expectLastCall().andThrow(new DeploymentException());
+
+
+        PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
+        Set<PolicySet> set = new HashSet<PolicySet>();
+        set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
+        EasyMock.expect(policyRegistry.activateDefinitions(CONTRIBUTION_URI)).andReturn(set);
+        domain.setPolicyRegistry(policyRegistry);
+
+        policyAttacher.attachPolicies(EasyMock.isA(Set.class), EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+
+        control.replay();
+
+        try {
+            domain.activateDefinitions(CONTRIBUTION_URI);
+            fail();
+        } catch (DeploymentException e) {
+            // expected
+        }
+        // verify the component contained in the composite was *not* added to the logical model as an error was raised during deployment
+        assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        control.verify();
+    }
+
     @SuppressWarnings({"unchecked"})
     public void testRecover() throws Exception {
 
@@ -303,5 +373,6 @@ public class DistributedDomainTestCase extends TestCase {
         EasyMock.expect(store.find(CONTRIBUTION_URI)).andReturn(contribution).anyTimes();
         return contribution;
     }
+
 
 }
