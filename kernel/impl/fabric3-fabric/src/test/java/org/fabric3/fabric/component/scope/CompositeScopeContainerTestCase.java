@@ -85,6 +85,21 @@ public class CompositeScopeContainerTestCase extends TestCase {
         control.verify();
     }
 
+    public void testEagerInit() throws Exception {
+
+        EasyMock.expect(component.isEagerInit()).andStubReturn(true);
+        EasyMock.expect(component.createInstanceWrapper(workContext)).andReturn(wrapper);
+        EasyMock.expect(wrapper.isStarted()).andReturn(false);
+        wrapper.start(EasyMock.isA(WorkContext.class));
+        wrapper.stop(EasyMock.isA(WorkContext.class));
+        EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
+        control.replay();
+        scopeContainer.register(component);
+        scopeContainer.startContext(workContext);
+        scopeContainer.stopContext(workContext);
+        control.verify();
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         deployable = new QName("deployable");
