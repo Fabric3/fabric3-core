@@ -44,6 +44,8 @@
 package org.fabric3.fabric.domain;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -83,6 +85,8 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
  */
 public class DistributedDomainTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");
+    private static final URI CONTRIBUTION_URI = URI.create("contribution");
+
     private static final QName DEPLOYABLE = new QName("foo", "bar");
 
     private IMocksControl control;
@@ -113,6 +117,31 @@ public class DistributedDomainTestCase extends TestCase {
         control.replay();
 
         domain.include(DEPLOYABLE);
+
+        // verify the component contained in the composite was added to the logical model
+        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        control.verify();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testIncludeUris() throws Exception {
+
+        createComposite();
+
+        IAnswer<InstantiationContext> answer = createAnswer();
+        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
+                                             EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+
+        control.replay();
+
+        domain.include(Collections.<URI>singletonList(CONTRIBUTION_URI));
 
         // verify the component contained in the composite was added to the logical model
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
@@ -172,6 +201,32 @@ public class DistributedDomainTestCase extends TestCase {
         assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
         control.verify();
     }
+
+    @SuppressWarnings({"unchecked"})
+    public void testRecover() throws Exception {
+
+        createComposite();
+
+        IAnswer<InstantiationContext> answer = createAnswer();
+        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
+                                             EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+
+        control.replay();
+
+        domain.recover(Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic"));
+
+        // verify the component contained in the composite was added to the logical model
+        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        control.verify();
+    }
+
 
     @Override
     protected void setUp() throws Exception {
@@ -242,11 +297,10 @@ public class DistributedDomainTestCase extends TestCase {
     }
 
     private Contribution createContribution() {
-        URI uri = URI.create("contribution");
-        Contribution contribution = new Contribution(uri);
+        Contribution contribution = new Contribution(CONTRIBUTION_URI);
         contribution.setState(ContributionState.INSTALLED);
 
-        EasyMock.expect(store.find(uri)).andReturn(contribution).anyTimes();
+        EasyMock.expect(store.find(CONTRIBUTION_URI)).andReturn(contribution).anyTimes();
         return contribution;
     }
 

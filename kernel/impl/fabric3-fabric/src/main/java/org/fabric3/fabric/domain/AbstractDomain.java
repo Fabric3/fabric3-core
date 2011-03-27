@@ -435,9 +435,9 @@ public abstract class AbstractDomain implements Domain {
     }
 
     /**
-     * Instantiates and optionally deploys deployables from a set of contributions. Deployment is performed if recovery mode is false or the runtme is
-     * operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but not
-     * deployed to zones. This is because the domain can run headless (i.e. without a controller) and may already be hosting deployed components.
+     * Instantiates and optionally deploys deployables from a set of contributions. Deployment is performed if recovery mode is false or the runtime
+     * is operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but
+     * not deployed to zones. This is because the domain can run headless (i.e. without a controller) and may already be hosting deployed components.
      *
      * @param deployables   the deployables
      * @param contributions the contributions to deploy
