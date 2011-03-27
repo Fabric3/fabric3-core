@@ -63,6 +63,8 @@ import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
+import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.host.domain.AssemblyFailure;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.HostInfo;
@@ -182,6 +184,29 @@ public class DistributedDomainTestCase extends TestCase {
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+    public void testInstantiationError() throws Exception {
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
+
+        IAnswer<InstantiationContext> answer = createErrorAnswer();
+        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        control.replay();
+
+        try {
+            domain.include(DEPLOYABLE);
+            fail();
+        } catch (AssemblyException e) {
+            // expected
+            assertFalse(e.getErrors().isEmpty());
+        }
+        // verify the component contained in the composite was *not* added to the logical model
+        assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertTrue(contribution.getLockOwners().isEmpty());
+        control.verify();
+    }
+
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testDeploymentError() throws Exception {
         Contribution contribution = createContribution();
         Composite composite = createComposite(contribution);
@@ -284,7 +309,7 @@ public class DistributedDomainTestCase extends TestCase {
     public void testRecover() throws Exception {
 
         Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
+        createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
@@ -352,6 +377,24 @@ public class DistributedDomainTestCase extends TestCase {
                 logicalComponent.setDeployable(DEPLOYABLE);
                 domainComposite.addComponent(logicalComponent);
                 return new InstantiationContext();
+            }
+        };
+    }
+
+    private IAnswer<InstantiationContext> createErrorAnswer() {
+        return new IAnswer<InstantiationContext>() {
+
+            @SuppressWarnings({"unchecked"})
+            public InstantiationContext answer() throws Throwable {
+                LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
+
+                LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, componentDefinition, domainComposite);
+                logicalComponent.setDeployable(DEPLOYABLE);
+                domainComposite.addComponent(logicalComponent);
+                InstantiationContext context = new InstantiationContext();
+                context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI) {
+                });
+                return context;
             }
         };
     }
