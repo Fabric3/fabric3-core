@@ -106,7 +106,8 @@ public class DistributedDomainTestCase extends TestCase {
 
     public void testInclude() throws Exception {
 
-        Composite composite = createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
@@ -124,13 +125,15 @@ public class DistributedDomainTestCase extends TestCase {
 
         // verify the component contained in the composite was added to the logical model
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertTrue(contribution.getLockOwners().contains(DEPLOYABLE));
         control.verify();
     }
 
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
 
-        createComposite();
+        Contribution contribution = createContribution();
+        createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
@@ -153,7 +156,8 @@ public class DistributedDomainTestCase extends TestCase {
     }
 
     public void testIncludeAndRemove() throws Exception {
-        Composite composite = createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
@@ -179,7 +183,8 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testDeploymentError() throws Exception {
-        Composite composite = createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
@@ -203,12 +208,14 @@ public class DistributedDomainTestCase extends TestCase {
         }
         // verify the component contained in the composite was *not* added to the logical model
         assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertTrue(contribution.getLockOwners().isEmpty());
         control.verify();
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testActivateDeactivateDefinitions() throws Exception {
-        Composite composite = createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
@@ -239,7 +246,8 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testActivateDefinitionsError() throws Exception {
-        Composite composite = createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
@@ -275,7 +283,8 @@ public class DistributedDomainTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testRecover() throws Exception {
 
-        createComposite();
+        Contribution contribution = createContribution();
+        Composite composite = createComposite(contribution);
 
         IAnswer<InstantiationContext> answer = createAnswer();
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
@@ -348,8 +357,7 @@ public class DistributedDomainTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private Composite createComposite() {
-        Contribution contribution = createContribution();
+    private Composite createComposite(Contribution contribution) {
         Composite composite = new Composite(DEPLOYABLE);
         componentDefinition = new ComponentDefinition("component");
         composite.add(componentDefinition);
