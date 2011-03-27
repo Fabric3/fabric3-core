@@ -72,10 +72,6 @@ public class ProvisionClassloaderCommandExecutor implements CommandExecutor<Prov
         this.commandExecutorRegistry = executorRegistry;
     }
 
-    public ProvisionClassloaderCommandExecutor(ClassLoaderBuilder classLoaderBuilder) {
-        this.classLoaderBuilder = classLoaderBuilder;
-    }
-
     @Init
     public void init() {
         commandExecutorRegistry.register(ProvisionClassloaderCommand.class, this);

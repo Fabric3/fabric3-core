@@ -66,8 +66,9 @@ public interface ChannelManager {
      * Removes a channel for the given URI.
      *
      * @param uri the uri
+     * @return the channel or null
      * @throws RegistrationException if there is an error removing the channel
      */
-    void unregister(URI uri) throws RegistrationException;
+    Channel unregister(URI uri) throws RegistrationException;
 
 }

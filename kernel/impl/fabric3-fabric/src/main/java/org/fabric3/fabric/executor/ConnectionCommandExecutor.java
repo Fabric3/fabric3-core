@@ -79,7 +79,7 @@ public class ConnectionCommandExecutor implements CommandExecutor<ConnectionComm
     }
 
     public void execute(ConnectionCommand command) throws ExecutionException {
-        final URI uri = command.getComponentUri();
+        URI uri = command.getComponentUri();
         Component component = componentManager.getComponent(uri);
         if (component == null) {
             throw new ExecutionException("Component not found: " + uri);

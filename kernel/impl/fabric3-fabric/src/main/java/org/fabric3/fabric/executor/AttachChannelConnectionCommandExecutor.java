@@ -71,10 +71,6 @@ public class AttachChannelConnectionCommandExecutor implements CommandExecutor<A
         this.connector = connector;
     }
 
-    public AttachChannelConnectionCommandExecutor(ChannelConnector connector) {
-        this.connector = connector;
-    }
-
     @Init
     public void init() {
         commandExecutorRegistry.register(AttachChannelConnectionCommand.class, this);

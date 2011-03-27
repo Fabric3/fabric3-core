@@ -67,7 +67,7 @@ public class ChannelManagerImpl implements ChannelManager {
         channels.put(uri, channel);
     }
 
-    public void unregister(URI uri) {
-        channels.remove(uri);
+    public Channel unregister(URI uri) {
+        return channels.remove(uri);
     }
 }
