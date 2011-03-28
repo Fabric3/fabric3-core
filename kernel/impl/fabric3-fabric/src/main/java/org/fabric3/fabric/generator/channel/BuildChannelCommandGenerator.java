@@ -83,7 +83,7 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         return order;
     }
 
-    public CompensatableCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public BuildChannelsCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent)) {
             return null;
         }
