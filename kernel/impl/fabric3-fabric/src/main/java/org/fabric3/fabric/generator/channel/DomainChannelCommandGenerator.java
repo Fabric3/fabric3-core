@@ -37,7 +37,8 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.fabric.command.BuildChannelsCommand;
+import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
@@ -57,7 +58,7 @@ public interface DomainChannelCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
+    BuildChannelsCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
 
     /**
      * Generates an dispose command.
@@ -67,7 +68,7 @@ public interface DomainChannelCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    CompensatableCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException;
+    DisposeChannelsCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException;
 
 
 }

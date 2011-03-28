@@ -71,7 +71,7 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
         this.generatorRegistry = generatorRegistry;
     }
 
-    public CompensatableCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
+    public BuildChannelsCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = createBuildDefinitions(channel, incremental);
         if (definitions.isEmpty()) {
             return null;
@@ -79,7 +79,7 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
         return new BuildChannelsCommand(definitions);
     }
 
-    public CompensatableCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException {
+    public DisposeChannelsCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = createDisposeDefinitions(channel);
         if (definitions.isEmpty()) {
             return null;
