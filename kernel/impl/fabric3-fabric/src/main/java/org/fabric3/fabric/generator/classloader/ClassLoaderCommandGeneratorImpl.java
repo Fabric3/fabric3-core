@@ -82,6 +82,8 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  * During undeployment, the process is reversed. Commands for releasing contribution classloaders are sent to the zones where components are being
  * undeployed. Individual zones and runtimes are responsible for deciding when to dispose of classloaders. For example, a contribution classloader
  * used by two composites that is released when one composite is undeployed will not be removed until both composites are undeployed.
+ *
+ * @version $Rev$ $Date$
  */
 public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenerator {
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
