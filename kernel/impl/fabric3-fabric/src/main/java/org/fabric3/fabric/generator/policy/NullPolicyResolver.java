@@ -70,10 +70,7 @@ public class NullPolicyResolver implements PolicyResolver {
         return EMPTY_RESULT;
     }
 
-    public PolicyResult resolvePolicies(
-            LogicalConsumer consumer
-    )
-            throws PolicyResolutionException {
+    public PolicyResult resolvePolicies(LogicalConsumer consumer) throws PolicyResolutionException {
         return EMPTY_RESULT;
     }
 

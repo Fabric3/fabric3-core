@@ -44,7 +44,6 @@ import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -114,14 +113,6 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         composite.addChannel(oldChannel);
 
         return composite;
-    }
-
-    private class MockBinding extends BindingDefinition {
-        private static final long serialVersionUID = -2225564023619496625L;
-
-        public MockBinding() {
-            super(null, null);
-        }
     }
 
     private class MockPhysicalChannelBindingDefinition extends PhysicalChannelBindingDefinition{

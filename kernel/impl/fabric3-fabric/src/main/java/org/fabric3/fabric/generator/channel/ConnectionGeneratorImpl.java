@@ -204,6 +204,9 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
     private void generatePolicy(LogicalConsumer consumer, List<PhysicalEventStreamDefinition> eventStreams) throws GenerationException {
         PolicyResult result = resolver.resolvePolicies(consumer);
+        if (result.getInterceptedPolicySets().isEmpty()) {
+            return;
+        }
         List<PolicySet> policies = result.getInterceptedPolicySets().values().iterator().next();
         PolicyMetadata metadata = result.getMetadata().values().iterator().next();
         for (PolicySet set : policies) {
