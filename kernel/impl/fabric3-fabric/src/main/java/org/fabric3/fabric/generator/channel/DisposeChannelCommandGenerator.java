@@ -73,7 +73,7 @@ public class DisposeChannelCommandGenerator implements CommandGenerator {
         return order;
     }
 
-    public CompensatableCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
+    public DisposeChannelsCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
         if (!(component instanceof LogicalCompositeComponent)) {
             return null;
         }
