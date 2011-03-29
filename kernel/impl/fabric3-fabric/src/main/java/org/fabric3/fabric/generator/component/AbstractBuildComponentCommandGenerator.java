@@ -56,7 +56,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * Base functionality for (un)build component generators.
+ * Base functionality for build/dispose component generators.
  *
  * @version $Rev$ $Date$
  */
