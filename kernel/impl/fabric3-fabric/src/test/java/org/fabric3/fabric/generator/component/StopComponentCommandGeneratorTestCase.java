@@ -43,37 +43,52 @@
  */
 package org.fabric3.fabric.generator.component;
 
-import org.osoa.sca.annotations.Property;
+import java.net.URI;
+
+import junit.framework.TestCase;
 
 import org.fabric3.fabric.command.StartComponentCommand;
-import org.fabric3.fabric.generator.CommandGenerator;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.fabric.command.StopComponentCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
 /**
- * Creates a command to start an atomic component on a runtime.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class StartComponentCommandGenerator implements CommandGenerator {
-    private int order;
+public class StopComponentCommandGeneratorTestCase extends TestCase {
 
-    public StartComponentCommandGenerator(@Property(name = "order") int order) {
-        this.order = order;
+    @SuppressWarnings({"unchecked"})
+    public void testIncrementalStop() throws Exception {
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        URI uri = URI.create("component");
+        LogicalComponent<?> component = new LogicalComponent(uri, null, null);
+        component.setState(LogicalState.MARKED);
+
+        StopComponentCommand command = generator.generate(component, true);
+
+        assertEquals(uri, command.getUri());
     }
 
-    public int getOrder() {
-        return order;
+    @SuppressWarnings({"unchecked"})
+    public void testFullStop() throws Exception {
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        URI uri = URI.create("component");
+        LogicalComponent<?> component = new LogicalComponent(uri, null, null);
+        component.setState(LogicalState.MARKED);
+        StopComponentCommand command = generator.generate(component, false);
+
+        assertEquals(uri, command.getUri());
     }
 
-    @SuppressWarnings("unchecked")
-    public StartComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        // start a component if it is atomic and not provisioned
-        if (!(component instanceof LogicalCompositeComponent) && (component.getState() == LogicalState.NEW || !incremental)) {
-            return new StartComponentCommand(component.getUri());
-        }
-        return null;
+    @SuppressWarnings({"unchecked"})
+    public void testIncrementalNoStop() throws Exception {
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        URI uri = URI.create("component");
+        LogicalComponent<?> component = new LogicalComponent(uri, null, null);
+        component.setState(LogicalState.PROVISIONED);
+
+        assertNull(generator.generate(component, true));
     }
+
+
 }

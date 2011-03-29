@@ -53,7 +53,7 @@ import org.fabric3.spi.model.instance.LogicalState;
  */
 public class StopComponentCommandGenerator implements CommandGenerator {
 
-    private final int order;
+    private int order;
 
     public StopComponentCommandGenerator(@Property(name = "order") int order) {
         this.order = order;
