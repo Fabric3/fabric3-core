@@ -88,7 +88,7 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
      * Returns the list of commands by zone, creating one if necessary.
      *
      * @param zone          the zone
-     * @param startCommands the list of commands maped by zone
+     * @param startCommands the list of commands mapped by zone
      * @return the list of commands for a zone
      */
     private List<CompensatableCommand> getCommands(String zone, Map<String, List<CompensatableCommand>> startCommands) {
