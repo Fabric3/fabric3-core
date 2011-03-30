@@ -152,7 +152,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata used to attach the physical callback wire to the target transport
         BindingGenerator<T> bindingGenerator = getGenerator(binding);
-        PhysicalTargetDefinition targetDefinition =  bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
+        PhysicalTargetDefinition targetDefinition = bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
         // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor
@@ -442,6 +442,9 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalComponent target = reference.getParent();
         ServiceContract referenceContract = reference.getServiceContract();
         ServiceContract referenceCallbackContract = referenceContract.getCallbackContract();
+        if (reference.getCallbackBindings().isEmpty()) {
+            throw new GenerationException("Callback binding not set");
+        }
         LogicalBinding<?> referenceBinding = reference.getCallbackBindings().get(0);
         LogicalService callbackService = target.getService(referenceCallbackContract.getInterfaceName());
         List<LogicalOperation> operations = reference.getCallbackOperations();

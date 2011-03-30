@@ -40,9 +40,7 @@ package org.fabric3.fabric.generator.wire;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -60,11 +58,9 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.contract.OperationResolver;
-import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.PolicyMetadata;
-import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -366,43 +362,6 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
         return expression;
     }
 
-
-    private class MockPolicyResult implements PolicyResult {
-        private PolicyMetadata metadata = new PolicyMetadata();
-        private Map<LogicalOperation, List<PolicySet>> policies = new HashMap<LogicalOperation, List<PolicySet>>();
-
-        public void addPolicy(LogicalOperation operation, List<PolicySet> list) {
-            policies.put(operation, list);
-        }
-
-        public EffectivePolicy getSourcePolicy() {
-            return null;
-        }
-
-        public EffectivePolicy getTargetPolicy() {
-            return null;
-        }
-
-        public Set<PolicySet> getInterceptedEndpointPolicySets() {
-            return Collections.emptySet();
-        }
-
-        public Map<LogicalOperation, List<PolicySet>> getInterceptedPolicySets() {
-            return policies;
-        }
-
-        public List<PolicySet> getInterceptedPolicySets(LogicalOperation operation) {
-            return policies.get(operation);
-        }
-
-        public Map<LogicalOperation, PolicyMetadata> getMetadata() {
-            throw new UnsupportedOperationException();
-        }
-
-        public PolicyMetadata getMetadata(LogicalOperation operation) {
-            return metadata;
-        }
-    }
 
     private class MockPhysicalInterceptorDefinition extends PhysicalInterceptorDefinition {
         private static final long serialVersionUID = 7343328866305106112L;
