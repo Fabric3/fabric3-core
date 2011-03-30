@@ -247,7 +247,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                                   GenerationType type) throws GenerationException {
         for (Map.Entry<String, List<CompensatableCommand>> entry : deploymentCommands.entrySet()) {
             String zone = entry.getKey();
-            if (zone == null) {
+            if (LogicalComponent.LOCAL_ZONE.equals(zone)) {
                 // skip local runtime
                 continue;
             }
