@@ -216,6 +216,42 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 
     }
 
+    @SuppressWarnings({"unchecked"})
+    public void testCallbackGeneration() throws Exception {
+        URI root = URI.create("root");
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(null);
+        LogicalCompositeComponent composite = new LogicalCompositeComponent(root, definition, null);
+
+        JavaServiceContract contract = new JavaServiceContract();
+        JavaServiceContract callbackContract = new JavaServiceContract();
+        contract.setCallbackContract(callbackContract);
+
+        URI sourceUri = URI.create("source");
+        ComponentDefinition<?> sourceDefinition = new ComponentDefinition(null);
+        LogicalComponent<?> source = new LogicalComponent(sourceUri, sourceDefinition, composite);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("reference", contract);
+        LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
+        source.addReference(reference);
+
+        LogicalBinding<?> binding = new LogicalBinding(null, reference, null);
+        reference.addBinding(binding);
+        reference.addCallbackBinding(binding);
+        
+        wireGenerator.generateBoundReference(binding);
+        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+        wireGenerator.generateBoundReferenceCallback(binding);
+        EasyMock.expectLastCall().andReturn(new PhysicalWireDefinition(null, null, null));
+
+        EasyMock.replay(wireGenerator);
+
+        ConnectionCommand command = generator.generate(source, true);
+
+        EasyMock.verify(wireGenerator);
+        assertEquals(2, command.getAttachCommands().size());
+        assertEquals(0, command.getDetachCommands().size());
+    }
+
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
