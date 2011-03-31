@@ -48,13 +48,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
+import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 
@@ -63,14 +66,14 @@ import org.fabric3.spi.model.instance.LogicalProperty;
  */
 public class AbstractComponentInstantiatorTestCase extends TestCase {
     private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
-    private AbstractComponentInstantiator componentInstantiator;
+    private AbstractComponentInstantiator instantiator;
     private LogicalComponent<CompositeImplementation> domain;
     private Element value;
     private Document property;
 
     public void testSimpleProperty() throws Exception {
         value.setTextContent("Hello World");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.TEXT_NODE, child.getNodeType());
         assertEquals("Hello World", child.getTextContent());
@@ -82,7 +85,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
         Element port = property.createElement("port");
         http.appendChild(port);
         port.setTextContent("8080");
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/port", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath("$domain/http/port", domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -93,7 +96,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
         Element http = property.createElement("http");
         http.setAttribute("port", "8080");
         value.appendChild(http);
-        Document value = componentInstantiator.deriveValueFromXPath("$domain/http/@port", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath("$domain/http/@port", domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -107,7 +110,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
         Element http2 = property.createElement("http");
         this.value.appendChild(http2);
         http2.setAttribute("index", "2");
-        Document values = componentInstantiator.deriveValueFromXPath("$domain/http", domain, new StatefulNamespaceContext());
+        Document values = instantiator.deriveValueFromXPath("$domain/http", domain, new StatefulNamespaceContext());
         Node value = values.getDocumentElement().getChildNodes().item(0);
         NodeList list = value.getChildNodes();
         assertEquals(1, list.getLength());
@@ -123,7 +126,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
 
     public void testUnknownVariable() {
         try {
-            componentInstantiator.deriveValueFromXPath("$foo", domain, new StatefulNamespaceContext());
+            instantiator.deriveValueFromXPath("$foo", domain, new StatefulNamespaceContext());
             fail();
         } catch (XPathExpressionException e) {
             // this is ok?
@@ -133,7 +136,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        componentInstantiator = new AbstractComponentInstantiator() {
+        instantiator = new AbstractComponentInstantiator() {
         };
 
         domain = new LogicalComponent<CompositeImplementation>(URI.create("fabric3://domain"), null, null);
