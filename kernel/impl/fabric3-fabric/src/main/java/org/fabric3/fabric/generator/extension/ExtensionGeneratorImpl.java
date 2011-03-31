@@ -322,13 +322,13 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
     private void addDependencies(Contribution contribution, AbstractExtensionsCommand command) throws GenerationException {
         List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
         for (ContributionWire<?, ?> wire : contributionWires) {
-            URI importedUri = wire.getExportContributionUri();
-            Contribution imported = store.find(importedUri);
+            URI uri = wire.getExportContributionUri();
+            Contribution imported = store.find(uri);
             addDependencies(imported, command);
-            if (!command.getExtensionUris().contains(importedUri)
-                    && !Names.HOST_CONTRIBUTION.equals(importedUri)
-                    && !Names.BOOT_CONTRIBUTION.equals(importedUri)) {
-                command.addExtensionUri(importedUri);
+            if (!command.getExtensionUris().contains(uri)
+                    && !Names.HOST_CONTRIBUTION.equals(uri)
+                    && !Names.BOOT_CONTRIBUTION.equals(uri)) {
+                command.addExtensionUri(uri);
             }
         }
         Set<Contribution> capabilities = store.resolveCapabilities(contribution);

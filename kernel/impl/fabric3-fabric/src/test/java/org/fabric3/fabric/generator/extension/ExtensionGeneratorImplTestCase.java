@@ -39,8 +39,8 @@ package org.fabric3.fabric.generator.extension;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,25 +49,36 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.command.AttachWireCommand;
+import org.fabric3.fabric.command.ConnectionCommand;
+import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.fabric.command.ProvisionExtensionsCommand;
+import org.fabric3.fabric.command.UnProvisionExtensionsCommand;
 import org.fabric3.fabric.generator.GenerationType;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionWire;
+import org.fabric3.spi.contribution.Export;
+import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -76,43 +87,43 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
 
     private ExtensionGenerator generator;
     private MetaDataStore store;
-    private ArrayList<LogicalComponent<?>> components;
+    private List<LogicalComponent<?>> components;
+    private Map<String, List<Contribution>> contributions;
+    private Map<String, List<CompensatableCommand>> deploymentCommands;
+    private URI extensionUri;
+    private URI componentExtensionUri;
+    private URI bindingExtensionUri;
+    private URI importedExtensionUri;
+    private URI interceptorExtensionUri;
 
 
-    public void testResolve() throws Exception {
+    public void testIncrementalCapabilities() throws Exception {
+        deploymentCommands = createDeploymentCommands(interceptorExtensionUri, true);
 
-        Set<Contribution> extensions = new HashSet<Contribution>();
-        URI extensionUri = URI.create("extensionUri");
-        extensions.add(new Contribution(extensionUri));
 
-        Set<Contribution> componentExtensions = new HashSet<Contribution>();
-        URI componentExtensionUri = URI.create("componentExtension");
-        componentExtensions.add(new Contribution(componentExtensionUri));
-
-        Set<Contribution> bindingExtensions = new HashSet<Contribution>();
-        URI bindingExtensionUri = URI.create("bindingExtension");
-        bindingExtensions.add(new Contribution(bindingExtensionUri));
-
-        List<Contribution> contributions = new ArrayList<Contribution>();
-        URI contributionUri = URI.create("app");
-        contributions.add(new Contribution(contributionUri));
-        Map<String, List<Contribution>> map = new HashMap<String, List<Contribution>>();
-        map.put("zone1", contributions);
-
-        EasyMock.expect(store.resolveCapabilities(EasyMock.isA(Contribution.class))).andReturn(extensions);
-        EasyMock.expect(store.resolveCapability("componentCapability")).andReturn(componentExtensions);
-        EasyMock.expect(store.resolveCapability("bindingCapability")).andReturn(bindingExtensions).times(2);
-
-        EasyMock.replay(store);
-        Map<String, List<CompensatableCommand>> deploymentCommands = new HashMap<String, List<CompensatableCommand>>();
-        Map<String, CompensatableCommand> ret = generator.generate(map, components, deploymentCommands, GenerationType.INCREMENTAL);
-        Command commands = ret.get("zone1");
-        ProvisionExtensionsCommand command = (ProvisionExtensionsCommand) commands;
+        Map<String, CompensatableCommand> ret = generator.generate(contributions, components, deploymentCommands, GenerationType.INCREMENTAL);
+        ProvisionExtensionsCommand command = (ProvisionExtensionsCommand) ret.get("zone1");
         assertTrue(command.getExtensionUris().contains(extensionUri));
+        assertTrue(command.getExtensionUris().contains(importedExtensionUri));
         assertTrue(command.getExtensionUris().contains(componentExtensionUri));
         assertTrue(command.getExtensionUris().contains(bindingExtensionUri));
-
+        EasyMock.verify(store);
     }
+
+    public void testUndeployCapabilities() throws Exception {
+        deploymentCommands = createDeploymentCommands(interceptorExtensionUri, false);
+        components.get(0).setState(LogicalState.MARKED);
+        components.get(0).getReference("reference").getBindings().get(0).setState(LogicalState.MARKED);
+        components.get(0).getService("service").getBindings().get(0).setState(LogicalState.MARKED);
+        Map<String, CompensatableCommand> ret = generator.generate(contributions, components, deploymentCommands, GenerationType.UNDEPLOY);
+        UnProvisionExtensionsCommand command = (UnProvisionExtensionsCommand) ret.get("zone1");
+        assertTrue(command.getExtensionUris().contains(extensionUri));
+        assertTrue(command.getExtensionUris().contains(importedExtensionUri));
+        assertTrue(command.getExtensionUris().contains(componentExtensionUri));
+        assertTrue(command.getExtensionUris().contains(bindingExtensionUri));
+        EasyMock.verify(store);
+    }
+
 
     @Override
     protected void setUp() throws Exception {
@@ -120,13 +131,45 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         store = EasyMock.createMock(MetaDataStore.class);
         HostInfo info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER);
-        EasyMock.replay(info);
+
         generator = new ExtensionGeneratorImpl(store, info);
 
-        // setup components
-        MockImplementation implementation = new MockImplementation();
-        InjectingComponentType type = new InjectingComponentType();
+        createComponent();
+
+        extensionUri = URI.create("extensionUri");
+        Set<Contribution> extensions = Collections.singleton(new Contribution(extensionUri));
+
+        componentExtensionUri = URI.create("componentExtension");
+        Set<Contribution> componentExtensions = Collections.singleton(new Contribution(componentExtensionUri));
+
+        bindingExtensionUri = URI.create("bindingExtension");
+        Set<Contribution> bindingExtensions = Collections.singleton(new Contribution(bindingExtensionUri));
+
+        importedExtensionUri = URI.create("importedExtension");
+        Contribution importedExtension = new Contribution(importedExtensionUri);
+
+        interceptorExtensionUri = URI.create("interceptorExtension");
+        Contribution interceptorExtension = new Contribution(interceptorExtensionUri);
+        interceptorExtension.addWire(new MockContributionWire(importedExtensionUri));
+
+        URI contributionUri = URI.create("app");
+        List<Contribution> contributions = Collections.singletonList(new Contribution(contributionUri));
+        this.contributions = Collections.singletonMap("zone1", contributions);
+
+        EasyMock.expect(store.resolveCapabilities(EasyMock.isA(Contribution.class))).andReturn(extensions).times(3);
+        EasyMock.expect(store.resolveCapability("componentCapability")).andReturn(componentExtensions);
+        EasyMock.expect(store.resolveCapability("bindingCapability")).andReturn(bindingExtensions).times(2);
+        EasyMock.expect(store.find(interceptorExtensionUri)).andReturn(interceptorExtension);
+        EasyMock.expect(store.find(importedExtensionUri)).andReturn(importedExtension);
+
+        EasyMock.replay(info, store);
+
+    }
+
+    private void createComponent() {
+        ComponentType type = new ComponentType();
         type.addRequiredCapability("componentCapability");
+        MockImplementation implementation = new MockImplementation();
         implementation.setComponentType(type);
         ComponentDefinition<MockImplementation> definition = new ComponentDefinition<MockImplementation>("test", implementation);
         URI uri = URI.create("test");
@@ -145,12 +188,36 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         LogicalService service = new LogicalService(URI.create("test#service"), serviceDefinition, component);
         service.addBinding(binding);
         component.addService(service);
-        
+
         components = new ArrayList<LogicalComponent<?>>();
         components.add(component);
-
-
     }
+
+    private Map<String, List<CompensatableCommand>> createDeploymentCommands(URI interceptorExtensionUri, boolean attach) {
+        Map<String, List<CompensatableCommand>> deploymentCommands = new HashMap<String, List<CompensatableCommand>>();
+        List<CompensatableCommand> zone1Commands = new ArrayList<CompensatableCommand>();
+        deploymentCommands.put("zone1", zone1Commands);
+        ConnectionCommand connectionCommand = new ConnectionCommand(URI.create("component"));
+
+        PhysicalOperationDefinition operationDefinition = new PhysicalOperationDefinition();
+        PhysicalInterceptorDefinition interceptorDefinition = new PhysicalInterceptorDefinition();
+        interceptorDefinition.setPolicyClassLoaderId(interceptorExtensionUri);
+        operationDefinition.addInterceptor(interceptorDefinition);
+        PhysicalWireDefinition wireDefinition = new PhysicalWireDefinition(null, null, Collections.singleton(operationDefinition));
+        if (attach) {
+            AttachWireCommand wireCommand = new AttachWireCommand();
+            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            connectionCommand.add(wireCommand);
+        } else {
+            DetachWireCommand wireCommand = new DetachWireCommand();
+            wireCommand.setPhysicalWireDefinition(wireDefinition);
+            connectionCommand.add(wireCommand);
+        }
+
+        zone1Commands.add(connectionCommand);
+        return deploymentCommands;
+    }
+
 
     private class MockBinding extends BindingDefinition {
         private static final long serialVersionUID = -7088192438672216044L;
@@ -160,11 +227,41 @@ public class ExtensionGeneratorImplTestCase extends TestCase {
         }
     }
 
-    private class MockImplementation extends Implementation<InjectingComponentType> {
+    private class MockImplementation extends Implementation<ComponentType> {
         private static final long serialVersionUID = 7965669678990461548L;
 
         public QName getType() {
             return null;
+        }
+    }
+
+
+    private class MockContributionWire implements ContributionWire {
+        private static final long serialVersionUID = -8513574148912964583L;
+        URI exportedUri;
+
+        private MockContributionWire(URI exportedUri) {
+            this.exportedUri = exportedUri;
+        }
+
+        public Import getImport() {
+            return null;
+        }
+
+        public Export getExport() {
+            return null;
+        }
+
+        public URI getImportContributionUri() {
+            return null;
+        }
+
+        public URI getExportContributionUri() {
+            return exportedUri;
+        }
+
+        public boolean resolves(Symbol resource) {
+            return false;
         }
     }
 
