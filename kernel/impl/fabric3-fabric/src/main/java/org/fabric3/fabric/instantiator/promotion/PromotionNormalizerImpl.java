@@ -173,10 +173,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 policySets = new HashSet<QName>();
                 policySets.addAll(service.getPolicySets());
             }
+            validateIntents(service, context);
             service.setLeafComponent(leafComponent);
             service.setLeafService(leafService);
         }
-        validateIntents(leafService, context);
 
     }
 
@@ -316,7 +316,8 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         if (reference.getParent().getAutowire() == Autowire.ON
                 || !reference.getBindings().isEmpty()
                 || reference.getAutowire() == Autowire.ON
-                || reference.getComponentReference() != null) {
+                || reference.getComponentReference() != null) {     // Reference should not be configured in the component.
+                                                                    // If it is (i.e. getComponentReference() != null, avoid check and return true.
             return true;
         }
         Multiplicity multiplicity = reference.getDefinition().getMultiplicity();
