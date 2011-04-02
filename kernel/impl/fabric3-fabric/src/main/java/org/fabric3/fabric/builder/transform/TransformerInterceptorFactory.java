@@ -58,8 +58,8 @@ public interface TransformerInterceptorFactory {
      * order of preference (the source and target types are sorted in descending order) and the availability of a tranformer.
      *
      * @param operation    the operation to create the interceptor for
-     * @param sources      the source types in desending order of preference
-     * @param targets      the supported target types, in desending order of preference
+     * @param sources      the source types in descending order of preference
+     * @param targets      the supported target types, in descending order of preference
      * @param targetLoader the target service contribution classloader
      * @param sourceLoader the source component contribution classloader
      * @return the transforming interceptor
