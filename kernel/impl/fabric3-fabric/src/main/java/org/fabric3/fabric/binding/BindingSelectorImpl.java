@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -160,6 +162,14 @@ public class BindingSelectorImpl implements BindingSelector {
                 source.getBindings().clear();
                 target.getBindings().clear();
                 provider.bind(wire);
+                if (source.getBindings().isEmpty()) {
+                    QName type = result.getType();
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: "+ type);
+                }
+                if (target.getBindings().isEmpty()) {
+                    QName type = result.getType();
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: "+ type);
+                }
                 wire.setSourceBinding(source.getBindings().get(0));
                 if (!target.getBindings().isEmpty()) {
                     wire.setTargetBinding(target.getBindings().get(0));
@@ -193,6 +203,10 @@ public class BindingSelectorImpl implements BindingSelector {
                 // clear binding.sca
                 channel.clearBinding();
                 provider.bind(channel);
+                if (channel.getBindings().isEmpty()) {
+                    QName type = result.getType();
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the channel: "+ type);
+                }
                 return;
             }
             results.add(result);
