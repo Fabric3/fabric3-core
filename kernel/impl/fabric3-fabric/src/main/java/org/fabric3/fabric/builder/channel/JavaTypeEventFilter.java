@@ -55,7 +55,6 @@ public class JavaTypeEventFilter implements EventFilter {
      * @param types the types to filter on
      */
     public JavaTypeEventFilter(Class<?>... types) {
-        assert types != null;
         this.types = types;
     }
 

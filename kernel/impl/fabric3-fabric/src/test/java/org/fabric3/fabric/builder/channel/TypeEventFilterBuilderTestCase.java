@@ -37,32 +37,27 @@
 */
 package org.fabric3.fabric.builder.channel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.channel.EventFilter;
-import org.fabric3.spi.builder.channel.EventFilterBuilder;
-import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * Creates an event filter that filters based on Java types.
- *
  * @version $Rev$ $Date$
  */
-public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilterDefinition> {
+public class TypeEventFilterBuilderTestCase extends TestCase {
 
-    public EventFilter build(TypeEventFilterDefinition definition) throws BuilderException {
-        List<DataType<?>> types = definition.getTypes();
-        int i = 0;
-        Class<?>[] classes = new Class<?>[types.size()];
-        for (DataType type : types) {
-            if (!(type instanceof JavaType)) {
-                throw new UnsupportedTypeException("Unsupported data type: " + type);
-            }
-            classes[i] = type.getPhysical();
-        }
-        return new JavaTypeEventFilter(classes);
+    public void testBuild() throws Exception {
+        TypeEventFilterBuilder builder = new TypeEventFilterBuilder();
+        DataType<?> type = new JavaClass<String>(String.class);
+        List<DataType<?>> types = new ArrayList<DataType<?>>();
+        types.add(type);
+        TypeEventFilterDefinition definition = new TypeEventFilterDefinition(types);
+
+        assertNotNull(builder.build(definition));
     }
 }
