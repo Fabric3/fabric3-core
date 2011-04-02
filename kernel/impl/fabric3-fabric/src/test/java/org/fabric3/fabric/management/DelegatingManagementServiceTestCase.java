@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.spi.management.ManagementExtension;
+import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 
 /**
@@ -66,6 +67,28 @@ public class DelegatingManagementServiceTestCase extends TestCase {
         managementService.setExtensions(Collections.singletonList(extension));
 
         managementService.export(uri, null, factory, loader);
+
+        EasyMock.verify(extension);
+    }
+
+    public void testComponentRemove() throws Exception {
+        URI uri = URI.create("test");
+        SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(this);
+        ClassLoader loader = getClass().getClassLoader();
+        ManagementInfo info = new ManagementInfo(null, null, null, null, null, null, null);
+
+        ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
+        extension.export(uri, info, factory, loader);
+        EasyMock.expectLastCall();
+        extension.remove(uri, info);
+        EasyMock.expectLastCall();
+        EasyMock.replay(extension);
+
+        managementService.setExtensions(Collections.singletonList(extension));
+
+        managementService.export(uri, info, factory, loader);
+        managementService.remove(uri, info);
 
         EasyMock.verify(extension);
     }
@@ -99,6 +122,24 @@ public class DelegatingManagementServiceTestCase extends TestCase {
         managementService.setExtensions(Collections.singletonList(extension));
 
         managementService.export("name", "group", "desc", instance);
+
+        EasyMock.verify(extension);
+    }
+
+    public void testInstanceRemove() throws Exception {
+        Object instance = new Object();
+        ManagementExtension extension = EasyMock.createMock(ManagementExtension.class);
+        EasyMock.expect(extension.getType()).andReturn("test.extension");
+        extension.export("name", "group", "desc", instance);
+        EasyMock.expectLastCall();
+        extension.remove("name", "group");
+        EasyMock.expectLastCall();
+        EasyMock.replay(extension);
+
+        managementService.setExtensions(Collections.singletonList(extension));
+
+        managementService.export("name", "group", "desc", instance);
+        managementService.remove("name", "group");
 
         EasyMock.verify(extension);
     }
