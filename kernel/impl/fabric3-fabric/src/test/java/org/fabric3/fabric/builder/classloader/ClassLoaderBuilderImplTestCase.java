@@ -48,11 +48,13 @@ import org.fabric3.host.Names;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
+import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -70,6 +72,7 @@ public class ClassLoaderBuilderImplTestCase extends TestCase {
 
     public void testMultiVMClassLoaderBuildDestroy() throws Exception {
         URI uri = URI.create("test");
+        URI dependentUri = URI.create("dependent");
         ClassLoader classLoader = getClass().getClassLoader();
 
         // build calls
@@ -82,6 +85,9 @@ public class ClassLoaderBuilderImplTestCase extends TestCase {
         EasyMock.expect(processorRegistry.process(url)).andReturn(Collections.<URL>emptyList());
         classLoaderRegistry.register(EasyMock.eq(uri), EasyMock.isA(ClassLoader.class));
         EasyMock.expectLastCall();
+        wireBuilder.build(EasyMock.isA(MultiParentClassLoader.class), EasyMock.isA(PhysicalClassLoaderWireDefinition.class));
+        EasyMock.expect(classLoaderRegistry.getClassLoader(dependentUri)).andReturn(classLoader);
+        tracker.incrementImported(EasyMock.isA(ClassLoader.class));
 
         // destroy calls 
         EasyMock.expect(classLoaderRegistry.getClassLoader(uri)).andReturn(classLoader);
@@ -93,6 +99,8 @@ public class ClassLoaderBuilderImplTestCase extends TestCase {
         EasyMock.replay(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
 
         PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, true);
+        PhysicalClassLoaderWireDefinition wireDefinition = new PhysicalClassLoaderWireDefinition(dependentUri, "org.fabric3.test");
+        definition.add(wireDefinition);
         builder.build(definition);
         builder.destroy(uri);
 
@@ -127,6 +135,67 @@ public class ClassLoaderBuilderImplTestCase extends TestCase {
 
         EasyMock.verify(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
     }
+
+    public void testBuildCommonClassLoader() throws Exception {
+        URI uri = URI.create("test");
+        URI dependentUri = URI.create("dependent");
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        // build calls
+        EasyMock.expect(tracker.increment(uri)).andReturn(1);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(uri)).andReturn(null);   // return null since classloader not yet registered
+        EasyMock.expect(classLoaderRegistry.getClassLoader(Names.HOST_CONTRIBUTION)).andReturn(classLoader);
+        EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(false);
+        classLoaderRegistry.register(EasyMock.eq(uri), EasyMock.isA(ClassLoader.class));
+        EasyMock.expectLastCall();
+
+        // destroy calls
+        EasyMock.expect(classLoaderRegistry.getClassLoader(uri)).andReturn(classLoader);
+        EasyMock.expect(tracker.decrement(classLoader)).andReturn(0);
+        EasyMock.expect(store.find(uri)).andReturn(null);   // simulates a participant which does not introspect application contributions
+        EasyMock.expect(classLoaderRegistry.unregister(uri)).andReturn(classLoader); // unregister must be called
+        resolver.release(uri);
+
+        EasyMock.replay(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
+
+        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, true);
+        PhysicalClassLoaderWireDefinition wireDefinition = new PhysicalClassLoaderWireDefinition(dependentUri, "org.fabric3.test");
+        definition.add(wireDefinition);
+        builder.build(definition);
+        builder.destroy(uri);
+
+        EasyMock.verify(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
+
+    }
+
+    public void testClassLoaderAlreadyRegistered() throws Exception {
+         URI uri = URI.create("test");
+         URI dependentUri = URI.create("dependent");
+         ClassLoader classLoader = getClass().getClassLoader();
+
+         // build calls
+         EasyMock.expect(tracker.increment(uri)).andReturn(1);
+         EasyMock.expect(classLoaderRegistry.getClassLoader(uri)).andReturn(classLoader);   // simulate registered classloader
+         EasyMock.expect(classLoaderRegistry.getClassLoader(dependentUri)).andReturn(classLoader);
+         tracker.incrementImported(EasyMock.isA(ClassLoader.class));
+
+         // destroy calls
+         EasyMock.expect(classLoaderRegistry.getClassLoader(uri)).andReturn(classLoader);
+         EasyMock.expect(tracker.decrement(classLoader)).andReturn(0);
+         EasyMock.expect(store.find(uri)).andReturn(null);   // simulates a participant which does not introspect application contributions
+         EasyMock.expect(classLoaderRegistry.unregister(uri)).andReturn(classLoader); // unregister must be called
+         resolver.release(uri);
+
+         EasyMock.replay(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
+
+         PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, true);
+         PhysicalClassLoaderWireDefinition wireDefinition = new PhysicalClassLoaderWireDefinition(dependentUri, "org.fabric3.test");
+         definition.add(wireDefinition);
+         builder.build(definition);
+         builder.destroy(uri);
+
+         EasyMock.verify(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
+     }
 
     @Override
     protected void setUp() throws Exception {
