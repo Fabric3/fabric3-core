@@ -86,7 +86,6 @@ public class EventWrapper implements Serializable {
     }
 
     public Object getEvent(DataType<?> type) {
-        Object cached = null;
         if (cache != null) {
             return cache.get(type);
         }
