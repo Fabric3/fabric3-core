@@ -55,10 +55,12 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.channel.AsyncFanOutHandler;
 import org.fabric3.fabric.channel.ChannelImpl;
 import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.ReplicationHandler;
+import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.spi.builder.BuilderException;
@@ -84,6 +86,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     private ChannelManager channelManager;
     private ExecutorService executorService;
     private CommandExecutorRegistry executorRegistry;
+    private ReplicationMonitor monitor;
     private ZoneTopologyService topologyService;
     private boolean replicationCapable;
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
@@ -92,10 +95,12 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
                                         @Reference ExecutorService executorService,
-                                        @Reference CommandExecutorRegistry executorRegistry) {
+                                        @Reference CommandExecutorRegistry executorRegistry,
+                                        @Monitor ReplicationMonitor monitor) {
         this.channelManager = channelManager;
         this.executorService = executorService;
         this.executorRegistry = executorRegistry;
+        this.monitor = monitor;
     }
 
     @Reference(required = false)
@@ -132,7 +137,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
                 Channel channel;
                 if (definition.isReplicate() && replicationCapable) {
                     String channelName = uri.toString();
-                    ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService);
+                    ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
                     channel = new ChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
                     try {
                         topologyService.openChannel(channelName, null, replicationHandler);

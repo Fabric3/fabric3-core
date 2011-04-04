@@ -51,6 +51,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
@@ -83,9 +84,11 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
         ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
         EasyMock.expect(topologyService.supportsDynamicChannels()).andReturn(true);
         topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.eq(null), EasyMock.isA(MessageReceiver.class));
-        EasyMock.replay(channelManager, builder, registry, topologyService);
 
-        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry);
+        ReplicationMonitor monitor = EasyMock.createMock(ReplicationMonitor.class);
+        EasyMock.replay(channelManager, builder, registry, topologyService, monitor);
+
+        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry, monitor);
 
         Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> map =
                 Collections.<Class<? extends PhysicalChannelBindingDefinition>,
@@ -95,7 +98,7 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
         BuildChannelsCommand command = new BuildChannelsCommand(Collections.singletonList(definition));
         executor.execute(command);
 
-        EasyMock.verify(channelManager, builder, registry, topologyService);
+        EasyMock.verify(channelManager, builder, registry, topologyService, monitor);
     }
 
     private class MockDefinition extends PhysicalChannelDefinition {

@@ -55,10 +55,12 @@ public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
     private String channelName;
     private ZoneTopologyService topologyService;
     private EventStreamHandler next;
+    private ReplicationMonitor monitor;
 
-    public ReplicationHandler(String channelName, ZoneTopologyService topologyService) {
+    public ReplicationHandler(String channelName, ZoneTopologyService topologyService, ReplicationMonitor monitor) {
         this.topologyService = topologyService;
         this.channelName = channelName;
+        this.monitor = monitor;
     }
 
     public void setNext(EventStreamHandler next) {
@@ -71,11 +73,11 @@ public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
 
     public void handle(Object event) {
         if (!(event instanceof EventWrapper) && event instanceof Serializable) {
+            // check for EventWrapper to avoid re-replicating an event that was just replicated
             try {
                 topologyService.sendAsynchronous(channelName, (Serializable) event);
             } catch (MessageException e) {
-                e.printStackTrace();
-                // monitor.replicationError(e);
+                monitor.error(e);
             }
         }
         // pass the object to the head stream handler

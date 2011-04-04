@@ -38,11 +38,14 @@
 package org.fabric3.fabric.channel;
 
 import java.net.URI;
+import java.util.Collections;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.PassThroughHandler;
 
@@ -55,7 +58,11 @@ public class ChannelImplTestCase extends TestCase {
     private ChannelImpl channel;
     private FanOutHandler fanOutHandler;
 
-    public void testAddRemove() throws Exception {
+    public void testAddRemoveHandler() throws Exception {
+        fanOutHandler.handle(EasyMock.notNull());
+        EasyMock.expectLastCall().times(2);
+        EasyMock.replay(fanOutHandler);
+
         BlockingHandler handler = new BlockingHandler();
         BlockingHandler handler2 = new BlockingHandler();
         channel.addHandler(handler);
@@ -74,16 +81,42 @@ public class ChannelImplTestCase extends TestCase {
 
         head.handle(new Object());
         EasyMock.verify(fanOutHandler);
+    }
 
+    public void testSubscribeUnsubscribe() throws Exception {
+
+        URI uri = URI.create("connection");
+        ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
+
+        fanOutHandler.addConnection(uri, connection);
+        EasyMock.expect(fanOutHandler.removeConnection(uri)).andReturn(connection);
+        EasyMock.replay(connection, fanOutHandler);
+
+        channel.subscribe(uri, connection);
+        assertEquals(connection, channel.unsubscribe(uri));
+
+        EasyMock.verify(connection, fanOutHandler);
+
+    }
+
+    public void testAttachConnection() throws Exception {
+        EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
+        handler.setNext(EasyMock.isA(EventStreamHandler.class));
+        EventStream stream = EasyMock.createMock(EventStream.class);
+        EasyMock.expect(stream.getTailHandler()).andReturn(handler);
+        ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
+        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+
+        EasyMock.replay(handler, stream, connection);
+        
+        channel.attach(connection);
+        EasyMock.verify(handler, stream, connection);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         fanOutHandler = EasyMock.createMock(FanOutHandler.class);
-        fanOutHandler.handle(EasyMock.notNull());
-        EasyMock.expectLastCall().times(2);
-        EasyMock.replay(fanOutHandler);
         channel = new ChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler);
     }
 

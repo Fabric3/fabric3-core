@@ -37,43 +37,13 @@
 */
 package org.fabric3.fabric.channel;
 
-import java.net.URI;
-
-import junit.framework.TestCase;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
+ * @version $Rev$ $Date$
  */
-public class ChannelManagerImplTestCase extends TestCase {
+public interface ReplicationMonitor {
 
-    public void testDuplicateRegistration() throws Exception {
-        ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
-        manager.register(channel);
-        try {
-            manager.register(channel);
-            fail();
-        } catch (DuplicateChannelException e) {
-            // expected
-        }
-    }
-
-    public void testGetChannel() throws Exception {
-        ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
-        manager.register(channel);
-        assertEquals(channel, manager.getChannel(uri));
-    }
-
-    public void testUnRegister() throws Exception {
-        ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
-        manager.register(channel);
-        manager.unregister(uri);
-        manager.register(channel);
-    }
-
+    @Severe("Error replicating event")
+    void error(Throwable t);
 }

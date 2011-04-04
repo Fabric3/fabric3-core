@@ -68,18 +68,31 @@ public class EventStreamImplTestCase extends TestCase {
     }
 
     public void testAddIndexedHandler() throws Exception {
-        EventStreamHandler handler1 = EasyMock.createMock(EventStreamHandler.class);
+        EventStreamHandler handler3 = EasyMock.createMock(EventStreamHandler.class);
+        handler3.setNext((EventStreamHandler) EasyMock.isNull());
 
-        handler1.setNext(EasyMock.isA(EventStreamHandler.class));
-        EasyMock.replay(handler1);
+        EventStreamHandler handler2 = EasyMock.createMock(EventStreamHandler.class);
+        handler2.setNext(EasyMock.eq(handler3));
+
+
+        EventStreamHandler handler1 = EasyMock.createMock(EventStreamHandler.class);
+        EasyMock.expect(handler1.getNext()).andReturn(null);
+        handler1.setNext(EasyMock.eq(handler3));
+        EasyMock.expectLastCall();
+        EasyMock.expect(handler1.getNext()).andReturn(handler3);
+        handler1.setNext(EasyMock.eq(handler2)); 
+        EasyMock.expectLastCall();
+
+        EasyMock.replay(handler1, handler2, handler3);
 
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("test");
 
         EventStreamImpl stream = new EventStreamImpl(definition);
-        stream.addHandler(0, handler1);
-        assertEquals(handler1, stream.getHeadHandler());
+        stream.addHandler(handler1);
+        stream.addHandler(2, handler3);
+        stream.addHandler(2, handler2);
 
-        EasyMock.verify(handler1);
+        EasyMock.verify(handler1, handler2, handler3);
     }
 
 }

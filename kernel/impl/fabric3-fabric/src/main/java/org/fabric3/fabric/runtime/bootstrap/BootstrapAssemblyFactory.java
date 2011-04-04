@@ -54,6 +54,7 @@ import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
 import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
+import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
@@ -130,6 +131,7 @@ import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.host.Names;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -315,7 +317,12 @@ public class BootstrapAssemblyFactory {
         commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
         commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
         commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
-        commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry));
+        try {
+            ReplicationMonitor monitor = monitorService.createMonitor(ReplicationMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
+            commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry, monitor));
+        } catch (MonitorCreationException e) {
+            throw new AssertionError(e);
+        }
 
         ChannelConnector channelConnector = createChannelConnector(componentManager, channelManager, classLoaderRegistry);
         commandRegistry.register(AttachChannelConnectionCommand.class, new AttachChannelConnectionCommandExecutor(commandRegistry, channelConnector));
