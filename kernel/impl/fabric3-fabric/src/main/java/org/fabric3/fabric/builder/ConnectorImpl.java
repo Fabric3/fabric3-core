@@ -114,6 +114,10 @@ public class ConnectorImpl implements Connector {
         this.targetAttachers = targetAttachers;
     }
 
+    public void setTransform(boolean transform) {
+        this.transform = transform;
+    }
+
     public void connect(PhysicalWireDefinition definition) throws BuilderException {
         PhysicalSourceDefinition sourceDefinition = definition.getSource();
         SourceWireAttacher<PhysicalSourceDefinition> sourceAttacher = getAttacher(sourceDefinition);
@@ -179,8 +183,8 @@ public class ConnectorImpl implements Connector {
      * @throws WiringException if there is an error creating a transformer
      */
     private void processTransform(Wire wire, PhysicalWireDefinition definition) throws WiringException {
-        if (!transform || definition.isOptimizable()) {
-            // short-circuit during bootstrap and when the wire is optimizable
+        if (!transform) {
+            // short-circuit during bootstrap
             return;
         }
         PhysicalSourceDefinition sourceDefinition = definition.getSource();
@@ -206,13 +210,18 @@ public class ConnectorImpl implements Connector {
     private void addTransformer(Wire wire, PhysicalWireDefinition definition, boolean checkPassByRef) throws WiringException {
         PhysicalSourceDefinition sourceDefinition = definition.getSource();
         PhysicalTargetDefinition targetDefinition = definition.getTarget();
-        URI targetId = targetDefinition.getClassLoaderId();
-        ClassLoader targetLoader = classLoaderRegistry.getClassLoader(targetId);
         URI sourceId = sourceDefinition.getClassLoaderId();
-        ClassLoader sourceLoader = classLoaderRegistry.getClassLoader(sourceId);
+        URI targetId = targetDefinition.getClassLoaderId();
+        ClassLoader sourceLoader = null;
+        ClassLoader targetLoader = null;
         for (InvocationChain chain : wire.getInvocationChains()) {
             if (checkPassByRef && chain.getPhysicalOperation().isAllowsPassByReference()) {
                 continue;
+            }
+            // lazy load classloaders
+            if (sourceLoader == null && targetLoader == null) {
+                sourceLoader = classLoaderRegistry.getClassLoader(sourceId);
+                targetLoader = classLoaderRegistry.getClassLoader(targetId);
             }
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             List<DataType<?>> sourceTypes = sourceDefinition.getPhysicalDataTypes();
