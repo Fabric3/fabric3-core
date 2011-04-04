@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.classloader;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -51,9 +53,64 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class ClassLoaderRegistryImplTestCase extends TestCase {
-    private ClassLoaderRegistry registry = new ClassLoaderRegistryImpl();
+    private static final URI CLassLOADER_URI = URI.create("classloader");
+
+    private ClassLoaderRegistry registry;
 
     public void testLoadPrimitive() throws Exception {
         assertEquals(Integer.TYPE, registry.loadClass(getClass().getClassLoader(), Integer.TYPE.getName()));
+    }
+
+    public void testLoadClassByClassLoader() throws Exception {
+        assertEquals(Test.class, registry.loadClass(getClass().getClassLoader(), Test.class.getName()));
+    }
+
+    public void testLoadClassByUri() throws Exception {
+        ClassLoader loader = getClass().getClassLoader();
+        registry.register(CLassLOADER_URI, loader);
+        assertEquals(Test.class, registry.loadClass(CLassLOADER_URI, Test.class.getName()));
+    }
+
+    public void testRegisterUnregister() throws Exception {
+        ClassLoader loader = getClass().getClassLoader();
+        registry.register(CLassLOADER_URI, loader);
+        assertEquals(loader, registry.getClassLoader(CLassLOADER_URI));
+        assertEquals(loader, registry.unregister(CLassLOADER_URI));
+        assertNull(registry.getClassLoader(CLassLOADER_URI));
+        registry.register(CLassLOADER_URI, loader);
+    }
+
+    public void testDuplicateRegistration() throws Exception {
+        ClassLoader loader = getClass().getClassLoader();
+        registry.register(CLassLOADER_URI, loader);
+        try {
+            registry.register(CLassLOADER_URI, loader);
+            fail();
+        } catch (AssertionError e) {
+            // expected
+        }
+    }
+
+    public void testGetClassLoaders() throws Exception {
+        ClassLoader loader = getClass().getClassLoader();
+        registry.register(CLassLOADER_URI, loader);
+        assertEquals(1, registry.getClassLoaders().size());
+        assertTrue(registry.getClassLoaders().containsValue(loader));
+    }
+
+    public void testGetClassLoader() throws Exception {
+        ClassLoader loader = getClass().getClassLoader();
+        registry.register(CLassLOADER_URI, loader);
+        assertEquals(loader, registry.getClassLoader(CLassLOADER_URI));
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        registry = new ClassLoaderRegistryImpl();
+    }
+
+    private static class Test {
+
     }
 }
