@@ -142,7 +142,7 @@ public abstract class PhysicalComponentDefinition implements Serializable {
         }
 
         PhysicalComponentDefinition other = (PhysicalComponentDefinition) obj;
-        return super.equals(uri.equals(other.getComponentUri()));
+        return uri.equals(other.getComponentUri());
 
     }
 
