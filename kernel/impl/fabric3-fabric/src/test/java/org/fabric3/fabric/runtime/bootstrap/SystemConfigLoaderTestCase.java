@@ -54,6 +54,7 @@ import org.w3c.dom.Element;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.stream.InputStreamSource;
+import org.fabric3.host.util.FileHelper;
 
 /**
  * Loads the system configuration property for a runtime domain.
@@ -161,5 +162,33 @@ public class SystemConfigLoaderTestCase extends TestCase {
         assertEquals(2, dirs.size());
         assertTrue(dirs.get(0).getName().equals("foo") || dirs.get(0).getName().equals("bar"));
         assertTrue(dirs.get(1).getName().equals("foo") || dirs.get(1).getName().equals("bar"));
+    }
+
+    public void testCreateDefaultSystemConfig() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        Document systemConfig = loader.createDefaultSystemConfig();
+        Element root = systemConfig.getDocumentElement();
+        assertEquals("values", root.getNodeName());
+        assertEquals(1, root.getElementsByTagName("config").getLength());
+    }
+
+    public void testLoadSystemConfig() throws Exception {
+        File dir = new File("testdir");
+        try {
+            if (dir.exists()) {
+                FileHelper.forceDelete(dir);
+            }
+            assertTrue(dir.mkdir());
+            File file = new File(dir, "systemConfig.xml");
+            FileHelper.write(new ByteArrayInputStream(CONFIG.getBytes()), file);
+            SystemConfigLoader loader = new SystemConfigLoader();
+            Document systemConfig = loader.loadSystemConfig(dir);
+            Element root = systemConfig.getDocumentElement();
+            assertEquals("values", root.getNodeName());
+        } finally {
+            if (dir.exists()) {
+                FileHelper.forceDelete(dir);
+            }
+        }
     }
 }
