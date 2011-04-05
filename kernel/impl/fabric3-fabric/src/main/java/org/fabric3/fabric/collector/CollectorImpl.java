@@ -37,8 +37,10 @@
 */
 package org.fabric3.fabric.collector;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -174,7 +176,10 @@ public class CollectorImpl implements Collector {
             if (binding != null && deployable.equals(binding.getDeployable())) {
                 binding.setState(LogicalState.MARKED);
             }
-            for (LogicalResource resource : composite.getResources()) {
+        }
+
+        for (LogicalResource resource : composite.getResources()) {
+            if (deployable.equals(resource.getDeployable())) {
                 resource.setState(LogicalState.MARKED);
             }
         }
@@ -200,13 +205,21 @@ public class CollectorImpl implements Collector {
                 }
             }
         }
-        for (List<LogicalWire> wires : composite.getWires().values()) {
-            for (Iterator<LogicalWire> it = wires.iterator(); it.hasNext();) {
+        List<LogicalReference> toRemove = new ArrayList<LogicalReference>();
+        for (Map.Entry<LogicalReference, List<LogicalWire>> wires : composite.getWires().entrySet()) {
+            for (Iterator<LogicalWire> it = wires.getValue().iterator(); it.hasNext();) {
                 LogicalWire wire = it.next();
                 if (LogicalState.MARKED == wire.getState()) {
                     it.remove();
                 }
             }
+            if (wires.getValue().isEmpty()) {
+                toRemove.add(wires.getKey());
+            }
+        }
+        // cleanup reference entries that have no wires
+        for (LogicalReference reference : toRemove) {
+            composite.getWires().remove(reference);
         }
 
         Iterator<LogicalChannel> channelIter = composite.getChannels().iterator();
