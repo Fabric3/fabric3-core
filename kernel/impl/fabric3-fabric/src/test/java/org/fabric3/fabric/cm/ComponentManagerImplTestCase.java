@@ -118,7 +118,7 @@ public class ComponentManagerImplTestCase extends TestCase {
         EasyMock.expect(c2.getUri()).andReturn(uri2).atLeastOnce();
         Component c3 = EasyMock.createMock(Component.class);
         EasyMock.expect(c3.getUri()).andReturn(URI.create("sca://other/component3")).atLeastOnce();
-        EasyMock.replay(c1,c2,c3);
+        EasyMock.replay(c1, c2, c3);
         manager.register(c1);
         manager.register(c2);
         manager.register(c3);
@@ -129,6 +129,17 @@ public class ComponentManagerImplTestCase extends TestCase {
         components = manager.getComponentsInHierarchy(URI.create("sca://fabric/component1"));
         assertEquals(1, components.size());
         assertTrue(components.contains(c1));
+    }
+
+    public void testGetComponents() throws Exception {
+        Component component = EasyMock.createMock(Component.class);
+        EasyMock.expect(component.getUri()).andReturn(ROOT1);
+        EasyMock.replay(component);
+        manager.register(component);
+
+        assertEquals(1, manager.getComponents().size());
+        assertTrue(manager.getComponents().contains(component));
+        EasyMock.verify(component);
     }
 
     public void testGetDeployedComponents() throws Exception {
@@ -145,7 +156,7 @@ public class ComponentManagerImplTestCase extends TestCase {
         QName deployable3 = new QName("urn:foo", "bar");
         EasyMock.expect(c3.getUri()).andReturn(URI.create("sca://other/component3")).atLeastOnce();
         EasyMock.expect(c3.getDeployable()).andReturn(deployable3).atLeastOnce();
-        EasyMock.replay(c1,c2,c3);
+        EasyMock.replay(c1, c2, c3);
         manager.register(c1);
         manager.register(c2);
         manager.register(c3);
