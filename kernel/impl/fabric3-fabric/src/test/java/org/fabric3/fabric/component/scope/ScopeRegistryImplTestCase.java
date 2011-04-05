@@ -43,40 +43,42 @@
  */
 package org.fabric3.fabric.component.scope;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.component.ScopeContainer;
 
 /**
- * A simple store that retains instances in memory without expiration.
- *
  * @version $Rev$ $Date$
  */
-public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
-    private final Map<KEY, Map<AtomicComponent, InstanceWrapper>> contexts = new ConcurrentHashMap<KEY, Map<AtomicComponent, InstanceWrapper>>();
+public class ScopeRegistryImplTestCase extends TestCase {
+    private ScopeContainer container;
+    private ScopeRegistryImpl registry;
 
-    public void startContext(KEY contextId) throws InstanceLifecycleException {
-        contexts.put(contextId, new ConcurrentHashMap<AtomicComponent, InstanceWrapper>());
+    public void testGetScopeEnum() throws Exception {
+        registry.register(container);
+        assertEquals(container, registry.getScopeContainer(Scope.COMPOSITE));
+        registry.unregister(container);
+        assertNull(registry.getScopeContainer(Scope.COMPOSITE));
+        EasyMock.verify(container);
     }
 
-    public void stopContext(KEY contextId) throws InstanceLifecycleException {
-        contexts.remove(contextId);
+    public void testGetScopeString() throws Exception {
+        registry.register(container);
+        assertEquals(container, registry.getScopeContainer("COMPOSITE"));
+        registry.unregister(container);
+        assertNull(registry.getScopeContainer("COMPOSITE"));
+        EasyMock.verify(container);
     }
 
-    @SuppressWarnings("unchecked")
-    public InstanceWrapper getWrapper(AtomicComponent component, KEY contextId) {
-        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
-        if (context == null) {
-            return null;
-        }
-        return context.get(component);
-    }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        container = EasyMock.createMock(ScopeContainer.class);
+        EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
+        EasyMock.replay(container);
 
-    public void putWrapper(AtomicComponent component, KEY contextId, InstanceWrapper wrapper) {
-        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
-        context.put(component, wrapper);
+        registry = new ScopeRegistryImpl();
     }
 }

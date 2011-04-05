@@ -43,40 +43,31 @@
  */
 package org.fabric3.fabric.component.scope;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
 
 /**
- * A simple store that retains instances in memory without expiration.
- *
  * @version $Rev$ $Date$
  */
-public class NonExpiringMemoryStore<KEY> implements InstanceWrapperStore<KEY> {
-    private final Map<KEY, Map<AtomicComponent, InstanceWrapper>> contexts = new ConcurrentHashMap<KEY, Map<AtomicComponent, InstanceWrapper>>();
+public class NonExpiringMemoryStoreTestCase extends TestCase {
 
-    public void startContext(KEY contextId) throws InstanceLifecycleException {
-        contexts.put(contextId, new ConcurrentHashMap<AtomicComponent, InstanceWrapper>());
-    }
+    public void testManageWrapper() throws Exception {
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
+        EasyMock.replay(component, wrapper);
 
-    public void stopContext(KEY contextId) throws InstanceLifecycleException {
-        contexts.remove(contextId);
-    }
+        NonExpiringMemoryStore<String> store = new NonExpiringMemoryStore<String>();
+        store.startContext("test");
 
-    @SuppressWarnings("unchecked")
-    public InstanceWrapper getWrapper(AtomicComponent component, KEY contextId) {
-        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
-        if (context == null) {
-            return null;
-        }
-        return context.get(component);
-    }
+        store.putWrapper(component, "test", wrapper);
+        assertEquals(wrapper, store.getWrapper(component, "test"));
+        store.stopContext("test");
+        assertNull(store.getWrapper(component, "test"));
 
-    public void putWrapper(AtomicComponent component, KEY contextId, InstanceWrapper wrapper) {
-        Map<AtomicComponent, InstanceWrapper> context = contexts.get(contextId);
-        context.put(component, wrapper);
+        EasyMock.verify(component, wrapper);
+
     }
 }

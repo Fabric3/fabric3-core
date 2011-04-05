@@ -149,6 +149,75 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.verify(component, wrapper, info, topologyService);
     }
 
+    public void testStopContainer() throws Exception {
+        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        EasyMock.expect(topologyService.isZoneLeader()).andReturn(false).times(2);
+
+        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+
+        EasyMock.expect(component.isEagerInit()).andReturn(true);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+
+        EasyMock.replay(component, wrapper, info, topologyService);
+
+        scopeContainer.register(component);
+        scopeContainer.startContext(workContext);
+        scopeContainer.stop();
+
+        scopeContainer.start();
+        scopeContainer.startContext(workContext);
+        
+        EasyMock.verify(component, wrapper, info, topologyService);
+    }
+
+    public void testStopAllContexts() throws Exception {
+        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+
+        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+
+        EasyMock.expect(component.isEagerInit()).andReturn(true);
+        EasyMock.expect(component.createInstanceWrapper(EasyMock.isA(WorkContext.class))).andReturn(wrapper);
+
+        EasyMock.expect(wrapper.isStarted()).andReturn(false);
+        wrapper.start(EasyMock.isA(WorkContext.class));
+        wrapper.stop(EasyMock.isA(WorkContext.class));
+        
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+
+        EasyMock.replay(component, wrapper, info, topologyService);
+
+        scopeContainer.register(component);
+        scopeContainer.startContext(workContext);
+        scopeContainer.stopAllContexts(workContext);
+
+        EasyMock.verify(component, wrapper, info, topologyService);
+    }
+
+    public void testStopContext() throws Exception {
+        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        EasyMock.expect(topologyService.isZoneLeader()).andReturn(true);
+
+        scopeContainer.setTopologyService(Collections.singletonList(topologyService));
+
+        EasyMock.expect(component.isEagerInit()).andReturn(true);
+        EasyMock.expect(component.createInstanceWrapper(EasyMock.isA(WorkContext.class))).andReturn(wrapper);
+
+        EasyMock.expect(wrapper.isStarted()).andReturn(false);
+        wrapper.start(EasyMock.isA(WorkContext.class));
+        wrapper.stop(EasyMock.isA(WorkContext.class));
+
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
+
+        EasyMock.replay(component, wrapper, info, topologyService);
+
+        scopeContainer.register(component);
+        scopeContainer.startContext(workContext);
+        scopeContainer.stopContext(workContext);
+
+        EasyMock.verify(component, wrapper, info, topologyService);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
