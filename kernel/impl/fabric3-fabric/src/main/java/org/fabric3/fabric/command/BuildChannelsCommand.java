@@ -61,7 +61,7 @@ public class BuildChannelsCommand implements CompensatableCommand {
         this.definitions = definitions;
     }
 
-    public CompensatableCommand getCompensatingCommand() {
+    public DisposeChannelsCommand getCompensatingCommand() {
         return new DisposeChannelsCommand(definitions);
     }
 

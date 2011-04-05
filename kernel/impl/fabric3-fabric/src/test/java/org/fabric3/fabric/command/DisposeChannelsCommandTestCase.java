@@ -38,39 +38,33 @@
 package org.fabric3.fabric.command;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import junit.framework.TestCase;
 
-public class StopComponentCommand implements CompensatableCommand {
-    private static final long serialVersionUID = 4385799180032870689L;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
-    private final URI uri;
+public class DisposeChannelsCommandTestCase extends TestCase {
+    private List<PhysicalChannelDefinition> definitions;
 
-    public StopComponentCommand(URI uri) {
-        this.uri = uri;
+    public void testCompensatingCommand() throws Exception {
+        DisposeChannelsCommand command = new DisposeChannelsCommand(definitions);
+        BuildChannelsCommand compensating = command.getCompensatingCommand();
+        assertEquals(definitions, compensating.getDefinitions());
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
-    public StartComponentCommand getCompensatingCommand() {
-        return new StartComponentCommand(uri);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StopComponentCommand that = (StopComponentCommand) o;
-
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
+    public void testEquals() throws Exception {
+        DisposeChannelsCommand command1 = new DisposeChannelsCommand(definitions);
+        DisposeChannelsCommand command2 = new DisposeChannelsCommand(definitions);
+        assertEquals(command1, command2);
     }
 
     @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+    protected void setUp() throws Exception {
+        super.setUp();
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "composite"), false, false);
+        definitions = Collections.singletonList(definition);
     }
 }

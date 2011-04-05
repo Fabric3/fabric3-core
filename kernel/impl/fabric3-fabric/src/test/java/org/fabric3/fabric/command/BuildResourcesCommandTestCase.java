@@ -37,40 +37,35 @@
 */
 package org.fabric3.fabric.command;
 
-import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import junit.framework.TestCase;
 
-public class StopComponentCommand implements CompensatableCommand {
-    private static final long serialVersionUID = 4385799180032870689L;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
-    private final URI uri;
+public class BuildResourcesCommandTestCase extends TestCase {
+    private BuildResourcesCommand command;
+    private List<PhysicalResourceDefinition> definitions;
 
-    public StopComponentCommand(URI uri) {
-        this.uri = uri;
+    public void testCompensatingCommand() throws Exception {
+        DisposeResourcesCommand compensating = command.getCompensatingCommand();
+        assertEquals(command.getDefinitions(), compensating.getDefinitions());
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
-    public StartComponentCommand getCompensatingCommand() {
-        return new StartComponentCommand(uri);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StopComponentCommand that = (StopComponentCommand) o;
-
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
+    public void testEquals() throws Exception {
+        BuildResourcesCommand command2 = new BuildResourcesCommand(definitions);
+        assertEquals(command2, command);
     }
 
     @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+    protected void setUp() throws Exception {
+        super.setUp();
+        definitions = Collections.<PhysicalResourceDefinition>singletonList(new MockDefinition());
+        command = new BuildResourcesCommand(definitions);
+    }
+
+    private class MockDefinition extends PhysicalResourceDefinition {
+        private static final long serialVersionUID = 6358317322714807832L;
     }
 }

@@ -37,40 +37,27 @@
 */
 package org.fabric3.fabric.command;
 
-import java.net.URI;
+import junit.framework.TestCase;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
-public class StopComponentCommand implements CompensatableCommand {
-    private static final long serialVersionUID = 4385799180032870689L;
+public class DetachWireCommandTestCase extends TestCase {
 
-    private final URI uri;
-
-    public StopComponentCommand(URI uri) {
-        this.uri = uri;
+    public void testCompensatingCommand() throws Exception {
+        DetachWireCommand command = new DetachWireCommand();
+        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
+        command.setPhysicalWireDefinition(definition);
+        AttachWireCommand compensating = command.getCompensatingCommand();
+        assertEquals(definition, compensating.getPhysicalWireDefinition());
     }
 
-    public URI getUri() {
-        return uri;
-    }
+    public void testEquals() throws Exception {
+        DetachWireCommand command1 = new DetachWireCommand();
+        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
+        command1.setPhysicalWireDefinition(definition);
 
-    public StartComponentCommand getCompensatingCommand() {
-        return new StartComponentCommand(uri);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StopComponentCommand that = (StopComponentCommand) o;
-
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+        DetachWireCommand command2 = new DetachWireCommand();
+        command2.setPhysicalWireDefinition(definition);
+        assertEquals(command1, command2);
     }
 }

@@ -58,7 +58,7 @@ public class BuildComponentCommand extends AbstractComponentCommand {
         super(definition);
     }
 
-    public CompensatableCommand getCompensatingCommand() {
+    public DisposeComponentCommand getCompensatingCommand() {
         return new DisposeComponentCommand(definition);
     }
 

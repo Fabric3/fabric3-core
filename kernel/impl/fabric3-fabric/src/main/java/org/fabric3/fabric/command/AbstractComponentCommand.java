@@ -63,7 +63,7 @@ public abstract class AbstractComponentCommand implements CompensatableCommand {
     }
 
     public String toString() {
-        return "ComponentBuild: " + definition.toString();
+        return "Component definition: " + definition.toString();
     }
 
 }

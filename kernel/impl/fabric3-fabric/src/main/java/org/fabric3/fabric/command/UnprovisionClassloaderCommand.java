@@ -55,6 +55,10 @@ public class UnprovisionClassloaderCommand implements CompensatableCommand {
         return new ProvisionClassloaderCommand(definition);
     }
 
+    public PhysicalClassLoaderDefinition getClassLoaderDefinition() {
+        return definition;
+    }
+
     public URI getUri() {
         return definition.getUri();
     }

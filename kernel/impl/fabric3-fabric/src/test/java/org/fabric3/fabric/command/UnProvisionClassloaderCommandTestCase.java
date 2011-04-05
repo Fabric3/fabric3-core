@@ -39,38 +39,34 @@ package org.fabric3.fabric.command;
 
 import java.net.URI;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import junit.framework.TestCase;
 
-public class StopComponentCommand implements CompensatableCommand {
-    private static final long serialVersionUID = 4385799180032870689L;
+import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
-    private final URI uri;
+public class UnProvisionClassloaderCommandTestCase extends TestCase {
+    private UnprovisionClassloaderCommand command;
 
-    public StopComponentCommand(URI uri) {
-        this.uri = uri;
+    public void testCompensatingCommand() throws Exception {
+        ProvisionClassloaderCommand compensating = command.getCompensatingCommand();
+        assertEquals(command.getClassLoaderDefinition(), compensating.getClassLoaderDefinition());
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
-    public StartComponentCommand getCompensatingCommand() {
-        return new StartComponentCommand(uri);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StopComponentCommand that = (StopComponentCommand) o;
-
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
+    public void testEquals() throws Exception {
+        UnprovisionClassloaderCommand command2 = new UnprovisionClassloaderCommand(new MockDefinition());
+        assertEquals(command2, command);
     }
 
     @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+    protected void setUp() throws Exception {
+        super.setUp();
+        command = new UnprovisionClassloaderCommand(new MockDefinition());
+    }
+
+    private class MockDefinition extends PhysicalClassLoaderDefinition {
+        private static final long serialVersionUID = 6358317322714807832L;
+
+        public MockDefinition() {
+            super(URI.create("classloader"), true);
+        }
     }
 }

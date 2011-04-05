@@ -59,10 +59,11 @@ public class ChannelConnectionCommand implements CompensatableCommand {
         detachCommands = new ArrayList<DetachChannelConnectionCommand>();
     }
 
-    public CompensatableCommand getCompensatingCommand() {
+    public ChannelConnectionCommand getCompensatingCommand() {
+        // return the commands in reverse order
         ChannelConnectionCommand compensating = new ChannelConnectionCommand();
         if (!attachCommands.isEmpty()){
-            ListIterator<AttachChannelConnectionCommand> iter = attachCommands.listIterator(attachCommands.size()-1);
+            ListIterator<AttachChannelConnectionCommand> iter = attachCommands.listIterator(attachCommands.size());
             while(iter.hasPrevious()){
                 AttachChannelConnectionCommand command = iter.previous();
                 DetachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
@@ -70,7 +71,7 @@ public class ChannelConnectionCommand implements CompensatableCommand {
             }
         }
         if (!detachCommands.isEmpty()){
-            ListIterator<DetachChannelConnectionCommand> iter = detachCommands.listIterator(detachCommands.size()-1);
+            ListIterator<DetachChannelConnectionCommand> iter = detachCommands.listIterator(detachCommands.size());
             while(iter.hasPrevious()){
                 DetachChannelConnectionCommand command = iter.previous();
                 AttachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();

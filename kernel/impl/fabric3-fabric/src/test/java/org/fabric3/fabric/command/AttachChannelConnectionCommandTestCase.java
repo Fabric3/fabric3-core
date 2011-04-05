@@ -37,40 +37,24 @@
 */
 package org.fabric3.fabric.command;
 
-import java.net.URI;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.CompensatableCommand;
+import junit.framework.TestCase;
 
-public class StopComponentCommand implements CompensatableCommand {
-    private static final long serialVersionUID = 4385799180032870689L;
+public class AttachChannelConnectionCommandTestCase extends TestCase {
 
-    private final URI uri;
-
-    public StopComponentCommand(URI uri) {
-        this.uri = uri;
+    public void testEquals() throws Exception {
+        QName deployable = new QName("test", "composite");
+        StopContextCommand command1 = new StopContextCommand(deployable, true);
+        StopContextCommand command2 = new StopContextCommand(deployable, true);
+        StopContextCommand command3 = new StopContextCommand(new QName("test", "composite3"), true);
+        assertEquals(command1, command2);
+        assertFalse(command1.equals(command3));
     }
 
-    public URI getUri() {
-        return uri;
-    }
-
-    public StartComponentCommand getCompensatingCommand() {
-        return new StartComponentCommand(uri);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StopComponentCommand that = (StopComponentCommand) o;
-
-        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
+    public void testCompensatingCommand() throws Exception {
+        QName deployable = new QName("test", "composite");
+        StopContextCommand command = new StopContextCommand(deployable, true);
+        assertEquals(deployable, command.getCompensatingCommand().getDeployable());
     }
 }

@@ -61,7 +61,7 @@ public class BuildResourcesCommand implements CompensatableCommand {
         this.definitions = definitions;
     }
 
-    public CompensatableCommand getCompensatingCommand() {
+    public DisposeResourcesCommand getCompensatingCommand() {
         return new DisposeResourcesCommand(definitions);
     }
 
