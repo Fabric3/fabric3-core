@@ -168,7 +168,7 @@ public abstract class AbstractDomain implements Domain {
                 plan = SYNTHETIC_PLAN;
             }
         } else {
-            // plan not specified
+            // plan specified
             plan = contributionHelper.findPlan(planName);
             if (plan == null) {
                 throw new DeploymentPlanNotFoundException("Deployment plan not found: " + planName);

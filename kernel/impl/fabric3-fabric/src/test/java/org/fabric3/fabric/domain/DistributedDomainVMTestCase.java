@@ -62,21 +62,16 @@ import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.domain.AssemblyFailure;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.generator.Deployment;
@@ -85,11 +80,14 @@ import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
+ * Verifies the distributed domain when run in Single-VM, transactional mode.
+ *
  * @version $Rev$ $Date$
  */
-public class DistributedDomainTestCase extends TestCase {
+public class DistributedDomainVMTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
 
@@ -97,21 +95,19 @@ public class DistributedDomainTestCase extends TestCase {
 
     private IMocksControl control;
     private DistributedDomain domain;
-    private MetaDataStore store;
     private LogicalModelInstantiator instantiator;
     private PolicyAttacher policyAttacher;
     private BindingSelector bindingSelector;
     private Generator generator;
     private Deployer deployer;
-    private ComponentDefinition componentDefinition;
     private LogicalComponentManagerImpl lcm;
 
+    private Contribution contribution;
+    private ComponentDefinition componentDefinition;
+    private Composite composite;
+
     public void testInclude() throws Exception {
-
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
@@ -133,11 +129,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
-
-        Contribution contribution = createContribution();
-        createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
                                              EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
@@ -158,10 +150,7 @@ public class DistributedDomainTestCase extends TestCase {
     }
 
     public void testIncludeAndRemove() throws Exception {
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
@@ -185,10 +174,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testInstantiationError() throws Exception {
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createErrorAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createErrorAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         control.replay();
@@ -208,10 +194,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testDeploymentError() throws Exception {
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
@@ -239,10 +222,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testActivateDeactivateDefinitions() throws Exception {
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         Deployment deployment = new Deployment("1");
@@ -271,10 +251,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testActivateDefinitionsError() throws Exception {
-        Contribution contribution = createContribution();
-        Composite composite = createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         Deployment deployment = new Deployment("1");
@@ -307,11 +284,7 @@ public class DistributedDomainTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testRecover() throws Exception {
-
-        Contribution contribution = createContribution();
-        createComposite(contribution);
-
-        IAnswer<InstantiationContext> answer = createAnswer();
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
         EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
                                              EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
@@ -331,15 +304,41 @@ public class DistributedDomainTestCase extends TestCase {
         control.verify();
     }
 
+    public void testAllocate() throws Exception {
+        Allocator allocator = EasyMock.createMock(Allocator.class);
+        allocator.allocate(EasyMock.isA(LogicalComponent.class), EasyMock.isA(DeploymentPlan.class));
+
+        domain.setAllocator(allocator);
+
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
+        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+        bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+
+        control.replay();
+
+        domain.include(DEPLOYABLE);
+
+        // verify the component contained in the composite was added to the logical model
+        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertTrue(contribution.getLockOwners().contains(DEPLOYABLE));
+        control.verify();
+    }
+
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        control = EasyMock.createControl();
-        store = control.createMock(MetaDataStore.class);
-
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, uri, null, null, null, null, null, null, null, null);
+        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, uri, null, null, null, null, null, null, null, null);  // set single-VM
+
+        control = EasyMock.createControl();
+        MetaDataStore store = control.createMock(MetaDataStore.class);
 
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 
@@ -363,67 +362,12 @@ public class DistributedDomainTestCase extends TestCase {
                                        collector,
                                        helper,
                                        info);
-        domain.setTransactional(true);
-    }
+        domain.setTransactional(true);     // set transactional mode
 
-    private IAnswer<InstantiationContext> createAnswer() {
-        return new IAnswer<InstantiationContext>() {
 
-            @SuppressWarnings({"unchecked"})
-            public InstantiationContext answer() throws Throwable {
-                LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
-
-                LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, componentDefinition, domainComposite);
-                logicalComponent.setDeployable(DEPLOYABLE);
-                domainComposite.addComponent(logicalComponent);
-                return new InstantiationContext();
-            }
-        };
-    }
-
-    private IAnswer<InstantiationContext> createErrorAnswer() {
-        return new IAnswer<InstantiationContext>() {
-
-            @SuppressWarnings({"unchecked"})
-            public InstantiationContext answer() throws Throwable {
-                LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
-
-                LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, componentDefinition, domainComposite);
-                logicalComponent.setDeployable(DEPLOYABLE);
-                domainComposite.addComponent(logicalComponent);
-                InstantiationContext context = new InstantiationContext();
-                context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI) {
-                });
-                return context;
-            }
-        };
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private Composite createComposite(Contribution contribution) {
-        Composite composite = new Composite(DEPLOYABLE);
+        contribution = DomainTestCaseHelper.createContribution(store);
         componentDefinition = new ComponentDefinition("component");
-        composite.add(componentDefinition);
-        composite.setContributionUri(contribution.getUri());
-
-        QNameSymbol symbol = new QNameSymbol(DEPLOYABLE);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, composite);
-        Resource resource = new Resource(contribution, null, "jar");
-        element.setResource(resource);
-
-        Deployable deployable = new Deployable(DEPLOYABLE);
-        contribution.getManifest().addDeployable(deployable);
-        EasyMock.expect(store.find(Composite.class, symbol)).andReturn(element).anyTimes();
-        return composite;
+        composite = DomainTestCaseHelper.createComposite(contribution, componentDefinition, store);
     }
-
-    private Contribution createContribution() {
-        Contribution contribution = new Contribution(CONTRIBUTION_URI);
-        contribution.setState(ContributionState.INSTALLED);
-
-        EasyMock.expect(store.find(CONTRIBUTION_URI)).andReturn(contribution).anyTimes();
-        return contribution;
-    }
-
 
 }
