@@ -37,6 +37,7 @@
 */
 package org.fabric3.async.runtime;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
@@ -71,6 +72,7 @@ public class NonBlockingInterceptorTestCase extends TestCase {
                 assertSame(message, request.getMessage());
                 WorkContext newWorkContext = message.getWorkContext();
                 assertNotSame(workContext, newWorkContext);
+                assertTrue(newWorkContext.getHeaders().containsKey("key"));
                 return null;
             }
         });
@@ -88,6 +90,7 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         workContext = new WorkContext();
         CallFrame frame = new CallFrame();
         workContext.addCallFrame(frame);
+        workContext.addHeaders(Collections.<String, Object>singletonMap("key", "value"));
 
         executorService = EasyMock.createMock(ExecutorService.class);
         next = EasyMock.createMock(Interceptor.class);
