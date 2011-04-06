@@ -43,44 +43,45 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import java.util.Collections;
+import java.util.Map;
 
-import org.fabric3.fabric.builder.ChannelConnector;
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.fabric.command.BuildResourcesCommand;
+import org.fabric3.fabric.command.DisposeResourcesCommand;
+import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- *
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10112 $ $Date: 2011-03-22 12:38:51 -0700 (Tue, 22 Mar 2011) $
  */
-@EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
-    private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
+public class DisposeResourcesCommandExecutorTestCase extends TestCase {
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
-        this.executorRegistry = executorRegistry;
-        this.connector = connector;
+
+    public void testExecute() throws Exception {
+        CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
+        registry.register(EasyMock.eq(DisposeResourcesCommand.class), EasyMock.isA(DisposeResourcesCommandExecutor.class));
+        ResourceBuilder<MockDefinition> builder = EasyMock.createMock(ResourceBuilder.class);
+        builder.remove(EasyMock.isA(MockDefinition.class));
+        EasyMock.replay(registry, builder);
+
+        Map<Class<?>, ResourceBuilder> builders = Collections.<Class<?>, ResourceBuilder>singletonMap(MockDefinition.class, builder);
+
+        DisposeResourcesCommandExecutor executor = new DisposeResourcesCommandExecutor(registry);
+        executor.setBuilders(builders);
+        executor.init();
+
+        PhysicalResourceDefinition definition = new MockDefinition();
+        DisposeResourcesCommand command = new DisposeResourcesCommand(Collections.singletonList(definition));
+        executor.execute(command);
+
+        EasyMock.verify(registry, builder);
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
-    }
-
-    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
-        try {
-            connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
+    private class MockDefinition extends PhysicalResourceDefinition {
+        private static final long serialVersionUID = 2610715229513271459L;
     }
 }

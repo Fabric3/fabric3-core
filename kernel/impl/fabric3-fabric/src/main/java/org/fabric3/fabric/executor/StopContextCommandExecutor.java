@@ -62,15 +62,17 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 @EagerInit
 public class StopContextCommandExecutor implements CommandExecutor<StopContextCommand> {
-    private ScopeContainer container;
     private CommandExecutorRegistry executorRegistry;
+    private ScopeContainer compositeScopeContainer;
+    private ScopeContainer domainScopeContainer;
     private ContextMonitor monitor;
 
     public StopContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                       @Reference ScopeRegistry scopeRegistry,
                                       @Monitor ContextMonitor monitor) {
         this.executorRegistry = executorRegistry;
-        this.container = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
         this.monitor = monitor;
     }
 
@@ -85,7 +87,11 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
         CallFrame frame = new CallFrame(deployable);
         workContext.addCallFrame(frame);
         try {
-            container.stopContext(workContext);
+            compositeScopeContainer.stopContext(workContext);
+            if (domainScopeContainer != null) {
+                // domain scope not available during bootstrap
+                domainScopeContainer.stopContext(workContext);
+            }
             if (monitor != null && command.isLog()) {
                 monitor.undeployed(deployable);
             }

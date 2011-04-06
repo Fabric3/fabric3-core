@@ -43,44 +43,36 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import java.net.URI;
 
-import org.fabric3.fabric.builder.ChannelConnector;
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.fabric.command.StartComponentCommand;
+import org.fabric3.fabric.command.StopComponentCommand;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
 
 /**
- *
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-@EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
-    private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
+public class StopComponentCommandExecutorTestCase extends TestCase {
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
-        this.executorRegistry = executorRegistry;
-        this.connector = connector;
+    public void testExecute() throws Exception {
+        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
+        ComponentManager manager = EasyMock.createMock(ComponentManager.class);
+        executorRegistry.register(EasyMock.eq(StopComponentCommand.class), EasyMock.isA(StopComponentCommandExecutor.class));
+        Component component = EasyMock.createMock(Component.class);
+        component.stop();
+        EasyMock.expect(manager.getComponent(EasyMock.isA(URI.class))).andReturn(component);
+        EasyMock.replay(executorRegistry, manager, component);
+
+        StopComponentCommandExecutor executor = new StopComponentCommandExecutor(manager, executorRegistry);
+        executor.init();
+        StopComponentCommand command = new StopComponentCommand(URI.create("component"));
+        executor.execute(command);
+        EasyMock.verify(executorRegistry, manager, component);
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
-    }
-
-    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
-        try {
-            connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
 }

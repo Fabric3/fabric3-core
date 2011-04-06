@@ -43,44 +43,33 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import org.fabric3.fabric.builder.ChannelConnector;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- *
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-@EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
-    private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
+public class AttachChannelConnectionCommandExecutorTestCase extends TestCase {
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
-        this.executorRegistry = executorRegistry;
-        this.connector = connector;
+    public void testExecute() throws Exception {
+        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
+        ChannelConnector connector = EasyMock.createMock(ChannelConnector.class);
+        executorRegistry.register(EasyMock.eq(AttachChannelConnectionCommand.class), EasyMock.isA(AttachChannelConnectionCommandExecutor.class));
+        connector.connect(EasyMock.isA(PhysicalChannelConnectionDefinition.class));
+        EasyMock.replay(executorRegistry, connector);
+
+        AttachChannelConnectionCommandExecutor executor = new AttachChannelConnectionCommandExecutor(executorRegistry, connector);
+        executor.init();
+        PhysicalChannelConnectionDefinition definition = new PhysicalChannelConnectionDefinition(null, null, null);
+        AttachChannelConnectionCommand command = new AttachChannelConnectionCommand(definition);
+        executor.execute(command);
+        EasyMock.verify(executorRegistry, connector);
+
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
-    }
-
-    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
-        try {
-            connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
 }

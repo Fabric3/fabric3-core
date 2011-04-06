@@ -43,58 +43,38 @@
  */
 package org.fabric3.fabric.executor;
 
-import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.Collection;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.command.AttachExtensionCommand;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.fabric.builder.classloader.ClassLoaderBuilder;
+import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
+ * @version $Rev: 10112 $ $Date: 2011-03-22 12:38:51 -0700 (Tue, 22 Mar 2011) $
  */
-public class AttachExtensionsCommandExecutorTestCase extends TestCase {
-    private Field field;
+public class ProvisionClassloaderCommandExecutorTestCase extends TestCase {
 
 
-    public void testAttachExtension() throws Exception {
-        URI contributionUri = URI.create("contribution");
-        URI providerUri = URI.create("provider");
+    public void testExecute() throws Exception {
+        CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
+        registry.register(EasyMock.eq(ProvisionClassloaderCommand.class), EasyMock.isA(ProvisionClassloaderCommandExecutor.class));
+        ClassLoaderBuilder builder = EasyMock.createMock(ClassLoaderBuilder.class);
+        builder.build(EasyMock.isA(PhysicalClassLoaderDefinition.class));
+        EasyMock.replay(registry, builder);
 
-        ClassLoader parent = getClass().getClassLoader();
-        MultiParentClassLoader contributionLoader = new MultiParentClassLoader(contributionUri, parent);
-        MultiParentClassLoader providerLoader = new MultiParentClassLoader(providerUri, parent);
 
-        HostInfo info = EasyMock.createMock(HostInfo.class);
-        EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(true);
-        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
+        ProvisionClassloaderCommandExecutor executor = new ProvisionClassloaderCommandExecutor(registry, builder);
+        executor.init();
 
-        ClassLoaderRegistry classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
-        EasyMock.expect(classLoaderRegistry.getClassLoader(contributionUri)).andReturn(contributionLoader);
-        EasyMock.expect(classLoaderRegistry.getClassLoader(providerUri)).andReturn(providerLoader);
-
-        EasyMock.replay(info, executorRegistry, classLoaderRegistry);
-
-        AttachExtensionCommandExecutor executor = new AttachExtensionCommandExecutor(info, executorRegistry, classLoaderRegistry);
-
-        AttachExtensionCommand command = new AttachExtensionCommand(contributionUri, providerUri);
+        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(URI.create("classloader"), true);
+        ProvisionClassloaderCommand command = new ProvisionClassloaderCommand(definition);
         executor.execute(command);
-        EasyMock.verify(info, executorRegistry, classLoaderRegistry);
 
-
-        assertTrue(((Collection) field.get(contributionLoader)).contains(providerLoader));
+        EasyMock.verify(registry, builder);
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        field = MultiParentClassLoader.class.getDeclaredField("extensions");
-        field.setAccessible(true);
-    }
 }

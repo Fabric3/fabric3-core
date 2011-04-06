@@ -43,44 +43,47 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.builder.ChannelConnector;
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.fabric.command.StartContextCommand;
+import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.invocation.WorkContext;
 
 /**
- *
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-@EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
-    private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
+public class StartContextCommandExecutorTestCase extends TestCase {
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
-        this.executorRegistry = executorRegistry;
-        this.connector = connector;
+    public void testExecute() throws Exception {
+        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
+        executorRegistry.register(EasyMock.eq(StartContextCommand.class), EasyMock.isA(StartContextCommandExecutor.class));
+
+        ScopeContainer compositeContainer = EasyMock.createMock(ScopeContainer.class);
+        compositeContainer.startContext(EasyMock.isA(WorkContext.class));
+        ScopeContainer domainContainer = EasyMock.createMock(ScopeContainer.class);
+        domainContainer.startContext(EasyMock.isA(WorkContext.class));        
+        ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
+        EasyMock.expect(scopeRegistry.getScopeContainer(Scope.COMPOSITE)).andReturn(compositeContainer);
+        EasyMock.expect(scopeRegistry.getScopeContainer(Scope.DOMAIN)).andReturn(domainContainer);
+
+
+        ContextMonitor monitor = EasyMock.createNiceMock(ContextMonitor.class);
+
+        EasyMock.replay(executorRegistry, scopeRegistry, compositeContainer, domainContainer, monitor);
+
+        StartContextCommandExecutor executor = new StartContextCommandExecutor(executorRegistry, scopeRegistry, monitor);
+        executor.init();
+        StartContextCommand command = new StartContextCommand(new QName("test", "component"), true);
+        executor.execute(command);
+
+        EasyMock.verify(executorRegistry, scopeRegistry, compositeContainer, domainContainer, monitor);
+
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
-    }
-
-    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
-        try {
-            connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
 }

@@ -88,7 +88,7 @@ public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResou
     }
 
     @SuppressWarnings("unchecked")
-    public void build(PhysicalResourceDefinition definition) throws ExecutionException {
+    private void build(PhysicalResourceDefinition definition) throws ExecutionException {
         ResourceBuilder builder = builders.get(definition.getClass());
         if (builder == null) {
             throw new ExecutionException("Builder not found for " + definition.getClass().getName());

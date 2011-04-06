@@ -43,44 +43,34 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
-import org.fabric3.fabric.builder.ChannelConnector;
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.fabric.builder.Connector;
+import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- *
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
-@EagerInit
-public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {
-    private CommandExecutorRegistry executorRegistry;
-    private final ChannelConnector connector;
+public class DetachWireCommandExecutorTestCase extends TestCase {
 
-    @Constructor
-    public AttachChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference ChannelConnector connector) {
-        this.executorRegistry = executorRegistry;
-        this.connector = connector;
+    public void testAttachExecute() throws Exception {
+        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
+        Connector connector = EasyMock.createMock(Connector.class);
+        executorRegistry.register(EasyMock.eq(DetachWireCommand.class), EasyMock.isA(DetachWireCommandExecutor.class));
+        connector.disconnect(EasyMock.isA(PhysicalWireDefinition.class));
+        EasyMock.replay(executorRegistry, connector);
+
+        DetachWireCommandExecutor executor = new DetachWireCommandExecutor(executorRegistry, connector);
+        executor.init();
+        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
+        DetachWireCommand command = new DetachWireCommand();
+        command.setPhysicalWireDefinition(definition);
+        executor.execute(command);
+        EasyMock.verify(executorRegistry, connector);
+
     }
 
-    @Init
-    public void init() {
-        executorRegistry.register(AttachChannelConnectionCommand.class, this);
-    }
-
-    public void execute(AttachChannelConnectionCommand command) throws ExecutionException {
-        try {
-            connector.connect(command.getDefinition());
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
 }
