@@ -49,7 +49,6 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 /**
  * @version $Rev$ $Date$
  */
-@EagerInit
 public class SyntheticDirectoryClasspathProcessorTestCase extends TestCase {
     private ClasspathProcessorRegistry registry;
     private URL url;
