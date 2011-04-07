@@ -35,33 +35,54 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.archive;
 
-import java.io.Serializable;
-import javax.xml.namespace.QName;
+import java.net.URI;
+import java.net.URL;
+
+import junit.framework.TestCase;
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
- * A contribution export.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+@EagerInit
+public class SyntheticDirectoryContributionProcessorTestCase extends TestCase {
+    private SyntheticDirectoryContributionProcessor processor;
+    private Contribution contribution;
+    private DefaultIntrospectionContext context;
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    public void testCanProcess() throws Exception {
+        assertTrue(processor.canProcess(contribution));
+    }
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
+    public void testProcessManifest() throws Exception {
+        processor.processManifest(contribution, context);
+        assertTrue(contribution.getManifest().getExtends().contains("1"));
+    }
 
+    public void testIndex() throws Exception {
+        processor.index(contribution, context);
+    }
+
+    public void testProcess() throws Exception {
+        processor.process(contribution, context);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        URI uri = URI.create("contribution");
+        URL url = getClass().getResource("/repository/1");
+        Source source = new UrlSource(url);
+        contribution = new Contribution(uri, source, url, -1, "application/vnd.fabric3.synthetic", false);
+
+        processor = new SyntheticDirectoryContributionProcessor();
+        context = new DefaultIntrospectionContext();
+    }
 }

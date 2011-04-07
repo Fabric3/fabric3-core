@@ -35,33 +35,39 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.manifest;
 
-import java.io.Serializable;
-import javax.xml.namespace.QName;
+import java.io.ByteArrayInputStream;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+
+import junit.framework.TestCase;
+
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
- * A contribution export.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+public class ProvidesLoaderTestCase extends TestCase {
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    private static final String XML = "<provides name='some-extension'/>";
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
+    private ProvidesLoader loader;
+    private XMLStreamReader reader;
+
+    public void testLoad() throws Exception {
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        ProvidesDeclaration declaration = loader.load(reader, context);
+        assertFalse(context.hasErrors());
+        assertEquals("some-extension", declaration.getName());
+    }
+
+    protected void setUp() throws Exception {
+        loader = new ProvidesLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
+        reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+        reader.nextTag();
+    }
+
 
 }

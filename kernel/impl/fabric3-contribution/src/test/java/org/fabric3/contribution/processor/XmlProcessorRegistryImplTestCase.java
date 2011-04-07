@@ -35,33 +35,47 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.processor;
 
-import java.io.Serializable;
+import java.net.URI;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.xml.XmlProcessor;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * A contribution export.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+public class XmlProcessorRegistryImplTestCase extends TestCase {
+    private static final QName TYPE = new QName("test", "element");
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    public void testProcess() throws Exception {
+        XmlProcessor processor = EasyMock.createMock(XmlProcessor.class);
+        EasyMock.expect(processor.getType()).andReturn(TYPE);
+        processor.processContent(EasyMock.isA(Contribution.class), EasyMock.isA(XMLStreamReader.class), EasyMock.isA(IntrospectionContext.class));
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getName()).andReturn(TYPE);
+
+        EasyMock.replay(processor, reader);
+
+        Contribution contribution = new Contribution(URI.create("test"));
+
+        XmlProcessorRegistryImpl registry = new XmlProcessorRegistryImpl();
+        registry.register(processor);
+
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        registry.process(contribution, reader, context);
+
+        registry.unregister(TYPE);
+
+        EasyMock.verify(processor, reader);
+    }
 
 }

@@ -35,33 +35,32 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.manifest;
 
-import java.io.Serializable;
-import javax.xml.namespace.QName;
+import java.net.URI;
+
+import junit.framework.TestCase;
+
+import org.fabric3.spi.contribution.Export;
 
 /**
- * A contribution export.
- *
  * @version $Rev$ $Date$
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+public class ContributionExportTestCase extends TestCase {
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    public void testEquals() throws Exception {
+        URI uri = URI.create("contribution");
+        ContributionExport export1 = new ContributionExport(uri);
+        ContributionExport export2 = new ContributionExport(uri);
+        assertEquals(export1, export2);
+    }
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
+    public void testMatch() throws Exception {
+        URI uri = URI.create("contribution");
+        ContributionExport export = new ContributionExport(uri);
+        ContributionImport imprt = new ContributionImport(uri);
+        assertEquals(Export.EXACT_MATCH, export.match(imprt));
+
+    }
 
 }

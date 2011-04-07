@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
- * Processes a contributed definitions file.
+ * Processes a definitions file.
  *
  * @version $Rev$ $Date$
  */

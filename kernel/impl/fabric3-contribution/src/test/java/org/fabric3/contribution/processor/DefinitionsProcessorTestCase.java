@@ -35,33 +35,44 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.processor;
 
-import java.io.Serializable;
-import javax.xml.namespace.QName;
+import java.net.URI;
+import javax.xml.stream.XMLStreamReader;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
+import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * A contribution export.
- *
  * @version $Rev$ $Date$
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+public class DefinitionsProcessorTestCase extends TestCase {
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    public void testProcessContent() throws Exception {
+        Contribution contribution = new Contribution(URI.create("contribution"));
+        Resource resource = new Resource(contribution, null, null);
+        contribution.addResource(resource);
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
+        IntrospectionContext context = new DefaultIntrospectionContext();
 
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+
+        XmlProcessorRegistry registry = EasyMock.createNiceMock(XmlProcessorRegistry.class);
+        XmlResourceElementLoader loader = EasyMock.createMock(XmlResourceElementLoader.class);
+        loader.load(reader, resource, context);
+
+        EasyMock.replay(registry, loader, reader);
+        DefinitionsProcessor processor = new DefinitionsProcessor(registry, loader);
+
+        processor.processContent(contribution, reader, context);
+
+        EasyMock.verify(registry, loader, reader);
+    }
 }

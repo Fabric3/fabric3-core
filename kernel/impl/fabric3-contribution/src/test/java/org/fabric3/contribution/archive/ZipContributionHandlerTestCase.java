@@ -45,17 +45,40 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.Loader;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ZipContributionHandlerTestCase extends TestCase {
     private ZipContributionHandler handler;
+    private Loader loader;
+
+    public void testCanProcess() throws Exception {
+        Contribution contribution = createContribution();
+        assertTrue(handler.canProcess(contribution));
+    }
+
+    public void testProcessManifest() throws Exception {
+        Contribution contribution = createContribution();
+
+        ContributionManifest manifest = new ContributionManifest();
+        loader.load(EasyMock.isA(Source.class), EasyMock.eq(ContributionManifest.class), EasyMock.isA(IntrospectionContext.class));
+        EasyMock.expectLastCall().andReturn(manifest);
+        EasyMock.replay(loader);
+
+        handler.processManifest(contribution, new DefaultIntrospectionContext());
+
+        EasyMock.verify(loader);
+    }
 
     public void testIterateAllContents() throws Exception {
         Contribution contribution = createContribution();
@@ -103,7 +126,9 @@ public class ZipContributionHandlerTestCase extends TestCase {
         ContentTypeResolver resolver = EasyMock.createMock(ContentTypeResolver.class);
         EasyMock.expect(resolver.getContentType(EasyMock.isA(URL.class))).andReturn("application/xml").anyTimes();
         EasyMock.replay(resolver);
-        handler = new ZipContributionHandler(null, resolver);
+        loader = EasyMock.createMock(Loader.class);
+
+        handler = new ZipContributionHandler(loader, resolver);
     }
 
     private Contribution createContribution() {

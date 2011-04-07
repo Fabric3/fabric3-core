@@ -39,6 +39,7 @@ package org.fabric3.contribution.processor;
 
 import java.net.URI;
 import java.net.URL;
+
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -50,24 +51,24 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
-import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
+import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class XmlResourceProcessorTestCase extends TestCase {
-    private XmlResourceProcessor processor;
+public class XmlContributionProcessorTestCase extends TestCase {
+    private XmlContributionProcessor processor;
     private ProcessorRegistry registry;
+    private Contribution contribution;
     private IntrospectionContext context;
+    private XmlProcessorRegistry xmlProcessorRegistry;
     private XmlIndexerRegistry xmlIndexerRegistry;
-    private XmlResourceElementLoaderRegistry elementLoaderRegistry;
-    private Resource resource;
 
     public void testInit() throws Exception {
         registry.register(processor);
-        registry.unregister("application/xml");
+        registry.unregister(processor);
         EasyMock.replay(registry);
 
         processor.init();
@@ -75,36 +76,46 @@ public class XmlResourceProcessorTestCase extends TestCase {
         EasyMock.verify(registry);
     }
 
+    public void testCanProcess() throws Exception {
+        EasyMock.replay(registry);
+        assertTrue(processor.canProcess(contribution));
+        EasyMock.verify(registry);
+    }
+
+    public void testProcessManifest() throws Exception {
+        EasyMock.replay(registry);
+        processor.processManifest(contribution, context);
+        EasyMock.verify(registry);
+    }
+
     public void testIndex() throws Exception {
         xmlIndexerRegistry.index(EasyMock.isA(Resource.class), EasyMock.isA(XMLStreamReader.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.replay(xmlIndexerRegistry);
 
-        processor.index(resource, context);
+        processor.index(contribution, context);
 
+        assertFalse(contribution.getResources().isEmpty());
         EasyMock.verify(xmlIndexerRegistry);
     }
 
     public void testProcess() throws Exception {
-        elementLoaderRegistry.load(EasyMock.isA(XMLStreamReader.class), EasyMock.isA(Resource.class), EasyMock.isA(IntrospectionContext.class));
-        EasyMock.replay(elementLoaderRegistry);
+        xmlProcessorRegistry.process(EasyMock.isA(Contribution.class),EasyMock.isA(XMLStreamReader.class), EasyMock.isA(IntrospectionContext.class));
+        EasyMock.replay(xmlProcessorRegistry);
 
-        processor.process(resource, context);
+        processor.process(contribution, context);
 
-        EasyMock.verify(elementLoaderRegistry);
+        EasyMock.verify(xmlProcessorRegistry);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         registry = EasyMock.createMock(ProcessorRegistry.class);
-        elementLoaderRegistry = EasyMock.createMock(XmlResourceElementLoaderRegistry.class);
+        xmlProcessorRegistry =    EasyMock.createMock(XmlProcessorRegistry.class);
         xmlIndexerRegistry = EasyMock.createMock(XmlIndexerRegistry.class);
         MockXMLFactory factory = new MockXMLFactory();
-        processor = new XmlResourceProcessor(registry, xmlIndexerRegistry, elementLoaderRegistry, factory);
+        processor = new XmlContributionProcessor(registry, xmlProcessorRegistry, xmlIndexerRegistry, factory);
         URL file = getClass().getResource("test.composite");
-        UrlSource source = new UrlSource(file);
-        Contribution contribution = new Contribution(URI.create("contribution"), source, file, -1, "application/xml", false);
-        resource = new Resource(contribution, source, "application/xml");
-        contribution.addResource(resource);
+        contribution = new Contribution(URI.create("contribution"), new UrlSource(file), file, -1, "application/xml", false);
         context = new DefaultIntrospectionContext();
     }
 }

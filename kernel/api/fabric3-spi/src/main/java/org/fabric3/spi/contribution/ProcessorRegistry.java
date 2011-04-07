@@ -59,7 +59,7 @@ public interface ProcessorRegistry {
      *
      * @param processor the processor to unregister
      */
-    void unregisterContributionProcessor(ContributionProcessor processor);
+    void unregister(ContributionProcessor processor);
 
     /**
      * Register a ResourceProcessor using the content type as the key
@@ -73,7 +73,7 @@ public interface ProcessorRegistry {
      *
      * @param contentType the content
      */
-    void unregisterResourceProcessor(String contentType);
+    void unregister(String contentType);
 
     /**
      * Dispatches to a {@link ContributionProcessor} to process manifest information in a contribution.

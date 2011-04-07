@@ -35,65 +35,45 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution.archive;
+package org.fabric3.contribution.processor;
 
-import java.io.File;
 import java.net.URL;
-import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JarClasspathProcessorTestCase extends TestCase {
-    private JarClasspathProcessor processor;
+public class SymLinkClasspathProcessorTestCase extends TestCase {
+    private SymLinkClasspathProcessor processor;
+    private ClasspathProcessorRegistry registry;
+    private URL file;
 
-    /**
-     * Verifies processing when no jars are present in META-INF/lib
-     *
-     * @throws Exception
-     */
-    public void testExpansionNoLibraries() throws Exception {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL location = cl.getResource("./repository/1/test.jar");
-        List<URL> urls = processor.process(location);
-        assertEquals(1, urls.size());
-        assertEquals(location, urls.get(0));
+    public void testInitDestroy() throws Exception {
+        registry.register(processor);
+        registry.unregister(processor);
+        EasyMock.replay(registry);
+
+        processor.init();
+        processor.destroy();
+        EasyMock.verify(registry);
     }
 
-    /**
-     * Verifies jars in META-INF/lib are added to the classpath
-     *
-     * @throws Exception
-     */
-    public void testExpansionWithLibraries() throws Exception {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL location = cl.getResource("./repository/2/testWithLibraries.jar");
-        List<URL> urls = processor.process(location);
-        assertEquals(2, urls.size());
-        assertEquals(location, urls.get(0));
+    public void testCanProcess() throws Exception {
+        assertTrue(processor.canProcess(file));
     }
 
-    public void testExplodeJars() throws Exception {
-        processor.setExplodeJars(true);
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL location = cl.getResource("./repository/2/testWithLibraries.jar");
-        List<URL> urls = processor.process(location);
-        assertEquals(2, urls.size());
-        assertEquals(location, urls.get(0));
+    public void testProcess() throws Exception {
+        assertFalse(processor.process(file).isEmpty());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        ClasspathProcessorRegistry registry = EasyMock.createNiceMock(ClasspathProcessorRegistry.class);
-        HostInfo info = EasyMock.createNiceMock(HostInfo.class);
-        EasyMock.expect(info.getTempDir()).andReturn(new File(System.getProperty("java.io.tmpdir"), ".f3"));
-        EasyMock.replay(info);
-        processor = new JarClasspathProcessor(registry, info);
+        registry = EasyMock.createMock(ClasspathProcessorRegistry.class);
+        processor = new SymLinkClasspathProcessor(registry);
+        file = getClass().getResource("sym.contribution");
     }
 }

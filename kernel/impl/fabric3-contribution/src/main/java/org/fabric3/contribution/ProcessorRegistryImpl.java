@@ -70,7 +70,7 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         contributionProcessorCache.add(processor);
     }
 
-    public void unregisterContributionProcessor(ContributionProcessor processor) {
+    public void unregister(ContributionProcessor processor) {
         contributionProcessorCache.remove(processor);
     }
 
@@ -78,7 +78,7 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         resourceProcessorCache.put(processor.getContentType(), processor);
     }
 
-    public void unregisterResourceProcessor(String contentType) {
+    public void unregister(String contentType) {
         resourceProcessorCache.remove(contentType);
     }
 

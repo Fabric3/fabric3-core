@@ -78,7 +78,7 @@ public interface Loader {
      * @param source  the source for the XML document to be loaded
      * @param type    the type of Java Object that should be returned
      * @param context the current loader context
-     * @return the model ojbect loaded from the document
+     * @return the model object loaded from the document
      * @throws LoaderException    if there was a problem loading the document
      * @throws ClassCastException if the XML type cannot be cast to the expected output type
      */

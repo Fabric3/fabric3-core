@@ -47,7 +47,7 @@ import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 
 /**
- * The base class for ContributionProcessor implementations
+ * The base ContributionProcessor implementation.
  *
  * @version $Rev$ $Date$
  */
@@ -79,7 +79,7 @@ public abstract class AbstractContributionProcessor implements ContributionProce
      */
     @Destroy
     public void stop() {
-        registry.unregisterContributionProcessor(this);
+        registry.unregister(this);
     }
 
 }

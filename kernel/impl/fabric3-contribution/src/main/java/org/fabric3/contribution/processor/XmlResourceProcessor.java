@@ -44,6 +44,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -85,6 +86,11 @@ public class XmlResourceProcessor implements ResourceProcessor {
     @Init
     public void init() {
         processorRegistry.register(this);
+    }
+
+    @Destroy
+    public void destroy() {
+        processorRegistry.unregister(getContentType());
     }
 
     public String getContentType() {

@@ -44,6 +44,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -75,6 +76,11 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
     @Init
     public void init() {
         processorRegistry.register(this);
+    }
+
+    @Destroy
+    public void destroy() {
+        processorRegistry.unregister(this);
     }
 
     public boolean canProcess(Contribution contribution) {

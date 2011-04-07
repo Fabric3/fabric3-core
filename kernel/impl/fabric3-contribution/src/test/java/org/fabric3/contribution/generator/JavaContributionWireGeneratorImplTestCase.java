@@ -35,33 +35,30 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.contribution.generator;
 
-import java.io.Serializable;
-import javax.xml.namespace.QName;
+import java.net.URI;
+
+import junit.framework.TestCase;
+
+import org.fabric3.contribution.wire.JavaContributionWire;
+import org.fabric3.spi.contribution.manifest.JavaExport;
+import org.fabric3.spi.contribution.manifest.JavaImport;
+import org.fabric3.spi.contribution.manifest.PackageInfo;
 
 /**
- * A contribution export.
- *
  * @version $Rev$ $Date$
  */
-public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
+public class JavaContributionWireGeneratorImplTestCase extends TestCase {
 
-    /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
-     *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
-     */
-    int match(Import imprt);
+    public void testGenerate() throws Exception {
+        JavaContributionWireGeneratorImpl generator = new JavaContributionWireGeneratorImpl();
+        PackageInfo info = new PackageInfo("org.fabric3");
+        JavaImport imprt = new JavaImport(info);
+        JavaExport export = new JavaExport(info);
+        JavaContributionWire wire = new JavaContributionWire(imprt, export, URI.create("import"), URI.create("export"));
+        assertNotNull(generator.generate(wire));
+    }
 
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
 
 }

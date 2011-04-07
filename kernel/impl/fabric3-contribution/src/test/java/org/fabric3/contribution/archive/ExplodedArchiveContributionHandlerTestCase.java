@@ -45,17 +45,42 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.Loader;
+
+import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
 /**
  * @version $Rev: 7146 $ $Date: 2009-06-15 01:28:54 +0200 (Mon, 15 Jun 2009) $
  */
 public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
     private ExplodedArchiveContributionHandler handler;
+    private Loader loader;
+
+    public void testCanProcess() throws Exception {
+        Contribution contribution = createContribution();
+        assertTrue(handler.canProcess(contribution));
+    }
+
+    public void testProcessManifest() throws Exception {
+        ContributionManifest manifest = new ContributionManifest();
+        loader.load(EasyMock.isA(Source.class), EasyMock.eq(ContributionManifest.class), EasyMock.isA(IntrospectionContext.class));
+        EasyMock.expectLastCall().andReturn(manifest);
+        EasyMock.replay(loader);
+        Contribution contribution = createContribution();
+
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        handler.processManifest(contribution, context);
+
+        EasyMock.verify(loader);
+    }
 
     public void testIterateAllContents() throws Exception {
         Contribution contribution = createContribution();
@@ -102,8 +127,10 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         super.setUp();
         ContentTypeResolver resolver = EasyMock.createMock(ContentTypeResolver.class);
         EasyMock.expect(resolver.getContentType(EasyMock.isA(URL.class))).andReturn("application/xml").anyTimes();
+        loader = EasyMock.createMock(Loader.class);
         EasyMock.replay(resolver);
-        handler = new ExplodedArchiveContributionHandler(null, resolver);
+
+        handler = new ExplodedArchiveContributionHandler(loader, resolver);
     }
 
     private Contribution createContribution() {
@@ -111,7 +138,7 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         URL location = cl.getResource("./exploded");
         URI uri = URI.create("test");
         UrlSource source = new UrlSource(location);
-        Contribution contribution = new Contribution(uri, source, location, -1, null, false);
+        Contribution contribution = new Contribution(uri, source, location, -1, EXPLODED_CONTENT_TYPE, false);
         ContributionManifest manifest = new ContributionManifest();
         contribution.setManifest(manifest);
         return contribution;

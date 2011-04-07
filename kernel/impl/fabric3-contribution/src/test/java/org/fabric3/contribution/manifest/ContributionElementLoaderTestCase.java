@@ -37,117 +37,87 @@
 */
 package org.fabric3.contribution.manifest;
 
-import java.net.URI;
+import java.io.ByteArrayInputStream;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.contribution.Deployable;
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.Export;
-import org.fabric3.spi.contribution.Import;
+import org.fabric3.spi.contribution.manifest.JavaExport;
+import org.fabric3.spi.contribution.manifest.JavaImport;
+import org.fabric3.spi.contribution.manifest.PackageInfo;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-
-import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ContributionElementLoaderTestCase extends TestCase {
-    private static final QName CONTRIBUTION = new QName(SCA_NS, "contribution");
-    private static final QName DEPLOYABLE_ELEMENT = new QName(SCA_NS, "deployable");
-    private static final QName IMPORT_ELEMENT = new QName(SCA_NS, "import");
-    private static final QName EXPORT_ELEMENT = new QName(SCA_NS, "export");
-    private static final QName DEPLOYABLE = new QName("test");
+    private static final QName DEPLOYABLE = new QName("urn:fabric3.org", "ControllerExtension");
+    private static final Capability REQUIRED_CAPABILITY = new Capability("some-required-capability");
+    private static final Capability PROVIDED_CAPABILITY = new Capability("some-provided-capability");
+
+    private static final String XML = "<contribution xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'\n" +
+            "              xmlns:f3='urn:fabric3.org'" +
+            "              f3:extension='true'" +
+            "              f3:description='JMS extension'>" +
+            "    <import.java package='javax.transaction' version='1.1.0'/>" +
+            "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
+            "    <deployable composite='f3:ControllerExtension' modes='controller vm'/>" +
+            "    <f3:provides name='some-extension'/>" +
+            "    <f3:requires.capability name='some-required-capability'/>" +
+            "    <f3:provides.capability name='some-provided-capability'/>" +
+            "</contribution>";
+
 
     private ContributionElementLoader loader;
     private XMLStreamReader reader;
-    private IMocksControl control;
+    private LoaderRegistry registry;
 
-    public void testDispatch() throws Exception {
-        ContributionManifest manifest = loader.load(reader, null);
-        control.verify();
+    public void testLoad() throws Exception {
+        PackageInfo info = new PackageInfo("org.fabric3");
+        registry.load(EasyMock.isA(XMLStreamReader.class), EasyMock.eq(Object.class), EasyMock.isA(IntrospectionContext.class));
+        JavaImport javaImport = new JavaImport(info);
+        EasyMock.expectLastCall().andReturn(javaImport);
+        registry.load(EasyMock.isA(XMLStreamReader.class), EasyMock.eq(Object.class), EasyMock.isA(IntrospectionContext.class));
+        JavaExport javaExport = new JavaExport(info);
+        EasyMock.expectLastCall().andReturn(javaExport);
+        registry.load(EasyMock.isA(XMLStreamReader.class), EasyMock.eq(Object.class), EasyMock.isA(IntrospectionContext.class));
+        EasyMock.expectLastCall().andReturn(new ProvidesDeclaration("some-extension"));
+
+        EasyMock.replay(registry);
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+
+        ContributionManifest manifest = loader.load(reader, context);
+
+        Deployable parsedDeployable = manifest.getDeployables().get(0);
+        assertEquals(DEPLOYABLE, parsedDeployable.getName());
+        assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.VM));
+        assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.CONTROLLER));
+        assertFalse(parsedDeployable.getRuntimeModes().contains(RuntimeMode.PARTICIPANT));
+        assertTrue(manifest.getImports().contains(javaImport));
+        assertTrue(manifest.getExports().contains(javaExport));
+        assertTrue(manifest.getRequiredCapabilities().contains(REQUIRED_CAPABILITY));
+        assertTrue(manifest.getProvidedCapabilities().contains(PROVIDED_CAPABILITY));
         assertTrue(manifest.isExtension());
-        assertEquals(1, manifest.getDeployables().size());
-        assertEquals(DEPLOYABLE, manifest.getDeployables().get(0).getName());
-        assertEquals(1, manifest.getExports().size());
-        assertEquals(1, manifest.getImports().size());
+        assertFalse(context.hasErrors());
+
+        EasyMock.verify(registry);
     }
 
-    @SuppressWarnings({"serial"})
     protected void setUp() throws Exception {
-        super.setUp();
-        control = EasyMock.createStrictControl();
-        LoaderRegistry loaderRegistry = EasyMock.createMock(LoaderRegistry.class);
-        loader = new ContributionElementLoader(loaderRegistry);
-
-        reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeCount()).andReturn(0).atLeastOnce();
-        EasyMock.expect(reader.getName()).andReturn(CONTRIBUTION);
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("extension"))).andReturn("true");
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("description"))).andReturn("the description");
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("required-capabilities"))).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue(EasyMock.eq(Namespaces.F3), EasyMock.eq("capabilities"))).andReturn(null);
-        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("modes"))).andReturn(null);
-
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(DEPLOYABLE_ELEMENT);
-        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("composite"))).andReturn("test");
-        EasyMock.expect(reader.getNamespaceURI()).andReturn(null);
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(DEPLOYABLE_ELEMENT);
-
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(IMPORT_ELEMENT);
-        Import contribImport = new Import() {
-            public URI getLocation() {
-                return null;
-            }
-
-            public QName getType() {
-                return null;
-            }
-
-            public boolean isMultiplicity() {
-                return false;
-            }
-
-        };
-        EasyMock.expect(loaderRegistry.load(
-                EasyMock.isA(XMLStreamReader.class),
-                EasyMock.eq(Object.class),
-                (IntrospectionContext) EasyMock.isNull())).andReturn(contribImport);
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(IMPORT_ELEMENT);
-
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(EXPORT_ELEMENT);
-        Export contribExport = new Export() {
-            public int match(Import contributionImport) {
-                return NO_MATCH;
-            }
-
-            public QName getType() {
-                return null;
-            }
-        };
-        EasyMock.expect(loaderRegistry.load(
-                EasyMock.isA(XMLStreamReader.class),
-                EasyMock.eq(Object.class), (IntrospectionContext) EasyMock.isNull())).andReturn(contribExport);
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(EXPORT_ELEMENT);
-
-        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
-        EasyMock.expect(reader.getName()).andReturn(CONTRIBUTION);
-        EasyMock.replay(loaderRegistry);
-        EasyMock.replay(reader);
-        control.replay();
-
+        registry = EasyMock.createMock(LoaderRegistry.class);
+        loader = new ContributionElementLoader(registry);
+        ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
+        reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+        reader.nextTag();
     }
 
 

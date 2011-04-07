@@ -60,7 +60,6 @@ public class QNameImportLoaderTestCase extends TestCase {
         assertEquals(LOCATION, qimport.getLocation());
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
         reader = EasyMock.createMock(XMLStreamReader.class);
