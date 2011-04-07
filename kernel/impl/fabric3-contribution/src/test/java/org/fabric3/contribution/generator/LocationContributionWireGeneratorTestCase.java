@@ -41,22 +41,22 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.contribution.wire.JavaContributionWire;
-import org.fabric3.spi.contribution.manifest.JavaExport;
-import org.fabric3.spi.contribution.manifest.JavaImport;
-import org.fabric3.spi.contribution.manifest.PackageInfo;
+import org.fabric3.contribution.manifest.ContributionExport;
+import org.fabric3.contribution.manifest.ContributionImport;
+import org.fabric3.contribution.wire.LocationContributionWire;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class JavaContributionWireGeneratorImplTestCase extends TestCase {
+public class LocationContributionWireGeneratorTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
-        JavaContributionWireGeneratorImpl generator = new JavaContributionWireGeneratorImpl();
-        PackageInfo info = new PackageInfo("org.fabric3");
-        JavaImport imprt = new JavaImport(info);
-        JavaExport export = new JavaExport(info);
-        JavaContributionWire wire = new JavaContributionWire(imprt, export, URI.create("import"), URI.create("export"));
+        LocationContributionWireGenerator generator = new LocationContributionWireGenerator();
+        URI importUri = URI.create("import");
+        URI exportUri = URI.create("export");
+        ContributionImport imprt = new ContributionImport(importUri);
+        ContributionExport export = new ContributionExport(exportUri);
+        LocationContributionWire wire = new LocationContributionWire(imprt, export, importUri, exportUri);
         assertNotNull(generator.generate(wire));
     }
 

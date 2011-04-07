@@ -31,11 +31,11 @@
     </component>
 
     <component name="ClassLoaderWireGenerator" f3:key="org.fabric3.contribution.wire.JavaContributionWire">
-        <f3:implementation.system class="org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.generator.JavaContributionWireGenerator"/>
     </component>
 
     <component name="LocationContributionWireGenerator" f3:key="org.fabric3.contribution.wire.LocationContributionWire">
-        <f3:implementation.system class="org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.contribution.generator.LocationContributionWireGenerator"/>
     </component>
 
     <component name="ClasspathProcessorRegistry">

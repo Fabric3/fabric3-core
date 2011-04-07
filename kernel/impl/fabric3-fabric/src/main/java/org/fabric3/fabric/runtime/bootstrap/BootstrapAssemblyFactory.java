@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.contribution.generator.JavaContributionWireGeneratorImpl;
-import org.fabric3.contribution.generator.LocationContributionWireGeneratorImpl;
+import org.fabric3.contribution.generator.JavaContributionWireGenerator;
+import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.fabric.builder.ChannelConnector;
@@ -462,8 +462,8 @@ public class BootstrapAssemblyFactory {
     }
 
     private static ClassLoaderCommandGenerator createClassLoaderGenerator() {
-        ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGeneratorImpl();
-        ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGeneratorImpl();
+        ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGenerator();
+        ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGenerator();
         Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators =
                 new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
         generators.put(JavaContributionWire.class, javaGenerator);

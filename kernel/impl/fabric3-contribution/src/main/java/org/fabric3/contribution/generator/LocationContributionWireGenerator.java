@@ -48,7 +48,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class LocationContributionWireGeneratorImpl implements ClassLoaderWireGenerator<LocationContributionWire> {
+public class LocationContributionWireGenerator implements ClassLoaderWireGenerator<LocationContributionWire> {
 
     public PhysicalClassLoaderWireDefinition generate(LocationContributionWire wire) {
         URI uri = wire.getExportContributionUri();

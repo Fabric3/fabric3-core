@@ -66,7 +66,7 @@ import org.fabric3.util.graph.Vertex;
 import org.fabric3.util.graph.VertexImpl;
 
 /**
- * Default implementation of the DependencyService
+ * Orders contribution dependencies by performing a topological sort of the dependency graph.
  *
  * @version $Rev$ $Date$
  */

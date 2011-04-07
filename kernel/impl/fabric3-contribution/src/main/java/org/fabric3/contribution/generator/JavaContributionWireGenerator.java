@@ -48,7 +48,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  *
  * @version $Rev$ $Date$
  */
-public class JavaContributionWireGeneratorImpl implements ClassLoaderWireGenerator<JavaContributionWire> {
+public class JavaContributionWireGenerator implements ClassLoaderWireGenerator<JavaContributionWire> {
 
     public PhysicalClassLoaderWireDefinition generate(JavaContributionWire wire) {
         URI uri = wire.getExportContributionUri();
