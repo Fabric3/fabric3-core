@@ -60,7 +60,7 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 /**
  * @version $Rev$ $Date$
  */
-public class MetaDataStoreImplTestCase extends TestCase {
+public class MetaDataStoreImplResolveTestCase extends TestCase {
     private static final URI RESOURCE_URI = URI.create("test-resource");
     private static final URI RESOURCE_URI2 = URI.create("test-resource2");
     private static final String IMPORT_EXPORT_QNAME = "test";
