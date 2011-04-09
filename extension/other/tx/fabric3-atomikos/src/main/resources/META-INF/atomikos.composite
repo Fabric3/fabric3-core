@@ -18,7 +18,10 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
 
     <component name="TransactionManager">
         <f3:implementation.system class="org.fabric3.tx.atomikos.tm.AtomikosTransactionManager"/>
-        <property name="monitorLevel" source="$systemConfig//transaction.manager/@logging"/>
+        <property name="timeout" source="$systemConfig/transaction.manager/@timeout"/>
+        <property name="singleThreaded2PC" source="$systemConfig/transaction.manager/@single.threaded"/>
+        <property name="enableLogging" source="$systemConfig/transaction.manager/@logging"/>
+        <property name="checkPointInterval" source="$systemConfig/transaction.manager/@checkpoint.interval"/>
         <property name="properties" source="$systemConfig/transaction.manager/*"/>
     </component>
 

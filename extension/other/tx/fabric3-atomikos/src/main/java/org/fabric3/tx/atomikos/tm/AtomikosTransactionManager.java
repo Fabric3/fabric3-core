@@ -53,73 +53,123 @@ import javax.transaction.TransactionManager;
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.TransactionManagerImp;
+import com.atomikos.icatch.system.Configuration;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.api.MonitorChannel;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeRecover;
-import org.fabric3.spi.monitor.MonitorService;
 
 /**
- * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicity by Atomikos.
+ * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicitly by Atomikos.
  *
  * @version $Rev$ $Date$
  */
-@Service(javax.transaction.TransactionManager.class)
+@Service(TransactionManager.class)
 public class AtomikosTransactionManager implements TransactionManager, Fabric3EventListener<RuntimeRecover> {
+    private static final String TM_NAME = "com.atomikos.icatch.tm_unique_name";
+
     private static final String ATOMIKOS_NO_FILE = "com.atomikos.icatch.no_file";
     private static final String OUTPUT_DIR_PROPERTY_NAME = "com.atomikos.icatch.output_dir";
     private static final String LOG_BASE_DIR_PROPERTY_NAME = "com.atomikos.icatch.log_base_dir";
     private static final String FACTORY_KEY = "com.atomikos.icatch.service";
     private static final String FACTORY_VALUE = "com.atomikos.icatch.standalone.UserTransactionServiceFactory";
 
+    private static final String THREADED2PC = "com.atomikos.icatch.threaded_2pc";
+    private static final String ENABLE_LOGGING = "com.atomikos.icatch.enable_logging";
+    private static final String CHECKPOINT_INTERVAL = "com.atomikos.icatch.checkpoint_interval";
+
     private EventService eventService;
-    private MonitorService monitorService;
     private HostInfo info;
     private TransactionManagerImp tm;
     private UserTransactionService uts;
-    private Properties properties = new Properties();
-    private MonitorLevel logLevel = MonitorLevel.WARNING;
 
-    public AtomikosTransactionManager(@Reference EventService eventService, @Reference MonitorService monitorService, @Reference HostInfo info) {
+    private Properties properties = new Properties();
+
+    // Transaction timeout. A value of -1 indicates the default Atomikos timeout.
+    private int timeout = -1;
+
+    // True if 2PC on a participating resource should be handled from a single thread. False by default so acknowledgements are done in parallel.  
+    private boolean singleThreaded2PC;
+
+    // Set to false if transaction logging to disk should not be done. If set to true, transaction integrity cannot be guaranteed.
+    // Only for use in unit or integration tests where disk access needs to be disabled for performance.
+    private boolean enableLogging = true;
+
+    private long checkPointInterval = -1;
+
+    private MonitorChannel monitorChannel;
+
+    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info, @Monitor MonitorChannel monitorChannel) {
         this.eventService = eventService;
-        this.monitorService = monitorService;
         this.info = info;
+        this.monitorChannel = monitorChannel;
     }
 
     @Property(required = false)
-    public void setMonitorLevel(String logLevel) {
-        this.logLevel = MonitorLevel.valueOf(logLevel);
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
+    @Property(required = false)
+    public void setProperties(Map<String, String> properties) {
+        this.properties.putAll(properties);
+    }
+
+    @Property(required = false)
+    public void setSingleThreaded2PC(boolean singleThreaded2PC) {
+        this.singleThreaded2PC = singleThreaded2PC;
+    }
+
+    @Property(required = false)
+    public void setEnableLogging(boolean enableLogging) {
+        this.enableLogging = enableLogging;
+    }
+
+    @Property(required = false)
+    public void setCheckPointInterval(long checkPointInterval) {
+        this.checkPointInterval = checkPointInterval;
+    }
 
     @Init
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     public void init() throws IOException {
-        monitorService.setProviderLevel("com.atomikos", logLevel.toString());
-        monitorService.setProviderLevel("atomikos", logLevel.toString());
         eventService.subscribe(RuntimeRecover.class, this);
+
         // turn off transactions.properties search by the transaction manager since these will be supplied directly
         System.setProperty(ATOMIKOS_NO_FILE, "true");
+
         // configure mandatory value
         System.setProperty(FACTORY_KEY, FACTORY_VALUE);
-        // set defaults
+
         File dataDir = info.getDataDir();
         File trxDir = new File(dataDir, "transactions");
         if (!trxDir.exists()) {
             trxDir.mkdirs();
         }
+
+        // set the unique TM name
+        properties.setProperty(TM_NAME, info.getRuntimeName().replace(":", "_"));
+
         String path = trxDir.getCanonicalPath();
         properties.setProperty(OUTPUT_DIR_PROPERTY_NAME, path);
         properties.setProperty(LOG_BASE_DIR_PROPERTY_NAME, path);
-//        PrintStreamConsole console = new PrintStreamConsole(System.out);
-//        console.setLevel(Console.DEBUG);
-//        Configuration.addConsole(console);
+
+        properties.setProperty(THREADED2PC, Boolean.toString(singleThreaded2PC));
+        properties.setProperty(ENABLE_LOGGING, Boolean.toString(enableLogging));
+        if (checkPointInterval != -1) {
+            properties.setProperty(CHECKPOINT_INTERVAL, Long.toString(checkPointInterval));
+        }
+
+        // redirect logging
+        Configuration.addConsole(new ConsoleChannelRedirector(monitorChannel));
     }
 
     @Destroy
@@ -128,11 +178,6 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
             uts.shutdown(true);
             uts = null;
         }
-    }
-
-    @Property(required = false)
-    public void setProperties(Map<String, String> properties) {
-        this.properties.putAll(properties);
     }
 
     /**
@@ -146,6 +191,13 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
                 uts = new UserTransactionServiceImp(properties);
                 uts.init(properties);
                 tm = (TransactionManagerImp) TransactionManagerImp.getTransactionManager();
+            }
+            if (timeout != -1) {
+                try {
+                    tm.setTransactionTimeout(timeout);
+                } catch (SystemException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
