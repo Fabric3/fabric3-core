@@ -200,13 +200,13 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
     public void onBuild(Component component, PhysicalComponentDefinition definition) {
         String strUri = component.getUri().toString();
         for (Map.Entry<URI, MonitorLevel> entry : runtimeComponentLevels.entrySet()) {
-            if (entry.getKey().toString().startsWith(strUri)) {
+            if (strUri.startsWith(entry.getKey().toString())) {
                 component.setLevel(entry.getValue());
                 return;
             }
         }
         for (Map.Entry<URI, MonitorLevel> entry : applicationComponentLevels.entrySet()) {
-            if (entry.getKey().toString().startsWith(strUri)) {
+            if (strUri.startsWith(entry.getKey().toString())) {
                 component.setLevel(entry.getValue());
                 return;
             }
