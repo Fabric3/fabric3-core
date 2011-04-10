@@ -82,7 +82,8 @@ public class TxInterceptor extends AbstractTxSupport implements Interceptor {
             if (txAction == TxAction.BEGIN && transaction == null) {
                 rollback();
             } else if (txAction == TxAction.SUSPEND && transaction != null) {
-                setRollbackOnly();
+                monitor.resumeOnError(e);
+                resume(transaction);
             }
             throw e;
         }

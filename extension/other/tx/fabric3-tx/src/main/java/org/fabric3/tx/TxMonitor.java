@@ -37,6 +37,7 @@
 */
 package org.fabric3.tx;
 
+import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
@@ -50,5 +51,7 @@ public interface TxMonitor {
     @Warning("Transaction marked for rollback [{0}]")
     void markedForRollback(String threadName);
 
+    @Severe("Error after transaction suspended. Resuming previous transaction")
+    void resumeOnError(Throwable e);
 
 }
