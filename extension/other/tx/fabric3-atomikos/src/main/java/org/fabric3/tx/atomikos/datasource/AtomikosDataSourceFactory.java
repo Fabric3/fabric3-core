@@ -96,10 +96,12 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
     }
 
     @Destroy
-    public void destroy() {
+    public void destroy() throws DataSourceFactoryException {
         for (Map.Entry<String, AbstractDataSourceBean> entry : beans.entrySet()) {
+            AbstractDataSourceBean bean = entry.getValue();
             registry.unregister(entry.getKey());
-            entry.getValue().close();
+            unRegisterManagement(bean);
+            bean.close();
         }
     }
 
