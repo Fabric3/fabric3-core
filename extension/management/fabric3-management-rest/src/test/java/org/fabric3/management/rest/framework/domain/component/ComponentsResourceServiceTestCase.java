@@ -91,6 +91,65 @@ public class ComponentsResourceServiceTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
+    public void testGetComponentsAtomic() {
+        URI domainUri = URI.create("fabric3://domain");
+        LogicalCompositeComponent domain = new LogicalCompositeComponent(domainUri, null, null);
+
+        URI componentUri = URI.create("fabric3://domain/foo/bar/baz");
+        LogicalComponent component = new LogicalComponent(componentUri, null, null);
+
+        LogicalComponentManager lcm = EasyMock.createMock(LogicalComponentManager.class);
+        EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
+        EasyMock.expect(lcm.getComponent(EasyMock.eq(componentUri)));
+        EasyMock.expectLastCall().andReturn(component);
+        EasyMock.replay(lcm);
+
+        ComponentsResourceService service = new ComponentsResourceService(lcm);
+
+        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://localhost/management/components/foo/bar/baz"));
+        EasyMock.expect(request.getScheme()).andReturn("http");
+        EasyMock.expect(request.getServerName()).andReturn("localhost");
+        EasyMock.expect(request.getServerPort()).andReturn(8080);
+        EasyMock.expect(request.getPathInfo()).andReturn("/domain/components/foo/bar/baz");
+        EasyMock.replay(request);
+
+        Response response = service.getComponents(request);
+        assertEquals(HttpStatus.OK, response.getStatus());
+
+        ComponentResource resource = (ComponentResource) response.getEntity();
+        assertEquals(componentUri, resource.getUri());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testGetComponentsDomain() {
+        URI domainUri = URI.create("fabric3://domain");
+        LogicalCompositeComponent domain = new LogicalCompositeComponent(domainUri, null, null);
+
+        LogicalComponentManager lcm = EasyMock.createMock(LogicalComponentManager.class);
+        EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
+        EasyMock.expect(lcm.getComponent(EasyMock.eq(URI.create("/"))));
+        EasyMock.expectLastCall().andReturn(domain);
+        EasyMock.replay(lcm);
+
+        ComponentsResourceService service = new ComponentsResourceService(lcm);
+
+        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://localhost/management/components"));
+        EasyMock.expect(request.getScheme()).andReturn("http");
+        EasyMock.expect(request.getServerName()).andReturn("localhost");
+        EasyMock.expect(request.getServerPort()).andReturn(8080);
+        EasyMock.expect(request.getPathInfo()).andReturn("");
+        EasyMock.replay(request);
+
+        Response response = service.getComponents(request);
+        assertEquals(HttpStatus.OK, response.getStatus());
+
+        CompositeResource resource = (CompositeResource) response.getEntity();
+        assertEquals(domainUri, resource.getUri());
+    }
+
+    @SuppressWarnings({"unchecked"})
     public void testGetComponentsNotFound() {
         URI domainUri = URI.create("fabric3://domain");
         LogicalCompositeComponent domain = new LogicalCompositeComponent(domainUri, null, null);

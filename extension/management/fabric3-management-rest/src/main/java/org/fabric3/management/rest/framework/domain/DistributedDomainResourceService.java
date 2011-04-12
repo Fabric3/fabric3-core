@@ -45,11 +45,12 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
-import org.fabric3.spi.federation.DomainTopologyService;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
@@ -63,11 +64,10 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 @EagerInit
 @Management(path = "/domain")
 public class DistributedDomainResourceService {
-    private DomainTopologyService topologyService;
+    private HostInfo info;
 
-    @Reference(required = false)
-    public void setTopologyService(DomainTopologyService topologyService) {
-        this.topologyService = topologyService;
+    public DistributedDomainResourceService(@Reference HostInfo info) {
+        this.info = info;
     }
 
     @ManagementOperation(path = "/")
@@ -85,7 +85,7 @@ public class DistributedDomainResourceService {
     }
 
     private void createZoneLinks(HttpServletRequest request, Resource resource) {
-        if (topologyService == null) {
+        if (info.getRuntimeMode() == RuntimeMode.VM) {
             // running in single-VM mode, return
             return;
         }
@@ -95,7 +95,7 @@ public class DistributedDomainResourceService {
     }
 
     private void createRuntimeLinks(HttpServletRequest request, Resource resource) {
-        if (topologyService == null) {
+        if (info.getRuntimeMode() == RuntimeMode.VM) {
             // running in single-VM mode, return
             return;
         }

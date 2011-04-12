@@ -190,7 +190,7 @@ public class ContributionsResourceService {
     }
 
     @ManagementOperation(path = "contribution")
-    public Resource getContribution(String uri) throws ResourceException {
+    public ContributionResource getContribution(String uri) throws ResourceException {
         URI contributionUri = URI.create(uri);
         Contribution contribution = store.find(contributionUri);
         if (contribution == null) {

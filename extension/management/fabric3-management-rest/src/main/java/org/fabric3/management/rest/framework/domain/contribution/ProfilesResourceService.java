@@ -144,7 +144,7 @@ public class ProfilesResourceService {
             monitor.error("Error creating contribution: " + name, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating profile: " + name);
         }
-    }
+    }              
 
     @ManagementOperation(path = "profile")
     public void deleteProfile(String uri) throws ResourceException {
