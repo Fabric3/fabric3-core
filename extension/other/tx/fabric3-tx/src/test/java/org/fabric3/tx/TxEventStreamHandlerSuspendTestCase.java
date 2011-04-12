@@ -40,55 +40,69 @@ package org.fabric3.tx;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Implements transactional policy for an event stream.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class TxEventStreamHandler extends AbstractTxSupport implements EventStreamHandler {
+public class TxEventStreamHandlerSuspendTestCase extends TestCase {
+    private TransactionManager tm;
+    private TxEventStreamHandler handler;
     private EventStreamHandler next;
+    private Object event;
 
-    public TxEventStreamHandler(TransactionManager tm, TxAction action, TxMonitor monitor) {
-        super(tm, action, monitor);
+    public void testSuspend() throws Exception {
+        Transaction trx = EasyMock.createMock(Transaction.class);
+        EasyMock.expect(tm.getTransaction()).andReturn(trx);
+        next.handle(EasyMock.isA(Object.class));
+        EasyMock.expect(tm.suspend()).andReturn(trx);
+        tm.resume(trx);
+        EasyMock.replay(tm, next);
+
+        handler.handle(event);
+
+        EasyMock.verify(tm, next);
     }
 
-    public void handle(Object event) {
-        Transaction transaction = getTransaction();
-
-        if (txAction == TxAction.BEGIN) {
-            if (transaction == null) {
-                begin();
-            }
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            suspend();
-        }
+    public void testSuspendOnError() throws Exception {
+        Transaction trx = EasyMock.createMock(Transaction.class);
+        EasyMock.expect(tm.getTransaction()).andReturn(trx);
+        next.handle(EasyMock.isA(Object.class));
+        EasyMock.expectLastCall().andThrow(new MockException());
+        EasyMock.expect(tm.suspend()).andReturn(trx);
+        tm.resume(trx);
+        EasyMock.replay(tm, next);
 
         try {
-            next.handle(event);
-        } catch (RuntimeException e) {
-            if (txAction == TxAction.BEGIN && transaction == null) {
-                rollback();
-            } else if (txAction == TxAction.SUSPEND && transaction != null) {
-                resume(transaction);
-            }
-            throw e;
+            handler.handle(event);
+            fail();
+        } catch (MockException e) {
+            // expected
         }
 
-        if (txAction == TxAction.BEGIN && transaction == null) {
-            commit();
-        } else if (txAction == TxAction.SUSPEND && transaction != null) {
-            resume(transaction);
-        }
+        EasyMock.verify(tm, next);
     }
 
-    public EventStreamHandler getNext() {
-        return next;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        tm = EasyMock.createMock(TransactionManager.class);
+        TxMonitor monitor = EasyMock.createNiceMock(TxMonitor.class);
+        EasyMock.replay(monitor);
+        handler = new TxEventStreamHandler(tm, TxAction.SUSPEND, monitor);
+        event = new Object();
+        next = EasyMock.createMock(EventStreamHandler.class);
+        handler.setNext(next);
     }
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
+    private class MockException extends RuntimeException {
+
+        private static final long serialVersionUID = -1746683997765583218L;
     }
+
 
 }

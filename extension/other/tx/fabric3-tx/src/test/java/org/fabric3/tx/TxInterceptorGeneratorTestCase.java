@@ -37,24 +37,23 @@
 */
 package org.fabric3.tx;
 
-import org.osoa.sca.annotations.EagerInit;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.w3c.dom.Element;
 
-import org.fabric3.spi.generator.InterceptorGenerator;
-import org.fabric3.spi.generator.PolicyMetadata;
-import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
-
 /**
- * Generates metadata for creating a TxInterceptor on a wire invocation chain.
- *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class TxInterceptorGenerator implements InterceptorGenerator {
+public class TxInterceptorGeneratorTestCase extends TestCase {
 
-    public TxInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) {
-        String action = policy.getAttribute("action");
-        return new TxInterceptorDefinition(TxAction.valueOf(action));
+    public void testGenerate() throws Exception {
+        Element element = EasyMock.createMock(Element.class);
+        EasyMock.expect(element.getAttribute("action")).andReturn("BEGIN");
+        EasyMock.replay(element);
+
+        TxInterceptorGenerator generator = new TxInterceptorGenerator();
+        TxInterceptorDefinition definition = generator.generate(element, null, null);
+        assertEquals(TxAction.BEGIN, definition.getAction());
+        EasyMock.verify(element);
     }
 }

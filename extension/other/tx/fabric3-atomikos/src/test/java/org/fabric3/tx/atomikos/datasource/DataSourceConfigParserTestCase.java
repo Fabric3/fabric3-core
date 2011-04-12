@@ -57,6 +57,16 @@ public class DataSourceConfigParserTestCase extends TestCase {
             "   <datasource name='test' driver='foo.Bar' type='xa'>" +
             "      <username>user</username>" +
             "      <password>pass</password>" +
+            "      <maxPoolSize>10</maxPoolSize>" +
+            "      <minPoolSize>1</minPoolSize>" +
+            "      <connectionTimeout>20000</connectionTimeout>" +
+            "      <loginTimeout>30000</loginTimeout>" +
+            "      <maintenanceInterval>40000</maintenanceInterval>" +
+            "      <maxIdle>50000</maxIdle>" +
+            "      <poolSize>30</poolSize>" +
+            "      <reap>40</reap>" +
+            "      <query>test query</query>" +
+            "      <foo>bar</foo>" +
             "   </datasource>" +
             "</datasources>" +
             "</value></foo>";
@@ -72,8 +82,18 @@ public class DataSourceConfigParserTestCase extends TestCase {
         assertEquals("test", configuration.getName());
         assertEquals("foo.Bar", configuration.getDriverClass());
         assertEquals(DataSourceType.XA, configuration.getType());
-        assertEquals("user", configuration.getProperty("username"));        
+        assertEquals("user", configuration.getProperty("username"));
         assertEquals("pass", configuration.getProperty("password"));
+        assertEquals(10, configuration.getMaxPoolSize());
+        assertEquals(1, configuration.getMinPoolSize());
+        assertEquals(20000, configuration.getConnectionTimeout());
+        assertEquals(30000, configuration.getLoginTimeout());
+        assertEquals(40000, configuration.getMaintenanceInterval());
+        assertEquals(50000, configuration.getMaxIdle());
+        assertEquals(30, configuration.getPoolSize());
+        assertEquals(40, configuration.getReap());
+        assertEquals("test query", configuration.getQuery());
+        assertEquals("bar", configuration.getProperty("foo"));
     }
 
     @Override
