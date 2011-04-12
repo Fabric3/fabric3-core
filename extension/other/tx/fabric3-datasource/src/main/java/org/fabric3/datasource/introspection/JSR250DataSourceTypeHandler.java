@@ -73,7 +73,7 @@ public class JSR250DataSourceTypeHandler implements ResourceTypeHandler {
         contract = contractProcessor.introspect(DataSource.class, new DefaultIntrospectionContext());
     }
 
-    public ResourceReferenceDefinition createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
+    public DataSourceResourceReference createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
         String dataSourceName = annotation.mappedName();
         if (dataSourceName.length() == 0) {
             MissingDataSourceName error = new MissingDataSourceName(member.getDeclaringClass());

@@ -57,6 +57,16 @@ public class DataSourceResourceLoaderTestCase extends TestCase {
                     "   <datasource name='test' driver='foo.Bar' type='xa' url='jdbc:test'>" +
                     "      <username>user</username>" +
                     "      <password>pass</password>" +
+                    "      <maxPoolSize>10</maxPoolSize>" +
+                    "      <minPoolSize>1</minPoolSize>" +
+                    "      <connectionTimeout>20000</connectionTimeout>" +
+                    "      <loginTimeout>30000</loginTimeout>" +
+                    "      <maintenanceInterval>40000</maintenanceInterval>" +
+                    "      <maxIdle>50000</maxIdle>" +
+                    "      <poolSize>30</poolSize>" +
+                    "      <reap>40</reap>" +
+                    "      <query>test query</query>" +
+                    "      <foo>bar</foo>" +
                     "   </datasource>" +
                     "</datasources>";
 
@@ -77,10 +87,22 @@ public class DataSourceResourceLoaderTestCase extends TestCase {
     public void testSingleDataSourceParse() throws Exception {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(SINGLE_DATASOURCE.getBytes()));
+
         DataSourceResource resource = loader.load(reader, context);
+
         assertFalse(context.hasErrors());
-        assertEquals(1, resource.getConfigurations().size());
         DataSourceConfiguration configuration = resource.getConfigurations().get(0);
+        assertEquals(10, configuration.getMaxPoolSize());
+        assertEquals(1, configuration.getMinPoolSize());
+        assertEquals(20000, configuration.getConnectionTimeout());
+        assertEquals(30000, configuration.getLoginTimeout());
+        assertEquals(40000, configuration.getMaintenanceInterval());
+        assertEquals(50000, configuration.getMaxIdle());
+        assertEquals(30, configuration.getPoolSize());
+        assertEquals(40, configuration.getReap());
+        assertEquals("test query", configuration.getQuery());
+        assertEquals("bar", configuration.getProperty("foo"));
+
         validateDataSource1(configuration);
 
     }
