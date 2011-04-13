@@ -40,6 +40,7 @@ package org.fabric3.wsdl.contribution.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +61,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaException;
+import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
+import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.StoreException;
@@ -108,6 +112,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private Wsdl4JFactory factory;
     private DocumentBuilderFactory documentBuilderFactory;
     private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
+    private ContextClassLoaderResolver schemaResolver;
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
                                  @Reference WsdlContractProcessor processor,
@@ -119,7 +124,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         this.factory = factory;
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
-
+        schemaResolver = new ContextClassLoaderResolver();
     }
 
     @Reference(required = false)
@@ -350,6 +355,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      */
     private XmlSchemaCollection parseSchema(Definition definition, IntrospectionContext context) {
         XmlSchemaCollection collection = new XmlSchemaCollection();
+        collection.setSchemaResolver(schemaResolver);
         try {
             Types types = definition.getTypes();
             if (types == null) {
