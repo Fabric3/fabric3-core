@@ -97,7 +97,7 @@ public class RestfulManagementExtension implements ManagementExtension {
     private ResourceHost resourceHost;
     private ManagementSecurity security = ManagementSecurity.DISABLED;
 
-    private List<ResourceListener> listeners = Collections.emptyList();
+    private List<ResourceListener> listeners = new ArrayList<ResourceListener>();
     private Map<String, ResourceMapping> dynamicResources = new ConcurrentHashMap<String, ResourceMapping>();
 
     public RestfulManagementExtension(@Reference TransformerPairService pairService,
@@ -143,17 +143,22 @@ public class RestfulManagementExtension implements ManagementExtension {
         }
         try {
             Class<?> clazz = classLoader.loadClass(info.getManagementClass());
-            boolean rootResourcePathOverride = false;
             List<ResourceMapping> getMappings = new ArrayList<ResourceMapping>();
 
             String identifier = componentUri.toString();
+
+            boolean rootResourcePathOverride = false;
             for (ManagementOperationInfo operationInfo : info.getOperations()) {
-                Signature signature = operationInfo.getSignature();
-                Method method = signature.getMethod(clazz);
+                // calculate if a root resource needs to be created
                 String path = operationInfo.getPath();
                 if (ROOT_PATH.equals(path)) {
                     rootResourcePathOverride = true;
                 }
+            }
+            for (ManagementOperationInfo operationInfo : info.getOperations()) {
+                Signature signature = operationInfo.getSignature();
+                Method method = signature.getMethod(clazz);
+                String path = operationInfo.getPath();
                 OperationType type = operationInfo.getOperationType();
                 Verb verb = getVerb(method, type);
 
@@ -172,7 +177,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                     getMappings.add(mapping);
                 }
 
-                createDynamicResources(mapping);
+                createDynamicResources(mapping, root, rootResourcePathOverride);
 
                 if (dynamicResources.remove(mapping.getPath()) != null) {
                     resourceHost.unregisterPath(mapping.getPath(), mapping.getVerb());
@@ -205,6 +210,17 @@ public class RestfulManagementExtension implements ManagementExtension {
 
             List<Method> methods = Arrays.asList(instance.getClass().getMethods());
             for (Method method : methods) {
+                ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
+                if (opAnnotation == null) {
+                    continue;
+                }
+                String path = opAnnotation.path();
+                if (ROOT_PATH.equals(path)) {
+                    rootResourcePathOverride = true;
+                }
+
+            }
+            for (Method method : methods) {
                 Set<Role> roles;
                 ManagementOperation opAnnotation = method.getAnnotation(ManagementOperation.class);
                 if (opAnnotation != null) {
@@ -224,11 +240,6 @@ public class RestfulManagementExtension implements ManagementExtension {
                         }
                     }
 
-                    String path = opAnnotation.path();
-                    if (ROOT_PATH.equals(path)) {
-                        rootResourcePathOverride = true;
-                    }
-
                     TransformerPair pair = pairService.getTransformerPair(Collections.singletonList(method), JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
                     ResourceMapping mapping = createMapping(name, root, EMPTY_PATH, method, verb, instance, pair, roles);
 
@@ -236,7 +247,7 @@ public class RestfulManagementExtension implements ManagementExtension {
                         getMappings.add(mapping);
                     }
 
-                    createDynamicResources(mapping);
+                    createDynamicResources(mapping, root, rootResourcePathOverride);
 
                     resourceHost.register(mapping);
                     notifyExport(mapping.getRelativePath(), mapping);
@@ -357,7 +368,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             for (ResourceListener listener : listeners) {
                 listener.onRootResourceExport(mapping);
             }
-            createDynamicResources(mapping);
+            createDynamicResources(mapping, root, false);
         } catch (TransformationException e) {
             throw new ManagementException(e);
         }
@@ -396,16 +407,18 @@ public class RestfulManagementExtension implements ManagementExtension {
     /**
      * Creates parent resources dynamically for the given mapping if they do not already exist.
      *
-     * @param mapping the mapping
+     * @param mapping            the mapping
+     * @param rootResourcePath   the root resource path for this hierarchy
+     * @param createRootResource true if a dynamic root resource should be dynamically created
      * @throws ManagementException if there was an error creating parent resources
      */
-    private void createDynamicResources(ResourceMapping mapping) throws ManagementException {
+    private void createDynamicResources(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) throws ManagementException {
         ResourceMapping previous = dynamicResources.remove(mapping.getPath());
         if (previous != null) {
             // A dynamic resource service was already registered. Remove it since it is being replaced by a configured resource service.
             resourceHost.unregisterPath(previous.getPath(), previous.getVerb());
         } else {
-            List<ResourceMapping> dynamicMappings = createDynamicResourceMappings(mapping);
+            List<ResourceMapping> dynamicMappings = createDynamicResourceMappings(mapping, rootResourcePath, createRootResource);
             for (ResourceMapping dynamicMapping : dynamicMappings) {
                 // add the resources as listeners first as parents need to be notified of children in order to generate links during registration
                 listeners.add((ResourceListener) dynamicMapping.getInstance());
@@ -422,10 +435,12 @@ public class RestfulManagementExtension implements ManagementExtension {
     /**
      * Creates a collection of parent resources dynamically for the given mapping if they do not already exist.
      *
-     * @param mapping the mapping
+     * @param mapping            the mapping
+     * @param rootResourcePath   the root resource path for this hierarchy
+     * @param createRootResource true if a dynamic root resource should be dynamically created
      * @return the an ordered collection of resources starting with the top-most resource in the hierarchy
      */
-    private List<ResourceMapping> createDynamicResourceMappings(ResourceMapping mapping) {
+    private List<ResourceMapping> createDynamicResourceMappings(ResourceMapping mapping, String rootResourcePath, boolean createRootResource) {
         String path = mapping.getPath();
         List<ResourceMapping> mappings = new ArrayList<ResourceMapping>();
         while (path != null) {
@@ -440,6 +455,9 @@ public class RestfulManagementExtension implements ManagementExtension {
             }
             path = current;
             try {
+                if (!createRootResource && current.equals(rootResourcePath)) {
+                    continue; // skip creating the root resource since one is provided
+                }
                 DynamicResourceService resourceService = new DynamicResourceService(current);
                 List<Method> list = Collections.singletonList(dynamicGetResourceMethod);
                 TransformerPair pair = pairService.getTransformerPair(list, JSON_INPUT_TYPE, JSON_OUTPUT_TYPE);
