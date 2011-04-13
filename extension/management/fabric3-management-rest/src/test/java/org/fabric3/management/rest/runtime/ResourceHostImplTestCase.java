@@ -53,6 +53,7 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
+import org.fabric3.spi.transform.Transformer;
 
 /**
  * @version $Rev$ $Date$
@@ -64,6 +65,7 @@ public final class ResourceHostImplTestCase extends TestCase {
     private Method parameterizedMethod;
 
     private Marshaller marshaller;
+    private ServletHost servletHost;
 
     public void testIsRegisteredInPath() throws Exception {
         ResourceMapping mapping = new ResourceMapping("foo", "/foo/bar", "bar", Verb.GET, null, null, null, null);
@@ -199,9 +201,10 @@ public final class ResourceHostImplTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void testInvokeErrorResource() throws Exception {
+        ResourceException e = new ResourceException(HttpStatus.BAD_REQUEST);
         MockResource resource = EasyMock.createMock(MockResource.class);
         resource.error();
-        EasyMock.expectLastCall().andThrow(new ResourceException(HttpStatus.BAD_REQUEST));
+        EasyMock.expectLastCall().andThrow(e);
 
         ResourceMapping mapping = new ResourceMapping("foo", "/foo/bar", "bar", Verb.GET, errorMethod, resource, null, null);
         host.register(mapping);
@@ -211,11 +214,24 @@ public final class ResourceHostImplTestCase extends TestCase {
         HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
         response.setStatus(HttpStatus.BAD_REQUEST.getCode());
 
+        EasyMock.expect(marshaller.deserialize(Verb.GET, request, mapping)).andReturn(new Object[]{});
         EasyMock.replay(request, response, marshaller, resource);
 
         host.doGet(request, response);
         EasyMock.verify(request, response, marshaller, resource);
     }
+
+    public void testStartStop() throws Exception {
+        servletHost.registerMapping("/management/*", host);
+        EasyMock.expect(servletHost.unregisterMapping("/management/*")).andReturn(host);
+        EasyMock.replay(servletHost);
+
+        host.start();
+        host.stop();
+
+        EasyMock.verify(servletHost);
+    }
+
 
     @Override
     protected void setUp() throws Exception {
@@ -226,9 +242,9 @@ public final class ResourceHostImplTestCase extends TestCase {
         operationMethod = MockResource.class.getMethod("operation");
 
 
-        marshaller = EasyMock.createNiceMock(Marshaller.class);
-        ServletHost servletHost = EasyMock.createNiceMock(ServletHost.class);
-        BasicAuthenticator authenticator = EasyMock.createNiceMock(BasicAuthenticator.class);
+        marshaller = EasyMock.createMock(Marshaller.class);
+        servletHost = EasyMock.createMock(ServletHost.class);
+        BasicAuthenticator authenticator = EasyMock.createMock(BasicAuthenticator.class);
         ManagementMonitor monitor = EasyMock.createNiceMock(ManagementMonitor.class);
         host = new ResourceHostImpl(marshaller, servletHost, authenticator, monitor);
     }
