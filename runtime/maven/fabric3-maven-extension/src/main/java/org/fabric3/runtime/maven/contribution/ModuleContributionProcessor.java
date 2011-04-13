@@ -141,12 +141,20 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     }
 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
-        iterateArtifacts(contribution, context, new Action() {
-            public void process(Contribution contribution, String contentType, URL url) throws InstallException {
-                UrlSource source = new UrlSource(url);
-                registry.indexResource(contribution, contentType, source, context);
-            }
-        });
+        ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = context.getClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(loader);
+
+            iterateArtifacts(contribution, context, new Action() {
+                public void process(Contribution contribution, String contentType, URL url) throws InstallException {
+                    UrlSource source = new UrlSource(url);
+                    registry.indexResource(contribution, contentType, source, context);
+                }
+            });
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassloader);
+        }
     }
 
     private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, Action action) throws InstallException {

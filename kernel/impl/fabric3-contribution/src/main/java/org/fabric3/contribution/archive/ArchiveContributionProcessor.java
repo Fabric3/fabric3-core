@@ -42,8 +42,8 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
@@ -81,12 +81,19 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
         ArchiveContributionHandler handler = getHandler(contribution);
-        handler.iterateArtifacts(contribution, new Action() {
-            public void process(Contribution contribution, String contentType, URL url) throws InstallException {
-                UrlSource source = new UrlSource(url);
-                registry.indexResource(contribution, contentType, source, context);
-            }
-        });
+        ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = context.getClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(loader);
+            handler.iterateArtifacts(contribution, new Action() {
+                public void process(Contribution contribution, String contentType, URL url) throws InstallException {
+                    UrlSource source = new UrlSource(url);
+                    registry.indexResource(contribution, contentType, source, context);
+                }
+            });
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassloader);
+        }
 
     }
 
