@@ -22,7 +22,7 @@ Public License. See the accompanying license file for details.
     </policySet>
 
     <policySet name="oasisPropagatesTransactionPolicy" provides="oasis:propagatesTransaction" >
-        <f3:transaction action="PROPOGATE"/>
+        <f3:transaction action="PROPAGATE"/>
     </policySet>
 
 </definitions>

@@ -44,6 +44,6 @@ package org.fabric3.tx;
  */
 public enum TxAction {
 
-    BEGIN, SUSPEND
+    BEGIN, SUSPEND, PROPAGATE
 
 }

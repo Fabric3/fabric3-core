@@ -53,9 +53,9 @@ import org.fabric3.spi.wire.Interceptor;
  */
 public class TxInterceptorTestCase extends TestCase {
     private TransactionManager tm;
-    private TxInterceptor interceptor;
     private Interceptor next;
     private MessageImpl message;
+    private TxMonitor monitor;
 
     public void testBeginCommit() throws Exception {
         EasyMock.expect(tm.getTransaction()).andReturn(null);
@@ -64,6 +64,9 @@ public class TxInterceptorTestCase extends TestCase {
         tm.begin();
         tm.commit();
         EasyMock.replay(tm, next);
+
+        TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+        interceptor.setNext(next);
 
         interceptor.invoke(message);
 
@@ -75,6 +78,9 @@ public class TxInterceptorTestCase extends TestCase {
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(message);
         EasyMock.replay(trx, tm, next);
+
+        TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+        interceptor.setNext(next);
 
         interceptor.invoke(message);
 
@@ -89,6 +95,9 @@ public class TxInterceptorTestCase extends TestCase {
         EasyMock.replay(tm, next);
 
         try {
+            TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+            interceptor.setNext(next);
+
             interceptor.invoke(message);
             fail();
         } catch (MockException e) {
@@ -106,6 +115,9 @@ public class TxInterceptorTestCase extends TestCase {
         tm.rollback();
         EasyMock.replay(tm, next);
 
+        TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+        interceptor.setNext(next);
+
         interceptor.invoke(message);
 
         EasyMock.verify(tm, next);
@@ -118,6 +130,9 @@ public class TxInterceptorTestCase extends TestCase {
         EasyMock.replay(trx, tm, next);
 
         try {
+            TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+            interceptor.setNext(next);
+
             interceptor.invoke(message);
             fail();
         } catch (MockException e) {
@@ -134,6 +149,23 @@ public class TxInterceptorTestCase extends TestCase {
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(fault);
         EasyMock.replay(tm, next);
 
+        TxInterceptor interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
+        interceptor.setNext(next);
+
+        interceptor.invoke(message);
+
+        EasyMock.verify(tm, next);
+    }
+
+    public void testPropagate() throws Exception {
+        Transaction trx = EasyMock.createMock(Transaction.class);
+        EasyMock.expect(tm.getTransaction()).andReturn(trx);
+
+        TxInterceptor interceptor = new TxInterceptor(tm, TxAction.PROPAGATE, monitor);
+        interceptor.setNext(next);
+        EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(message);
+        EasyMock.replay(tm, next);
+
         interceptor.invoke(message);
 
         EasyMock.verify(tm, next);
@@ -143,12 +175,10 @@ public class TxInterceptorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         tm = EasyMock.createMock(TransactionManager.class);
-        TxMonitor monitor = EasyMock.createNiceMock(TxMonitor.class);
+        monitor = EasyMock.createNiceMock(TxMonitor.class);
         EasyMock.replay(monitor);
-        interceptor = new TxInterceptor(tm, TxAction.BEGIN, monitor);
         message = new MessageImpl();
         next = EasyMock.createMock(Interceptor.class);
-        interceptor.setNext(next);
     }
 
     private class MockException extends RuntimeException {
