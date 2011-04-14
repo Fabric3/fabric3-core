@@ -37,97 +37,72 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-
-import org.oasisopen.sca.ServiceRuntimeException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.timer.spi.Task;
 
 /**
- * Invokes a timer component instance within the context of a transaction when a trigger has fired.
+ * A {@link Task} implementation that returns the next firing interval by calling a <code>nextInterval</code> method on the timer component
+ * implementation.
  *
- * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
+ * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
-public class TransactionalTimerInvoker implements Runnable {
+public class NonTransactionalIntervalTask implements Task {
     private static final CallFrame FRAME = new CallFrame();
     private TimerComponent component;
-    private ScopeContainer scopeContainer;
-    private TransactionManager tm;
+    private Method method;
+    private Runnable delegate;
     private InvokerMonitor monitor;
 
-    public TransactionalTimerInvoker(TimerComponent component, TransactionManager tm, InvokerMonitor monitor) {
+    public NonTransactionalIntervalTask(TimerComponent component, Runnable delegate, Method method, InvokerMonitor monitor)
+            throws NoSuchMethodException {
         this.component = component;
-        this.tm = tm;
+        this.delegate = delegate;
+        this.method = method;
         this.monitor = monitor;
-        this.scopeContainer = component.getScopeContainer();
+    }
+
+    public long nextInterval() {
+        WorkContext workContext = new WorkContext();
+        workContext.addCallFrame(FRAME);
+        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
+
+        InstanceWrapper wrapper = null;
+        try {
+            wrapper = component.getScopeContainer().getWrapper(component, workContext);
+            Object instance = wrapper.getInstance();
+            return (Long) method.invoke(instance);
+        } catch (InstanceLifecycleException e) {
+            monitor.executeError(e);
+            throw new InvocationRuntimeException(e);
+        } catch (InvocationTargetException e) {
+            monitor.executeError(e);
+            throw new InvocationRuntimeException(e);
+        } catch (IllegalAccessException e) {
+            monitor.executeError(e);
+            throw new InvocationRuntimeException(e);
+        } finally {
+            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
+            if (wrapper != null) {
+                try {
+                    component.getScopeContainer().returnWrapper(component, workContext, wrapper);
+                } catch (InstanceDestructionException e) {
+                    monitor.executeError(e);
+                }
+            }
+        }
     }
 
     public void run() {
-        // create a new work context
-        WorkContext workContext = new WorkContext();
-        workContext.addCallFrame(FRAME);
-        InstanceWrapper wrapper;
-        try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
-        } catch (InstanceLifecycleException e) {
-            monitor.initError(e);
-            throw new InvocationRuntimeException(e);
-        }
-
-        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
-        try {
-            Object instance = wrapper.getInstance();
-            tm.begin();
-            ((Runnable) instance).run();
-            tm.commit();
-        } catch (HeuristicRollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (RollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (SystemException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (NotSupportedException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (RuntimeException e) {
-            monitor.executeError(e);
-            try {
-                tm.rollback();
-            } catch (SystemException ex) {
-                monitor.executeError(e);
-            }
-            throw new ServiceRuntimeException(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
-            try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
-            } catch (InstanceDestructionException e) {
-                monitor.disposeError(e);
-            }
-        }
-
+        delegate.run();
     }
 }
+

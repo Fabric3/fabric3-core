@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -108,10 +109,11 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         }
         processInitialDelay(data, reader, context);
         processTimeUnit(data, reader, context);
-        processTask(reader, context, data);
+        processIntervalClass(reader, context, data);
         processRepeatInterval(reader, context, data);
         processRepeatFixedRate(reader, context, data);
         processFireOnce(reader, context, data);
+        processIntervalMethod(context, implementation);
         validateData(reader, context, data);
 
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
@@ -149,7 +151,11 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
     }
 
     private void validateData(XMLStreamReader reader, IntrospectionContext context, TimerData data) {
-        if (data.getIntervalClass() == null && data.getFixedRate() == UNSPECIFIED && data.getRepeatInterval() == UNSPECIFIED && data.getFireOnce() == UNSPECIFIED) {
+        if (!data.isIntervalMethod()
+                && data.getIntervalClass() == null
+                && data.getFixedRate() == UNSPECIFIED
+                && data.getRepeatInterval() == UNSPECIFIED
+                && data.getFireOnce() == UNSPECIFIED) {
             MissingAttribute failure =
                     new MissingAttribute("A task, fixed rate, repeat interval, or time must be specified on the timer component", reader);
             context.addError(failure);
@@ -185,7 +191,7 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         return true;
     }
 
-    private void processTask(XMLStreamReader reader, IntrospectionContext context, TimerData data) throws XMLStreamException {
+    private void processIntervalClass(XMLStreamReader reader, IntrospectionContext context, TimerData data) throws XMLStreamException {
         String intervalClass = reader.getAttributeValue(null, "intervalClass");
         if (intervalClass == null) {
             // no task defined
@@ -206,6 +212,26 @@ public class TimerImplementationLoader implements TypeLoader<TimerImplementation
         }
 
         data.setIntervalClass(intervalClass);
+    }
+
+    private void processIntervalMethod(IntrospectionContext context, TimerImplementation implementation) throws XMLStreamException {
+        try {
+            String name = implementation.getImplementationClass();
+            Class<?> clazz = context.getClassLoader().loadClass(name);
+            Method intervalMethod = clazz.getMethod("nextInterval");
+            Class<?> type = intervalMethod.getReturnType();
+            TimerData data = implementation.getTimerData();
+            data.setIntervalMethod(true);  // set regardless of whether the method is valid
+            data.setType(TimerType.RECURRING);
+            if (!Long.class.equals(type) && !Long.TYPE.equals(type)) {
+                InvalidIntervalMethod failure = new InvalidIntervalMethod("The nextInterval method must return a long value: " + name);
+                context.addError(failure);
+            }
+        } catch (ClassNotFoundException e) {
+            // this should not happen as the impl class should already be loaded
+        } catch (NoSuchMethodException e) {
+            // do nothing, the class does not define an interval method
+        }
     }
 
     private void processRepeatInterval(XMLStreamReader reader, IntrospectionContext introspectionContext, TimerData data) {

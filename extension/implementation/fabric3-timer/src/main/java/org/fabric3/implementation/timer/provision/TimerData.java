@@ -54,6 +54,7 @@ public class TimerData implements Serializable {
     private TimerType type = TimerType.INTERVAL;
     private String poolName = TimerService.DEFAULT_POOL;
     private String intervalClass;
+    private boolean intervalMethod;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private long initialDelay = 100;
     private long fixedRate = UNSPECIFIED;
@@ -124,4 +125,11 @@ public class TimerData implements Serializable {
         this.intervalClass = intervalClass;
     }
 
+    public boolean isIntervalMethod() {
+        return intervalMethod;
+    }
+
+    public void setIntervalMethod(boolean intervalMethod) {
+        this.intervalMethod = intervalMethod;
+    }
 }

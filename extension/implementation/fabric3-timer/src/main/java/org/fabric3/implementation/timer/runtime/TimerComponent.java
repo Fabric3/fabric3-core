@@ -37,14 +37,11 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
@@ -66,6 +63,7 @@ import org.fabric3.timer.spi.TimerService;
  */
 public class TimerComponent extends JavaComponent implements TopologyListener {
     private TimerData data;
+    private Class<?> implementationClass;
     private TimerService timerService;
     private ScheduledFuture<?> future;
     private ZoneTopologyService topologyService;
@@ -79,6 +77,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     public TimerComponent(URI componentId,
                           QName deployable,
                           TimerData data,
+                          Class<?> implementationClass,
                           boolean transactional,
                           InstanceFactoryProvider factoryProvider,
                           ScopeContainer scopeContainer,
@@ -89,6 +88,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           InvokerMonitor monitor) {
         super(componentId, factoryProvider, scopeContainer, deployable, false, -1, -1);
         this.data = data;
+        this.implementationClass = implementationClass;
         this.transactional = transactional;
         this.timerService = timerService;
         this.topologyService = topologyService;
@@ -161,18 +161,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
             future = timerService.scheduleWithFixedDelay(name, invoker, delay, data.getRepeatInterval(), data.getTimeUnit());
             break;
         case RECURRING:
-            Task task = null;
-            try {
-                Object interval = classLoader.loadClass(data.getIntervalClass()).newInstance();
-                task = new TimerTask(interval, invoker);
-            } catch (InstantiationException e) {
-                monitor.executeError(e);
-            } catch (IllegalAccessException e) {
-                monitor.executeError(e);
-            } catch (ClassNotFoundException e) {
-                monitor.executeError(e);
-            }
-            future = timerService.scheduleRecurring(data.getPoolName(), task);
+            scheduleRecurring(invoker);
             break;
         case ONCE:
             future = timerService.schedule(data.getPoolName(), invoker, data.getFireOnce(), data.getTimeUnit());
@@ -180,39 +169,29 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         }
     }
 
-    private class TimerTask implements Task {
-        private Method method;
-        private Object interval;
-        private Runnable delegate;
-
-        private TimerTask(Object interval, Runnable delegate) {
-            try {
-                this.method = interval.getClass().getMethod("nextInterval");
-            } catch (NoSuchMethodException e) {
-                monitor.executeError(e);
-            }
-            this.interval = interval;
-            this.delegate = delegate;
-        }
-
-        public long nextInterval() {
-            try {
-                if (method == null) {
-                    // the interval class was invalid
-                    return Task.DONE;
+    private void scheduleRecurring(Runnable invoker) {
+        try {
+            Task task;
+            if (data.isIntervalMethod()) {
+                Method method = implementationClass.getMethod("nextInterval");
+                if (transactional) {
+                    task = new TransactionalIntervalTask(this, invoker, method, tm, monitor);
+                } else {
+                    task = new NonTransactionalIntervalTask(this, invoker, method, monitor);
                 }
-                return (Long) method.invoke(interval);
-            } catch (ClassCastException e) {
-                throw new ServiceRuntimeException("Invalid interval type returned", e);
-            } catch (IllegalAccessException e) {
-                throw new ServiceRuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new ServiceRuntimeException(e);
+            } else {
+                Object interval = classLoader.loadClass(data.getIntervalClass()).newInstance();
+                task = new IntervalClassTask(interval, invoker);
             }
-        }
-
-        public void run() {
-            delegate.run();
+            future = timerService.scheduleRecurring(data.getPoolName(), task);
+        } catch (NoSuchMethodException e) {
+            monitor.executeError(e);
+        } catch (InstantiationException e) {
+            monitor.executeError(e);
+        } catch (IllegalAccessException e) {
+            monitor.executeError(e);
+        } catch (ClassNotFoundException e) {
+            monitor.executeError(e);
         }
     }
 

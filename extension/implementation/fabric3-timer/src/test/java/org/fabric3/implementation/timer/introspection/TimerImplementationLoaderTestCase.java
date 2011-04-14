@@ -83,6 +83,13 @@ public class TimerImplementationLoaderTestCase extends TestCase {
     private static final String INVALID_INTERVAL_CLASS =
             "<implementation.timer intervalClass='" + TestCase.class.getName() + "' class='" + TestTimer.class.getName() + "' />";
 
+    private static final String INTERVAL_METHOD =
+            "<implementation.timer class='" + TestIntervalTimer.class.getName() + "' />";
+
+    private static final String INVALID_INTERVAL_METHOD =
+            "<implementation.timer class='" + TestInvalidIntervalTimer.class.getName() + "' />";
+
+
     private XMLInputFactory xmlFactory;
     private DefaultIntrospectionContext context;
 
@@ -141,6 +148,18 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         loader.load(createReader(INVALID_INTERVAL_CLASS), context);
         assertTrue(context.hasErrors());
         assertEquals(InvalidIntervalClass.class, context.getErrors().get(0).getClass());
+    }
+
+    public void testIntervalMethod() throws Exception {
+        TimerImplementation implementation = loader.load(createReader(INTERVAL_METHOD), context);
+        assertFalse(context.hasErrors());
+        assertTrue(implementation.getTimerData().isIntervalMethod());
+    }
+
+    public void testInvalidIntervalMethod() throws Exception {
+        loader.load(createReader(INVALID_INTERVAL_METHOD), context);
+        assertTrue(context.hasErrors());
+        assertEquals(InvalidIntervalMethod.class, context.getErrors().get(0).getClass());
     }
 
     @Override

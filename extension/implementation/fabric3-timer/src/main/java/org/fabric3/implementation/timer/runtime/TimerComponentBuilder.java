@@ -108,7 +108,12 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
-
+        Class<?> implClass;
+        try {
+            implClass = classLoader.loadClass(factoryDefinition.getImplementationClass());
+        } catch (ClassNotFoundException e) {
+            throw new BuilderException(e);
+        }
         InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
 
         createPropertyFactories(definition, provider);
@@ -117,6 +122,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         TimerComponent component = new TimerComponent(uri,
                                                       deployable,
                                                       data,
+                                                      implClass,
                                                       transactional,
                                                       provider,
                                                       scopeContainer,
