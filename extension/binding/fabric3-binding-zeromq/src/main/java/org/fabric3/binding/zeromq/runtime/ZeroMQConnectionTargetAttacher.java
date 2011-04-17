@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
 
     @Reference
-    protected IZMQMessageBroker   zmqMsgBroker;
+    protected ZMQMessageBroker   zmqMsgBroker;
 
     @Reference
     protected ClassLoaderRegistry classLoadRegistry;
@@ -57,7 +57,7 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
     public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target,
                        ChannelConnection connection) throws ConnectionAttachException {
         ZeroMQMetadata metadata = target.getMetadata();
-        IZMQMessagePublisher publisher = zmqMsgBroker.createPublisher(metadata);
+        ZMQMessagePublisher publisher = zmqMsgBroker.createPublisher(metadata);
         ClassLoader loader = classLoadRegistry.getClassLoader(target.getClassLoaderId());
         for (EventStream stream : connection.getEventStreams()) {
             ZeroMQEventStreamHandler handler = new ZeroMQEventStreamHandler(publisher, loader);

@@ -28,20 +28,55 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.broker;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.ZMQMessagePublisher;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Context;
+import org.zeromq.ZMQ.Socket;
 
 /**
+ * Creates an ZeroMQ Socket for a channel.
+ * 
  * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
  *          2011) $
  * 
  */
-public interface IZMQMessageBroker {
+public class ZMQMessagePublisherImpl implements ZMQMessagePublisher {
 
-    public final static String ALLOCATOR_TYPE_ZMQ_PUB = "zmq.publishers";
+    private String             channelName;
+    private Context            context;
+    private Socket             socket;
+    private ZeroMQMetadata     metadata;
 
-    public IZMQMessagePublisher createPublisher(ZeroMQMetadata metadata);
+    protected ZMQBrokerMonitor monitor;
 
-    public void addSubscriber(IMessageListener listener, ZeroMQMetadata metadata);
+    public ZMQMessagePublisherImpl(ZMQ.Context context, ZeroMQMetadata metadata, ZMQBrokerMonitor monitor) {
+        channelName = metadata.getChannelName();
+        this.context = context;
+        this.metadata = metadata;
+        this.monitor = monitor;
+        initSocket();
+    }
+
+    @Override
+    public String getChannelName() {
+        return channelName;
+    }
+
+    protected void initSocket() {
+        // here a socket could be bound to an inproc
+        // this could be triggered by the broker ?
+        socket = context.socket(ZMQ.PUB);
+        String connection = String.format("tcp://%s:%d", "*", metadata.getPort());
+        socket.bind(connection);
+        monitor.publisherRegistered(metadata.getChannelName(), connection);
+    }
+
+    @Override
+    public void sendMessage(byte[] message) {
+        socket.send(message, 0);
+    }
+
 }

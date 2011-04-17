@@ -37,7 +37,7 @@ import org.fabric3.spi.channel.EventStreamHandler;
  *          2011) $
  * 
  */
-public class EventStreamListener implements IMessageListener {
+public class EventStreamListener implements MessageListener {
 
     private EventStreamHandler handler;
     private ClassLoader        loader;

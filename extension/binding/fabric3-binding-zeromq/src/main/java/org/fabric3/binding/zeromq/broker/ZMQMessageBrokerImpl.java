@@ -42,10 +42,10 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.IMessageListener;
-import org.fabric3.binding.zeromq.runtime.IZMQMessageBroker;
-import org.fabric3.binding.zeromq.runtime.IZMQMessagePublisher;
-import org.fabric3.binding.zeromq.runtime.IZMQMessageSubscriber;
+import org.fabric3.binding.zeromq.runtime.MessageListener;
+import org.fabric3.binding.zeromq.runtime.ZMQMessageBroker;
+import org.fabric3.binding.zeromq.runtime.ZMQMessagePublisher;
+import org.fabric3.binding.zeromq.runtime.ZMQMessageSubscriber;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
@@ -73,10 +73,10 @@ import org.zeromq.ZMQ.Context;
 @EagerInit
 @Scope(Scopes.COMPOSITE)
 @Management(description = "ZeroMQ Broker instance", group = "binding", name = "zmq", path = "/runtime/binding/zmq")
-public class ZMQMessageBroker implements IZMQMessageBroker {
+public class ZMQMessageBrokerImpl implements ZMQMessageBroker {
 
-    private Map<String, IZMQMessagePublisher>  publishers  = new HashMap<String, IZMQMessagePublisher>();
-    private Map<String, IZMQMessageSubscriber> subscribers = new HashMap<String, IZMQMessageSubscriber>();
+    private Map<String, ZMQMessagePublisher>  publishers  = new HashMap<String, ZMQMessagePublisher>();
+    private Map<String, ZMQMessageSubscriber> subscribers = new HashMap<String, ZMQMessageSubscriber>();
     private Context                            context;
     private String                             zmqLibraryPath;
 
@@ -89,7 +89,7 @@ public class ZMQMessageBroker implements IZMQMessageBroker {
     @Monitor
     protected ZMQBrokerMonitor                 monitor;
 
-    public ZMQMessageBroker() {
+    public ZMQMessageBrokerImpl() {
 
     }
 
@@ -128,11 +128,11 @@ public class ZMQMessageBroker implements IZMQMessageBroker {
     }
 
     @Override
-    public IZMQMessagePublisher createPublisher(ZeroMQMetadata metadata) {
-        IZMQMessagePublisher publisher = publishers.get(metadata.getChannelName());
+    public ZMQMessagePublisher createPublisher(ZeroMQMetadata metadata) {
+        ZMQMessagePublisher publisher = publishers.get(metadata.getChannelName());
         if (publisher == null) {
             allocatePort(metadata);
-            publisher = new ZMQMessagePublisher(context, metadata, monitor);
+            publisher = new ZMQMessagePublisherImpl(context, metadata, monitor);
             publishers.put(metadata.getChannelName(), publisher);
 
         }
@@ -146,7 +146,7 @@ public class ZMQMessageBroker implements IZMQMessageBroker {
     protected void allocatePort(ZeroMQMetadata metadata, boolean force) {
         try {
             if (metadata.getPort() == ZeroMQMetadata.PORT_NOT_SET || force) {
-                int port = allocator.allocate(metadata.getChannelName(), IZMQMessageBroker.ALLOCATOR_TYPE_ZMQ_PUB);
+                int port = allocator.allocate(metadata.getChannelName(), ZMQMessageBroker.ALLOCATOR_TYPE_ZMQ_PUB);
                 metadata.setPort(port);
             }
             allocator.reserve(metadata.getChannelName(), ALLOCATOR_TYPE_ZMQ_PUB, metadata.getPort());
@@ -157,10 +157,10 @@ public class ZMQMessageBroker implements IZMQMessageBroker {
     }
 
     @Override
-    public void addSubscriber(IMessageListener listener, ZeroMQMetadata metadata) {
-        IZMQMessageSubscriber subscriber = subscribers.get(metadata.getChannelName());
+    public void addSubscriber(MessageListener listener, ZeroMQMetadata metadata) {
+        ZMQMessageSubscriber subscriber = subscribers.get(metadata.getChannelName());
         if (subscriber == null) {
-            subscriber = new ZMQMessageSubscriber(context, metadata, classLoaderReistry, monitor);
+            subscriber = new ZMQMessageSubscriberImpl(context, metadata, classLoaderReistry, monitor);
             subscribers.put(subscriber.getChannelName(), subscriber);
         }
         subscriber.addSubscriber(listener);

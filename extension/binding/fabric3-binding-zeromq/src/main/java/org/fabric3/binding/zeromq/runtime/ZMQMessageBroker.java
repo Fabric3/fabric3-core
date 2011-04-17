@@ -30,11 +30,18 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+
 /**
  * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
  *          2011) $
  * 
  */
-public interface IMessageListener {
-    public void onMessage(Object message);
+public interface ZMQMessageBroker {
+
+    public final static String ALLOCATOR_TYPE_ZMQ_PUB = "zmq.publishers";
+
+    public ZMQMessagePublisher createPublisher(ZeroMQMetadata metadata);
+
+    public void addSubscriber(MessageListener listener, ZeroMQMetadata metadata);
 }

@@ -28,55 +28,13 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.broker;
-
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.IZMQMessagePublisher;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
-import org.zeromq.ZMQ.Socket;
+package org.fabric3.binding.zeromq.runtime;
 
 /**
- * Creates an ZeroMQ Socket for a channel.
- * 
  * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
  *          2011) $
  * 
  */
-public class ZMQMessagePublisher implements IZMQMessagePublisher {
-
-    private String             channelName;
-    private Context            context;
-    private Socket             socket;
-    private ZeroMQMetadata     metadata;
-
-    protected ZMQBrokerMonitor monitor;
-
-    public ZMQMessagePublisher(ZMQ.Context context, ZeroMQMetadata metadata, ZMQBrokerMonitor monitor) {
-        channelName = metadata.getChannelName();
-        this.context = context;
-        this.metadata = metadata;
-        this.monitor = monitor;
-        initSocket();
-    }
-
-    @Override
-    public String getChannelName() {
-        return channelName;
-    }
-
-    protected void initSocket() {
-        // here a socket could be bound to an inproc
-        // this could be triggered by the broker ?
-        socket = context.socket(ZMQ.PUB);
-        String connection = String.format("tcp://%s:%d", "*", metadata.getPort());
-        socket.bind(connection);
-        monitor.publisherRegistered(metadata.getChannelName(), connection);
-    }
-
-    @Override
-    public void sendMessage(byte[] message) {
-        socket.send(message, 0);
-    }
-
+public interface MessageListener {
+    public void onMessage(Object message);
 }

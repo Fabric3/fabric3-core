@@ -47,9 +47,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class ZeroMQEventStreamHandler implements EventStreamHandler {
 
     private ClassLoader          classloader;
-    private IZMQMessagePublisher publisher;
+    private ZMQMessagePublisher publisher;
 
-    public ZeroMQEventStreamHandler(IZMQMessagePublisher publisher, ClassLoader loader) {
+    public ZeroMQEventStreamHandler(ZMQMessagePublisher publisher, ClassLoader loader) {
         this.publisher = publisher;
         this.classloader = loader;
     }

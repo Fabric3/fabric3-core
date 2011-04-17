@@ -35,8 +35,8 @@ package org.fabric3.binding.zeromq.runtime;
  *          2011) $
  * 
  */
-public interface IZMQMessageSubscriber {
+public interface ZMQMessagePublisher {
     public String getChannelName();
 
-    public void addSubscriber(IMessageListener listener);
+    public void sendMessage(byte[] message);
 }

@@ -53,7 +53,7 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
     protected ClassLoaderRegistry registry;
 
     @Reference
-    protected IZMQMessageBroker   zmqBroker;
+    protected ZMQMessageBroker   zmqBroker;
 
     @Override
     public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target,

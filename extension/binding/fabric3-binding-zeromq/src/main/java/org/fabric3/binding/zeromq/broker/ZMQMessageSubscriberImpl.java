@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.IMessageListener;
-import org.fabric3.binding.zeromq.runtime.IZMQMessageSubscriber;
+import org.fabric3.binding.zeromq.runtime.MessageListener;
+import org.fabric3.binding.zeromq.runtime.ZMQMessageSubscriber;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.zeromq.ZMQ;
@@ -61,11 +61,11 @@ import org.zeromq.ZMQ.Socket;
  *          2011) $
  * 
  */
-public class ZMQMessageSubscriber implements IZMQMessageSubscriber {
+public class ZMQMessageSubscriberImpl implements ZMQMessageSubscriber {
     private String                 channelName;
     private Context                context;
     private Socket                 mgmSocket;
-    private List<IMessageListener> listeners             = new ArrayList<IMessageListener>();
+    private List<MessageListener> listeners             = new ArrayList<MessageListener>();
     private ByteArrayInputStream   bis;
     private ThreadGroup            listenerGroup         = new ThreadGroup("msgListeners");
     private String                 mgmConnectionTemplate = "inproc://%sSubMgm";
@@ -73,7 +73,7 @@ public class ZMQMessageSubscriber implements IZMQMessageSubscriber {
 
     protected ZMQBrokerMonitor     monitor;
 
-    public ZMQMessageSubscriber(Context context, ZeroMQMetadata metadata, ClassLoaderRegistry registry,
+    public ZMQMessageSubscriberImpl(Context context, ZeroMQMetadata metadata, ClassLoaderRegistry registry,
                                 ZMQBrokerMonitor monitor) {
         this.channelName = metadata.getChannelName();
         this.monitor = monitor;
@@ -99,7 +99,7 @@ public class ZMQMessageSubscriber implements IZMQMessageSubscriber {
     }
 
     @Override
-    public void addSubscriber(IMessageListener listener) {
+    public void addSubscriber(MessageListener listener) {
         listeners.add(listener);
 
         Socket sock = context.socket(ZMQ.SUB);
@@ -163,10 +163,10 @@ public class ZMQMessageSubscriber implements IZMQMessageSubscriber {
     }
 
     private class MessageHandler extends Thread {
-        private IMessageListener listener;
+        private MessageListener listener;
         private Socket           socket;
 
-        public MessageHandler(String channel, Socket socket, IMessageListener listener) {
+        public MessageHandler(String channel, Socket socket, MessageListener listener) {
             this.socket = socket;
             this.listener = listener;
             this.setDaemon(true);
