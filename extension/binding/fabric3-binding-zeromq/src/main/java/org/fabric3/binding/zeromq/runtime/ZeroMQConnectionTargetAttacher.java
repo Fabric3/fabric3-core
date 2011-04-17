@@ -41,8 +41,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
@@ -65,19 +65,10 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.fabric3.spi.builder.component.TargetConnectionAttacher#detach(org
-     * .fabric3.spi.model.physical.PhysicalConnectionSourceDefinition,
-     * org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition)
-     */
     @Override
     public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target)
             throws ConnectionAttachException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException();
     }
 
 }

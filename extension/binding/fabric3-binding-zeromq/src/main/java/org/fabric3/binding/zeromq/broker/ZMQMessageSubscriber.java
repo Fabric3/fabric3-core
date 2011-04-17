@@ -57,8 +57,8 @@ import org.zeromq.ZMQ.Socket;
  * of subscribes in a runtime. The MessageSubscriber will also be responsible to
  * reconnect to a different runtime if the connected runtime crashes.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZMQMessageSubscriber implements IZMQMessageSubscriber {

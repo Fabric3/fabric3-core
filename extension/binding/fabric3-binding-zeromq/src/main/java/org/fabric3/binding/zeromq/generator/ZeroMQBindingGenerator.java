@@ -44,8 +44,8 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 @EagerInit
@@ -55,16 +55,14 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
     public PhysicalSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> serviceBinding,
                                                    ServiceContract contract, List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PhysicalTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> referenceBinding,
                                                    ServiceContract contract, List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -72,8 +70,7 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }

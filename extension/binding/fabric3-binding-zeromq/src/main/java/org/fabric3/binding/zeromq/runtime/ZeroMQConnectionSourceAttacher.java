@@ -43,8 +43,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
@@ -55,15 +55,6 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
     @Reference
     protected IZMQMessageBroker   zmqBroker;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.fabric3.spi.builder.component.SourceConnectionAttacher#attach(org
-     * .fabric3.spi.model.physical.PhysicalConnectionSourceDefinition,
-     * org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition,
-     * org.fabric3.spi.channel.ChannelConnection)
-     */
     @Override
     public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target,
                        ChannelConnection connection) throws ConnectionAttachException {
@@ -77,18 +68,10 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
         zmqBroker.addSubscriber(listener, metadata);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.fabric3.spi.builder.component.SourceConnectionAttacher#detach(org
-     * .fabric3.spi.model.physical.PhysicalConnectionSourceDefinition,
-     * org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition)
-     */
     @Override
     public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target)
             throws ConnectionAttachException {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
 
 }

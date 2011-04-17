@@ -32,9 +32,13 @@ package org.fabric3.binding.zeromq.broker;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -54,20 +58,21 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
 /**
- * The ZMQMessageBroker manages the {@link IZMQMessagePublisher} and
- * {@link IZMQMessageSubscriber} instances. There is one
- * {@link IZMQMessagePublisher} per runtime and channel. All producers for the
- * same channel will send messages through the same {@link IZMQMessagePublisher}
- * instance. There is one {@link IZMQMessageSubscriber} per runtime and channel.
- * All consumers for the same channel will receive messages through the same
- * {@link IZMQMessageSubscriber} instance.
+ * The ZMQMessageBroker manages the IZMQMessagePublisher and
+ * IZMQMessageSubscriber instances. There is one IZMQMessagePublisher per
+ * runtime and channel. All producers for the same channel will send messages
+ * through the same IZMQMessagePublisher instance. There is one
+ * IZMQMessageSubscriber per runtime and channel. All consumers for the same
+ * channel will receive messages through the same IZMQMessageSubscriber
+ * instance.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 @EagerInit
 @Scope(Scopes.COMPOSITE)
+@Management(description = "ZeroMQ Broker instance", group = "binding", name = "zmq", path = "/runtime/binding/zmq")
 public class ZMQMessageBroker implements IZMQMessageBroker {
 
     private Map<String, IZMQMessagePublisher>  publishers  = new HashMap<String, IZMQMessagePublisher>();
@@ -108,6 +113,18 @@ public class ZMQMessageBroker implements IZMQMessageBroker {
         } catch (Exception e) {
             monitor.error(e);
         }
+    }
+
+    @ManagementOperation(path = "/")
+    public String getChannels() {
+        return "seas";
+    }
+
+    @ManagementOperation(description = "Get all registered publishers", path = "publishers")
+    public List<String> getPublishers() {
+        List<String> pubs = new ArrayList<String>();
+        pubs.addAll(publishers.keySet());
+        return pubs;
     }
 
     @Override

@@ -38,8 +38,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 /**
  * Generated metadata used for attaching producers to a ZeroMQ Socket.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {

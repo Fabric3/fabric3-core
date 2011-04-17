@@ -33,8 +33,8 @@ package org.fabric3.binding.zeromq.runtime;
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class EventStreamListener implements IMessageListener {
@@ -56,8 +56,6 @@ public class EventStreamListener implements IMessageListener {
      */
     @Override
     public void onMessage(Object message) {
-        // TODO Auto-generated method stub
-
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 
         try {

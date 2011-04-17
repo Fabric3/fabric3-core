@@ -39,8 +39,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
  * Generated metadaata used for attaching channels and consumers to a ZeroMQ
  * socket.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZeroMQConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {

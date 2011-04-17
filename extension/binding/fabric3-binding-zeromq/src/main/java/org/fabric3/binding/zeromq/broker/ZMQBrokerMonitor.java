@@ -34,8 +34,8 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:19:22 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public interface ZMQBrokerMonitor {

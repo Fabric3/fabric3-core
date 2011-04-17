@@ -49,8 +49,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 @EagerInit
@@ -59,7 +59,6 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
     @Override
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding)
             throws GenerationException {
-        // TODO Auto-generated method stub
         return null;
     }
 

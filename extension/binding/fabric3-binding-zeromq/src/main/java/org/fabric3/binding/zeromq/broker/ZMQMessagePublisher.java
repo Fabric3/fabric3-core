@@ -39,8 +39,8 @@ import org.zeromq.ZMQ.Socket;
 /**
  * Creates an ZeroMQ Socket for a channel.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZMQMessagePublisher implements IZMQMessagePublisher {

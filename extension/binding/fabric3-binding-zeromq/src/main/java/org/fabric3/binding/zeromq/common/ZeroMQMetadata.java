@@ -35,8 +35,8 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Holds the ZeroMQ Binding Metadata.
  * 
- * @version $Revision:$ $Date:$
- * @author jb
+ * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
+ *          2011) $
  * 
  */
 public class ZeroMQMetadata extends ModelObject {
