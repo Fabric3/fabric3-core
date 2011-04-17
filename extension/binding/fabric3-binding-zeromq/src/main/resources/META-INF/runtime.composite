@@ -17,7 +17,7 @@
     
     <component name="ZeroMQMessageBroker">
         <f3:implementation.system
-            class="org.fabric3.binding.zeromq.broker.ZMQMessageBroker"/>
+            class="org.fabric3.binding.zeromq.broker.ZMQMessageBrokerImpl"/>
         <property name="zmqLibraryPath" source="$systemConfig//zmq//@lib.path" />
     </component>
     
