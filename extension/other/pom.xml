@@ -39,5 +39,6 @@
 		<module>databinding</module>
         <module>web</module>
 		<module>ftp</module>
+		<module>fabric3-jndi</module>
 	</modules>
 </project>
