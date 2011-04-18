@@ -67,8 +67,8 @@ import sun.security.util.SecurityConstants;
  *   <li>If a resource is not found, extension classloaders are searched. Extension classloaders will not delegate to their classloader hierarchy.
  * </ul>
  * </pre>
- * The extension mechanism allows classes to be dyamically loaded via Class.forName() and ClassLoader.loadClass(). This is used to accomodate
- * contributions and libraries that rely on Java reflection to add additional capabilities provided by another contribution. Since reslution is
+ * The extension mechanism allows classes to be dynamically loaded via Class.forName() and ClassLoader.loadClass(). This is used to accommodate
+ * contributions and libraries that rely on Java reflection to add additional capabilities provided by another contribution. Since resolution is
  * performed dynamically, cycles between classloaders are supported where one classloader is a parent of the other and the former is an extension of
  * the latter.
  * <p/>
