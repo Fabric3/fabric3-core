@@ -58,6 +58,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.transport.Transport;
@@ -70,7 +71,7 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
  */
 @EagerInit
 @Service(interfaces = {MessageContainerManager.class, Transport.class})
-public class MessageContainerManagerImpl implements MessageContainerManager, Transport, Fabric3EventListener<RuntimeStart> {
+public class MessageContainerManagerImpl implements MessageContainerManager, Transport {
     private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
@@ -106,17 +107,12 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
 
     @Init
     public void init() {
-        eventService.subscribe(RuntimeStart.class, this);
+        eventService.subscribe(RuntimeStart.class, new StartEventListener());
+        eventService.subscribe(RuntimeStop.class, new StopEventListener());
     }
 
     @Destroy
     public void destroy() throws JMSException {
-        for (AdaptiveMessageContainer container : containers.values()) {
-            container.stop();
-        }
-        for (AdaptiveMessageContainer container : containers.values()) {
-            container.shutdown();
-        }
         started = false;
     }
 
@@ -141,19 +137,6 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
             try {
                 entry.getValue().start();
-            } catch (JMSException e) {
-                managerMonitor.startError(entry.getKey(), e);
-            }
-        }
-        started = true;
-    }
-
-    public void onEvent(RuntimeStart event) {
-        // start receiving messages after the runtime has started
-        for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
-            try {
-                entry.getValue().initialize();
-                managerMonitor.registerListener(entry.getKey());
             } catch (JMSException e) {
                 managerMonitor.startError(entry.getKey(), e);
             }
@@ -232,5 +215,42 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         return "JMS/message containers/" + uri.getAuthority();
     }
 
+    private class StartEventListener implements Fabric3EventListener<RuntimeStart> {
+
+        public void onEvent(RuntimeStart event) {
+            // start receiving messages after the runtime has started
+            for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
+                try {
+                    entry.getValue().initialize();
+                    managerMonitor.registerListener(entry.getKey());
+                } catch (JMSException e) {
+                    managerMonitor.startError(entry.getKey(), e);
+                }
+            }
+            started = true;
+
+        }
+    }
+
+    private class StopEventListener implements Fabric3EventListener<RuntimeStop> {
+
+        public void onEvent(RuntimeStop event) {
+            for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
+                try {
+                    entry.getValue().stop();
+                } catch (JMSException e) {
+                    managerMonitor.stopError(entry.getKey(), e);
+                }
+            }
+            for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
+                try {
+                    entry.getValue().shutdown();
+                } catch (JMSException e) {
+                    managerMonitor.stopError(entry.getKey(), e);
+                }
+            }
+
+        }
+    }
 
 }
