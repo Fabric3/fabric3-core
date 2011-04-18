@@ -38,7 +38,6 @@
 
 package org.fabric3.tx.atomikos.jms.connection;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +53,6 @@ import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.util.UriHelper;
 
 /**
  * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA
