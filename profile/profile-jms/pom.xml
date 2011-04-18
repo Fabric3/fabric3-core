@@ -30,6 +30,12 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jndi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-activemq</artifactId>
             <version>${project.version}</version>
         </dependency>
