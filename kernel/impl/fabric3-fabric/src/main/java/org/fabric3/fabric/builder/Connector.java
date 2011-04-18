@@ -67,7 +67,7 @@ public interface Connector {
      * Disconnects a wire between two components or a component and a binding.
      *
      * @param definition the metadata describing the wire to disconnect
-     * @throws BuilderException if an error disconecting the wire occurs
+     * @throws BuilderException if an error disconnecting the wire occurs
      */
     void disconnect(PhysicalWireDefinition definition) throws BuilderException;
 }
