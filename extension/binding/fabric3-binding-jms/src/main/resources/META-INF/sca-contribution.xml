@@ -18,10 +18,16 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.jms" version="1.1.0"/>
     <import.java package="javax.xml.bind.annotation" version="1.8"/>
     <import.java package="org.fabric3.spi.*" version="1.8"/>
+    <import.java package="org.fabric3.jndi.spi" version="1.8"/>
+
     <export.java package="org.fabric3.binding.jms.spi.common" version="1.8"/>
     <export.java package="org.fabric3.binding.jms.model" version="1.8"/>
     <export.java package="org.fabric3.binding.jms.spi.*" version="1.8"/>
+
     <deployable composite="f3:JmsControllerExtension" modes="controller vm"/>
     <deployable composite="f3:JmsRuntimeExtension" modes="participant vm"/>
+
+    <f3:requires.capability name="transaction"/>
     <f3:provides name="jms"/>
+
 </contribution>

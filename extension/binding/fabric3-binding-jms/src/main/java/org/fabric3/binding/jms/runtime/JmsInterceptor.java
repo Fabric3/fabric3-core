@@ -99,7 +99,7 @@ public class JmsInterceptor implements Interceptor {
     private ConnectionFactory connectionFactory;
     private CorrelationScheme correlationScheme;
     private ResponseListener responseListener;
-    private ClassLoader cl;
+    private ClassLoader classLoader;
     private boolean oneWay;
     private TransactionType transactionType;
     private TransactionManager tm;
@@ -123,7 +123,7 @@ public class JmsInterceptor implements Interceptor {
         this.callbackUri = wireConfig.getCallbackUri();
         this.connectionFactory = wireConfig.getRequestConnectionFactory();
         this.correlationScheme = wireConfig.getCorrelationScheme();
-        this.cl = wireConfig.getClassloader();
+        this.classLoader = wireConfig.getClassloader();
         this.responseListener = wireConfig.getResponseListener();
         this.tm = wireConfig.getTransactionManager();
         this.transactionType = wireConfig.getTransactionType();
@@ -145,7 +145,9 @@ public class JmsInterceptor implements Interceptor {
         Session session = null;
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(cl);
+            // set the context classloader to the one that loaded the connection factory implementation.
+            // this is required by some JMS providers
+            Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
             connection = connectionFactory.createConnection();
             connection.start();
             int status = tm.getStatus();
@@ -258,12 +260,20 @@ public class JmsInterceptor implements Interceptor {
             throw new ServiceUnavailableException("Timeout waiting for response to message: " + correlationId);
         }
         Message response = new MessageImpl();
-        if (resultMessage.getBooleanProperty(JmsConstants.FAULT_HEADER)) {
-            Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getFaultType());
-            response.setBodyWithFault(payload);
-        } else {
-            Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getOutputType());
-            response.setBody(payload);
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            // set the context classloader to the application classloader so message types can be deserialized properly
+            // (message types defined in an application contribution will not be visible to the JMS extension classloader
+            Thread.currentThread().setContextClassLoader(classLoader);
+            if (resultMessage.getBooleanProperty(JmsConstants.FAULT_HEADER)) {
+                Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getFaultType());
+                response.setBodyWithFault(payload);
+            } else {
+                Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getOutputType());
+                response.setBody(payload);
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
         return response;
     }

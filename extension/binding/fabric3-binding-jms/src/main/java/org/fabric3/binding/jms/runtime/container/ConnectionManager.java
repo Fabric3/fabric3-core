@@ -100,10 +100,18 @@ public class ConnectionManager {
         if (cacheConnection) {
             return getSharedConnection();
         } else {
-            Connection connection = connectionFactory.createConnection();
-            setClientId(connection);
-            connection.start();
-            return connection;
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            Connection connection;
+            try {
+                // set TCCL since some JMS providers require it
+                Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
+                connection = connectionFactory.createConnection();
+                setClientId(connection);
+                connection.start();
+                return connection;
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
+            }
         }
     }
 
@@ -135,14 +143,19 @@ public class ConnectionManager {
      * @throws JMSException if an error is encountered creating the connection
      */
     private Connection createSharedConnection() throws JMSException {
-        Connection connection = connectionFactory.createConnection();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Connection connection = null;
         try {
+            // set TCCL since some JMS providers require it
+            Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
+            connection = connectionFactory.createConnection();
             setClientId(connection);
             return connection;
-        }
-        catch (JMSException ex) {
+        } catch (JMSException ex) {
             JmsHelper.closeQuietly(connection);
             throw ex;
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
@@ -184,8 +197,16 @@ public class ConnectionManager {
             if (cacheConnection) {
                 refreshSharedConnection();
             } else {
-                Connection con = connectionFactory.createConnection();
-                JmsHelper.closeQuietly(con);
+                // set TCCL since some JMS providers require it
+                ClassLoader old = Thread.currentThread().getContextClassLoader();
+                Connection con = null;
+                try {
+                    Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
+                    con = connectionFactory.createConnection();
+                } finally {
+                    Thread.currentThread().setContextClassLoader(old);
+                    JmsHelper.closeQuietly(con);
+                }
             }
             return true;
         } catch (Exception e) {

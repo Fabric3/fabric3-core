@@ -66,14 +66,12 @@ import org.fabric3.spi.channel.EventStreamHandler;
 public class JmsEventStreamHandler implements EventStreamHandler {
     private Destination destination;
     private ConnectionFactory connectionFactory;
-    private ClassLoader classLoader;
     private boolean persistent;
 
-    public JmsEventStreamHandler(Destination destination, ConnectionFactory connectionFactory, boolean persistent, ClassLoader classLoader) {
+    public JmsEventStreamHandler(Destination destination, ConnectionFactory connectionFactory, boolean persistent) {
         this.destination = destination;
         this.connectionFactory = connectionFactory;
         this.persistent = persistent;
-        this.classLoader = classLoader;
     }
 
     public void handle(Object event) {
@@ -85,7 +83,9 @@ public class JmsEventStreamHandler implements EventStreamHandler {
         Session session = null;
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(classLoader);
+            // set the context classloader to the one that loaded the connection factory implementation.
+            // this is required by some JMS providers
+            Thread.currentThread().setContextClassLoader(connectionFactory.getClass().getClassLoader());
             connection = connectionFactory.createConnection();
             connection.start();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

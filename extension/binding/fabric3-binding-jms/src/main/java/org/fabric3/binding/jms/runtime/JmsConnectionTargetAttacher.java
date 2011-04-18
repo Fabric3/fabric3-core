@@ -60,7 +60,6 @@ import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
@@ -70,16 +69,13 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
  */
 public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTargetDefinition> {
     private AdministeredObjectResolver resolver;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver) {
         this.resolver = resolver;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        ClassLoader classLoader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         // resolve the connection factories and destinations for the wire
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
@@ -95,7 +91,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
             throw new ConnectionAttachException(e);
         }
         for (EventStream stream : connection.getEventStreams()) {
-            JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent, classLoader);
+            JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent);
             stream.addHandler(handler);
         }
 

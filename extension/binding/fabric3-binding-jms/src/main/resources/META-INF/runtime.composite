@@ -64,4 +64,12 @@ licensed under the Apache 2.0 license.
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.resolver.connectionfactory.IfNotExistConnectionFactoryStrategy"/>
     </component>
 
+    <component name="JndiConnectionFactoryResolver">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.jndi.JndiAdministeredObjectResolver"/>
+    </component>
+
+    <component name="JndiClassLoaderUpdater">
+        <f3:implementation.system class="org.fabric3.binding.jms.runtime.jndi.JndiClassLoaderUpdater"/>
+    </component>
+
 </composite>
