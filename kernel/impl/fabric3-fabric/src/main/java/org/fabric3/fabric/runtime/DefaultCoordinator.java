@@ -63,6 +63,7 @@ import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.event.RuntimeStop;
 
 import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
@@ -124,6 +125,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     public void shutdown() throws ShutdownException {
         if (state == RuntimeState.STARTED) {
+            EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+            eventService.publish(new RuntimeStop());
             runtime.destroy();
         }
         state = RuntimeState.SHUTDOWN;
