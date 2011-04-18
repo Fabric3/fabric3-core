@@ -52,7 +52,7 @@ public interface EventService {
     void publish(Fabric3Event event);
 
     /**
-     * Subscribes the listener to receive notification when events of the specified type are published.
+     * Subscribe the listener to receive notification when events of the specified type are published.
      *
      * @param type     the event type to receive notifications for
      * @param listener the listener to subscribe
@@ -60,9 +60,9 @@ public interface EventService {
     <T extends Fabric3Event> void subscribe(Class<T> type, Fabric3EventListener<T> listener);
 
     /**
-     * Unsubscribes the listener from receiving notifications when events of the specified type are published.
+     * Unsubscribe the listener from receiving notifications when events of the specified type are published.
      *
-     * @param type     the event type to unsibscribe from
+     * @param type     the event type to unsubscribe from
      * @param listener the listener to unsubscribe
      */
     <T extends Fabric3Event> void unsubscribe(Class<T> type, Fabric3EventListener<T> listener);

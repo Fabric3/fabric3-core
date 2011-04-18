@@ -38,7 +38,7 @@
 package org.fabric3.spi.event;
 
 /**
- * Singals when request processing has stopped and the runtime is being taken offline
+ * Signals when request processing has stopped and the runtime is being taken offline
  *
  * @version $Rev$ $Date$
  */
