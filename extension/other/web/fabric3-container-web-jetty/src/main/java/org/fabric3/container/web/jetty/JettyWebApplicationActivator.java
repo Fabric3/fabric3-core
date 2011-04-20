@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -110,9 +112,9 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
 
     @SuppressWarnings({"unchecked"})
     public ServletContext activate(String contextPath,
-                                   URI uri,
+                                   final URI uri,
                                    URI parentClassLoaderId,
-                                   Map<String, List<Injector<?>>> injectors,
+                                   final Map<String, List<Injector<?>>> injectors,
                                    ComponentContext componentContext) throws WebApplicationActivationException {
         if (mappings.containsKey(uri)) {
             throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
@@ -121,16 +123,35 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             // resolve the url to a local artifact
             URL resolved = resolver.resolve(uri);
             ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
-            WebAppContext context = createWebAppContext("/" + contextPath, injectors, resolved, parentClassLoader);
+            final WebAppContext context = createWebAppContext("/" + contextPath, injectors, resolved, parentClassLoader);
             jettyService.registerHandler(context);  // the context needs to be registered before it is started
+
+            // Use a ServletContextListener to setup session injectors and perform context injection.
+            // Note context injection must be done here since servlet filters may rely on SCA reference proxies, c.f. FABRICTHREE-570
+            context.addEventListener(new ServletContextListener() {
+                public void contextInitialized(ServletContextEvent sce) {
+
+                    // Setup the session listener to inject conversational reference proxies in newly created sessions
+                    // Note the listener must be added after the context is started as Jetty web xml configurer clears event listeners
+                    List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));
+                    InjectingSessionListener listener = new InjectingSessionListener(sessionInjectors);
+                    context.getSessionHandler().addEventListener(listener);
+                    ServletContext servletContext = context.getServletContext();
+                    try {
+                        injectServletContext(servletContext, injectors);
+                    } catch (ObjectCreationException e) {
+                        monitor.error("Error initializing web component: " + uri, e);
+                    }
+                }
+
+                public void contextDestroyed(ServletContextEvent sce) {
+
+                }
+            });
             context.start();
-            // Setup the session listener to inject conversational reference proxies in newly created sessions
-            // Note the listener must be added after the context is started as Jetty web xml configurer clears event listeners
-            List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));
-            InjectingSessionListener listener = new InjectingSessionListener(sessionInjectors);
-            context.getSessionHandler().addEventListener(listener);
+
             ServletContext servletContext = context.getServletContext();
-            injectServletContext(servletContext, injectors);
+
             Holder holder = new Holder(contextPath, context);
             mappings.put(uri, holder);
             export(context);
@@ -199,7 +220,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
             final String group = "webapps/" + webAppName + "/servlets";
-            managementService.export(webAppName+"/"+servletHolder.getName(), group, "web application", servletHolder);
+            managementService.export(webAppName + "/" + servletHolder.getName(), group, "web application", servletHolder);
         }
     }
 
@@ -209,7 +230,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
             final String group = "webapps/" + webAppName + "/servlets";
-            managementService.remove(webAppName+"/"+servletHolder.getName(), group);
+            managementService.remove(webAppName + "/" + servletHolder.getName(), group);
         }
     }
 
