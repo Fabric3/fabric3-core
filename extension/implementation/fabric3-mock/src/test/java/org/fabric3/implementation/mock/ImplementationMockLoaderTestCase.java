@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.stream.XMLInputFactory;
@@ -52,6 +53,20 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  */
 public class ImplementationMockLoaderTestCase extends TestCase {
+    private static final String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            "           xmlns:sca='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +
+            "           xmlns:f3='urn:fabric3.org'" +
+            "           name='org.fabric3.MockImplementation'" +
+            "           autowire='true'>" +
+            "    <component name='testMock'>" +
+            "        <f3:implementation.mock>" +
+            "            org.fabric3.implementation.mock.Foo" +
+            "            org.fabric3.implementation.mock.Bar" +
+            "            org.fabric3.implementation.mock.Baz" +
+            "        </f3:implementation.mock>" +
+            "    </component>" +
+            "" +
+            "</composite>";
 
     public void testLoad() throws Exception {
 
@@ -60,7 +75,7 @@ public class ImplementationMockLoaderTestCase extends TestCase {
 
         ImplementationMockLoader loader = new ImplementationMockLoader(componentTypeLoader);
 
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("META-INF/mock.composite");
+        InputStream stream = new ByteArrayInputStream(XML.getBytes());
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
 
         while (reader.hasNext()) {
