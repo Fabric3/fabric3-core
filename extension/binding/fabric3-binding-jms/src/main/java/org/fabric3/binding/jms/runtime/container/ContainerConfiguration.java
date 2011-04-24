@@ -66,7 +66,6 @@ public class ContainerConfiguration {
     private int maxReceivers = 1;
     private int idleLimit = 1;
 
-    private int transactionTimeout = -1;
     private int receiveTimeout = -1;
 
     private int maxMessagesToProcess = -1;
@@ -179,14 +178,6 @@ public class ContainerConfiguration {
 
     public void setIdleLimit(int idleLimit) {
         this.idleLimit = idleLimit;
-    }
-
-    public int getTransactionTimeout() {
-        return transactionTimeout;
-    }
-
-    public void setTransactionTimeout(int transactionTimeout) {
-        this.transactionTimeout = transactionTimeout;
     }
 
     public int getReceiveTimeout() {

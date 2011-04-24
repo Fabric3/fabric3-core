@@ -76,8 +76,7 @@ public class JmsBindingMetadata extends ModelObject {
     private int minReceivers = 1;
     private int maxReceivers = 1;
     private int idleLimit = 1;
-    private int transactionTimeout = 30; // in seconds
-    private int receiveTimeout = (transactionTimeout / 2) * 1000;  // set the timeout in milliseconds to half that of the trx timeout
+    private int receiveTimeout = 15000;  // set the timeout in milliseconds
     private int responseTimeout = 600000;  // set the default response wait to 10 minutes
     private int maxMessagesToProcess = -1;
     private long recoveryInterval = 5000;   // default 5 seconds
@@ -215,14 +214,6 @@ public class JmsBindingMetadata extends ModelObject {
         this.idleLimit = idleLimit;
     }
 
-    public int getTransactionTimeout() {
-        return transactionTimeout;
-    }
-
-    public void setTransactionTimeout(int transactionTimeout) {
-        this.transactionTimeout = transactionTimeout;
-    }
-
     public int getReceiveTimeout() {
         return receiveTimeout;
     }
@@ -312,7 +303,6 @@ public class JmsBindingMetadata extends ModelObject {
         copy.minReceivers = this.minReceivers;
         copy.maxReceivers = this.maxReceivers;
         copy.idleLimit = this.idleLimit;
-        copy.transactionTimeout = this.transactionTimeout;
         copy.receiveTimeout = this.receiveTimeout;
         copy.responseTimeout = this.responseTimeout;
         copy.maxMessagesToProcess = this.maxMessagesToProcess;

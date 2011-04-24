@@ -44,7 +44,6 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
@@ -52,12 +51,12 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DeliveryMode;
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.host.Namespaces;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -69,6 +68,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
+import static org.fabric3.spi.channel.ChannelIntents.NON_PERSISTENT_INTENT;
 
 /**
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
@@ -77,7 +77,6 @@ import static org.fabric3.spi.channel.ChannelIntents.DURABLE_INTENT;
  */
 @EagerInit
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {
-    private static final QName NON_PERSISTENT = new QName(Namespaces.F3, "nonPersistent");
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
@@ -99,6 +98,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         generateIntents(binding, metadata);
 
+        metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
+        
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
@@ -116,7 +117,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         JmsGeneratorHelper.generateDefaultFactoryConfiguration(factory, specifier, TransactionType.NONE);   // TODO support transactions
 
         generateIntents(binding, metadata);
-        
+
         JmsConnectionTargetDefinition definition = new JmsConnectionTargetDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionTarget(definition);
@@ -140,7 +141,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         if (binding.getDefinition().getIntents().contains(DURABLE_INTENT) || parent.getDefinition().getIntents().contains(DURABLE_INTENT)) {
             metadata.setDurable(true);
         }
-        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT) || parent.getDefinition().getIntents().contains(NON_PERSISTENT)) {
+        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)
+                || parent.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)) {
             metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         }
 

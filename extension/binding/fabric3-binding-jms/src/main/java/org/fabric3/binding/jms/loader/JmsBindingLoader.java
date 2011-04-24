@@ -118,7 +118,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("name");
         ATTRIBUTES.add("cache");
         ATTRIBUTES.add("idle.limit");
-        ATTRIBUTES.add("transaction.timeout");
         ATTRIBUTES.add("receive.timeout");
         ATTRIBUTES.add("response.timeout");
         ATTRIBUTES.add("max.messages");
@@ -291,17 +290,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 context.addError(error);
             }
         }
-        String trxTimeout = reader.getAttributeValue(null, "transaction.timeout");
-        int trxVal = defaultTransactionTimeout;
-        if (trxTimeout != null) {
-            try {
-                trxVal = Integer.parseInt(trxTimeout);
-            } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid transaction.timeout attribute", reader, e);
-                context.addError(error);
-            }
-        }
-        metadata.setTransactionTimeout(trxVal);
 
         String receiveTimeout = reader.getAttributeValue(null, "receive.timeout");
         int receiveVal = defaultReceiveTimeout;

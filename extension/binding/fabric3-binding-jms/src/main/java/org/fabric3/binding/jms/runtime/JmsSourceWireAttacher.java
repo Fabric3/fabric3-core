@@ -152,7 +152,6 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         configuration.setMaxReceivers(metadata.getMaxReceivers());
         configuration.setMinReceivers(metadata.getMinReceivers());
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
-        configuration.setTransactionTimeout(metadata.getTransactionTimeout());
 
         if (metadata.getUriMessageSelection() != null) {
             configuration.setMessageSelector(metadata.getUriMessageSelection().getSelector());
