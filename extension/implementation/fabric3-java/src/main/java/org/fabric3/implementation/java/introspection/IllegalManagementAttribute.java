@@ -13,8 +13,8 @@ public class IllegalManagementAttribute extends ValidationFailure {
     }
 
     public String getMessage() {
-        return "Implementation class " + implClass + " is marked as a managed component but instance management is not supported for its scope. " +
-                "Management will not be enabled";
+        return "Implementation class " + implClass + " is marked as a managed component but management is not supported for its scope. " +
+                "Management will not be enabled.";
     }
 
 }
