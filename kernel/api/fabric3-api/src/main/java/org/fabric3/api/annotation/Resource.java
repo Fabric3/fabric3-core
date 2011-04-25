@@ -65,10 +65,4 @@ public @interface Resource {
      */
     boolean optional() default false;
 
-    /**
-     * Denotes the default name of the resource provided by the runtime environment.
-     *
-     * @return the default name of the resource provided by the runtime environment
-     */
-    String mappedName() default "";
 }

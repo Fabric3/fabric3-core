@@ -74,7 +74,7 @@ public class DataSourceTypeHandler implements ResourceTypeHandler {
     }
 
     public DataSourceResourceReference createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
-        String dataSourceName = annotation.mappedName();
+        String dataSourceName = annotation.name();
         if (dataSourceName.length() == 0) {
             MissingDataSourceName error = new MissingDataSourceName(member.getDeclaringClass());
             context.addError(error);

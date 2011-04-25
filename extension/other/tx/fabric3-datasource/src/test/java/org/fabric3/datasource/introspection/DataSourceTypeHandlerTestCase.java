@@ -107,13 +107,13 @@ public class DataSourceTypeHandlerTestCase extends TestCase {
 
 
     private class Test {
-        @Resource(mappedName = "datasource")
+        @Resource(name = "datasource")
         protected DataSource source;
 
         @Resource
         protected DataSource badSource;
 
-        @Resource(mappedName = "datasource", optional = true)
+        @Resource(name = "datasource", optional = true)
         protected DataSource optional;
 
     }

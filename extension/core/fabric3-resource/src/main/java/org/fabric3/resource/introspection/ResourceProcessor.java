@@ -103,7 +103,7 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
             definition = handler.createResourceReference(name, annotation, constructor, context);
         } else {
             boolean optional = annotation.optional();
-            String mappedName = annotation.mappedName();
+            String mappedName = annotation.name();
             if (mappedName.length() == 0) {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
@@ -128,7 +128,7 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
             definition = handler.createResourceReference(name, annotation, field, context);
         } else {
             boolean optional = annotation.optional();
-            String mappedName = annotation.mappedName();
+            String mappedName = annotation.name();
             if (mappedName.length() == 0) {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
@@ -151,7 +151,7 @@ public class ResourceProcessor<I extends Implementation<? extends InjectingCompo
             definition = handler.createResourceReference(name, annotation, method, context);
         } else {
             boolean optional = annotation.optional();
-            String mappedName = annotation.mappedName();
+            String mappedName = annotation.name();
             if (mappedName.length() == 0) {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();

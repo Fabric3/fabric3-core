@@ -46,7 +46,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.datasource.model.DataSourceResourceReference;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -74,7 +73,7 @@ public class JSR250DataSourceTypeHandler implements ResourceTypeHandler {
     }
 
     public DataSourceResourceReference createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
-        String dataSourceName = annotation.mappedName();
+        String dataSourceName = annotation.name();
         if (dataSourceName.length() == 0) {
             MissingDataSourceName error = new MissingDataSourceName(member.getDeclaringClass());
             context.addError(error);
