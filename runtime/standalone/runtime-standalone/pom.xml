@@ -88,13 +88,13 @@ licensed under the Apache 2.0 license.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-management-jmx-agent</artifactId>
+            <artifactId>fabric3-databinding-json</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-databinding-json</artifactId>
+            <artifactId>fabric3-management-jmx-agent</artifactId>
             <version>${project.version}</version>
         </dependency>
 
