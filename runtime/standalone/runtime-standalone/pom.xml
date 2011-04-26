@@ -73,7 +73,7 @@ licensed under the Apache 2.0 license.
             <artifactId>fabric3-security</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-management-jmx</artifactId>
@@ -89,6 +89,12 @@ licensed under the Apache 2.0 license.
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-management-jmx-agent</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-databinding-json</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -143,10 +149,10 @@ licensed under the Apache 2.0 license.
         </dependency>
 
         <dependency>
-             <groupId>ch.qos.logback</groupId>
-             <artifactId>logback-classic</artifactId>
-             <version>${logback.version}</version>
-         </dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -168,7 +174,7 @@ licensed under the Apache 2.0 license.
             <version>${jax.rs.version}</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>com.springsource.javax.transaction</artifactId>
@@ -236,7 +242,7 @@ licensed under the Apache 2.0 license.
             <artifactId>fabric3-recovery</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-federation-deployment</artifactId>
