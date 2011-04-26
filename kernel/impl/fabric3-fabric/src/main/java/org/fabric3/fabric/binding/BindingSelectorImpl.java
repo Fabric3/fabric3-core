@@ -162,11 +162,11 @@ public class BindingSelectorImpl implements BindingSelector {
                 source.getBindings().clear();
                 target.getBindings().clear();
                 provider.bind(wire);
-                if (source.getBindings().isEmpty()) {
+                if (source.getLeafReference().getBindings().isEmpty()) {
                     QName type = result.getType();
                     throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: "+ type);
                 }
-                if (target.getBindings().isEmpty()) {
+                if (target.getLeafService().getBindings().isEmpty()) {
                     QName type = result.getType();
                     throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: "+ type);
                 }
