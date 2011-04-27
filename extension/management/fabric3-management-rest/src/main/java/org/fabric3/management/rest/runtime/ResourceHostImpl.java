@@ -316,11 +316,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             response.setStatus(HttpStatus.NOT_FOUND.getCode());
             return;
         }
-        String pathInfo = request.getPathInfo().toLowerCase();
-        if (pathInfo.endsWith("/")) {
-            // strip trailing '/'
-            pathInfo = pathInfo.substring(0, pathInfo.length() - 1);
-        }
+        String pathInfo = parsePathInfo(request);
         ResourceMapping mapping = resolveMapping(verb, pathInfo);
         if (mapping == null) {
             response.setStatus(404);
@@ -344,6 +340,25 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         } catch (ResourceException e) {
             respondError(e, mapping, response);
         }
+    }
+
+    /**
+     * Parses the path info so it can be used to resolve the requested resource.
+     *
+     * @param request the currrent request
+     * @return the parsed path info
+     */
+    private String parsePathInfo(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo().toLowerCase();
+        if (pathInfo.endsWith("/")) {
+            // strip trailing '/'
+            pathInfo = pathInfo.substring(0, pathInfo.length() - 1);
+        }
+        if (pathInfo.startsWith("/management/")) {
+            // strip the leading '/management' path as some servlet containers (e.g. Tomcat) include it
+            pathInfo = pathInfo.substring(11);
+        }
+        return pathInfo;
     }
 
     /**
