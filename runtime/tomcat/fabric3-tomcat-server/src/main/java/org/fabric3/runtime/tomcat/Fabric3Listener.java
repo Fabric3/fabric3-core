@@ -196,9 +196,9 @@ public class Fabric3Listener implements LifecycleListener {
     private void stop() {
         try {
             if (coordinator != null) {
+                monitor.stopped();
                 coordinator.shutdown();
             }
-            monitor.stopped();
         } catch (ShutdownException ex) {
             monitor.runError(ex);
             throw new Fabric3ListenerException(ex);
