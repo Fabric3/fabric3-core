@@ -129,7 +129,7 @@ public class OSGiManifestHandler implements JarManifestHandler {
 
     private List<JavaExport> parseExportHeader(String header, IntrospectionContext context) {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(header);
-        List<JavaExport> imports = new ArrayList<JavaExport>();
+        List<JavaExport> exports = new ArrayList<JavaExport>();
         PackageInfo info = null;
         while (true) {
             OSGiManifestEntryParser.EventType type = parser.next();
@@ -149,10 +149,10 @@ public class OSGiManifestHandler implements JarManifestHandler {
                 break;
             case END_CLAUSE:
                 JavaExport export = new JavaExport(info);
-                imports.add(export);
+                exports.add(export);
                 break;
             case END:
-                return imports;
+                return exports;
             }
         }
     }

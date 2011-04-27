@@ -50,6 +50,8 @@ public class OSGiManifestEntryParserTestCase extends TestCase {
 
     private static final String HEADER_3 = "org.fabric3.baz;version=\"[1.0.0, 2.0.0]\";resolution:=required";
 
+    private static final String HEADER_4 = "org.fabric3.baz";
+
     public void testHeader1() {
         OSGiManifestEntryParser parser = new OSGiManifestEntryParser(HEADER_1);
         OSGiManifestEntryParser.EventType type = parser.next();
@@ -105,6 +107,17 @@ public class OSGiManifestEntryParserTestCase extends TestCase {
         type = parser.next();
         assertEquals(OSGiManifestEntryParser.EventType.PARAMETER, type);
         assertEquals("resolution:=required", parser.getText());
+        type = parser.next();
+        assertEquals(OSGiManifestEntryParser.EventType.END_CLAUSE, type);
+        type = parser.next();
+        assertEquals(OSGiManifestEntryParser.EventType.END, type);
+    }
+
+    public void testHeader4() {
+        OSGiManifestEntryParser parser = new OSGiManifestEntryParser(HEADER_4);
+        OSGiManifestEntryParser.EventType type = parser.next();
+        assertEquals(OSGiManifestEntryParser.EventType.PATH, type);
+        assertEquals("org.fabric3.baz", parser.getText());
         type = parser.next();
         assertEquals(OSGiManifestEntryParser.EventType.END_CLAUSE, type);
         type = parser.next();

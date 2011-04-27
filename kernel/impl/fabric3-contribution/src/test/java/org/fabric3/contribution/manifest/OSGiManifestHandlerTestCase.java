@@ -38,11 +38,15 @@
 package org.fabric3.contribution.manifest;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
 import java.util.jar.Manifest;
 
 import junit.framework.TestCase;
 
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.Export;
+import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageVersion;
@@ -58,6 +62,12 @@ public class OSGiManifestHandlerTestCase extends TestCase {
             "Import-Package: org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version" +
             " =\"[1.0.0, 2.0.0)\"\n" +
             "Export-Package: org.fabric3.export1;version=\"1.1.1.1\",org.fabric3.export2;version=\"2.2.2.2\";uses:=\"foo.com, bar.com\"\n";
+
+    private static final String MANIFEST2 = "Manifest-Version: 1.0\n" +
+            "Created-By: test\n" +
+            "Import-Package: org.fabric3.foo\n" +
+            "Export-Package: org.fabric3.export\n";
+
     private OSGiManifestHandler handler = new OSGiManifestHandler();
 
     public void testHeaderParse() throws Exception {
@@ -94,5 +104,24 @@ public class OSGiManifestHandlerTestCase extends TestCase {
         assertEquals(new PackageVersion("2.2.2.2"), secondExport.getPackageInfo().getMinVersion());
 
     }
+
+    public void testPackage() throws Exception {
+
+        IntrospectionContext context = new DefaultIntrospectionContext();
+        InputStream resourceAsStream = new ByteArrayInputStream(MANIFEST2.getBytes());
+        Manifest jarManifest = new Manifest(resourceAsStream);
+        ContributionManifest contributionManifest = new ContributionManifest();
+        handler.processManifest(contributionManifest, jarManifest, context);
+
+        List<Export> exports = contributionManifest.getExports();
+
+        Import dummyImport = contributionManifest.getImports().get(0);
+
+        for (Export export : exports) {
+            export.match(dummyImport);
+        }
+
+    }
+
 
 }
