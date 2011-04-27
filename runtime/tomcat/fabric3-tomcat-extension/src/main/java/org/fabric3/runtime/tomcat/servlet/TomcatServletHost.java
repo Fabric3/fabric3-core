@@ -139,7 +139,12 @@ public class TomcatServletHost implements ServletHost {
     }
 
     public Servlet unregisterMapping(String mapping) {
-        throw new UnsupportedOperationException();
+        try {
+            return dispatchingServlet.unregisterMapping(mapping);
+        } catch (ServletException e) {
+            // FIXME
+            throw new AssertionError(e);
+        }
     }
 
     public boolean isMappingRegistered(String mapping) {

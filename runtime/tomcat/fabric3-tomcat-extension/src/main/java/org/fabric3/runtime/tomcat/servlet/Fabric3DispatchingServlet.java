@@ -96,4 +96,13 @@ public class Fabric3DispatchingServlet extends HttpServlet {
         servlets.put(path, servlet);
     }
 
+    public Servlet unregisterMapping(String path) throws ServletException {
+        Servlet servlet = servlets.remove(path);
+        if (servlet == null) {
+            throw new ServletException("Servlet not registered: " + path);
+        }
+        servlet.destroy();
+        return servlet;
+    }
+
 }
