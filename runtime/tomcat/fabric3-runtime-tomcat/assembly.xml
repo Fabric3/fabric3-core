@@ -83,6 +83,8 @@
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3.tomcat:fabric3-tomcat-extension</include>
+                <include>org.codehaus.fabric3:fabric3-management-rest</include>
+                <include>org.codehaus.fabric3:fabric3-databinding-json</include>
                 <include>org.codehaus.fabric3:fabric3-management-jmx</include>
                 <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
                 <include>org.codehaus.fabric3:fabric3-java</include>
