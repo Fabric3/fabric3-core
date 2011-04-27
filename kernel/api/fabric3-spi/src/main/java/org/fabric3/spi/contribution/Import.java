@@ -49,9 +49,9 @@ import javax.xml.namespace.QName;
 public interface Import extends Serializable {
 
     /**
-     * The QName uniquely identiying the import/export type.
+     * The QName uniquely identifying the import/export type.
      *
-     * @return the QName uniquely identiying the import/export type
+     * @return the QName uniquely identifying the import/export type
      */
     QName getType();
 
@@ -68,4 +68,11 @@ public interface Import extends Serializable {
      * @return true if this import supports wiring to multiple exports.
      */
     boolean isMultiplicity();
+
+    /**
+     * True if this import must be resolved.
+     *
+     * @return true if this import must be resolved.
+     */
+    boolean isRequired();
 }

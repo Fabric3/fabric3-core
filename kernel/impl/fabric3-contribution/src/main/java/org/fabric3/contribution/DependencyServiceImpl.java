@@ -106,7 +106,7 @@ public class DependencyServiceImpl implements DependencyService {
                                     + resolved.getUri() + " which is not installed");
                         }
                     }
-                    if (resolvedContributions.isEmpty()) {
+                    if (resolvedContributions.isEmpty() && imprt.isRequired()) {
                         throw new UnresolvableImportException("Unable to resolve import " + imprt + " in " + uri, imprt);
                     }
 

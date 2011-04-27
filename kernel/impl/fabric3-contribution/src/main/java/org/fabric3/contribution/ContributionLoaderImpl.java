@@ -192,11 +192,19 @@ public class ContributionLoaderImpl implements ContributionLoader {
         ContributionManifest manifest = contribution.getManifest();
         for (Import imprt : manifest.getImports()) {
             URI uri = contribution.getUri();
-            List<ContributionWire<?, ?>> wires = store.resolveContributionWires(uri, imprt);
-            // add the resolved wire to the contribution
-            for (ContributionWire<?, ?> wire : wires) {
-                contribution.addWire(wire);
-                resolved.add(wire);
+            try {
+                List<ContributionWire<?, ?>> wires = store.resolveContributionWires(uri, imprt);
+                // add the resolved wire to the contribution
+                for (ContributionWire<?, ?> wire : wires) {
+                    contribution.addWire(wire);
+                    resolved.add(wire);
+                }
+            } catch (UnresolvedImportException e) {
+                if (!imprt.isRequired()) {
+                    // not required, ignore
+                    continue;
+                }
+                throw e;
             }
         }
         return resolved;

@@ -69,6 +69,10 @@ public class ContributionImport implements Import {
         return false;
     }
 
+    public boolean isRequired() {
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

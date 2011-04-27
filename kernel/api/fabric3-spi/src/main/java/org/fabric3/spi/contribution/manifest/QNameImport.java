@@ -81,6 +81,10 @@ public class QNameImport implements Import {
         return true;
     }
 
+    public boolean isRequired() {
+        return true;
+    }
+
     public String toString() {
         return "qname [" + namespace + "]";
     }

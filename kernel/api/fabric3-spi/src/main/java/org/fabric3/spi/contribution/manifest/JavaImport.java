@@ -55,6 +55,9 @@ public class JavaImport implements Import {
     private PackageInfo packageInfo;
 
     public JavaImport(PackageInfo packageInfo) {
+        if (packageInfo == null) {
+            throw new IllegalArgumentException("Package info cannot be null");
+        }
         this.packageInfo = packageInfo;
     }
 
@@ -77,6 +80,10 @@ public class JavaImport implements Import {
 
     public boolean isMultiplicity() {
         return false;
+    }
+
+    public boolean isRequired() {
+        return packageInfo.isRequired();
     }
 
     public String toString() {
