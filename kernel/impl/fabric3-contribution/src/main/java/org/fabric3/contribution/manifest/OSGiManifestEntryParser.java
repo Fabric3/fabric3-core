@@ -148,7 +148,6 @@ public class OSGiManifestEntryParser {
                     appendNoWhiteSpace(c);
                     if (pos == header.length() && state == EventType.BEGIN) {
                         state = EventType.PATH;
-//                        return EventType.END_CLAUSE;
                     }
                 }
             }
