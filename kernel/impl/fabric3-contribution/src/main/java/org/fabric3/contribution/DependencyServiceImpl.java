@@ -97,7 +97,7 @@ public class DependencyServiceImpl implements DependencyService {
             for (Import imprt : manifest.getImports()) {
                 // See if the import is already stored
                 // note that extension imports do not need to be checked since we assume extensions are installed prior
-                List<Vertex<Contribution>> sinks = findTargetVertices(dag, uri, imprt);
+                List<Vertex<Contribution>> sinks = resolveImport(dag, uri, imprt);
                 if (sinks.isEmpty()) {
                     List<Contribution> resolvedContributions = store.resolve(uri, imprt);
                     for (Contribution resolved : resolvedContributions) {
@@ -175,7 +175,7 @@ public class DependencyServiceImpl implements DependencyService {
                 for (Contribution entry : contributions) {
                     if (entry.getUri().equals(wire.getExportContributionUri())) {
                         Import imprt = wire.getImport();
-                        List<Vertex<Contribution>> sinks = findTargetVertices(dag, uri, imprt);
+                        List<Vertex<Contribution>> sinks = resolveImport(dag, uri, imprt);
                         if (sinks.isEmpty()) {
                             // this should not happen
                             throw new AssertionError("Unable to resolve import " + imprt + " in " + uri);
@@ -209,14 +209,14 @@ public class DependencyServiceImpl implements DependencyService {
     }
 
     /**
-     * Finds vertices in the graph with a matching export.
+     * Resolve the import against the graph of contributions being loaded, returning the vertices in the graph with a matching export.
      *
      * @param dag             the graph to resolve against
      * @param contributionUri the importing contribution URI
      * @param imprt           the import to resolve
      * @return the matching Vertex or null
      */
-    private List<Vertex<Contribution>> findTargetVertices(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
+    private List<Vertex<Contribution>> resolveImport(DirectedGraph<Contribution> dag, URI contributionUri, Import imprt) {
         List<Vertex<Contribution>> vertices = new ArrayList<Vertex<Contribution>>();
         for (Vertex<Contribution> vertex : dag.getVertices()) {
             Contribution contribution = vertex.getEntity();
@@ -224,15 +224,17 @@ public class DependencyServiceImpl implements DependencyService {
             URI location = imprt.getLocation();
             for (Export export : manifest.getExports()) {
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
-                if (Export.EXACT_MATCH == export.match(imprt) && !contributionUri.equals(contribution.getUri())) {
+                if (export.match(imprt) && !contributionUri.equals(contribution.getUri())) {
                     if (location != null) {
                         // explicit location specified
                         if (location.equals(contribution.getUri())) {
                             vertices.add(vertex);
+                            imprt.addResolved(contribution.getUri(), export);
                             return vertices; // done since explicit locations must resolve to one contribution
                         }
                     } else {
                         vertices.add(vertex);
+                        imprt.addResolved(contribution.getUri(), export);
                         if (!imprt.isMultiplicity()) {
                             return vertices;
                         }

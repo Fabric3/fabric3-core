@@ -41,8 +41,6 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.contribution.Export;
-
 /**
  * @version $Rev$ $Date$
  */
@@ -59,7 +57,7 @@ public class ContributionExportTestCase extends TestCase {
         URI uri = URI.create("contribution");
         ContributionExport export = new ContributionExport(uri);
         ContributionImport imprt = new ContributionImport(uri);
-        assertEquals(Export.EXACT_MATCH, export.match(imprt));
+        assertTrue(export.match(imprt));
 
     }
 

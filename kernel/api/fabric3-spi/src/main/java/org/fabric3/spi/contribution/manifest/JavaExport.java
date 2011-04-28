@@ -68,14 +68,14 @@ public class JavaExport implements Export {
         return packageInfo;
     }
 
-    public int match(Import imprt) {
+    public boolean match(Import imprt) {
         if (imprt instanceof JavaImport) {
             JavaImport javaImport = (JavaImport) imprt;
             if (javaImport.getPackageInfo().matches(packageInfo)) {
-                return EXACT_MATCH;
+                return true;
             }
         }
-        return NO_MATCH;
+        return false;
     }
 
     public String toString() {

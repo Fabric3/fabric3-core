@@ -129,7 +129,7 @@ public interface WireProxyService {
     <T> T createCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
 
     /**
-     * Creates a callback proxy that allways returns to the same target service
+     * Creates a callback proxy that always returns to the same target service
      *
      * @param interfaze the service interface
      * @param mapping   the invocation chain mapping for the callback service

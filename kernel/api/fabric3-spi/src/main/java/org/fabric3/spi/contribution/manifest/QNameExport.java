@@ -61,12 +61,8 @@ public class QNameExport implements Export {
         return namespace;
     }
 
-    public int match(Import contributionImport) {
-        if (contributionImport instanceof QNameImport
-                && ((QNameImport) contributionImport).getNamespace().equals(namespace)) {
-            return EXACT_MATCH;
-        }
-        return NO_MATCH;
+    public boolean match(Import contributionImport) {
+        return contributionImport instanceof QNameImport && ((QNameImport) contributionImport).getNamespace().equals(namespace);
     }
 
     public QName getType() {

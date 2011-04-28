@@ -38,9 +38,12 @@
 package org.fabric3.spi.contribution.manifest;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
 /**
@@ -53,17 +56,19 @@ public class JavaImport implements Import {
     private static final QName TYPE = new QName(Namespaces.F3, "javaImport");
     private URI location;
     private PackageInfo packageInfo;
+    private Map<URI, Export> resolved;
 
     public JavaImport(PackageInfo packageInfo) {
+        this(packageInfo, null);
+    }
+
+    public JavaImport(PackageInfo packageInfo, URI location) {
         if (packageInfo == null) {
             throw new IllegalArgumentException("Package info cannot be null");
         }
         this.packageInfo = packageInfo;
-    }
-
-    public JavaImport(PackageInfo packageInfo, URI location) {
-        this.packageInfo = packageInfo;
         this.location = location;
+        resolved = new HashMap<URI, Export>();
     }
 
     public URI getLocation() {
@@ -84,6 +89,17 @@ public class JavaImport implements Import {
 
     public boolean isRequired() {
         return packageInfo.isRequired();
+    }
+
+    public Map<URI, Export> getResolved() {
+        return resolved;
+    }
+
+    public void addResolved(URI contributionUri, Export export) {
+        if (!resolved.isEmpty()) {
+            throw new IllegalArgumentException("Import can resolve to only one export");
+        }
+        resolved.put(contributionUri, export);
     }
 
     public String toString() {

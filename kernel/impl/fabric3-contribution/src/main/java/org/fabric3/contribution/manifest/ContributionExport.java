@@ -67,12 +67,8 @@ public class ContributionExport implements Export {
         return location;
     }
 
-    public int match(Import imprt) {
-        if (imprt instanceof ContributionImport && location.equals(imprt.getLocation())) {
-            return EXACT_MATCH;
-        } else {
-            return NO_MATCH;
-        }
+    public boolean match(Import imprt) {
+        return imprt instanceof ContributionImport && location.equals(imprt.getLocation());
     }
 
     @Override

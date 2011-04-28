@@ -39,6 +39,7 @@ package org.fabric3.spi.contribution;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 /**
@@ -75,4 +76,21 @@ public interface Import extends Serializable {
      * @return true if this import must be resolved.
      */
     boolean isRequired();
+
+    /**
+     * Returns the collection of resolved exports for this import. The key corresponds to the exporting contribution URI and the value is the export
+     * that satisfies the import.
+     *
+     * @return the collection of resolved exports for this import
+     */
+    Map<URI, Export> getResolved();
+
+    /**
+     * Adds an export that satisfies the current import.
+     *
+     * @param contributionUri the exporting contribution URI
+     * @param export          the export
+     */
+    void addResolved(URI contributionUri, Export export);
+
 }

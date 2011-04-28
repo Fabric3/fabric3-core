@@ -48,6 +48,7 @@ import java.util.Set;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.host.contribution.ContributionInUseException;
 import org.fabric3.host.contribution.UnresolvedImportException;
@@ -95,6 +96,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
         this.builder = builder;
         classloaderIsolation = info.supportsClassLoaderIsolation();
         hostImport = new ContributionImport(HOST_CONTRIBUTION);
+        hostImport.addResolved(HOST_CONTRIBUTION, new ContributionExport(HOST_CONTRIBUTION));
     }
 
     public ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException {

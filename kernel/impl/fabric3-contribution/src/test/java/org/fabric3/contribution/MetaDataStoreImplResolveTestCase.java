@@ -66,10 +66,12 @@ public class MetaDataStoreImplResolveTestCase extends TestCase {
     private static final String IMPORT_EXPORT_QNAME = "test";
     private static final String IMPORT_EXPORT_QNAME2 = "test2";
     private MetaDataStoreImpl store;
+    private QNameExport export;
 
     public void testResolve() throws Exception {
         URI uri = URI.create("source");
         QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME, null);
+        imprt.addResolved(RESOURCE_URI, export);
         List<ContributionWire<?, ?>> wires = store.resolveContributionWires(uri, imprt);
         assertEquals(RESOURCE_URI, wires.get(0).getExportContributionUri());
     }
@@ -90,7 +92,7 @@ public class MetaDataStoreImplResolveTestCase extends TestCase {
         store.setInstantiatorRegistry(instantiatorRegistry);
         Contribution contribution = new Contribution(RESOURCE_URI);
         ContributionManifest manifest = contribution.getManifest();
-        QNameExport export = new QNameExport(IMPORT_EXPORT_QNAME);
+        export = new QNameExport(IMPORT_EXPORT_QNAME);
         manifest.addExport(export);
         store.store(contribution);
 
@@ -101,6 +103,7 @@ public class MetaDataStoreImplResolveTestCase extends TestCase {
         QNameExport export2 = new QNameExport(IMPORT_EXPORT_QNAME2);
         manifest2.addExport(export2);
         store.store(contribution2);
+        imprt.addResolved(RESOURCE_URI, export);
         List<ContributionWire<?, ?>> wires = store.resolveContributionWires(RESOURCE_URI2, imprt);
         for (ContributionWire<?, ?> wire : wires) {
             contribution2.addWire(wire);

@@ -38,9 +38,12 @@
 package org.fabric3.contribution.manifest;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
 /**
@@ -52,9 +55,11 @@ public class ContributionImport implements Import {
     private static final long serialVersionUID = 5947082714758125178L;
     private static final QName TYPE = new QName(Namespaces.F3, "contributionImport");
     private URI location;
+    private Map<URI, Export> resolved;
 
     public ContributionImport(URI contributionId) {
         location = contributionId;
+        resolved = new HashMap<URI, Export>();
     }
 
     public QName getType() {
@@ -71,6 +76,21 @@ public class ContributionImport implements Import {
 
     public boolean isRequired() {
         return true;
+    }
+
+    public Map<URI, Export> getResolved() {
+        return resolved;
+    }
+
+    public void addResolved(URI contributionUri, Export export) {
+        if (!resolved.isEmpty()) {
+            throw new IllegalArgumentException("Import can resolve to only one export");
+        }
+        resolved.put(contributionUri, export);
+    }
+
+    public String toString() {
+        return "contribution [" + location + "]";
     }
 
     @Override

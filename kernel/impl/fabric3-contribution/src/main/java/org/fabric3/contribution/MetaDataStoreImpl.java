@@ -74,10 +74,11 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  */
 public class MetaDataStoreImpl implements MetaDataStore {
-    private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
-    private Map<QName, Map<Export, List<Contribution>>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, List<Contribution>>>();
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
+
+    private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
+    private Map<QName, Map<Export, List<Contribution>>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, List<Contribution>>>();
 
     public MetaDataStoreImpl(ProcessorRegistry processorRegistry) {
         this.processorRegistry = processorRegistry;
@@ -205,17 +206,19 @@ public class MetaDataStoreImpl implements MetaDataStore {
             for (Map.Entry<Export, List<Contribution>> entry : exports.entrySet()) {
                 Export export = entry.getKey();
                 // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
-                if (Export.EXACT_MATCH == export.match(imprt)) {
+                if (export.match(imprt)) {
                     for (Contribution contribution : entry.getValue()) {
                         if (location != null) {
                             // location is specified, resolve to the explicit contribution with that export
                             if (location.equals(contribution.getUri())) {
                                 resolved.add(contribution);
+                                imprt.addResolved(contribution.getUri(), export);
                                 return resolved;   // finished, since location is used to specify exactly one contribution
                             }
                         } else {
                             if (!uri.equals(contribution.getUri())) {
                                 resolved.add(contribution);
+                                imprt.addResolved(contribution.getUri(), export);
                             }
                         }
                     }
@@ -232,31 +235,9 @@ public class MetaDataStoreImpl implements MetaDataStore {
             return null;
         }
         List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
-        for (Map.Entry<Export, List<Contribution>> entry : map.entrySet()) {
-            Export export = entry.getKey();
-            int level = export.match(imprt);
-            if (level == Export.EXACT_MATCH) {
-                if (instantiatorRegistry == null) {
-                    // Programming error: an illegal attempt to resolve a contribution before bootstrap has completed.
-                    throw new AssertionError("Instantiator not yet configured");
-                }
-                for (Contribution contribution : entry.getValue()) {
-                    URI exportUri = contribution.getUri();
-                    URI location = imprt.getLocation();
-                    if (location != null && location.equals(exportUri)) {
-                        // location specified, resolve to exact contribution
-                        ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
-                        wires.add(wire);
-                        return wires;
-                    } else if (location == null) {
-                        ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, export, uri, exportUri);
-                        wires.add(wire);
-                        if (!imprt.isMultiplicity()) {
-                            return wires;
-                        }
-                    }
-                }
-            }
+        for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
+            ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, entry.getValue(), uri, entry.getKey());
+            wires.add(wire);
         }
         if (wires.isEmpty()) {
             throw new UnresolvedImportException(imprt.toString());

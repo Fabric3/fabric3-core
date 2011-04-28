@@ -46,16 +46,14 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface Export extends Serializable {
-    int NO_MATCH = -1;
-    int EXACT_MATCH = 1;
 
     /**
-     * Returns {@link #NO_MATCH} or {@link #EXACT_MATCH} when comparing against an import.
+     * Returns true if an import matched the export.
      *
-     * @param imprt the import declaration
-     * @return {@link #NO_MATCH} or {@link #EXACT_MATCH}
+     * @param imprt the import to match
+     * @return true if an import matched the export
      */
-    int match(Import imprt);
+    boolean match(Import imprt);
 
     /**
      * The QName uniquely identifying the import/export type.
