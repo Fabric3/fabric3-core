@@ -135,6 +135,9 @@ public class OSGiManifestEntryParser {
 
                     } else {
                         EventType current = state;
+                        if (EventType.BEGIN == state) {
+                           current = EventType.PATH;
+                        }
                         state = EventType.END_CLAUSE;
                         return current;
                     }
@@ -146,7 +149,7 @@ public class OSGiManifestEntryParser {
                         inQuote = true;
                     }
                     appendNoWhiteSpace(c);
-                    if (pos == header.length() && state == EventType.BEGIN) {
+                    if (pos == header.length() && (state == EventType.BEGIN || state == EventType.PATH)) {
                         state = EventType.PATH;
                     }
                 }

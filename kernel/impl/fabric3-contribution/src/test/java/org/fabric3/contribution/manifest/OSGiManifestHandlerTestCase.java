@@ -68,59 +68,73 @@ public class OSGiManifestHandlerTestCase extends TestCase {
             "Import-Package: org.fabric3.foo\n" +
             "Export-Package: org.fabric3.export\n";
 
+    private static final String MANIFEST3 = "Manifest-Version: 1.0\n" +
+            "Created-By: test\n" +
+            "Import-Package: org.fabric3.foo1, org.fabric3.foo2\n" +
+            "Export-Package: org.fabric3.export1, org.fabric3.export2\n";
+
     private OSGiManifestHandler handler = new OSGiManifestHandler();
 
     public void testHeaderParse() throws Exception {
-        Manifest manifest = new Manifest(new ByteArrayInputStream(MANIFEST.getBytes()));
-        ContributionManifest contributionManifest = new ContributionManifest();
+        Manifest jarManifest = new Manifest(new ByteArrayInputStream(MANIFEST.getBytes()));
+        ContributionManifest manifest = new ContributionManifest();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        handler.processManifest(contributionManifest, manifest, context);
+        handler.processManifest(manifest, jarManifest, context);
 
         assertFalse(context.hasErrors());
 
-        assertEquals(3, contributionManifest.getImports().size());
-        JavaImport first = (JavaImport) contributionManifest.getImports().get(0);
+        assertEquals(3, manifest.getImports().size());
+        JavaImport first = (JavaImport) manifest.getImports().get(0);
         assertEquals("org.fabric3.foo", first.getPackageInfo().getName());
         assertTrue(first.getPackageInfo().isRequired());
 
-        JavaImport second = (JavaImport) contributionManifest.getImports().get(1);
+        JavaImport second = (JavaImport) manifest.getImports().get(1);
         assertEquals("org.fabric3.bar", second.getPackageInfo().getName());
         assertFalse(second.getPackageInfo().isRequired());
 
-        JavaImport third = (JavaImport) contributionManifest.getImports().get(2);
+        JavaImport third = (JavaImport) manifest.getImports().get(2);
         assertEquals("org.fabric3.baz", third.getPackageInfo().getName());
         assertEquals(new PackageVersion("1.0.0"), third.getPackageInfo().getMinVersion());
         assertTrue(third.getPackageInfo().isMinInclusive());
         assertEquals(new PackageVersion("2.0.0"), third.getPackageInfo().getMaxVersion());
         assertFalse(third.getPackageInfo().isMaxInclusive());
 
-        assertEquals(2, contributionManifest.getExports().size());
-        JavaExport firstExport = (JavaExport) contributionManifest.getExports().get(0);
+        assertEquals(2, manifest.getExports().size());
+        JavaExport firstExport = (JavaExport) manifest.getExports().get(0);
         assertEquals("org.fabric3.export1", firstExport.getPackageInfo().getName());
         assertEquals(new PackageVersion("1.1.1.1"), firstExport.getPackageInfo().getMinVersion());
 
-        JavaExport secondExport = (JavaExport) contributionManifest.getExports().get(1);
+        JavaExport secondExport = (JavaExport) manifest.getExports().get(1);
         assertEquals("org.fabric3.export2", secondExport.getPackageInfo().getName());
         assertEquals(new PackageVersion("2.2.2.2"), secondExport.getPackageInfo().getMinVersion());
 
     }
 
     public void testPackage() throws Exception {
-
         IntrospectionContext context = new DefaultIntrospectionContext();
         InputStream resourceAsStream = new ByteArrayInputStream(MANIFEST2.getBytes());
         Manifest jarManifest = new Manifest(resourceAsStream);
-        ContributionManifest contributionManifest = new ContributionManifest();
-        handler.processManifest(contributionManifest, jarManifest, context);
+        ContributionManifest manifest = new ContributionManifest();
+        handler.processManifest(manifest, jarManifest, context);
 
-        List<Export> exports = contributionManifest.getExports();
+        List<Export> exports = manifest.getExports();
 
-        Import dummyImport = contributionManifest.getImports().get(0);
+        Import dummyImport = manifest.getImports().get(0);
 
         for (Export export : exports) {
             export.match(dummyImport);
         }
+    }
 
+    public void testMultipleImportsExports() throws Exception {
+        IntrospectionContext context = new DefaultIntrospectionContext();
+        InputStream resourceAsStream = new ByteArrayInputStream(MANIFEST3.getBytes());
+        Manifest jarManifest = new Manifest(resourceAsStream);
+        ContributionManifest manifest = new ContributionManifest();
+        handler.processManifest(manifest, jarManifest, context);
+
+        assertEquals(2, manifest.getImports().size());
+        assertEquals(2, manifest.getExports().size());
     }
 
 
