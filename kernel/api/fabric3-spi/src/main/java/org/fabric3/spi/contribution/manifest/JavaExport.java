@@ -54,6 +54,9 @@ public class JavaExport implements Export {
     private PackageInfo packageInfo;
 
     public JavaExport(PackageInfo packageInfo) {
+        if (packageInfo == null) {
+            throw new IllegalStateException("Package info cannot be null");
+        }
         this.packageInfo = packageInfo;
     }
 
