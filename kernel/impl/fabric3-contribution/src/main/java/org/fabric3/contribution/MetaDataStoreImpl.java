@@ -41,12 +41,10 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -78,7 +76,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
 
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
-    private Map<QName, Map<Export, List<Contribution>>> exportsToContributionCache = new ConcurrentHashMap<QName, Map<Export, List<Contribution>>>();
 
     public MetaDataStoreImpl(ProcessorRegistry processorRegistry) {
         this.processorRegistry = processorRegistry;
@@ -101,7 +98,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
 
     public void store(Contribution contribution) throws StoreException {
         cache.put(contribution.getUri(), contribution);
-        addToExports(contribution);
     }
 
     public Contribution find(URI contributionUri) {
@@ -113,25 +109,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public void remove(URI contributionUri) {
-        Contribution contribution = find(contributionUri);
-        if (contribution != null) {
-            List<Export> exports = contribution.getManifest().getExports();
-            for (Export export : exports) {
-                Map<Export, List<Contribution>> types = exportsToContributionCache.get(export.getType());
-                if (types == null) {
-                    // programming error
-                    throw new AssertionError("Export type not found: " + export.getType());
-                }
-                for (Iterator<Map.Entry<Export, List<Contribution>>> it = types.entrySet().iterator(); it.hasNext();) {
-                    Map.Entry<Export, List<Contribution>> contributions = it.next();
-                    contributions.getValue().remove(contribution);
-                    if (contributions.getValue().isEmpty()) {
-                        // if there are no exporting contributions left, remove it
-                        it.remove();
-                    }
-                }
-            }
-        }
         cache.remove(contributionUri);
     }
 
@@ -200,39 +177,36 @@ public class MetaDataStoreImpl implements MetaDataStore {
 
     public List<Contribution> resolve(URI uri, Import imprt) {
         List<Contribution> resolved = new ArrayList<Contribution>();
-        if (!imprt.getResolved().isEmpty()){
+        if (!imprt.getResolved().isEmpty()) {
             // already resolved
             for (URI exportUri : imprt.getResolved().keySet()) {
                 Contribution contribution = cache.get(exportUri);
                 if (contribution == null) {
-                    throw new AssertionError("Contribution not found: "+ contribution);
+                    throw new AssertionError("Contribution not found: " + contribution);
                 }
                 resolved.add(contribution);
             }
             return resolved;
         }
 
-        Map<Export, List<Contribution>> exports = exportsToContributionCache.get(imprt.getType());
         URI location = imprt.getLocation();
-        if (exports != null) {
-            for (Map.Entry<Export, List<Contribution>> entry : exports.entrySet()) {
-                Export export = entry.getKey();
+
+        for (Contribution contribution : cache.values()) {
+            for (Export export : contribution.getManifest().getExports()) {
                 if (export.match(imprt)) {
-                    for (Contribution contribution : entry.getValue()) {
-                        if (location != null) {
-                            // location is specified, resolve to the explicit contribution with that export
-                            if (location.equals(contribution.getUri())) {
-                                resolved.add(contribution);
-                                imprt.addResolved(contribution.getUri(), export);
-                                export.resolve();
-                                return resolved;   // finished, since location is used to specify exactly one contribution
-                            }
-                        } else {
-                            if (!uri.equals(contribution.getUri())) {
-                                resolved.add(contribution);
-                                imprt.addResolved(contribution.getUri(), export);
-                                export.resolve();
-                            }
+                    if (location != null) {
+                        // location is specified, resolve to the explicit contribution with that export
+                        if (location.equals(contribution.getUri())) {
+                            resolved.add(contribution);
+                            imprt.addResolved(contribution.getUri(), export);
+                            export.resolve();
+                            return resolved;   // finished, since location is used to specify exactly one contribution
+                        }
+                    } else {
+                        if (!uri.equals(contribution.getUri())) {
+                            resolved.add(contribution);
+                            imprt.addResolved(contribution.getUri(), export);
+                            export.resolve();
                         }
                     }
 
@@ -243,10 +217,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<ContributionWire<?, ?>> resolveContributionWires(URI uri, Import imprt) throws UnresolvedImportException {
-        Map<Export, List<Contribution>> map = exportsToContributionCache.get(imprt.getType());
-        if (map == null) {
-            return null;
-        }
         List<ContributionWire<?, ?>> wires = new ArrayList<ContributionWire<?, ?>>();
         for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
             ContributionWire<Import, Export> wire = instantiatorRegistry.instantiate(imprt, entry.getValue(), uri, entry.getKey());
@@ -378,34 +348,6 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         return null;
-    }
-
-    /**
-     * Adds the contribution exports to the cached list of exports for the domain
-     *
-     * @param contribution the contribution containing the exports to add
-     */
-    private void addToExports(Contribution contribution) {
-        List<Export> exports = contribution.getManifest().getExports();
-        if (exports.size() > 0) {
-            for (Export export : exports) {
-                Map<Export, List<Contribution>> map = exportsToContributionCache.get(export.getType());
-                if (map == null) {
-                    map = new ConcurrentHashMap<Export, List<Contribution>>();
-                    exportsToContributionCache.put(export.getType(), map);
-                    List<Contribution> contributions = new ArrayList<Contribution>();
-                    contributions.add(contribution);
-                    map.put(export, contributions);
-                } else {
-                    List<Contribution> contributions = map.get(export);
-                    if (contributions == null) {
-                        contributions = new ArrayList<Contribution>();
-                        map.put(export, contributions);
-                    }
-                    contributions.add(contribution);
-                }
-            }
-        }
     }
 
 }
