@@ -96,7 +96,9 @@ public class ContributionLoaderImpl implements ContributionLoader {
         this.builder = builder;
         classloaderIsolation = info.supportsClassLoaderIsolation();
         hostImport = new ContributionImport(HOST_CONTRIBUTION);
-        hostImport.addResolved(HOST_CONTRIBUTION, new ContributionExport(HOST_CONTRIBUTION));
+        ContributionExport hostExport = new ContributionExport(HOST_CONTRIBUTION);
+        hostExport.resolve();
+        hostImport.addResolved(HOST_CONTRIBUTION, hostExport);
     }
 
     public ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException {

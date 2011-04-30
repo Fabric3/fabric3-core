@@ -62,4 +62,16 @@ public interface Export extends Serializable {
      */
     QName getType();
 
+    /**
+     * True if this export has been resolved to an import. When resolving an import, previously resolved exports must be preferred over unresolved
+     * ones.
+     *
+     * @return true if this export has been resolved to an import
+     */
+    boolean isResolved();
+
+    /**
+     * Marks the export as resolved for an import.
+     */
+    void resolve();
 }

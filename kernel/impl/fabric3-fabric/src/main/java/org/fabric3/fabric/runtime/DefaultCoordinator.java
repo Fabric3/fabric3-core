@@ -114,10 +114,10 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
         // initiate domain recovery
         eventService.publish(new DomainRecover());
-        
+
         // signal domain finished recovery
         eventService.publish(new DomainRecovered());
-        
+
         // signal runtime start
         eventService.publish(new RuntimeStart());
         state = RuntimeState.STARTED;
@@ -183,7 +183,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         }
         // install user contributions - they will be deployed when the domain recovers
         List<ContributionSource> contributions = configuration.getUserContributions();
-        installContributions(contributions);
+        if (!contributions.isEmpty()) {
+            installContributions(contributions);
+        }
         eventService.publish(new RuntimeRecover());
     }
 

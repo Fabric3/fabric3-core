@@ -52,6 +52,7 @@ public class QNameExport implements Export {
     private static final long serialVersionUID = -6813997109078522174L;
     private static final QName TYPE = new QName(Namespaces.F3, "qNameImport");
     private String namespace;
+    private boolean resolved;
 
     public QNameExport(String namespace) {
         this.namespace = namespace;
@@ -67,6 +68,14 @@ public class QNameExport implements Export {
 
     public QName getType() {
         return TYPE;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void resolve() {
+        resolved = true;
     }
 
     @Override

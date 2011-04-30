@@ -199,13 +199,24 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     public List<Contribution> resolve(URI uri, Import imprt) {
+        List<Contribution> resolved = new ArrayList<Contribution>();
+        if (!imprt.getResolved().isEmpty()){
+            // already resolved
+            for (URI exportUri : imprt.getResolved().keySet()) {
+                Contribution contribution = cache.get(exportUri);
+                if (contribution == null) {
+                    throw new AssertionError("Contribution not found: "+ contribution);
+                }
+                resolved.add(contribution);
+            }
+            return resolved;
+        }
+
         Map<Export, List<Contribution>> exports = exportsToContributionCache.get(imprt.getType());
         URI location = imprt.getLocation();
-        List<Contribution> resolved = new ArrayList<Contribution>();
         if (exports != null) {
             for (Map.Entry<Export, List<Contribution>> entry : exports.entrySet()) {
                 Export export = entry.getKey();
-                // also compare the contribution URI to avoid resolving to a contribution that imports and exports the same namespace
                 if (export.match(imprt)) {
                     for (Contribution contribution : entry.getValue()) {
                         if (location != null) {
@@ -213,12 +224,14 @@ public class MetaDataStoreImpl implements MetaDataStore {
                             if (location.equals(contribution.getUri())) {
                                 resolved.add(contribution);
                                 imprt.addResolved(contribution.getUri(), export);
+                                export.resolve();
                                 return resolved;   // finished, since location is used to specify exactly one contribution
                             }
                         } else {
                             if (!uri.equals(contribution.getUri())) {
                                 resolved.add(contribution);
                                 imprt.addResolved(contribution.getUri(), export);
+                                export.resolve();
                             }
                         }
                     }

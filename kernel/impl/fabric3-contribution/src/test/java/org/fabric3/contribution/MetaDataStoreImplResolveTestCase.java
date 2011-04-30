@@ -76,6 +76,14 @@ public class MetaDataStoreImplResolveTestCase extends TestCase {
         assertEquals(RESOURCE_URI, wires.get(0).getExportContributionUri());
     }
 
+    public void testAlreadyResolved() throws Exception {
+        URI uri = URI.create("source");
+        QNameImport imprt = new QNameImport(IMPORT_EXPORT_QNAME, null);
+        imprt.addResolved(RESOURCE_URI, export);
+        List<Contribution> contributions = store.resolve(uri, imprt);
+        assertEquals(1, contributions.size());
+    }
+
     public void testResolveDependentContributions() throws Exception {
         Set<Contribution> contributions = store.resolveDependentContributions(RESOURCE_URI);
         assertEquals(RESOURCE_URI2, contributions.iterator().next().getUri());

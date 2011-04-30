@@ -54,6 +54,7 @@ public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;
     private static final QName TYPE = new QName(Namespaces.F3, "contributionImport");
     private URI location;
+    private boolean resolved;
 
     public ContributionExport(URI contributionId) {
         location = contributionId;
@@ -69,6 +70,14 @@ public class ContributionExport implements Export {
 
     public boolean match(Import imprt) {
         return imprt instanceof ContributionImport && location.equals(imprt.getLocation());
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void resolve() {
+        resolved = true;
     }
 
     @Override

@@ -52,6 +52,7 @@ public class JavaExport implements Export {
     private static final long serialVersionUID = -1362112844218693711L;
     private static final QName TYPE = new QName(Namespaces.F3, "javaImport");
     private PackageInfo packageInfo;
+    private boolean resolved;
 
     public JavaExport(PackageInfo packageInfo) {
         if (packageInfo == null) {
@@ -76,6 +77,14 @@ public class JavaExport implements Export {
             }
         }
         return false;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void resolve() {
+        resolved = true;
     }
 
     public String toString() {
