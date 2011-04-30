@@ -26,8 +26,8 @@
         <f3:implementation.system class="org.fabric3.contribution.ContributionLoaderImpl"/>
     </component>
 
-    <component name="DependencyService">
-        <f3:implementation.system class="org.fabric3.contribution.DependencyServiceImpl"/>
+    <component name="DependencyResolver">
+        <f3:implementation.system class="org.fabric3.contribution.DependencyResolverImpl"/>
     </component>
 
     <component name="ClassLoaderWireGenerator" f3:key="org.fabric3.contribution.wire.JavaContributionWire">

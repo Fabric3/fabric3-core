@@ -57,12 +57,12 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 /**
  * @version $Rev$ $Date$
  */
-public class DependencyServiceImplTestCase extends TestCase {
+public class DependencyResolverImplTestCase extends TestCase {
     private static final URI CONTRIBUTION1_URI = URI.create("contribution1");
     private static final URI CONTRIBUTION2_URI = URI.create("contribution2");
     private static final URI CONTRIBUTION3_URI = URI.create("contribution3");
 
-    private DependencyServiceImpl service;
+    private DependencyResolverImpl service;
 
     private Contribution contribution1;
     private Contribution contribution2;
@@ -77,7 +77,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution1);
         contributions.add(contribution3);
 
-        List<Contribution> ordered = service.order(contributions);
+        List<Contribution> ordered = service.resolve(contributions);
 
         assertEquals(contribution3, ordered.get(0));
         assertEquals(contribution2, ordered.get(1));
@@ -94,7 +94,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution1);
         contributions.add(contribution3);
 
-        List<Contribution> ordered = service.order(contributions);
+        List<Contribution> ordered = service.resolve(contributions);
 
         assertTrue(ordered.contains(contribution3));
         assertTrue(ordered.contains(contribution1));
@@ -113,7 +113,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution3);
 
         try {
-            service.order(contributions);
+            service.resolve(contributions);
             fail();
         } catch (DependencyException e) {
             // expected
@@ -132,7 +132,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution3);
 
         try {
-            service.order(contributions);
+            service.resolve(contributions);
             fail();
         } catch (DependencyException e) {
             // expected
@@ -149,7 +149,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution1);
         contributions.add(contribution2);
 
-        List<Contribution> ordered = service.order(contributions);
+        List<Contribution> ordered = service.resolve(contributions);
 
         assertTrue(ordered.contains(contribution2));
         assertTrue(ordered.contains(contribution1));
@@ -167,7 +167,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution2);
 
         try {
-            service.order(contributions);
+            service.resolve(contributions);
             fail();
         } catch (DependencyException e) {
             // expected
@@ -186,7 +186,7 @@ public class DependencyServiceImplTestCase extends TestCase {
         contributions.add(contribution2);
 
         try {
-            service.order(contributions);
+            service.resolve(contributions);
             fail();
         } catch (DependencyException e) {
             // expected
@@ -212,7 +212,7 @@ public class DependencyServiceImplTestCase extends TestCase {
 
         createContributions();
         store = EasyMock.createMock(MetaDataStore.class);
-        service = new DependencyServiceImpl(store);
+        service = new DependencyResolverImpl(store);
     }
 
     private void createContributions() throws MalformedURLException {

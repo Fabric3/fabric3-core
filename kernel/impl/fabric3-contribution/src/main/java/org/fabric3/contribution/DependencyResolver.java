@@ -42,23 +42,25 @@ import java.util.List;
 import org.fabric3.spi.contribution.Contribution;
 
 /**
- * Orders contribution dependencies.
+ * Resolves contribution dependencies.
  *
  * @version $Rev$ $Date$
  */
-public interface DependencyService {
+public interface DependencyResolver {
 
     /**
-     * Orders a list of contributions by their import dependencies using a reverse topological sort of contribution imports.
+     * Resolves dependencies for the given contributions. An ordered list is returned based on a reverse topological sort of contribution resolved
+     * imports and capability requirements.
      *
      * @param contributions the  list of contributions to order
      * @return the ordered list of contributions
      * @throws DependencyException if an error occurs ordering the contributions such as an unresolvable import or dependency cycle
      */
-    List<Contribution> order(List<Contribution> contributions) throws DependencyException;
+    List<Contribution> resolve(List<Contribution> contributions) throws DependencyException;
 
     /**
-     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on contribution imports.
+     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on resolved contribution imports
+     * and capability requirements.
      *
      * @param contributions the contributions to order
      * @return the ordered list of contributions

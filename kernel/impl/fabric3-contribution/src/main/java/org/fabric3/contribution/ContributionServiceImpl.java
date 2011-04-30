@@ -107,7 +107,7 @@ public class ContributionServiceImpl implements ContributionService {
     private MetaDataStore metaDataStore;
     private ContributionLoader contributionLoader;
     private ContentTypeResolver contentTypeResolver;
-    private DependencyService dependencyService;
+    private DependencyResolver dependencyResolver;
     private ContributionServiceMonitor monitor;
     private List<ContributionServiceListener> listeners;
 
@@ -115,13 +115,13 @@ public class ContributionServiceImpl implements ContributionService {
                                    @Reference MetaDataStore metaDataStore,
                                    @Reference ContributionLoader contributionLoader,
                                    @Reference ContentTypeResolver contentTypeResolver,
-                                   @Reference DependencyService dependencyService,
+                                   @Reference DependencyResolver dependencyResolver,
                                    @Monitor ContributionServiceMonitor monitor) {
         this.processorRegistry = processorRegistry;
         this.metaDataStore = metaDataStore;
         this.contributionLoader = contributionLoader;
         this.contentTypeResolver = contentTypeResolver;
-        this.dependencyService = dependencyService;
+        this.dependencyResolver = dependencyResolver;
         this.monitor = monitor;
         listeners = new ArrayList<ContributionServiceListener>();
     }
@@ -221,7 +221,7 @@ public class ContributionServiceImpl implements ContributionService {
             Contribution contribution = find(uri);
             contributions.add(contribution);
         }
-        contributions = dependencyService.orderForUninstall(contributions);
+        contributions = dependencyResolver.orderForUninstall(contributions);
         for (Contribution contribution : contributions) {
             uninstall(contribution);
         }
@@ -278,7 +278,7 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
         List<URI> profileContributions = new ArrayList<URI>();
-        sortedContributions = dependencyService.orderForUninstall(sortedContributions);
+        sortedContributions = dependencyResolver.orderForUninstall(sortedContributions);
         for (Contribution contribution : sortedContributions) {
             profileContributions.add(contribution.getUri());
         }
@@ -331,7 +331,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             }
         }
-        toUninstall = dependencyService.orderForUninstall(toUninstall);
+        toUninstall = dependencyResolver.orderForUninstall(toUninstall);
         for (Contribution contribution : toUninstall) {
             uninstall(contribution.getUri());
         }
@@ -409,7 +409,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
         // order the contributions based on their dependencies
         try {
-            contributions = dependencyService.order(contributions);
+            contributions = dependencyResolver.resolve(contributions);
         } catch (DependencyException e) {
             throw new InstallException(e);
         }
@@ -466,7 +466,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
         // order the contributions based on their dependencies
         try {
-            contributions = dependencyService.order(contributions);
+            contributions = dependencyResolver.resolve(contributions);
         } catch (DependencyException e) {
             throw new InstallException(e);
         }

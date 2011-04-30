@@ -47,7 +47,7 @@ import java.util.Map;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.contribution.DependencyException;
-import org.fabric3.contribution.DependencyService;
+import org.fabric3.contribution.DependencyResolver;
 import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;
@@ -87,7 +87,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
  */
 public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenerator {
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
-    private DependencyService dependencyService;
+    private DependencyResolver dependencyResolver;
 
     public ClassLoaderCommandGeneratorImpl(@Reference Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators) {
         this.generators = generators;
@@ -96,11 +96,11 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
     /**
      * Setter to allow lazy injection of the dependency service. This is used for undeployment only, which is not required during bootstrap.
      *
-     * @param dependencyService the dependency service
+     * @param dependencyResolver the dependency service
      */
     @Reference(required = false)
-    public void setDependencyService(DependencyService dependencyService) {
-        this.dependencyService = dependencyService;
+    public void setDependencyService(DependencyResolver dependencyResolver) {
+        this.dependencyResolver = dependencyResolver;
     }
 
     public Map<String, List<CompensatableCommand>> generate(Map<String, List<Contribution>> contributions) throws GenerationException {
@@ -138,7 +138,7 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
                 // Order the contributions by dependencies and reverse it to determine the sequence the classloaders must be removed in
                 // Ordering is important for classloaders to be properly disposed. Runtimes will only dispose classloaders when they are no longer
                 // referenced by other registered classloaders. This requires dependent classloaders to be released first.
-                ordered = dependencyService.order(new ArrayList<Contribution>(entry.getValue()));
+                ordered = dependencyResolver.resolve(new ArrayList<Contribution>(entry.getValue()));
                 Collections.reverse(ordered);
             } catch (DependencyException e) {
                 throw new GenerationException(e);

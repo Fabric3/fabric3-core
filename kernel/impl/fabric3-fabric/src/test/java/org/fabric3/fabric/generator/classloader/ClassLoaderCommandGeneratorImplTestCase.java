@@ -47,7 +47,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.contribution.DependencyService;
+import org.fabric3.contribution.DependencyResolver;
 import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;
@@ -94,14 +94,14 @@ public class ClassLoaderCommandGeneratorImplTestCase extends TestCase {
         PhysicalClassLoaderWireDefinition definition = new PhysicalClassLoaderWireDefinition(null, null);
         EasyMock.expect(wireGenerator.generate(EasyMock.isA(MockContributionWire.class))).andReturn(definition);
 
-        DependencyService dependencyService = EasyMock.createMock(DependencyService.class);
-        EasyMock.expect(dependencyService.order(EasyMock.isA(List.class))).andReturn(contributions.get("zone1"));
+        DependencyResolver dependencyResolver = EasyMock.createMock(DependencyResolver.class);
+        EasyMock.expect(dependencyResolver.resolve(EasyMock.isA(List.class))).andReturn(contributions.get("zone1"));
 
-        EasyMock.replay(wireGenerator, dependencyService);
+        EasyMock.replay(wireGenerator, dependencyResolver);
 
         Map map = Collections.singletonMap(MockContributionWire.class, wireGenerator);
         ClassLoaderCommandGeneratorImpl generator = new ClassLoaderCommandGeneratorImpl(map);
-        generator.setDependencyService(dependencyService);
+        generator.setDependencyService(dependencyResolver);
 
         Map<String, List<CompensatableCommand>> commands = generator.release(contributions);
         assertEquals(2, commands.get("zone1").size());
@@ -112,7 +112,7 @@ public class ClassLoaderCommandGeneratorImplTestCase extends TestCase {
                 fail("Invalid command generated: " + entry.getClass());
             }
         }
-        EasyMock.verify(wireGenerator, dependencyService);
+        EasyMock.verify(wireGenerator, dependencyResolver);
     }
 
     private Map<String, List<Contribution>> createContributions() {

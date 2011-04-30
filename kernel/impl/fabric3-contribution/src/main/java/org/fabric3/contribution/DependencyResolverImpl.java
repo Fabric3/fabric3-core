@@ -73,19 +73,19 @@ import org.fabric3.util.graph.VertexImpl;
  *
  * @version $Rev$ $Date$
  */
-public class DependencyServiceImpl implements DependencyService {
+public class DependencyResolverImpl implements DependencyResolver {
     private CycleDetector<Contribution> detector;
     private TopologicalSorter<Contribution> sorter;
     private MetaDataStore store;
 
 
-    public DependencyServiceImpl(@Reference MetaDataStore store) {
+    public DependencyResolverImpl(@Reference MetaDataStore store) {
         this.store = store;
         detector = new CycleDetectorImpl<Contribution>();
         sorter = new TopologicalSorterImpl<Contribution>();
     }
 
-    public List<Contribution> order(List<Contribution> contributions) throws DependencyException {
+    public List<Contribution> resolve(List<Contribution> contributions) throws DependencyException {
         DirectedGraph<Contribution> dag = new DirectedGraphImpl<Contribution>();
         // add the contributions as vertices
         for (Contribution contribution : contributions) {
