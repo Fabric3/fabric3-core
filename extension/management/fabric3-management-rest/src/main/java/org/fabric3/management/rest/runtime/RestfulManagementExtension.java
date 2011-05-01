@@ -263,11 +263,20 @@ public class RestfulManagementExtension implements ManagementExtension {
     }
 
     public void remove(URI componentUri, ManagementInfo info) throws ManagementException {
-        resourceHost.unregister(componentUri.toString());
+        String identifier = componentUri.toString();
+        resourceHost.unregister(identifier);
+        for (ResourceListener listener : listeners) {
+            listener.onRootResourceRemove(identifier);
+            listener.onSubResourceRemove(identifier);
+        }
     }
 
     public void remove(String name, String group) throws ManagementException {
         resourceHost.unregister(name);
+        for (ResourceListener listener : listeners) {
+            listener.onRootResourceRemove(name);
+            listener.onSubResourceRemove(name);
+        }
     }
 
     /**
