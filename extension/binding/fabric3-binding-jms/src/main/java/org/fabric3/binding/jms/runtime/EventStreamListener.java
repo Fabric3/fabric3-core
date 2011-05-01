@@ -47,6 +47,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
 
 import org.fabric3.spi.channel.EventStreamHandler;
 
@@ -71,13 +72,16 @@ public class EventStreamListener implements MessageListener {
         try {
             // set the TCCL to the target service classloader
             Thread.currentThread().setContextClassLoader(cl);
-            if (!(request instanceof ObjectMessage)) {
+            if (request instanceof ObjectMessage) {
+                ObjectMessage message = (ObjectMessage) request;
+                handler.handle(message.getObject());
+            } else if (request instanceof TextMessage) {
+                TextMessage message = (TextMessage) request;
+                handler.handle(message.getText());
+            } else {
                 String type = request.getClass().getName();
                 monitor.invalidMessageType(type);
-                return;
             }
-            ObjectMessage message = (ObjectMessage) request;
-            handler.handle(message.getObject());
         } catch (JMSException e) {
             // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
             monitor.redeliveryError(e);
