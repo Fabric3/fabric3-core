@@ -71,9 +71,9 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.domain.DomainListener;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
@@ -104,7 +104,7 @@ public abstract class AbstractDomain implements Domain {
     protected PolicyRegistry policyRegistry;
     protected boolean generateFullDeployment;
 
-    protected List<DomainListener> listeners;
+    protected List<DeployListener> listeners;
 
     protected MetaDataStore metadataStore;
     protected LogicalComponentManager logicalComponentManager;
@@ -174,18 +174,18 @@ public abstract class AbstractDomain implements Domain {
                 throw new DeploymentPlanNotFoundException("Deployment plan not found: " + planName);
             }
         }
-        for (DomainListener listener : listeners) {
+        for (DeployListener listener : listeners) {
             listener.onDeploy(deployable, plan.getName());
         }
         instantiateAndDeploy(wrapper, plan);
-        for (DomainListener listener : listeners) {
+        for (DeployListener listener : listeners) {
             listener.onDeployCompleted(deployable, plan.getName());
         }
     }
 
     public synchronized void include(Composite composite) throws DeploymentException {
         QName name = composite.getName();
-        for (DomainListener listener : listeners) {
+        for (DeployListener listener : listeners) {
             listener.onDeploy(name, SYNTHETIC_PLAN_NAME);
         }
         instantiateAndDeploy(composite, SYNTHETIC_PLAN);
@@ -208,7 +208,7 @@ public abstract class AbstractDomain implements Domain {
             // notify listeners
             for (Composite deployable : deployables) {
                 QName name = deployable.getName();
-                for (DomainListener listener : listeners) {
+                for (DeployListener listener : listeners) {
                     URI uri = deployable.getContributionUri();
                     DeploymentPlan plan = plans.get(uri);
                     listener.onDeploy(name, plan.getName());
@@ -217,7 +217,7 @@ public abstract class AbstractDomain implements Domain {
             instantiateAndDeploy(deployables, contributions, merged, false);
             for (Composite deployable : deployables) {
                 QName name = deployable.getName();
-                for (DomainListener listener : listeners) {
+                for (DeployListener listener : listeners) {
                     URI uri = deployable.getContributionUri();
                     DeploymentPlan plan = plans.get(uri);
                     listener.onDeployCompleted(name, plan.getName());
@@ -226,13 +226,13 @@ public abstract class AbstractDomain implements Domain {
         } else {
             // notify listeners
             for (Composite deployable : deployables) {
-                for (DomainListener listener : listeners) {
+                for (DeployListener listener : listeners) {
                     listener.onDeploy(deployable.getName(), SYNTHETIC_PLAN_NAME);
                 }
             }
             instantiateAndDeploy(deployables, contributions, SYNTHETIC_PLAN, false);
             for (Composite deployable : deployables) {
-                for (DomainListener listener : listeners) {
+                for (DeployListener listener : listeners) {
                     listener.onDeployCompleted(deployable.getName(), SYNTHETIC_PLAN_NAME);
                 }
             }
@@ -261,7 +261,7 @@ public abstract class AbstractDomain implements Domain {
         }
 
         for (QName deployable : names) {
-            for (DomainListener listener : listeners) {
+            for (DeployListener listener : listeners) {
                 listener.onUndeploy(deployable);
             }
         }
@@ -301,7 +301,7 @@ public abstract class AbstractDomain implements Domain {
         }
         logicalComponentManager.replaceRootComponent(domain);
         for (QName deployable : names) {
-            for (DomainListener listener : listeners) {
+            for (DeployListener listener : listeners) {
                 listener.onUndeployCompleted(deployable);
             }
         }

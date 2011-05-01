@@ -26,8 +26,8 @@
         <f3:implementation.system class="org.fabric3.recovery.contribution.ProfileTracker"/>
     </component>
 
-    <component name="FSDomainTracker">
-        <f3:implementation.system class="org.fabric3.recovery.domain.FSDomainTracker"/>
+    <component name="FSDeployTracker">
+        <f3:implementation.system class="org.fabric3.recovery.domain.FSDeployTracker"/>
     </component>
 
     <component name="FSDomainReplayer">

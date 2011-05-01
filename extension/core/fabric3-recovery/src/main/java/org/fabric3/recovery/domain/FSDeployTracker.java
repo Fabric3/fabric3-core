@@ -55,7 +55,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.domain.DomainListener;
+import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
@@ -64,14 +64,14 @@ import org.fabric3.spi.xml.XMLFactory;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class FSDomainTracker implements DomainListener {
+public class FSDeployTracker implements DeployListener {
     private static final String NO_PLAN = "";
     private File domainLog;
     private XMLOutputFactory outputFactory;
     private FSDomainTrackerMonitor monitor;
     private Map<QName, String> deployables;
 
-    public FSDomainTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor FSDomainTrackerMonitor monitor) {
+    public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor FSDomainTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
         this.deployables = new HashMap<QName, String>();

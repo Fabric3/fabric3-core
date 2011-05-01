@@ -44,7 +44,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public interface DomainListener {
+public interface DeployListener {
 
     /**
      * Called when a composite is deployed to the domain.

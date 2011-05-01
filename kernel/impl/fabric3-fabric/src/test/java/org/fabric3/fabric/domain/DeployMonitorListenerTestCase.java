@@ -39,48 +39,52 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.domain.DomainListener;
 
 /**
- * Listener that sends deployment and undeployment events to a monitor on the controller.
- *
  * @version $Rev$ $Date$
  */
-public class DomainMonitorListener implements DomainListener {
-    private boolean enabled;
-    private DomainMonitor monitor;
+public class DeployMonitorListenerTestCase extends TestCase {
+    private static final QName DEPLOYABLE = new QName("test", "composite");
 
-    public DomainMonitorListener(@Reference HostInfo info, @Monitor DomainMonitor monitor) {
-        enabled = RuntimeMode.CONTROLLER == info.getRuntimeMode();
-        this.monitor = monitor;
+    public void testEnabled() throws Exception {
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.CONTROLLER);
+
+        DomainMonitor monitor = EasyMock.createMock(DomainMonitor.class);
+        monitor.undeployCompleted(DEPLOYABLE);
+        monitor.deploy(DEPLOYABLE);
+        monitor.deploymentCompleted(DEPLOYABLE);
+        monitor.undeploy(DEPLOYABLE);
+        EasyMock.replay(info, monitor);
+
+        DeployMonitorListener listener = new DeployMonitorListener(info, monitor);
+        listener.onDeploy(DEPLOYABLE, "plan");
+        listener.onDeployCompleted(DEPLOYABLE, "plan");
+        listener.onUndeploy(DEPLOYABLE);
+        listener.onUndeployCompleted(DEPLOYABLE);
+
+        EasyMock.verify(info, monitor);
     }
 
-    public void onDeploy(QName deployable, String plan) {
-        if (enabled) {
-            monitor.deploy(deployable);
-        }
+    public void testNotEnabled() throws Exception {
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT);
+
+        DomainMonitor monitor = EasyMock.createMock(DomainMonitor.class);
+        EasyMock.replay(info, monitor);
+
+        DeployMonitorListener listener = new DeployMonitorListener(info, monitor);
+        listener.onDeploy(DEPLOYABLE, "plan");
+        listener.onDeployCompleted(DEPLOYABLE, "plan");
+        listener.onUndeploy(DEPLOYABLE);
+        listener.onUndeployCompleted(DEPLOYABLE);
+
+        EasyMock.verify(info, monitor);
     }
 
-    public void onDeployCompleted(QName deployable, String plan) {
-        if (enabled) {
-            monitor.deploymentCompleted(deployable);
-        }
-    }
-
-    public void onUndeploy(QName undeployed) {
-        if (enabled) {
-            monitor.undeploy(undeployed);
-        }
-    }
-
-    public void onUndeployCompleted(QName undeployed) {
-        if (enabled) {
-            monitor.undeployCompleted(undeployed);
-        }
-    }
 }

@@ -23,8 +23,8 @@
         <property name="transactional" source="$systemConfig//deployment/@transactional"/>
     </component>
 
-    <component name="DomainMonitorListener">
-        <f3:implementation.system class="org.fabric3.fabric.domain.DomainMonitorListener"/>
+    <component name="DeployMonitorListener">
+        <f3:implementation.system class="org.fabric3.fabric.domain.DeployMonitorListener"/>
     </component>
 
     <component name="ContributionHelper">

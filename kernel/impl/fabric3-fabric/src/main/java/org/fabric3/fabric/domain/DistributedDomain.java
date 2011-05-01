@@ -53,7 +53,7 @@ import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DomainListener;
+import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
@@ -118,7 +118,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
      * @param listeners the listeners
      */
     @Reference(required = false)
-    public void setListeners(List<DomainListener> listeners) {
+    public void setListeners(List<DeployListener> listeners) {
         this.listeners = listeners;
     }
 
