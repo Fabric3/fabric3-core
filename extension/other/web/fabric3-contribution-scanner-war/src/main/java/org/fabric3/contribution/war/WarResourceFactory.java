@@ -46,6 +46,7 @@ import java.util.jar.JarFile;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.contribution.scanner.spi.FileResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
@@ -58,9 +59,11 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
  */
 @EagerInit
 public class WarResourceFactory implements FileSystemResourceFactory {
+    private WarResourceMonitor monitor;
 
-    public WarResourceFactory(@Reference FileSystemResourceFactoryRegistry registry) {
+    public WarResourceFactory(@Reference FileSystemResourceFactoryRegistry registry, @Monitor WarResourceMonitor monitor) {
         registry.register(this);
+        this.monitor = monitor;
     }
 
     public FileSystemResource createResource(File file) {
@@ -76,6 +79,7 @@ public class WarResourceFactory implements FileSystemResourceFactory {
             }
         } catch (FileNotFoundException e) {
             // no sca-contribution, ignore
+            monitor.noManifest();
             return null;
         } catch (IOException e) {
             throw new AssertionError(e);
