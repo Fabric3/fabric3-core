@@ -37,9 +37,6 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.host.Namespaces;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -50,7 +47,6 @@ import org.fabric3.spi.contribution.Import;
  */
 public class QNameExport implements Export {
     private static final long serialVersionUID = -6813997109078522174L;
-    private static final QName TYPE = new QName(Namespaces.F3, "qNameImport");
     private String namespace;
     private boolean resolved;
 
@@ -64,10 +60,6 @@ public class QNameExport implements Export {
 
     public boolean match(Import contributionImport) {
         return contributionImport instanceof QNameImport && ((QNameImport) contributionImport).getNamespace().equals(namespace);
-    }
-
-    public QName getType() {
-        return TYPE;
     }
 
     public boolean isResolved() {

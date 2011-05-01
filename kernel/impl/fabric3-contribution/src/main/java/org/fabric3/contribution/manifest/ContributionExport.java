@@ -38,9 +38,7 @@
 package org.fabric3.contribution.manifest;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -52,16 +50,11 @@ import org.fabric3.spi.contribution.Import;
  */
 public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;
-    private static final QName TYPE = new QName(Namespaces.F3, "contributionImport");
     private URI location;
     private boolean resolved;
 
     public ContributionExport(URI contributionId) {
         location = contributionId;
-    }
-
-    public QName getType() {
-        return TYPE;
     }
 
     public URI getLocation() {

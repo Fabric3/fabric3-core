@@ -38,7 +38,6 @@
 package org.fabric3.spi.contribution;
 
 import java.io.Serializable;
-import javax.xml.namespace.QName;
 
 /**
  * A contribution export.
@@ -54,13 +53,6 @@ public interface Export extends Serializable {
      * @return true if an import matched the export
      */
     boolean match(Import imprt);
-
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
 
     /**
      * True if this export has been resolved to an import. When resolving an import, previously resolved exports must be preferred over unresolved

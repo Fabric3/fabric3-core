@@ -40,7 +40,6 @@ package org.fabric3.spi.contribution;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 /**
  * A contribution import.
@@ -48,13 +47,6 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface Import extends Serializable {
-
-    /**
-     * The QName uniquely identifying the import/export type.
-     *
-     * @return the QName uniquely identifying the import/export type
-     */
-    QName getType();
 
     /**
      * A URI representing the import artifact location.

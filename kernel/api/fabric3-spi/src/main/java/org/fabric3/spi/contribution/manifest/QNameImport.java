@@ -38,13 +38,9 @@
 package org.fabric3.spi.contribution.manifest;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -55,7 +51,6 @@ import org.fabric3.spi.contribution.Import;
  */
 public class QNameImport implements Import {
     private static final long serialVersionUID = 7714960525252585065L;
-    private static final QName TYPE = new QName(Namespaces.F3, "qNameImport");
     private String namespace;
     private URI location;
     private Map<URI, Export> resolved;
@@ -74,10 +69,6 @@ public class QNameImport implements Import {
 
     public String getNamespace() {
         return namespace;
-    }
-
-    public QName getType() {
-        return TYPE;
     }
 
     public URI getLocation() {
