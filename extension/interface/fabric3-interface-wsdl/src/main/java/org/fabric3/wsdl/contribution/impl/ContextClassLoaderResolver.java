@@ -45,7 +45,18 @@ import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
 /**
- * Resolves a WSDL entity by first using the thread context classloader and if not found, a default URI resolver.
+ * Resolves a WSDL entity by first using the thread context classloader and if not found, a default URI resolver. The following resource locations
+ * will be used with the thread context classloader: <ul>
+ * <p/>
+ * <li>Root jar directory
+ * <p/>
+ * <li>wsdl directory
+ * <p/>
+ * <li>META-INF directory
+ * <p/>
+ * <li>META-INF/wsdl directory
+ * <p/>
+ * </ul>
  *
  * @version $Rev$ $Date$
  */
@@ -54,14 +65,31 @@ public class ContextClassLoaderResolver implements URIResolver {
     private URIResolver defaultResolver = new DefaultURIResolver();
 
     public InputSource resolveEntity(String targetNamespace, String schemaLocation, String baseUri) {
-        URL url = Thread.currentThread().getContextClassLoader().getResource(schemaLocation);
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL url = loader.getResource(schemaLocation);
         if (url != null) {
-            try {
-                return new InputSource(url.openStream());
-            } catch (IOException e) {
-                throw new AssertionError(e);
-            }
+            return createSource(url);
+        }
+        url = loader.getResource("wsdl/" + schemaLocation);
+        if (url != null) {
+            return createSource(url);
+        }
+        url = loader.getResource("META-INF/" + schemaLocation);
+        if (url != null) {
+            return createSource(url);
+        }
+        url = loader.getResource("META-INF/wsdl/" + schemaLocation);
+        if (url != null) {
+            return createSource(url);
         }
         return defaultResolver.resolveEntity(targetNamespace, schemaLocation, baseUri);
+    }
+
+    private InputSource createSource(URL url) {
+        try {
+            return new InputSource(url.openStream());
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 }
