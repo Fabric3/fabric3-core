@@ -388,6 +388,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                     monitor.processed(resource.getName());
                 }
             } catch (ValidationException e) {
+                // remove from not seen: FABRICTHREE-583
+                for (ContributionSource source : sources) {
+                    notSeen.remove(source.getUri());
+                }
                 // print out the validation errors
                 monitor.contributionErrors(e.getMessage());
                 for (FileSystemResource resource : addedResources) {
