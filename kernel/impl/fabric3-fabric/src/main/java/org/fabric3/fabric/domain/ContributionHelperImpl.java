@@ -147,6 +147,9 @@ public class ContributionHelperImpl implements ContributionHelper {
         Set<Contribution> contributions = new LinkedHashSet<Contribution>(uris.size());
         for (URI uri : uris) {
             Contribution contribution = metadataStore.find(uri);
+            if (contribution == null) {
+                throw new AssertionError("Contribution not found for: " + uri);
+            }
             contributions.add(contribution);
         }
         return contributions;
