@@ -121,6 +121,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
             EventStream stream = streams.get(0);
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
             configuration.setClientId(clientId);
+            configuration.setDestinationType(metadata.getDestination().geType());
             configuration.setDestination(destination);
             configuration.setFactory(connectionFactory);
             configuration.setMessageListener(listener);

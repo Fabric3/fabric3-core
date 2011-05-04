@@ -51,13 +51,13 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
@@ -86,6 +86,7 @@ public class AdaptiveMessageContainer {
     // container configuration
     private int receiveTimeout;
     private URI listenerUri;
+    private DestinationType destinationType;
     private Destination destination;
     private int cacheLevel;
     private TransactionType transactionType;
@@ -134,6 +135,7 @@ public class AdaptiveMessageContainer {
                                     ExecutorService executorService,
                                     MessageContainerMonitor monitor) {
         listenerUri = configuration.getUri();
+        destinationType = configuration.getDestinationType();
         destination = configuration.getDestination();
         cacheLevel = configuration.getCacheLevel();
         transactionType = configuration.getType();
@@ -665,7 +667,7 @@ public class AdaptiveMessageContainer {
      * @throws JMSException if an error is encountered creating the consumer
      */
     private MessageConsumer createConsumer(Session session) throws JMSException {
-        if (destination instanceof Topic && !(destination instanceof Queue)) {
+        if (DestinationType.TOPIC == destinationType) {
             if (isDurable()) {
                 return session.createDurableSubscriber((Topic) destination, subscriptionName, messageSelector, localDelivery);
             } else {

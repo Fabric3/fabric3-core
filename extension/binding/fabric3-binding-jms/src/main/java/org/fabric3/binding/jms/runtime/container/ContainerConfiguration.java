@@ -43,6 +43,7 @@ import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.MessageListener;
 
+import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
@@ -73,6 +74,7 @@ public class ContainerConfiguration {
     private boolean durable;
     private boolean localDelivery;
     private String clientId;
+    private DestinationType destinationType;
 
     public URI getUri() {
         return uri;
@@ -116,6 +118,14 @@ public class ContainerConfiguration {
 
     public Destination getDestination() {
         return destination;
+    }
+
+    public void setDestinationType(DestinationType type) {
+        this.destinationType = type;
+    }
+
+    public DestinationType getDestinationType() {
+        return destinationType;
     }
 
     public void setDestination(Destination destination) {
@@ -227,4 +237,5 @@ public class ContainerConfiguration {
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
+
 }
