@@ -152,6 +152,11 @@ public class ResourceMapping {
      * @return true if the path is parameterized
      */
     public boolean isParameterized() {
+        if (Verb.PUT == verb || Verb.POST == verb) {
+            if (method.getParameterTypes().length > 0 && (HttpServletRequest.class.isAssignableFrom(method.getParameterTypes()[0]))) {
+                return true;
+            }
+        }
         return method.getParameterTypes().length > 0 && !(HttpServletRequest.class.isAssignableFrom(method.getParameterTypes()[0]));
     }
 
