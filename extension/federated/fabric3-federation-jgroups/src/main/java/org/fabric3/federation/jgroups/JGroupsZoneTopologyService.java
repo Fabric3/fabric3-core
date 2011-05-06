@@ -242,12 +242,20 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     public void sendAsynchronous(String runtimeName, Command command) throws MessageException {
-        Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
+        View view = domainChannel.getView();
+        if (view == null) {
+            throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
+        }
+        Address address = helper.getRuntimeAddress(runtimeName, view);
         sendAsync(address, command);
     }
 
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
-        Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
+        View view = domainChannel.getView();
+        if (view == null) {
+            throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
+        }
+        Address address = helper.getRuntimeAddress(runtimeName, view);
         if (address == null) {
             throw new MessageException("Runtime not found: " + runtimeName);
         }

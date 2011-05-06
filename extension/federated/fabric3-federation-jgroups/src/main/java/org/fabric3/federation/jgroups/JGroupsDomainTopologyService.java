@@ -261,7 +261,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         try {
             byte[] payload = helper.serialize(command);
-            Address address = helper.getRuntimeAddress(runtimeName, domainChannel.getView());
+            View view = domainChannel.getView();
+            if (view == null) {
+                throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
+            }
+            Address address = helper.getRuntimeAddress(runtimeName, view);
             Message message = new Message(address, domainChannel.getAddress(), payload);
             Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
             assert o instanceof byte[] : "Expected byte[] but was " + o;
