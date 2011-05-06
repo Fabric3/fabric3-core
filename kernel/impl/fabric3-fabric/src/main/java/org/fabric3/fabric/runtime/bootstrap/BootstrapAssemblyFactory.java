@@ -206,6 +206,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.transform.DefaultTransformerRegistry;
 import org.fabric3.transform.property.Property2BooleanTransformer;
+import org.fabric3.transform.property.Property2ElementTransformer;
 import org.fabric3.transform.property.Property2IntegerTransformer;
 import org.fabric3.transform.property.Property2QNameTransformer;
 import org.fabric3.transform.property.Property2StringTransformer;
@@ -368,6 +369,7 @@ public class BootstrapAssemblyFactory {
         transformers.add(new Property2StringTransformer());
         transformers.add(new Property2IntegerTransformer());
         transformers.add(new Property2BooleanTransformer());
+        transformers.add(new Property2ElementTransformer());
         transformers.add(new Property2QNameTransformer());
         transformers.add(new String2ClassTransformer(classLoaderRegistry));
         transformers.add(new String2QNameTransformer());

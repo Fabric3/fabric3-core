@@ -51,6 +51,8 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 import org.slf4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -94,21 +96,26 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
      * @param levels the mapping of relative URI to monitor level.
      */
     @Property(required = false)
-    public void setApplicationComponentLevels(Map<String, String> levels) {
+    public void setApplicationComponentLevels(Element levels) {
         this.applicationComponentLevels = new HashMap<URI, MonitorLevel>();
         // add the application domain prefix
         String base = info.getDomain().toString();
-        for (Map.Entry<String, String> entry : levels.entrySet()) {
+        NodeList list = levels.getElementsByTagName("level");
+        for (int i = 0; i < list.getLength(); i++) {
             URI uri;
-            if (entry.getKey().length() == 0) {
+            Element element = (Element) list.item(i);
+            String name = element.getAttribute("name");
+            if (name.length() == 0) {
                 // root domain component specified
                 uri = info.getDomain();
 
             } else {
-                uri = URI.create(base + "/" + entry.getKey());
+                uri = URI.create(base + "/" + name);
             }
-            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
+            String value = element.getAttribute("value").toUpperCase();
+            MonitorLevel level = MonitorLevel.valueOf(value);
             applicationComponentLevels.put(uri, level);
+
         }
     }
 
@@ -119,19 +126,22 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
      * @param levels the mapping of relative URI to monitor level.
      */
     @Property(required = false)
-    public void setRuntimeComponentLevels(Map<String, String> levels) {
+    public void setRuntimeComponentLevels(Element levels) {
         this.runtimeComponentLevels = new HashMap<URI, MonitorLevel>();
-        // add the runtime domain prefix
-        for (Map.Entry<String, String> entry : levels.entrySet()) {
+        NodeList list = levels.getElementsByTagName("level");
+        for (int i = 0; i < list.getLength(); i++) {
             URI uri;
-            if (entry.getKey().length() == 0) {
+            Element element = (Element) list.item(i);
+            String name = element.getAttribute("name");
+            if (name.length() == 0) {
                 // root domain component specified
                 uri = Names.RUNTIME_URI;
 
             } else {
-                uri = URI.create(Names.RUNTIME_NAME + "/" + entry.getKey());
+                uri = URI.create(Names.RUNTIME_NAME + "/" + name);
             }
-            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
+            String value = element.getAttribute("value").toUpperCase();
+            MonitorLevel level = MonitorLevel.valueOf(value);
             runtimeComponentLevels.put(uri, level);
         }
     }
@@ -142,11 +152,14 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
      * @param levels the mapping of composite name to monitor level.
      */
     @Property(required = false)
-    public void setDeployableLevels(Map<QName, String> levels) {
+    public void setDeployableLevels(Element levels) {
         this.deployableLevels = new HashMap<QName, MonitorLevel>();
-        for (Map.Entry<QName, String> entry : levels.entrySet()) {
-            MonitorLevel level = MonitorLevel.valueOf(entry.getValue().toUpperCase());
-            deployableLevels.put(entry.getKey(), level);
+        NodeList list = levels.getElementsByTagName("level");
+        for (int i = 0; i < list.getLength(); i++) {
+            Element element = (Element) list.item(i);
+            String value = element.getAttribute("value").toUpperCase();
+            MonitorLevel level = MonitorLevel.valueOf(value.toUpperCase());
+            deployableLevels.put(getQualifiedName(element), level);
         }
     }
 
@@ -219,5 +232,20 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
 
     public void onDispose(Component component, PhysicalComponentDefinition definition) {
         // no-op
+    }
+
+
+    private QName getQualifiedName(Element element) {
+        String text = element.getAttribute("name");
+        int index = text.indexOf(':');
+        if (index < 1 || index == text.length() - 1) {
+            // unqualified form - use the default supplied
+            return new QName(null, text);
+        } else {
+            String prefix = text.substring(0, index);
+            String uri = element.lookupNamespaceURI(prefix);
+            String localPart = text.substring(index + 1);
+            return new QName(uri, localPart, prefix);
+        }
     }
 }

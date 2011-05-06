@@ -38,12 +38,17 @@
 package org.fabric3.monitor.runtime;
 
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Collections;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.Names;
@@ -56,9 +61,26 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
  * @version $Rev$ $Date$
  */
 public class LogBackMonitorServiceTestCase extends TestCase {
+    private static final String XML = "<config xmlns:foo='foo'>" +
+            "    <runtime>" +
+            "       <monitor>" +
+            "        <deployables>" +
+            "            <level name='foo:bar' value='debug'/>" +
+            "        </deployables>" +
+            "        <runtime.components>" +
+            "            <level name='Component' value='debug'/>" +
+            "        </runtime.components>" +
+            "        <application.components>" +
+            "            <level name='Component' value='debug'/>" +
+            "        </application.components>" +
+            "    </monitor>    " +
+            "    </runtime>" +
+            "</config>";
+    
     private ComponentManager componentManager;
     private HostInfo info;
     private Component component;
+    private Document document;
 
     public void testSetDeployableLevelAtStartup() throws Exception {
         QName deployable = new QName("foo", "bar");
@@ -67,7 +89,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setDeployableLevels(Collections.<QName, String>singletonMap(deployable, "debug"));
+        Element element = (Element) document.getElementsByTagName("deployables").item(0);
+        service.setDeployableLevels(element);
         service.init();
         EasyMock.verify(componentManager, info, component);
     }
@@ -79,7 +102,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setDeployableLevels(Collections.<QName, String>singletonMap(deployable, "debug"));
+        Element element = (Element) document.getElementsByTagName("deployables").item(0);
+        service.setDeployableLevels(element);
         service.init();
         EasyMock.verify(componentManager, info);
     }
@@ -96,7 +120,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         PhysicalComponentDefinition definition = new MockDefinition();
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setDeployableLevels(Collections.<QName, String>singletonMap(deployable, "debug"));
+        Element element = (Element) document.getElementsByTagName("deployables").item(0);
+        service.setDeployableLevels(element);
         service.init();
 
         service.onBuild(component, definition);
@@ -111,7 +136,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setRuntimeComponentLevels(Collections.<String, String>singletonMap("Component", "debug"));
+        Element element = (Element) document.getElementsByTagName("runtime.components").item(0);
+        service.setRuntimeComponentLevels(element);
         service.init();
         EasyMock.verify(componentManager, info, component);
     }
@@ -121,7 +147,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setRuntimeComponentLevels(Collections.<String, String>singletonMap("NotFoundComponent", "debug"));
+        Element element = (Element) document.getElementsByTagName("runtime.components").item(0);
+        service.setRuntimeComponentLevels(element);
         service.init();
         EasyMock.verify(componentManager, info, component);
     }
@@ -135,7 +162,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setRuntimeComponentLevels(Collections.<String, String>singletonMap("Component", "debug"));
+        Element element = (Element) document.getElementsByTagName("runtime.components").item(0);
+        service.setRuntimeComponentLevels(element);
         service.init();
 
         PhysicalComponentDefinition definition = new MockDefinition();
@@ -143,26 +171,6 @@ public class LogBackMonitorServiceTestCase extends TestCase {
 
         EasyMock.verify(componentManager, info, component);
     }
-
-
-    public void testSetRuntimeDomainUriLevelAfterStartup() throws Exception {
-        URI uri = URI.create(Names.RUNTIME_NAME);
-        // return no components to simulate setting a deployable that is not yet deployed
-        EasyMock.expect(componentManager.getComponentsInHierarchy(uri)).andReturn(Collections.<Component>emptyList());
-        EasyMock.expect(component.getUri()).andReturn(URI.create(Names.RUNTIME_NAME + "/Component")).atLeastOnce();
-        component.setLevel(MonitorLevel.DEBUG);
-        EasyMock.replay(componentManager, info, component);
-
-        LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setRuntimeComponentLevels(Collections.<String, String>singletonMap("", "debug"));
-        service.init();
-
-        PhysicalComponentDefinition definition = new MockDefinition();
-        service.onBuild(component, definition);
-
-        EasyMock.verify(componentManager, info, component);
-    }
-
 
     public void testSetApplicationUriLevelAtStartup() throws Exception {
         URI uri = URI.create("fabric3://domain/Component");
@@ -175,7 +183,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setApplicationComponentLevels(Collections.<String, String>singletonMap("Component", "debug"));
+        Element element = (Element) document.getElementsByTagName("application.components").item(0);
+        service.setApplicationComponentLevels(element);
         service.init();
         EasyMock.verify(componentManager, info, component);
     }
@@ -187,7 +196,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setApplicationComponentLevels(Collections.<String, String>singletonMap("NotFoundComponent", "debug"));
+        Element element = (Element) document.getElementsByTagName("application.components").item(0);
+        service.setApplicationComponentLevels(element);
         service.init();
         EasyMock.verify(componentManager, info, component);
     }
@@ -206,30 +216,8 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         EasyMock.replay(componentManager, info, component);
 
         LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setApplicationComponentLevels(Collections.<String, String>singletonMap("Component", "debug"));
-        service.init();
-
-        PhysicalComponentDefinition definition = new MockDefinition();
-        service.onBuild(component, definition);
-
-        EasyMock.verify(componentManager, info, component);
-    }
-
-    public void testSetApplicationDomainUriLevelAfterStartup() throws Exception {
-        URI uri = URI.create("fabric3://domain");
-
-        // return no components to simulate setting a deployable that is not yet deployed
-        EasyMock.expect(componentManager.getComponentsInHierarchy(uri)).andReturn(Collections.<Component>emptyList());
-        EasyMock.expect(component.getUri()).andReturn(URI.create("fabric3://domain/Component")).atLeastOnce();
-        component.setLevel(MonitorLevel.DEBUG);
-
-        URI domain = URI.create("fabric3://domain");
-        EasyMock.expect(info.getDomain()).andReturn(domain).atLeastOnce();
-
-        EasyMock.replay(componentManager, info, component);
-
-        LogBackMonitorService service = new LogBackMonitorService(componentManager, info);
-        service.setApplicationComponentLevels(Collections.<String, String>singletonMap("", "debug"));
+        Element element = (Element) document.getElementsByTagName("application.components").item(0);
+        service.setApplicationComponentLevels(element);
         service.init();
 
         PhysicalComponentDefinition definition = new MockDefinition();
@@ -244,9 +232,18 @@ public class LogBackMonitorServiceTestCase extends TestCase {
         componentManager = EasyMock.createMock(ComponentManager.class);
         info = EasyMock.createMock(HostInfo.class);
         component = EasyMock.createMock(Component.class);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
+        document = builder.parse(stream);
+
     }
 
     private class MockDefinition extends PhysicalComponentDefinition {
         private static final long serialVersionUID = -1266410990667874184L;
     }
+
+
 }
+
