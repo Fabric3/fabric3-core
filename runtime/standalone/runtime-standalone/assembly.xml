@@ -74,7 +74,7 @@
             <outputDirectory>host</outputDirectory>
         </dependencySet>
 
-        <!-- copy boot dependencies to standalone profile -->
+        <!-- copy boot dependencies -->
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3:fabric3-monitor</include>
