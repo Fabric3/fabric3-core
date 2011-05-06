@@ -175,7 +175,6 @@ public abstract class AbstractComponentInstantiator {
 
         Document document = builder.newDocument();
         Element root = document.createElement("values");
-        // TODO do we need to copy namespace declarations to this root
         document.appendChild(root);
         try {
             NodeList result = (NodeList) xpath.evaluate(source, document, XPathConstants.NODESET);
@@ -194,8 +193,9 @@ public abstract class AbstractComponentInstantiator {
                     // value is already specified as the root of the XPath select, append directly to it
                     value = root;
                 }
-                // clone the node as the original may be accessed multiple times
+                // clone the node and copy the namespaces as the original may be accessed multiple times
                 Node cloned = node.cloneNode(true);
+                NamespaceHelper.copyNamespaces(node, value);
                 document.adoptNode(cloned);
                 short type = cloned.getNodeType();
                 if (Node.ELEMENT_NODE == type || Node.TEXT_NODE == type) {
@@ -214,7 +214,7 @@ public abstract class AbstractComponentInstantiator {
             // the Apache and Sun implementations of XPath throw a nested NullPointerException
             // if the xpath contains an unresolvable variable. It might be better to throw
             // a more descriptive cause, but that also might be confusing for people who
-            // are used to this behaviour
+            // are used to this behavior
             throw e;
         }
         return document;
