@@ -65,6 +65,7 @@ public class BootConfiguration {
     private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages = new HashMap<String, String>();
+    private List<String> hostCapabilities = new ArrayList<String>();
     private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
     private List<ContributionSource> extensionContributions = Collections.emptyList();
     private List<ContributionSource> userContributions = Collections.emptyList();
@@ -116,6 +117,14 @@ public class BootConfiguration {
 
     public void setExportedPackages(Map<String, String> exportedPackages) {
         this.exportedPackages = exportedPackages;
+    }
+
+    public List<String> getHostCapabilities() {
+        return hostCapabilities;
+    }
+
+    public void setHostCapabilities(List<String> hostCapabilities) {
+        this.hostCapabilities = hostCapabilities;
     }
 
     public List<ComponentRegistration> getRegistrations() {

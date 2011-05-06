@@ -45,6 +45,7 @@ package org.fabric3.fabric.runtime;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
@@ -79,6 +80,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionState;
@@ -138,6 +140,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
+    private List<String> hostCapabilities;
     private ClassLoader hostClassLoader;
     private Contribution bootContribution;
     private List<ComponentRegistration> registrations;
@@ -149,6 +152,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         hostClassLoader = configuration.getHostClassLoader();
         bootClassLoader = configuration.getBootClassLoader();
         exportedPackages = configuration.getExportedPackages();
+        hostCapabilities = configuration.getHostCapabilities();
         registrations = configuration.getRegistrations();
 
         // create disposable components needed to bootstrap the runtime
@@ -318,10 +322,10 @@ public class DefaultBootstrapper implements Bootstrapper {
     private void synthesizeContributions() throws InitializationException {
         try {
             // export packages included in JDK 6
-            synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostClassLoader);
+            synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader);
             // add default boot exports
             exportedPackages.putAll(BootExports.getExports());
-            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, bootClassLoader);
+            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader);
         } catch (ContributionException e) {
             throw new InitializationException(e);
         }
@@ -332,12 +336,15 @@ public class DefaultBootstrapper implements Bootstrapper {
      *
      * @param contributionUri  the contribution URI
      * @param exportedPackages the packages exported by the contribution
+     * @param hostCapabilities the capabilities provided by the contribution
      * @param loader           the classloader
      * @return the synthesized contribution
      * @throws ContributionException if there is an error synthesizing the contribution
      */
-    private Contribution synthesizeContribution(URI contributionUri, Map<String, String> exportedPackages, ClassLoader loader)
-            throws ContributionException {
+    private Contribution synthesizeContribution(URI contributionUri,
+                                                Map<String, String> exportedPackages,
+                                                List<String> hostCapabilities,
+                                                ClassLoader loader) throws ContributionException {
         Contribution contribution = new Contribution(contributionUri);
         contribution.setState(ContributionState.INSTALLED);
         ContributionManifest manifest = contribution.getManifest();
@@ -348,6 +355,9 @@ public class DefaultBootstrapper implements Bootstrapper {
             PackageInfo info = new PackageInfo(entry.getKey(), version);
             JavaExport export = new JavaExport(info);
             manifest.addExport(export);
+        }
+        for (String capability : hostCapabilities) {
+            manifest.addProvidedCapability(new Capability(capability));
         }
         metaDataStore.store(contribution);
         classLoaderRegistry.register(contributionUri, loader);
