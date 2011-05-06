@@ -93,7 +93,7 @@ public class InstallProfileCommand implements Command {
     public boolean storeProfile(URL profile, URI uri, PrintStream out) {
         HttpURLConnection connection = null;
         try {
-            String path =  "/contributions/profiles/profile/" + uri;
+            String path =  "/domain/contributions/profiles/profile/" + uri;
             connection = domainConnection.put(path, profile);
             int code = connection.getResponseCode();
             if (HttpStatus.UNAUTHORIZED.getCode() == code) {

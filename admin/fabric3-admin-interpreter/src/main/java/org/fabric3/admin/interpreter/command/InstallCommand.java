@@ -94,7 +94,7 @@ public class InstallCommand implements Command {
         }
         HttpURLConnection connection = null;
         try {
-            String path = "/contributions/contribution/" + contributionUri;
+            String path = "/domain/contributions/contribution/" + contributionUri;
             connection = domainConnection.put(path, contribution);
             int code = connection.getResponseCode();
             if (HttpStatus.UNAUTHORIZED.getCode() == code) {
