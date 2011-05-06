@@ -228,8 +228,19 @@ Public License. See the accompanying license file for details.
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-datasource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- JMS extensions -->
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-jndi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.codehaus.fabric3.weblogic</groupId>
@@ -274,6 +285,13 @@ Public License. See the accompanying license file for details.
             <version>3.1.0</version>
         </dependency>
 
+        <!-- required by the monitor module -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        
 
     </dependencies>
 

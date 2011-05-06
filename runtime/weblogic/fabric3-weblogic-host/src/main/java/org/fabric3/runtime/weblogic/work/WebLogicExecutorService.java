@@ -45,6 +45,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import com.bea.core.workmanager.WorkManagerFactory;
 import commonj.work.Work;
@@ -52,8 +55,7 @@ import commonj.work.WorkException;
 import commonj.work.WorkManager;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
-
-import org.fabric3.api.annotation.monitor.Monitor;
+import weblogic.logging.LoggingHelper;
 
 /**
  * Delegates to a WebLogic <code>WorkManager</code>.
@@ -66,11 +68,12 @@ import org.fabric3.api.annotation.monitor.Monitor;
  */
 @EagerInit
 public class WebLogicExecutorService implements ExecutorService {
-    private WebLogicWorkSchedulerMonitor monitor;
     private WorkManager workManager;
+    private Logger logger;
 
-    public WebLogicExecutorService(@Monitor WebLogicWorkSchedulerMonitor monitor) {
-        this.monitor = monitor;
+    public WebLogicExecutorService() {
+        // can't use a monitor since this is a primordial service
+        logger = LoggingHelper.getServerLogger();
     }
 
     @Init
@@ -83,7 +86,9 @@ public class WebLogicExecutorService implements ExecutorService {
         try {
             workManager.schedule(new CommonJWorkWrapper(command));
         } catch (WorkException e) {
-            monitor.scheduleError(e);
+            LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
+            record.setThrown(e);
+            logger.log(record);
         }
     }
 

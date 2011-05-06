@@ -46,11 +46,11 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface DataSourceResolverMonitor {
 
-    @Severe("Error:")
+    @Severe
     void error(Exception e);
 
     @Warning(
-            "he configured datasource {0} was not found in JNDI. If this is an error, ensure that the datasource has a JNDI binding and is targeted to this managed server.")
+            "The configured datasource {0} was not found in JNDI. If this is an error, ensure that the datasource has a JNDI binding and is targeted to this managed server.")
     void dataSourceNotFound(String name);
 
     @Debug("Registering JNDI datasource: {0}")

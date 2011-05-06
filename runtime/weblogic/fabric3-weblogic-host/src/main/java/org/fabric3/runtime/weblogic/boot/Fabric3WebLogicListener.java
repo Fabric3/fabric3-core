@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -76,6 +77,7 @@ import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.weblogic.api.Constants;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
 import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcherFactory;
+import org.fabric3.runtime.weblogic.work.WebLogicExecutorService;
 
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
@@ -209,10 +211,20 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
             WebLogicMonitorEventDispatcherFactory factory = new WebLogicMonitorEventDispatcherFactory();
-            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
-                                                                           MonitorEventDispatcherFactory.class,
-                                                                           factory, true);
-            registrations.add(registration);
+            ComponentRegistration dispatcherRegistration = new ComponentRegistration("MonitorEventDispatcherFactory",
+                                                                                     MonitorEventDispatcherFactory.class,
+                                                                                     factory,
+                                                                                     true);
+
+            registrations.add(dispatcherRegistration);
+
+            WebLogicExecutorService executorService = new WebLogicExecutorService();
+            ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService",
+                                                                                   ExecutorService.class,
+                                                                                   executorService,
+                                                                                   true);
+            registrations.add(executorRegistration);
+
             configuration.addRegistrations(registrations);
 
             configuration.setRuntime(runtime);
@@ -223,7 +235,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             configuration.setExtensionContributions(result.getExtensionContributions());
             configuration.setUserContributions(result.getUserContributions());
             configuration.setExportedPackages(exportedPackages);
-
+            configuration.setHostCapabilities(getHostCapabilities());
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
@@ -254,6 +266,12 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         exportedPackages.put("javax.transaction.xa", "1.1.0");
         exportedPackages.put("org.fabric3.runtime.weblogic.api", Names.VERSION);
         return exportedPackages;
+    }
+
+    private List<String> getHostCapabilities() {
+        List<String> capabilities = new ArrayList<String>();
+        capabilities.add("transaction");
+        return capabilities;
     }
 
     private static RuntimeMode getRuntimeMode() {

@@ -39,7 +39,7 @@
             <outputDirectory>fabric3/host</outputDirectory>
         </dependencySet>
 
-        <!-- copy boot dependencies to standalone profile -->
+        <!-- copy boot dependencies -->
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3:fabric3-monitor</include>
@@ -53,8 +53,14 @@
                 <include>org.codehaus.fabric3:fabric3-contribution</include>
                 <include>org.codehaus.fabric3:fabric3-fabric</include>
                 <include>org.codehaus.fabric3:fabric3-system</include>
+                <!--<include>org.codehaus.fabric3:fabric3-thread-pool</include>-->
                 <include>jaxen:jaxen</include>
                 <include>org.codehaus.woodstox:wstx-asl</include>
+
+                <!-- logback is required because the monitor module references ILoggingEvent from MonitorEventImpl  -->
+                <include>ch.qos.logback:logback-classic</include>
+                <include>ch.qos.logback:logback-core</include>
+                <include>org.slf4j:slf4j-api</include>
             </includes>
             <outputDirectory>fabric3/boot</outputDirectory>
         </dependencySet>
@@ -77,12 +83,14 @@
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-kernel</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-federation</include>
                 <include>org.codehaus.fabric3:fabric3-tx</include>
+                <include>org.codehaus.fabric3:fabric3-datasource</include>
 
                 <!-- Data binding -->
                 <include>org.codehaus.fabric3:fabric3-databinding-jaxb</include>
                 <include>org.codehaus.fabric3:fabric3-jaxb</include>
 
                 <!-- JMS -->
+                <include>org.codehaus.fabric3:fabric3-jndi</include>
                 <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-jms</include>
                 <include>org.codehaus.fabric3:fabric3-binding-jms</include>
 
