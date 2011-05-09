@@ -204,8 +204,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
     }
 
     public void shutdownRuntime() {
-        latch.countDown();
         shutdown();
+        latch.countDown();
     }
 
     private void shutdown() {
