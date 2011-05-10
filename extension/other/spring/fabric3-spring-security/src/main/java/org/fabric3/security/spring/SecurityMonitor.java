@@ -38,6 +38,7 @@
 package org.fabric3.security.spring;
 
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * @version $Rev$ $Date$
@@ -46,5 +47,8 @@ public interface SecurityMonitor {
 
     @Info("Security will be disabled as a provider is not configured")
     void disabled();
+
+    @Severe
+    void error(String message);
 
 }

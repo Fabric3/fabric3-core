@@ -114,6 +114,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
 
     public SecuritySubject authenticate(AuthenticationToken<?, ?> token) throws AuthenticationException {
         if (disabled) {
+            monitor.error("Attempt to authenticate when authentication is disabled");
             throw new AuthenticationException("Authentication is disabled");
         }
         ClassLoader old = Thread.currentThread().getContextClassLoader();
