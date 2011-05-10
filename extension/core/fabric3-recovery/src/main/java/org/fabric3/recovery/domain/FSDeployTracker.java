@@ -68,10 +68,10 @@ public class FSDeployTracker implements DeployListener {
     private static final String NO_PLAN = "";
     private File domainLog;
     private XMLOutputFactory outputFactory;
-    private FSDomainTrackerMonitor monitor;
+    private DeployTrackerMonitor monitor;
     private Map<QName, String> deployables;
 
-    public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor FSDomainTrackerMonitor monitor) {
+    public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor DeployTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
         this.deployables = new HashMap<QName, String>();

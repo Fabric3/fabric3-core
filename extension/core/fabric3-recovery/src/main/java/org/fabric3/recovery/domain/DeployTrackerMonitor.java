@@ -39,7 +39,7 @@ package org.fabric3.recovery.domain;
 
 import org.fabric3.api.annotation.monitor.Severe;
 
-public interface FSDomainTrackerMonitor {
+public interface DeployTrackerMonitor {
 
     @Severe("Error recording domain state")
     void error(Throwable e);
