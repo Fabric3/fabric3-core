@@ -71,11 +71,16 @@ public class ChannelRouter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo().substring(1);    // strip leading '/'
+        String info = request.getPathInfo();
+        if (info == null) {
+            response.setStatus(404);
+            return;
+        }
+        String path = info.substring(1);    // strip leading '/'
         ChannelSubscriber subscriber = pubSubManager.getSubscriber(path);
         if (subscriber == null) {
-            // TODO return 404
-            throw new AssertionError("Path not found: " + path);
+            response.setStatus(404);
+            return;
         }
         try {
             subscriber.subscribe(request);
@@ -89,11 +94,16 @@ public class ChannelRouter extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String path = request.getPathInfo().substring(1);    // strip leading '/'
+        String info = request.getPathInfo();
+        if (info == null) {
+            response.setStatus(404);
+            return;
+        }
+        String path = info.substring(1);    // strip leading '/'
         ChannelPublisher publisher = pubSubManager.getPublisher(path);
         if (publisher == null) {
-            // TODO return 404
-            throw new AssertionError("Path not found");
+            response.setStatus(404);
+            return;
         }
         try {
             String contentType = request.getHeader("Content-Type");

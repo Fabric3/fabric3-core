@@ -37,18 +37,24 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.cpr.CometSupportResolver;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.Fabric3CometSupportResolver;
 import org.fabric3.spi.host.ServletHost;
+
+import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_JSON;
+import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_PLAIN;
 
 /**
  * Receives incoming comet and websocket requests destined for a service. This class extends the AtmosphereServlet to provide custom
@@ -90,6 +96,20 @@ public class ServiceGatewayServlet extends AtmosphereServlet {
     @Override
     protected void loadConfiguration(ServletConfig config) {
         // no-op, required
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String contentType = request.getContentType();
+        if ((contentType == null)) {
+            super.doGet(request, response);
+        } else if (contentType.contains(APPLICATION_JSON) || contentType.contains(TEXT_PLAIN)) {
+            super.doGet(request, response);
+        } else {
+            response.setStatus(400);  // bad request
+            response.getWriter().write("Unsupported content type: " + contentType);
+        }
+
     }
 
     @Override

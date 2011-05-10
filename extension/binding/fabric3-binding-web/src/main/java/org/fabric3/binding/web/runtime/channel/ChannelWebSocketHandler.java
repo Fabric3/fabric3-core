@@ -66,7 +66,13 @@ public class ChannelWebSocketHandler extends AbstractReflectorAtmosphereHandler 
     }
 
     public void onRequest(AtmosphereResource<HttpServletRequest, HttpServletResponse> r) throws IOException {
-        String path = r.getRequest().getPathInfo().substring(1); // strip leading "/"
+        String info = r.getRequest().getPathInfo();
+        if (info == null) {
+            // no path specified
+            handler.onRequest(r);
+            return;
+        }
+        String path = info.substring(1); // strip leading "/"
         Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path);
         r.setBroadcaster(broadcaster);
         if (!r.getResponse().getClass().isAssignableFrom(WebSocketHttpServletResponse.class)) {

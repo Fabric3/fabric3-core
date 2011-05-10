@@ -74,7 +74,7 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
             initializeTransformer();
-            broadcaster = new ChannelBroadcaster(path, jsonTransformer, registry);
+            broadcaster = new ChannelBroadcaster(path, jsonTransformer);
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;
