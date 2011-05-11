@@ -107,6 +107,7 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
 
     public InputStream resolve(URI contributionUri) throws ResolutionException {
         String zoneLeader = topologyService.getZoneLeaderName();
+        URL resolveURL = null;
         ProvisionCommand command = new ProvisionCommand(contributionUri);
         try {
             ProvisionResponse response;
@@ -119,15 +120,17 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
             } else {
                 throw new ResolutionException("Unable to contact controller or peer to resolve contribution: " + contributionUri);
             }
-            URL url = response.getContributionUrl();
+            resolveURL = response.getContributionUrl();
             if (secure) {
-                url = new URL(url.toString() + "?username=" + username + "&password=" + password);
+                resolveURL = new URL(resolveURL.toString() + "?username=" + username + "&password=" + password);
             }
-            monitor.resolving(url);
-            return url.openStream();
+            monitor.resolving(resolveURL);
+            return resolveURL.openStream();
         } catch (MessageException e) {
+        	monitor.error("Error while sending Provisioning Command", e);
             throw new ResolutionException(e);
         } catch (IOException e) {
+        	monitor.error("Cant resolve Contribution from URL :"+resolveURL, e);
             throw new ResolutionException(e);
         }
     }
