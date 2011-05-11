@@ -39,7 +39,6 @@ package org.fabric3.host.domain;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.Composite;
@@ -115,9 +114,9 @@ public interface Domain {
     /**
      * Initiates a recovery operation using a Map of deployables to plans.
      *
-     * @param deployables a Map containing deployable keys and plan name values
+     * @param journal the domain journal containing the recorded domain state
      * @throws DeploymentException if an error is encountered during recovery
      */
-    void recover(Map<QName, String> deployables) throws DeploymentException;
+    void recover(DomainJournal journal) throws DeploymentException;
 
 }

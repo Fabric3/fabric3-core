@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.domain;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Reference;
@@ -82,5 +83,21 @@ public class DeployMonitorListener implements DeployListener {
         if (enabled) {
             monitor.undeployCompleted(undeployed);
         }
+    }
+
+    public void onDeploy(URI contribution) {
+        // no-op
+    }
+
+    public void onDeployCompleted(URI contribution) {
+        // no-op
+    }
+
+    public void onUnDeploy(URI contribution) {
+        // no-op
+    }
+
+    public void onUnDeployCompleted(URI contribution) {
+        // no-op
     }
 }

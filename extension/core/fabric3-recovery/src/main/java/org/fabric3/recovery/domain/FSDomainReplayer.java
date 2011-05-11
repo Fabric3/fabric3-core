@@ -42,7 +42,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -59,6 +62,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.domain.DomainJournal;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.DomainRecover;
 import org.fabric3.spi.event.EventService;
@@ -66,14 +70,16 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * Replays the domain journal when the controller synchronizes with the domain. The domain journal records the state of the domain as composites are
- * included and undeployed. Replaying the journal has the affect of reinstating the logical assembly to its prior state before the controller went
- * offline (either as a result of a normal shutdown or system failure).
+ * Replays the domain journal when the controller synchronizes with the domain.
+ * <p/>
+ * The domain journal records the state of the domain as composites are included and undeployed. Replaying the journal has the affect of reinstating
+ * the logical assembly to its prior state before the controller went offline (either as a result of a normal shutdown or system failure).
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
+    private static final QName CONTRIBUTION = new QName(Namespaces.F3, "contribution");
     private static final QName DEPLOYABLE = new QName(Namespaces.F3, "deployable");
     private EventService eventService;
     private FSDomainReplayMonitor monitor;
@@ -104,8 +110,8 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         }
 
         try {
-            Map<QName, String> deployables = parse();
-            domain.recover(deployables);
+            DomainJournal journal = parse();
+            domain.recover(journal);
         } catch (FileNotFoundException e) {
             monitor.error(e);
         } catch (XMLStreamException e) {
@@ -122,10 +128,11 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
      * @throws FileNotFoundException if the journal file does not exist
      * @throws XMLStreamException    if there is an error reading the journal
      */
-    private Map<QName, String> parse() throws FileNotFoundException, XMLStreamException {
+    private DomainJournal parse() throws FileNotFoundException, XMLStreamException {
         FileInputStream fis = new FileInputStream(domainLog);
         BufferedInputStream stream = new BufferedInputStream(fis);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(stream);
+        List<URI> contributions = new ArrayList<URI>();
         Map<QName, String> deployables = new LinkedHashMap<QName, String>();
         try {
             while (true) {
@@ -151,10 +158,20 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
                         String plan = reader.getAttributeValue(null, "plan");
                         QName qName = new QName(namespace, name);
                         deployables.put(qName, plan);
+                    } else if (CONTRIBUTION.equals(reader.getName())) {
+                        String uri = reader.getAttributeValue(null, "uri");
+                        if (uri == null) {
+                            Location location = reader.getLocation();
+                            int line = location.getLineNumber();
+                            int col = location.getColumnNumber();
+                            monitor.errorMessage("URI attribute missing in domain journal [" + line + "," + col + "]");
+                            continue;
+                        }
+                        contributions.add(URI.create(uri));
                     }
                     break;
                 case XMLStreamConstants.END_DOCUMENT:
-                    return deployables;
+                    return new DomainJournal(contributions, deployables);
                 }
 
             }

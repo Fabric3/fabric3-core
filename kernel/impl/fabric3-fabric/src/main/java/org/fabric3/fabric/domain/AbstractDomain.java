@@ -60,6 +60,7 @@ import org.fabric3.host.domain.ContributionNotFoundException;
 import org.fabric3.host.domain.ContributionNotInstalledException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.domain.DomainJournal;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.Include;
@@ -206,6 +207,11 @@ public abstract class AbstractDomain implements Domain {
             }
             DeploymentPlan merged = merge(plans.values());
             // notify listeners
+            for (URI uri : uris) {
+                for (DeployListener listener : listeners) {
+                    listener.onDeploy(uri);
+                }
+            }
             for (Composite deployable : deployables) {
                 QName name = deployable.getName();
                 for (DeployListener listener : listeners) {
@@ -223,8 +229,18 @@ public abstract class AbstractDomain implements Domain {
                     listener.onDeployCompleted(name, plan.getName());
                 }
             }
+            for (URI uri : uris) {
+                for (DeployListener listener : listeners) {
+                    listener.onDeployCompleted(uri);
+                }
+            }
         } else {
             // notify listeners
+            for (URI uri : uris) {
+                for (DeployListener listener : listeners) {
+                    listener.onDeploy(uri);
+                }
+            }
             for (Composite deployable : deployables) {
                 for (DeployListener listener : listeners) {
                     listener.onDeploy(deployable.getName(), SYNTHETIC_PLAN_NAME);
@@ -234,6 +250,11 @@ public abstract class AbstractDomain implements Domain {
             for (Composite deployable : deployables) {
                 for (DeployListener listener : listeners) {
                     listener.onDeployCompleted(deployable.getName(), SYNTHETIC_PLAN_NAME);
+                }
+            }
+            for (URI uri : uris) {
+                for (DeployListener listener : listeners) {
+                    listener.onDeployCompleted(uri);
                 }
             }
         }
@@ -264,6 +285,9 @@ public abstract class AbstractDomain implements Domain {
             for (DeployListener listener : listeners) {
                 listener.onUndeploy(deployable);
             }
+        }
+        for (DeployListener listener : listeners) {
+            listener.onUnDeploy(uri);
         }
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
@@ -305,17 +329,13 @@ public abstract class AbstractDomain implements Domain {
                 listener.onUndeployCompleted(deployable);
             }
         }
+        for (DeployListener listener : listeners) {
+            listener.onUnDeployCompleted(uri);
+        }
     }
 
     public synchronized void activateDefinitions(URI uri) throws DeploymentException {
-        Contribution contribution = metadataStore.find(uri);
-        if (ContributionState.INSTALLED != contribution.getState()) {
-            throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
-        }
-        Set<PolicySet> policySets = activateDefinitions(contribution);
-        if (!policySets.isEmpty()) {
-            deployPolicySets(policySets);
-        }
+        activateAndDeployDefinitions(uri, false);
     }
 
     public synchronized void deactivateDefinitions(URI uri) throws DeploymentException {
@@ -333,7 +353,12 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public void recover(Map<QName, String> deployables) throws DeploymentException {
+    public void recover(DomainJournal journal) throws DeploymentException {
+        for (URI uri : journal.getContributions()) {
+            activateAndDeployDefinitions(uri, true);
+        }
+
+        Map<QName, String> deployables = journal.getDeployables();
         Set<Contribution> contributions = new LinkedHashSet<Contribution>();
         List<DeploymentPlan> plans = new ArrayList<DeploymentPlan>();
         for (Map.Entry<QName, String> entry : deployables.entrySet()) {
@@ -608,6 +633,28 @@ public abstract class AbstractDomain implements Domain {
             }
         }
     }
+
+    /**
+     * Activates and optionally deploys definitions to a domain.
+     *
+     * @param uri     the URI of the contribution containing the definitions to activate
+     * @param recover true if recovery is being performed. If true and the runtime is in distributed (controller) mode, definitions will only be
+     *                activated.
+     * @throws DeploymentException if there is an error activating definitions
+     */
+    private synchronized void activateAndDeployDefinitions(URI uri, boolean recover) throws DeploymentException {
+        Contribution contribution = metadataStore.find(uri);
+        if (ContributionState.INSTALLED != contribution.getState()) {
+            throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
+        }
+        Set<PolicySet> policySets = activateDefinitions(contribution);
+        if (!policySets.isEmpty()) {
+            if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
+                deployPolicySets(policySets);
+            }
+        }
+    }
+
 
     /**
      * Activates policy definitions contained in the contribution.

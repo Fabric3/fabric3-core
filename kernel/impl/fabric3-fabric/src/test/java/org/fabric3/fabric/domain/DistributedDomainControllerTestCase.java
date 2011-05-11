@@ -47,6 +47,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -63,6 +64,7 @@ import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.host.domain.DomainJournal;
 import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -246,7 +248,9 @@ public class DistributedDomainControllerTestCase extends TestCase {
         // generation and deployment should not be done
         control.replay();
 
-        domain.recover(Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic"));
+        Map<QName,String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
+        DomainJournal journal = new DomainJournal(Collections.<URI>emptyList(), deployables);
+        domain.recover(journal);
 
         // verify the component contained in the composite was added to the logical model
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));

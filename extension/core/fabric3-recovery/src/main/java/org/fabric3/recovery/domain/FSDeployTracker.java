@@ -42,7 +42,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
@@ -60,6 +63,9 @@ import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Records the current domain state to a journal so it may be replayed when a controller comes back online and resyncs with the domain.
+ * <p/>
+ * Deployed contributions and composites are written to a file system based journal ad the state of the domain changes (i.e. deployments and
+ * undeployments are made). On recovery, the journal can be read to reconstitute the current state of the domain.
  *
  * @version $Rev$ $Date$
  */
@@ -69,13 +75,25 @@ public class FSDeployTracker implements DeployListener {
     private File domainLog;
     private XMLOutputFactory outputFactory;
     private DeployTrackerMonitor monitor;
+    private List<URI> contributions;
     private Map<QName, String> deployables;
 
     public FSDeployTracker(@Reference XMLFactory factory, @Reference HostInfo info, @Monitor DeployTrackerMonitor monitor) {
         this.monitor = monitor;
         this.outputFactory = factory.newOutputFactoryInstance();
+        this.contributions = new ArrayList<URI>();
         this.deployables = new HashMap<QName, String>();
         domainLog = new File(info.getDataDir(), "domain.xml");
+    }
+
+    public void onDeploy(URI uri) {
+        contributions.add(uri);
+        persist();
+    }
+
+    public void onUnDeploy(URI uri) {
+        contributions.remove(uri);
+        persist();
     }
 
     public void onDeploy(QName included, String plan) {
@@ -86,17 +104,25 @@ public class FSDeployTracker implements DeployListener {
         persist();
     }
 
+    public void onUndeploy(QName undeployed) {
+        deployables.remove(undeployed);
+        persist();
+    }
+
+    public void onDeployCompleted(URI uri) {
+        // no-op
+    }
+
+    public void onUnDeployCompleted(URI contribution) {
+        // no-op
+    }
+
     public void onDeployCompleted(QName deployable, String plan) {
         // no-op
     }
 
     public void onUndeployCompleted(QName undeployed) {
         // no-op
-    }
-
-    public void onUndeploy(QName undeployed) {
-        deployables.remove(undeployed);
-        persist();
     }
 
     private void persist() {
@@ -108,17 +134,8 @@ public class FSDeployTracker implements DeployListener {
             writer.writeStartDocument();
             writer.writeStartElement("domain");
             writer.writeDefaultNamespace(Namespaces.F3);
-            for (Map.Entry<QName, String> entry : deployables.entrySet()) {
-                QName deployable = entry.getKey();
-                String plan = entry.getValue();
-                writer.writeStartElement("deployable");
-                writer.writeAttribute("namespace", deployable.getNamespaceURI());
-                writer.writeAttribute("name", deployable.getLocalPart());
-                if (plan != NO_PLAN) {
-                    writer.writeAttribute("plan", plan);
-                }
-                writer.writeEndElement();
-            }
+            writeContributions(writer);
+            writeDeployables(writer);
             writer.writeEndElement();
             writer.writeEndDocument();
         } catch (FileNotFoundException e) {
@@ -134,6 +151,32 @@ public class FSDeployTracker implements DeployListener {
                 // ignore
             }
         }
+    }
+
+    private void writeContributions(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("contributions");
+        for (URI uri : contributions) {
+            writer.writeStartElement("contribution");
+            writer.writeAttribute("uri", uri.toString());
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
+    }
+
+    private void writeDeployables(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("deployables");
+        for (Map.Entry<QName, String> entry : deployables.entrySet()) {
+            QName deployable = entry.getKey();
+            String plan = entry.getValue();
+            writer.writeStartElement("deployable");
+            writer.writeAttribute("namespace", deployable.getNamespaceURI());
+            writer.writeAttribute("name", deployable.getLocalPart());
+            if (plan != NO_PLAN) {
+                writer.writeAttribute("plan", plan);
+            }
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
     }
 
 }

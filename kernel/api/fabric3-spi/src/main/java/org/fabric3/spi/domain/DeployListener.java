@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.domain;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 /**
@@ -45,6 +46,38 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface DeployListener {
+
+    /**
+     * Called when the contents of a contribution are deployed to the domain. This will be called before {@link #onDeploy(QName, String)} if the
+     * contribution contains deployables.
+     *
+     * @param uri the contribution URI
+     */
+    void onDeploy(URI uri);
+
+    /**
+     * Called when the contents of a contribution are finished being deployed to the domain. This will be called after {@link #onDeploy(QName,
+     * String)} if the contribution contains deployables.
+     *
+     * @param uri the contribution URI
+     */
+    void onDeployCompleted(URI uri);
+
+    /**
+     * Called when the contents of a contribution are undeployed from the domain. This will be called before {@link #onUndeploy(QName)} if the
+     * contribution contains deployables.
+     *
+     * @param uri the contribution URI
+     */
+    void onUnDeploy(URI uri);
+
+    /**
+     * Called when the contents of a contribution have been undeployed from the domain. This will be called after {@link #onUndeploy(QName)} if the
+     * contribution contains deployables.
+     *
+     * @param uri the contribution URI
+     */
+    void onUnDeployCompleted(URI uri);
 
     /**
      * Called when a composite is deployed to the domain.
