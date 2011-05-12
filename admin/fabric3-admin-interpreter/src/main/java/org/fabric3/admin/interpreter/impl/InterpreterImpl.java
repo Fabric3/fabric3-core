@@ -39,6 +39,7 @@ package org.fabric3.admin.interpreter.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,8 +109,7 @@ public class InterpreterImpl implements Interpreter {
             out.println("Using " + configuration.getName() + " [" + configuration.getAddress() + "]");
         }
         try {
-            ConsoleReader reader = createReader();
-            reader.setInput(in);
+            ConsoleReader reader = createReader(in, out);
             String line;
             while ((line = reader.readLine(PROMPT)) != null) {
                 if ("quit".equals(line) || "q".equals(line) || "exit".equals(line)) {
@@ -182,8 +182,8 @@ public class InterpreterImpl implements Interpreter {
         }
     }
 
-    private ConsoleReader createReader() throws IOException {
-        ConsoleReader reader = new ConsoleReader();
+    private ConsoleReader createReader(InputStream in, PrintStream out) throws IOException {
+        ConsoleReader reader = new ConsoleReader(in,new OutputStreamWriter(out));
         List<Completor> completors = new ArrayList<Completor>();
         String[] commands =
                 {"authenticate", "back", "deploy", "follow", "get", "install", "list", "post", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
