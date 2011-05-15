@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-runtime-standalone-parent-pom</artifactId>
-        <version>1.8-SNAPSHOT</version>
+        <version>1.8</version>
     </parent>
     <groupId>org.codehaus.fabric3.standalone</groupId>
     <artifactId>fabric3-standalone-server</artifactId>
