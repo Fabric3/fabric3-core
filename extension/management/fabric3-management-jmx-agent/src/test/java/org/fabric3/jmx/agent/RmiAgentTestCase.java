@@ -36,14 +36,14 @@ public class RmiAgentTestCase extends TestCase {
         RmiAgentMonitor monitor = EasyMock.createNiceMock(RmiAgentMonitor.class);
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
-        portAllocator.reserve("JMX", "JMX", 9001);
+        portAllocator.reserve("JMX", "JMX", 8182);
         portAllocator.release("JMX");
         EasyMock.expectLastCall();
 
         EasyMock.replay(mBeanServer, monitor, portAllocator);
 
         RmiAgent agent = new RmiAgent(mBeanServer, authenticator, portAllocator, monitor);
-        agent.setJmxPort("9001");
+        agent.setJmxPort("8182");
         agent.init();
         agent.destroy();
         EasyMock.verify(portAllocator);
@@ -56,7 +56,7 @@ public class RmiAgentTestCase extends TestCase {
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
         EasyMock.expect(portAllocator.isPoolEnabled()).andReturn(true);
-        EasyMock.expect(portAllocator.allocate("JMX", "JMX")).andReturn(9001);
+        EasyMock.expect(portAllocator.allocate("JMX", "JMX")).andReturn(8182);
         portAllocator.release("JMX");
         EasyMock.expectLastCall();
 
