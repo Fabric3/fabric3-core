@@ -63,7 +63,7 @@
                 <plugin>
                     <groupId>org.codehaus.fabric3</groupId>
                     <artifactId>fabric3-contribution-plugin</artifactId>
-                    <version>${version}</version>
+                    <version>1.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
