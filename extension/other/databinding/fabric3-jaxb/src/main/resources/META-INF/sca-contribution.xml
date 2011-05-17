@@ -12,7 +12,7 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.8"/>
+    <import.java package="org.fabric3.spi.*" version="1.9"/>
     <!-- exports are needed for the implicit imports added by JaxbContributionServiceListener to end-user contrbutions -->
     <export.java package="com.sun.xml.bind.*" version="2.2"/>
     <export.java package="com.sun.xml.xsom.*" version="2.2"/>

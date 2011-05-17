@@ -52,7 +52,7 @@ import java.net.URI;
  */
 public interface Names {
 
-    String VERSION = "1.8";
+    String VERSION = "1.9";
 
     URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
 
