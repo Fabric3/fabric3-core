@@ -48,11 +48,16 @@ public class OperatingSystem extends Versionable {
     private String name;
     private String processor;
 
+    public OperatingSystem(String name, String processor) {
+        this.name = name;
+        this.processor = processor;
+    }
+
     public OperatingSystem(String name, String processor, Version minVersion, boolean minInclusive) {
-         super(minVersion, minInclusive);
-         this.name = name;
-         this.processor = processor;
-     }
+        super(minVersion, minInclusive);
+        this.name = name;
+        this.processor = processor;
+    }
 
     public OperatingSystem(String name, String processor, Version minVersion, boolean minInclusive, Version maxVersion, boolean maxInclusive) {
         super(minVersion, minInclusive, maxVersion, maxInclusive);
@@ -60,19 +65,30 @@ public class OperatingSystem extends Versionable {
         this.processor = processor;
     }
 
-    public OperatingSystem(String name, Version minVersion, boolean minInclusive, Version maxVersion, boolean maxInclusive) {
-        super(minVersion, minInclusive, maxVersion, maxInclusive);
-        this.name = name;
-    }
-
+    /**
+     * Returns the OS name.
+     *
+     * @return the OS name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the OS processor architecture or null if not specified.
+     *
+     * @return the OS processor architecture or null if not specified.
+     */
     public String getProcessor() {
         return processor;
     }
 
+    /**
+     * Returnds true if the other OperatingSystem matches the constraints of the present one.
+     *
+     * @param other the other OperatingSystem
+     * @return true if the other OperatingSystem matches the constraints of the present one.
+     */
     public boolean matches(OperatingSystem other) {
         return !(!super.matches(other) || !name.equals(other.getName())) && (processor == null && other.getProcessor() == null || processor.equals(
                 other.getProcessor()));

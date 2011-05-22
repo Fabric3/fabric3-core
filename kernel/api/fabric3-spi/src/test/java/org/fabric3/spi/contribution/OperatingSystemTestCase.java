@@ -71,7 +71,7 @@ public class OperatingSystemTestCase extends TestCase {
     }
 
     /**
-     * Versions specified without a range default to minium inclusive with a maximum to infinity
+     * Versions specified without a range default to minimum inclusive with a maximum to infinity
      */
     public void testMatchVersionOSGiDefault() throws Exception {
         Version min = new Version(1, 0, 0);
