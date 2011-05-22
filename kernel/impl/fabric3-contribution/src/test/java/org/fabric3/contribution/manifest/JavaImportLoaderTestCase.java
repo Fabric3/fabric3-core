@@ -43,9 +43,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.manifest.PackageVersion;
 
 /**
  * @version $Rev$ $Date$
@@ -54,8 +54,8 @@ public class JavaImportLoaderTestCase extends TestCase {
     private static final String XML_VERSION = "<import.java package=\"org.bar\" version=\"1.0.0\" required=\"true\"/>";
     private static final String XML_RANGE =
             "<import.java package=\"org.bar\" min=\"1.0.0\" minInclusive=\"false\" max=\"2.0.0\" maxInclusive=\"true\" required=\"true\"/>";
-    private static final PackageVersion MIN_VERSION = new PackageVersion(1, 0, 0);
-    private static final PackageVersion MAX_VERSION = new PackageVersion(2, 0, 0);
+    private static final Version MIN_VERSION = new Version(1, 0, 0);
+    private static final Version MAX_VERSION = new Version(2, 0, 0);
 
     private JavaImportLoader loader;
     private XMLStreamReader reader;

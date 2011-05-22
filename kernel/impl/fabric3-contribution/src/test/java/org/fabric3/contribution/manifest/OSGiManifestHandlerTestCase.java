@@ -49,7 +49,7 @@ import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
-import org.fabric3.spi.contribution.manifest.PackageVersion;
+import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
@@ -94,19 +94,19 @@ public class OSGiManifestHandlerTestCase extends TestCase {
 
         JavaImport third = (JavaImport) manifest.getImports().get(2);
         assertEquals("org.fabric3.baz", third.getPackageInfo().getName());
-        assertEquals(new PackageVersion("1.0.0"), third.getPackageInfo().getMinVersion());
+        assertEquals(new Version("1.0.0"), third.getPackageInfo().getMinVersion());
         assertTrue(third.getPackageInfo().isMinInclusive());
-        assertEquals(new PackageVersion("2.0.0"), third.getPackageInfo().getMaxVersion());
+        assertEquals(new Version("2.0.0"), third.getPackageInfo().getMaxVersion());
         assertFalse(third.getPackageInfo().isMaxInclusive());
 
         assertEquals(2, manifest.getExports().size());
         JavaExport firstExport = (JavaExport) manifest.getExports().get(0);
         assertEquals("org.fabric3.export1", firstExport.getPackageInfo().getName());
-        assertEquals(new PackageVersion("1.1.1.1"), firstExport.getPackageInfo().getMinVersion());
+        assertEquals(new Version("1.1.1.1"), firstExport.getPackageInfo().getMinVersion());
 
         JavaExport secondExport = (JavaExport) manifest.getExports().get(1);
         assertEquals("org.fabric3.export2", secondExport.getPackageInfo().getName());
-        assertEquals(new PackageVersion("2.2.2.2"), secondExport.getPackageInfo().getMinVersion());
+        assertEquals(new Version("2.2.2.2"), secondExport.getPackageInfo().getMinVersion());
 
     }
 

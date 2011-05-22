@@ -52,13 +52,13 @@
  * limitations under the License.
  *
  */
-package org.fabric3.spi.contribution.manifest;
+package org.fabric3.spi.contribution;
 
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
- * Version identifier for Java import/export. Version identifiers have four components:
+ * A version identifier. Version identifiers have four components:
  * <pre>
  *  <ol>
  * <li>Major version. A non-negative integer.</li>
@@ -72,7 +72,7 @@ import java.util.StringTokenizer;
  *
  * @version $Rev$ $Date$
  */
-public class PackageVersion implements Comparable {
+public class Version implements Comparable {
 
     private final int major;
     private final int minor;
@@ -83,7 +83,7 @@ public class PackageVersion implements Comparable {
     /**
      * The empty version "0.0.0". Equivalent to calling <code>new Version(0,0,0)</code>.
      */
-    public static final PackageVersion emptyVersion = new PackageVersion(0, 0, 0);
+    public static final Version emptyVersion = new Version(0, 0, 0);
 
     /**
      * Creates a version identifier from the specified numerical components.
@@ -96,7 +96,7 @@ public class PackageVersion implements Comparable {
      * @param micro Micro component of the version identifier.
      * @throws IllegalArgumentException If the numerical components are negative.
      */
-    public PackageVersion(int major, int minor, int micro) {
+    public Version(int major, int minor, int micro) {
         this(major, minor, micro, null);
     }
 
@@ -110,7 +110,7 @@ public class PackageVersion implements Comparable {
      *                  string.
      * @throws IllegalArgumentException If the numerical components are negative or the qualifier string is invalid.
      */
-    public PackageVersion(int major, int minor, int micro, String qualifier) {
+    public Version(int major, int minor, int micro, String qualifier) {
         if (qualifier == null) {
             qualifier = "";
         }
@@ -143,7 +143,7 @@ public class PackageVersion implements Comparable {
      * @param version String representation of the version identifier.
      * @throws IllegalArgumentException If <code>version</code> is improperly formatted.
      */
-    public PackageVersion(String version) {
+    public Version(String version) {
         int major;
         int minor = 0;
         int micro = 0;
@@ -216,7 +216,7 @@ public class PackageVersion implements Comparable {
      *         then <code>emptyVersion</code> will be returned.
      * @throws IllegalArgumentException If <code>version</code> is improperly formatted.
      */
-    public static PackageVersion parseVersion(String version) {
+    public static Version parseVersion(String version) {
         if (version == null) {
             return emptyVersion;
         }
@@ -226,7 +226,7 @@ public class PackageVersion implements Comparable {
             return emptyVersion;
         }
 
-        return new PackageVersion(version);
+        return new Version(version);
     }
 
     /**
@@ -307,11 +307,11 @@ public class PackageVersion implements Comparable {
             return true;
         }
 
-        if (!(object instanceof PackageVersion)) {
+        if (!(object instanceof Version)) {
             return false;
         }
 
-        PackageVersion other = (PackageVersion) object;
+        Version other = (Version) object;
         return (major == other.major) && (minor == other.minor) && (micro == other.micro) && qualifier.equals(other.qualifier);
     }
 
@@ -337,7 +337,7 @@ public class PackageVersion implements Comparable {
             return 0;
         }
 
-        PackageVersion other = (PackageVersion) object;
+        Version other = (Version) object;
 
         int result = major - other.major;
         if (result != 0) {

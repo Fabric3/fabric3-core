@@ -85,9 +85,9 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -351,7 +351,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         // add the ContributionExport
         manifest.addExport(new ContributionExport(contributionUri));
         for (Map.Entry<String, String> entry : exportedPackages.entrySet()) {
-            PackageVersion version = new PackageVersion(entry.getValue());
+            Version version = new Version(entry.getValue());
             PackageInfo info = new PackageInfo(entry.getKey(), version);
             JavaExport export = new JavaExport(info);
             manifest.addExport(export);

@@ -35,53 +35,32 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution.manifest;
+package org.fabric3.spi.contribution;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.EagerInit;
-
-import org.fabric3.spi.contribution.manifest.JavaExport;
-import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.Version;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * Loads an <code>export.java</code> entry in a contribution manifest.
+ * A native library entry in an contribution manifest.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class JavaExportLoader implements TypeLoader<JavaExport> {
+public class Library implements Serializable {
+    private static final long serialVersionUID = -3440164417832624801L;
 
+    private String path;
+    private List<OperatingSystem> operatingSystems;
 
-    public JavaExport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        String statement = reader.getAttributeValue(null, "package");
-        if (statement == null) {
-            MissingPackage failure = new MissingPackage("No package name specified", reader);
-            context.addError(failure);
-            return null;
-        }
-        PackageInfo info;
-        String version = reader.getAttributeValue(null, "version");
-        if (version != null) {
-            Version packageVersion;
-            try {
-                packageVersion = new Version(version);
-            } catch (IllegalArgumentException e) {
-                context.addError(new InvalidValue("Invalid export version", reader, e));
-                packageVersion = new Version("0");
-            }
-            info = new PackageInfo(statement, packageVersion, true, true);
-        } else {
-            info = new PackageInfo(statement);
-        }
-        return new JavaExport(info);
+    public Library(String path, List<OperatingSystem> operatingSystems) {
+        this.path = path;
+        this.operatingSystems = operatingSystems;
     }
 
+    public String getPath() {
+        return path;
+    }
 
+    public List<OperatingSystem> getOperatingSystems() {
+        return operatingSystems;
+    }
 }
-

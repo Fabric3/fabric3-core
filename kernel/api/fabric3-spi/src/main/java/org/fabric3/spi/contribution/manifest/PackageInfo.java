@@ -37,20 +37,19 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
+import org.fabric3.spi.contribution.Version;
+import org.fabric3.spi.contribution.Versionable;
+
 /**
  * Represents Java package information specified in a Java import or export contribution manifest declaration.
  *
  * @version $Rev$ $Date$
  */
-public final class PackageInfo {
-    private static final PackageVersion NON_SPECIFIED = new PackageVersion(0, 0, 0);
+public final class PackageInfo extends Versionable {
+    private static final long serialVersionUID = 1011714148953772009L;
     private String name;
-    private PackageVersion minVersion = NON_SPECIFIED;
-    private PackageVersion maxVersion;
     private boolean required;
     private String[] packageNames;
-    private boolean minInclusive = true;
-    private boolean maxInclusive = true;
 
     /**
      * Constructor for an import package declaration specifying a version range.
@@ -63,16 +62,13 @@ public final class PackageInfo {
      * @param required     if package resolution is required
      */
     public PackageInfo(String name,
-                       PackageVersion minVersion,
+                       Version minVersion,
                        boolean minInclusive,
-                       PackageVersion maxVersion,
+                       Version maxVersion,
                        boolean maxInclusive,
                        boolean required) {
-        this.minInclusive = minInclusive;
-        this.maxInclusive = maxInclusive;
+        super(minVersion, minInclusive, maxVersion, maxInclusive);
         setName(name);
-        this.minVersion = minVersion;
-        this.maxVersion = maxVersion;
         this.required = required;
     }
 
@@ -84,10 +80,9 @@ public final class PackageInfo {
      * @param minInclusive true if the minimum version is considered inclusive for range matching
      * @param required     if package resolution is required
      */
-    public PackageInfo(String name, PackageVersion version, boolean minInclusive, boolean required) {
+    public PackageInfo(String name, Version version, boolean minInclusive, boolean required) {
+        super(version, minInclusive);
         setName(name);
-        this.minVersion = version;
-        this.minInclusive = minInclusive;
         this.required = required;
     }
 
@@ -97,6 +92,7 @@ public final class PackageInfo {
      * @param name the package name
      */
     public PackageInfo(String name) {
+        super();
         setName(name);
         this.required = true;
     }
@@ -107,9 +103,9 @@ public final class PackageInfo {
      * @param name    the package name
      * @param version the version
      */
-    public PackageInfo(String name, PackageVersion version) {
+    public PackageInfo(String name, Version version) {
+        super(version);
         setName(name);
-        this.minVersion = version;
     }
 
     /**
@@ -119,6 +115,7 @@ public final class PackageInfo {
      * @param required if package resolution is required
      */
     public PackageInfo(String name, boolean required) {
+        super();
         setName(name);
         this.required = required;
     }
@@ -127,6 +124,7 @@ public final class PackageInfo {
      * Default constructor.
      */
     public PackageInfo() {
+        super();
 
     }
 
@@ -154,7 +152,7 @@ public final class PackageInfo {
      *
      * @return the version
      */
-    public PackageVersion getMinVersion() {
+    public Version getMinVersion() {
         return minVersion;
     }
 
@@ -163,7 +161,7 @@ public final class PackageInfo {
      *
      * @param minVersion the minimum required version.
      */
-    public void setMinVersion(PackageVersion minVersion) {
+    public void setMinVersion(Version minVersion) {
         this.minVersion = minVersion;
     }
 
@@ -190,7 +188,7 @@ public final class PackageInfo {
      *
      * @return the maximum version or null
      */
-    public PackageVersion getMaxVersion() {
+    public Version getMaxVersion() {
         return maxVersion;
     }
 
@@ -199,7 +197,7 @@ public final class PackageInfo {
      *
      * @param maxVersion maximum version
      */
-    public void setMaxVersion(PackageVersion maxVersion) {
+    public void setMaxVersion(Version maxVersion) {
         this.maxVersion = maxVersion;
     }
 
@@ -248,6 +246,9 @@ public final class PackageInfo {
      * @return true if this import package matches the specified export package
      */
     public boolean matches(PackageInfo exportPackage) {
+        if (!super.matches(exportPackage)) {
+            return false;
+        }
         // match package names
         int i = 0;
         if (packageNames.length < exportPackage.packageNames.length && !"*".equals(packageNames[packageNames.length - 1])) {
@@ -263,29 +264,6 @@ public final class PackageInfo {
             i++;
             if (packageNames.length - 1 == i && packageNames.length > exportPackage.packageNames.length && !"*".equals(packageNames[i])) {
                 return false;
-            }
-        }
-        if (minVersion != null) {
-            if (minInclusive) {
-                if (minVersion.compareTo(exportPackage.minVersion) > 0) {
-                    return false;
-                }
-            } else {
-                if (minVersion.compareTo(exportPackage.minVersion) >= 0) {
-                    return false;
-                }
-            }
-        }
-        if (maxVersion != null) {
-            // The exporting PackageInfo.minVersion is used as the export version. Compare the range against that.
-            if (maxInclusive) {
-                if (maxVersion.compareTo(exportPackage.minVersion) < 0) {
-                    return false;
-                }
-            } else {
-                if (maxVersion.compareTo(exportPackage.minVersion) <= 0) {
-                    return false;
-                }
             }
         }
         return true;

@@ -1,0 +1,4 @@
+<library path="lib/http.dll">
+    <os name="Windows7" version="2.1" processor="x64"/>
+    <os name="Windows95" version="2.1" processor="x64"/>
+</library>

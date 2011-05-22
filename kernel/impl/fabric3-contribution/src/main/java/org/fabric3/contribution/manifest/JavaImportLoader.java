@@ -46,7 +46,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.manifest.PackageVersion;
+import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
@@ -106,7 +106,7 @@ public class JavaImportLoader implements TypeLoader<JavaImport> {
         try {
             String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
             boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);
-            PackageVersion packageVersion = new PackageVersion(version);
+            Version packageVersion = new Version(version);
             return new PackageInfo(statement, packageVersion, minInclusive, required);
         } catch (IllegalArgumentException e) {
             InvalidValue failure = new InvalidValue("Invalid import package version", reader, e);
@@ -123,10 +123,10 @@ public class JavaImportLoader implements TypeLoader<JavaImport> {
         String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
         boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);
         String maxVersion = reader.getAttributeValue(null, "max");
-        PackageVersion minimum;
-        PackageVersion maximum = null;
+        Version minimum;
+        Version maximum = null;
         try {
-            minimum = new PackageVersion(minVersion);
+            minimum = new Version(minVersion);
         } catch (IllegalArgumentException e) {
             InvalidValue failure = new InvalidValue("Invalid minimum package version", reader, e);
             context.addError(failure);
@@ -134,7 +134,7 @@ public class JavaImportLoader implements TypeLoader<JavaImport> {
         }
         if (maxVersion != null) {
             try {
-                maximum = new PackageVersion(maxVersion);
+                maximum = new Version(maxVersion);
             } catch (IllegalArgumentException e) {
                 InvalidValue failure = new InvalidValue("Invalid maximum package version", reader, e);
                 context.addError(failure);

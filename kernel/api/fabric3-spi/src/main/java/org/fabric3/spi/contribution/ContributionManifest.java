@@ -58,6 +58,7 @@ public class ContributionManifest implements Serializable {
     private boolean extension;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
+    private List<Library> libraries = new ArrayList<Library>();
     private Set<Capability> requiredCapabilities = new HashSet<Capability>();
     private Set<Capability> providedCapabilities = new HashSet<Capability>();
     private List<Deployable> deployables = new ArrayList<Deployable>();
@@ -135,6 +136,24 @@ public class ContributionManifest implements Serializable {
      */
     public void addImport(Import imprt) {
         imports.add(imprt);
+    }
+
+    /**
+     * Returns native code libraries contained in the contribution.
+     *
+     * @return native code libraries contained in the contribution
+     */
+    public List<Library> getLibraries() {
+        return libraries;
+    }
+
+    /**
+     * Adds a native code library configuration.
+     *
+     * @param library the native code library configuration
+     */
+    public void addLibrary(Library library) {
+        libraries.add(library);
     }
 
     /**

@@ -46,11 +46,11 @@ import java.util.jar.Manifest;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.manifest.PackageVersion;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -181,10 +181,10 @@ public class OSGiManifestHandler implements JarManifestHandler {
         }
         String[] versions = val.split(",");
         try {
-            PackageVersion packageVersion = new PackageVersion(versions[0]);
+            Version packageVersion = new Version(versions[0]);
             info.setMinVersion(packageVersion);
             if (versions.length == 2) {
-                packageVersion = new PackageVersion(versions[1]);
+                packageVersion = new Version(versions[1]);
                 info.setMaxVersion(packageVersion);
             }
         } catch (IllegalArgumentException e) {

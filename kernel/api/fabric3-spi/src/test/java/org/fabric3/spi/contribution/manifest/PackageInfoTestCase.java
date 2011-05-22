@@ -39,6 +39,8 @@ package org.fabric3.spi.contribution.manifest;
 
 import junit.framework.TestCase;
 
+import org.fabric3.spi.contribution.Version;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -81,7 +83,7 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchSpecificVersion() throws Exception {
-        PackageVersion version = new PackageVersion(1, 2, 3, "alpha");
+        Version version = new Version(1, 2, 3, "alpha");
         PackageInfo imprt = new PackageInfo("foo.bar.Baz", version, true, true);
         PackageInfo export = new PackageInfo("foo.bar.*", version, true, true);
         assertTrue(imprt.matches(export));
@@ -100,9 +102,9 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchRangeVersion() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion max = new PackageVersion(2, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(1, 5, 0);
+        Version min = new Version(1, 0, 0);
+        Version max = new Version(2, 0, 0);
+        Version exportedVersion = new Version(1, 5, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar.Baz", min, true, max, true, true);
         PackageInfo export = new PackageInfo("foo.bar.*", exportedVersion, true, true);
@@ -110,8 +112,8 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchRangeVersionMinExclusive() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(1, 0, 0);
+        Version min = new Version(1, 0, 0);
+        Version exportedVersion = new Version(1, 0, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar", min, false, true);
         PackageInfo export = new PackageInfo("foo.bar", exportedVersion, true, true);
@@ -122,8 +124,8 @@ public class PackageInfoTestCase extends TestCase {
      * Versions specified without a range default to minium inclusive with a maximum to infinity
      */
     public void testMatchVersionOSGiDefault() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(2, 0, 0);
+        Version min = new Version(1, 0, 0);
+        Version exportedVersion = new Version(2, 0, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar", min, true, true);
         PackageInfo export = new PackageInfo("foo.bar", exportedVersion, true, true);
@@ -131,8 +133,8 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchRangeVersionMinInclusive() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(1, 0, 0);
+        Version min = new Version(1, 0, 0);
+        Version exportedVersion = new Version(1, 0, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar", min, true, true);
         PackageInfo export = new PackageInfo("foo.bar", exportedVersion, true, true);
@@ -140,9 +142,9 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchRangeVersionMaxExclusive() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion max = new PackageVersion(2, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(2, 0, 0);
+        Version min = new Version(1, 0, 0);
+        Version max = new Version(2, 0, 0);
+        Version exportedVersion = new Version(2, 0, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar", min, true, max, false, true);
         PackageInfo export = new PackageInfo("foo.bar", exportedVersion, true, true);
@@ -150,9 +152,9 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testMatchRangeVersionMaxInclusive() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion max = new PackageVersion(2, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(2, 0, 0);
+        Version min = new Version(1, 0, 0);
+        Version max = new Version(2, 0, 0);
+        Version exportedVersion = new Version(2, 0, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar", min, true, max, true, true);
         PackageInfo export = new PackageInfo("foo.bar", exportedVersion, true, true);
@@ -161,9 +163,9 @@ public class PackageInfoTestCase extends TestCase {
 
 
     public void testOutOfMinRange() throws Exception {
-        PackageVersion min = new PackageVersion(1, 6, 0);
-        PackageVersion max = new PackageVersion(2, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(1, 5, 0);
+        Version min = new Version(1, 6, 0);
+        Version max = new Version(2, 0, 0);
+        Version exportedVersion = new Version(1, 5, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar.Baz", min, true, max, true, true);
         PackageInfo export = new PackageInfo("foo.bar.*", exportedVersion, true, true);
@@ -171,9 +173,9 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     public void testOutOfMaxRange() throws Exception {
-        PackageVersion min = new PackageVersion(1, 0, 0);
-        PackageVersion max = new PackageVersion(2, 0, 0);
-        PackageVersion exportedVersion = new PackageVersion(2, 5, 0);
+        Version min = new Version(1, 0, 0);
+        Version max = new Version(2, 0, 0);
+        Version exportedVersion = new Version(2, 5, 0);
 
         PackageInfo imprt = new PackageInfo("foo.bar.Baz", min, true, max, true, true);
         PackageInfo export = new PackageInfo("foo.bar.*", exportedVersion, true, true);
