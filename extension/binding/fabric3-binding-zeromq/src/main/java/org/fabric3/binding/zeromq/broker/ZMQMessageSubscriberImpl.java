@@ -93,12 +93,10 @@ public class ZMQMessageSubscriberImpl implements ZMQMessageSubscriber {
 
     }
 
-    @Override
     public String getChannelName() {
         return channelName;
     }
 
-    @Override
     public void addSubscriber(MessageListener listener) {
         listeners.add(listener);
 

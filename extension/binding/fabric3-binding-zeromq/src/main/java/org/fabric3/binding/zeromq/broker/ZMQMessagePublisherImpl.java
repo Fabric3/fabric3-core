@@ -60,7 +60,6 @@ public class ZMQMessagePublisherImpl implements ZMQMessagePublisher {
         initSocket();
     }
 
-    @Override
     public String getChannelName() {
         return channelName;
     }
@@ -74,7 +73,6 @@ public class ZMQMessagePublisherImpl implements ZMQMessagePublisher {
         monitor.publisherRegistered(metadata.getChannelName(), connection);
     }
 
-    @Override
     public void sendMessage(byte[] message) {
         socket.send(message, 0);
     }

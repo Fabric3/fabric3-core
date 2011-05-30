@@ -38,7 +38,6 @@ public class ZeroMQZoneTopologyService implements MessageReceiver {
         }
     }
 
-    @Override
     public void onMessage(Object object) {
         // TODO Auto-generated method stub
         System.out.println("Received :" + object.toString());

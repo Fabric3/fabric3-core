@@ -14,6 +14,7 @@ Public License. See the accompanying license file for details.
               f3:extension="true"
               f3:description="ZeroMQ binding extension">
     <import.java package="org.fabric3.spi.*"/>
+    <import.java package="org.zeromq" version="2.1.0"/>
 
     <f3:provides.capability name="zeromq"/>
 

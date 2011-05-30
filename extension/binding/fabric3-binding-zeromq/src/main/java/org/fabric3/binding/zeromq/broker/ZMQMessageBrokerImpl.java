@@ -37,6 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Context;
+
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -49,66 +57,53 @@ import org.fabric3.binding.zeromq.runtime.ZMQMessageSubscriber;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Scope;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 
 /**
- * The ZMQMessageBroker manages the IZMQMessagePublisher and
- * IZMQMessageSubscriber instances. There is one IZMQMessagePublisher per
- * runtime and channel. All producers for the same channel will send messages
- * through the same IZMQMessagePublisher instance. There is one
- * IZMQMessageSubscriber per runtime and channel. All consumers for the same
- * channel will receive messages through the same IZMQMessageSubscriber
- * instance.
- * 
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * The ZMQMessageBroker manages the IZMQMessagePublisher and IZMQMessageSubscriber instances. There is one IZMQMessagePublisher per runtime and
+ * channel. All producers for the same channel will send messages through the same IZMQMessagePublisher instance. There is one IZMQMessageSubscriber
+ * per runtime and channel. All consumers for the same channel will receive messages through the same IZMQMessageSubscriber instance.
+ *
+ * @version $Revision$ $Date$
  */
 @EagerInit
 @Scope(Scopes.COMPOSITE)
 @Management(description = "ZeroMQ Broker instance", group = "binding", name = "zmq", path = "/runtime/binding/zmq")
 public class ZMQMessageBrokerImpl implements ZMQMessageBroker {
 
-    private Map<String, ZMQMessagePublisher>  publishers  = new HashMap<String, ZMQMessagePublisher>();
+    private Map<String, ZMQMessagePublisher> publishers = new HashMap<String, ZMQMessagePublisher>();
     private Map<String, ZMQMessageSubscriber> subscribers = new HashMap<String, ZMQMessageSubscriber>();
-    private Context                            context;
-    private String                             zmqLibraryPath;
+    private Context context;
+//    private String zmqLibraryPath;
 
     @Reference
-    protected PortAllocator                    allocator;
+    protected PortAllocator allocator;
 
     @Reference
-    protected ClassLoaderRegistry              classLoaderReistry;
+    protected ClassLoaderRegistry classLoaderReistry;
 
     @Monitor
-    protected ZMQBrokerMonitor                 monitor;
+    protected ZMQBrokerMonitor monitor;
 
     public ZMQMessageBrokerImpl() {
 
     }
 
-    @Property
-    public void setZmqLibraryPath(String path) {
-        this.zmqLibraryPath = File.pathSeparator + path;
-        monitor.addedZMQLibraryPath(path);
-    }
+//    @Property
+//    public void setZmqLibraryPath(String path) {
+//        this.zmqLibraryPath = File.pathSeparator + path;
+//        monitor.addedZMQLibraryPath(path);
+//    }
 
     @Init
     protected void init() {
-        String syspath = System.getProperty("java.library.path");
-        // syspath = syspath + ":/home/jb/dev/zmq/zmq-standard/lib";
-        syspath += zmqLibraryPath;
-        System.setProperty("java.library.path", syspath);
+//        String syspath = System.getProperty("java.library.path");
+//        // syspath = syspath + ":/home/jb/dev/zmq/zmq-standard/lib";
+//        syspath += zmqLibraryPath;
+//        System.setProperty("java.library.path", syspath);
         try {
-            Field fieldsyspath = ClassLoader.class.getDeclaredField("sys_paths");
-            fieldsyspath.setAccessible(true);
-            fieldsyspath.set(null, null);
+//            Field fieldsyspath = ClassLoader.class.getDeclaredField("sys_paths");
+//            fieldsyspath.setAccessible(true);
+//            fieldsyspath.set(null, null);
             context = ZMQ.context(1);
         } catch (Exception e) {
             monitor.error(e);
@@ -127,7 +122,6 @@ public class ZMQMessageBrokerImpl implements ZMQMessageBroker {
         return pubs;
     }
 
-    @Override
     public ZMQMessagePublisher createPublisher(ZeroMQMetadata metadata) {
         ZMQMessagePublisher publisher = publishers.get(metadata.getChannelName());
         if (publisher == null) {
@@ -156,7 +150,6 @@ public class ZMQMessageBrokerImpl implements ZMQMessageBroker {
 
     }
 
-    @Override
     public void addSubscriber(MessageListener listener, ZeroMQMetadata metadata) {
         ZMQMessageSubscriber subscriber = subscribers.get(metadata.getChannelName());
         if (subscriber == null) {

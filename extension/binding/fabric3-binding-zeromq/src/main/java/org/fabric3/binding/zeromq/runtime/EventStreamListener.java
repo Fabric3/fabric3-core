@@ -47,14 +47,6 @@ public class EventStreamListener implements MessageListener {
         this.handler = handler;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.fabric3.binding.zeromq.runtime.IMessageListener#onMessage(java.lang
-     * .Object)
-     */
-    @Override
     public void onMessage(Object message) {
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 

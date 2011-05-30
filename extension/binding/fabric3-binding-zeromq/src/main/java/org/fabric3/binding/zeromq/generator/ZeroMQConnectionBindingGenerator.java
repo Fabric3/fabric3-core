@@ -56,13 +56,11 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenerator<ZeroMQBindingDefinition> {
 
-    @Override
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding)
             throws GenerationException {
         return null;
     }
 
-    @Override
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
                                                                        LogicalBinding<ZeroMQBindingDefinition> binding)
             throws GenerationException {
@@ -75,7 +73,6 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     }
 
-    @Override
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
                                                                        LogicalBinding<ZeroMQBindingDefinition> binding)
             throws GenerationException {

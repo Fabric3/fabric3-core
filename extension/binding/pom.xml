@@ -39,5 +39,8 @@
         <module>fabric3-binding-ws-policy</module>
         <module>fabric3-binding-ftp</module>
         <module>fabric3-activemq</module>
+        <module>fabric3-jzmq-install</module>
+        <module>fabric3-binding-zeromq-library</module>
+        <module>fabric3-binding-zeromq</module>
 	</modules>
 </project>

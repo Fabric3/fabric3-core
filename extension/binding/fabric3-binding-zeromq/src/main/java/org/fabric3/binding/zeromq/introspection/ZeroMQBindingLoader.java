@@ -77,7 +77,6 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
         this.loaderHelper = loaderHelper;
     }
 
-    @Override
     public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
 
         validateAttributes(reader, context);
