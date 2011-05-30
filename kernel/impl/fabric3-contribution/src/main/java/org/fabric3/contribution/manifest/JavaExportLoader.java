@@ -44,7 +44,7 @@ import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.contribution.Version;
+import org.fabric3.host.Version;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;

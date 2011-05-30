@@ -38,10 +38,13 @@
 package org.fabric3.contribution.processor;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
@@ -67,7 +70,8 @@ public class SymLinkClasspathProcessorTestCase extends TestCase {
     }
 
     public void testProcess() throws Exception {
-        assertFalse(processor.process(file).isEmpty());
+        List<Library> libraries = Collections.emptyList();
+        assertFalse(processor.process(file, libraries).isEmpty());
     }
 
     protected void setUp() throws Exception {

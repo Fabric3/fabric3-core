@@ -50,6 +50,7 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -82,7 +83,7 @@ public class SymLinkClasspathProcessor implements ClasspathProcessor {
         return url.toString().endsWith(".contribution");
     }
 
-    public List<URL> process(URL url) throws IOException {
+    public List<URL> process(URL url, List<Library> libraries) throws IOException {
         List<URL> classpath = new ArrayList<URL>();
         File root = deReferenceFile(url);
         classpath.add(root.toURI().toURL());

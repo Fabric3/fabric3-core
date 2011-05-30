@@ -56,7 +56,9 @@ import java.util.List;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.Version;
 import org.fabric3.host.util.FileHelper;
+import org.fabric3.host.util.OSHelper;
 
 /**
  * Utility class for bootstrap operations.
@@ -221,6 +223,8 @@ public final class BootstrapHelper {
         }
         deployDirs.add(deployDir);
 
+        OperatingSystem os = getOperatingSystem();
+
         return new DefaultHostInfo(runtimeName,
                                    runtimeMode,
                                    domainName,
@@ -231,7 +235,16 @@ public final class BootstrapHelper {
                                    configDir,
                                    dataDir,
                                    tempDir,
-                                   deployDirs);
+                                   deployDirs,
+                                   os);
+    }
+
+    public static OperatingSystem getOperatingSystem() {
+        String name = System.getProperty("os.name");
+        String processor = OSHelper.parseProcessor(System.getProperty("os.arch"));
+        String versionStr = OSHelper.parseVersion(System.getProperty("os.version"));
+        Version version = Version.parseVersion(versionStr);
+        return new OperatingSystem(name, processor, version);
     }
 
 }

@@ -49,6 +49,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.runtime.maven.MavenHostInfo;
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -86,7 +87,7 @@ public class ModuleClasspathProcessor implements ClasspathProcessor {
         }
     }
 
-    public List<URL> process(URL url) throws IOException {
+    public List<URL> process(URL url, List<Library> libraries) throws IOException {
         String file = url.getFile();
         List<URL> urls = new ArrayList<URL>(2);
         urls.add(new File(file, "classes").toURI().toURL());

@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.fabric3.spi.contribution.Library;
+
 /**
  * Constructs a classpath based on the contents of an archive. Implementations introspect archives and place any required artifacts on the classpath.
  * For example, a jar processor may place libraries found in /META-INF/lib on the classpath.
@@ -55,15 +57,16 @@ public interface ClasspathProcessor {
      * @param url the location of the archive
      * @return true if the processor can introspect the archive
      */
-    public boolean canProcess(URL url);
+    boolean canProcess(URL url);
 
     /**
      * Constructs the classpath by introspecting the archive
      *
-     * @param url the location of the archive
-     * @return the classpath
+     * @param url       the location of the archive
+     * @param libraries the native libraries contained in the archive
+     * @return the classpath URLs for the given archive
      * @throws IOException if an error occurs during introspection
      */
-    public List<URL> process(URL url) throws IOException;
+    List<URL> process(URL url, List<Library> libraries) throws IOException;
 
 }

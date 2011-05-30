@@ -41,90 +41,52 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.runtime.maven.itest;
+package org.fabric3.host.runtime;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.List;
-import java.util.Set;
-
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.OperatingSystem;
-import org.fabric3.runtime.maven.MavenHostInfo;
+import org.fabric3.host.Version;
 
 /**
+ * The current runtime operating system in normalized form.
+ *
  * @version $Rev$ $Date$
  */
-public class MavenHostInfoImpl implements MavenHostInfo {
-    private final URI domain;
-    private final Set<URL> dependencyUrls;
-    private final File tempDir;
-    private File baseDir;
-    private OperatingSystem operatingSystem;
+public class OperatingSystem {
+    private String name;
+    private String processor;
+    private Version version;
 
-    public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File baseDir, File tempDir, OperatingSystem operatingSystem) {
-        this.domain = domain;
-        this.dependencyUrls = dependencyUrls;
-        this.baseDir = baseDir;
-        this.tempDir = tempDir;
-        this.operatingSystem = operatingSystem;
+    public OperatingSystem(String name, String processor, Version version) {
+        this.name = name;
+        this.processor = processor;
+        this.version = version;
     }
 
-    public String getRuntimeName() {
-        return "maven";
+    /**
+     * Returns the normalized operating system name.
+     *
+     * @return the normalized operating system name
+     */
+    public String getName() {
+        return name;
     }
 
-    public File getBaseDir() {
-        return baseDir;
+    /**
+     * Returns the normalized operating system processor.
+     *
+     * @return the normalized operating system processor
+     */
+    public String getProcessor() {
+        return processor;
     }
 
-    public File getTempDir() {
-        return tempDir;
+    /**
+     * Returns the operating system version.
+     *
+     * @return the operating system version
+     */
+    public Version getVersion() {
+        return version;
     }
 
-    public File getDataDir() {
-        // use the temp directory as the data dir
-        return tempDir;
-    }
 
-    public File getConfigDirectory() {
-        return null;
-    }
-
-    public File getUserRepositoryDirectory() {
-        return null;
-    }
-
-    public File getRuntimeRepositoryDirectory() {
-        return null;
-    }
-
-    public File getExtensionsRepositoryDirectory() {
-        return null;
-    }
-
-    public List<File> getDeployDirectories() {
-        return null;
-    }
-
-    public boolean supportsClassLoaderIsolation() {
-        return true;
-    }
-
-    public OperatingSystem getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public RuntimeMode getRuntimeMode() {
-        return RuntimeMode.VM;
-    }
-
-    public URI getDomain() {
-        return domain;
-    }
-
-    public Set<URL> getDependencyUrls() {
-        return dependencyUrls;
-    }
 }

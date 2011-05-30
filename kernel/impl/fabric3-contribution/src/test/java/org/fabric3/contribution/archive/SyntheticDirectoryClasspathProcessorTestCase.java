@@ -38,11 +38,13 @@
 package org.fabric3.contribution.archive;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -72,7 +74,8 @@ public class SyntheticDirectoryClasspathProcessorTestCase extends TestCase {
 
     public void testProcess() throws Exception {
         EasyMock.replay(registry);
-        assertEquals(1, processor.process(url).size());
+        List<Library> libraries = Collections.emptyList();
+        assertEquals(1, processor.process(url, libraries).size());
     }
 
     @Override

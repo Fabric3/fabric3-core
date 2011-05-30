@@ -44,9 +44,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.Library;
-import org.fabric3.spi.contribution.OperatingSystem;
-import org.fabric3.spi.contribution.Version;
+import org.fabric3.spi.contribution.OperatingSystemSpec;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
@@ -74,17 +74,17 @@ public class LibraryLoader implements TypeLoader<Library> {
             return null;
         }
 
-        List<OperatingSystem> systems = parseOperatingSystems(reader, context);
+        List<OperatingSystemSpec> systems = parseOperatingSystems(reader, context);
         return new Library(path, systems);
     }
 
-    private List<OperatingSystem> parseOperatingSystems(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        List<OperatingSystem> systems = new ArrayList<OperatingSystem>();
+    private List<OperatingSystemSpec> parseOperatingSystems(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        List<OperatingSystemSpec> systems = new ArrayList<OperatingSystemSpec>();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 if (OS.equals(reader.getName().getLocalPart())) {
-                    OperatingSystem system = parseOperatingSystem(reader, context);
+                    OperatingSystemSpec system = parseOperatingSystem(reader, context);
                     if (system != null) {
                         systems.add(system);
                     }
@@ -107,7 +107,7 @@ public class LibraryLoader implements TypeLoader<Library> {
      * @param context the context to report errors to
      * @return the parsed entry or null
      */
-    private OperatingSystem parseOperatingSystem(XMLStreamReader reader, IntrospectionContext context) {
+    private OperatingSystemSpec parseOperatingSystem(XMLStreamReader reader, IntrospectionContext context) {
         validateOperatingSystemAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
@@ -116,7 +116,7 @@ public class LibraryLoader implements TypeLoader<Library> {
             return null;
         }
 
-        OperatingSystem system;
+        OperatingSystemSpec system;
         String versionStr = reader.getAttributeValue(null, "version");
         String minVersion = reader.getAttributeValue(null, "min");
         if (versionStr != null) {
@@ -125,19 +125,19 @@ public class LibraryLoader implements TypeLoader<Library> {
             system = parseRange(name, minVersion, reader, context);
         } else {
             String processor = reader.getAttributeValue(null, "processor");
-            system = new OperatingSystem(name, processor);
+            system = new OperatingSystemSpec(name, processor);
         }
         return system;
     }
 
 
-    private OperatingSystem parseVersion(String name, String versionStr, XMLStreamReader reader, IntrospectionContext context) {
+    private OperatingSystemSpec parseVersion(String name, String versionStr, XMLStreamReader reader, IntrospectionContext context) {
         try {
             Version version = new Version(versionStr);
             String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
             boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);
             String processor = reader.getAttributeValue(null, "processor");
-            return new OperatingSystem(name, processor, version, minInclusive);
+            return new OperatingSystemSpec(name, processor, version, minInclusive);
         } catch (IllegalArgumentException e) {
             InvalidValue failure = new InvalidValue("Invalid operating systems version", reader, e);
             context.addError(failure);
@@ -145,7 +145,7 @@ public class LibraryLoader implements TypeLoader<Library> {
         }
     }
 
-    private OperatingSystem parseRange(String name, String minVersion, XMLStreamReader reader, IntrospectionContext context) {
+    private OperatingSystemSpec parseRange(String name, String minVersion, XMLStreamReader reader, IntrospectionContext context) {
         String processor = reader.getAttributeValue(null, "processor");
 
         String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
@@ -172,7 +172,7 @@ public class LibraryLoader implements TypeLoader<Library> {
                 return null;
             }
         }
-        return new OperatingSystem(name, processor, minimum, minInclusive, maximum, maxInclusive);
+        return new OperatingSystemSpec(name, processor, minimum, minInclusive, maximum, maxInclusive);
     }
 
 

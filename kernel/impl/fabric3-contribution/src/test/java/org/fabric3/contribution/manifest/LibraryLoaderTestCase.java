@@ -45,7 +45,7 @@ import junit.framework.TestCase;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.fabric3.spi.contribution.Library;
-import org.fabric3.spi.contribution.OperatingSystem;
+import org.fabric3.spi.contribution.OperatingSystemSpec;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
@@ -81,7 +81,7 @@ public class LibraryLoaderTestCase extends TestCase {
         Library library = loader.load(reader, context);
         assertEquals("lib/http.dll", library.getPath());
         assertEquals(1, library.getOperatingSystems().size());
-        OperatingSystem os = library.getOperatingSystems().get(0);
+        OperatingSystemSpec os = library.getOperatingSystems().get(0);
         assertEquals("OS1", os.getName());
 
         assertFalse(context.hasErrors());
@@ -95,7 +95,7 @@ public class LibraryLoaderTestCase extends TestCase {
         Library library = loader.load(reader, context);
         assertEquals("lib/http.dll", library.getPath());
         assertEquals(1, library.getOperatingSystems().size());
-        OperatingSystem os = library.getOperatingSystems().get(0);
+        OperatingSystemSpec os = library.getOperatingSystems().get(0);
         assertEquals("OS1", os.getName());
         assertEquals("x64", os.getProcessor());
         assertEquals(2, os.getMinVersion().getMajor());
@@ -112,7 +112,7 @@ public class LibraryLoaderTestCase extends TestCase {
         Library library = loader.load(reader, context);
         assertEquals("lib/http.dll", library.getPath());
         assertEquals(1, library.getOperatingSystems().size());
-        OperatingSystem os = library.getOperatingSystems().get(0);
+        OperatingSystemSpec os = library.getOperatingSystems().get(0);
         assertEquals(2, os.getMinVersion().getMajor());
         assertEquals(1, os.getMinVersion().getMinor());
         assertEquals(3, os.getMaxVersion().getMajor());

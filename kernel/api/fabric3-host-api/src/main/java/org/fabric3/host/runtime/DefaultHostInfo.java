@@ -65,6 +65,7 @@ public class DefaultHostInfo implements HostInfo {
     private final File configDirectory;
     private final File tempDirectory;
     private List<File> deployDirectories;
+    private OperatingSystem operatingSystem;
     private File dataDirectory;
 
     /**
@@ -81,6 +82,7 @@ public class DefaultHostInfo implements HostInfo {
      * @param dataDirectory     directory for storing persistent data
      * @param tempDirectory     the directory for writing temporary files
      * @param deployDirectories the directory for file system-based deployments
+     * @param operatingSystem   the current operating system
      */
     public DefaultHostInfo(String runtimeName,
                            RuntimeMode runtimeMode,
@@ -92,7 +94,8 @@ public class DefaultHostInfo implements HostInfo {
                            File configDir,
                            File dataDirectory,
                            File tempDirectory,
-                           List<File> deployDirectories) {
+                           List<File> deployDirectories,
+                           OperatingSystem operatingSystem) {
         this.runtimeName = runtimeName;
         this.runtimeMode = runtimeMode;
         this.domain = domain;
@@ -104,6 +107,7 @@ public class DefaultHostInfo implements HostInfo {
         this.dataDirectory = dataDirectory;
         this.tempDirectory = tempDirectory;
         this.deployDirectories = deployDirectories;
+        this.operatingSystem = operatingSystem;
     }
 
     public String getRuntimeName() {
@@ -132,6 +136,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public boolean supportsClassLoaderIsolation() {
         return true;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
     }
 
     public File getUserRepositoryDirectory() {

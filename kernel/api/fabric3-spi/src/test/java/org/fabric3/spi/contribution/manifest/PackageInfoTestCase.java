@@ -39,7 +39,7 @@ package org.fabric3.spi.contribution.manifest;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.contribution.Version;
+import org.fabric3.host.Version;
 
 /**
  * @version $Rev$ $Date$

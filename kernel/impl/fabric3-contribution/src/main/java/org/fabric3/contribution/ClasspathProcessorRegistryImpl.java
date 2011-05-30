@@ -41,9 +41,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -62,10 +64,10 @@ public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistr
         processors.remove(processor);
     }
 
-    public List<URL> process(URL url) throws IOException {
+    public List<URL> process(URL url, List<Library> libraries) throws IOException {
         for (ClasspathProcessor processor : processors) {
             if (processor.canProcess(url)) {
-                return processor.process(url);
+                return processor.process(url, libraries);
             }
         }
         // artifact does not need to be expanded, just return its base url

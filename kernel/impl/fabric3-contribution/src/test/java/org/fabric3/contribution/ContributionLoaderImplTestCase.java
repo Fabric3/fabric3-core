@@ -43,6 +43,7 @@
  */
 package org.fabric3.contribution;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -70,6 +71,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.manifest.JavaExport;
@@ -79,7 +81,7 @@ import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
- * This is more intended to be a integration test then a unit test. *
+ * This is more intended to be a integration test then a unit test.
  */
 public class ContributionLoaderImplTestCase extends TestCase {
     private ClassLoaderRegistry classLoaderRegistry;
@@ -114,10 +116,10 @@ public class ContributionLoaderImplTestCase extends TestCase {
         assertTrue(((List) extensions.get(extensionClassLoader)).contains(classLoader));
 
         // verify location url
-         assertTrue(Arrays.asList(classLoader.getURLs()).contains(locationUrl));
+        assertTrue(Arrays.asList(classLoader.getURLs()).contains(locationUrl));
 
         EasyMock.verify(classLoaderRegistry, store, processorRegistry, builder);
-     }
+    }
 
 
     @Override
@@ -138,7 +140,8 @@ public class ContributionLoaderImplTestCase extends TestCase {
         setupGenerators();
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
-        EasyMock.expect(processorRegistry.process(locationUrl)).andReturn(Collections.singletonList(locationUrl));
+        List<URL>  classpath = Collections.singletonList(locationUrl);
+        EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);
         builder.build(EasyMock.isA(MultiParentClassLoader.class), EasyMock.isA(PhysicalClassLoaderWireDefinition.class));
@@ -146,6 +149,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
 
         info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(true);
+        EasyMock.expect(info.getTempDir()).andReturn(new File(""));
         EasyMock.replay(info);
 
     }

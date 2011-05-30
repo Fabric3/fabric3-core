@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.contribution.Version;
+import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 

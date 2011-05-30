@@ -161,4 +161,8 @@
         <f3:implementation.system class="org.fabric3.contribution.ExtensionMapContentTypeResolver"/>
     </component>
 
+    <component name="LibraryLoader" f3:key="f3:library">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.LibraryLoader"/>
+    </component>
+
 </composite>

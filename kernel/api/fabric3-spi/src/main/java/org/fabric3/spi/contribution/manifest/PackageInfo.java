@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
-import org.fabric3.spi.contribution.Version;
+import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.Versionable;
 
 /**
@@ -246,7 +246,7 @@ public final class PackageInfo extends Versionable {
      * @return true if this import package matches the specified export package
      */
     public boolean matches(PackageInfo exportPackage) {
-        if (!super.matches(exportPackage)) {
+        if (!super.matches(exportPackage.getMinVersion())) {
             return false;
         }
         // match package names

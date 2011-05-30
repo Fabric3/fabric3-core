@@ -141,4 +141,11 @@ public interface HostInfo {
      * @return true if the host environment supports classloader isolation
      */
     boolean supportsClassLoaderIsolation();
+
+    /**
+     * Returns the current operating system.
+     *
+     * @return the current operating system.
+     */
+    OperatingSystem getOperatingSystem();
 }

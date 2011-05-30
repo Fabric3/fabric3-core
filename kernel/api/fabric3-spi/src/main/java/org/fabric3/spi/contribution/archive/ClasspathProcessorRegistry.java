@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.fabric3.spi.contribution.Library;
+
 /**
  * A registry of classpath processors.
  *
@@ -49,25 +51,26 @@ import java.util.List;
 public interface ClasspathProcessorRegistry {
 
     /**
-     * Registers the processor
+     * Registers the processor.
      *
      * @param processor the processor
      */
     void register(ClasspathProcessor processor);
 
     /**
-     * De-registers the processor
+     * De-registers the processor.
      *
      * @param processor the processor
      */
     void unregister(ClasspathProcessor processor);
 
     /**
-     * Processes the given url
+     * Processes the given url.
      *
-     * @param url the url to process
+     * @param url       the url to process
+     * @param libraries native libraries contained in the contribution
      * @return the classpath
      * @throws IOException if an error occurs processing the url
      */
-    List<URL> process(URL url) throws IOException;
+    List<URL> process(URL url, List<Library> libraries) throws IOException;
 }

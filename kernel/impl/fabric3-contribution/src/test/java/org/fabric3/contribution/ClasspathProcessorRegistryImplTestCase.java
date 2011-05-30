@@ -39,10 +39,12 @@ package org.fabric3.contribution;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 
 /**
@@ -61,10 +63,12 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
 
     public void testProcess() throws Exception {
         EasyMock.expect(processor.canProcess(url)).andReturn(true);
-        EasyMock.expect(processor.process(url)).andReturn(Collections.singletonList(processedUrl));
+        List<URL> classpath = Collections.singletonList(processedUrl);
+        List<Library> libraries = Collections.emptyList();
+        EasyMock.expect(processor.process(url, libraries)).andReturn(classpath);
 
         EasyMock.replay(processor);
-        assertTrue(registry.process(url).contains(processedUrl));
+        assertTrue(registry.process(url, Collections.<Library>emptyList()).contains(processedUrl));
         EasyMock.verify(processor);
     }
 
@@ -72,7 +76,8 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
         EasyMock.expect(processor.canProcess(url)).andReturn(false);
 
         EasyMock.replay(processor);
-        assertTrue(registry.process(url).contains(url));
+        List<Library> libraries = Collections.emptyList();
+        assertTrue(registry.process(url, libraries).contains(url));
         EasyMock.verify(processor);
     }
 

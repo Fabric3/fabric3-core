@@ -44,12 +44,12 @@ import java.util.jar.Manifest;
 
 import junit.framework.TestCase;
 
+import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
-import org.fabric3.spi.contribution.Version;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

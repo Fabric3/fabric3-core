@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * A native library entry in an contribution manifest.
+ * Identifies a native library in an contribution manifest.
  *
  * @version $Rev$ $Date$
  */
@@ -49,9 +49,9 @@ public class Library implements Serializable {
     private static final long serialVersionUID = -3440164417832624801L;
 
     private String path;
-    private List<OperatingSystem> operatingSystems;
+    private List<OperatingSystemSpec> operatingSystems;
 
-    public Library(String path, List<OperatingSystem> operatingSystems) {
+    public Library(String path, List<OperatingSystemSpec> operatingSystems) {
         this.path = path;
         this.operatingSystems = operatingSystems;
     }
@@ -60,7 +60,7 @@ public class Library implements Serializable {
         return path;
     }
 
-    public List<OperatingSystem> getOperatingSystems() {
+    public List<OperatingSystemSpec> getOperatingSystems() {
         return operatingSystems;
     }
 }

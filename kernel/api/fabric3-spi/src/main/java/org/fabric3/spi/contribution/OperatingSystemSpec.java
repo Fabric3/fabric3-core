@@ -37,29 +37,32 @@
 */
 package org.fabric3.spi.contribution;
 
+import org.fabric3.host.Version;
+import org.fabric3.host.runtime.OperatingSystem;
+
 /**
  * An operating system specification for a native library entry in a contribution manifest.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class OperatingSystem extends Versionable {
+public class OperatingSystemSpec extends Versionable {
     private static final long serialVersionUID = 464100854160609807L;
 
     private String name;
     private String processor;
 
-    public OperatingSystem(String name, String processor) {
+    public OperatingSystemSpec(String name, String processor) {
         this.name = name;
         this.processor = processor;
     }
 
-    public OperatingSystem(String name, String processor, Version minVersion, boolean minInclusive) {
+    public OperatingSystemSpec(String name, String processor, Version minVersion, boolean minInclusive) {
         super(minVersion, minInclusive);
         this.name = name;
         this.processor = processor;
     }
 
-    public OperatingSystem(String name, String processor, Version minVersion, boolean minInclusive, Version maxVersion, boolean maxInclusive) {
+    public OperatingSystemSpec(String name, String processor, Version minVersion, boolean minInclusive, Version maxVersion, boolean maxInclusive) {
         super(minVersion, minInclusive, maxVersion, maxInclusive);
         this.name = name;
         this.processor = processor;
@@ -77,22 +80,39 @@ public class OperatingSystem extends Versionable {
     /**
      * Returns the OS processor architecture or null if not specified.
      *
-     * @return the OS processor architecture or null if not specified.
+     * @return the OS processor architecture or null if not specified
      */
     public String getProcessor() {
         return processor;
     }
 
     /**
-     * Returnds true if the other OperatingSystem matches the constraints of the present one.
+     * Returns true if the other OperatingSystemSpec matches the constraints of the present spec.
      *
-     * @param other the other OperatingSystem
-     * @return true if the other OperatingSystem matches the constraints of the present one.
+     * @param other the other OperatingSystemSpec
+     * @return true if the other OperatingSystemSpec matches the constraints of the present spec
      */
-    public boolean matches(OperatingSystem other) {
-        return !(!super.matches(other) || !name.equals(other.getName())) && (processor == null && other.getProcessor() == null || processor.equals(
-                other.getProcessor()));
+    public boolean matches(OperatingSystemSpec other) {
+        return !(!super.matches(other.getMinVersion()) || !name.equals(other.getName()))
+                && (processor == null && other.getProcessor() == null || processor.equals(other.getProcessor()));
     }
+
+    /**
+     * Returns true if the OperatingSystem matches the constraints of the present spec.
+     *
+     * @param os the OperatingSystem
+     * @return true if the other OperatingSystem matches the constraints of the present spec
+     */
+    public boolean matches(OperatingSystem os) {
+        if (name.equals(os.getName()) || (name.equalsIgnoreCase("windows") && os.getName().startsWith("Windows"))) {
+            if (processor == null || processor.equalsIgnoreCase(os.getProcessor())) {
+                return super.matches(os.getVersion());
+            }
+
+        }
+        return false;
+    }
+
 
     @Override
     public int hashCode() {

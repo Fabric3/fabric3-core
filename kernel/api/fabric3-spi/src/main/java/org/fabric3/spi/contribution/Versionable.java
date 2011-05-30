@@ -39,6 +39,8 @@ package org.fabric3.spi.contribution;
 
 import java.io.Serializable;
 
+import org.fabric3.host.Version;
+
 /**
  * A contribution manifest attribute that is used to specfify a version range.
  *
@@ -172,31 +174,30 @@ public abstract class Versionable implements Serializable {
     }
 
     /**
-     * Returns true if this versionable matches the other versionable according to OSGi R4 semantics.
+     * Returns true if this versionable matches the other version according to OSGi R4 semantics.
      *
-     * @param other the versionable
+     * @param other the version
      * @return true if this import package matches the specified export package
      */
-    protected <V extends Versionable> boolean matches(V other) {
+    protected boolean matches(Version other) {
         if (minVersion != null) {
             if (minInclusive) {
-                if (minVersion.compareTo(other.minVersion) > 0) {
+                if (minVersion.compareTo(other) > 0) {
                     return false;
                 }
             } else {
-                if (minVersion.compareTo(other.minVersion) >= 0) {
+                if (minVersion.compareTo(other) >= 0) {
                     return false;
                 }
             }
         }
         if (maxVersion != null) {
-            // The exporting PackageInfo.minVersion is used as the export version. Compare the range against that.
             if (maxInclusive) {
-                if (maxVersion.compareTo(other.minVersion) < 0) {
+                if (maxVersion.compareTo(other) < 0) {
                     return false;
                 }
             } else {
-                if (maxVersion.compareTo(other.minVersion) <= 0) {
+                if (maxVersion.compareTo(other) <= 0) {
                     return false;
                 }
             }

@@ -52,8 +52,9 @@
  * limitations under the License.
  *
  */
-package org.fabric3.spi.contribution;
+package org.fabric3.host;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -72,13 +73,14 @@ import java.util.StringTokenizer;
  *
  * @version $Rev$ $Date$
  */
-public class Version implements Comparable {
+public class Version implements Comparable, Serializable {
+    private static final long serialVersionUID = -2755678770473603563L;
+    private static final String SEPARATOR = ".";
 
     private final int major;
     private final int minor;
     private final int micro;
     private final String qualifier;
-    private static final String SEPARATOR = ".";                    //$NON-NLS-1$
 
     /**
      * The empty version "0.0.0". Equivalent to calling <code>new Version(0,0,0)</code>.
@@ -166,7 +168,7 @@ public class Version implements Comparable {
                         qualifier = st.nextToken();
 
                         if (st.hasMoreTokens()) {
-                            throw new IllegalArgumentException("invalid format: " + version);
+                            throw new IllegalArgumentException("Invalid format: " + version);
                         }
                     }
                 }
@@ -181,29 +183,6 @@ public class Version implements Comparable {
         this.micro = micro;
         this.qualifier = qualifier;
         validate();
-    }
-
-    /**
-     * Called by the Version constructors to validate the version components.
-     *
-     * @throws IllegalArgumentException If the numerical components are negative or the qualifier string is invalid.
-     */
-    private void validate() {
-        if (major < 0) {
-            throw new IllegalArgumentException("negative major");
-        }
-        if (minor < 0) {
-            throw new IllegalArgumentException("negative minor");
-        }
-        if (micro < 0) {
-            throw new IllegalArgumentException("negative micro");
-        }
-        int length = qualifier.length();
-        for (int i = 0; i < length; i++) {
-            if ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-".indexOf(qualifier.charAt(i)) == -1) {
-                throw new IllegalArgumentException("invalid qualifier");
-            }
-        }
     }
 
     /**
@@ -356,4 +335,29 @@ public class Version implements Comparable {
 
         return qualifier.compareTo(other.qualifier);
     }
+
+    /**
+     * Called by the Version constructors to validate the version components.
+     *
+     * @throws IllegalArgumentException If the numerical components are negative or the qualifier string is invalid.
+     */
+    private void validate() {
+        if (major < 0) {
+            throw new IllegalArgumentException("negative major");
+        }
+        if (minor < 0) {
+            throw new IllegalArgumentException("negative minor");
+        }
+        if (micro < 0) {
+            throw new IllegalArgumentException("negative micro");
+        }
+        int length = qualifier.length();
+        for (int i = 0; i < length; i++) {
+            if ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-".indexOf(qualifier.charAt(i)) == -1) {
+                throw new IllegalArgumentException("invalid qualifier");
+            }
+        }
+    }
+
+
 }

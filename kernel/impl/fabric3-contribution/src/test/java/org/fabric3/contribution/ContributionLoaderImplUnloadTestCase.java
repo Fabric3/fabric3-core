@@ -43,6 +43,7 @@
  */
 package org.fabric3.contribution;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
@@ -127,6 +128,7 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
 
         info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(true);
+        EasyMock.expect(info.getTempDir()).andReturn(new File(""));
         EasyMock.replay(info);
 
     }

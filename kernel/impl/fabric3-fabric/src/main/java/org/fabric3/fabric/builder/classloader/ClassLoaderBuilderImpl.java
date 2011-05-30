@@ -59,6 +59,7 @@ import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.ContributionResolver;
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
@@ -202,7 +203,8 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
             URL resolvedUrl = resolver.resolve(uri);
             // introspect and expand if necessary
             List<URL> classpath = new ArrayList<URL>();
-            classpath.addAll(classpathProcessorRegistry.process(resolvedUrl));
+            List<URL> archiveClasspath = classpathProcessorRegistry.process(resolvedUrl, Collections.<Library>emptyList());
+            classpath.addAll(archiveClasspath);
             return classpath.toArray(new URL[classpath.size()]);
         } catch (ResolutionException e) {
             throw new ClassLoaderBuilderException("Error resolving artifact: " + uri.toString(), e);

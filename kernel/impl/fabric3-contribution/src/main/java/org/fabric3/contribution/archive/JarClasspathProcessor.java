@@ -40,14 +40,15 @@ package org.fabric3.contribution.archive;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -59,6 +60,8 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.IOHelper;
+import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.contribution.OperatingSystemSpec;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
@@ -79,10 +82,12 @@ public class JarClasspathProcessor implements ClasspathProcessor {
     private ClasspathProcessorRegistry registry;
     private HostInfo hostInfo;
     private boolean explodeJars;
+    private File libraryDir;
 
     public JarClasspathProcessor(@Reference ClasspathProcessorRegistry registry, @Reference HostInfo hostInfo) {
         this.registry = registry;
         this.hostInfo = hostInfo;
+        libraryDir = new File(hostInfo.getTempDir(), "native");
     }
 
     @Property(required = false)
@@ -106,30 +111,35 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         return name.endsWith(".jar") || name.endsWith(".zip") || name.endsWith("/classes") || name.endsWith("/classes/");
     }
 
-    public List<URL> process(URL url) throws IOException {
+    public List<URL> process(URL jar, List<Library> libraries) throws IOException {
         List<URL> classpath = new ArrayList<URL>();
         // add the the jar itself to the classpath
-        classpath.add(url);
-
-        // add libraries from the jar
-        addLibraries(classpath, url);
-        return classpath;
-    }
-
-    private void addLibraries(List<URL> classpath, URL jar) throws IOException {
+        classpath.add(jar);
 
         File dir = hostInfo.getTempDir();
-
         InputStream is = jar.openStream();
+        Set<String> resolvedLibraryPaths = resolveNativeLibraries(libraries);
         try {
+
             JarInputStream jarStream = new JarInputStream(is);
             JarEntry entry;
             while ((entry = jarStream.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                String path = entry.getName();
-                if (!path.startsWith("META-INF/lib/")) {
+                int index = entry.getName().lastIndexOf("/");
+                String path;
+                if (index > 0) {
+                    path = entry.getName().substring(0, index);
+                } else {
+                    path = entry.getName();
+                }
+
+                if (resolvedLibraryPaths.contains(entry.getName())) {
+                    extractNativeLibrary(path, jarStream, entry);
+                    continue;
+                }
+                if (!path.startsWith("META-INF/lib")) {
                     continue;
                 }
                 if (explodeJars) {
@@ -153,12 +163,37 @@ public class JarClasspathProcessor implements ClasspathProcessor {
                     classpath.add(jarFile.toURI().toURL());
                 }
             }
+            return classpath;
         } finally {
             is.close();
         }
     }
 
-    private void explodeJar(File dir, JarInputStream jarStream, File explodedDirectory) throws IOException, FileNotFoundException {
+    private void extractNativeLibrary(String path, JarInputStream jarStream, JarEntry entry) throws IOException {
+        File dir = hostInfo.getTempDir();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (!libraryDir.exists()) {
+            libraryDir.mkdirs();
+            libraryDir.deleteOnExit();
+        }
+        String libraryName = entry.getName().substring(path.length() + 1); // add '/' separator
+        File library = new File(libraryDir, libraryName);
+        if (library.exists()) {
+            return;
+        }
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(library));
+        try {
+            IOHelper.copy(jarStream, os);
+            os.flush();
+        } finally {
+            os.close();
+        }
+        library.deleteOnExit();
+    }
+
+    private void explodeJar(File dir, JarInputStream jarStream, File explodedDirectory) throws IOException {
 
         if (!explodedDirectory.exists()) {
 
@@ -205,4 +240,19 @@ public class JarClasspathProcessor implements ClasspathProcessor {
             }
         }
     }
+
+    private Set<String> resolveNativeLibraries(List<Library> libraries) {
+        Set<String> paths = new HashSet<String>();
+        for (Library library : libraries) {
+            for (OperatingSystemSpec os : library.getOperatingSystems()) {
+                if (os.matches(hostInfo.getOperatingSystem())) {
+                    paths.add(library.getPath());
+                    break;
+                }
+            }
+        }
+        return paths;
+    }
+
+
 }

@@ -43,6 +43,7 @@
  */
 package org.fabric3.contribution;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -68,6 +69,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionWire;
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.manifest.JavaImport;
@@ -119,11 +121,14 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
         setupGenerators();
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
-        EasyMock.expect(processorRegistry.process(locationUrl)).andReturn(Collections.singletonList(locationUrl));
+        List<URL>  classpath = Collections.emptyList();
+        EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);
 
         info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getTempDir()).andReturn(new File(""));
+         
         EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(true);
         EasyMock.replay(info);
 

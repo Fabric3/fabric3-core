@@ -64,9 +64,11 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
+import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.host.runtime.OperatingSystem;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;
@@ -171,7 +173,9 @@ public class MavenRuntimeBooter {
 
         URI domain = URI.create(DOMAIN);
         File baseDir = new File(outputDirectory, "test-classes");
-        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, moduleDependencies, baseDir, tempDir);
+        OperatingSystem os = BootstrapHelper.getOperatingSystem();
+
+        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, moduleDependencies, baseDir, tempDir, os);
 
         MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 

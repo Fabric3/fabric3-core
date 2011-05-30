@@ -37,7 +37,9 @@
 */
 package org.fabric3.contribution;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,6 +77,7 @@ import static org.fabric3.host.Names.HOST_CONTRIBUTION;
  * @version $Rev$ $Date$
  */
 public class ContributionLoaderImpl implements ContributionLoader {
+    private static final String JAVA_LIBRARY_PATH = "java.library.path";
     private final ContributionImport hostImport;
     private final ClassLoaderRegistry classLoaderRegistry;
     private final MetaDataStore store;
@@ -82,6 +85,8 @@ public class ContributionLoaderImpl implements ContributionLoader {
     private boolean classloaderIsolation;
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
+    private HostInfo info;
+    private Field sysPathsField;
 
     public ContributionLoaderImpl(@Reference ClassLoaderRegistry classLoaderRegistry,
                                   @Reference MetaDataStore store,
@@ -94,18 +99,28 @@ public class ContributionLoaderImpl implements ContributionLoader {
         this.classpathProcessorRegistry = classpathProcessorRegistry;
         this.generators = generators;
         this.builder = builder;
+        this.info = info;
         classloaderIsolation = info.supportsClassLoaderIsolation();
         hostImport = new ContributionImport(HOST_CONTRIBUTION);
         ContributionExport hostExport = new ContributionExport(HOST_CONTRIBUTION);
         hostExport.resolve();
         hostImport.addResolved(HOST_CONTRIBUTION, hostExport);
+        // xcv should this be part of host info?
+        System.setProperty(JAVA_LIBRARY_PATH, new File(info.getTempDir(), "native").getAbsolutePath());
+        try {
+            sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+            sysPathsField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new AssertionError(e);
+        }
     }
 
     public ClassLoader load(Contribution contribution) throws ContributionLoadException, UnresolvedImportException {
         URI contributionUri = contribution.getUri();
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         // all contributions implicitly import the host contribution
-        contribution.getManifest().addImport(hostImport);
+        ContributionManifest manifest = contribution.getManifest();
+        manifest.addImport(hostImport);
 
         // verify and resolve the imports
         List<ContributionWire<?, ?>> wires = resolveImports(contribution);
@@ -118,10 +133,11 @@ public class ContributionLoaderImpl implements ContributionLoader {
         URL location = contribution.getLocation();
         if (location != null) {
             try {
-                List<URL> classpath = classpathProcessorRegistry.process(location);
-                for (URL library : classpath) {
-                    loader.addURL(library);
+                List<URL> classpath = classpathProcessorRegistry.process(location, manifest.getLibraries());
+                for (URL url : classpath) {
+                    loader.addURL(url);
                 }
+                setSysPathsField(loader);
             } catch (IOException e) {
                 throw new ContributionLoadException(e);
             }
@@ -239,4 +255,20 @@ public class ContributionLoaderImpl implements ContributionLoader {
         }
         return uris;
     }
+
+    /**
+     * Sets the native libraries path by setting the classlaoder's sysPathsField to null. This will force the classloader to reinitialize the field to
+     * JAVA_LIBRARY_PATH.
+     *
+     * @param loader the classloader
+     */
+    private void setSysPathsField(MultiParentClassLoader loader) {
+        try {
+            sysPathsField.set(loader, null);
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+
 }
