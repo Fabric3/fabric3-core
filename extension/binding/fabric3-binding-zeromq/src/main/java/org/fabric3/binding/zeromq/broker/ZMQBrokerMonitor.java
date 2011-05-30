@@ -34,17 +34,12 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:19:22 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * @version $Revision$ $Date$
  */
 public interface ZMQBrokerMonitor {
 
     @Severe("Caught Error :{0}")
     public void error(Throwable t);
-
-    @Info("Extending java.library.path with :{0}")
-    public void addedZMQLibraryPath(String path);
 
     @Info("Registered ZMQ-Publisher:{0}@{1}")
     public void publisherRegistered(String channel, String connection);
