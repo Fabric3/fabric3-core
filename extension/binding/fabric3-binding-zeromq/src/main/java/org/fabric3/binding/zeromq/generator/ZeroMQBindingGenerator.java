@@ -32,6 +32,8 @@ package org.fabric3.binding.zeromq.generator;
 
 import java.util.List;
 
+import org.oasisopen.sca.annotation.EagerInit;
+
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
@@ -41,7 +43,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
@@ -51,21 +52,18 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {
 
-    @Override
     public PhysicalSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> serviceBinding,
                                                    ServiceContract contract, List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public PhysicalTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> referenceBinding,
                                                    ServiceContract contract, List<LogicalOperation> operations,
                                                    EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
