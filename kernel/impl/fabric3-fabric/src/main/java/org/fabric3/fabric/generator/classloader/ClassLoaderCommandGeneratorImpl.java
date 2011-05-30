@@ -55,6 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
+import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
@@ -186,7 +187,8 @@ public class ClassLoaderCommandGeneratorImpl implements ClassLoaderCommandGenera
             return null;
         }
         boolean provisionArtifact = contribution.getLocation() != null;  // don't provision synthetic artifacts;
-        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, provisionArtifact);
+        List<Library> libraries = contribution.getManifest().getLibraries();
+        PhysicalClassLoaderDefinition definition = new PhysicalClassLoaderDefinition(uri, libraries, provisionArtifact);
         List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
         for (ContributionWire<?, ?> wire : contributionWires) {
             ClassLoaderWireGenerator generator = generators.get(wire.getClass());

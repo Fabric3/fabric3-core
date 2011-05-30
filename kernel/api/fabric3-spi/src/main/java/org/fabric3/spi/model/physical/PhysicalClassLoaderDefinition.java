@@ -39,8 +39,12 @@ package org.fabric3.spi.model.physical;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.fabric3.spi.contribution.Library;
 
 /**
  * Used to provision classloaders on a runtime. Defined classloaders correspond to a contribution.
@@ -53,6 +57,7 @@ public class PhysicalClassLoaderDefinition implements Serializable {
     private URI uri;
     private boolean provisionArtifact;
     private Set<PhysicalClassLoaderWireDefinition> wireDefinitions = new LinkedHashSet<PhysicalClassLoaderWireDefinition>();
+    private List<Library> libraries = Collections.emptyList();
 
     /**
      * Constructor.
@@ -62,6 +67,19 @@ public class PhysicalClassLoaderDefinition implements Serializable {
      */
     public PhysicalClassLoaderDefinition(URI uri, boolean provisionArtifact) {
         this.uri = uri;
+        this.provisionArtifact = provisionArtifact;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param uri               the URI of the contribution associated with the classloader
+     * @param libraries         metadata for native libraries bundled in the contribution
+     * @param provisionArtifact true if the associated contribution should be provisioned. Synthetic contributions do not need to be provisioned.
+     */
+    public PhysicalClassLoaderDefinition(URI uri, List<Library> libraries, boolean provisionArtifact) {
+        this.uri = uri;
+        this.libraries = libraries;
         this.provisionArtifact = provisionArtifact;
     }
 
@@ -101,6 +119,15 @@ public class PhysicalClassLoaderDefinition implements Serializable {
         return wireDefinitions;
     }
 
+    /**
+     * Returns metadata for native libraries bundled in the contribution.
+     *
+     * @return metadata for native libraries bundled in the contribution
+     */
+    public List<Library> getLibraries() {
+        return libraries;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,10 +135,9 @@ public class PhysicalClassLoaderDefinition implements Serializable {
 
         PhysicalClassLoaderDefinition that = (PhysicalClassLoaderDefinition) o;
 
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
-        if (wireDefinitions != null ? !wireDefinitions.equals(that.wireDefinitions) : that.wireDefinitions != null) return false;
+        return !(uri != null ? !uri.equals(that.uri) : that.uri != null)
+                && !(wireDefinitions != null ? !wireDefinitions.equals(that.wireDefinitions) : that.wireDefinitions != null);
 
-        return true;
     }
 
     @Override

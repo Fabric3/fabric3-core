@@ -176,7 +176,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         ClassLoader hostClassLoader = classLoaderRegistry.getClassLoader(HOST_CONTRIBUTION);
         MultiParentClassLoader loader;
         if (definition.isProvisionArtifact()) {
-            URL[] classpath = resolveClasspath(definition.getUri());
+            URL[] classpath = resolveClasspath(definition);
             loader = new MultiParentClassLoader(uri, classpath, hostClassLoader);
         } else {
             loader = new MultiParentClassLoader(uri, hostClassLoader);
@@ -193,17 +193,19 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     /**
      * Resolves classpath urls.
      *
-     * @param uri uri to resolve
+     * @param definition the physical classpath definition
      * @return the resolved classpath urls
      * @throws ClassLoaderBuilderException if an error occurs resolving a url
      */
-    private URL[] resolveClasspath(URI uri) throws ClassLoaderBuilderException {
+    private URL[] resolveClasspath(PhysicalClassLoaderDefinition definition) throws ClassLoaderBuilderException {
+        URI uri = definition.getUri();
         try {
             // resolve the remote contributions and cache them locally
             URL resolvedUrl = resolver.resolve(uri);
             // introspect and expand if necessary
             List<URL> classpath = new ArrayList<URL>();
-            List<URL> archiveClasspath = classpathProcessorRegistry.process(resolvedUrl, Collections.<Library>emptyList());
+            List<Library> libraries = definition.getLibraries();
+            List<URL> archiveClasspath = classpathProcessorRegistry.process(resolvedUrl, libraries);
             classpath.addAll(archiveClasspath);
             return classpath.toArray(new URL[classpath.size()]);
         } catch (ResolutionException e) {
