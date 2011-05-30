@@ -37,7 +37,6 @@
 */
 package org.fabric3.contribution;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
@@ -77,7 +76,6 @@ import static org.fabric3.host.Names.HOST_CONTRIBUTION;
  * @version $Rev$ $Date$
  */
 public class ContributionLoaderImpl implements ContributionLoader {
-    private static final String JAVA_LIBRARY_PATH = "java.library.path";
     private final ContributionImport hostImport;
     private final ClassLoaderRegistry classLoaderRegistry;
     private final MetaDataStore store;
@@ -85,7 +83,6 @@ public class ContributionLoaderImpl implements ContributionLoader {
     private boolean classloaderIsolation;
     private Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators;
     private ClassLoaderWireBuilder builder;
-    private HostInfo info;
     private Field sysPathsField;
 
     public ContributionLoaderImpl(@Reference ClassLoaderRegistry classLoaderRegistry,
@@ -99,14 +96,11 @@ public class ContributionLoaderImpl implements ContributionLoader {
         this.classpathProcessorRegistry = classpathProcessorRegistry;
         this.generators = generators;
         this.builder = builder;
-        this.info = info;
         classloaderIsolation = info.supportsClassLoaderIsolation();
         hostImport = new ContributionImport(HOST_CONTRIBUTION);
         ContributionExport hostExport = new ContributionExport(HOST_CONTRIBUTION);
         hostExport.resolve();
         hostImport.addResolved(HOST_CONTRIBUTION, hostExport);
-        // xcv should this be part of host info?
-        System.setProperty(JAVA_LIBRARY_PATH, new File(info.getTempDir(), "native").getAbsolutePath());
         try {
             sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
             sysPathsField.setAccessible(true);

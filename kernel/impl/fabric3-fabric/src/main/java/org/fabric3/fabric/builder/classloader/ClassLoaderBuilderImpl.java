@@ -44,6 +44,7 @@
 package org.fabric3.fabric.builder.classloader;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
     private List<ClassLoaderListener> listeners;
     private HostInfo info;
     private MetaDataStore metaDataStore;
+    private Field sysPathsField;
 
     public ClassLoaderBuilderImpl(@Reference ClassLoaderWireBuilder wireBuilder,
                                   @Reference ClassLoaderRegistry classLoaderRegistry,
@@ -99,6 +101,13 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         this.metaDataStore = metaDataStore;
         this.info = info;
         this.listeners = Collections.emptyList();
+        try {
+            sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+            sysPathsField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new AssertionError(e);
+        }
+
     }
 
     @Reference(required = false)
@@ -178,6 +187,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         if (definition.isProvisionArtifact()) {
             URL[] classpath = resolveClasspath(definition);
             loader = new MultiParentClassLoader(uri, classpath, hostClassLoader);
+            setSysPathsField(loader);
         } else {
             loader = new MultiParentClassLoader(uri, hostClassLoader);
         }
@@ -214,5 +224,20 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
             throw new ClassLoaderBuilderException("Error processing: " + uri.toString(), e);
         }
     }
+
+    /**
+     * Sets the native libraries path by setting the classlaoder's sysPathsField to null. This will force the classloader to reinitialize the field to
+     * JAVA_LIBRARY_PATH.
+     *
+     * @param loader the classloader
+     */
+    private void setSysPathsField(MultiParentClassLoader loader) {
+        try {
+            sysPathsField.set(loader, null);
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        }
+    }
+
 
 }

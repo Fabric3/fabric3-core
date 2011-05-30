@@ -56,14 +56,16 @@ import org.fabric3.host.RuntimeMode;
  */
 public class DefaultHostInfo implements HostInfo {
     private String runtimeName;
-    private final RuntimeMode runtimeMode;
-    private final URI domain;
-    private final File baseDir;
-    private final File userDirectory;
+    private RuntimeMode runtimeMode;
+    private URI domain;
+    private File baseDir;
+    private File userDirectory;
     private File sharedDirectory;
     private File runtimeDirectory;
-    private final File configDirectory;
-    private final File tempDirectory;
+    private File configDirectory;
+    private File tempDirectory;
+    private File nativeDirectory;
+
     private List<File> deployDirectories;
     private OperatingSystem operatingSystem;
     private File dataDirectory;
@@ -106,6 +108,7 @@ public class DefaultHostInfo implements HostInfo {
         this.configDirectory = configDir;
         this.dataDirectory = dataDirectory;
         this.tempDirectory = tempDirectory;
+        this.nativeDirectory = new File(tempDirectory, "native");
         this.deployDirectories = deployDirectories;
         this.operatingSystem = operatingSystem;
     }
@@ -128,6 +131,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public File getTempDir() {
         return tempDirectory;
+    }
+
+    public File getNativeLibraryDir() {
+        return nativeDirectory;
     }
 
     public File getDataDir() {

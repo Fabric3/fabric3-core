@@ -43,6 +43,7 @@
  */
 package org.fabric3.fabric.runtime;
 
+import java.io.File;
 import java.net.URI;
 import javax.management.MBeanServer;
 import javax.xml.namespace.QName;
@@ -104,6 +105,8 @@ import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices {
+    private static final String JAVA_LIBRARY_PATH = "java.library.path";
+
     private HostInfo hostInfo;
     private MonitorProxyService monitorService;
     private LogicalComponentManager logicalComponentManager;
@@ -126,6 +129,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         runtimeDispatcher = configuration.getRuntimeDispatcher();
         appDispatcher = configuration.getAppDispatcher();
         repository = configuration.getRepository();
+        System.setProperty(JAVA_LIBRARY_PATH, new File(hostInfo.getTempDir(), "native").getAbsolutePath());
+
     }
 
     public HostInfo getHostInfo() {

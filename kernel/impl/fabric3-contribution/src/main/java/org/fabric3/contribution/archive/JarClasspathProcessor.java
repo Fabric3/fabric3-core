@@ -87,7 +87,7 @@ public class JarClasspathProcessor implements ClasspathProcessor {
     public JarClasspathProcessor(@Reference ClasspathProcessorRegistry registry, @Reference HostInfo hostInfo) {
         this.registry = registry;
         this.hostInfo = hostInfo;
-        libraryDir = new File(hostInfo.getTempDir(), "native");
+        libraryDir = hostInfo.getNativeLibraryDir();
     }
 
     @Property(required = false)

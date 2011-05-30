@@ -57,17 +57,19 @@ import org.fabric3.runtime.maven.MavenHostInfo;
  * @version $Rev$ $Date$
  */
 public class MavenHostInfoImpl implements MavenHostInfo {
-    private final URI domain;
-    private final Set<URL> dependencyUrls;
-    private final File tempDir;
+    private URI domain;
+    private Set<URL> dependencyUrls;
+    private File tempDir;
     private File baseDir;
     private OperatingSystem operatingSystem;
+    private File nativeDirectory;
 
     public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File baseDir, File tempDir, OperatingSystem operatingSystem) {
         this.domain = domain;
         this.dependencyUrls = dependencyUrls;
         this.baseDir = baseDir;
         this.tempDir = tempDir;
+        this.nativeDirectory = new File(tempDir, "native");
         this.operatingSystem = operatingSystem;
     }
 
@@ -81,6 +83,10 @@ public class MavenHostInfoImpl implements MavenHostInfo {
 
     public File getTempDir() {
         return tempDir;
+    }
+
+    public File getNativeLibraryDir() {
+        return nativeDirectory;
     }
 
     public File getDataDir() {

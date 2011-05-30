@@ -101,6 +101,13 @@ public interface HostInfo {
     File getTempDir();
 
     /**
+     * Returns the temporary directory where native are extracted.
+     *
+     * @return the temporary directory where native are extracted
+     */
+    File getNativeLibraryDir();
+
+    /**
      * Returns the directory containing this runtime's configuration.
      *
      * @return the directory containing this runtime's configuration or null if the runtime does not support external configuration
