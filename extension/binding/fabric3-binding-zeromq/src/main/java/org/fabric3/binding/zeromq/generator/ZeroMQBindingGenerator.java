@@ -45,9 +45,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * @version $Revision$ $Date$
  */
 @EagerInit
 public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {
