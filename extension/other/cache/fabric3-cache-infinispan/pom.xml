@@ -52,7 +52,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
-            <version>4.1.0.FINAL</version>
+            <version>4.2.1.FINAL</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jgroups</groupId>
