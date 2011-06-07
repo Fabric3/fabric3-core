@@ -35,14 +35,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.event.Fabric3EventListener;
-import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.TopologyListener;
@@ -54,8 +53,9 @@ import org.fabric3.spi.federation.ZoneTopologyService;
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-@Service(interfaces = {AddressCache.class, TopologyListener.class, Fabric3EventListener.class})
-public class FederatedAddressCache extends LocalAddressCache implements TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomain> {
+@EagerInit
+@Service(AddressCache.class)
+public class FederatedAddressCache extends LocalAddressCache implements TopologyListener, MessageReceiver {
     private static final String ZEROMQ_CHANNEL = "ZeroMQChannel";
     private ZoneTopologyService topologyService;
     private HostInfo info;
@@ -67,8 +67,10 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
 
     @Init
     public void init() throws MessageException {
-        topologyService.openChannel(ZEROMQ_CHANNEL, null, this);
         topologyService.register(this);
+        topologyService.openChannel(ZEROMQ_CHANNEL, null, this);
+        AddressRequest request = new AddressRequest(info.getRuntimeName());
+        topologyService.sendAsynchronous(ZEROMQ_CHANNEL, request);
     }
 
     @Destroy
@@ -84,6 +86,7 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
                 topologyService.sendAsynchronous(ZEROMQ_CHANNEL, event);
                 super.publish(event);
             } catch (MessageException e) {
+                e.printStackTrace();
                 // TODO monitor
             }
         }
@@ -92,6 +95,11 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
     public void onMessage(Object object) {
         if (object instanceof AddressAnnouncement) {
             super.publish((AddressAnnouncement) object);
+        } else if (object instanceof AddressUpdate) {
+            AddressUpdate update = (AddressUpdate) object;
+            for (AddressAnnouncement announcement : update.getAnnouncements()) {
+                super.publish(announcement);
+            }
         } else if (object instanceof AddressRequest) {
             AddressRequest request = (AddressRequest) object;
             AddressUpdate update = new AddressUpdate();
@@ -107,18 +115,10 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
                 try {
                     topologyService.sendAsynchronous(request.getRuntimeName(), ZEROMQ_CHANNEL, update);
                 } catch (MessageException e) {
+                    e.printStackTrace();
                     // TODO monitor
                 }
             }
-        }
-    }
-
-    public void onEvent(JoinDomain event) {
-        try {
-            AddressRequest request = new AddressRequest(info.getRuntimeName());
-            topologyService.sendAsynchronous(ZEROMQ_CHANNEL, request);
-        } catch (MessageException e) {
-            // TODO monitor
         }
     }
 

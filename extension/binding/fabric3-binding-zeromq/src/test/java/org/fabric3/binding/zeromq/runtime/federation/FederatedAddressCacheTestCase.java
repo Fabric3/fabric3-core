@@ -59,6 +59,7 @@ public class FederatedAddressCacheTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         topologyService.openChannel(EasyMock.eq(ZEROMQ_CHANNEL), (String) EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
         topologyService.register(EasyMock.isA(TopologyListener.class));
+        topologyService.sendAsynchronous(EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressRequest.class));
         topologyService.deregister(EasyMock.isA(TopologyListener.class));
         topologyService.closeChannel(ZEROMQ_CHANNEL);
         EasyMock.replay(info, topologyService);
