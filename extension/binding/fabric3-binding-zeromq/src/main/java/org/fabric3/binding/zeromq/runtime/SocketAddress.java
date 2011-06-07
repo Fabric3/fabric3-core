@@ -30,12 +30,16 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import java.io.Serializable;
+
 /**
  * A socket address.
  *
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class SocketAddress {
+public class SocketAddress implements Serializable {
+    private static final long serialVersionUID = -6325896048393741909L;
+
     private String runtimeName;
     private String protocol;
     private String address;
