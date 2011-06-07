@@ -28,28 +28,54 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.message;
 
-import java.net.URI;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import junit.framework.TestCase;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+import org.zeromq.ZMQ;
+
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
- * Generated metadata used for attaching producers to a ZeroMQ Socket.
- *
- * @version $Revision$ $Date$
+ * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -3528383965698203784L;
-    private ZeroMQMetadata metadata;
+public class NonReliablePublisherTestCase extends TestCase {
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
 
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setTargetUri(uri);
-    }
+    public void testPublish() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
 
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
+        byte[] message = "test".getBytes();
+
+        ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
+        socket.bind(ADDRESS.toProtocolString());
+        EasyMock.expect(socket.send(message, 0)).andStubAnswer(new IAnswer<Boolean>() {
+
+            public Boolean answer() throws Throwable {
+                latch.countDown();
+                return true;
+            }
+        });
+
+        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+        EasyMock.expect(context.socket(ZMQ.PUB)).andReturn(socket);
+        MessagingMonitor monitor = EasyMock.createMock(MessagingMonitor.class);
+
+        EasyMock.replay(monitor);
+        EasyMock.replay(context);
+        EasyMock.replay(socket);
+
+        NonReliablePublisher publisher = new NonReliablePublisher(context, ADDRESS, monitor);
+        publisher.start();
+        publisher.publish(message);
+
+        latch.await(10000, TimeUnit.MILLISECONDS);
+
+        EasyMock.verify(context);
+        EasyMock.verify(socket);
     }
 }

@@ -33,30 +33,20 @@ package org.fabric3.binding.zeromq.common;
 import org.fabric3.model.type.ModelObject;
 
 /**
- * Holds the ZeroMQ Binding Metadata.
- * 
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Holds ZeroMQ binding metadata.
+ *
+ * @version $Revision$ $Date$
  */
 public class ZeroMQMetadata extends ModelObject {
     private static final long serialVersionUID = 6236084212498002778L;
 
-    public final static int   PORT_NOT_SET     = -1;
-    private int               port             = PORT_NOT_SET;
-    private String            host;
-    private String            channelName;
-
-    // TODO create an enum for the different connection types
-    // TODO create an enum for the different socket types
+    public final static int PORT_NOT_SET = -1;
+    private int port = PORT_NOT_SET;
+    private String host;
+    private String channelName;
 
     public ZeroMQMetadata() {
 
-    }
-
-    public ZeroMQMetadata(String host, int port) {
-        setHost(host);
-        setPort(port);
     }
 
     public int getPort() {
@@ -83,8 +73,7 @@ public class ZeroMQMetadata extends ModelObject {
     }
 
     /**
-     * @param channelName
-     *            the channelName to set
+     * @param channelName the channelName to set
      */
     public void setChannelName(String channelName) {
         this.channelName = channelName;

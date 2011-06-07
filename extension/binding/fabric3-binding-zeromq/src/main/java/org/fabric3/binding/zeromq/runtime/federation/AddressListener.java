@@ -28,28 +28,31 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.federation;
 
-import java.net.URI;
+import java.util.List;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
- * Generated metadata used for attaching producers to a ZeroMQ Socket.
+ * Receives callbacks when an endpoint socket is bound or is removed on a runtime in the domain.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -3528383965698203784L;
-    private ZeroMQMetadata metadata;
+public interface AddressListener {
 
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setTargetUri(uri);
-    }
+    /**
+     * Returns the unique listener id.
+     *
+     * @return the unique listener id
+     */
+    String getId();
 
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
-    }
+    /**
+     * Callback when an endpoint socket changes.
+     *
+     * @param addresses the list of current sockets
+     */
+    void onUpdate(List<SocketAddress> addresses);
+
 }

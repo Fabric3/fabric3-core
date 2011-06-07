@@ -34,44 +34,48 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-package org.fabric3.binding.zeromq.model;
+*/
+package org.fabric3.binding.zeromq.runtime.handler;
 
-import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.concurrent.ExecutorService;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 
 /**
- * A ZeroMQ binding configuration set on a channel, reference, or composite.
+ * Asynchronously broadcasts a received event to a collection of handlers.
  *
  * @version $Rev$ $Date$
  */
-public class ZeroMQBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 4154636613386389578L;
+public class AsyncFanOutHandler extends AbstractFanOutHandler {
+    private ExecutorService executorService;
 
-    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
-
-    private ZeroMQMetadata metadata;
-
-    public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
-        this(bindingName, null, metadata);
+    public AsyncFanOutHandler(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
-    public ZeroMQBindingDefinition(String bindingName, URI targetUri, ZeroMQMetadata metadata) {
-        super(bindingName, targetUri, BINDING_0MQ);
-        this.metadata = metadata;
+    public void handle(Object event) {
+        if (connections.isEmpty()) {
+            // no connections, skip scheduling work
+            return;
+        }
+        FanOutWork work = new FanOutWork(event);
+        executorService.execute(work);
     }
 
-    /**
-     * Returns ZeroMQ configuration.
-     *
-     * @return the configuration
-     */
-    public ZeroMQMetadata getZeroMQMetadata() {
-        return metadata;
-    }
+    private class FanOutWork implements Runnable {
+        private Object event;
 
+        private FanOutWork(Object event) {
+            this.event = event;
+        }
+
+        public void run() {
+            for (ChannelConnection connection : connections) {
+                for (EventStream stream : connection.getEventStreams()) {
+                    stream.getHeadHandler().handle(event);
+                }
+            }
+        }
+    }
 }

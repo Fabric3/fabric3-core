@@ -34,44 +34,45 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-package org.fabric3.binding.zeromq.model;
+*/
+package org.fabric3.binding.zeromq.runtime.handler;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * A ZeroMQ binding configuration set on a channel, reference, or composite.
+ * Base FanOutHandler functionality.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
-public class ZeroMQBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 4154636613386389578L;
+public abstract class AbstractFanOutHandler implements EventStreamHandler {
+    protected List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
+    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
 
-    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
-
-    private ZeroMQMetadata metadata;
-
-    public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
-        this(bindingName, null, metadata);
+    public synchronized void addConnection(URI uri, ChannelConnection connection) {
+        connections.add(connection);
+        index.put(uri, connection);
     }
 
-    public ZeroMQBindingDefinition(String bindingName, URI targetUri, ZeroMQMetadata metadata) {
-        super(bindingName, targetUri, BINDING_0MQ);
-        this.metadata = metadata;
+    public synchronized ChannelConnection removeConnection(URI uri) {
+        ChannelConnection connection = index.remove(uri);
+        connections.remove(connection);
+        return connection;
     }
 
-    /**
-     * Returns ZeroMQ configuration.
-     *
-     * @return the configuration
-     */
-    public ZeroMQMetadata getZeroMQMetadata() {
-        return metadata;
+
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
+    }
+
+    public EventStreamHandler getNext() {
+        return null;
     }
 
 }

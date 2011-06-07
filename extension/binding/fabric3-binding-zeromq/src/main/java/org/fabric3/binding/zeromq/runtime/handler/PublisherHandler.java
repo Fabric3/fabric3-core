@@ -28,28 +28,37 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.handler;
 
-import java.net.URI;
+import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.binding.zeromq.runtime.message.Publisher;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Generated metadata used for attaching producers to a ZeroMQ Socket.
+ * Forwards events to a ZeroMQ publisher.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -3528383965698203784L;
-    private ZeroMQMetadata metadata;
+public class PublisherHandler implements EventStreamHandler {
+    private Publisher publisher;
 
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setTargetUri(uri);
+    public PublisherHandler(Publisher publisher) {
+        this.publisher = publisher;
     }
 
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
+    public void handle(Object event) {
+        if (!(event instanceof byte[])) {
+            throw new ServiceRuntimeException("Event must be serialized: " + event);
+        }
+        publisher.publish((byte[]) event);
+    }
+
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
+    }
+
+    public EventStreamHandler getNext() {
+        return null;
     }
 }

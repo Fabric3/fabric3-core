@@ -28,28 +28,22 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.context;
 
-import java.net.URI;
-
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.zeromq.ZMQ.Context;
 
 /**
- * Generated metadata used for attaching producers to a ZeroMQ Socket.
+ * Manages the ZeroMQ Context lifecycle.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 10396 $ $Date: 2011-05-30 16:10:42 +0200 (Mon, 30 May 2011) $
  */
-public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -3528383965698203784L;
-    private ZeroMQMetadata metadata;
+public interface ContextManager {
 
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setTargetUri(uri);
-    }
+    /**
+     * Returns the active ZeroMQ context.
+     *
+     * @return the active ZeroMQ context
+     */
+    Context getContext();
 
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
-    }
 }

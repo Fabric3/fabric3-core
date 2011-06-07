@@ -28,38 +28,49 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.federation;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import java.util.List;
+
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Provides a view on the state of all ZeroMQ endpoints in the domain. An endpoint is the socket which binds to an address and can either be the
+ * ZeroMQ client or server side of a connection.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class EventStreamListener implements MessageListener {
+public interface AddressCache {
 
-    private EventStreamHandler handler;
-    private ClassLoader        loader;
+    /**
+     * Returns a collections of active socket addresses for the endpoint in the domain.
+     *
+     * @param endpointId the endpoint id.
+     * @return a collections of active socket addresses for the endpoint in the domain
+     */
+    List<SocketAddress> getActiveAddresses(String endpointId);
 
-    public EventStreamListener(ClassLoader cl, EventStreamHandler handler) {
-        this.loader = cl;
-        this.handler = handler;
-    }
+    /**
+     * Publishes an address event.
+     *
+     * @param event the address event
+     */
+    void publish(AddressEvent event);
 
-    public void onMessage(Object message) {
-        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+    /**
+     * Subscribes a listener to receive notifications when a socket associated with the endpoint changes in the domain.
+     *
+     * @param endpointId the endpoint id
+     * @param listener   the listener
+     */
+    void subscribe(String endpointId, AddressListener listener);
 
-        try {
-            Thread.currentThread().setContextClassLoader(loader);
-            handler.handle(message);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldLoader);
-        }
-
-    }
+    /**
+     * Unsubscribes a listener.
+     *
+     * @param endpointId the endpoint id
+     * @param listenerId the listener id
+     */
+    void unsubscribe(String endpointId, String listenerId);
 
 }

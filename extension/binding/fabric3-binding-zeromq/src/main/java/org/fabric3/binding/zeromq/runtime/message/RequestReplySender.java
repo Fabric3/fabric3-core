@@ -28,15 +28,31 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.message;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Implementations dispatch messages over a ZeroMQ socket using a request-reply pattern. Qualities of service such as reliability may be provided by
+ * an implementation.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface ZMQMessageSubscriber {
-    public String getChannelName();
+public interface RequestReplySender {
 
-    public void addSubscriber(MessageListener listener);
+    /**
+     * Initializes the client and its underlying socket.
+     */
+    void start();
+
+    /**
+     * Disposes the client and any open resources.
+     */
+    void stop();
+
+    /**
+     * Sends the message over the socket and blocks for a response.
+     *
+     * @param message the serialized message
+     * @return the serialized response
+     */
+    byte[] send(byte[] message);
 }

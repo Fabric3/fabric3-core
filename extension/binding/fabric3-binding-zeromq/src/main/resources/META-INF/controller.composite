@@ -16,8 +16,6 @@ Public License. See the accompanying license file for details.
            name="ZeroMQControllerExtension"
            autowire="true">
 
-    
-    
     <component name="ZeroMQBindingLoader" f3:key="f3:binding.zeromq">
         <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQBindingLoader"/>
     </component>
@@ -29,6 +27,5 @@ Public License. See the accompanying license file for details.
     <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
     </component>
-    
-    
+
 </composite>

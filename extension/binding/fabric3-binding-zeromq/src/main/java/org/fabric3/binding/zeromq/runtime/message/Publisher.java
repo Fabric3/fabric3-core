@@ -28,20 +28,30 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
-
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+package org.fabric3.binding.zeromq.runtime.message;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Implementations dispatch messages over a ZeroMQ socket in a non-blocking using PUB sockets. Qualities of service such as reliability may be
+ * provided by an implementation.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface ZMQMessageBroker {
+public interface Publisher {
 
-    public final static String ALLOCATOR_TYPE_ZMQ_PUB = "zmq.publishers";
+    /**
+     * Initializes the client and its underlying socket.
+     */
+    void start();
 
-    public ZMQMessagePublisher createPublisher(ZeroMQMetadata metadata);
+    /**
+     * Disposes the client and any open resources.
+     */
+    void stop();
 
-    public void addSubscriber(MessageListener listener, ZeroMQMetadata metadata);
+    /**
+     * Sends the message over the socket.
+     *
+     * @param message the serialized message
+     */
+    void publish(byte[] message);
 }

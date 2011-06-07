@@ -28,22 +28,15 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.broker;
+package org.fabric3.binding.zeromq.runtime.federation;
 
-import org.fabric3.api.annotation.monitor.Info;
-import org.fabric3.api.annotation.monitor.Severe;
+import java.io.Serializable;
 
 /**
- * @version $Revision$ $Date$
+ * An address event.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface ZMQBrokerMonitor {
+public abstract class AddressEvent implements Serializable {
 
-    @Severe("Caught Error :{0}")
-    public void error(Throwable t);
-
-    @Info("Registered ZMQ-Publisher:{0}@{1}")
-    public void publisherRegistered(String channel, String connection);
-
-    @Info("Connected ZMQ-Subscriber:{0}@{1}")
-    public void connectedSubscriber(String channel, String connection);
 }

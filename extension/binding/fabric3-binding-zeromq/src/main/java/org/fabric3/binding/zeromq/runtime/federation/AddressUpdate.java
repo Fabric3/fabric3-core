@@ -28,53 +28,24 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.broker;
+package org.fabric3.binding.zeromq.runtime.federation;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.ZMQMessagePublisher;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
-import org.zeromq.ZMQ.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Creates an ZeroMQ Socket for a channel.
- * 
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZMQMessagePublisherImpl implements ZMQMessagePublisher {
+public class AddressUpdate extends AddressEvent {
+    private static final long serialVersionUID = -7699148587872349130L;
 
-    private String             channelName;
-    private Context            context;
-    private Socket             socket;
-    private ZeroMQMetadata     metadata;
+    private List<AddressAnnouncement> announcements = new ArrayList<AddressAnnouncement>();
 
-    protected ZMQBrokerMonitor monitor;
-
-    public ZMQMessagePublisherImpl(ZMQ.Context context, ZeroMQMetadata metadata, ZMQBrokerMonitor monitor) {
-        channelName = metadata.getChannelName();
-        this.context = context;
-        this.metadata = metadata;
-        this.monitor = monitor;
-        initSocket();
+    public void addAnnouncement(AddressAnnouncement announcement) {
+        announcements.add(announcement);
     }
 
-    public String getChannelName() {
-        return channelName;
+    public List<AddressAnnouncement> getAnnouncements() {
+        return announcements;
     }
-
-    protected void initSocket() {
-        // here a socket could be bound to an inproc
-        // this could be triggered by the broker ?
-        socket = context.socket(ZMQ.PUB);
-        String connection = String.format("tcp://%s:%d", "*", metadata.getPort());
-        socket.bind(connection);
-        monitor.publisherRegistered(metadata.getChannelName(), connection);
-    }
-
-    public void sendMessage(byte[] message) {
-        socket.send(message, 0);
-    }
-
 }

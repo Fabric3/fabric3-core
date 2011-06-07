@@ -28,84 +28,64 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.oasisopen.sca.ServiceRuntimeException;
 
+import org.fabric3.spi.channel.EventStreamHandler;
+
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Serializes an event to a byte array.
+ * <p/>
+ * Note this class will be removed when serialization with Kryo and Avro are in place.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQEventStreamHandler implements EventStreamHandler {
+public class SerializingEventStreamHandler implements EventStreamHandler {
+    private EventStreamHandler next;
 
-    private ClassLoader          classloader;
-    private ZMQMessagePublisher publisher;
-
-    public ZeroMQEventStreamHandler(ZMQMessagePublisher publisher, ClassLoader loader) {
-        this.publisher = publisher;
-        this.classloader = loader;
-    }
-
-    @Override
     public void handle(Object event) {
-        if (!(event instanceof Serializable)) {
-            throw new ServiceRuntimeException("Event type must be serializable: " + event.getClass().getName());
+        if (event != null) {
+            event = serialize(event);
         }
-
-        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(classloader);
-
-        Serializable serializable = (Serializable) event;
-        // TODO add pluggable serializers
-        byte[] data = getByteArray(event);
-
-        publisher.sendMessage(data);
-        Thread.currentThread().setContextClassLoader(oldLoader);
+        next.handle(event);
     }
 
-    private byte[] getByteArray(Object event) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        byte[] ret = null;
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
+    private byte[] serialize(Object o) {
+        if (!(o instanceof Serializable)) {
+            throw new ServiceRuntimeException("Event must implement Serializable: " + o.getClass());
+        }
+        ObjectOutputStream stream = null;
         try {
-            out = new MultiClassLoaderObjectOutputStream(bos);
-            out.writeObject(event);
-            out.flush();
-            out.close();
-            bos.flush();
-            ret = bos.toByteArray();
-            bos.close();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            stream = new ObjectOutputStream(bos);
+            stream.writeObject(o);
+            stream.flush();
+            return bos.toByteArray();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ServiceRuntimeException(e);
         } finally {
             try {
-                out.close();
-                bos.close();
+                if (stream != null) {
+                    stream.close();
+                }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        return ret;
-
-    }
-
-    @Override
-    public void setNext(EventStreamHandler next) {
-    }
-
-    @Override
-    public EventStreamHandler getNext() {
-        return null;
     }
 
 }

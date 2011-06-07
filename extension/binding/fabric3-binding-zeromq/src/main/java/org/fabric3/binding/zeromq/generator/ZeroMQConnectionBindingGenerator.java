@@ -54,25 +54,26 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 @EagerInit
 public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenerator<ZeroMQBindingDefinition> {
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
-                                                                       LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<ZeroMQBindingDefinition> binding)
+            throws GenerationException {
         URI uri = consumer.getUri();
-        ZeroMQMetadata metadata = binding.getDefinition().getZerMQMetadata();
+        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         setChannelName(binding, metadata);
         return new ZeroMQConnectionSourceDefinition(uri, metadata);
 
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
-                                                                       LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<ZeroMQBindingDefinition> binding)
+            throws GenerationException {
         URI targetUri = binding.getDefinition().getTargetUri();
-        ZeroMQMetadata metadata = binding.getDefinition().getZerMQMetadata();
+        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         setChannelName(binding, metadata);
         return new ZeroMQConnectionTargetDefinition(targetUri, metadata);
+    }
+
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+        // do nothing
+        return null;
     }
 
     private void setChannelName(LogicalBinding binding, ZeroMQMetadata metadata) {
@@ -81,4 +82,5 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
             metadata.setChannelName(channelName);
         }
     }
+
 }

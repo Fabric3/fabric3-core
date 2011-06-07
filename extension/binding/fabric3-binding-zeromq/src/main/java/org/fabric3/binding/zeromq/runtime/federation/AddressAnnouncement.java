@@ -28,13 +28,40 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.federation;
+
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Denotes a new socket bound on a runtime for an endpoint or the removal of an existing socket.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface MessageListener {
-    public void onMessage(Object message);
+public class AddressAnnouncement extends AddressEvent {
+    private static final long serialVersionUID = 5338562626119315692L;
+    public enum Type {
+        ACTIVATED, REMOVED
+    }
+
+    private String endpointId;
+    private Type type;
+    private SocketAddress address;
+
+    public AddressAnnouncement(String endpointId, Type type, SocketAddress address) {
+        this.endpointId = endpointId;
+        this.type = type;
+        this.address = address;
+    }
+
+    public String getEndpointId() {
+        return endpointId;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public SocketAddress getAddress() {
+        return address;
+    }
 }

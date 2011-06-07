@@ -36,16 +36,13 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Generated metadaata used for attaching channels and consumers to a ZeroMQ
- * socket.
- * 
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * Generated metadata used for attaching channels and consumers to a ZeroMQ socket.
+ *
+ * @version $Revision$ $Date$
  */
 public class ZeroMQConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -5592193497329776643L;
-    private ZeroMQMetadata    metadata;
+    private ZeroMQMetadata metadata;
 
     public ZeroMQConnectionSourceDefinition(URI uri, ZeroMQMetadata metadata) {
         this.metadata = metadata;

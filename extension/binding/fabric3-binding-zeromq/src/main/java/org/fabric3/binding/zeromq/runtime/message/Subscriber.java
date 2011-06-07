@@ -28,28 +28,49 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.message;
 
 import java.net.URI;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
+import org.fabric3.spi.channel.ChannelConnection;
 
 /**
- * Generated metadata used for attaching producers to a ZeroMQ Socket.
+ * Implementations receive a ZeroMQ socket using SUB sockets. Qualities of service such as reliability may be provided by an implementation.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
-    private static final long serialVersionUID = -3528383965698203784L;
-    private ZeroMQMetadata metadata;
+public interface Subscriber extends AddressListener {
 
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setTargetUri(uri);
-    }
+    /**
+     * Initializes the server and its underlying socket.
+     */
+    void start();
 
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
-    }
+    /**
+     * Disposes the server and any open resources.
+     */
+    void stop();
+
+    /**
+     * Adds a connection to a component consumer for dispatching received messages.
+     *
+     * @param subscriberId the consumer unique id
+     * @param connection   the connection
+     */
+    void addConnection(URI subscriberId, ChannelConnection connection);
+
+    /**
+     * Removes a connection to a component consumer for dispatching received messages.
+     *
+     * @param subscriberId the consumer unique id
+     */
+    void removeConnection(URI subscriberId);
+
+    /**
+     * True if this subscriber has active consumer connections.
+     *
+     * @return true if this subscriber has active consumer connections
+     */
+    boolean hasConnections();
 }

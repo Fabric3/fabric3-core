@@ -30,47 +30,42 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import java.util.List;
+import java.net.URI;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.osoa.sca.annotations.Reference;
+
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * @version $Revision$ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar
- *          2011) $
- * 
+ * @version $Revision$ $Date$
  */
 public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
+    private ZeroMQBroker broker;
+    private ClassLoaderRegistry registry;
 
-    @Reference
-    protected ClassLoaderRegistry registry;
-
-    @Reference
-    protected ZMQMessageBroker   zmqBroker;
-
-    @Override
-    public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target,
-                       ChannelConnection connection) throws ConnectionAttachException {
-        ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
-        List<EventStream> streams = connection.getEventStreams();
-
-        EventStreamListener listener = new EventStreamListener(loader, streams.get(0).getHeadHandler());
-
-        ZeroMQMetadata metadata = source.getMetadata();
-
-        zmqBroker.addSubscriber(listener, metadata);
+    public ZeroMQConnectionSourceAttacher(@Reference ZeroMQBroker broker, @Reference ClassLoaderRegistry registry) {
+        this.broker = broker;
+        this.registry = registry;
     }
 
-    @Override
-    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target)
+    public void attach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
+
+        ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
+        String channelName = source.getMetadata().getChannelName();
+
+        // seed the subscriber with active producer addresses
+        URI subscriberId = source.getUri();
+        broker.subscribe(subscriberId, channelName, connection, loader);
+    }
+
+
+    public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
         throw new UnsupportedOperationException();
     }
 
