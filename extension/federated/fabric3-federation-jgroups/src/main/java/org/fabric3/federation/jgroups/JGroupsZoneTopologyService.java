@@ -295,7 +295,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
 
-    public void openChannel(String name, String configuration, final MessageReceiver receiver) throws ZoneChannelException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
         if (channels.containsKey(name)) {
             throw new ZoneChannelException("Channel already open:" + name);
         }
@@ -326,6 +326,27 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         try {
             byte[] payload = helper.serialize(message);
             Message jMessage = new Message(null, null, payload);
+            channel.send(jMessage);
+        } catch (ChannelNotConnectedException e) {
+            throw new MessageException(e);
+        } catch (ChannelClosedException e) {
+            throw new MessageException(e);
+        }
+    }
+
+    public void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException {
+        Channel channel = channels.get(name);
+        if (channel == null) {
+            throw new MessageException("Channel not found: " + name);
+        }
+        try {
+            View view = domainChannel.getView();
+            if (view == null) {
+                throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
+            }
+            Address address = helper.getRuntimeAddress(runtimeName, view);
+            byte[] payload = helper.serialize(message);
+            Message jMessage = new Message(address, null, payload);
             channel.send(jMessage);
         } catch (ChannelNotConnectedException e) {
             throw new MessageException(e);

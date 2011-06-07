@@ -187,4 +187,14 @@ public interface ZoneTopologyService {
      */
     void sendAsynchronous(String name, Serializable message) throws MessageException;
 
+    /**
+     * Asynchronously sends a message over the given channel to the specified runtime.
+     *
+     * @param runtimeName the runtime
+     * @param name    the channel name
+     * @param message the message
+     * @throws MessageException if there is an error sending the message
+     */
+    void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException;
+
 }

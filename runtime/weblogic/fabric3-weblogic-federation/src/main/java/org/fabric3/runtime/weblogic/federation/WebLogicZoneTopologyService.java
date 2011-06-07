@@ -221,6 +221,10 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         throw new UnsupportedOperationException();
     }
 
+    public void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Initializes JNDI contexts used for domain communications.
      *
