@@ -30,83 +30,46 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.osoa.sca.annotations.Reference;
-import org.zeromq.ZMQ;
 
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
-import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
-import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
-import org.fabric3.binding.zeromq.runtime.handler.SerializingEventStreamHandler;
-import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
-import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.host.PortAllocationException;
-import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
  * @version $Revision$ $Date$
  */
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
-    private static final String ZMQ = "zmq";
+    private ZeroMQBroker broker;
 
-    private ContextManager contextManager;
-    private PortAllocator allocator;
-    private AddressCache addressCache;
-    private HostInfo info;
-    private MessagingMonitor monitor;
-
-    public ZeroMQConnectionTargetAttacher(@Reference ContextManager contextManager,
-                                          @Reference PortAllocator allocator,
-                                          @Reference AddressCache addressCache,
-                                          @Reference HostInfo info,
-                                          @Monitor MessagingMonitor monitor) {
-        this.contextManager = contextManager;
-        this.allocator = allocator;
-        this.addressCache = addressCache;
-        this.info = info;
-        this.monitor = monitor;
+    public ZeroMQConnectionTargetAttacher(@Reference ZeroMQBroker broker) {
+        this.broker = broker;
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        ZeroMQMetadata metadata = target.getMetadata();
         try {
+            ZeroMQMetadata metadata = target.getMetadata();
             String channelName = metadata.getChannelName();
-            int port = allocator.allocate(channelName, ZMQ);
-            // XCV FIXME localhost
-            String runtimeName = info.getRuntimeName();
-            SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
-            ZMQ.Context context = contextManager.getContext();
-            NonReliablePublisher publisher = new NonReliablePublisher(context, address, monitor);
-            for (EventStream stream : connection.getEventStreams()) {
-                stream.addHandler(new SerializingEventStreamHandler());
-                stream.addHandler(new PublisherHandler(publisher));
-            }
-
-            AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
-            addressCache.publish(event);
-            publisher.start();
-        } catch (PortAllocationException e) {
-            throw new ConnectionAttachException(e);
-        } catch (UnknownHostException e) {
+            String connectionId = source.getUri().toString();
+            broker.connect(connectionId, connection, channelName);
+        } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }
     }
 
-    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) {
-        throw new UnsupportedOperationException();
+    public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) throws ConnectionAttachException {
+        try {
+            ZeroMQMetadata metadata = target.getMetadata();
+            String channelName = metadata.getChannelName();
+            String connectionId = source.getUri().toString();
+            broker.release(connectionId, channelName);
+        } catch (BrokerException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
 }

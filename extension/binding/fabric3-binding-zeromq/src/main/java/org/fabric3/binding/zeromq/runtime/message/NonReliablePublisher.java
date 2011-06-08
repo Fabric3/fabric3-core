@@ -95,7 +95,9 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
 
         public void stop() {
             active.set(false);
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
         }
 
         public void run() {

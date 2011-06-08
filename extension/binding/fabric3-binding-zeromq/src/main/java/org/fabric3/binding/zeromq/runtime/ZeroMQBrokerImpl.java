@@ -30,7 +30,11 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,33 +45,50 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
+import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.handler.DeserializingEventStreamHandler;
+import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
+import org.fabric3.binding.zeromq.runtime.handler.SerializingEventStreamHandler;
 import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
+import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.host.PortAllocationException;
+import org.fabric3.spi.host.PortAllocator;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class ZeroMQBrokerImpl implements ZeroMQBroker {
+    private static final String ZMQ = "zmq";
+
     private ContextManager manager;
     private AddressCache addressCache;
     private ExecutorService executorService;
+    private PortAllocator allocator;
+    private HostInfo info;
     private MessagingMonitor monitor;
 
-    private Map<String, Subscriber> subscribers = new ConcurrentHashMap<String, Subscriber>();
+    private Map<String, Subscriber> subscribers = new HashMap<String, Subscriber>();
+    private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
 
     public ZeroMQBrokerImpl(@Reference ContextManager manager,
                             @Reference AddressCache addressCache,
                             @Reference ExecutorService executorService,
+                            @Reference PortAllocator allocator,
+                            @Reference HostInfo info,
                             @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
         this.executorService = executorService;
+        this.allocator = allocator;
+        this.info = info;
         this.monitor = monitor;
     }
 
@@ -87,7 +108,7 @@ public class ZeroMQBrokerImpl implements ZeroMQBroker {
             addressCache.subscribe(subscriberId.toString(), subscriber);
             subscribers.put(channelName, subscriber);
         } else {
-             subscriber.addConnection(subscriberId, connection);
+            subscriber.addConnection(subscriberId, connection);
         }
     }
 
@@ -97,17 +118,80 @@ public class ZeroMQBrokerImpl implements ZeroMQBroker {
             throw new IllegalStateException("MessageServer not found: " + subscriberId);
         }
         subscriber.removeConnection(subscriberId);
-        if (!subscriber.hasConnections()){
+        if (!subscriber.hasConnections()) {
             subscribers.remove(channelName);
             subscriber.stop();
         }
     }
 
-    public Publisher getPublisher() {
-        return null;
+    public void connect(String connectionId, ChannelConnection connection, String channelName) throws BrokerException {
+        PublisherHolder holder = publishers.get(channelName);
+        if (holder == null) {
+            try {
+                int port = allocator.allocate(channelName, ZMQ);
+                // XCV FIXME localhost
+                String runtimeName = info.getRuntimeName();
+                SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
+                ZMQ.Context context = manager.getContext();
+
+                Publisher publisher = new NonReliablePublisher(context, address, monitor);
+                attachConnection(connection, publisher);
+
+                AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
+                addressCache.publish(event);
+                publisher.start();
+
+                holder = new PublisherHolder(publisher);
+                holder.getConnectionIds().add(connectionId);
+                publishers.put(channelName, holder);
+            } catch (PortAllocationException e) {
+                throw new BrokerException("Error creating connection to " + channelName, e);
+            } catch (UnknownHostException e) {
+                throw new BrokerException("Error creating connection to " + channelName, e);
+            }
+        } else {
+            Publisher publisher = holder.getPublisher();
+            attachConnection(connection, publisher);
+            holder.getConnectionIds().add(connectionId);
+        }
     }
 
-    public void releasePublisher() {
-
+    public void release(String connectionId, String channelName) throws BrokerException {
+        PublisherHolder holder = publishers.get(channelName);
+        if (holder == null) {
+            throw new BrokerException("Publisher not found for " + channelName);
+        }
+        Publisher publisher = holder.getPublisher();
+        holder.getConnectionIds().remove(connectionId);
+        if (holder.getConnectionIds().isEmpty()) {
+            publishers.remove(connectionId);
+            publisher.stop();
+        }
     }
+
+    private void attachConnection(ChannelConnection connection, Publisher publisher) {
+        for (EventStream stream : connection.getEventStreams()) {
+            stream.addHandler(new SerializingEventStreamHandler());
+            stream.addHandler(new PublisherHandler(publisher));
+        }
+    }
+
+    private class PublisherHolder {
+        private List<String> connectionIds = new ArrayList<String>();
+        private Publisher publisher;
+
+        private PublisherHolder(Publisher publisher) {
+            this.publisher = publisher;
+        }
+
+        public List<String> getConnectionIds() {
+            return connectionIds;
+        }
+
+        public Publisher getPublisher() {
+            return publisher;
+        }
+    }
+
+
 }

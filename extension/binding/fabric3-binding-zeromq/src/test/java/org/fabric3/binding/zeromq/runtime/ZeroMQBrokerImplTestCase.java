@@ -39,10 +39,15 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
+import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.host.PortAllocator;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
@@ -57,21 +62,45 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
     private ZMQ.Context context;
     private ChannelConnection connection;
     private ZeroMQBrokerImpl broker;
+    private PortAllocator allocator;
+    private HostInfo info;
 
 
     public void testSubscribeUnsubscribe() throws Exception {
+        EasyMock.expect(addressCache.getActiveAddresses("endpoint")).andReturn(Collections.singletonList(ADDRESS));
         addressCache.subscribe(EasyMock.eq("subscriber"), EasyMock.isA(Subscriber.class));
         EasyMock.expectLastCall();
 
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, connection);
+        EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info);
 
         broker.subscribe(URI.create("subscriber"), "endpoint", connection, getClass().getClassLoader());
         broker.unsubscribe(URI.create("subscriber"), "endpoint");
 
         EasyMock.verify(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, connection);
+        EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info);
+    }
 
+    public void testConnectRelease() throws Exception {
+        EasyMock.expect(allocator.allocate("channel", "zmq")).andReturn(9090);
+        EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
+
+        EventStream stream = EasyMock.createMock(EventStream.class);
+        stream.addHandler(EasyMock.isA(EventStreamHandler.class));
+        EasyMock.expectLastCall().times(2);
+        ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+
+        addressCache.publish(EasyMock.isA(AddressAnnouncement.class));
+        
+        EasyMock.replay(context);
+        EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream);
+
+        broker.connect("id", connection, "channel");
+        broker.release("id", "channel");
+
+        EasyMock.verify(context);
+        EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info, stream);
     }
 
     @Override
@@ -85,12 +114,14 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
         EasyMock.expect(manager.getContext()).andReturn(context);
 
         addressCache = EasyMock.createMock(AddressCache.class);
-        EasyMock.expect(addressCache.getActiveAddresses("endpoint")).andReturn(Collections.singletonList(ADDRESS));
 
         executorService = EasyMock.createMock(ExecutorService.class);
+
+        allocator = EasyMock.createMock(PortAllocator.class);
+        info = EasyMock.createMock(HostInfo.class);
         monitor = EasyMock.createMock(MessagingMonitor.class);
 
-        broker = new ZeroMQBrokerImpl(manager, addressCache, executorService, monitor);
+        broker = new ZeroMQBrokerImpl(manager, addressCache, executorService, allocator, info, monitor);
 
     }
 }

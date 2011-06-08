@@ -32,7 +32,6 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.net.URI;
 
-import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.spi.channel.ChannelConnection;
 
 /**
@@ -50,27 +49,36 @@ public interface ZeroMQBroker {
      * @param channelName  the channel name
      * @param connection   the consumer connection to dispatch received message to
      * @param loader       the classloader for deserializing messages, typically the consumer implementation contribution classloader
+     * @throws BrokerException if an error occurs creating the subscription
      */
-    void subscribe(URI subscriberId, String channelName, ChannelConnection connection, ClassLoader loader);
+    void subscribe(URI subscriberId, String channelName, ChannelConnection connection, ClassLoader loader) throws BrokerException;
 
     /**
      * Removes a consumer from the given channel.
      *
      * @param subscriberId the unique subscription id
      * @param channelName  the channel name
+     * @throws BrokerException if an error occurs removing the subscription
      */
-    void unsubscribe(URI subscriberId, String channelName);
+    void unsubscribe(URI subscriberId, String channelName) throws BrokerException;
 
     /**
-     * Returns a publisher.
+     * Connects the channel connection to the publisher for the given channel.
      *
-     * @return a publisher
+     * @param connectionId the unique id for the connection
+     * @param connection   the producer that dispatches messages to the publisher
+     * @param channelName  the channel name   @throws BrokerException if an error occurs creating the publisher
+     * @throws BrokerException if an error occurs removing the subscription
      */
-    Publisher getPublisher();
+    void connect(String connectionId, ChannelConnection connection, String channelName) throws BrokerException;
 
     /**
-     * Releases a publisher.
+     * Releases a publisher for a channel.
+     *
+     * @param connectionId the unique id for the connection
+     * @param channelName  the channel name
+     * @throws BrokerException if an error occurs removing the publisher
      */
-    void releasePublisher();
+    void release(String connectionId, String channelName) throws BrokerException;
 
 }

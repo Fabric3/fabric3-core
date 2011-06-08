@@ -58,15 +58,22 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
 
         ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
         String channelName = source.getMetadata().getChannelName();
-
-        // seed the subscriber with active producer addresses
         URI subscriberId = source.getUri();
-        broker.subscribe(subscriberId, channelName, connection, loader);
+        try {
+            broker.subscribe(subscriberId, channelName, connection, loader);
+        } catch (BrokerException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
-
     public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        throw new UnsupportedOperationException();
+        String channelName = source.getMetadata().getChannelName();
+        URI subscriberId = source.getUri();
+        try {
+            broker.unsubscribe(subscriberId, channelName);
+        } catch (BrokerException e) {
+            throw new ConnectionAttachException(e);
+        }
     }
 
 }

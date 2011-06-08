@@ -28,31 +28,22 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.message;
+package org.fabric3.binding.zeromq.runtime;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Implementations dispatch messages over a ZeroMQ socket in a non-blocking using PUB sockets. Qualities of service such as reliability may be
- * provided by an implementation.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface Publisher {
+public class BrokerException extends Fabric3Exception {
+    private static final long serialVersionUID = 4442369221828416074L;
 
-    /**
-     * Initializes the client and its underlying socket.
-     */
-    void start();
+    public BrokerException(String message) {
+        super(message);
+    }
 
-    /**
-     * Disposes the client and any open resources.
-     */
-    void stop();
-
-    /**
-     * Sends the message over the socket.
-     *
-     * @param message the serialized message
-     */
-    void publish(byte[] message);
-
+    public BrokerException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
