@@ -68,7 +68,7 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
 
     public void testSubscribeUnsubscribe() throws Exception {
         EasyMock.expect(addressCache.getActiveAddresses("endpoint")).andReturn(Collections.singletonList(ADDRESS));
-        addressCache.subscribe(EasyMock.eq("subscriber"), EasyMock.isA(Subscriber.class));
+        addressCache.subscribe(EasyMock.eq("endpoint"), EasyMock.isA(Subscriber.class));
         EasyMock.expectLastCall();
 
         EasyMock.replay(context);

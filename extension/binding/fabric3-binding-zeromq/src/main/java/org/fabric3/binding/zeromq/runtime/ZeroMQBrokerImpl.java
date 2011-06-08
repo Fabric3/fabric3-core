@@ -105,7 +105,7 @@ public class ZeroMQBrokerImpl implements ZeroMQBroker {
             ZMQ.Context context = manager.getContext();
             subscriber = new NonReliableSubscriber(subscriberId.toString(), context, addresses, head, monitor);
             subscriber.start();
-            addressCache.subscribe(subscriberId.toString(), subscriber);
+            addressCache.subscribe(channelName, subscriber);
             subscribers.put(channelName, subscriber);
         } else {
             subscriber.addConnection(subscriberId, connection);
