@@ -67,11 +67,17 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     private Context context;
     private SocketAddress address;
     private MessagingMonitor monitor;
-    private LinkedBlockingQueue<Request> queue = new LinkedBlockingQueue<Request>();
-
 
     private Socket socket;
     private Dispatcher dispatcher;
+    private LinkedBlockingQueue<Request> queue;
+
+    public NonReliableRequestReplySender(Context context, SocketAddress address, MessagingMonitor monitor) {
+        this.address = address;
+        this.context = context;
+        this.monitor = monitor;
+        queue = new LinkedBlockingQueue<Request>();
+    }
 
     public void start() {
         dispatcher = new Dispatcher();
@@ -83,12 +89,6 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
 
     public void stop() {
         dispatcher.stop();
-    }
-
-    public NonReliableRequestReplySender(Context context, SocketAddress address, MessagingMonitor monitor) {
-        this.address = address;
-        this.context = context;
-        this.monitor = monitor;
     }
 
     public byte[] send(byte[] message) {
