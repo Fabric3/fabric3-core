@@ -123,7 +123,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         }
 
         public void run() {
-            socket = context.socket(ZMQ.PUB);
+            socket = context.socket(ZMQ.XREQ);
             socket.bind(address.toProtocolString());
 
             while (active.get()) {
