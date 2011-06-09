@@ -68,7 +68,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
 
     private AtomicInteger connectionCount = new AtomicInteger();
 
-    private Receiver receiver;
+    private SocketReceiver receiver;
 
     public NonReliableSubscriber(String id,
                                  Context context,
@@ -85,7 +85,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     }
 
     public void start() {
-        receiver = new Receiver();
+        receiver = new SocketReceiver();
         schedule();
 
     }
@@ -146,7 +146,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     /**
      * The message receiver. Responsible for creating socket connections to publishers and polling for messages.
      */
-    private class Receiver implements Runnable {
+    private class SocketReceiver implements Runnable {
         private Socket socket;
         private ZMQ.Poller poller;
         private AtomicBoolean active = new AtomicBoolean(true);
