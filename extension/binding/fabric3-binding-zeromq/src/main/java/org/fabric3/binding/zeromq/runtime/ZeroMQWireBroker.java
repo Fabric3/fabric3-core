@@ -28,24 +28,23 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.message;
+package org.fabric3.binding.zeromq.runtime;
 
 /**
- * Implementations receive messages on a ZeroMQ socket using XREQ sockets. Qualities of service such as reliability may be provided by an
- * implementation.
+ * Responsible for managing local senders and receivers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do not
+ * receive or forward messages; rather, senders connect directly to receivers.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface Receiver {
+public interface ZeroMQWireBroker {
 
-    /**
-     * Initializes the server and its underlying socket.
-     */
-    void start();
+    void connectToSender(String id, ClassLoader loader) throws BrokerException;
 
-    /**
-     * Disposes the server and any open resources.
-     */
-    void stop();
+    void releaseSender(String id) throws BrokerException;
+
+    void connectToReceiver(String id, ClassLoader loader) throws BrokerException;
+
+    void releaseReceiver(String id) throws BrokerException;
+
 
 }

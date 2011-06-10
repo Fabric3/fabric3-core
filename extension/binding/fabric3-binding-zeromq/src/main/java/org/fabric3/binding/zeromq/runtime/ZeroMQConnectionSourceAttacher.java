@@ -45,10 +45,10 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
  * @version $Revision$ $Date$
  */
 public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
-    private ZeroMQBroker broker;
+    private ZeroMQPubSubBroker broker;
     private ClassLoaderRegistry registry;
 
-    public ZeroMQConnectionSourceAttacher(@Reference ZeroMQBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQConnectionSourceAttacher(@Reference ZeroMQPubSubBroker broker, @Reference ClassLoaderRegistry registry) {
         this.broker = broker;
         this.registry = registry;
     }

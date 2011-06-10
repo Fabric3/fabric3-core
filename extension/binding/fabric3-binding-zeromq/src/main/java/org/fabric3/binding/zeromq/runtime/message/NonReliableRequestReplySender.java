@@ -30,9 +30,17 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -40,6 +48,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -48,6 +57,8 @@ import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * A {@link RequestReplySender} that provides no qualities of service.
@@ -64,36 +75,51 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         }
     };
 
+    private String id;
     private Context context;
-    private SocketAddress address;
+    private List<SocketAddress> addresses;
     private MessagingMonitor monitor;
 
     private Socket socket;
     private Dispatcher dispatcher;
+
+    private byte[] epoch;
+    private AtomicLong counter;     // a message id counter
     private LinkedBlockingQueue<Request> queue;
 
-    public NonReliableRequestReplySender(Context context, SocketAddress address, MessagingMonitor monitor) {
-        this.address = address;
+    public NonReliableRequestReplySender(String id, Context context, List<SocketAddress> addresses, MessagingMonitor monitor) {
+        this.id = id;
+        this.addresses = addresses;
         this.context = context;
         this.monitor = monitor;
+        epoch = UUID.randomUUID().toString().getBytes();
+        counter = new AtomicLong(0);
         queue = new LinkedBlockingQueue<Request>();
     }
 
     public void start() {
         dispatcher = new Dispatcher();
-        // TODO use runtime thread pool
-        Thread thread = new Thread(dispatcher);
-        thread.setUncaughtExceptionHandler(this);
-        thread.start();
+        schedule();
+
     }
 
     public void stop() {
         dispatcher.stop();
     }
 
-    public byte[] send(byte[] message) {
+    public String getId() {
+        return id;
+    }
+
+    public void onUpdate(List<SocketAddress> addresses) {
+        // refresh socket
+        this.addresses = addresses;
+        dispatcher.refresh();
+    }
+
+    public byte[] send(byte[] message, int index, WorkContext workContext) {
         try {
-            Request future = new Request(message);
+            Request future = new Request(message, index, workContext);
             return future.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.interrupted();
@@ -109,12 +135,39 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         monitor.error(e);
     }
 
+    private void schedule() {
+        // TODO use runtime thread pool
+        Thread thread = new Thread(dispatcher);
+        thread.setUncaughtExceptionHandler(this);
+        thread.start();
+    }
+
+    private byte[] generateMessageId() {
+        byte[] id = new byte[epoch.length + 8];
+        ByteBuffer buffer = ByteBuffer.wrap(id);
+        buffer.put(epoch);
+        buffer.putLong(epoch.length, counter.getAndIncrement());
+        return id;
+    }
+
     /**
      * Dispatches requests to the ZeroMQ socket.
      */
     private class Dispatcher implements Runnable {
         private AtomicBoolean active = new AtomicBoolean(true);
+        private AtomicBoolean doRefresh = new AtomicBoolean(true);
+        private Map<ByteArrayKey, Request> correlationTable = new ConcurrentHashMap<ByteArrayKey, Request>();
 
+        /**
+         * Signals to closes the old socket and establish a new one when publisher addresses have changed in the domain.
+         */
+        public void refresh() {
+            doRefresh.set(true);
+        }
+
+        /**
+         * Stops polling and closes the existing socket.
+         */
         public void stop() {
             active.set(false);
             if (socket != null) {
@@ -123,20 +176,88 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         }
 
         public void run() {
-            socket = context.socket(ZMQ.XREQ);
-            socket.bind(address.toProtocolString());
-
             while (active.get()) {
-                List<Request> drained = new ArrayList<Request>();
-                queue.drainTo(drained);
-                for (Request request : drained) {
-                    socket.send(request.getPayload(), 0);
-                    byte[] response = socket.recv(1);
-                    request.set(response);
-                    request.run();
+                try {
+                    reconnect();
+
+                    // handle pending requests
+                    List<Request> drained = new ArrayList<Request>();
+                    queue.drainTo(drained);
+                    for (Request request : drained) {
+                        // send the message id
+                        byte[] id = generateMessageId();
+                        // serialize the work context as a header
+                        byte[] serializedWork = serialize(request.getWorkContext());
+
+                        socket.send(id, ZMQ.SNDMORE);
+                        socket.send(serializedWork, ZMQ.SNDMORE);
+
+                        // serialize the operation index
+                        int index = request.getIndex();
+                        if (index >= 0) {
+                            byte[] serializedIndex = ByteBuffer.allocate(4).putInt(index).array();
+                            socket.send(serializedIndex, ZMQ.SNDMORE);
+                        }
+
+                        // serialize the request payload
+                        socket.send(request.getPayload(), 0);
+
+                        // store the request in the correlation table
+                        ByteArrayKey key = new ByteArrayKey(id);
+                        correlationTable.put(key, request);
+                    }
+
+                    // handle pending responses
+                    byte[] responseId;
+                    while ((responseId = socket.recv(ZMQ.NOBLOCK)) != null){
+                        ByteArrayKey key = new ByteArrayKey(responseId);
+                        Request request = correlationTable.remove(key);
+                        if (request == null) {
+                            monitor.warn("Correlation id not found: " + Arrays.toString(responseId));
+                            continue;
+                        }
+                        byte[] response = socket.recv(0);
+                        request.set(response);
+                        request.run();
+                    }
+
+                } catch (RuntimeException e) {
+                    // exception, make sure the thread is rescheduled
+                    schedule();
+                    throw e;
+                } catch (IOException e) {
+                    monitor.error(e);
                 }
+
             }
         }
+
+        private byte[] serialize(WorkContext workContext) throws IOException {
+            List<CallFrame> stack = workContext.getCallFrameStack();
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            ObjectOutputStream stream = new ObjectOutputStream(bas);
+            stream.writeObject(stack);
+            stream.close();
+            return bas.toByteArray();
+        }
+
+        /**
+         * Closes an existing socket and creates a new one, binding it to the list of active service endpoints.
+         */
+        private synchronized void reconnect() {
+            if (!doRefresh.getAndSet(false)) {
+                return;
+            }
+            if (socket != null) {
+                socket.close();
+            }
+            socket = context.socket(ZMQ.XREQ);
+
+            for (SocketAddress address : addresses) {
+                socket.connect(address.toProtocolString());
+            }
+        }
+
     }
 
     /**
@@ -144,14 +265,26 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
      */
     private class Request extends FutureTask<byte[]> {
         private byte[] payload;
+        private WorkContext workContext;
+        private int index;
 
-        public Request(byte[] payload) {
+        public Request(byte[] payload, int index, WorkContext workContext) {
             super(CALLABLE);
             this.payload = payload;
+            this.index = index;
+            this.workContext = workContext;
         }
 
         public byte[] getPayload() {
             return payload;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public WorkContext getWorkContext() {
+            return workContext;
         }
 
         @Override

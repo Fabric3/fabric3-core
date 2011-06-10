@@ -28,24 +28,15 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.message;
+package org.fabric3.binding.zeromq.provision;
+
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * Implementations receive messages on a ZeroMQ socket using XREQ sockets. Qualities of service such as reliability may be provided by an
- * implementation.
+ * Generated metadata used for attaching a service to a ZeroMQ Socket.
  *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ * @version $Revision: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
  */
-public interface Receiver {
-
-    /**
-     * Initializes the server and its underlying socket.
-     */
-    void start();
-
-    /**
-     * Disposes the server and any open resources.
-     */
-    void stop();
-
+public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
+    private static final long serialVersionUID = -1119229094076577838L;
 }

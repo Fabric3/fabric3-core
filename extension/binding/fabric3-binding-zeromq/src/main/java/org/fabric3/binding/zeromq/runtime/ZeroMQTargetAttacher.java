@@ -28,24 +28,36 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.message;
+package org.fabric3.binding.zeromq.runtime;
+
+import org.osoa.sca.annotations.Reference;
+
+import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
+import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.wire.Wire;
 
 /**
- * Implementations receive messages on a ZeroMQ socket using XREQ sockets. Qualities of service such as reliability may be provided by an
- * implementation.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ * @version $Revision$ $Date$
  */
-public interface Receiver {
+public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefinition> {
+    private ZeroMQWireBroker broker;
 
-    /**
-     * Initializes the server and its underlying socket.
-     */
-    void start();
+    public ZeroMQTargetAttacher(@Reference ZeroMQWireBroker broker) {
+        this.broker = broker;
+    }
 
-    /**
-     * Disposes the server and any open resources.
-     */
-    void stop();
+    public void attach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target, Wire wire) throws WiringException {
+//        broker.
+    }
 
+    public void detach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target) throws WiringException {
+
+    }
+
+    public ObjectFactory<?> createObjectFactory(ZeroMQTargetDefinition target) throws WiringException {
+        throw new UnsupportedOperationException();
+    }
 }

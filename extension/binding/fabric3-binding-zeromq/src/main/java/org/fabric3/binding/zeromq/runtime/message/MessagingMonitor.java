@@ -40,4 +40,7 @@ public interface MessagingMonitor {
     @Severe
     public void error(Throwable t);
 
+    @Severe
+    public void warn(String message);
+
 }

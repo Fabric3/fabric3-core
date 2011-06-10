@@ -17,8 +17,8 @@
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.context.ContextManagerImpl"/>
     </component>
 
-    <component name="ZeroMQBroker">
-        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQBrokerImpl"/>
+    <component name="ZeroMQPubSubBroker">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBrokerImpl"/>
     </component>
 
 </composite>

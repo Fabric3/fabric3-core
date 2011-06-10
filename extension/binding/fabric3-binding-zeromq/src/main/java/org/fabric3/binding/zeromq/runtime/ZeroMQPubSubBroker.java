@@ -40,7 +40,7 @@ import org.fabric3.spi.channel.ChannelConnection;
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface ZeroMQBroker {
+public interface ZeroMQPubSubBroker {
 
     /**
      * Subscribes a consumer to the given channel.

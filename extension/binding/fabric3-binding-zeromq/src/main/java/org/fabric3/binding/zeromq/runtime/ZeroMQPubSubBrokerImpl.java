@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
 import org.osoa.sca.annotations.Reference;
@@ -65,7 +64,7 @@ import org.fabric3.spi.host.PortAllocator;
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQBrokerImpl implements ZeroMQBroker {
+public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
@@ -78,7 +77,7 @@ public class ZeroMQBrokerImpl implements ZeroMQBroker {
     private Map<String, Subscriber> subscribers = new HashMap<String, Subscriber>();
     private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
 
-    public ZeroMQBrokerImpl(@Reference ContextManager manager,
+    public ZeroMQPubSubBrokerImpl(@Reference ContextManager manager,
                             @Reference AddressCache addressCache,
                             @Reference ExecutorService executorService,
                             @Reference PortAllocator allocator,

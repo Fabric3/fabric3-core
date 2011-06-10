@@ -61,7 +61,7 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
     private MessagingMonitor monitor;
     private ZMQ.Context context;
     private ChannelConnection connection;
-    private ZeroMQBrokerImpl broker;
+    private ZeroMQPubSubBrokerImpl broker;
     private PortAllocator allocator;
     private HostInfo info;
 
@@ -121,7 +121,7 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
         info = EasyMock.createMock(HostInfo.class);
         monitor = EasyMock.createMock(MessagingMonitor.class);
 
-        broker = new ZeroMQBrokerImpl(manager, addressCache, executorService, allocator, info, monitor);
+        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, executorService, allocator, info, monitor);
 
     }
 }

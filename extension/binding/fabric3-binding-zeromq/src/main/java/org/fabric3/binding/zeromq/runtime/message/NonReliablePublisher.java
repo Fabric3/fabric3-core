@@ -61,10 +61,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
 
     public void start() {
         dispatcher = new Dispatcher();
-        // TODO use runtime thread pool
-        Thread thread = new Thread(dispatcher);
-        thread.setUncaughtExceptionHandler(this);
-        thread.start();
+        schedule();
     }
 
     public void stop() {
@@ -90,6 +87,13 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
         monitor.error(e);
     }
 
+    private void schedule() {
+        // TODO use runtime thread pool
+        Thread thread = new Thread(dispatcher);
+        thread.setUncaughtExceptionHandler(this);
+        thread.start();
+    }
+
     private class Dispatcher implements Runnable {
         private AtomicBoolean active = new AtomicBoolean(true);
 
@@ -105,11 +109,18 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
             socket.bind(address.toProtocolString());
 
             while (active.get()) {
-                List<byte[]> drained = new ArrayList<byte[]>();
-                queue.drainTo(drained);
-                for (byte[] bytes : drained) {
-                    socket.send(bytes, 0);
+                try {
+                    List<byte[]> drained = new ArrayList<byte[]>();
+                    queue.drainTo(drained);
+                    for (byte[] bytes : drained) {
+                        socket.send(bytes, 0);
+                    }
+                } catch (RuntimeException e) {
+                    // exception, make sure the thread is rescheduled
+                    schedule();
+                    throw e;
                 }
+
             }
 
         }
