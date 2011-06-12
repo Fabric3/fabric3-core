@@ -56,7 +56,7 @@ import java.util.Set;
  *
  * @version $Revision$ $Date$
  */
-public class PhysicalOperationDefinition implements Serializable {
+public class PhysicalOperationDefinition implements Serializable, Comparable {
     private static final long serialVersionUID = -4270990709748460450L;
 
     private String name;
@@ -74,6 +74,7 @@ public class PhysicalOperationDefinition implements Serializable {
     private boolean endsConversation;
     private boolean remotable;
     private boolean allowsPassByReference = true;
+    private String compareString;
 
     // Interceptors defined against the operation
     private Set<PhysicalInterceptorDefinition> interceptors = new HashSet<PhysicalInterceptorDefinition>();
@@ -319,5 +320,33 @@ public class PhysicalOperationDefinition implements Serializable {
      */
     public void setAllowsPassByReference(boolean allowsPassByReference) {
         this.allowsPassByReference = allowsPassByReference;
+    }
+
+    /**
+     * Implementation that relies on comparing a string representation of the operation name and input parameters.
+     *
+     * @param o the operation to compare against
+     * @return the compare value
+     */
+    public int compareTo(Object o) {
+        if (!(o instanceof PhysicalOperationDefinition)) {
+            throw new ClassCastException("Specified object must be of type " + getClass().getName());
+        }
+        PhysicalOperationDefinition other = (PhysicalOperationDefinition) o;
+        return getCompareString().compareTo(other.getCompareString());
+    }
+
+    protected String getCompareString() {
+        if (compareString == null) {
+            StringBuilder builder = new StringBuilder(name);
+            for (String type : parameterTypes) {
+                builder.append(type);
+            }
+            for (String type : targetParameterTypes) {
+                builder.append(type);
+            }
+            compareString = builder.toString();
+        }
+        return compareString;
     }
 }
