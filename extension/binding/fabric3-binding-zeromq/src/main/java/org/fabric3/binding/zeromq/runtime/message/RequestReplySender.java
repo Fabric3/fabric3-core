@@ -55,6 +55,7 @@ public interface RequestReplySender extends AddressListener {
      * Sends the message over the socket and blocks for a response.
      *
      * @param message the serialized message
+     * @param index   the operation index used to determine which intercept chain to dispatch the message to
      * @param context the current work context
      * @return the serialized response
      */

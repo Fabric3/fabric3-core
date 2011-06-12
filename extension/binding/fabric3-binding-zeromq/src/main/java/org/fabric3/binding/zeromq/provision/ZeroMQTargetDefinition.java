@@ -30,6 +30,8 @@
  */
 package org.fabric3.binding.zeromq.provision;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
@@ -39,5 +41,8 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 public class ZeroMQTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 2273519605739325350L;
-    
+
+    public ZeroMQTargetDefinition(URI uri) {
+        setUri(uri);
+    }
 }

@@ -13,12 +13,26 @@
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQConnectionSourceAttacher"/>
     </component>
 
+    <component name="ZeroMQSourceAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQSourceAttacher"/>
+    </component>
+
+    <component name="ZeroMQTargetAttacher"
+               f3:key="org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTargetAttacher"/>
+    </component>
+
     <component name="ContextManager">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.context.ContextManagerImpl"/>
     </component>
 
     <component name="ZeroMQPubSubBroker">
-        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBrokerImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQPubSubBrokerImpl"/>
+    </component>
+
+    <component name="ZeroMQWireBroker">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQWireBrokerImpl"/>
     </component>
 
 </composite>

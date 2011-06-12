@@ -28,21 +28,24 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.interceptor;
 
-import java.net.URI;
-
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.invocation.Message;
 
 /**
- * Generated metadata used for attaching a service to a ZeroMQ Socket.
+ * Note this class will be removed when serialization with Kryo and Avro are in place.
  *
- * @version $Revision: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = -1119229094076577838L;
+public class ReferenceMarshallingInterceptor extends AbstractMarshallingInterceptor {
 
-    public ZeroMQSourceDefinition(URI uri) {
-        setUri(uri);
+    public ReferenceMarshallingInterceptor(ClassLoader loader) {
+        super(loader);
     }
+
+    public Message invoke(Message message) {
+        return deserialize(getNext().invoke(serialize(message)), loader);
+    }
+
+
 }

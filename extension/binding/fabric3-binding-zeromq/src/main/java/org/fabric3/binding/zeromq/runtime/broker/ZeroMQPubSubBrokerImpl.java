@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.broker;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -43,6 +43,9 @@ import org.osoa.sca.annotations.Reference;
 import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.runtime.BrokerException;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;

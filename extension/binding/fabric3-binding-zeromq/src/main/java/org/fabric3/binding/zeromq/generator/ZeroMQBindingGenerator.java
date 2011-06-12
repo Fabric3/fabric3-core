@@ -30,19 +30,26 @@
  */
 package org.fabric3.binding.zeromq.generator;
 
+import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.util.UriHelper;
 
 /**
  * @version $Revision$ $Date$
@@ -50,19 +57,41 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 @EagerInit
 public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {
 
-    public PhysicalSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> serviceBinding,
-                                                   ServiceContract contract, List<LogicalOperation> operations,
-                                                   EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
+    public ZeroMQSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
+                                                 ServiceContract contract, List<LogicalOperation> operations,
+                                                 EffectivePolicy policy) throws GenerationException {
+        URI uri = binding.getDefinition().getTargetUri();
+        return new ZeroMQSourceDefinition(uri);
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> referenceBinding,
-                                                   ServiceContract contract, List<LogicalOperation> operations,
-                                                   EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
+    public ZeroMQTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+                                                 ServiceContract contract, List<LogicalOperation> operations,
+                                                 EffectivePolicy policy) throws GenerationException {
+        LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
+        URI parent = composite.getUri();
+        URI targetUri = URI.create(parent.toString() + "/" + binding.getDefinition().getTargetUri());
+        if (targetUri.getFragment() == null) {
+            LogicalComponent<?> component = composite.getComponent(targetUri);
+            if (component == null) {
+                throw new GenerationException("Target component not found: " + targetUri);
+            }
+            if (component.getServices().size() != 1) {
+                throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
+            }
+            Collection<LogicalService> services = component.getServices();
+            targetUri = services.iterator().next().getUri();        
+        } else {
+            URI defragmented = UriHelper.getDefragmentedName(targetUri);
+            LogicalComponent component = composite.getComponent(defragmented);
+            if (component == null) {
+                throw new GenerationException("Target component not found: " + targetUri);
+            }
+
+        }
+        return new ZeroMQTargetDefinition(targetUri);
     }
 
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> serviceBinding,
+    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {

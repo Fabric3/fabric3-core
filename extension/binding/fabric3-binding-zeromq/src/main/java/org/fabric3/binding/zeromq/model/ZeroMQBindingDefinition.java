@@ -55,6 +55,7 @@ public class ZeroMQBindingDefinition extends BindingDefinition {
     public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
 
     private ZeroMQMetadata metadata;
+    private URI targetUri;
 
     public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
         this(bindingName, null, metadata);
@@ -65,13 +66,15 @@ public class ZeroMQBindingDefinition extends BindingDefinition {
         this.metadata = metadata;
     }
 
-    /**
-     * Returns ZeroMQ configuration.
-     *
-     * @return the configuration
-     */
     public ZeroMQMetadata getZeroMQMetadata() {
         return metadata;
     }
 
+    public URI getTargetUri() {
+        return targetUri;
+    }
+
+    public void setTargetUri(URI targetUri) {
+        this.targetUri = targetUri;
+    }
 }

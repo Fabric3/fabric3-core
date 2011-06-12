@@ -51,6 +51,7 @@ import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.wire.InvocationChain;
 
 /**
  * Implementation of a {@link Receiver} with no qualities of service.
@@ -75,15 +76,19 @@ public class NonReliableRequestReplyReceiver implements Receiver, Thread.Uncaugh
 
     public NonReliableRequestReplyReceiver(Context context,
                                            SocketAddress address,
-                                           List<Interceptor> interceptors,
+                                           List<InvocationChain> chains,
                                            String callbackUri,
                                            MessagingMonitor monitor) {
         this.context = context;
         this.address = address;
-        if (interceptors.size() == 1) {
-            singleInterceptor = interceptors.get(0);
-        } else {
-            this.interceptors = interceptors.toArray(new Interceptor[interceptors.size()]);
+//        if (chains.size() == 1) {
+//            singleInterceptor = chains.get(0).getHeadInterceptor();
+//        } else {
+        this.interceptors = new Interceptor[chains.size()];
+        for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
+            InvocationChain chain = chains.get(i);
+            interceptors[i] = chain.getHeadInterceptor();
+//            }
         }
         this.callbackUri = callbackUri;
         this.monitor = monitor;
@@ -185,14 +190,14 @@ public class NonReliableRequestReplyReceiver implements Receiver, Thread.Uncaugh
                         WorkContext context = createWorkContext(contextHeader);
                         Message request = new MessageImpl();
                         request.setWorkContext(context);
-                        if (singleInterceptor != null) {
-                            invokeAndReply(request, clientId, messageId, singleInterceptor);
-                        } else {
-                            ByteBuffer buffer = ByteBuffer.wrap(socket.recv(0));
-                            int methodIndex = buffer.getInt();
-                            Interceptor interceptor = interceptors[methodIndex];
-                            invokeAndReply(request, clientId, messageId, interceptor);
-                        }
+//                        if (singleInterceptor != null) {
+//                            invokeAndReply(request, clientId, messageId, singleInterceptor);
+//                        } else {
+                        ByteBuffer buffer = ByteBuffer.wrap(socket.recv(0));
+                        int methodIndex = buffer.getInt();
+                        Interceptor interceptor = interceptors[methodIndex];
+                        invokeAndReply(request, clientId, messageId, interceptor);
+//                        }
                     }
                 }
             } catch (RuntimeException e) {
@@ -204,6 +209,10 @@ public class NonReliableRequestReplyReceiver implements Receiver, Thread.Uncaugh
         }
 
         private void bind() {
+            if (socket != null) {
+                // Socket is still active, ignore. This can happen if bind is called after the receiver has been rescheduled
+                return;
+            }
             socket = context.socket(ZMQ.XREP);
             socket.bind(address.toProtocolString());
             poller = context.poller();

@@ -28,21 +28,43 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.interceptor;
 
-import java.net.URI;
-
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.wire.Interceptor;
 
 /**
- * Generated metadata used for attaching a service to a ZeroMQ Socket.
- *
- * @version $Revision: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = -1119229094076577838L;
+public class RequestReplyInterceptor implements Interceptor {
+    private int index;
+    private RequestReplySender sender;
 
-    public ZeroMQSourceDefinition(URI uri) {
-        setUri(uri);
+    public RequestReplyInterceptor(int index, RequestReplySender sender) {
+        this.index = index;
+        this.sender = sender;
     }
+
+    public Message invoke(Message msg) {
+        byte[] body = (byte[]) msg.getBody();
+        WorkContext workContext = msg.getWorkContext();
+        // XCV remove hack
+        if (workContext == null) {
+            workContext = new WorkContext();
+        }
+        byte[] value = sender.send(body, index, workContext);
+        msg.setBody(value);
+        return msg;
+    }
+
+    public void setNext(Interceptor next) {
+        throw new IllegalStateException("This interceptor must be the last one in an target interceptor chain");
+    }
+
+    public Interceptor getNext() {
+        return null;
+    }
+
 }

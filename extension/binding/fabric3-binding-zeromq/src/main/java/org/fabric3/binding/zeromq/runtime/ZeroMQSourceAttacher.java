@@ -35,11 +35,11 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
@@ -47,32 +47,36 @@ import org.fabric3.spi.wire.Wire;
 /**
  * @version $Revision$ $Date$
  */
-public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefinition> {
+public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefinition> {
     private ZeroMQWireBroker broker;
     private ClassLoaderRegistry registry;
 
-    public ZeroMQTargetAttacher(@Reference ZeroMQWireBroker broker, @Reference ClassLoaderRegistry registry) {
+    public ZeroMQSourceAttacher(@Reference ZeroMQWireBroker broker, @Reference ClassLoaderRegistry registry) {
         this.broker = broker;
         this.registry = registry;
     }
 
-    public void attach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target, Wire wire) throws WiringException {
-        String id = source.getUri().toString();
+    public void attach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         URI uri = target.getUri();
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {
-            broker.connectToSender(id, uri, chains, loader);
+            broker.connectToReceiver(uri, chains, null, loader);
         } catch (BrokerException e) {
             throw new WiringException(e);
         }
     }
 
-    public void detach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target) throws WiringException {
+    public void detach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
 
     }
 
-    public ObjectFactory<?> createObjectFactory(ZeroMQTargetDefinition target) throws WiringException {
+    public void attachObjectFactory(ZeroMQSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
+            throws WiringException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void detachObjectFactory(ZeroMQSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
 

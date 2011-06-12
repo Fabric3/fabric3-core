@@ -30,6 +30,11 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
+import java.net.URI;
+import java.util.List;
+
+import org.fabric3.spi.wire.InvocationChain;
+
 /**
  * Responsible for managing local senders and receivers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do not
  * receive or forward messages; rather, senders connect directly to receivers.
@@ -38,13 +43,45 @@ package org.fabric3.binding.zeromq.runtime;
  */
 public interface ZeroMQWireBroker {
 
-    void connectToSender(String id, ClassLoader loader) throws BrokerException;
+    /**
+     * Connects a set of ordered invocation chains to a ZeroMQ XREQ sender. The Invocation chain order is used to match an invocation chain on the
+     * receiving end to dispatch the invocation to.
+     *
+     * @param id     the connection id
+     * @param uri    the target service URI
+     * @param chains the invocation chains
+     * @param loader the classloader to load invocation parameters with
+     * @throws BrokerException if a connection error occurs
+     */
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException;
 
-    void releaseSender(String id) throws BrokerException;
+    /**
+     * Releases a previous connection to a sender.
+     *
+     * @param id  the connection id
+     * @param uri the target service URI
+     * @throws BrokerException if a connection error occurs
+     */
+    public void releaseSender(String id, URI uri) throws BrokerException;
 
-    void connectToReceiver(String id, ClassLoader loader) throws BrokerException;
+    /**
+     * Connects to a receiver that dispatches invocation requests from an ZeroMQ XRESP socket. The Invocation chain order is used to match an
+     * invocation chain for dispatching the invocation.
+     *
+     * @param uri      the target service URI
+     * @param chains   the invocation chains
+     * @param callback the callback ID or null
+     * @param loader   the classloader to load invocation parameters with
+     * @throws BrokerException if a connection error occurs
+     */
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, String callback, ClassLoader loader) throws BrokerException;
 
-    void releaseReceiver(String id) throws BrokerException;
-
+    /**
+     * Releases previous connection to a receiver.
+     *
+     * @param uri the target service URI
+     * @throws BrokerException if a connection error occurs
+     */
+    void releaseReceiver(URI uri) throws BrokerException;
 
 }

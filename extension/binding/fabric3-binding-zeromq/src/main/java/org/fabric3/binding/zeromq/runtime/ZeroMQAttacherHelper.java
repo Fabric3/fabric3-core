@@ -28,21 +28,38 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime;
 
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.wire.Wire;
 
 /**
- * Generated metadata used for attaching a service to a ZeroMQ Socket.
- *
- * @version $Revision: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
+ * @version $Revision: 10454 $ $Date: 2011-06-10 23:06:51 +0200 (Fri, 10 Jun 2011) $
  */
-public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
-    private static final long serialVersionUID = -1119229094076577838L;
+public final class ZeroMQAttacherHelper {
 
-    public ZeroMQSourceDefinition(URI uri) {
-        setUri(uri);
+    private ZeroMQAttacherHelper() {
     }
+
+    /**
+     * Returns the invocation chains for a wire in their natural order.
+     *
+     * @param wire the wire
+     * @return the invocation chains
+     */
+    public static List<InvocationChain> sortChains(Wire wire) {
+        TreeMap<PhysicalOperationDefinition, InvocationChain> map = new TreeMap<PhysicalOperationDefinition, InvocationChain>();
+        for (InvocationChain chain : wire.getInvocationChains()) {
+            map.put(chain.getPhysicalOperation(), chain);
+        }
+        List<InvocationChain> sorted = new ArrayList<InvocationChain>();
+        sorted.addAll(map.values());
+        return sorted;
+    }
+
 }

@@ -119,8 +119,9 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
 
     public byte[] send(byte[] message, int index, WorkContext workContext) {
         try {
-            Request future = new Request(message, index, workContext);
-            return future.get(10000, TimeUnit.MILLISECONDS);
+            Request request = new Request(message, index, workContext);
+            queue.put(request);
+            return request.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.interrupted();
             throw new ServiceRuntimeException(e);
@@ -209,7 +210,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
 
                     // handle pending responses
                     byte[] responseId;
-                    while ((responseId = socket.recv(ZMQ.NOBLOCK)) != null){
+                    while ((responseId = socket.recv(ZMQ.NOBLOCK)) != null) {
                         ByteArrayKey key = new ByteArrayKey(responseId);
                         Request request = correlationTable.remove(key);
                         if (request == null) {
@@ -232,6 +233,13 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             }
         }
 
+        /**
+         * Serializes the work context.
+         *
+         * @param workContext the work context
+         * @return the serialized work context
+         * @throws IOException if a serialization error is encountered
+         */
         private byte[] serialize(WorkContext workContext) throws IOException {
             List<CallFrame> stack = workContext.getCallFrameStack();
             ByteArrayOutputStream bas = new ByteArrayOutputStream();
