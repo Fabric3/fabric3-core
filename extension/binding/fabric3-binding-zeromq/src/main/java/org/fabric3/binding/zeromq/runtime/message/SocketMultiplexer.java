@@ -35,7 +35,7 @@ import java.util.List;
 import org.zeromq.ZMQ;
 
 /**
- * Implementations return an available socket based on a selection algorithm such as round-robin.
+ * Implementations return an available socket from a collection based on a selection algorithm such as round-robin.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
@@ -54,4 +54,9 @@ public interface SocketMultiplexer {
      * @param sockets the new sockets
      */
     void update(List<ZMQ.Socket> sockets);
+
+    /**
+     * Closes the underlying collection of sockets.
+     */
+    void close();
 }

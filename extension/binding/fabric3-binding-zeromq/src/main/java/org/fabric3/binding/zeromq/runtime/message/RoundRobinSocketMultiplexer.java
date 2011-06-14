@@ -62,7 +62,14 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
         }
     }
 
-    public boolean hasNext() {
+    public void close() {
+        for (ZMQ.Socket socket : sockets) {
+            socket.close();
+        }
+
+    }
+
+    private boolean hasNext() {
         if (!iterator.hasNext()) {
             // return to top of list
             iterator = sockets.iterator();
