@@ -78,7 +78,7 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
 
     @Override
     protected void invoke(ZMQ.Socket socket) {
-        byte[] clientId = socket.recv(0);
+//        byte[] clientId = socket.recv(0);
 
         byte[] contextHeader = socket.recv(0);
         WorkContext context = createWorkContext(contextHeader);

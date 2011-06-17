@@ -28,45 +28,40 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.interceptor;
+package org.fabric3.binding.zeromq.generator;
 
-import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+
+import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
+import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
+import org.fabric3.model.type.contract.Operation;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.generator.BindingGenerator;
+import org.fabric3.spi.generator.EffectivePolicy;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalService;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.util.UriHelper;
 
 /**
- * Dispatches a message from an invocation chain to a ZeroMQ request-response sender.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ * @version $Revision$ $Date$
  */
-public class RequestReplyInterceptor implements Interceptor {
-    private int index;
-    private RequestReplySender sender;
+@EagerInit
+public class InvalidContractException extends GenerationException {
+    private static final long serialVersionUID = -222604356274529323L;
 
-    public RequestReplyInterceptor(int index, RequestReplySender sender) {
-        this.index = index;
-        this.sender = sender;
+    public InvalidContractException(String message) {
+        super(message);
     }
-
-    public Message invoke(Message msg) {
-        byte[] body = (byte[]) msg.getBody();
-        WorkContext workContext = msg.getWorkContext();
-        // XCV remove hack
-        if (workContext == null) {
-            workContext = new WorkContext();
-        }
-        byte[] value = sender.send(body, index, workContext);
-        msg.setBody(value);
-        return msg;
-    }
-
-    public void setNext(Interceptor next) {
-        throw new IllegalStateException("This interceptor must be the last one in an target interceptor chain");
-    }
-
-    public Interceptor getNext() {
-        return null;
-    }
-
 }

@@ -33,12 +33,15 @@ package org.fabric3.binding.zeromq.generator;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import javax.xml.namespace.QName;
 
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
+import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -56,17 +59,22 @@ import org.fabric3.spi.util.UriHelper;
  */
 @EagerInit
 public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {
+    private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
+    private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
 
     public ZeroMQSourceDefinition generateSource(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                 ServiceContract contract, List<LogicalOperation> operations,
+                                                 ServiceContract contract,
+                                                 List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
         return new ZeroMQSourceDefinition(uri);
     }
 
     public ZeroMQTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                 ServiceContract contract, List<LogicalOperation> operations,
+                                                 ServiceContract contract,
+                                                 List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
+        validateServiceContract(contract);
         LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
         URI parent = composite.getUri();
         URI targetUri = URI.create(parent.toString() + "/" + binding.getDefinition().getTargetUri());
@@ -79,7 +87,7 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                 throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
             }
             Collection<LogicalService> services = component.getServices();
-            targetUri = services.iterator().next().getUri();        
+            targetUri = services.iterator().next().getUri();
         } else {
             URI defragmented = UriHelper.getDefragmentedName(targetUri);
             LogicalComponent component = composite.getComponent(defragmented);
@@ -96,6 +104,22 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {
         throw new UnsupportedOperationException();
+    }
+
+    private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
+        boolean oneway = false;
+        boolean first = true;
+        for (Operation operation : contract.getOperations()) {
+            if (first) {
+                oneway = operation.getIntents().contains(ONEWAY);
+            } else {
+                boolean oneWayIntent = operation.getIntents().contains(ONEWAY);
+                if ((!oneway && oneWayIntent) || (oneway && !oneWayIntent)) {
+                    String name = contract.getInterfaceName();
+                    throw new InvalidContractException("The ZeroMQ binding does not support mixing one-way and request-response operations: " + name);
+                }
+            }
+        }
     }
 
 }

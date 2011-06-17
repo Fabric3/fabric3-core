@@ -14,7 +14,7 @@
     <artifactId>fabric3-binding-zeromq</artifactId>
     <name>Fabric3 ZeroMQ Binding Extension</name>
     <description>ZeroMQ Binding Extension</description>
-    <packaging>jar</packaging>
+    <packaging>sca-contribution-jar</packaging>
     <dependencies>
         <dependency>
             <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
@@ -55,6 +55,16 @@
             <version>${woodstox.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.fabric3</groupId>
+                <artifactId>fabric3-contribution-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

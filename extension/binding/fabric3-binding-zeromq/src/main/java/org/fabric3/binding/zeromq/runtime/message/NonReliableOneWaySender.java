@@ -50,8 +50,6 @@ import org.fabric3.spi.invocation.WorkContext;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExceptionHandler {
-
-
     private String id;
     private ZMQ.Context context;
     private List<SocketAddress> addresses;
@@ -68,7 +66,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         this.context = context;
         this.monitor = monitor;
         queue = new LinkedBlockingQueue<Request>();
-        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PUSH);
     }
 
     public void start() {
@@ -130,9 +128,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
          */
         public void stop() {
             active.set(false);
-            if (multiplexer != null) {
-                multiplexer.close();
-            }
+            multiplexer.close();
         }
 
         public void run() {
@@ -187,20 +183,12 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         }
 
         /**
-         * Closes an existing socket and creates a new one, binding it to the list of active service endpoints.
+         * Updates the multiplexer with new endpoint addresses.
          */
         private synchronized void reconnect() {
             if (!doRefresh.getAndSet(false)) {
                 return;
             }
-
-//            handle update better. Need to only close connections that are no longer active. This means have to cache address so a compare can be made abd the connections closed
-
-            if (multiplexer != null) {
-                multiplexer.close();
-            }
-
-
             multiplexer.update(addresses);
         }
     }

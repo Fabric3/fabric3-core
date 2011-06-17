@@ -30,21 +30,23 @@
  */
 package org.fabric3.binding.zeromq.runtime.interceptor;
 
-import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
+import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * Dispatches a message from an invocation chain to a ZeroMQ request-response sender.
+ * Dispatches a message from an invocation chain to a ZeroMQ one-way sender.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class RequestReplyInterceptor implements Interceptor {
+public class OneWayInterceptor implements Interceptor {
+    private static final Message ONE_WAY_RESPONSE = new MessageImpl();
     private int index;
-    private RequestReplySender sender;
+    private OneWaySender sender;
 
-    public RequestReplyInterceptor(int index, RequestReplySender sender) {
+    public OneWayInterceptor(int index, OneWaySender sender) {
         this.index = index;
         this.sender = sender;
     }
@@ -56,9 +58,8 @@ public class RequestReplyInterceptor implements Interceptor {
         if (workContext == null) {
             workContext = new WorkContext();
         }
-        byte[] value = sender.send(body, index, workContext);
-        msg.setBody(value);
-        return msg;
+        sender.send(body, index, workContext);
+        return ONE_WAY_RESPONSE;
     }
 
     public void setNext(Interceptor next) {

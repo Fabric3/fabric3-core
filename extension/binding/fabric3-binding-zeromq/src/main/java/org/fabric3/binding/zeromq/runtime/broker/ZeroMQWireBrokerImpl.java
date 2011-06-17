@@ -49,17 +49,23 @@ import org.fabric3.binding.zeromq.runtime.ZeroMQWireBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
-import org.fabric3.binding.zeromq.runtime.interceptor.ServiceMarshallingInterceptor;
-import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
+import org.fabric3.binding.zeromq.runtime.interceptor.OneWayInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.ReferenceMarshallingInterceptor;
+import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
+import org.fabric3.binding.zeromq.runtime.interceptor.ServiceMarshallingInterceptor;
 import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
+import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWayReceiver;
+import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableRequestReplyReceiver;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableRequestReplySender;
+import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
+import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -75,7 +81,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
     private HostInfo info;
     private MessagingMonitor monitor;
 
-    private Map<URI, SenderHolder<RequestReplySender>> senders = new HashMap<URI, SenderHolder<RequestReplySender>>();
+    private Map<URI, SenderHolder> senders = new HashMap<URI, SenderHolder>();
     private Map<URI, Receiver> receivers = new HashMap<URI, Receiver>();
 
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
@@ -93,39 +99,29 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
     }
 
     public void connectToSender(String id, URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
-        SenderHolder<RequestReplySender> holder = senders.get(uri);
+        SenderHolder holder = senders.get(uri);
         if (holder == null) {
-            ZMQ.Context context = manager.getContext();
-            String endpointId = uri.toString();
-            List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
-
-            RequestReplySender sender = new NonReliableRequestReplySender(endpointId, context, addresses, monitor);
-            holder = new SenderHolder<RequestReplySender>(sender);
-            sender.start();
-
-            addressCache.subscribe(endpointId, sender);
-            
-            senders.put(uri, holder);
+            holder = createSender(uri, chains);
         }
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
             ReferenceMarshallingInterceptor serializingInterceptor = new ReferenceMarshallingInterceptor(loader);
             chain.addInterceptor(serializingInterceptor);
-            RequestReplyInterceptor interceptor = new RequestReplyInterceptor(i, holder.getSender());
+            Interceptor interceptor = createInterceptor(holder, i);
             chain.addInterceptor(interceptor);
         }
         holder.getIds().add(id);
     }
 
     public void releaseSender(String id, URI uri) throws BrokerException {
-        SenderHolder<RequestReplySender> holder = senders.get(uri);
+        SenderHolder holder = senders.get(uri);
         if (holder == null) {
             throw new BrokerException("Sender not found for " + uri);
         }
         holder.getIds().remove(id);
         if (holder.getIds().isEmpty()) {
             senders.remove(uri);
-            RequestReplySender sender = holder.getSender();
+            Sender sender = holder.getSender();
             sender.stop();
         }
     }
@@ -147,7 +143,13 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
                 ServiceMarshallingInterceptor interceptor = new ServiceMarshallingInterceptor(loader);
                 chain.addInterceptor(interceptor);
             }
-            NonReliableRequestReplyReceiver receiver = new NonReliableRequestReplyReceiver(context, address, chains, callback, monitor);
+            boolean oneWay = isOneWay(chains, uri);
+            Receiver receiver;
+            if (oneWay) {
+                receiver = new NonReliableOneWayReceiver(context, address, chains, callback, monitor);
+            } else {
+                receiver = new NonReliableRequestReplyReceiver(context, address, chains, callback, monitor);
+            }
             receiver.start();
 
             AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.ACTIVATED, address);
@@ -169,16 +171,67 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
         receiver.stop();
     }
 
-    private class SenderHolder<T> {
-        private T sender;
+    private SenderHolder createSender(URI uri, List<InvocationChain> chains) {
+        ZMQ.Context context = manager.getContext();
+        String endpointId = uri.toString();
+        List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
+
+        boolean oneWay = isOneWay(chains, uri);
+
+
+        Sender sender;
+        if (oneWay) {
+            sender = new NonReliableOneWaySender(endpointId, context, addresses, monitor);
+        } else {
+            sender = new NonReliableRequestReplySender(endpointId, context, addresses, monitor);
+        }
+
+
+        SenderHolder holder = new SenderHolder(sender);
+        sender.start();
+
+        addressCache.subscribe(endpointId, sender);
+
+        senders.put(uri, holder);
+        return holder;
+    }
+
+    /**
+     * Determines if the wire is one-way or request-reply. The first operation is used to determine if the contract is one-way as the binding does not
+     * support mixing one-way and request-response operations on a service contract.
+     *
+     * @param chains the wire invocation chains
+     * @param uri    thr service URI.
+     * @return true if the wire is one-way
+     */
+    private boolean isOneWay(List<InvocationChain> chains, URI uri) {
+        if (chains.size() < 1) {
+            throw new AssertionError("Contract must have at least one operation: " + uri);
+        }
+        return chains.get(0).getPhysicalOperation().isOneWay();
+    }
+
+    private Interceptor createInterceptor(SenderHolder holder, int i) {
+        Sender sender = holder.getSender();
+        if (sender instanceof NonReliableRequestReplySender) {
+            return new RequestReplyInterceptor(i, (RequestReplySender) sender);
+        } else if (sender instanceof OneWaySender) {
+            return new OneWayInterceptor(i, (OneWaySender) sender);
+        } else {
+            throw new AssertionError("Unknown sender type: " + sender.getClass().getName());
+        }
+    }
+
+    private class SenderHolder {
+        private Sender sender;
         private List<String> ids;
 
-        private SenderHolder(T sender) {
+        private SenderHolder(Sender sender) {
             this.sender = sender;
             ids = new ArrayList<String>();
         }
 
-        public T getSender() {
+        public Sender getSender() {
             return sender;
         }
 

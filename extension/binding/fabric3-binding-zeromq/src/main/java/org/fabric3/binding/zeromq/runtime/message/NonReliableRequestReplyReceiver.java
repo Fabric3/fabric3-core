@@ -55,7 +55,6 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
-
     private Interceptor singleInterceptor;
     private Interceptor[] interceptors;
 

@@ -70,6 +70,9 @@ public abstract class AbstractMarshallingInterceptor implements Interceptor {
         ObjectInputStream stream = null;
         try {
             Object body = message.getBody();
+            if (body == null) {
+                return message;
+            }
             if (!(body instanceof byte[])) {
                 throw new ServiceRuntimeException("Parameters must be a serialized byte array");
             }
