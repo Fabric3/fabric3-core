@@ -31,7 +31,7 @@
 package org.fabric3.binding.zeromq.runtime.message;
 
 /**
- * Implementations dispatch messages over a ZeroMQ socket in a non-blocking using PUB sockets. Qualities of service such as reliability may be
+ * Implementations dispatch messages over a ZeroMQ socket in a non-blocking fashion using PUB sockets. Qualities of service such as reliability may be
  * provided by an implementation.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $

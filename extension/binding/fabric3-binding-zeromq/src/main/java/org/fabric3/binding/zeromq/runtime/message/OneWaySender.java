@@ -41,7 +41,7 @@ import org.fabric3.spi.invocation.WorkContext;
 public interface OneWaySender extends Sender {
 
     /**
-     * Sends the message over the socket and blocks for a response.
+     * Dispatches a message to a service in a non-blocking fashion.
      *
      * @param message the serialized message
      * @param index   the operation index used to determine which intercept chain to dispatch the message to
