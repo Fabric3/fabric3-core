@@ -31,11 +31,14 @@
 package org.fabric3.binding.zeromq.runtime.message;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
+
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
@@ -43,59 +46,182 @@ import org.zeromq.ZMQ;
 public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
     public void testRoundRobin() throws Exception {
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer();
+        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket1);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
+        EasyMock.replay(context);
 
-        List<ZMQ.Socket> list = new ArrayList<ZMQ.Socket>();
-        list.add(socket1);
-        list.add(socket2);
-        list.add(socket3);
+        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
+        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
+        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        list.add(address1);
+        list.add(address2);
+        list.add(address3);
+
         multiplexer.update(list);
 
-        assertEquals(socket1, multiplexer.get());
-        assertEquals(socket2, multiplexer.get());
-        assertEquals(socket3, multiplexer.get());
-        assertEquals(socket1, multiplexer.get());
+        List<ZMQ.Socket> order = new ArrayList<ZMQ.Socket>();
+        ZMQ.Socket next = multiplexer.get();
+        order.add(next);
+        next = multiplexer.get();
+        assertFalse(order.contains(next));
+        order.add(next);
+        next = multiplexer.get();
+        assertFalse(order.contains(next));
+        order.add(next);
+
+        for (ZMQ.Socket socket : order) {
+            assertSame(socket, multiplexer.get());
+        }
+
+        for (ZMQ.Socket socket : order) {
+            assertSame(socket, multiplexer.get());
+        }
     }
 
     public void testSingletonIterator() throws Exception {
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer();
-        ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
+        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        List<ZMQ.Socket> list = new ArrayList<ZMQ.Socket>();
-        list.add(socket1);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket);
+        EasyMock.replay(context);
+
+        SocketAddress address = new SocketAddress("vm", "tcp", "1", 1);
+        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        list.add(address);
+
         multiplexer.update(list);
 
-        assertEquals(socket1, multiplexer.get());
-        assertEquals(socket1, multiplexer.get());
+        assertSame(socket, multiplexer.get());
+        assertSame(socket, multiplexer.get());
     }
 
-    public void testUpdate() throws Exception {
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer();
+    public void testUpdateAdd() throws Exception {
+        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
+        socket1.connect("tcp://1:1");
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
+        socket2.connect("tcp://2:2");
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
+        socket3.connect("tcp://3:3");
+        ZMQ.Socket socket4 = EasyMock.createMock(ZMQ.Socket.class);
+        socket4.connect("tcp://4:4");
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket1);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket4);
+        EasyMock.replay(context);
+        EasyMock.replay(socket1);
+        EasyMock.replay(socket2);
+        EasyMock.replay(socket3);
+        EasyMock.replay(socket4);
 
-        List<ZMQ.Socket> list1 = new ArrayList<ZMQ.Socket>();
-        list1.add(socket1);
-        list1.add(socket2);
-        list1.add(socket3);
-        multiplexer.update(list1);
+        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
+        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
+        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        list.add(address1);
+        list.add(address2);
+        list.add(address3);
 
-        assertEquals(socket1, multiplexer.get());
+        multiplexer.update(list);
+        multiplexer.get();
 
-        List<ZMQ.Socket> list2 = new ArrayList<ZMQ.Socket>();
-        list2.add(socket1);
-        list2.add(socket2);
-        multiplexer.update(list2);
+        SocketAddress address4 = new SocketAddress("vm", "tcp", "4", 4);
+        list.add(address4);
+        multiplexer.update(list);
 
+        List<ZMQ.Socket> order = new ArrayList<ZMQ.Socket>();
+        ZMQ.Socket next = multiplexer.get();
+        order.add(next);
+        next = multiplexer.get();
+        assertFalse(order.contains(next));
+        order.add(next);
+        next = multiplexer.get();
+        assertFalse(order.contains(next));
+        order.add(next);
+        next = multiplexer.get();
+        assertFalse(order.contains(next));
+        order.add(next);
 
-        assertEquals(socket1, multiplexer.get());
-        assertEquals(socket2, multiplexer.get());
-        assertEquals(socket1, multiplexer.get());
-        assertEquals(socket2, multiplexer.get());
+        for (ZMQ.Socket socket : order) {
+            assertSame(socket, multiplexer.get());
+        }
+
+        for (ZMQ.Socket socket : order) {
+            assertSame(socket, multiplexer.get());
+        }
+
+        EasyMock.verify(context);
+        EasyMock.verify(socket1);
+        EasyMock.verify(socket2);
+        EasyMock.verify(socket3);
+        EasyMock.verify(socket4);
     }
+
+    public void testUpdateRemove() throws Exception {
+        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
+        socket1.connect("tcp://1:1");
+        socket1.close();
+        ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
+        socket2.connect("tcp://2:2");
+        socket2.close();
+        ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
+        socket3.connect("tcp://3:3");
+        socket3.close();
+        ZMQ.Socket socket4 = EasyMock.createMock(ZMQ.Socket.class);
+        socket4.connect("tcp://4:4");
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket1);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
+        EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket4);
+        EasyMock.replay(context);
+        EasyMock.replay(socket1);
+        EasyMock.replay(socket2);
+        EasyMock.replay(socket3);
+        EasyMock.replay(socket4);
+ 
+        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
+        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
+        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+        List<SocketAddress> list = new ArrayList<SocketAddress>();
+        list.add(address1);
+        list.add(address2);
+        list.add(address3);
+
+        multiplexer.update(list);
+        multiplexer.get();
+
+        SocketAddress address4 = new SocketAddress("vm", "tcp", "4", 4);
+        multiplexer.update(Collections.singletonList(address4));
+
+        assertSame(socket4,multiplexer.get());
+        assertSame(socket4,multiplexer.get());
+        assertSame(socket4,multiplexer.get());
+        assertSame(socket4,multiplexer.get());
+
+
+        EasyMock.verify(context);
+        EasyMock.verify(socket1);
+        EasyMock.verify(socket2);
+        EasyMock.verify(socket3);
+        EasyMock.verify(socket4);
+
+    }
+
+
 
 }
