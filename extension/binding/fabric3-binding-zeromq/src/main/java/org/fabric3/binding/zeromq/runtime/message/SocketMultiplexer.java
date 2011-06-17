@@ -34,6 +34,8 @@ import java.util.List;
 
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
+
 /**
  * Implementations return an available socket from a collection based on a selection algorithm such as round-robin.
  *
@@ -42,18 +44,18 @@ import org.zeromq.ZMQ;
 public interface SocketMultiplexer {
 
     /**
+     * Replaces the previous list of available sockets with a new one.
+     *
+     * @param addresses the new socket addresses
+     */
+    void update(List<SocketAddress> addresses);
+
+    /**
      * Return the next available socket.
      *
      * @return the next available socket
      */
     ZMQ.Socket get();
-
-    /**
-     * Replaces the previous list of available sockets with a new one.
-     *
-     * @param sockets the new sockets
-     */
-    void update(List<ZMQ.Socket> sockets);
 
     /**
      * Closes the underlying collection of sockets.
