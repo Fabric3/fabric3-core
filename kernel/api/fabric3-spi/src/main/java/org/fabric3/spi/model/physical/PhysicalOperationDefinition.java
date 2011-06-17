@@ -188,7 +188,7 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
     }
 
     /**
-     * Returns the fuly qualified target return type for this operation.
+     * Returns the fully qualified target return type for this operation.
      *
      * @return the target return type for this operation.
      */
