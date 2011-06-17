@@ -30,23 +30,24 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * Implementations dispatch messages over a ZeroMQ socket using a request-reply pattern. Qualities of service such as reliability may be provided by
- * an implementation.
+ * Implementations dispatch messages over a ZeroMQ socket.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface RequestReplySender extends Sender {
+public interface Sender extends AddressListener {
 
     /**
-     * Sends the message over the socket and blocks for a response.
-     *
-     * @param message the serialized message
-     * @param index   the operation index used to determine which intercept chain to dispatch the message to
-     * @param context the current work context
-     * @return the serialized response
+     * Initializes the client and its underlying socket.
      */
-    byte[] send(byte[] message, int index, WorkContext context);
+    void start();
+
+    /**
+     * Disposes the client and any open resources.
+     */
+    void stop();
+
 }

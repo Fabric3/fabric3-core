@@ -33,10 +33,8 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
-import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.Message;
@@ -46,7 +44,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Implementation of a {@link Receiver} that implements request-reply with no qualities of service.
+ * Implementation of a {@link Receiver} the implements one-way with no qualities of service.
  * <p/>
  * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The
  * receiver listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket,
@@ -54,17 +52,18 @@ import org.fabric3.spi.wire.InvocationChain;
  *
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
+public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
 
     private Interceptor singleInterceptor;
     private Interceptor[] interceptors;
 
-    public NonReliableRequestReplyReceiver(Context context,
-                                           SocketAddress address,
-                                           List<InvocationChain> chains,
-                                           String callbackUri,
-                                           MessagingMonitor monitor) {
-        super(context, address, chains, callbackUri, ZMQ.XREP, monitor);
+
+    public NonReliableOneWayReceiver(Context context,
+                                     SocketAddress address,
+                                     List<InvocationChain> chains,
+                                     String callbackUri,
+                                     MessagingMonitor monitor) {
+        super(context, address, chains, callbackUri, ZMQ.PULL, monitor);
 //        if (chains.size() == 1) {
 //            singleInterceptor = chains.get(0).getHeadInterceptor();
 //        } else {
@@ -76,11 +75,11 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
         }
     }
 
+
     @Override
-    protected void invoke(Socket socket) {
-        // read the message
+    protected void invoke(ZMQ.Socket socket) {
         byte[] clientId = socket.recv(0);
-        byte[] messageId = socket.recv(0);
+
         byte[] contextHeader = socket.recv(0);
         WorkContext context = createWorkContext(contextHeader);
         Message request = new MessageImpl();
@@ -91,21 +90,13 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
         ByteBuffer buffer = ByteBuffer.wrap(socket.recv(0));
         int methodIndex = buffer.getInt();
         Interceptor interceptor = interceptors[methodIndex];
+
+
         byte[] body = socket.recv(0);
         request.setBody(body);
 
-        // invoke the service
-        Message response = interceptor.invoke(request);
-        Object responseBody = response.getBody();
-        if (!(responseBody instanceof byte[])) {
-            throw new ServiceRuntimeException("Return value not serialized");
-        }
-
-        // send the response
-        socket.send(clientId, ZMQ.SNDMORE);
-        socket.send(messageId, ZMQ.SNDMORE);
-        socket.send((byte[]) responseBody, 0);
+        interceptor.invoke(request);
     }
-
-
 }
+
+
