@@ -37,6 +37,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -51,7 +52,6 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExceptionHandler {
     private String id;
-    private ZMQ.Context context;
     private List<SocketAddress> addresses;
     private MessagingMonitor monitor;
 
@@ -59,11 +59,12 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
     private Dispatcher dispatcher;
 
     private LinkedBlockingQueue<Request> queue;
+    private long pollTimeout;
 
-    public NonReliableOneWaySender(String id, ZMQ.Context context, List<SocketAddress> addresses, MessagingMonitor monitor) {
+    public NonReliableOneWaySender(String id, ZMQ.Context context, List<SocketAddress> addresses, long pollTimeout, MessagingMonitor monitor) {
         this.id = id;
         this.addresses = addresses;
-        this.context = context;
+        this.pollTimeout = pollTimeout;
         this.monitor = monitor;
         queue = new LinkedBlockingQueue<Request>();
         multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PUSH);
@@ -138,7 +139,11 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
 
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
-                    queue.drainTo(drained);
+                    Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    if (value != null) {
+                        drained.add(value);
+                        queue.drainTo(drained);
+                    }
                     for (Request request : drained) {
                         // serialize the work context as a header
                         byte[] serializedWork = serialize(request.getWorkContext());
@@ -161,6 +166,8 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     throw e;
                 } catch (IOException e) {
                     monitor.error(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }

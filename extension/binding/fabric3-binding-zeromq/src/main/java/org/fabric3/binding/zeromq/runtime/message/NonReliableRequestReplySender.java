@@ -78,19 +78,22 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     private String id;
     private Context context;
     private List<SocketAddress> addresses;
+    private long pollTimeout;
     private MessagingMonitor monitor;
 
     private Socket socket;
+    private ZMQ.Poller poller;
     private Dispatcher dispatcher;
 
     private byte[] epoch;
     private AtomicLong counter;     // a message id counter
     private LinkedBlockingQueue<Request> queue;
 
-    public NonReliableRequestReplySender(String id, Context context, List<SocketAddress> addresses, MessagingMonitor monitor) {
+    public NonReliableRequestReplySender(String id, Context context, List<SocketAddress> addresses, long pollTimeout, MessagingMonitor monitor) {
         this.id = id;
         this.addresses = addresses;
         this.context = context;
+        this.pollTimeout = pollTimeout;
         this.monitor = monitor;
         epoch = UUID.randomUUID().toString().getBytes();
         counter = new AtomicLong(0);
@@ -183,7 +186,11 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
 
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
-                    queue.drainTo(drained);
+                    Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    if (value != null) {
+                        drained.add(value);
+                        queue.drainTo(drained);
+                    }
                     for (Request request : drained) {
                         // send the message id
                         byte[] id = generateMessageId();
@@ -207,8 +214,14 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                         ByteArrayKey key = new ByteArrayKey(id);
                         correlationTable.put(key, request);
                     }
-
+                    if (correlationTable.isEmpty()) {
+                        continue;
+                    }
                     // handle pending responses
+                    poller.poll(pollTimeout * 1000);   // convert timeout to microseconds
+                    if (!poller.pollin(0)) {
+                        continue;
+                    }
                     byte[] responseId;
                     while ((responseId = socket.recv(ZMQ.NOBLOCK)) != null) {
                         ByteArrayKey key = new ByteArrayKey(responseId);
@@ -228,6 +241,8 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                     throw e;
                 } catch (IOException e) {
                     monitor.error(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
 
             }
@@ -260,7 +275,8 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                 socket.close();
             }
             socket = context.socket(ZMQ.XREQ);
-
+            poller = context.poller(1);
+            poller.register(socket, ZMQ.Poller.POLLIN);
             for (SocketAddress address : addresses) {
                 socket.connect(address.toProtocolString());
             }

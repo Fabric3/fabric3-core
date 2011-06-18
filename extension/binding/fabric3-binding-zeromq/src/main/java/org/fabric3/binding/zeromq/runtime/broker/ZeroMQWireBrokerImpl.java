@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.zeromq.ZMQ;
 
@@ -76,26 +76,34 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
 
     private ContextManager manager;
     private AddressCache addressCache;
-    private ExecutorService executorService;
     private PortAllocator allocator;
     private HostInfo info;
     private MessagingMonitor monitor;
+    private long pollTimeout = 1000;
 
     private Map<URI, SenderHolder> senders = new HashMap<URI, SenderHolder>();
     private Map<URI, Receiver> receivers = new HashMap<URI, Receiver>();
 
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
                                 @Reference AddressCache addressCache,
-                                @Reference ExecutorService executorService,
                                 @Reference PortAllocator allocator,
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
-        this.executorService = executorService;
         this.allocator = allocator;
         this.info = info;
         this.monitor = monitor;
+    }
+
+    /**
+     * Sets the timeout in milliseconds for polling operations.
+     *
+     * @param timeout the timeout in milliseconds for polling operations
+     */
+    @Property(required = false)
+    public void setPollTimeout(long timeout) {
+        this.pollTimeout = timeout;
     }
 
     public void connectToSender(String id, URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
@@ -178,12 +186,11 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker {
 
         boolean oneWay = isOneWay(chains, uri);
 
-
         Sender sender;
         if (oneWay) {
-            sender = new NonReliableOneWaySender(endpointId, context, addresses, monitor);
+            sender = new NonReliableOneWaySender(endpointId, context, addresses, pollTimeout, monitor);
         } else {
-            sender = new NonReliableRequestReplySender(endpointId, context, addresses, monitor);
+            sender = new NonReliableRequestReplySender(endpointId, context, addresses, pollTimeout, monitor);
         }
 
 

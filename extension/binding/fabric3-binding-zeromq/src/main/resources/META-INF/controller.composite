@@ -30,7 +30,7 @@ Public License. See the accompanying license file for details.
 
     <component name="ZeroMQBindingProvider">
         <f3:implementation.system class="org.fabric3.binding.zeromq.provider.ZeroMQBindingProvider"/>
-        <property name="enabled" source="$systemConfig//binding.zeromq/@bindingProvider"/>
+        <property name="enabled" source="$systemConfig//zeromq.binding/@bindingProvider"/>
     </component>
 
 </composite>
