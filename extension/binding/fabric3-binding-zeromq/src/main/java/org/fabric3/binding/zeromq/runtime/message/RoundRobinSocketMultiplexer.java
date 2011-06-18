@@ -43,7 +43,7 @@ import org.zeromq.ZMQ;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
- * Implements a round-robin strategy for selecting a next available socket from a collection of sockets.
+ * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */

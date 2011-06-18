@@ -162,7 +162,6 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                 } catch (IOException e) {
                     monitor.error(e);
                 }
-
             }
         }
 
