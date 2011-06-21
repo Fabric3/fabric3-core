@@ -239,6 +239,12 @@ licensed under the Apache 2.0 license.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-execution</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-recovery</artifactId>
             <version>${project.version}</version>
         </dependency>

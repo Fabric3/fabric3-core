@@ -93,6 +93,7 @@
                 <include>org.codehaus.fabric3:fabric3-sca-intents</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>
                 <include>org.codehaus.fabric3:fabric3-resource</include>
+                <include>org.codehaus.fabric3:fabric3-execution</include>
                 <include>org.codehaus.fabric3:fabric3-recovery</include>
                 <include>org.codehaus.fabric3:fabric3-security</include>
                 <include>org.codehaus.fabric3:fabric3-federation-provisioning</include>

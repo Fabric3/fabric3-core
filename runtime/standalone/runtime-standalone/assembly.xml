@@ -113,6 +113,7 @@
                 <include>org.codehaus.fabric3:fabric3-jetty</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>
                 <include>org.codehaus.fabric3:fabric3-resource</include>
+                <include>org.codehaus.fabric3:fabric3-execution</include>
                 <include>org.codehaus.fabric3:fabric3-security</include>
                 <include>org.codehaus.fabric3:fabric3-security-impl</include>
                 <include>org.codehaus.fabric3:fabric3-recovery</include>
