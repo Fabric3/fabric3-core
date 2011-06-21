@@ -39,5 +39,6 @@
 		<module>fabric3-sca-intents</module>
 		<module>fabric3-test-spi</module>
 		<module>fabric3-recovery</module>
+		<module>fabric3-execution</module>
 	</modules>
 </project>
