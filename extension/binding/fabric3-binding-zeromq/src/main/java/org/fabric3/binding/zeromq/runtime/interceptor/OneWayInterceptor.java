@@ -54,10 +54,6 @@ public class OneWayInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         byte[] body = (byte[]) msg.getBody();
         WorkContext workContext = msg.getWorkContext();
-        // XCV remove hack
-        if (workContext == null) {
-            workContext = new WorkContext();
-        }
         sender.send(body, index, workContext);
         return ONE_WAY_RESPONSE;
     }

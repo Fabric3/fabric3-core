@@ -115,7 +115,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         SenderHolder holder;
         if ("zmq".equals(uri.getScheme())) {
             DelegatingOneWaySender sender = new DelegatingOneWaySender(id, this);
-            // fixme and track sender URI is null
             holder = new SenderHolder(sender);
         } else {
             holder = senders.get(uri.toString());
@@ -192,6 +191,41 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         receiver.stop();
     }
 
+    public void send(byte[] message, int index, WorkContext context) {
+        CallFrame frame = context.peekCallFrame();
+        if (frame == null) {
+            monitor.error("Callframe not found for callback");
+            return;
+        }
+        String callback = frame.getCallbackUri();
+        SenderHolder holder = senders.get(callback);
+        if (holder == null) {
+            holder = createSender(callback, true);
+        }
+        Sender sender = holder.getSender();
+        if (sender instanceof OneWaySender) {
+            ((OneWaySender) sender).send(message, index, context);
+        } else {
+            monitor.error("Callback sender is not a one-way type: " + holder.getClass().getName());
+        }
+    }
+
+    public void start() {
+        // no-op
+    }
+
+    public void stop() {
+        // no-op
+    }
+
+    public String getId() {
+        return "ZeroMQWireBroker";
+    }
+
+    public void onUpdate(List<SocketAddress> addresses) {
+        // no-op
+    }
+
     private SenderHolder createSender(String endpointId, boolean oneWay) {
         ZMQ.Context context = manager.getContext();
         List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
@@ -237,41 +271,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         } else {
             throw new AssertionError("Unknown sender type: " + sender.getClass().getName());
         }
-    }
-
-    public void send(byte[] message, int index, WorkContext context) {
-        CallFrame frame = context.peekCallFrame();
-        if (frame == null) {
-            monitor.error("Callframe not found for callback");
-            return;
-        }
-        String callback = frame.getCallbackUri();
-        SenderHolder holder = senders.get(callback);
-        if (holder == null) {
-            holder = createSender(callback, true);
-        }
-        Sender sender = holder.getSender();
-        if (sender instanceof OneWaySender) {
-            ((OneWaySender) sender).send(message, index, context);
-        } else {
-            monitor.error("Callback sender is not a one-way type: " + holder.getClass().getName());
-        }
-    }
-
-    public void start() {
-        // no-op
-    }
-
-    public void stop() {
-        // no-op
-    }
-
-    public String getId() {
-        return "ZeroMQWireBroker";
-    }
-
-    public void onUpdate(List<SocketAddress> addresses) {
-        // no-op
     }
 
     private class SenderHolder {
