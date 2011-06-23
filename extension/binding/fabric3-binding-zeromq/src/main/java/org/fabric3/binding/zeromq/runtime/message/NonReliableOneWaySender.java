@@ -91,10 +91,12 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
 
     public void send(byte[] message, int index, WorkContext workContext) {
         try {
-            Request request = new Request(message, index, workContext);
+            Request request = new Request(message, index, serialize(workContext));
             queue.put(request);
         } catch (InterruptedException e) {
             Thread.interrupted();
+            throw new ServiceRuntimeException(e);
+        } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -109,6 +111,23 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         thread.setUncaughtExceptionHandler(this);
         thread.start();
     }
+
+    /**
+     * Serializes the work context.
+     *
+     * @param workContext the work context
+     * @return the serialized work context
+     * @throws IOException if a serialization error is encountered
+     */
+    private byte[] serialize(WorkContext workContext) throws IOException {
+        List<CallFrame> stack = workContext.getCallFrameStack();
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        ObjectOutputStream stream = new ObjectOutputStream(bas);
+        stream.writeObject(stack);
+        stream.close();
+        return bas.toByteArray();
+    }
+
 
     /**
      * Dispatches requests to the ZeroMQ socket.
@@ -146,9 +165,8 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     }
                     for (Request request : drained) {
                         // serialize the work context as a header
-                        byte[] serializedWork = serialize(request.getWorkContext());
                         ZMQ.Socket socket = multiplexer.get();
-                        socket.send(serializedWork, ZMQ.SNDMORE);
+                        socket.send(request.getWorkContext(), ZMQ.SNDMORE);
 
                         // serialize the operation index
                         int index = request.getIndex();
@@ -164,28 +182,10 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     // exception, make sure the thread is rescheduled
                     schedule();
                     throw e;
-                } catch (IOException e) {
-                    monitor.error(e);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
-        }
-
-        /**
-         * Serializes the work context.
-         *
-         * @param workContext the work context
-         * @return the serialized work context
-         * @throws IOException if a serialization error is encountered
-         */
-        private byte[] serialize(WorkContext workContext) throws IOException {
-            List<CallFrame> stack = workContext.getCallFrameStack();
-            ByteArrayOutputStream bas = new ByteArrayOutputStream();
-            ObjectOutputStream stream = new ObjectOutputStream(bas);
-            stream.writeObject(stack);
-            stream.close();
-            return bas.toByteArray();
         }
 
         /**
@@ -201,10 +201,10 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
 
     private class Request {
         private byte[] payload;
-        private WorkContext workContext;
+        private byte[] workContext;
         private int index;
 
-        public Request(byte[] payload, int index, WorkContext workContext) {
+        public Request(byte[] payload, int index, byte[] workContext) {
             this.payload = payload;
             this.index = index;
             this.workContext = workContext;
@@ -218,7 +218,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
             return index;
         }
 
-        public WorkContext getWorkContext() {
+        public byte[] getWorkContext() {
             return workContext;
         }
 

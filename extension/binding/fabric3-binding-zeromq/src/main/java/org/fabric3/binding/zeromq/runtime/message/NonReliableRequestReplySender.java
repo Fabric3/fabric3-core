@@ -120,9 +120,10 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         dispatcher.refresh();
     }
 
-    public byte[] send(byte[] message, int index, WorkContext workContext) {
+    public byte[] sendAndReply(byte[] message, int index, WorkContext workContext) {
         try {
-            Request request = new Request(message, index, workContext);
+            byte[] serializedWorkContext = serialize(workContext);
+            Request request = new Request(message, index, serializedWorkContext);
             queue.put(request);
             return request.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -131,6 +132,8 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         } catch (ExecutionException e) {
             throw new ServiceRuntimeException(e);
         } catch (TimeoutException e) {
+            throw new ServiceUnavailableException(e);
+        } catch (IOException e) {
             throw new ServiceUnavailableException(e);
         }
     }
@@ -152,6 +155,22 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         buffer.put(epoch);
         buffer.putLong(epoch.length, counter.getAndIncrement());
         return id;
+    }
+
+    /**
+     * Serializes the work context.
+     *
+     * @param workContext the work context
+     * @return the serialized work context
+     * @throws IOException if a serialization error is encountered
+     */
+    private byte[] serialize(WorkContext workContext) throws IOException {
+        List<CallFrame> stack = workContext.getCallFrameStack();
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        ObjectOutputStream stream = new ObjectOutputStream(bas);
+        stream.writeObject(stack);
+        stream.close();
+        return bas.toByteArray();
     }
 
     /**
@@ -195,10 +214,9 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                         // send the message id
                         byte[] id = generateMessageId();
                         // serialize the work context as a header
-                        byte[] serializedWork = serialize(request.getWorkContext());
 
                         socket.send(id, ZMQ.SNDMORE);
-                        socket.send(serializedWork, ZMQ.SNDMORE);
+                        socket.send(request.getWorkContext(), ZMQ.SNDMORE);
 
                         // serialize the operation index
                         int index = request.getIndex();
@@ -239,29 +257,11 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                     // exception, make sure the thread is rescheduled
                     schedule();
                     throw e;
-                } catch (IOException e) {
-                    monitor.error(e);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
 
             }
-        }
-
-        /**
-         * Serializes the work context.
-         *
-         * @param workContext the work context
-         * @return the serialized work context
-         * @throws IOException if a serialization error is encountered
-         */
-        private byte[] serialize(WorkContext workContext) throws IOException {
-            List<CallFrame> stack = workContext.getCallFrameStack();
-            ByteArrayOutputStream bas = new ByteArrayOutputStream();
-            ObjectOutputStream stream = new ObjectOutputStream(bas);
-            stream.writeObject(stack);
-            stream.close();
-            return bas.toByteArray();
         }
 
         /**
@@ -289,10 +289,10 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
      */
     private class Request extends FutureTask<byte[]> {
         private byte[] payload;
-        private WorkContext workContext;
+        private byte[] workContext;
         private int index;
 
-        public Request(byte[] payload, int index, WorkContext workContext) {
+        public Request(byte[] payload, int index, byte[] workContext) {
             super(CALLABLE);
             this.payload = payload;
             this.index = index;
@@ -307,7 +307,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             return index;
         }
 
-        public WorkContext getWorkContext() {
+        public byte[] getWorkContext() {
             return workContext;
         }
 

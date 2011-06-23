@@ -66,8 +66,12 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                  ServiceContract contract,
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
-        URI uri = binding.getDefinition().getTargetUri();
-        return new ZeroMQSourceDefinition(uri);
+        if (binding.isCallback()) {
+            URI uri = URI.create("zmq://" + contract.getInterfaceName());
+            return new ZeroMQSourceDefinition(uri);
+        } else {
+            return new ZeroMQSourceDefinition();
+        }
     }
 
     public ZeroMQTargetDefinition generateTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
@@ -75,6 +79,11 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
         validateServiceContract(contract);
+
+        if (binding.isCallback()) {
+            URI targetUri = URI.create("zmq://" + contract.getInterfaceName());
+            return new ZeroMQTargetDefinition(targetUri);
+        }
         LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
         URI parent = composite.getUri();
         URI targetUri = URI.create(parent.toString() + "/" + binding.getDefinition().getTargetUri());
@@ -95,6 +104,11 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                 throw new GenerationException("Target component not found: " + targetUri);
             }
 
+        }
+        boolean hasCallback = contract.getCallbackContract() != null;
+        if (hasCallback) {
+            URI callbackUri = URI.create("zmq://" + contract.getCallbackContract().getInterfaceName());
+            return new ZeroMQTargetDefinition(targetUri, callbackUri);
         }
         return new ZeroMQTargetDefinition(targetUri);
     }

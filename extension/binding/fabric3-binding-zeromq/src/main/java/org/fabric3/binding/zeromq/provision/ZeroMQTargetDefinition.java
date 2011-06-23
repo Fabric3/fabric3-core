@@ -42,7 +42,29 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 public class ZeroMQTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 2273519605739325350L;
 
+    private URI callbackUri;
+
+    /**
+     * Constructor for a reference binding.
+     *
+     * @param uri the target URI
+     */
     public ZeroMQTargetDefinition(URI uri) {
         setUri(uri);
+    }
+
+    /**
+     * Constructor for a bidirectional service
+     *
+     * @param uri         the target URI
+     * @param callbackUri the callback URI
+     */
+    public ZeroMQTargetDefinition(URI uri, URI callbackUri) {
+        setUri(uri);
+        this.callbackUri = callbackUri;
+    }
+
+    public URI getCallbackUri() {
+        return callbackUri;
     }
 }

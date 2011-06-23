@@ -139,7 +139,8 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 Serializable id = previous.getCorrelationId(Serializable.class);
                 ConversationContext context = previous.getConversationContext();
                 F3Conversation conversation = previous.getConversation();
-                CallFrame frame = new CallFrame(callbackUri, id, conversation, context);
+                String callback = previous.getCallbackUri();
+                CallFrame frame = new CallFrame(callback, id, conversation, context);
                 stack.add(frame);
             } else {
                 workContext.addCallFrame(CallFrame.STATELESS_FRAME);

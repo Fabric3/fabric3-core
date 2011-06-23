@@ -52,11 +52,7 @@ public class RequestReplyInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         byte[] body = (byte[]) msg.getBody();
         WorkContext workContext = msg.getWorkContext();
-        // XCV remove hack
-        if (workContext == null) {
-            workContext = new WorkContext();
-        }
-        byte[] value = sender.send(body, index, workContext);
+        byte[] value = sender.sendAndReply(body, index, workContext);
         msg.setBody(value);
         return msg;
     }

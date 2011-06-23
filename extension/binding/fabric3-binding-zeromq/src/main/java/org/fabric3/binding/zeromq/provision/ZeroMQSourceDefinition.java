@@ -41,8 +41,16 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
  */
 public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -1119229094076577838L;
+    private URI callbackUri;
 
-    public ZeroMQSourceDefinition(URI uri) {
-        setUri(uri);
+    public ZeroMQSourceDefinition() {
+    }
+
+    public ZeroMQSourceDefinition(URI callbackUri) {
+        this.callbackUri = callbackUri;
+    }
+
+    public URI getCallbackUri() {
+        return callbackUri;
     }
 }

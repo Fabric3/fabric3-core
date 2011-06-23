@@ -57,7 +57,12 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
     }
 
     public void attach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
-        URI uri = target.getUri();
+        URI uri;
+        if (source.getCallbackUri() != null) {
+            uri = source.getCallbackUri();
+        } else {
+            uri = target.getUri();
+        }
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {

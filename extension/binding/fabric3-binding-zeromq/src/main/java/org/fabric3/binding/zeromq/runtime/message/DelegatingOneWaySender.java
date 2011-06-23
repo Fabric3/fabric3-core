@@ -30,23 +30,38 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import java.util.List;
+
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * Implementations dispatch messages over a ZeroMQ socket using a request-reply pattern. Qualities of service such as reliability may be provided by
- * an implementation.
- *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface RequestReplySender extends Sender {
+public class DelegatingOneWaySender implements OneWaySender {
+    private String id;
+    private OneWaySender delegate;
 
-    /**
-     * Sends the message over the socket and blocks for a response.
-     *
-     * @param message the serialized message
-     * @param index   the operation index used to determine which intercept chain to dispatch the message to
-     * @param context the current work context
-     * @return the serialized response
-     */
-    byte[] sendAndReply(byte[] message, int index, WorkContext context);
+    public DelegatingOneWaySender(String id, OneWaySender delegate) {
+        this.id = id;
+        this.delegate = delegate;
+    }
+
+    public void start() {
+    }
+
+    public void stop() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void onUpdate(List<SocketAddress> addresses) {
+    }
+
+
+    public void send(byte[] message, int index, WorkContext context) {
+        delegate.send(message, index, context);
+    }
 }
