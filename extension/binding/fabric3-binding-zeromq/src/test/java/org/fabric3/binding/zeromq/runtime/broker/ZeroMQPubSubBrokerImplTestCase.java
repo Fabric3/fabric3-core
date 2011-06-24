@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.binding.zeromq.runtime.broker;
 
 import java.net.URI;
 import java.util.Collections;
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
-import org.fabric3.binding.zeromq.runtime.broker.ZeroMQPubSubBrokerImpl;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
@@ -53,7 +53,7 @@ import org.fabric3.spi.host.PortAllocator;
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQBrokerImplTestCase extends TestCase {
+public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
     private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
 
     private ContextManager manager;
@@ -84,6 +84,7 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
 
     public void testConnectRelease() throws Exception {
         EasyMock.expect(allocator.allocate("channel", "zmq")).andReturn(9090);
+        allocator.release("channel");
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
 
         EventStream stream = EasyMock.createMock(EventStream.class);
@@ -93,7 +94,7 @@ public class ZeroMQBrokerImplTestCase extends TestCase {
         EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
 
         addressCache.publish(EasyMock.isA(AddressAnnouncement.class));
-        
+
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream);
 

@@ -81,11 +81,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
     private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
 
     public ZeroMQPubSubBrokerImpl(@Reference ContextManager manager,
-                            @Reference AddressCache addressCache,
-                            @Reference ExecutorService executorService,
-                            @Reference PortAllocator allocator,
-                            @Reference HostInfo info,
-                            @Monitor MessagingMonitor monitor) {
+                                  @Reference AddressCache addressCache,
+                                  @Reference ExecutorService executorService,
+                                  @Reference PortAllocator allocator,
+                                  @Reference HostInfo info,
+                                  @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
         this.executorService = executorService;
@@ -169,6 +169,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
             publishers.remove(connectionId);
             publisher.stop();
         }
+        allocator.release(channelName);
     }
 
     private void attachConnection(ChannelConnection connection, Publisher publisher) {

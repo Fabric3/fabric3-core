@@ -192,6 +192,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             throw new BrokerException("Receiver not found for " + uri);
         }
         receiver.stop();
+        String endpointId = uri.toString();
+        allocator.release(endpointId);
     }
 
     public void send(byte[] message, int index, WorkContext context) {

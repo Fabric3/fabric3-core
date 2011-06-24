@@ -166,7 +166,9 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
         public synchronized void stop() {
             active.set(false);
             if (socket != null) {
-                socket.close();
+                // FIXME closing results in a segmentation fault for no-reliable one-way
+                // socket.close();
+                // socket = null;
             }
         }
 
