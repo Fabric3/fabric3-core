@@ -65,16 +65,15 @@ public interface ZeroMQWireBroker {
     public void releaseSender(String id, URI uri) throws BrokerException;
 
     /**
-     * Connects to a receiver that dispatches invocation requests from an ZeroMQ XRESP socket. The Invocation chain order is used to match an
+     * Connects to a receiver that dispatches invocation requests from an ZeroMQ XREP socket. The Invocation chain order is used to match an
      * invocation chain for dispatching the invocation.
      *
-     * @param uri      the target service URI
-     * @param chains   the invocation chains
-     * @param callback the callback ID or null
-     * @param loader   the classloader to load invocation parameters with
+     * @param uri    the target service URI
+     * @param chains the invocation chains
+     * @param loader the classloader to load invocation parameters with
      * @throws BrokerException if a connection error occurs
      */
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, String callback, ClassLoader loader) throws BrokerException;
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException;
 
     /**
      * Releases previous connection to a receiver.

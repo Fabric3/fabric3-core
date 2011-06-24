@@ -66,14 +66,24 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {
-            broker.connectToReceiver(uri, chains, null, loader);
+            broker.connectToReceiver(uri, chains, loader);
         } catch (BrokerException e) {
             throw new WiringException(e);
         }
     }
 
     public void detach(ZeroMQSourceDefinition source, PhysicalTargetDefinition target) throws WiringException {
-
+        URI uri;
+        if (source.getCallbackUri() != null) {
+            uri = source.getCallbackUri();
+        } else {
+            uri = target.getUri();
+        }
+        try {
+            broker.releaseReceiver(uri);
+        } catch (BrokerException e) {
+            throw new WiringException(e);
+        }
     }
 
     public void attachObjectFactory(ZeroMQSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)

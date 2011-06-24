@@ -61,9 +61,8 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
     public NonReliableOneWayReceiver(Context context,
                                      SocketAddress address,
                                      List<InvocationChain> chains,
-                                     String callbackUri,
                                      MessagingMonitor monitor) {
-        super(context, address, chains, callbackUri, ZMQ.PULL, monitor);
+        super(context, address, chains, ZMQ.PULL, monitor);
 //        if (chains.size() == 1) {
 //            singleInterceptor = chains.get(0).getHeadInterceptor();
 //        } else {

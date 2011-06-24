@@ -65,12 +65,10 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
 
 
     private Receiver receiver;
-    private String callbackUri;
 
     public AbstractReceiver(Context context,
                             SocketAddress address,
                             List<InvocationChain> chains,
-                            String callbackUri,
                             int socketType,
                             MessagingMonitor monitor) {
         this.context = context;
@@ -84,7 +82,6 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             interceptors[i] = chain.getHeadInterceptor();
 //            }
         }
-        this.callbackUri = callbackUri;
         this.socketType = socketType;
         this.monitor = monitor;
     }

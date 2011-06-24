@@ -61,9 +61,8 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
     public NonReliableRequestReplyReceiver(Context context,
                                            SocketAddress address,
                                            List<InvocationChain> chains,
-                                           String callbackUri,
                                            MessagingMonitor monitor) {
-        super(context, address, chains, callbackUri, ZMQ.XREP, monitor);
+        super(context, address, chains, ZMQ.XREP, monitor);
 //        if (chains.size() == 1) {
 //            singleInterceptor = chains.get(0).getHeadInterceptor();
 //        } else {

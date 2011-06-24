@@ -69,7 +69,13 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
     }
 
     public void detach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target) throws WiringException {
-
+        String id = source.getUri().toString();
+        URI uri = target.getUri();
+        try {
+            broker.releaseSender(id, uri);
+        } catch (BrokerException e) {
+            throw new WiringException(e);
+        }
     }
 
     public ObjectFactory<?> createObjectFactory(ZeroMQTargetDefinition target) throws WiringException {

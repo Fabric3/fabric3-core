@@ -113,7 +113,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
 
     public void connectToSender(String id, URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
         SenderHolder holder;
-        if ("zmq".equals(uri.getScheme())) {
+        if (ZMQ.equals(uri.getScheme())) {
             DelegatingOneWaySender sender = new DelegatingOneWaySender(id, this);
             holder = new SenderHolder(sender);
         } else {
@@ -136,7 +136,10 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
     public void releaseSender(String id, URI uri) throws BrokerException {
         SenderHolder holder = senders.get(uri.toString());
         if (holder == null) {
-            throw new BrokerException("Sender not found for " + uri);
+            if (!ZMQ.equals(uri.getScheme())) {
+                // callback holders are dynamically created and it is possible for a sender to be released before an invocation is dispatched to it
+                throw new BrokerException("Sender not found for " + uri);
+            }
         }
         holder.getIds().remove(id);
         if (holder.getIds().isEmpty()) {
@@ -146,7 +149,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         }
     }
 
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, String callback, ClassLoader loader) throws BrokerException {
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
         if (receivers.containsKey(uri.toString())) {
             throw new BrokerException("Receiver already defined for " + uri);
         }
@@ -166,9 +169,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             boolean oneWay = isOneWay(chains, uri);
             Receiver receiver;
             if (oneWay) {
-                receiver = new NonReliableOneWayReceiver(context, address, chains, callback, monitor);
+                receiver = new NonReliableOneWayReceiver(context, address, chains, monitor);
             } else {
-                receiver = new NonReliableRequestReplyReceiver(context, address, chains, callback, monitor);
+                receiver = new NonReliableRequestReplyReceiver(context, address, chains, monitor);
             }
             receiver.start();
 
