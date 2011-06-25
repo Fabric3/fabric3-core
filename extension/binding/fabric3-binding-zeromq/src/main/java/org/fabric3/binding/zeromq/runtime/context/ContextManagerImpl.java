@@ -46,9 +46,6 @@ import org.fabric3.api.annotation.scope.Scopes;
 public class ContextManagerImpl implements ContextManager {
     private Context context;
 
-    public ContextManagerImpl() {
-    }
-
     public Context getContext() {
         return context;
     }
