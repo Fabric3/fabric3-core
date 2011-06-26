@@ -30,39 +30,91 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
+import org.fabric3.host.runtime.HostInfo;
 import java.io.IOException;
-
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
 /**
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2011-06-25 18:27:25 +0200 (Sat, 25 Jun
+ *          2011) $
  */
 @EagerInit
 public class ContextManagerImpl implements ContextManager {
-    private Context context;
+	private Context context;
 
-    public Context getContext() {
-        return context;
-    }
+	@Reference
+	protected HostInfo hostInfo;
 
-    @Init
-    public void init() throws IOException {
-        if ("Mac OS X".equals(System.getProperty("os.name"))) {
-            // do nothing
-        } else {
-            // Windows and Linux require the ZMQ library to be loaded as the JZMQ library is linked to it and Windows is unable to resolve it
-            // relative to the JZMQ library
-            System.loadLibrary("libzmq");
-        }
-        context = ZMQ.context(1);
-    }
+	public Context getContext() {
+		return context;
+	}
 
-    @Destroy
-    public void destroy() {
-        context.term();
-    }
+	@Init
+	public void init() {
+		// Windows requires the ZMQ library to be loaded as the JZMQ library is
+		// linked to it and Windows is unable to
+		// resolve it relative to the JZMQ library
+		// System.loadLibrary("zmq");
+
+		ZMQLibraryInitializer.loadLibrary(hostInfo);
+		context = ZMQ.context(1);
+	}
+
+	@Destroy
+	public void destroy() {
+		context.term();
+	}
+
+	/**
+	 * Initializes the ZeroMQ library on Windows and Linux. If the ZeroMQ
+	 * Library is not initialized before the Context is created the loading of
+	 * the library is delegated to the Operating System. This causes problems
+	 * since then F3 can't control where to load the libraries from. To work
+	 * around this problem we initialize ZeroMQ base library (libzmq.dll or
+	 * libzmq.so) prior to the JZMQ (which happens when a Context is created).
+	 * This workaround is currently tested on Windows and Linux.
+	 */
+	protected enum ZMQLibraryInitializer {
+		WINDOWS("libzmq"), LINUX("zmq"), OTHER("");
+
+		private String libName;
+
+		private ZMQLibraryInitializer(String libName) {
+			this.libName = libName;
+		}
+
+		/**
+		 * Uses the OperatingSystem information of the HostInfo to decide what
+		 * library to load.
+		 * On Windows the library name is "libzmq".
+		 * On Linux the library name is "zmq".
+		 * 
+		 * @param hostInfo
+		 *            Based on the OperatingSystem member the needed Library
+		 *            will be loaded.
+		 */
+		public static void loadLibrary(HostInfo hostInfo) {
+			if (hostInfo == null)
+				return;
+			String osName = hostInfo.getOperatingSystem().getName();
+
+			for (ZMQLibraryInitializer lib : values()) {
+				if (lib.name().equalsIgnoreCase(osName)) {
+					lib.loadLibrary();
+					return;
+				}
+			}
+		}
+
+		private void loadLibrary() {
+			if (!this.equals(OTHER))
+				System.loadLibrary(libName);
+		}
+	}
 }
