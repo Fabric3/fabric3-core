@@ -88,7 +88,6 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
     }
 
     private void schedule() {
-        // TODO use runtime thread pool
         Thread thread = new Thread(dispatcher);
         thread.setUncaughtExceptionHandler(this);
         thread.start();
