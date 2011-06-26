@@ -25,12 +25,20 @@ Public License. See the accompanying license file for details.
     <f3:library path='META-INF/native/libjzmq.dylib'>
         <os name='Mac OS X' version="10.6.6" processor='x86'/>
     </f3:library>
-
+    
     <f3:library path='META-INF/native/libzmq.dll'>
         <os name='Windows'/>
     </f3:library>
 
     <f3:library path='META-INF/native/jzmq.dll'>
         <os name='Windows'/>
+    </f3:library>
+    
+    <f3:library path="META-INF/native/libzmq.so">
+    	<os name="Linux" min="2.6" processor="x86"/>
+    </f3:library>
+
+    <f3:library path="META-INF/native/libjzmq.so">
+    	<os name="Linux" min="2.6" processor="x86"/>
     </f3:library>
 </contribution>
