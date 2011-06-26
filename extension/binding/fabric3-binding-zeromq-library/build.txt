@@ -1,4 +1,4 @@
-This file contains build instructions dor the ZMQ and JZMQ dynamic link libraries for various operating systems.
+This file contains build instructions for the ZMQ and JZMQ dynamic link libraries for various operating systems.
 
 Windows 7 x64
 ______________________
