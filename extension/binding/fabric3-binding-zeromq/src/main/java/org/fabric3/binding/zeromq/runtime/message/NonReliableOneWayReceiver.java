@@ -32,6 +32,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -56,43 +57,41 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
 
     private Interceptor singleInterceptor;
     private Interceptor[] interceptors;
-
-
+    private ExecutorService executorService;
     public NonReliableOneWayReceiver(Context context,
                                      SocketAddress address,
                                      List<InvocationChain> chains,
+                                     ExecutorService executorService,
                                      MessagingMonitor monitor) {
         super(context, address, chains, ZMQ.PULL, monitor);
-//        if (chains.size() == 1) {
-//            singleInterceptor = chains.get(0).getHeadInterceptor();
-//        } else {
+        this.executorService = executorService;
         this.interceptors = new Interceptor[chains.size()];
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
             interceptors[i] = chain.getHeadInterceptor();
-//            }
         }
     }
 
 
     @Override
     protected void invoke(ZMQ.Socket socket) {
-        byte[] contextHeader = socket.recv(0);
-        WorkContext context = createWorkContext(contextHeader);
-        Message request = new MessageImpl();
-        request.setWorkContext(context);
-//                        if (singleInterceptor != null) {
-//                            invokeAndReply(request, clientId, messageId, singleInterceptor);
-//                        } else {
-        ByteBuffer buffer = ByteBuffer.wrap(socket.recv(0));
-        int methodIndex = buffer.getInt();
-        Interceptor interceptor = interceptors[methodIndex];
+        final byte[] contextHeader = socket.recv(0);
+        final byte[] methodNumber = socket.recv(0);
+        final byte[] body = socket.recv(0);
 
+        executorService.submit(new Runnable(){
+            public void run() {
+                int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
+                Interceptor interceptor = interceptors[methodIndex];
 
-        byte[] body = socket.recv(0);
-        request.setBody(body);
+                WorkContext context = createWorkContext(contextHeader);
+                Message request = new MessageImpl();
+                request.setWorkContext(context);
+                request.setBody(body);
+                interceptor.invoke(request);
+            }
+        });
 
-        interceptor.invoke(request);
     }
 }
 

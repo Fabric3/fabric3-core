@@ -142,7 +142,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         monitor = EasyMock.createMock(MessagingMonitor.class);
 
-        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, info, monitor);
+        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, info, monitor);
 
     }
 }

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -83,6 +84,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
     private AddressCache addressCache;
     private PortAllocator allocator;
     private HostInfo info;
+    private ExecutorService executorService;
     private MessagingMonitor monitor;
     private long pollTimeout = 1000;
 
@@ -92,11 +94,13 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
     public ZeroMQWireBrokerImpl(@Reference ContextManager manager,
                                 @Reference AddressCache addressCache,
                                 @Reference PortAllocator allocator,
+                                @Reference ExecutorService executorService,
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
         this.allocator = allocator;
+        this.executorService = executorService;
         this.info = info;
         this.monitor = monitor;
     }
@@ -169,7 +173,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             boolean oneWay = isOneWay(chains, uri);
             Receiver receiver;
             if (oneWay) {
-                receiver = new NonReliableOneWayReceiver(context, address, chains, monitor);
+                receiver = new NonReliableOneWayReceiver(context, address, chains, executorService, monitor);
             } else {
                 receiver = new NonReliableRequestReplyReceiver(context, address, chains, monitor);
             }
