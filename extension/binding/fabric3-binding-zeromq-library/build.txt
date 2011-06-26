@@ -1,0 +1,35 @@
+This file contains build instructions dor the ZMQ and JZMQ dynamic link libraries for various operating systems.
+
+Windows 7 x64
+______________________
+JZMQ was built against libzmq 2.1.7. Both the ZMQ and JZMQ libraries were built using Microsoft Visual Studio 2010 targeted to 64-bit architectures.
+Note the Visual Studio solution distributed with JZMQ needed to be modified to include a 64-bit target with updated ZMQ library dependencies (dynamic
+and static libraries). Also, projected type needed to be changed from Application (EXE) to Dynamic Link Library.
+
+
+OS X
+______________________
+
+JZMQ was built against libzmq 2.1.7 installed using Homebrew. The JZMQ dylib was modified with instal_name_tool to make the dependency path to
+libzmq.0.dylib relative using @loader_path. This allows the libzmq.dylib library to load the libzmq.0.dylib library without the need to place the
+latter in usr/local or set the DYLD_FALLBACK_LIBRARY_PATH environment variable on runtime startup.
+
+The following otool and instal_name_tool commands were used:
+
+$ otool -L libjzmq.dylib
+
+libjzmq.dylib:
+	/usr/local/lib/libjzmq.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/local/Cellar/zeromq/2.0.10/lib/libzmq.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 7.9.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 125.2.1)
+
+$ install_name_tool -change /usr/local/Cellar/zeromq/2.0.10/lib/libzmq.0.dylib @loader_path/libzmq.0.dylib libjzmq.dylib
+
+$ otool -L libjzmq.dylib
+
+libjzmq.dylib:
+	/usr/local/lib/libjzmq.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	@loader_path/libzmq.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 7.9.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 125.2.1)

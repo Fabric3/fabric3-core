@@ -18,6 +18,10 @@ Public License. See the accompanying license file for details.
 
     <f3:provides.capability name="zeromq"/>
 
+    <f3:library path='META-INF/native/libzmq.0.dylib'>
+        <os name='Mac OS X' version="10.6.6" processor='x86'/>
+    </f3:library>
+
     <f3:library path='META-INF/native/libjzmq.dylib'>
         <os name='Mac OS X' version="10.6.6" processor='x86'/>
     </f3:library>
