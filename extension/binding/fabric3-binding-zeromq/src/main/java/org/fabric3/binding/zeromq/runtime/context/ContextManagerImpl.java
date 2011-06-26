@@ -30,14 +30,13 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
+import java.io.IOException;
+
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
-
-import org.fabric3.api.annotation.scope.Scopes;
 
 /**
  * @version $Revision$ $Date$
@@ -51,10 +50,14 @@ public class ContextManagerImpl implements ContextManager {
     }
 
     @Init
-    public void init() {
-        // Windows requires the ZMQ library to be loaded as the JZMQ library is linked to it and Windows is unable to
-        // resolve it relative to the JZMQ library
-        System.loadLibrary("libzmq");
+    public void init() throws IOException {
+        if ("Mac OS X".equals(System.getProperty("os.name"))) {
+            // do nothing
+        } else {
+            // Windows and Linux require the ZMQ library to be loaded as the JZMQ library is linked to it and Windows is unable to resolve it
+            // relative to the JZMQ library
+            System.loadLibrary("libzmq");
+        }
         context = ZMQ.context(1);
     }
 
