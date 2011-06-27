@@ -102,10 +102,12 @@ public class ContextManagerImpl implements ContextManager {
 		public static void loadLibrary(HostInfo hostInfo) {
 			if (hostInfo == null)
 				return;
-			String osName = hostInfo.getOperatingSystem().getName();
+			String osName = hostInfo.getOperatingSystem().getName().toLowerCase();
+            if(osName == null)
+                return;
 
 			for (ZMQLibraryInitializer lib : values()) {
-				if (lib.name().equalsIgnoreCase(osName)) {
+				if (osName.toLowerCase().contains(lib.name().toLowerCase())) {
 					lib.loadLibrary();
 					return;
 				}
