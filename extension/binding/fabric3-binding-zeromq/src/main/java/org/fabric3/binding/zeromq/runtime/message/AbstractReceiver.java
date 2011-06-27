@@ -60,8 +60,8 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
     private int socketType;
 
     private Interceptor singleInterceptor;
-    private Interceptor[] interceptors;
-    private MessagingMonitor monitor;
+    protected Interceptor[] interceptors;
+    protected MessagingMonitor monitor;
 
 
     private Receiver receiver;
@@ -151,6 +151,8 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
 
     protected abstract void invoke(Socket socket);
 
+    protected abstract void response(Socket socket);
+
     /**
      * The message receiver. Responsible for creating socket connections to publishers and polling for messages.
      */
@@ -180,6 +182,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                     if (val > 0) {
                         invoke(socket);
                     }
+                    response(socket);
                 }
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled

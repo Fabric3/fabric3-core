@@ -31,7 +31,11 @@
 package org.fabric3.binding.zeromq.runtime.message;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
@@ -55,54 +59,89 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
-    private Interceptor singleInterceptor;
-    private Interceptor[] interceptors;
+    private ExecutorService executorService;
+    private long pollTimeout;
+    private LinkedBlockingQueue<Response> queue;
 
     public NonReliableRequestReplyReceiver(Context context,
                                            SocketAddress address,
                                            List<InvocationChain> chains,
+                                           ExecutorService executorService,
+                                           long pollTimeout,
                                            MessagingMonitor monitor) {
         super(context, address, chains, ZMQ.XREP, monitor);
-//        if (chains.size() == 1) {
-//            singleInterceptor = chains.get(0).getHeadInterceptor();
-//        } else {
-        this.interceptors = new Interceptor[chains.size()];
-        for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
-            InvocationChain chain = chains.get(i);
-            interceptors[i] = chain.getHeadInterceptor();
-//            }
-        }
+        this.executorService = executorService;
+        this.pollTimeout = pollTimeout;
+        queue = new LinkedBlockingQueue<Response>();
     }
 
     @Override
     protected void invoke(Socket socket) {
         // read the message
-        byte[] clientId = socket.recv(0);
-        byte[] messageId = socket.recv(0);
-        byte[] contextHeader = socket.recv(0);
-        WorkContext context = createWorkContext(contextHeader);
-        Message request = new MessageImpl();
-        request.setWorkContext(context);
-//                        if (singleInterceptor != null) {
-//                            invokeAndReply(request, clientId, messageId, singleInterceptor);
-//                        } else {
-        ByteBuffer buffer = ByteBuffer.wrap(socket.recv(0));
-        int methodIndex = buffer.getInt();
-        Interceptor interceptor = interceptors[methodIndex];
-        byte[] body = socket.recv(0);
-        request.setBody(body);
+        final byte[] clientId = socket.recv(0);
+        final byte[] messageId = socket.recv(0);
+        final byte[] contextHeader = socket.recv(0);
+        final byte[] methodNumber = socket.recv(0);
+        final byte[] body = socket.recv(0);
 
-        // invoke the service
-        Message response = interceptor.invoke(request);
-        Object responseBody = response.getBody();
-        if (!(responseBody instanceof byte[])) {
-            throw new ServiceRuntimeException("Return value not serialized");
+        executorService.execute(new Runnable() {
+            public void run() {
+                WorkContext context = createWorkContext(contextHeader);
+                Message request = new MessageImpl();
+                request.setWorkContext(context);
+                int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
+                Interceptor interceptor = interceptors[methodIndex];
+                request.setBody(body);
+
+                // invoke the service
+                Message response = interceptor.invoke(request);
+                Object responseBody = response.getBody();
+                if (!(responseBody instanceof byte[])) {
+                    throw new ServiceRuntimeException("Return value not serialized");
+                }
+
+                // queue the response
+                try {
+                    queue.put(new Response(clientId, messageId, (byte[]) responseBody));
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+
+            }
+        });
+
+    }
+
+    protected void response(Socket socket) {
+        try {
+            Response first = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+            if (first == null) {
+                return;
+            }
+            List<Response> drained = new ArrayList<Response>();
+            drained.add(first);
+            queue.drainTo(drained);
+
+            for (Response response : drained) {
+                socket.send(response.clientId, ZMQ.SNDMORE);
+                socket.send(response.messageId, ZMQ.SNDMORE);
+                socket.send(response.body, 0);
+            }
+        } catch (InterruptedException e) {
+            Thread.interrupted();
         }
+    }
 
-        // send the response
-        socket.send(clientId, ZMQ.SNDMORE);
-        socket.send(messageId, ZMQ.SNDMORE);
-        socket.send((byte[]) responseBody, 0);
+    private class Response {
+        private byte[] clientId;
+        private byte[] messageId;
+        private byte[] body;
+
+        private Response(byte[] clientId, byte[] messageId, byte[] body) {
+            this.clientId = clientId;
+            this.messageId = messageId;
+            this.body = body;
+        }
     }
 
 

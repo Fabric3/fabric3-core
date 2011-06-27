@@ -175,7 +175,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             if (oneWay) {
                 receiver = new NonReliableOneWayReceiver(context, address, chains, executorService, monitor);
             } else {
-                receiver = new NonReliableRequestReplyReceiver(context, address, chains, monitor);
+                receiver = new NonReliableRequestReplyReceiver(context, address, chains, executorService, pollTimeout, monitor);
             }
             receiver.start();
 

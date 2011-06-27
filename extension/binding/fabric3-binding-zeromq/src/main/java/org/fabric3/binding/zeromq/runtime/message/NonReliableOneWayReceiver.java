@@ -54,10 +54,8 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
-
-    private Interceptor singleInterceptor;
-    private Interceptor[] interceptors;
     private ExecutorService executorService;
+
     public NonReliableOneWayReceiver(Context context,
                                      SocketAddress address,
                                      List<InvocationChain> chains,
@@ -65,11 +63,6 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                                      MessagingMonitor monitor) {
         super(context, address, chains, ZMQ.PULL, monitor);
         this.executorService = executorService;
-        this.interceptors = new Interceptor[chains.size()];
-        for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
-            InvocationChain chain = chains.get(i);
-            interceptors[i] = chain.getHeadInterceptor();
-        }
     }
 
 
@@ -79,7 +72,7 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
         final byte[] methodNumber = socket.recv(0);
         final byte[] body = socket.recv(0);
 
-        executorService.submit(new Runnable(){
+        executorService.submit(new Runnable() {
             public void run() {
                 int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
                 Interceptor interceptor = interceptors[methodIndex];
@@ -92,6 +85,11 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
             }
         });
 
+    }
+
+    @Override
+    protected void response(ZMQ.Socket socket) {
+        // no-op
     }
 }
 
