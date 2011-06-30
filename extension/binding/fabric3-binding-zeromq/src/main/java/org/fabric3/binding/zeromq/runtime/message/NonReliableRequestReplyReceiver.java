@@ -69,7 +69,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                                            ExecutorService executorService,
                                            long pollTimeout,
                                            MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.XREP, monitor);
+        super(context, address, chains, ZMQ.XREP, 100, monitor);
         this.executorService = executorService;
         this.pollTimeout = pollTimeout;
         queue = new LinkedBlockingQueue<Response>();
@@ -79,7 +79,6 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
     protected void invoke(Socket socket) {
         // read the message
         final byte[] clientId = socket.recv(0);
-        final byte[] messageId = socket.recv(0);
         final byte[] contextHeader = socket.recv(0);
         final byte[] methodNumber = socket.recv(0);
         final byte[] body = socket.recv(0);
@@ -102,7 +101,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
 
                 // queue the response
                 try {
-                    queue.put(new Response(clientId, messageId, (byte[]) responseBody));
+                    queue.put(new Response(clientId, (byte[]) responseBody));
                 } catch (InterruptedException e) {
                     Thread.interrupted();
                 }
@@ -124,7 +123,6 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
 
             for (Response response : drained) {
                 socket.send(response.clientId, ZMQ.SNDMORE);
-                socket.send(response.messageId, ZMQ.SNDMORE);
                 socket.send(response.body, 0);
             }
         } catch (InterruptedException e) {
@@ -134,12 +132,10 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
 
     private class Response {
         private byte[] clientId;
-        private byte[] messageId;
         private byte[] body;
 
-        private Response(byte[] clientId, byte[] messageId, byte[] body) {
+        private Response(byte[] clientId, byte[] body) {
             this.clientId = clientId;
-            this.messageId = messageId;
             this.body = body;
         }
     }

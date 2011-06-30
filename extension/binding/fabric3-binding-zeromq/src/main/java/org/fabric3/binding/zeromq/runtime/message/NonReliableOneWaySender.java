@@ -159,6 +159,13 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+
+                    // if no available socket, drop the message
+                    if (!multiplexer.isAvailable()) {
+                        monitor.dropMessage();
+                        continue;
+                    }
+                    
                     if (value != null) {
                         drained.add(value);
                         queue.drainTo(drained);

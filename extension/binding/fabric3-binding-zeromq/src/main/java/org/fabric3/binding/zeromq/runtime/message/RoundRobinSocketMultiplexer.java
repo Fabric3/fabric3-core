@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -95,7 +96,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);
             }
-            
+
             if (sockets.size() == 1) {
                 iterator = new SingletonIterator(sockets.values().iterator().next());
             } else {
@@ -109,6 +110,14 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
             throw new NoSuchElementException();
         }
         return iterator.next();
+    }
+
+    public Collection<ZMQ.Socket> getAll() {
+        return sockets.values();
+    }
+
+    public boolean isAvailable() {
+        return !sockets.isEmpty();
     }
 
     public void close() {

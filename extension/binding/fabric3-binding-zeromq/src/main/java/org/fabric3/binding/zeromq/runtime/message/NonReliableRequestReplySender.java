@@ -35,10 +35,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -48,7 +47,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -76,28 +74,27 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     };
 
     private String id;
-    private Context context;
+    private ZMQ.Context context;
     private List<SocketAddress> addresses;
     private long pollTimeout;
     private MessagingMonitor monitor;
 
-    private Socket socket;
-    private ZMQ.Poller poller;
     private Dispatcher dispatcher;
 
-    private byte[] epoch;
-    private AtomicLong counter;     // a message id counter
+    private RoundRobinSocketMultiplexer multiplexer;
+    private Map<Socket, ZMQ.Poller> pollers;
+
     private LinkedBlockingQueue<Request> queue;
 
     public NonReliableRequestReplySender(String id, Context context, List<SocketAddress> addresses, long pollTimeout, MessagingMonitor monitor) {
         this.id = id;
-        this.addresses = addresses;
         this.context = context;
+        this.addresses = addresses;
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
-        epoch = UUID.randomUUID().toString().getBytes();
-        counter = new AtomicLong(0);
+        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.XREQ);
         queue = new LinkedBlockingQueue<Request>();
+        pollers = new ConcurrentHashMap<Socket, ZMQ.Poller>();
     }
 
     public void start() {
@@ -125,7 +122,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             byte[] serializedWorkContext = serialize(workContext);
             Request request = new Request(message, index, serializedWorkContext);
             queue.put(request);
-            return request.get(10000, TimeUnit.MILLISECONDS);
+            return request.get(100000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.interrupted();
             throw new ServiceRuntimeException(e);
@@ -149,13 +146,13 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         thread.start();
     }
 
-    private byte[] generateMessageId() {
-        byte[] id = new byte[epoch.length + 8];
-        ByteBuffer buffer = ByteBuffer.wrap(id);
-        buffer.put(epoch);
-        buffer.putLong(epoch.length, counter.getAndIncrement());
-        return id;
-    }
+//    private byte[] generateMessageId() {
+//        byte[] id = new byte[epoch.length + 8];
+//        ByteBuffer buffer = ByteBuffer.wrap(id);
+//        buffer.put(epoch);
+//        buffer.putLong(epoch.length, counter.getAndIncrement());
+//        return id;
+//    }
 
     /**
      * Serializes the work context.
@@ -179,7 +176,6 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     private class Dispatcher implements Runnable {
         private AtomicBoolean active = new AtomicBoolean(true);
         private AtomicBoolean doRefresh = new AtomicBoolean(true);
-        private Map<ByteArrayKey, Request> correlationTable = new ConcurrentHashMap<ByteArrayKey, Request>();
 
         /**
          * Signals to closes the old socket and establish a new one when publisher addresses have changed in the domain.
@@ -193,9 +189,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
          */
         public void stop() {
             active.set(false);
-            if (socket != null) {
-                socket.close();
-            }
+            multiplexer.close();
         }
 
         public void run() {
@@ -206,16 +200,20 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    // if no available socket, drop the message
+                    if (!multiplexer.isAvailable()) {
+                        monitor.dropMessage();
+                        continue;
+                    }
+
                     if (value != null) {
                         drained.add(value);
                         queue.drainTo(drained);
                     }
                     for (Request request : drained) {
-                        // send the message id
-                        byte[] id = generateMessageId();
-                        // serialize the work context as a header
+                        Socket socket = multiplexer.get();
 
-                        socket.send(id, ZMQ.SNDMORE);
+                        // send the work context as a header
                         socket.send(request.getWorkContext(), ZMQ.SNDMORE);
 
                         // serialize the operation index
@@ -225,34 +223,21 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                             socket.send(serializedIndex, ZMQ.SNDMORE);
                         }
 
-                        // serialize the request payload
                         socket.send(request.getPayload(), 0);
 
-                        // store the request in the correlation table
-                        ByteArrayKey key = new ByteArrayKey(id);
-                        correlationTable.put(key, request);
-                    }
-                    if (correlationTable.isEmpty()) {
-                        continue;
-                    }
-                    // handle pending responses
-                    poller.poll(pollTimeout * 1000);   // convert timeout to microseconds
-                    if (!poller.pollin(0)) {
-                        continue;
-                    }
-                    byte[] responseId;
-                    while ((responseId = socket.recv(ZMQ.NOBLOCK)) != null) {
-                        ByteArrayKey key = new ByteArrayKey(responseId);
-                        Request request = correlationTable.remove(key);
-                        if (request == null) {
-                            monitor.warn("Correlation id not found: " + Arrays.toString(responseId));
+                        ZMQ.Poller poller = pollers.get(socket);
+                        long val = poller.poll(pollTimeout * 1000);
+                        if (val < 0) {
+                            // response timed out, return an error to the waiting thread
+                            //noinspection ThrowableInstanceNeverThrown
+                            request.setException(new ServiceUnavailableException("Timeout waiting on response"));
+                            request.run();
                             continue;
                         }
                         byte[] response = socket.recv(0);
                         request.set(response);
                         request.run();
                     }
-
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled
                     schedule();
@@ -271,17 +256,15 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             if (!doRefresh.getAndSet(false)) {
                 return;
             }
-            if (socket != null) {
-                socket.close();
-            }
-            socket = context.socket(ZMQ.XREQ);
-            poller = context.poller(1);
-            poller.register(socket, ZMQ.Poller.POLLIN);
-            for (SocketAddress address : addresses) {
-                socket.connect(address.toProtocolString());
+            multiplexer.update(addresses);
+            Collection<Socket> sockets = multiplexer.getAll();
+            pollers.clear();
+            for (Socket socket : sockets) {
+                ZMQ.Poller poller = context.poller();
+                poller.register(socket);
+                pollers.put(socket, poller);
             }
         }
-
     }
 
     /**
@@ -315,7 +298,11 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         public void set(byte[] s) {
             super.set(s);
         }
-    }
 
+        @Override
+        protected void setException(Throwable t) {
+            super.setException(t);
+        }
+    }
 
 }

@@ -61,7 +61,7 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                                      List<InvocationChain> chains,
                                      ExecutorService executorService,
                                      MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.PULL, monitor);
+        super(context, address, chains, ZMQ.PULL, -1, monitor);
         this.executorService = executorService;
     }
 

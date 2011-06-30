@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -46,4 +47,6 @@ public interface MessagingMonitor {
     @Severe
     public void warn(String message);
 
+    @Debug("ZeroMQ message dropped due to unavailable endpoint")
+    void dropMessage();
 }

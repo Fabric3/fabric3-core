@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.zeromq.ZMQ;
@@ -51,11 +52,25 @@ public interface SocketMultiplexer {
     void update(List<SocketAddress> addresses);
 
     /**
-     * Return the next available socket.
+     * Returns the next available socket.
      *
      * @return the next available socket
      */
     ZMQ.Socket get();
+
+    /**
+     * Returns all active sockets.
+     *
+     * @return all active sockets
+     */
+    Collection<ZMQ.Socket> getAll();
+
+    /**
+     * Returns true if the multiplexer has an available socket.
+     *
+     * @return true if the multiplexer has an available socket
+     */
+    boolean isAvailable();
 
     /**
      * Closes the underlying collection of sockets.

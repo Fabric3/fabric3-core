@@ -65,14 +65,17 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
 
 
     private Receiver receiver;
+    private long pollTimeout;
 
     public AbstractReceiver(Context context,
                             SocketAddress address,
                             List<InvocationChain> chains,
                             int socketType,
+                            long pollTimeout,
                             MessagingMonitor monitor) {
         this.context = context;
         this.address = address;
+        this.pollTimeout = pollTimeout;
 //        if (chains.size() == 1) {
 //            singleInterceptor = chains.get(0).getHeadInterceptor();
 //        } else {
@@ -80,7 +83,6 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
             interceptors[i] = chain.getHeadInterceptor();
-//            }
         }
         this.socketType = socketType;
         this.monitor = monitor;
@@ -178,7 +180,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 bind();
 
                 while (active.get()) {
-                    long val = poller.poll();
+                    long val = poller.poll(pollTimeout);   // convert timeout to microseconds
                     if (val > 0) {
                         invoke(socket);
                     }
