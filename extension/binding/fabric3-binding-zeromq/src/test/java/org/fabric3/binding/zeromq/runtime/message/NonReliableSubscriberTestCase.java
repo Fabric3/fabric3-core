@@ -43,14 +43,40 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
+import org.fabric3.spi.host.Port;
 
 /**
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliableSubscriberTestCase extends TestCase {
 
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
-    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", 1061);
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port(){
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    });
+
+    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", new Port(){
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    });
     private MessagingMonitor monitor;
 
     public void testReceive() throws Exception {

@@ -60,6 +60,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.transport.jetty.impl.JettyServiceImpl;
 import org.fabric3.transport.jetty.impl.TransportMonitor;
@@ -198,13 +199,17 @@ public class JettyServiceImplTestCase extends TestCase {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime").atLeastOnce();
         EasyMock.replay(info);
 
+        Port port = EasyMock.createMock(Port.class);
+        EasyMock.expect(port.getNumber()).andReturn(8585).anyTimes();
+        port.releaseLock();
+        EasyMock.expectLastCall().atLeastOnce();
+
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
         EasyMock.expect(portAllocator.isPoolEnabled()).andReturn(false).times(2);
-        portAllocator.reserve("HTTP", "HTTP", 8585);
-        EasyMock.expectLastCall().atLeastOnce();
+        EasyMock.expect(portAllocator.reserve("HTTP", "HTTP", 8585)).andReturn(port).atLeastOnce();
         portAllocator.release("HTTP");
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.replay(portAllocator);
+        EasyMock.replay(portAllocator, port);
 
         service = new JettyServiceImpl(portAllocator, monitor, info);
 

@@ -40,6 +40,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.ParseException;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 
@@ -54,7 +55,7 @@ public class RmiAgent {
     private JmxSecurity security = JmxSecurity.DISABLED;
 
     private Registry registry;
-    private int assignedPort;
+    private Port assignedPort;
     private MBeanServer mBeanServer;
     private PortAllocator portAllocator;
     private RmiAgentMonitor monitor;
@@ -109,7 +110,7 @@ public class RmiAgent {
             createRegistry();
             Map<String, Object> environment = initEnvironment();
             initConnector(environment);
-            monitor.jmxStarted(assignedPort);
+            monitor.jmxStarted(assignedPort.getNumber());
         } catch (MalformedURLException ex) {
             throw new ManagementException(ex);
         } catch (IOException ex) {
@@ -143,7 +144,7 @@ public class RmiAgent {
     }
 
     private void initConnector(Map<String, Object> environment) throws IOException {
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + assignedPort + "/server");
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + assignedPort.getNumber() + "/server");
         // service:jmx:rmi:///jndi/rmi://localhost:1199/server
         connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, environment, mBeanServer);
         connectorServer.start();
@@ -156,10 +157,10 @@ public class RmiAgent {
                 if (portAllocator.isPoolEnabled()) {
                     assignedPort = portAllocator.allocate("JMX", "JMX");
                 } else {
-                    portAllocator.reserve("JMX", "JMX", DEFAULT_JMX_PORT);
-                    assignedPort = DEFAULT_JMX_PORT;
+                    assignedPort = portAllocator.reserve("JMX", "JMX", DEFAULT_JMX_PORT);
                 }
-                registry = LocateRegistry.createRegistry(assignedPort);
+                assignedPort.releaseLock();
+                registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (RemoteException e) {
                 throw new ManagementException(e);
             } catch (PortAllocationException e) {
@@ -168,9 +169,9 @@ public class RmiAgent {
         } else {
             // port is explicitly assigned
             try {
-                portAllocator.reserve("JMX", "JMX", port);
-                assignedPort = port;
-                registry = LocateRegistry.createRegistry(assignedPort);
+                assignedPort = portAllocator.reserve("JMX", "JMX", port);
+                assignedPort.releaseLock();
+                registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (PortAllocationException e) {
                 throw new ManagementException(e);
             } catch (ExportException e) {

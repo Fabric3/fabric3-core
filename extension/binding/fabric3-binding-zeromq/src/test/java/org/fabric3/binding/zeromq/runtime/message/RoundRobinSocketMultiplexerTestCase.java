@@ -39,6 +39,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
@@ -57,9 +58,10 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
         EasyMock.replay(context);
 
-        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
-        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
-        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+        SocketAddress address1 = createAddress(1);
+        SocketAddress address2 = createAddress(2);
+        SocketAddress address3 = createAddress(3);
+
         List<SocketAddress> list = new ArrayList<SocketAddress>();
         list.add(address1);
         list.add(address2);
@@ -94,7 +96,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket);
         EasyMock.replay(context);
 
-        SocketAddress address = new SocketAddress("vm", "tcp", "1", 1);
+        SocketAddress address = createAddress(1);
         List<SocketAddress> list = new ArrayList<SocketAddress>();
         list.add(address);
 
@@ -126,9 +128,9 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.replay(socket3);
         EasyMock.replay(socket4);
 
-        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
-        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
-        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+        SocketAddress address1 = createAddress(1);
+        SocketAddress address2 = createAddress(2);
+        SocketAddress address3 = createAddress(3);
         List<SocketAddress> list = new ArrayList<SocketAddress>();
         list.add(address1);
         list.add(address2);
@@ -137,7 +139,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         multiplexer.update(list);
         multiplexer.get();
 
-        SocketAddress address4 = new SocketAddress("vm", "tcp", "4", 4);
+        SocketAddress address4 = createAddress(4);
         list.add(address4);
         multiplexer.update(list);
 
@@ -193,10 +195,10 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.replay(socket2);
         EasyMock.replay(socket3);
         EasyMock.replay(socket4);
- 
-        SocketAddress address1 = new SocketAddress("vm", "tcp", "1", 1);
-        SocketAddress address2 = new SocketAddress("vm", "tcp", "2", 2);
-        SocketAddress address3 = new SocketAddress("vm", "tcp", "3", 3);
+
+        SocketAddress address1 = createAddress(1);
+        SocketAddress address2 = createAddress(2);
+        SocketAddress address3 = createAddress(3);
         List<SocketAddress> list = new ArrayList<SocketAddress>();
         list.add(address1);
         list.add(address2);
@@ -205,13 +207,13 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         multiplexer.update(list);
         multiplexer.get();
 
-        SocketAddress address4 = new SocketAddress("vm", "tcp", "4", 4);
+        SocketAddress address4 = createAddress(4);
         multiplexer.update(Collections.singletonList(address4));
 
-        assertSame(socket4,multiplexer.get());
-        assertSame(socket4,multiplexer.get());
-        assertSame(socket4,multiplexer.get());
-        assertSame(socket4,multiplexer.get());
+        assertSame(socket4, multiplexer.get());
+        assertSame(socket4, multiplexer.get());
+        assertSame(socket4, multiplexer.get());
+        assertSame(socket4, multiplexer.get());
 
 
         EasyMock.verify(context);
@@ -222,6 +224,21 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
     }
 
+    private SocketAddress createAddress(final int port) {
+        return new SocketAddress("vm", "tcp", String.valueOf(port), new Port() {
+            public String getName() {
+                return null;
+            }
+
+            public int getNumber() {
+                return port;
+            }
+
+            public void releaseLock() {
+
+            }
+        });
+    }
 
 
 }

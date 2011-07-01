@@ -48,13 +48,26 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port(){
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    });
 
     private ContextManager manager;
     private AddressCache addressCache;
@@ -83,7 +96,10 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
     }
 
     public void testConnectRelease() throws Exception {
-        EasyMock.expect(allocator.allocate("channel", "zmq")).andReturn(9090);
+        Port port = EasyMock.createMock(Port.class);
+        EasyMock.expect(port.getNumber()).andReturn(9090).anyTimes();
+
+        EasyMock.expect(allocator.allocate("channel", "zmq")).andReturn(port);
         allocator.release("channel");
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
 
@@ -96,13 +112,13 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         addressCache.publish(EasyMock.isA(AddressAnnouncement.class));
 
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream);
+        EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream, port);
 
         broker.connect("id", connection, "channel");
         broker.release("id", "channel");
 
         EasyMock.verify(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info, stream);
+        EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info, stream, port);
     }
 
     @Override

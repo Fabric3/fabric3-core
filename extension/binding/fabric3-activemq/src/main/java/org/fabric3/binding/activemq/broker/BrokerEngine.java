@@ -57,6 +57,7 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.monitor.MonitorService;
@@ -76,7 +77,7 @@ public class BrokerEngine {
     private String brokerName;
     private BrokerService broker;
     private File tempDir;
-    private int selectedPort = -1;
+    private Port selectedPort;
     private int jmsPort = -1;
     private String bindAddress;
     private File dataDir;
@@ -157,7 +158,8 @@ public class BrokerEngine {
             // default configuration
             broker.setBrokerName(brokerName);
             createManagementContext(brokerName);
-            TransportConnector connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort);
+            selectedPort.releaseLock();
+            TransportConnector connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort.getNumber());
             String group = info.getDomain().getAuthority();
             connector.setDiscoveryUri(URI.create("multicast://default?group=" + group));
             broker.addNetworkConnector("multicast://default?group=" + group);
@@ -215,13 +217,11 @@ public class BrokerEngine {
             if (portAllocator.isPoolEnabled()) {
                 selectedPort = portAllocator.allocate("JMS", "JMS");
             } else {
-                portAllocator.reserve("JMS", "JMS", DEFAULT_PORT);
-                selectedPort = DEFAULT_PORT;
+                selectedPort = portAllocator.reserve("JMS", "JMS", DEFAULT_PORT);
             }
         } else {
             // port is explicitly assigned
-            portAllocator.reserve("JMS", "JMS", jmsPort);
-            selectedPort = jmsPort;
+            selectedPort = portAllocator.reserve("JMS", "JMS", jmsPort);
         }
 
     }

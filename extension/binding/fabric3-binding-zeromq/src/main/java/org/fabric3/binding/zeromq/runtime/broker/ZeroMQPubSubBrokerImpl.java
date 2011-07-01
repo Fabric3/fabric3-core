@@ -61,6 +61,7 @@ import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 
@@ -130,7 +131,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
             try {
-                int port = allocator.allocate(channelName, ZMQ);
+                Port port = allocator.allocate(channelName, ZMQ);
                 // XCV FIXME localhost
                 String runtimeName = info.getRuntimeName();
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);

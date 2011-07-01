@@ -32,6 +32,8 @@ package org.fabric3.binding.zeromq.runtime;
 
 import java.io.Serializable;
 
+import org.fabric3.spi.host.Port;
+
 /**
  * A socket address.
  *
@@ -43,7 +45,7 @@ public class SocketAddress implements Serializable {
     private String runtimeName;
     private String protocol;
     private String address;
-    private int port;
+    private Port port;
 
     /**
      * Constructor.
@@ -53,7 +55,7 @@ public class SocketAddress implements Serializable {
      * @param address     the IP address the socket should send/listen on
      * @param port        the socket port
      */
-    public SocketAddress(String runtimeName, String protocol, String address, int port) {
+    public SocketAddress(String runtimeName, String protocol, String address, Port port) {
         this.runtimeName = runtimeName;
         this.protocol = protocol;
         this.address = address;
@@ -72,17 +74,17 @@ public class SocketAddress implements Serializable {
         return address;
     }
 
-    public int getPort() {
+    public Port getPort() {
         return port;
     }
 
     public String toProtocolString() {
-        return protocol + "://" + address + ":" + port;
+        return protocol + "://" + address + ":" + port.getNumber();
     }
 
     @Override
     public String toString() {
-        return protocol + "://" + address + ":" + port + " [" + runtimeName + "]";
+        return protocol + "://" + address + ":" + port.getNumber() + " [" + runtimeName + "]";
     }
 
     @Override
@@ -92,7 +94,7 @@ public class SocketAddress implements Serializable {
 
         SocketAddress that = (SocketAddress) o;
 
-        return port == that.port && !(address != null ? !address.equals(that.address) : that.address != null)
+        return port.getNumber() == that.port.getNumber() && !(address != null ? !address.equals(that.address) : that.address != null)
                 && !(protocol != null ? !protocol.equals(that.protocol) : that.protocol != null)
                 && !(runtimeName != null ? !runtimeName.equals(that.runtimeName) : that.runtimeName != null);
 
@@ -103,7 +105,7 @@ public class SocketAddress implements Serializable {
         int result = runtimeName != null ? runtimeName.hashCode() : 0;
         result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + port;
+        result = 31 * result + port.getNumber();
         return result;
     }
 }

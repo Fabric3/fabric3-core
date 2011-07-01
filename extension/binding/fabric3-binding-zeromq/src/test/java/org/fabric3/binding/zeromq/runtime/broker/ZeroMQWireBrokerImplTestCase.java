@@ -46,6 +46,7 @@ import org.fabric3.binding.zeromq.runtime.federation.AddressEvent;
 import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.wire.Interceptor;
@@ -55,7 +56,19 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class ZeroMQWireBrokerImplTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    });
 
     private ContextManager manager;
     private AddressCache addressCache;
@@ -72,7 +85,10 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         addressCache.publish(EasyMock.isA(AddressEvent.class));
 
-        EasyMock.expect(allocator.allocate("wire", "zmq")).andReturn(1099);
+        Port port = EasyMock.createMock(Port.class);
+        EasyMock.expect(port.getNumber()).andReturn(1099).anyTimes();
+
+        EasyMock.expect(allocator.allocate("wire", "zmq")).andReturn(port);
         allocator.release("wire");
 
         EasyMock.replay(context);
@@ -89,13 +105,13 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor).atLeastOnce();
 
         List<InvocationChain> chains = Collections.singletonList(chain);
-        EasyMock.replay(chain, interceptor);
+        EasyMock.replay(chain, interceptor, port);
 
         broker.connectToReceiver(URI.create("wire"), chains, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
         EasyMock.verify(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor);
+        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port);
     }
 
     public void testConnectToSenderRelease() throws Exception {

@@ -39,12 +39,25 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class NonReliablePublisherTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port(){
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    });
 
     public void testPublish() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);

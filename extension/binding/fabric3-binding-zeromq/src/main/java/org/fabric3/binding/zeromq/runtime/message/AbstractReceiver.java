@@ -200,6 +200,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 return;
             }
             socket = context.socket(socketType);
+            address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
             poller = context.poller();
             poller.register(socket);

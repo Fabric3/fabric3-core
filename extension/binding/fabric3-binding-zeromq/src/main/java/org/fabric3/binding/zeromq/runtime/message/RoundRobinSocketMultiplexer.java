@@ -66,12 +66,14 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
             if (addresses.size() == 1) {
                 ZMQ.Socket socket = context.socket(socketType);
                 SocketAddress address = addresses.get(0);
+                address.getPort().releaseLock();
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);
                 iterator = new SingletonIterator(socket);
             } else {
                 for (SocketAddress address : addresses) {
                     ZMQ.Socket socket = context.socket(socketType);
+                    address.getPort().releaseLock();
                     socket.connect(address.toProtocolString());
                     sockets.put(address, socket);
                 }
@@ -93,6 +95,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
 
             for (SocketAddress address : toAdd) {
                 ZMQ.Socket socket = context.socket(socketType);
+                address.getPort().releaseLock();
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);
             }

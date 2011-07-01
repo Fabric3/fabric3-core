@@ -66,6 +66,7 @@ import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.invocation.CallFrame;
@@ -161,7 +162,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             ZMQ.Context context = manager.getContext();
             String endpointId = uri.toString();
 
-            int port = allocator.allocate(endpointId, ZMQ);
+            Port port = allocator.allocate(endpointId, ZMQ);
             // XCV FIXME localhost
             String runtimeName = info.getRuntimeName();
             SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);

@@ -105,6 +105,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
 
         public void run() {
             socket = context.socket(ZMQ.PUB);
+            address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
 
             while (active.get()) {

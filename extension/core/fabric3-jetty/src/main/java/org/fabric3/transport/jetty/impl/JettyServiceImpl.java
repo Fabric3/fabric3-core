@@ -77,6 +77,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.federation.FederationConstants;
 import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.management.ManagementException;
@@ -123,9 +124,9 @@ public class JettyServiceImpl implements JettyService, Transport {
     private final Object joinLock = new Object();
     private boolean enableHttps;
     private int configuredHttpPort = -1;
-    private int selectedHttp = -1;
+    private Port selectedHttp;
     private int configuredHttpsPort = -1;
-    private int selectedHttps = -1;
+    private Port selectedHttps;
     //    private String keystore;
     private boolean sendServerVersion;
     private boolean debug;
@@ -246,9 +247,9 @@ public class JettyServiceImpl implements JettyService, Transport {
             initializeHandlers();
             server.setStopAtShutdown(true);
             server.setSendServerVersion(sendServerVersion);
-            monitor.startHttpListener(selectedHttp);
+            monitor.startHttpListener(selectedHttp.getNumber());
             if (enableHttps) {
-                monitor.startHttpsListener(selectedHttps);
+                monitor.startHttpsListener(selectedHttps.getNumber());
             }
             server.start();
             if (managementService != null) {
@@ -327,15 +328,18 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     public int getHttpPort() {
-        return selectedHttp;
+        return selectedHttp.getNumber();
     }
 
     public int getHttpsPort() {
-        return selectedHttps;
+        if (selectedHttps == null) {
+            return -1;
+        }
+        return selectedHttps.getNumber();
     }
 
     public boolean isHttpsEnabled() {
-        return selectedHttps != -1;
+        return selectedHttps != null;
     }
 
     public synchronized void registerMapping(String path, Servlet servlet) {
@@ -431,11 +435,12 @@ public class JettyServiceImpl implements JettyService, Transport {
     private void initializeConnector() throws IOException, JettyInitializationException {
         selectHttpPort();
         selectHttpsPort();
-
+        selectedHttp.releaseLock();
         if (enableHttps) {
             if (keyStoreManager == null) {
                 throw new JettyInitializationException("Key store manager not found - a security extension must be installed");
             }
+            selectedHttps.releaseLock();
             // setup HTTP and HTTPS
             String keystore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
             String keyPassword = keyStoreManager.getKeyStorePassword();
@@ -443,10 +448,10 @@ public class JettyServiceImpl implements JettyService, Transport {
             String trustPassword = keyStoreManager.getTrustStorePassword();
             String certPassword = keyStoreManager.getCertPassword();
             httpConnector = new ContextAwareConnector();
-            httpConnector.setPort(selectedHttp);
+            httpConnector.setPort(selectedHttp.getNumber());
             sslConnector = new ContextAwareSslConnector();
             sslConnector.setAllowRenegotiate(true);
-            sslConnector.setPort(selectedHttps);
+            sslConnector.setPort(selectedHttps.getNumber());
             sslConnector.setKeystore(keystore);
             sslConnector.setKeyPassword(keyPassword);
             sslConnector.setPassword(certPassword);
@@ -456,7 +461,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         } else {
             // setup HTTP
             httpConnector = new ContextAwareConnector();
-            httpConnector.setPort(selectedHttp);
+            httpConnector.setPort(selectedHttp.getNumber());
             httpConnector.setSoLingerTime(-1);
             server.setConnectors(new Connector[]{httpConnector});
         }
@@ -469,14 +474,14 @@ public class JettyServiceImpl implements JettyService, Transport {
      */
     private void registerHttpMetadata() throws UnknownHostException {
         if (topologyService != null) {
-            topologyService.registerMetadata(FederationConstants.HTTP_PORT_METADATA, selectedHttp);
+            topologyService.registerMetadata(FederationConstants.HTTP_PORT_METADATA, selectedHttp.getNumber());
             String host = httpConnector.getHost();
             if (host == null) {
                 host = InetAddress.getLocalHost().getHostAddress();
             }
             topologyService.registerMetadata(FederationConstants.HTTP_HOST_METADATA, host);
             if (isHttpsEnabled()) {
-                topologyService.registerMetadata(FederationConstants.HTTPS_PORT_METADATA, selectedHttps);
+                topologyService.registerMetadata(FederationConstants.HTTPS_PORT_METADATA, selectedHttps.getNumber());
             }
         }
     }
@@ -485,11 +490,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         try {
             if (!portAllocator.isPoolEnabled()) {
                 if (configuredHttpPort == -1) {
-                    selectedHttp = DEFAULT_HTTP_PORT;
+                    selectedHttp = portAllocator.reserve("HTTP", "HTTP", DEFAULT_HTTP_PORT);
                 } else {
-                    selectedHttp = configuredHttpPort;
+                    selectedHttp = portAllocator.reserve("HTTP", "HTTP", configuredHttpPort);
                 }
-                portAllocator.reserve("HTTP", "HTTP", selectedHttp);
             } else {
                 selectedHttp = portAllocator.allocate("HTTP", "HTTP");
             }
@@ -505,11 +509,11 @@ public class JettyServiceImpl implements JettyService, Transport {
         try {
             if (!portAllocator.isPoolEnabled()) {
                 if (configuredHttpsPort == -1) {
-                    selectedHttps = DEFAULT_HTTPS_PORT;
+                    selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", DEFAULT_HTTPS_PORT);
                 } else {
-                    selectedHttps = configuredHttpsPort;
+                    selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", configuredHttpsPort);
                 }
-                portAllocator.reserve("HTTPS", "HTTPS", selectedHttps);
+
             } else {
                 selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
             }

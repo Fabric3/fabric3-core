@@ -36,13 +36,27 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class LocalAddressCacheTestCase extends TestCase {
-    private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "tcp", "10.10.10.1", 1061);
-    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", 1061);
+    private static final Port PORT = new Port(){
+        public String getName() {
+            return null;
+        }
+
+        public int getNumber() {
+            return 1061;
+        }
+
+        public void releaseLock() {
+
+        }
+    };
+    private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "tcp", "10.10.10.1", PORT);
+    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", PORT);
 
     private LocalAddressCache cache = new LocalAddressCache();
 

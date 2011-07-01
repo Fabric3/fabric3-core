@@ -68,10 +68,10 @@ public interface PortAllocator {
      *
      * @param name the port name. Used when a transport uses a port per endpoint
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
-     * @return the allocated port number
+     * @return the allocated port
      * @throws PortAllocationException if there was an error allocating a port
      */
-    int allocate(String name, String type) throws PortAllocationException;
+    Port allocate(String name, String type) throws PortAllocationException;
 
     /**
      * Requests a specific port number to be reserved. This may be outside the configured port range. If so, the allocator will check availability and
@@ -80,9 +80,10 @@ public interface PortAllocator {
      * @param name the port name. Used when a transport uses a port per endpoint
      * @param type the transport type, e.g. HTTP, HTTPS, FTP, TCP
      * @param port the requested port number
+     * @return returns the port
      * @throws PortAllocationException if there was an error reserving the port
      */
-    void reserve(String name, String type, int port) throws PortAllocationException;
+    Port reserve(String name, String type, int port) throws PortAllocationException;
 
     /**
      * Returns the port number associated with the name.
@@ -90,7 +91,7 @@ public interface PortAllocator {
      * @param name the port name
      * @return the allocated port number or {@link #NOT_ALLOCATED} if a port has not been allocated
      */
-    int getAllocatedPort(String name);
+    int getAllocatedPortNumber(String name);
 
     /**
      * Returns a list of allocated port types.
