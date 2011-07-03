@@ -37,18 +37,25 @@
  */
 package org.fabric3.binding.zeromq.provider;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
+import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Property;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.model.type.contract.Operation;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalReference;
+import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.util.UriHelper;
 
 /**
  * A binding.sca implementation that uses ZeroMQ as the underlying transport.
@@ -71,7 +78,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public BindingMatchResult canBind(LogicalWire wire) {
-        return NO_MATCH;  // not yet implemented
+        return !enabled ? NO_MATCH : MATCH;
     }
 
     public BindingMatchResult canBind(LogicalChannel channel) {
@@ -79,7 +86,44 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalWire wire) throws BindingSelectionException {
-        throw new UnsupportedOperationException();
+        LogicalReference source = wire.getSource().getLeafReference();
+        LogicalService target = wire.getTarget().getLeafService();
+        QName deployable = source.getParent().getDeployable();
+
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+
+        // setup the forward binding
+        ZeroMQBindingDefinition referenceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBindingDefinition> referenceBinding =
+                new LogicalBinding<ZeroMQBindingDefinition>(referenceDefinition, source, deployable);
+        referenceDefinition.setTargetUri(URI.create(UriHelper.getBaseName(target.getUri())));
+        referenceBinding.setAssigned(true);
+        source.addBinding(referenceBinding);
+
+
+        ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<ZeroMQBindingDefinition>(serviceDefinition, target, deployable);
+        serviceBinding.setAssigned(true);
+        target.addBinding(serviceBinding);
+
+        // check if the interface is bidirectional
+        ServiceContract targetContract = target.getDefinition().getServiceContract();
+        if (targetContract.getCallbackContract() != null) {
+            // setup callback bindings
+
+            ZeroMQMetadata callbackMetadata = new ZeroMQMetadata();
+            ZeroMQBindingDefinition callbackReferenceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
+            LogicalBinding<ZeroMQBindingDefinition> callbackReferenceBinding =
+                    new LogicalBinding<ZeroMQBindingDefinition>(callbackReferenceDefinition, source, deployable);
+            callbackReferenceBinding.setAssigned(true);
+            source.addCallbackBinding(callbackReferenceBinding);
+
+            ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
+            LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding =
+                    new LogicalBinding<ZeroMQBindingDefinition>(callbackServiceDefinition, target, deployable);
+            callbackServiceBinding.setAssigned(true);
+            target.addCallbackBinding(callbackServiceBinding);
+        }
     }
 
     public void bind(LogicalChannel channel) throws BindingSelectionException {
@@ -89,4 +133,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
         LogicalBinding<ZeroMQBindingDefinition> binding = new LogicalBinding<ZeroMQBindingDefinition>(definition, channel);
         channel.addBinding(binding);
     }
+
+
+
 }

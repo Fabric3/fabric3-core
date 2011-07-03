@@ -51,7 +51,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -105,19 +104,24 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
             }
 
         }
+        return generateTarget(contract, targetUri);
+    }
+
+    public ZeroMQTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
+                                                                 ServiceContract contract,
+                                                                 List<LogicalOperation> operations,
+                                                                 EffectivePolicy policy) throws GenerationException {
+        URI targetUri = binding.getParent().getUri();
+        return generateTarget(contract, targetUri);
+    }
+
+    private ZeroMQTargetDefinition generateTarget(ServiceContract contract, URI targetUri) {
         boolean hasCallback = contract.getCallbackContract() != null;
         if (hasCallback) {
             URI callbackUri = URI.create("zmq://" + contract.getCallbackContract().getInterfaceName());
             return new ZeroMQTargetDefinition(targetUri, callbackUri);
         }
         return new ZeroMQTargetDefinition(targetUri);
-    }
-
-    public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                                 ServiceContract contract,
-                                                                 List<LogicalOperation> operations,
-                                                                 EffectivePolicy policy) throws GenerationException {
-        throw new UnsupportedOperationException();
     }
 
     private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
