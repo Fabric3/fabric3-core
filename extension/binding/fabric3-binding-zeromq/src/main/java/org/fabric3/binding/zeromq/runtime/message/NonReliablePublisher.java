@@ -61,12 +61,18 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
     private LinkedBlockingQueue<byte[]> queue;
 
     public void start() {
-        dispatcher = new Dispatcher();
-        schedule();
+        if (dispatcher == null) {
+            dispatcher = new Dispatcher();
+            schedule();
+        }
     }
 
     public void stop() {
-        dispatcher.stop();
+        try {
+            dispatcher.stop();
+        } finally {
+            dispatcher = null;
+        }
     }
 
     public NonReliablePublisher(Context context, SocketAddress address, MessagingMonitor monitor) {

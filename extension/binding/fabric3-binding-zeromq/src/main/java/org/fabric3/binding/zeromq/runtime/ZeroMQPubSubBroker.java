@@ -81,4 +81,14 @@ public interface ZeroMQPubSubBroker {
      */
     void release(String connectionId, String channelName) throws BrokerException;
 
+    /**
+     * Starts all publishers and subscribers.
+     */
+    void startAll();
+
+    /**
+     * Stops all publishers and subscribers.
+     */
+    void stopAll();
+
 }

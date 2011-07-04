@@ -222,6 +222,24 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         }
     }
 
+    public void startAll() {
+        for (Receiver receiver : receivers.values()) {
+            receiver.start();
+        }
+        for (SenderHolder holder : senders.values()) {
+            holder.getSender().start();
+        }
+    }
+
+    public void stopAll() {
+        for (Receiver receiver : receivers.values()) {
+            receiver.stop();
+        }
+        for (SenderHolder holder : senders.values()) {
+            holder.getSender().stop();
+        }
+    }
+
     public void start() {
         // no-op
     }

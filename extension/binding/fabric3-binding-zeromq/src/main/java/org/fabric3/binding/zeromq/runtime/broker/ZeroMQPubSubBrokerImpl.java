@@ -175,6 +175,24 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         allocator.release(channelName);
     }
 
+    public void startAll() {
+        for (Subscriber subscriber : subscribers.values()) {
+            subscriber.start();
+        }
+        for (PublisherHolder holder : publishers.values()) {
+            holder.getPublisher().start();
+        }
+    }
+
+    public void stopAll() {
+        for (Subscriber subscriber : subscribers.values()) {
+            subscriber.stop();
+        }
+        for (PublisherHolder holder : publishers.values()) {
+            holder.getPublisher().stop();
+        }
+    }
+
     private void attachConnection(ChannelConnection connection, Publisher publisher) {
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(new SerializingEventStreamHandler());

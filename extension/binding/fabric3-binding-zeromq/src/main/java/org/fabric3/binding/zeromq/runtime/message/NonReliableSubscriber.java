@@ -86,13 +86,19 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     }
 
     public void start() {
-        receiver = new SocketReceiver();
-        schedule();
+        if (receiver == null) {
+            receiver = new SocketReceiver();
+            schedule();
+        }
 
     }
 
     public void stop() {
-        receiver.stop();
+        try {
+            receiver.stop();
+        } finally {
+            receiver = null;
+        }
     }
 
     public void addConnection(URI subscriberId, ChannelConnection connection) {

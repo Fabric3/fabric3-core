@@ -90,13 +90,19 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
     }
 
     public void start() {
-        receiver = new Receiver();
-        schedule();
+        if (receiver == null) {
+            receiver = new Receiver();
+            schedule();
+        }
 
     }
 
     public void stop() {
-        receiver.stop();
+        try {
+            receiver.stop();
+        } finally {
+            receiver = null;
+        }
     }
 
     public void uncaughtException(Thread t, Throwable e) {

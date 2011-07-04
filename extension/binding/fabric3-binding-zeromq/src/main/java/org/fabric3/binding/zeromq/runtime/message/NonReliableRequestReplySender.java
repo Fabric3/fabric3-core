@@ -99,13 +99,19 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     }
 
     public void start() {
-        dispatcher = new Dispatcher();
-        schedule();
+        if (dispatcher == null) {
+            dispatcher = new Dispatcher();
+            schedule();
+        }
 
     }
 
     public void stop() {
-        dispatcher.stop();
+        try {
+            dispatcher.stop();
+        } finally {
+            dispatcher = null;
+        }
     }
 
     public String getId() {

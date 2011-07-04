@@ -83,4 +83,14 @@ public interface ZeroMQWireBroker {
      */
     void releaseReceiver(URI uri) throws BrokerException;
 
+    /**
+     * Starts all senders and receivers.
+     */
+    void startAll();
+
+    /**
+     * Stops all senders and receivers.
+     */
+    void stopAll();
+
 }

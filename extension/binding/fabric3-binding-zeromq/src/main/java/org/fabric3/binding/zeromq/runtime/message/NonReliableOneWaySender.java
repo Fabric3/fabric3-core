@@ -72,12 +72,18 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
     }
 
     public void start() {
-        dispatcher = new Dispatcher();
-        schedule();
+        if (dispatcher == null) {
+            dispatcher = new Dispatcher();
+            schedule();
+        }
     }
 
     public void stop() {
-        dispatcher.stop();
+        try {
+            dispatcher.stop();
+        } finally {
+            dispatcher = null;
+        }
     }
 
     public String getId() {
@@ -166,7 +172,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                         monitor.dropMessage();
                         continue;
                     }
-                    
+
                     if (value != null) {
                         drained.add(value);
                         queue.drainTo(drained);

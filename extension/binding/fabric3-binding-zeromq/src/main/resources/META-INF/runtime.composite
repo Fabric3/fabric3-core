@@ -36,4 +36,8 @@
         <property name="pollTimeout" source="$systemConfig//zeromq.binding/@poll.timeout"/>
     </component>
 
+    <component name="ZeroMQTransport" f3:key="zeromq">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTransport"/>
+    </component>
+
 </composite>
