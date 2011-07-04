@@ -56,7 +56,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     private PortAllocatorImpl allocator;
 
     public void testPortAllocation() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
         Port port = allocator.allocate("http", "http");
         port.releaseLock();
@@ -70,7 +70,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testMultiplePortAllocation() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
         Port port1 = allocator.allocate("http1", "http");
         Port port2 = allocator.allocate("http2", "http");
@@ -82,7 +82,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testGetPortTypes() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
         allocator.allocate("http1", "http");
         allocator.allocate("http2", "http");
@@ -92,9 +92,9 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testPortReserve() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
-        allocator.reserve("http", "http", 8900);
+        allocator.reserve("http", "http", 9900);
         try {
             allocator.allocate("http", "http");
             fail();
@@ -116,12 +116,12 @@ public class PortAllocatorImplTestCase extends TestCase {
 
     public void testPortReserveNotConfigured() throws Exception {
         allocator.init();
-        allocator.reserve("http", "http", 8900);
+        allocator.reserve("http", "http", 9900);
         assertTrue(PortAllocator.NOT_ALLOCATED != allocator.getAllocatedPortNumber("http"));
     }
 
     public void testNoPortAvailable() throws Exception {
-        allocator.setRange("8900-8900");
+        allocator.setRange("9900-9900");
         allocator.init();
         Port port = allocator.allocate("http", "http");
         assertTrue(port.getNumber() != PortAllocator.NOT_ALLOCATED);
@@ -139,7 +139,7 @@ public class PortAllocatorImplTestCase extends TestCase {
 
     public void testIllegalPortRange() throws Exception {
         try {
-            allocator.setRange("8901-8900");
+            allocator.setRange("9901-9900");
             allocator.init();
             fail();
         } catch (IllegalArgumentException e) {
@@ -149,7 +149,7 @@ public class PortAllocatorImplTestCase extends TestCase {
 
     public void testInvalidRangeSyntax() throws Exception {
         try {
-            allocator.setRange("-8900-8901");
+            allocator.setRange("-9900-9901");
             allocator.init();
             fail();
         } catch (IllegalArgumentException e) {
@@ -158,7 +158,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testIsPoolEnabled() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
         assertTrue(allocator.isPoolEnabled());
     }
@@ -169,7 +169,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testReleasePort() throws Exception {
-        allocator.setRange("8900-8900");
+        allocator.setRange("9900-9900");
         allocator.init();
         Port port = allocator.allocate("http", "http");
         allocator.release(port.getNumber());
@@ -179,7 +179,7 @@ public class PortAllocatorImplTestCase extends TestCase {
     }
 
     public void testReleaseAll() throws Exception {
-        allocator.setRange("8900-8901");
+        allocator.setRange("9900-9901");
         allocator.init();
         allocator.allocate("http", "http1");
         allocator.allocate("http", "http2");
