@@ -95,7 +95,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             String sourceUrl = contribution.getLocation().toString();
 
             URL manifestUrl = new URL(sourceUrl + "/META-INF/sca-contribution.xml");
-            File file = new File(manifestUrl.toExternalForm());
+            File file = new File(manifestUrl.getPath());
             if (!file.exists()) {
                 manifestUrl = new URL(sourceUrl + "/WEB-INF/sca-contribution.xml");
             }
