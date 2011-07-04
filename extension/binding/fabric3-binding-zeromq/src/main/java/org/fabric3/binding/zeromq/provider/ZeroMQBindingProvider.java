@@ -40,12 +40,10 @@ package org.fabric3.binding.zeromq.provider;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.Property;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;

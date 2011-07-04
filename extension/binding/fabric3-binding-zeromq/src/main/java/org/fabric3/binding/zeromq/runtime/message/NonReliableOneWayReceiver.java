@@ -37,6 +37,7 @@ import java.util.concurrent.ExecutorService;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;

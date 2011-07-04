@@ -28,9 +28,12 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.message;
+package org.fabric3.binding.zeromq.runtime;
+
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -47,6 +50,19 @@ public interface MessagingMonitor {
     @Severe
     public void warn(String message);
 
+    @Info("Provisioned ZeroMQ subscriber [{0}]")
+    void onSubscribe(URI id);
+
+    @Info("Removed ZeroMQ subscriber [{0}]")
+    void onUnsubscribe(URI id);
+
+    @Info("Provisioned ZeroMQ endpoint [{0}]")
+    void onProvisionEndpoint(URI id);
+
+    @Info("Removed ZeroMQ endpoint [{0}]")
+    void onRemoveEndpoint(URI id);
+    
     @Debug("ZeroMQ message dropped due to unavailable endpoint")
     void dropMessage();
+
 }

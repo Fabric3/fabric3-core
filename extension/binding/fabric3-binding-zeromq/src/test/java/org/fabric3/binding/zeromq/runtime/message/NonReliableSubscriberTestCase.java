@@ -41,6 +41,7 @@ import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.spi.host.Port;

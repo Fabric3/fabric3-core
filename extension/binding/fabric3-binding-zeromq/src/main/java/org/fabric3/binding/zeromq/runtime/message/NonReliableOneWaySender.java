@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;

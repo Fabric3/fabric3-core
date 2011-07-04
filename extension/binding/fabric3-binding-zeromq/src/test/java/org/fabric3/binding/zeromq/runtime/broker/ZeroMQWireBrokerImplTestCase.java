@@ -39,11 +39,11 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.federation.AddressEvent;
-import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.host.Port;
@@ -156,7 +156,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         info = EasyMock.createMock(HostInfo.class);
 
-        monitor = EasyMock.createMock(MessagingMonitor.class);
+        monitor = EasyMock.createNiceMock(MessagingMonitor.class);
 
         broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, info, monitor);
 

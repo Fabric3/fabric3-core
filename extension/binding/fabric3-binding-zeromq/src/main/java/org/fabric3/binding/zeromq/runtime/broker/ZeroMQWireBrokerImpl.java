@@ -46,6 +46,7 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.ZeroMQWireBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -56,7 +57,6 @@ import org.fabric3.binding.zeromq.runtime.interceptor.ReferenceMarshallingInterc
 import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.ServiceMarshallingInterceptor;
 import org.fabric3.binding.zeromq.runtime.message.DelegatingOneWaySender;
-import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWayReceiver;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableRequestReplyReceiver;
@@ -184,6 +184,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             addressCache.publish(event);
 
             receivers.put(uri.toString(), receiver);
+            monitor.onProvisionEndpoint(uri);
         } catch (PortAllocationException e) {
             throw new BrokerException("Error allocating port for " + uri, e);
         } catch (UnknownHostException e) {
@@ -199,6 +200,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         receiver.stop();
         String endpointId = uri.toString();
         allocator.release(endpointId);
+        monitor.onRemoveEndpoint(uri);
     }
 
     public void send(byte[] message, int index, WorkContext context) {

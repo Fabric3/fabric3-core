@@ -44,6 +44,7 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -53,7 +54,6 @@ import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.handler.DeserializingEventStreamHandler;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
 import org.fabric3.binding.zeromq.runtime.handler.SerializingEventStreamHandler;
-import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
@@ -113,18 +113,20 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         } else {
             subscriber.addConnection(subscriberId, connection);
         }
+        monitor.onSubscribe(subscriberId);
     }
 
     public void unsubscribe(URI subscriberId, String channelName) {
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
-            throw new IllegalStateException("MessageServer not found: " + subscriberId);
+            throw new IllegalStateException("Subscriber not found: " + subscriberId);
         }
         subscriber.removeConnection(subscriberId);
         if (!subscriber.hasConnections()) {
             subscribers.remove(channelName);
             subscriber.stop();
         }
+        monitor.onUnsubscribe(subscriberId);
     }
 
     public void connect(String connectionId, ChannelConnection connection, String channelName) throws BrokerException {

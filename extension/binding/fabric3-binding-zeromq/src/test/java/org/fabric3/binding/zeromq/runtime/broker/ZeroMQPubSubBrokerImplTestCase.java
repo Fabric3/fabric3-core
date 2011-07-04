@@ -38,11 +38,11 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
-import org.fabric3.binding.zeromq.runtime.message.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -137,7 +137,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         allocator = EasyMock.createMock(PortAllocator.class);
         info = EasyMock.createMock(HostInfo.class);
-        monitor = EasyMock.createMock(MessagingMonitor.class);
+        monitor = EasyMock.createNiceMock(MessagingMonitor.class);
 
         broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, executorService, allocator, info, monitor);
 
