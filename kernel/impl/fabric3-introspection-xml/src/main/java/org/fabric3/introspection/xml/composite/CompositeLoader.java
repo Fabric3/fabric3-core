@@ -323,8 +323,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.add(channelDefinition);
     }
 
-    private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext context)
-            throws XMLStreamException {
+    private void handleReference(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         CompositeReference reference = referenceLoader.load(reader, context);
         if (reference == null) {
             // error encountered loading the reference
