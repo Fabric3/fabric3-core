@@ -177,8 +177,9 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             active.set(false);
             if (socket != null) {
                 // FIXME closing results in a segmentation fault for no-reliable one-way
-                // socket.close();
-                // socket = null;
+//                socket.hasReceiveMore();
+//                socket.close();
+                socket = null;
             }
         }
 
@@ -187,6 +188,11 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 bind();
 
                 while (active.get()) {
+                    if (poller == null) {
+                        // the socket or poller could not be created, abort
+                        monitor.error("Failed to initialize ZeroMQ socket, aborting receiver");
+                        return;
+                    }
                     long val = poller.poll(pollTimeout);   // convert timeout to microseconds
                     if (val > 0) {
                         invoke(socket);
