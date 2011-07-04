@@ -177,8 +177,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             active.set(false);
             if (socket != null) {
                 // FIXME closing results in a segmentation fault for no-reliable one-way
-//                socket.hasReceiveMore();
-//                socket.close();
+                socket.close();
                 socket = null;
             }
         }
